@@ -765,6 +765,11 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         if(this.conflict.conflictUnopposed) {
+            const prevention = this.conflict.loser?.getRawEffects().find((effect) => effect.type === EffectName.NoUnopposedHonorLoss);
+            if(prevention) {
+                this.game.addMessage(msg`${prevention.context.source} prevents ${this.conflict.loser} from losing honor for not defending the conflict`);
+                return;
+            }
             const honorLossMods = this.conflict.sumEffects(EffectName.ModifyUnopposedHonorLoss);
 
             const honorLoss = Math.max(0, 1 + honorLossMods);

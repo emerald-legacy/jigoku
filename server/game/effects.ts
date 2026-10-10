@@ -31,7 +31,8 @@ import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { Conflict } from './Conflict.js';
 import type { Faction } from './BaseCard.js';
 import type { Duel } from './Duel.js';
-import type { ConflictType, Element, SkillType } from './Constants.js';
+import type { CharacterStatus, ConflictType, Element, SkillType } from './Constants.js';
+import type { StatusToken } from './StatusToken.js';
 import type {
     AbilityLimitIncrease,
     DelayedEffectValue,
@@ -209,6 +210,17 @@ export const Effects = {
     suppressEffects: (condition: (effect: EffectApplier) => boolean) =>
         EffectBuilder.card.static(EffectName.SuppressEffects, new SuppressEffect(condition)),
     takeControl: (player: Player | undefined) => EffectBuilder.card.static(EffectName.TakeControl, player),
+    treatStatusTokenAs: (token: StatusToken, status: CharacterStatus) =>
+        EffectBuilder.card.detached(EffectName.TreatStatusTokenAs, {
+            apply: (card) => {
+                token.overrideStatus = status;
+                card.updateStatusTokenEffects();
+            },
+            unapply: (card) => {
+                token.overrideStatus = undefined;
+                card.updateStatusTokenEffects();
+            }
+        }),
     participatesFromHome: () => EffectBuilder.card.static(EffectName.ParticipatesFromHome, true),
     unlessActionCost: (properties: UnlessActionCostValue) => EffectBuilder.card.static(EffectName.UnlessActionCost, properties),
     replacePrintedElement: (value: EffectValueMap[EffectName.ReplacePrintedElement]) => EffectBuilder.card.static(EffectName.ReplacePrintedElement, value),
@@ -278,6 +290,7 @@ export const Effects = {
         }),
     increaseCost: (properties: Omit<CostReducerProps, 'amount'> & { amount: number }) =>
         reduceCost(Object.assign({}, properties, { amount: -properties.amount })),
+    noUnopposedHonorLoss: () => EffectBuilder.player.static(EffectName.NoUnopposedHonorLoss, true),
     modifyCardsDrawnInDrawPhase: (amount: FlexibleValue<number, Player>) =>
         EffectBuilder.player.flexible(EffectName.ModifyCardsDrawnInDrawPhase, amount),
     playerCannot: (properties: RestrictionType | PlayType | RestrictionProperties) =>
@@ -384,13 +397,13 @@ export const {
     mustBeDeclaredAsDefender, refillProvinceTo, setApparentFate, setBaseDash, setBaseMilitarySkill,
     setBasePoliticalSkill, setBaseProvinceStrength, setDash, setGlory, setBaseGlory, setMilitarySkill,
     setPoliticalSkill, setProvinceStrength, setProvinceStrengthBonus, provinceCannotHaveSkillIncreased,
-    switchBaseSkills, suppressEffects, takeControl, participatesFromHome, unlessActionCost, replacePrintedElement,
+    switchBaseSkills, suppressEffects, takeControl, treatStatusTokenAs, participatesFromHome, unlessActionCost, replacePrintedElement,
     winDuel, winDuelTies, ignoreDuelSkill, addElement, cannotBidInDuels, cannotDeclareRing, considerRingAsClaimed,
     additionalAction, addPlayerFlag, additionalCardPlayed, additionalCharactersInConflict, additionalConflict,
     additionalTriggerCost, additionalPlayCost, alternateFatePool, cannotDeclareConflictsOfType,
     canPlayFromOpponents, limitHonorGainPerPhase, modifyHonorTransferGiven, modifyHonorTransferReceived,
     cannotResolveRings, changePlayerSkillModifier, customDetachedPlayer, gainActionPhasePriority, increaseCost,
-    modifyCardsDrawnInDrawPhase, playerCannot, playerDelayedEffect, playerFateCostToTargetCard,
+    modifyCardsDrawnInDrawPhase, noUnopposedHonorLoss, playerCannot, playerDelayedEffect, playerFateCostToTargetCard,
     reduceNextPlayedCardCost, satisfyAffinity, setConflictDeclarationType, provideConflictDeclarationType,
     forceConflictDeclarationType, setMaxConflicts, setConflictTotalSkill, showTopConflictCard, showTopDynastyCard,
     eventsCannotBeCancelled, mustDeclareMaximumAttackers, restartDynastyPhase, strongholdCanBeAttacked,

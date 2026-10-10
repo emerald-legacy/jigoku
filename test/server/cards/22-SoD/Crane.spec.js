@@ -75,7 +75,7 @@ describe('SoD - Crane', function () {
                 expect(this.player1.honor).toBe(honor + 1);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'Castle of Air cancels the honor loss'
+                    'Castle of Air prevents player1 from losing honor for not defending the conflict'
                 );
             });
 
@@ -125,7 +125,7 @@ describe('SoD - Crane', function () {
                 expect(this.player1.honor).toBe(honor + 1);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'Castle of Air cancels the honor loss'
+                    'Castle of Air prevents player1 from losing honor for not defending the conflict'
                 );
             });
 

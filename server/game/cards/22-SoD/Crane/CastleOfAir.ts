@@ -1,29 +1,14 @@
 import { msg } from '../../../GameChat.js';
-import { AbilityType, EventName, CardType, Location } from '../../../Constants.js';
+import { CardType, Duration, Location } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
-import { modifyProvinceStrength } from '../../../effects.js';
-import {
-    cardLastingEffect,
-    handler,
-    selectCard
-} from '../../../GameActions/GameActions.js';
+import { modifyProvinceStrength, noUnopposedHonorLoss } from '../../../effects.js';
+import { cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { EventRegistrar } from '../../../EventRegistrar.js';
-import type { Event } from '../../../Events/Event.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-
 
 export default class CastleOfAir extends DrawCard {
     static id = 'castle-of-air';
-    private playersTriggered = new Set<string>();
 
     setupCardAbilities() {
-        const eventRegistrar = new EventRegistrar(this.game);
-        eventRegistrar.registerTriggerWindow(EventName.OnModifyHonor, AbilityType.WouldInterrupt, (event) => this.onHonorLoss(event));
-        eventRegistrar.register({
-            [EventName.OnConflictFinished]: () => this.onConflictFinished()
-        });
-
         this.action('Add Province Strength')
             .cost(costs.bow({
                 cardType: CardType.Character,
@@ -43,29 +28,13 @@ export default class CastleOfAir extends DrawCard {
                 })
             }))
             .if((context) => context.player.hasAffinity('air', context))
-            .gameAction(handler({
-                handler: (context) => {
-                    this.playersTriggered.add(context.player.uuid);
-                }
+            .playerLastingEffect((context) => ({
+                target: context.player,
+                duration: Duration.UntilEndOfConflict,
+                effect: noUnopposedHonorLoss()
             }))
             .chatText((context) => context.player.hasAffinity('air', context)
                 ? msg`increase the strength of an attacked province by 4${' and prevent unopposed honor loss'}`
                 : msg`increase the strength of an attacked province by 4`);
-    }
-
-    onHonorLoss(event: Event & EventPayload<EventName.OnModifyHonor>) {
-        if(
-            event.context.game.currentConflict &&
-            event.dueToUnopposed &&
-            this.playersTriggered.has(event.context.player.uuid) &&
-            !event.cancelled
-        ) {
-            event.cancel();
-            this.game.addMessage(msg`${this} cancels the honor loss`);
-        }
-    }
-
-    public onConflictFinished() {
-        this.playersTriggered.clear();
     }
 }
