@@ -958,6 +958,11 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.chooseAction(properties));
     }
 
+    /** The top card of a deck becomes a token, then `gameAction(token)` resolves. */
+    tokenFromTopCard(properties: FactoryProperties<'tokenFromTopCard', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.tokenFromTopCard(properties));
+    }
+
     /** Cancels the triggering event (interrupts only), optionally replacing it with `replacementGameAction`. */
     cancel<B extends Base & CancellingContext>(
         this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>,

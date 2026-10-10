@@ -35,6 +35,15 @@ describe('Noble Vanguard', function () {
             expect(this.kuwanan.militarySkill).toBe(this.kuwanan.baseMilitarySkill + 1);
         });
 
+        it('should not trigger with an empty conflict deck', function () {
+            this.player1.reduceDeckToNumber('conflict deck', 0);
+
+            this.player1.clickCard(this.vanguard);
+            this.player1.clickPrompt('1');
+            expect(this.vanguard.location).toBe('play area');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+
         it('should put the top card of your deck into a +1/+1 attachment', function () {
             this.player1.moveCard(this.katana, 'conflict deck');
 

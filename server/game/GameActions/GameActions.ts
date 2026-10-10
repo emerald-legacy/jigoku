@@ -97,6 +97,7 @@ import { SetHonorDialAction, SetDialProperties } from './SetHonorDialAction.js';
 import { SetAsideAction, SetAsideProperties } from './SetAsideAction.js';
 import { PlaceInProvinceAction, PlaceInProvinceProperties } from './PlaceInProvinceAction.js';
 import { NameCardAction, NameCardProperties } from './NameCardAction.js';
+import { TokenFromTopCardAction, TokenFromTopCardProperties } from './TokenFromTopCardAction.js';
 import { ShuffleDeckAction, ShuffleDeckProperties } from './ShuffleDeckAction.js';
 import { SwitchConflictElementAction, SwitchConflictElementProperties } from './SwitchConflictElementAction.js';
 import { SwitchConflictTypeAction, SwitchConflictTypeProperties } from './SwitchConflictTypeAction.js';
@@ -385,6 +386,10 @@ export function shuffleDeck<C extends AbilityContext = AbilityContext>(propertyF
 /** "Name a card": the chooser names a card, then `gameAction(cardName)` resolves. */
 export function nameCard<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<NameCardProperties, C>): NameCardAction<C> {
     return new NameCardAction<C>(propertyFactory);
+}
+/** The top card of a player's deck becomes a token, then `gameAction(token)` resolves. */
+export function tokenFromTopCard<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TokenFromTopCardProperties, C>): TokenFromTopCardAction<C> {
+    return new TokenFromTopCardAction<C>(propertyFactory);
 }
 /** Puts a dynasty card from out of play into a province, faceup by default, optionally discarding the cards there first. */
 export function placeInProvince<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceInProvinceProperties, C> = {}): PlaceInProvinceAction<C> {

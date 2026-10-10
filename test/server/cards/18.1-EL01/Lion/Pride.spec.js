@@ -47,6 +47,13 @@ describe('Pride', function () {
             expect(this.player1).not.toBeAbleToSelect(this.dojiWhisperer);
         });
 
+        it('cannot be used with an empty conflict deck', function () {
+            this.player1.reduceDeckToNumber('conflict deck', 0);
+            this.player1.clickCard(this.pride);
+            expect(this.player1).not.toHavePrompt('Choose a character');
+            expect(this.pride.bowed).toBe(false);
+        });
+
         it('should put the top card of your deck into a +1/+1 attachment', function () {
             this.player1.reduceDeckToNumber('conflict deck', 0);
             this.player1.moveCard(this.crane, 'conflict deck');

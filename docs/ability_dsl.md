@@ -600,6 +600,7 @@ These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscar
 | `handler({ handler })` | Run arbitrary code as an action |
 | `chatMessage((context) => msg\`…\`)` | A chat line as a step of its own (or nothing, when the function returns `undefined`) |
 | `nameCard({ gameAction, player?, message? })` | The chooser (default the ability's player, or `Players.Opponent`) names a card while the ability resolves; then `gameAction(cardName)` resolves. `message: (context, cardName, chooser) => msg\`…\`` |
+| `tokenFromTopCard({ deck, token, gameAction })` | The top card of the target player's `deck` (default the ability's player) becomes a `token` (a card class such as `Soldier`), then `gameAction(token)` resolves (Pride: `attach`, Ashigaru Encampment: `putIntoPlay`). After a card target, the ability also needs a condition that the deck isn't empty |
 | `noAction()` | No-op |
 | `duel({ ... })` | Initiate a duel (see [Duels](#duels)) |
 | `conflictLastingEffect({ ... })` | Lasting effect scoped to conflict |
