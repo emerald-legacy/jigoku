@@ -1,4 +1,5 @@
 import { msg } from '../GameChat.js';
+import * as AbilityLimit from '../AbilityLimit.js';
 import { AbilityType, EventName, Location } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -25,6 +26,7 @@ export class RallyAbility extends TriggeredAbility<DrawCard> {
             ],
             title: `${card.name}'s Rally`,
             printedAbility: false,
+            limit: AbilityLimit.unlimited(),
             message: (context: TriggeredAbilityContext) => {
                 const province = context.player.getProvinceCardInProvince(context.source.location);
                 return msg`${context.player} places ${context.player.dynastyDeck[0] ?? 'a card'} faceup in ${province?.isFacedown() ? context.source.location : province} due to ${context.source}'s Rally`;

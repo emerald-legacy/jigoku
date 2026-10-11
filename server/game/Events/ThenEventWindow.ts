@@ -11,7 +11,7 @@ export class ThenEventWindow extends EventWindow {
     resetCurrentEventWindow() {
         if(this.previousEventWindow) {
             for(const event of this.events) {
-                this.previousEventWindow.addEvent(event);
+                this.previousEventWindow.addHandedBackEvent(event);
             }
         }
         super.resetCurrentEventWindow();

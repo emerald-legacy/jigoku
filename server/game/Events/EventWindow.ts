@@ -17,6 +17,8 @@ export class EventWindow extends BaseStepWithPipeline {
     thenAbilities: Array<{ ability: ThenAbilityLike; context: AbilityContext; condition: (event: Event) => boolean }> = [];
     previousEventWindow: EventWindow | null = null;
     eventsToExecute: Event[] = [];
+    // their keyword reactions resolved in the nested window (RRG: once per triggering condition)
+    handedBackEvents: Event[] = [];
 
     constructor(game: Game, events: Event[]) {
         super(game);
@@ -50,6 +52,12 @@ export class EventWindow extends BaseStepWithPipeline {
             new SimpleStep(this.game, () => this.openWindow(AbilityType.Reaction)),
             new SimpleStep(this.game, () => this.resetCurrentEventWindow())
         ]);
+    }
+
+    /** An event a nested window resolved: its reactions are offered here. */
+    addHandedBackEvent(event: Event): void {
+        this.addEvent(event);
+        this.handedBackEvents.push(event);
     }
 
     addEvent(event: Event): Event {
@@ -141,7 +149,8 @@ export class EventWindow extends BaseStepWithPipeline {
             return;
         }
 
-        this.queueStep(new KeywordAbilityWindow(this.game, abilityType, this));
+        const exclude = abilityType === AbilityType.KeywordReaction ? this.handedBackEvents : [];
+        this.queueStep(new KeywordAbilityWindow(this.game, abilityType, this, exclude));
     }
 
     checkThenAbilities() {
