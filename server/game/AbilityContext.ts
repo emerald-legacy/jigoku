@@ -143,6 +143,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         copy.choosingPlayerOverride = this.choosingPlayerOverride;
         copy.gameActionsResolutionChain = this.gameActionsResolutionChain;
         copy.playType = this.playType;
+        copy.ignoreFateCost = this.ignoreFateCost;
         copy.previousEvents = this.previousEvents;
         return copy;
     }
