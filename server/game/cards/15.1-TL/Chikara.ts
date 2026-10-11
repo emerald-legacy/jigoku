@@ -9,7 +9,6 @@ class Chikara extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            myControl: true,
             unique: true,
             faction: 'crab'
         });

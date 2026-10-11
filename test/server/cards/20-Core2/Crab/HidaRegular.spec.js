@@ -41,7 +41,7 @@ describe('Hida Regular', function () {
             expect(this.player1).toBeAbleToSelect(this.regular);
             this.player1.clickCard(this.regular);
 
-            expect(this.player1).toBeAbleToSelect(this.regular);
+            expect(this.player1).not.toBeAbleToSelect(this.regular);
             expect(this.player1).not.toBeAbleToSelect(this.whisperer);
             expect(this.player1).toBeAbleToSelect(this.brash);
             expect(this.player1).not.toBeAbleToSelect(this.sotorii);

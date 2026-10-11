@@ -19,7 +19,7 @@ export default class ObligationsOfHospitality extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3)
+                cardCondition: (card, context) => card.isParticipating() && !card.anotherUniqueInPlay(context.player) && card.costLessThan(3)
             }, cardLastingEffect((context) => ({
                 effect: takeControl(context.player)
             })))

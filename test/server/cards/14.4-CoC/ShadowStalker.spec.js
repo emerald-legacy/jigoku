@@ -46,8 +46,10 @@ describe('Shadow Stalker', function() {
             expect(this.stalker1.militarySkill).toBe(this.stalker1.printedMilitarySkill + 2);
             expect(this.stalker1.politicalSkill).toBe(this.stalker1.printedPoliticalSkill + 2);
 
+            this.game.rings.air.fate = 1;
             this.player1.clickCard(this.philosopher);
             this.player1.clickRing('air');
+            this.player1.clickRing('fire');
 
             expect(this.stalker1.militarySkill).toBe(this.stalker1.printedMilitarySkill);
             expect(this.stalker1.politicalSkill).toBe(this.stalker1.printedPoliticalSkill);

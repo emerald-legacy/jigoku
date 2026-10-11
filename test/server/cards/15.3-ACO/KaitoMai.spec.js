@@ -84,5 +84,15 @@ describe('Kaito Mai', function() {
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player1).not.toBeAbleToSelect(this.mai);
         });
+
+        it('cannot remove fate from itself', function() {
+            this.mai.fate = 2;
+            this.player1.playAttachment(this.steed, this.mai);
+            this.player1.clickCard(this.mai);
+            this.player1.clickPrompt('1');
+            this.player1.clickCard(this.mai);
+            expect(this.player1).not.toBeAbleToSelect(this.mai);
+            expect(this.player1).toBeAbleToSelect(this.alibi);
+        });
     });
 });

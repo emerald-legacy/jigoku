@@ -20,6 +20,7 @@ export default class WhiteLotusMethod extends DrawCard {
                 name: TOKEN,
                 activePromptTitle: 'Choose the status token to move',
                 cardType: CardType.Character,
+                controller: Players.Self,
                 tokenCondition: (token) => token.grantedStatus === CharacterStatus.Dishonored
             })
             .target({

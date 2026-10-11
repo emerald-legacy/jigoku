@@ -1,4 +1,4 @@
-import { CardType, Players, ConflictType } from '../../../Constants.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { bow, cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
@@ -21,7 +21,6 @@ export default class SupportingCast extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character to give +3 military skill',
                 cardType: CardType.Character,
-                controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
                     !context.event.cardTargets.some((eventCard) => eventCard === card)

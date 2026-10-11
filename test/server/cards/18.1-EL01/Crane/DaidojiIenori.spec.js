@@ -71,5 +71,11 @@ describe('Daidoji Ienori', function() {
             expect(this.player1).toBeAbleToSelect(this.yoshi);
             expect(this.player1).toBeAbleToSelect(this.ienori);
         });
+
+        it('can choose a character at home', function() {
+            this.player2.clickCard(this.ienori);
+            expect(this.player2).toBeAbleToSelect(this.alchemist);
+            expect(this.player2).toBeAbleToSelect(this.chagatai);
+        });
     });
 });

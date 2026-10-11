@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { delayedEffect } from '../../../effects.js';
 import { cardLastingEffect, dishonor, honor, multiple } from '../../../GameActions/GameActions.js';
-import { CardType, Duration } from '../../../Constants.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class FieldsOfRollingThunder extends DrawCard {
@@ -18,6 +18,7 @@ export default class FieldsOfRollingThunder extends DrawCard {
         this.action('Honor a character')
             .target({
                 cardType: CardType.Character,
+                controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.isFaction('unicorn')
             }, multiple([
                 honor(),

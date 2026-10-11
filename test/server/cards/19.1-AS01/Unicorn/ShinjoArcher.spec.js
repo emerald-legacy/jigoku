@@ -36,7 +36,7 @@ describe('Shinjo Archer', function() {
             this.player1.clickCard(this.shinjoArcher);
             expect(this.player1).toHavePrompt('Choose a character');
 
-            expect(this.player1).toBeAbleToSelect(this.shinjoArcher);
+            expect(this.player1).not.toBeAbleToSelect(this.shinjoArcher);
             expect(this.player1).toBeAbleToSelect(this.solemnScholar);
             expect(this.player1).not.toBeAbleToSelect(this.isawaTadaka);
             expect(this.player1).not.toBeAbleToSelect(this.kitsuMotso);

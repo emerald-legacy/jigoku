@@ -17,7 +17,6 @@ export default class KaitoYoshiaki extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card !== context.source &&
                     card.isParticipating() &&
                     context.game.requireConflict()
                         .getCharacters(context.player)

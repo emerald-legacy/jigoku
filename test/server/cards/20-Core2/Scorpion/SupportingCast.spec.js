@@ -64,5 +64,14 @@ describe('Supporting Cast', function () {
                 'player2 plays Supporting Cast to give +3 military skill to Bayushi Manipulator - Shosuro Sadako was just a distraction'
             );
         });
+
+        it('can give the bonus to an opponent\'s participating character', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.assassination);
+            this.player1.clickCard(this.shosuroSadako);
+            this.player2.clickCard(this.supportingCast);
+            expect(this.player2).toBeAbleToSelect(this.bayushiManipulator);
+            expect(this.player2).toBeAbleToSelect(this.matsuBerserker);
+        });
     });
 });

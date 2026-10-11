@@ -17,6 +17,6 @@ export default class UseTheTerrain extends DrawCard {
     }
 
     private hasKicker(context: AbilityContext<this>) {
-        return context.player.isCharacterTraitInPlay('scout');
+        return context.player.cardsInPlay.some((card) => card.hasTrait('scout') && card.isParticipating());
     }
 }

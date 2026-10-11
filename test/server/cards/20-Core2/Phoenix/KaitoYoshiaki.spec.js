@@ -91,5 +91,15 @@ describe('Kaito Yoshiaki', function () {
                 'player1 uses Kaito Yoshiaki to remove a fate from and set the base skills of Brash Samurai to 0military/0political'
             );
         });
+
+        it('can choose itself', function () {
+            this.initiateConflict({
+                attackers: [this.kaitoYoshiaki, this.isawaUjina],
+                defenders: [this.brash]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.kaitoYoshiaki);
+            expect(this.player1).toBeAbleToSelect(this.kaitoYoshiaki);
+        });
     });
 });

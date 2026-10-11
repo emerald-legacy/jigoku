@@ -11,7 +11,8 @@ export default class SawakitensBlessing extends DrawCard {
         this.conflictAction('Character doesn\'t bow during resolution', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
-                controller: Players.Self
+                controller: Players.Self,
+                cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect({
                 condition: () => this.game.isDuringConflict(),
                 effect: doesNotBow()

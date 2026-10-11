@@ -4,7 +4,6 @@ import { modifyDuelistSkill } from '../../../effects.js';
 import { cardLastingEffect, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import type BaseCard from '../../../BaseCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
 function getAttachmentSkill(card: DrawCard) {
@@ -27,6 +26,11 @@ export default class BitingSteel extends DrawCard {
     static id = 'biting-steel';
 
     public setupCardAbilities() {
+        this.attachmentConditions({
+            myControl: true,
+            cardCondition: (card) => card.attachments.some((attachment) => attachment.hasTrait('weapon'))
+        });
+
         this.duelChallenge('Add a Weapon to your duel stats', (duel, context) =>
             (duel.duelType === DuelType.Military || duel.duelType === DuelType.Political) &&
                 !!context.source.parentCharacter && duel.isInvolved(context.source.parentCharacter))
@@ -51,14 +55,6 @@ export default class BitingSteel extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)
             }, sendHome());
-    }
-
-    public canAttach(card: BaseCard) {
-        return (
-            card.getType() === CardType.Character &&
-            card.attachments.some((c) => c.hasTrait('weapon')) &&
-            super.canAttach(card)
-        );
     }
 
     public canPlay(context: AbilityContext, playType?: PlayType) {

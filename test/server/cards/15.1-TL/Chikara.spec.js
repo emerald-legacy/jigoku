@@ -28,10 +28,10 @@ describe('Chikara', function() {
                 this.netsu = this.player2.findCardByName('daidoji-netsu');
             });
 
-            it('should only be able to attach to unique crab characters you control', function() {
+            it('should only be able to attach to unique crab characters', function() {
                 this.player1.clickCard(this.chikara);
                 expect(this.player1).toBeAbleToSelect(this.kisadaP1);
-                expect(this.player1).not.toBeAbleToSelect(this.kisadaP2);
+                expect(this.player1).toBeAbleToSelect(this.kisadaP2);
                 expect(this.player1).not.toBeAbleToSelect(this.brashSamurai);
                 expect(this.player1).toBeAbleToSelect(this.oushi);
                 expect(this.player1).not.toBeAbleToSelect(this.yoritomo);

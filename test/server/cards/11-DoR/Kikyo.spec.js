@@ -134,3 +134,27 @@ describe('kikyo', function() {
         });
     });
 });
+
+describe('kikyo attach restriction', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['kikyo']
+                },
+                player2: {
+                    inPlay: ['hida-kisada', 'brash-samurai']
+                }
+            });
+            this.kisada = this.player2.findCardByName('hida-kisada');
+            this.brash = this.player2.findCardByName('brash-samurai');
+        });
+
+        it('can attach to an opponent\'s unique crab character', function() {
+            this.player1.clickCard('kikyo');
+            expect(this.player1).toBeAbleToSelect(this.kisada);
+            expect(this.player1).not.toBeAbleToSelect(this.brash);
+        });
+    });
+});

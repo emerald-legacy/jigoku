@@ -7,8 +7,6 @@ export default class Naginata extends DrawCard {
     static id = 'naginata';
 
     setupCardAbilities() {
-        this.attachmentConditions({ myControl: true });
-
         this.whileAttached({
             condition: (context) => !!context.source.parentCharacter && context.source.controller.firstPlayer,
             effect: modifyMilitarySkill(1)

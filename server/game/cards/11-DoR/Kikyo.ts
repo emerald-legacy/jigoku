@@ -6,7 +6,6 @@ class Kikyo extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            myControl: true,
             unique: true,
             faction: 'crab'
         });

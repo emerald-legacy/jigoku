@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -11,7 +11,6 @@ export default class CompetingInterests extends DrawCard {
             .condition((context) => this.hasEnoughUniques(context))
             .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
                 cardCondition: (card) => card.isUnique() && card.isParticipating()
             }, bow());
     }

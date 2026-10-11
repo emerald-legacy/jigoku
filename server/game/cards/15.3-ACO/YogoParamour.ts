@@ -12,7 +12,8 @@ class YogoParamour extends DrawCard {
             effect: gainAbility.action('Dishonor any character', (ability) => ability
                 .cost(costs.bowSelf())
                 .target({
-                    cardType: CardType.Character
+                    cardType: CardType.Character,
+                    cardCondition: (card, context) => card !== context.source
                 }, dishonor()))
         });
     }

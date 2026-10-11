@@ -6,7 +6,7 @@ export default class MountainTattoo extends DrawCard {
     static id = 'mountain-tattoo';
 
     setupCardAbilities() {
-        this.attachmentConditions({ trait: 'monk' });
+        this.attachmentConditions({ myControl: true, trait: 'monk' });
 
         this.whileAttached({ effect: addTrait('tattooed') });
 

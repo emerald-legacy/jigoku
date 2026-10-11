@@ -18,8 +18,10 @@ const selectAttachmentPrompt = 'Select an attachment';
 
 function isSearchableCard(card: BaseCard, context: AbilityContext) {
     return (
+        card.isDrawCard() &&
         card.type === CardType.Attachment &&
         (card.hasTrait('title') || card.hasTrait('technique')) &&
+        card.costLessThan(2) &&
         card.canAttach(context.source)
     );
 }

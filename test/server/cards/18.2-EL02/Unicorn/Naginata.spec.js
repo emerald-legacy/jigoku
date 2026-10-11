@@ -102,3 +102,25 @@ describe('Daikyu Reprint', function () {
         });
     });
 });
+
+describe('Naginata attach restriction', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['naginata']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+        });
+
+        it('can attach to an opponent\'s character', function () {
+            this.player1.clickCard('naginata');
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+        });
+    });
+});

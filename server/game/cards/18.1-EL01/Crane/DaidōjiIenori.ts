@@ -17,8 +17,7 @@ class DaidojiIenori extends DrawCard {
         this.conflictAction('Set a participating character to 3/3')
             .target({
                 cardType: CardType.Character,
-                controller: Players.Any,
-                cardCondition: (card) => card.isParticipating()
+                controller: Players.Any
             }, cardLastingEffect((context) => {
                 const effect = [
                     setMilitarySkill(3),

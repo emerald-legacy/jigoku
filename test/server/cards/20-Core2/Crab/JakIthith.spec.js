@@ -196,3 +196,39 @@ describe('Jak\'Ithith', function() {
         });
     });
 });
+
+describe('Jak\'ithith receiver', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-initiate'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['jak-ithith', 'borderlands-defender', 'doji-whisperer']
+                }
+            });
+            this.borderlands = this.player2.findCardByName('borderlands-defender');
+            this.jakithit = this.player2.findCardByName('jak-ithith');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.initiate = this.player1.findCardByName('togashi-initiate');
+            this.katana = this.player1.playAttachment('fine-katana', this.initiate);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.initiate],
+                defenders: [this.borderlands, this.jakithit],
+                type: 'military'
+            });
+            this.noMoreActions();
+        });
+
+        it('can attach the attachment to a character at home', function() {
+            this.player2.clickCard(this.jakithit);
+            this.player2.clickCard(this.katana);
+            expect(this.player2).toBeAbleToSelect(this.borderlands);
+            expect(this.player2).toBeAbleToSelect(this.whisperer);
+        });
+    });
+});

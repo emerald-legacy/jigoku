@@ -87,5 +87,35 @@ describe('Use the Terrain', function () {
                 expect(this.getChatLogs(5)).toContain('player1 plays Use the Terrain to give all characters they control +2military');
             });
         });
+
+        describe('with a Scout at home', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['border-rider', 'eager-scout'],
+                        hand: ['use-the-terrain']
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger']
+                    }
+                });
+                this.rider = this.player1.findCardByName('border-rider');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+            });
+
+            it('gives only +1 military', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rider],
+                    defenders: [this.challenger]
+                });
+                const riderMil = this.rider.militarySkill;
+                this.player2.pass();
+                this.player1.clickCard('use-the-terrain');
+                expect(this.rider.militarySkill).toBe(riderMil + 1);
+            });
+        });
     });
 });

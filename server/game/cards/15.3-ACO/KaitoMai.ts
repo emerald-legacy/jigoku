@@ -17,7 +17,8 @@ class KaitoMai extends DrawCard {
                     event.origin === context.source && (event.fate ?? 0) > 0 && context.game.currentPhase !== Phase.Fate
             })
             .target({
-                cardType: CardType.Character
+                cardType: CardType.Character,
+                cardCondition: (card, context) => card !== context.source
             }, removeFate());
     }
 }

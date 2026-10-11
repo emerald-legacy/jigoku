@@ -13,7 +13,7 @@ export default class ShinjoArcher extends DrawCard {
             .cost(costs.switchLocation())
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => card !== context.source && card.isParticipating()
             }, cardLastingEffect({
                 effect: modifyBothSkills(-2)
             }))

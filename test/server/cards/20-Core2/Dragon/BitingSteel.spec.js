@@ -122,3 +122,34 @@ describe('Biting Steel', function () {
         });
     });
 });
+
+describe('Biting Steel attach restriction', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-makoto'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['mirumoto-raitsugu', 'miya-mystic'],
+                    hand: ['biting-steel', 'fine-katana']
+                },
+                gameMode: GameMode.Emerald
+            });
+            this.makoto = this.player1.findCardByName('akodo-makoto');
+            this.raitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+            this.bitingSteel = this.player2.findCardByName('biting-steel');
+            this.player1.playAttachment('fine-katana', this.makoto);
+            this.player2.playAttachment('fine-katana', this.raitsugu);
+            this.player1.pass();
+        });
+
+        it('attaches only to a character you control with a Weapon', function () {
+            this.player2.clickCard(this.bitingSteel);
+            expect(this.player2).toBeAbleToSelect(this.raitsugu);
+            expect(this.player2).not.toBeAbleToSelect(this.makoto);
+        });
+    });
+});
