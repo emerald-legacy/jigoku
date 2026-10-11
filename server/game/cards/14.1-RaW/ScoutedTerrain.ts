@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { strongholdCanBeAttacked } from '../../effects.js';
-import { Duration } from '../../Constants.js';
+import { Duration, Phase } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
 class ScoutedTerrain extends DrawCard {
@@ -14,7 +14,8 @@ class ScoutedTerrain extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: strongholdCanBeAttacked()
             }))
-            .chatText((context) => msg`allow ${context.player.opponent}'s stronghold to be attacked this phase`);
+            .chatText((context) => msg`allow ${context.player.opponent}'s stronghold to be attacked this phase`)
+            .phase(Phase.Conflict);
     }
 }
 

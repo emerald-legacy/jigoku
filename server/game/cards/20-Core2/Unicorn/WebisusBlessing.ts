@@ -1,6 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { discardStatusToken } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { perRound } from '../../../AbilityLimit.js';
 
 export default class WebisusBlessing extends DrawCard {
     static id = 'webisu-s-blessing';
@@ -20,6 +21,7 @@ export default class WebisusBlessing extends DrawCard {
             }, discardStatusToken())
             .chatText((context) => context.tokens.second
                 ? msg`discard ${context.tokens.first[0].card}'s ${context.tokens.first} and ${context.tokens.second[0].card}${'\'s '}${context.tokens.second}`
-                : msg`discard ${context.tokens.first[0].card}'s ${context.tokens.first}`);
+                : msg`discard ${context.tokens.first[0].card}'s ${context.tokens.first}`)
+            .max(perRound(1));
     }
 }

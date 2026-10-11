@@ -2,6 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { CardType, Players, Location, TargetMode, DeckType } from '../../../Constants.js';
 import { deckSearch } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { perRound } from '../../../AbilityLimit.js';
 
 export default class TennyosBlessing extends DrawCard {
     static id = 'tennyo-s-blessing';
@@ -33,6 +34,7 @@ export default class TennyosBlessing extends DrawCard {
                     }
                 }
             }))
-            .evenDuringDynasty();
+            .evenDuringDynasty()
+            .max(perRound(1));
     }
 }

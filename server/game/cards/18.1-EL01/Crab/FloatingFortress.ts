@@ -11,6 +11,7 @@ import {
 } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { perConflict } from '../../../AbilityLimit.js';
 
 export default class FloatingFortress extends DrawCard {
     static id = 'floating-fortress';
@@ -48,6 +49,7 @@ export default class FloatingFortress extends DrawCard {
                     }
                 })
             ]))
-            .chatText((context) => msg`turn ${context.source} into a copy of ${context.chatTarget()}`);
+            .chatText((context) => msg`turn ${context.source} into a copy of ${context.chatTarget()}`)
+            .max(perConflict(1));
     }
 }

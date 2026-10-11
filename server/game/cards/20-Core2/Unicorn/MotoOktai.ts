@@ -1,4 +1,4 @@
-import { CardType, Duration, Location, Players } from '../../../Constants.js';
+import { CardType, Duration, Location, Phase, Players } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,8 +14,8 @@ export default class MotoOktai extends DrawCard {
     setupCardAbilities() {
         this.interrupt('Increase this character\'s skill')
             .when({
-                onCardLeavesPlay: ({ card }, _context) =>
-                    card.location === Location.PlayArea && card.type === CardType.Character
+                onCardLeavesPlay: ({ card }, context) =>
+                    context.game.currentPhase === Phase.Conflict && card.location === Location.PlayArea && card.type === CardType.Character
             })
             .cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,

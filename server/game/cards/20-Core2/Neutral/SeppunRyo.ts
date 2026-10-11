@@ -3,6 +3,7 @@ import { DuelType, Duration, FavorType } from '../../../Constants.js';
 import { modifyDuelSkill } from '../../../effects.js';
 import { bow, claimImperialFavor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { unlimited } from '../../../AbilityLimit.js';
 
 export default class SeppunRyo extends DrawCard {
     static id = 'seppun-ryo';
@@ -16,7 +17,8 @@ export default class SeppunRyo extends DrawCard {
                 effect: modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Duration.UntilEndOfDuel
             }))
-            .chatText('add 1 to their duel total');
+            .chatText('add 1 to their duel total')
+            .limit(unlimited());
 
         this.conflictAction('Initiate a military duel to bow')
             .initiateDuel((context) => {

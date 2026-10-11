@@ -43,5 +43,29 @@ describe('Propitious Market', function () {
             expect(this.manicured.getStrength()).toBe(5);
             expect(this.getChatLogs(5)).toContain('player1 chooses not to sacrifice Propitious Market');
         });
+
+    });
+});
+
+describe('Propitious Market timing', function () {
+    integration(function () {
+        describe('outside the conflict phase', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'fate',
+                    player1: {
+                        dynastyDiscard: ['propitious-market']
+                    }
+                });
+                this.propitiousMarket = this.player1.findCardByName('propitious-market');
+                this.player1.placeCardInProvince(this.propitiousMarket, 'province 1');
+                this.propitiousMarket.facedown = false;
+            });
+
+            it('can be used', function () {
+                this.player1.clickCard(this.propitiousMarket);
+                expect(this.player1).toHavePrompt('Sacrifice Propitious Market?');
+            });
+        });
     });
 });

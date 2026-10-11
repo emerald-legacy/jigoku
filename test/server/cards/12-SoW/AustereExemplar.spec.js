@@ -121,5 +121,35 @@ describe('Austere Exemplar', function() {
                 expect(this.player1).toHavePrompt('Choose an effect to resolve');
             });
         });
+
+        describe('Max 1 per conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['austere-exemplar', 'austere-exemplar']
+                    },
+                    player2: {
+                        inPlay: ['brash-samurai']
+                    }
+                });
+                [this.exemplar1, this.exemplar2] = this.player1.filterCardsByName('austere-exemplar');
+            });
+
+            it('a second copy cannot be used in the same conflict', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.exemplar1, this.exemplar2],
+                    defenders: ['brash-samurai']
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.exemplar1);
+                this.player1.clickRing('fire');
+                expect(this.getChatLogs(3)).toContain('player1 uses Austere Exemplar, placing 1 fate on the Fire Ring to take three actions');
+
+                this.player1.clickCard(this.exemplar2);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+            });
+        });
     });
 });

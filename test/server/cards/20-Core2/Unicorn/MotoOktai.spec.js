@@ -72,5 +72,36 @@ describe('Moto Oktai', function () {
                 'player1 uses Moto Oktai to get +4 military for this phase - he is emboldened by justice, but unburdened by mercy'
             );
         });
+
+    });
+});
+
+describe('Moto Oktai timing', function () {
+    integration(function () {
+        describe('outside the conflict phase', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['moto-oktai']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer']
+                    }
+                });
+                this.motoOktai = this.player1.findCardByName('moto-oktai');
+                this.motoOktai.fate = 1;
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+            });
+
+            it('does not react to characters discarded in the fate phase', function () {
+                this.nextPhase();
+                this.player2.clickPrompt('Done');
+
+                expect(this.game.currentPhase).toBe('fate');
+                expect(this.whisperer.location).toBe('dynasty discard pile');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            });
+        });
     });
 });

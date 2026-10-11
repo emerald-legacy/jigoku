@@ -6,6 +6,7 @@ import type { Event } from '../../../Events/Event.js';
 import type Player from '../../../Player.js';
 import type Ring from '../../../Ring.js';
 import { resolveRingEffect } from '../../../GameActions/GameActions.js';
+import { perRound } from '../../../AbilityLimit.js';
 
 function getNumberOfMonks(context: AbilityContext) {
     return context.player.cardsInPlay.reduce(
@@ -88,6 +89,7 @@ export default class RiddlesOfTheHenshin extends DrawCard {
         this.action('Resolve ring effects')
             .condition((context) => getNumberOfMonks(context) > 0 && context.player.getClaimedRings().length > 0)
             .handler((context) => new Process(getNumberOfMonks(context), context).promptPlayer())
-            .chatText('resolve ring effects');
+            .chatText('resolve ring effects')
+            .max(perRound(1));
     }
 }

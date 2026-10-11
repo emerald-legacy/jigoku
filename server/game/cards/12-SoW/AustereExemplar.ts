@@ -17,7 +17,7 @@ class AustereExemplar extends DrawCard {
                 effect: additionalAction(3)
             }))
             .chatText('take three actions')
-            .limit(perConflict(1));
+            .max(perConflict(1));
     }
 }
 
