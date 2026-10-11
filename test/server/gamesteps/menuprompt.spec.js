@@ -4,7 +4,7 @@ import Player from '../../../build/server/game/Player.js';
 
 describe('the MenuPrompt', function() {
     beforeEach(function() {
-        var game = new jasmine.createSpyObj('game', ['playerDecked', 'emitEvent', 'addMessage', 'getOtherPlayer']);
+        var game = new jasmine.createSpyObj('game', ['playerDecked', 'emitEvent', 'addMessage', 'getOtherPlayer', 'getPlayers']);
         game.rules = rulesFor('stronghold');
 
         this.player = new Player('1', { username: 'Player 1', settings: {} }, true, game);
@@ -22,13 +22,15 @@ describe('the MenuPrompt', function() {
 
         this.properties = {
             activePrompt: {
-                buttons: [{ command: 'menuButton', text: 'Do it!', method: 'doIt' }]
+                buttons: [{ command: 'menuButton', text: 'Do it!', method: 'doIt', arg: 123 }]
             }
         };
 
         this.arg = 123;
 
+        game.getPlayers.and.returnValue([this.player, this.otherPlayer]);
         this.prompt = new MenuPrompt(game, this.player, this.handlers, this.properties);
+        this.prompt.setPrompt();
     });
 
     describe('the onMenuCommand() function', function() {

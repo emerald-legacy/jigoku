@@ -13,11 +13,7 @@ export class EndRoundPrompt extends PlayerOrderPrompt {
         return { menuTitle: 'Waiting for opponent to end the round' };
     }
 
-    onMenuCommand(player: Player): boolean {
-        if(player !== this.currentPlayer) {
-            return false;
-        }
-
+    menuCommand(_player: Player): boolean {
         this.completePlayer();
         return true;
     }

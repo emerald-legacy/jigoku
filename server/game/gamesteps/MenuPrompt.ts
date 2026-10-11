@@ -47,9 +47,6 @@ export class MenuPrompt extends UiPrompt {
     }
 
     menuCommand(player: Player, arg: string, method: string): boolean {
-        if(!this.offers(method, arg)) {
-            return false;
-        }
         const handler = Object.hasOwn(this.handlers, method) ? this.handlers[method] : undefined;
         if(!handler) {
             return false;
@@ -60,16 +57,6 @@ export class MenuPrompt extends UiPrompt {
         }
 
         return true;
-    }
-
-    /** Whether a button or control of this prompt sends `method` (with `arg`, where every such button fixes it): the client names it. */
-    private offers(method: string, arg: string): boolean {
-        const { buttons = [], controls = [] } = this.properties.activePrompt;
-        const buttonArgs = buttons.filter((button) => button.method === method).map((button) => button.arg);
-        if(controls.some((control) => control.method === method) || buttonArgs.some((buttonArg) => buttonArg === undefined)) {
-            return true;
-        }
-        return buttonArgs.some((buttonArg) => String(buttonArg) === String(arg));
     }
 }
 
