@@ -64,7 +64,7 @@ export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> 
         event.player = player || context.player;
         event.physicalRing = physicalRing;
         event.optional = optional;
-        event.effectivellyResolvedEffect = false;
+        event.effectResolved = false;
     }
 
     eventHandler(event: ActionEvent<EventName.OnResolveRingElement, C>): void {
@@ -79,7 +79,7 @@ export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> 
 
         context.game.resolveAbility(
             RingAbilities.contextFor(event.player, event.ring.element, event.optional, (resolved) => {
-                event.effectivellyResolvedEffect = resolved;
+                event.effectResolved = resolved;
             })
         );
     }

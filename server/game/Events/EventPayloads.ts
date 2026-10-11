@@ -293,7 +293,7 @@ interface EventPayloadMap {
     [EventName.OnResolveRingElement]: BaseEventPayload & {
         player: Player;
         ring: Ring;
-        effectivellyResolvedEffect: boolean;
+        effectResolved: boolean;
         physicalRing?: Ring;
         optional?: boolean;
     };

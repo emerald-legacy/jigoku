@@ -9,7 +9,7 @@ export default class PalaceOfKnowledge extends StrongholdCard {
         this.reaction('Resolve another ring effect')
             .when({
                 onResolveRingElement: (event, context) =>
-                    event.player === context.player && event.effectivellyResolvedEffect && context.game.isDuringConflict()
+                    event.player === context.player && event.effectResolved && context.game.isDuringConflict()
             })
             .cost(costs.bowSelf())
             .cost(costs.discardCard())
