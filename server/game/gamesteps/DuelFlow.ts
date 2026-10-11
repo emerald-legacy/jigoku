@@ -44,6 +44,7 @@ export class DuelFlow extends BaseStepWithPipeline {
     #setCurrentDuel() {
         this.duel.previousDuel = this.game.currentDuel ?? undefined;
         this.game.currentDuel = this.duel;
+        this.duel.start();
         this.game.checkGameState(true);
     }
 
@@ -110,6 +111,7 @@ export class DuelFlow extends BaseStepWithPipeline {
         if(this.game.currentDuel === this.duel) {
             this.game.currentDuel = this.duel.previousDuel ?? null;
         }
+        this.duel.cleanup();
     }
 
     #cleanUpDuel() {

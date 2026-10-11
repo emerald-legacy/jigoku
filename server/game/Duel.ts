@@ -53,11 +53,6 @@ export class Duel extends GameObject {
     ) {
         super(game, 'Duel');
         this.#initializeDuelModifiers(challenger.controller);
-
-        this.eventRegistrar = new EventRegistrar(this.game);
-        this.eventRegistrar.register({
-            [EventName.OnCardAbilityTriggered]: (event) => this.onCardAbilityTriggered(event)
-        });
     }
 
     get winnerController(): undefined | Player {
@@ -367,8 +362,20 @@ export class Duel extends GameObject {
         }
     }
 
+    /** Starts tracking the duel abilities each player triggers; ended by `cleanup()`. */
+    start() {
+        if(this.eventRegistrar) {
+            return;
+        }
+        this.eventRegistrar = new EventRegistrar(this.game);
+        this.eventRegistrar.register({
+            [EventName.OnCardAbilityTriggered]: (event) => this.onCardAbilityTriggered(event)
+        });
+    }
+
     cleanup() {
         this.eventRegistrar?.unregisterAll();
+        this.eventRegistrar = undefined;
     }
 
     onCardAbilityTriggered({
