@@ -91,6 +91,8 @@ describe('Prayers on the Eve of Battle', function () {
                 });
 
                 this.noMoreActions();
+                // both players' forced reactions: the first player orders them
+                this.player1.clickCard(this.prayers1);
 
                 expect(this.asakoTsuki.isParticipating()).toBe(false);
                 expect(this.prayers1.location).toBe('removed from game');
@@ -108,6 +110,8 @@ describe('Prayers on the Eve of Battle', function () {
                 });
 
                 this.noMoreActions();
+                // both players' forced reactions: the first player orders them
+                this.player1.clickCard(this.prayers1);
                 expect(this.player1.fate).toBe(fate);
                 expect(this.player2.fate).toBe(fate2 + 1);
 

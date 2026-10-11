@@ -427,6 +427,8 @@ describe('Togashi Yokuni', function() {
                 expect(this.sumiko.location).toBe('play area');
                 this.noMoreActions();
                 this.player2.pass();
+                // both players' delayed effects: the first player orders them
+                this.player1.clickPrompt('Kitsu Spiritcaller\'s effect on Akodo Toturi');
                 expect(this.sumiko.location).toBe('dynasty deck');
                 expect(this.toturi.location).toBe('dynasty deck');
             });

@@ -71,6 +71,10 @@ describe('Jurojin\'s Curse', function() {
                 this.noMoreActions();
                 this.player1.clickPrompt('Done');
                 this.player2.clickPrompt('Done');
+                // both players' forced interrupts and delayed effects: the first player orders them
+                expect(this.player2).toHavePrompt('Choose forced interrupt order for fate phase ending');
+                this.player2.clickCard(this.curse2);
+                this.player2.clickPrompt('Jurōjin\'s Curse\'s effect on player2');
                 this.player2.clickPrompt('Done');
 
                 expect(this.seekerOfKnowledge.fate).toBe(0);

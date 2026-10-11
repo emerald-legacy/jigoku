@@ -87,6 +87,7 @@ export class EffectEngine {
             const targets = effect.targets;
             return {
                 title: context.source.name + '\'s effect' + (targets.length === 1 ? ' on ' + targets[0].name : ''),
+                player: context.player,
                 handler: () => {
                     if(properties.message && properties.gameAction.hasLegalTarget(context, { target: targets })) {
                         this.game.addMessage(properties.message(context, targets));

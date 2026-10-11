@@ -80,7 +80,9 @@ export class TriggerWindow extends BaseStep {
         if(this.choices.length === 0) {
             return true;
         }
-        if(this.choices.length === 1 || !this.requireCurrentPlayer().optionSettings.orderForcedAbilities) {
+        // RRG: the first player orders forced abilities, regardless of who controls them
+        const severalPlayers = new Set(this.choices.map((context) => context.player)).size > 1;
+        if(this.choices.length === 1 || (!severalPlayers && !this.requireCurrentPlayer().optionSettings.orderForcedAbilities)) {
             this.resolveAbility(this.choices[0]);
             return false;
         }

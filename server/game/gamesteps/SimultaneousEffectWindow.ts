@@ -6,12 +6,15 @@ export interface SimultaneousEffectChoiceInput {
     condition?: () => boolean;
     title: string;
     handler: () => void;
+    // whose effect it is
+    player?: Player;
 }
 
 interface SimultaneousEffectChoice {
     condition: () => boolean;
     title: string;
     handler: () => void;
+    player?: Player;
 }
 
 export class SimultaneousEffectWindow extends BaseStep {
@@ -43,7 +46,8 @@ export class SimultaneousEffectWindow extends BaseStep {
         this.choices.push({
             condition: choice.condition ?? (() => true),
             title: choice.title,
-            handler: choice.handler
+            handler: choice.handler,
+            player: choice.player
         });
     }
 
@@ -53,7 +57,9 @@ export class SimultaneousEffectWindow extends BaseStep {
             return true;
         }
         const player = this.currentPlayer;
-        if(choices.length === 1 || !player || !player.optionSettings.orderForcedAbilities) {
+        // RRG: the first player orders delayed effects, regardless of who controls them
+        const severalPlayers = new Set(choices.map((choice) => choice.player)).size > 1;
+        if(choices.length === 1 || !player || (!severalPlayers && !player.optionSettings.orderForcedAbilities)) {
             this.resolveEffect(choices[0]);
         } else {
             this.promptBetweenChoices(player, choices);
