@@ -34,8 +34,11 @@ export default class ACleansingDeath extends DrawCard {
             }))
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => (card.printedCost ?? 0) <=
-                    (context.costs.sacrificeStateWhenChosen?.printedCost || 10),
+                // before the sacrifice is chosen (legality check), any character up to cost 10 counts
+                cardCondition: (card, context) => {
+                    const sacrificed = context.costs.sacrificeStateWhenChosen;
+                    return (card.printedCost ?? 0) <= (sacrificed ? (sacrificed.printedCost ?? 0) : 10);
+                },
                 location: Location.Provinces,
                 controller: Players.Self
             }, joint([

@@ -28,7 +28,7 @@ class Reconnaissance extends DrawCard {
                         if(!Array.isArray(target)) {
                             target = target ? [target] : [];
                         }
-                        const locations = target.map((a) => a.location);
+                        const provinces = target;
                         return ({
                             activePromptTitle: 'Choose cards to discard',
                             mode: TargetMode.Unlimited,
@@ -36,7 +36,7 @@ class Reconnaissance extends DrawCard {
                             cardType: [CardType.Character, CardType.Event, CardType.Holding],
                             location: [Location.Provinces],
                             controller: Players.Any,
-                            cardCondition: (card) => locations.includes(card.location),
+                            cardCondition: (card) => provinces.some((province) => province.location === card.location && province.controller === card.controller),
                             message: (_context, cards) => msg`${context.player} chooses to discard ${cards}`,
                             gameAction: moveCard({ destination: Location.DynastyDiscardPile })
                         });

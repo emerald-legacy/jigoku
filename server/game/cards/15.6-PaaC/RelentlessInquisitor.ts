@@ -6,13 +6,12 @@ class RelentlessInquisitor extends DrawCard {
     static id = 'relentless-inquisitor';
 
     setupCardAbilities() {
-        this.action('Remove a fate from or bow a character')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Remove a fate from or bow a character')
             .target({
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating() && !card.bowed
+                cardCondition: (card) => card.isParticipating()
             })
             .select({
                 name: 'select',

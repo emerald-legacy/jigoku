@@ -21,22 +21,23 @@ export default class AsahinaTakako extends DrawCard {
                 controller: Players.Self
             }, chooseAction((context) => ({
                 choices: {
-                    Discard: discardCard({ target: context.target }),
-                    'Switch with another card': {
-                        action: selectCard({
-                            activePromptTitle: 'Choose a card to switch with',
-                            cardType: [CardType.Character, CardType.Holding, CardType.Event],
-                            location: Location.Provinces,
-                            controller: Players.Self,
-                            message: (context, card) => msg`${context.player} switches ${context.target?.isFacedown() ? 'a facedown card' : context.target ?? ''} in ${context.target?.location ?? ''} and ${card.isFacedown() ? 'a facedown card' : card} in ${card.location}`,
-                            gameAction: moveCard({
-                                destination: context.target?.location,
-                                switch: true,
-                                switchTarget: context.target
-                            })
-                        }),
+                    Discard: {
+                        action: discardCard({ target: context.target }),
                         message: (_context, target, player) => msg`${player} chooses to discard ${target}`
-                    }
+                    },
+                    'Switch with another card': selectCard({
+                        activePromptTitle: 'Choose a card to switch with',
+                        cardType: [CardType.Character, CardType.Holding, CardType.Event],
+                        location: Location.Provinces,
+                        controller: Players.Self,
+                        cardCondition: (card) => card.location !== context.target?.location,
+                        message: (context, card) => msg`${context.player} switches ${context.target?.isFacedown() ? 'a facedown card' : context.target ?? ''} in ${context.target?.location ?? ''} and ${card.isFacedown() ? 'a facedown card' : card} in ${card.location}`,
+                        gameAction: moveCard({
+                            destination: context.target?.location,
+                            switch: true,
+                            switchTarget: context.target
+                        })
+                    })
                 }
             })))
             .chatText((context) => msg`switch or discard ${context.target.isFacedown() ? 'a facedown card' : context.target} in ${context.target.location}`);

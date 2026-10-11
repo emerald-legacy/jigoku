@@ -21,7 +21,7 @@ class VoidWielder extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card, context) => card.isParticipating() && sendHome().canAffect(card, context)
+                cardCondition: (card) => card.isParticipating()
             })
             .select({
                 name: 'select',

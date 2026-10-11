@@ -1,3 +1,4 @@
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class LiaisonToTheAncestors extends DrawCard {
@@ -9,8 +10,8 @@ export default class LiaisonToTheAncestors extends DrawCard {
                 onCardDishonored: ({ card }, context) =>
                     card.isCharacter() &&
                     card.controller === context.player &&
-                    context.player.dynastyDiscardPile.some(
-                        (discarded) => (card.printedCost ?? 0) < (discarded.printedCost ?? 0)
+                    [...context.player.dynastyDiscardPile, ...context.player.conflictDiscardPile].some((discarded) =>
+                        discarded.type === CardType.Character && (card.printedCost ?? 0) < (discarded.printedCost ?? 0)
                     )
             })
             .honor((context) => ({

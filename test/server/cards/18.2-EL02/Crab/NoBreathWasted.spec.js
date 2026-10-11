@@ -46,5 +46,14 @@ describe('No Breath Wasted', function() {
             expect(this.steadfastWitchHunter.location).toBe('dynasty discard pile');
             expect(this.getChatLogs(1)).toContain('player1 attempted to use No Breath Wasted, but there are insufficient legal targets');
         });
+
+        it('cannot sacrifice the character it readies', function() {
+            this.steadfastWitchHunter.bowed = true;
+            this.player1.clickCard(this.commonCause);
+            this.player1.clickCard(this.steadfastWitchHunter);
+            expect(this.player1).toHavePrompt('Select card to sacrifice');
+            expect(this.player1).not.toBeAbleToSelect(this.steadfastWitchHunter);
+            expect(this.player1).toBeAbleToSelect(this.defender);
+        });
     });
 });

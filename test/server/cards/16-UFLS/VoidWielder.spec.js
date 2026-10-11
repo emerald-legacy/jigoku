@@ -64,7 +64,7 @@ describe('Void Wielder', function() {
             this.player2.pass();
             this.player1.clickCard(this.void);
             expect(this.player1).not.toBeAbleToSelect(this.void);
-            expect(this.player1).not.toBeAbleToSelect(this.defender);
+            expect(this.player1).toBeAbleToSelect(this.defender); // cannot go home, but has an attachment
             expect(this.player1).toBeAbleToSelect(this.wayfinder);
             expect(this.player1).toBeAbleToSelect(this.whisperer);
             this.player1.clickCard(this.whisperer);
@@ -83,7 +83,7 @@ describe('Void Wielder', function() {
             });
             this.player2.pass();
             this.player1.clickCard(this.void);
-            expect(this.player1).not.toBeAbleToSelect(this.defender);
+            expect(this.player1).toBeAbleToSelect(this.defender); // cannot go home, but has an attachment
             expect(this.player1).toBeAbleToSelect(this.wayfinder);
             expect(this.player1).toBeAbleToSelect(this.whisperer);
             this.player1.clickCard(this.whisperer);

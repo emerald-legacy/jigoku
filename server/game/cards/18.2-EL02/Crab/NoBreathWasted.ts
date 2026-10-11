@@ -8,7 +8,7 @@ class NoBreathWasted extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready character')
-            .cost(costs.sacrifice({ cardType: CardType.Character }))
+            .cost(costs.sacrifice({ cardType: CardType.Character, cardCondition: (card, context) => card !== context.target }))
             .target({
                 activePromptTitle: 'Choose a character to ready',
                 cardType: CardType.Character
