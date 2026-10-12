@@ -13,15 +13,10 @@ export default class Pilgrimage extends ProvinceCard {
     }
 
     public cancelRingEffect(event: GameEvent<EventName.OnResolveRingElement>) {
-        if(
-            !this.isBroken &&
-            !this.isBlank() &&
-            event.context.game.currentConflict &&
-            this.isConflictProvince() &&
-            !event.cancelled
-        ) {
+        const province = this.conflictProvinceWithText();
+        if(province && !event.cancelled) {
             event.cancel();
-            this.game.addMessage(msg`${this} cancels the ring effect`);
+            this.game.addMessage(msg`${province} cancels the ring effect`);
         }
     }
 }

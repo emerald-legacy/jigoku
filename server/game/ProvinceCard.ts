@@ -182,6 +182,13 @@ export class ProvinceCard extends BaseCard {
         return !!this.game.currentConflict?.getConflictProvinces().includes(this);
     }
 
+    /** The conflict province with this province's text: this one, or a copy of it. */
+    conflictProvinceWithText(): ProvinceCard | undefined {
+        return this.game.currentConflict?.getConflictProvinces().find((province) =>
+            !province.hasBlankText() && (province.copiedCard ?? province) === this
+        );
+    }
+
     canBeAttacked() {
         const fateCostToAttack = this.getFateCostToAttack();
         const attackers = this.game.isDuringConflict() && this.game.currentConflict ? this.game.currentConflict.attackers : [];
@@ -207,10 +214,15 @@ export class ProvinceCard extends BaseCard {
     }
 
     isBlank(): boolean {
+        return this.hasBlankText() || super.isBlank();
+    }
+
+    // blank apart from copying another province
+    private hasBlankText(): boolean {
         const ignoreTokens =
             !!this.game.currentConflict?.anyEffect(EffectName.ConflictIgnoreStatusTokens) && this.isConflictProvince();
         const dishonored = this.isDishonored && !ignoreTokens;
-        return this.isBroken || dishonored || super.isBlank();
+        return this.isBroken || dishonored || this.anyEffect(EffectName.Blank);
     }
 
     breakProvince(): void {

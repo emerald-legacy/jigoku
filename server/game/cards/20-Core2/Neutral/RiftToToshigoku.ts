@@ -35,7 +35,6 @@ export default class RiftToToshigoku extends ProvinceCard {
         if(
             this.game.currentConflict &&
             this.game.currentConflict.uuid === this.cancelRingEffectsInConflict &&
-            this.isConflictProvince() &&
             !event.cancelled
         ) {
             event.cancel();
