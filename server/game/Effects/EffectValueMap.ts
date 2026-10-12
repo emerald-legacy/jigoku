@@ -230,6 +230,7 @@ export interface EffectValueMap {
     [EffectName.RegisterToPlayFromOutOfPlay]: boolean;
     [EffectName.CostToDeclareAnyParticipants]: ParticipantCostEffect;
     [EffectName.LoseAllNonKeywordAbilities]: boolean;
+    [EffectName.LoseGainedAbilities]: true;
     [EffectName.ParticipatesFromHome]: true;
     [EffectName.AdditionalAttackedProvince]: ProvinceCard;
     [EffectName.ReplacePrintedElement]: Pick<ElementSymbolInfo, 'key' | 'element'>;

@@ -132,7 +132,11 @@ export class CardAbility extends ThenAbility {
     }
 
     meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
-        if(this.card.isBlank() && this.printedAbility) {
+        // keywords are switched by the keyword itself (hasKeyword)
+        const blanked = this.printedAbility
+            ? this.card.isBlank()
+            : !this.isKeywordAbility() && this.card.anyEffect(EffectName.LoseGainedAbilities);
+        if(blanked) {
             return Blocker.Blanked;
         }
 

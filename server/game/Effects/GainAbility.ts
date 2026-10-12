@@ -1,5 +1,6 @@
 import { EffectValue } from './EffectValue.js';
-import { AbilityType, Location } from '../Constants.js';
+import { AbilityType, EffectName, Location } from '../Constants.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import type { Duration } from '../Constants.js';
 import type { AbilityLimit } from '../AbilityLimit.js';
 import type BaseCard from '../BaseCard.js';
@@ -143,7 +144,10 @@ export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
                 'play area': [Location.PlayArea],
                 province: this.requireContext().game.getProvinceArray()
             };
-            const value: PersistentGainValue = Object.assign(origin, grant.properties);
+            const condition = grant.properties.condition;
+            const value: PersistentGainValue = Object.assign(origin, grant.properties, {
+                condition: (context: AbilityContext) => !target.anyEffect(EffectName.LoseGainedAbilities) && (!condition || condition(context))
+            });
             this.value = value;
             this.grantedPersistent = value;
             if(activeLocations[value.location].includes(target.location)) {

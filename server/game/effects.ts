@@ -158,6 +158,8 @@ export const Effects = {
         EffectBuilder.card.static(EffectName.IncreaseLimitOnPrintedAbilities, abilities ?? true),
     legendaryFate: (amount: FlexibleValue<number> = 1) => EffectBuilder.card.flexible(EffectName.LegendaryFate, amount),
     loseAllNonKeywordAbilities: () => EffectBuilder.card.static(EffectName.LoseAllNonKeywordAbilities, true),
+    /** Gained actions, reactions, constant abilities and keywords stop working; printed ones are kept. */
+    loseGainedAbilities: () => EffectBuilder.card.static(EffectName.LoseGainedAbilities, true),
     loseKeyword: (keyword: string) => EffectBuilder.card.static(EffectName.LoseKeyword, keyword),
     loseTrait: (trait: string) => EffectBuilder.card.static(EffectName.LoseTrait, trait),
     modifyBaseMilitarySkillMultiplier: (value: FlexibleValue<number>) =>
@@ -389,7 +391,7 @@ export const {
     honorCostToDeclare, fateCostToRingToDeclareConflictAgainst, fateCostToTarget, gainAllAbilitiesDynamic,
     gainExtraFateWhenPlayed, gainPlayAction, hideWhenFaceUp, honorStatusDoesNotAffectLeavePlay,
     honorStatusDoesNotModifySkill, taintedStatusDoesNotCostHonor, honorStatusReverseModifySkill, immunity,
-    increaseLimitOnAbilities, increaseLimitOnPrintedAbilities, legendaryFate, loseAllNonKeywordAbilities,
+    increaseLimitOnAbilities, increaseLimitOnPrintedAbilities, legendaryFate, loseAllNonKeywordAbilities, loseGainedAbilities,
     loseKeyword, loseTrait, modifyBaseMilitarySkillMultiplier, modifyBasePoliticalSkillMultiplier,
     modifyBaseProvinceStrength, modifyBothSkills, modifyGlory, modifyMilitarySkill, modifyMilitarySkillMultiplier,
     modifyPoliticalSkill, modifyPoliticalSkillMultiplier, modifyProvinceStrength, modifyProvinceStrengthMultiplier,

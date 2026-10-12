@@ -83,6 +83,24 @@ export class Duel extends GameObject {
         this.targets.push(card);
     }
 
+    /** A character of `target`'s controller at the same location, not in the duel, that could be dueled. */
+    canReplaceTarget(target: DrawCard, card: DrawCard, context: AbilityContext): boolean {
+        return (
+            this.targets.includes(target) &&
+            !this.participants.includes(card) &&
+            card.controller === target.controller &&
+            card.location === Location.PlayArea &&
+            card.isParticipating() === target.isParticipating() &&
+            !card.hasNoDuels() &&
+            !card.hasDash(this.duelType) &&
+            card.checkRestrictions(RestrictionType.Duel, context)
+        );
+    }
+
+    replaceTarget(target: DrawCard, replacement: DrawCard) {
+        this.targets = this.targets.map((card) => (card === target ? replacement : card));
+    }
+
     canAddToDuel(card: DrawCard, context: AbilityContext) {
         return (
             !this.participants.includes(card) &&

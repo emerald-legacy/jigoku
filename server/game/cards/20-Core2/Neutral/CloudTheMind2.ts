@@ -1,4 +1,4 @@
-import { blank, cannotTriggerAbilities } from '../../../effects.js';
+import { blank, loseGainedAbilities } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -14,7 +14,7 @@ export default class CloudTheMind2 extends DrawCard {
 
         this.whileAttached({
             condition: (context) => context.source.controller.hasAffinity('air', context),
-            effect: cannotTriggerAbilities()
+            effect: loseGainedAbilities()
         });
     }
 

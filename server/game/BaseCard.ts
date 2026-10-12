@@ -503,7 +503,12 @@ export class BaseCard extends EffectSource {
 
     hasKeyword(keyword: string): boolean {
         const targetKeyword = keyword.toLowerCase();
-        const added = this.getEffects(EffectName.AddKeyword).filter((value) => value === targetKeyword).length;
+        // with lost gained abilities, only the card's own effects add keywords
+        const added = this.anyEffect(EffectName.LoseGainedAbilities)
+            ? this.getRawEffects().filter((effect) =>
+                isEffectOf(effect, EffectName.AddKeyword) && effect.context?.source === this && effect.getValue(this) === targetKeyword
+            ).length
+            : this.getEffects(EffectName.AddKeyword).filter((value) => value === targetKeyword).length;
         const lost = this.getEffects(EffectName.LoseKeyword).filter((value) => value === targetKeyword).length;
         return added > lost;
     }

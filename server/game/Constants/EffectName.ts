@@ -144,6 +144,7 @@ export enum EffectName {
     RegisterToPlayFromOutOfPlay = 'registerToPlayFromOutOfPlay',
     CostToDeclareAnyParticipants = 'costToDeclareAnyParticipants',
     LoseAllNonKeywordAbilities = 'loseAllNonKeywordAbilities',
+    LoseGainedAbilities = 'loseGainedAbilities',
     ParticipatesFromHome = 'participatesFromHome',
     AdditionalAttackedProvince = 'additionalAttackedProvince',
     ReplacePrintedElement = 'replacePrintedElement',

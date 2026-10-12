@@ -31,3 +31,40 @@ describe('Cloud the Mind 2', function () {
         });
     });
 });
+
+describe('Cloud the Mind 2 with Air affinity', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['young-philosopher'],
+                    hand: ['cloud-the-mind-2']
+                },
+                player2: {
+                    inPlay: ['matsu-berserker', 'yogo-preserver', 'doji-whisperer'],
+                    hand: ['command-the-tributary']
+                }
+            });
+
+            this.cloud = this.player1.findCardByName('cloud-the-mind-2');
+            this.matsu = this.player2.findCardByName('matsu-berserker');
+            this.tributary = this.player2.findCardByName('command-the-tributary');
+
+            this.matsu.dishonor();
+            this.matsu.fate = 1;
+            this.player1.pass();
+            this.player2.playAttachment(this.tributary, this.matsu);
+        });
+
+        it('removes gained keywords and gained abilities', function () {
+            expect(this.matsu.hasSincerity()).toBe(true);
+            this.player1.playAttachment(this.cloud, this.matsu);
+            expect(this.matsu.hasSincerity()).toBe(false);
+
+            this.player2.clickCard(this.matsu);
+            expect(this.player2).toHavePrompt('Action Window');
+        });
+    });
+});
+
