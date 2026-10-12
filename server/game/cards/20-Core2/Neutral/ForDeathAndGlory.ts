@@ -1,8 +1,8 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players, Duration, ConflictType } from '../../../Constants.js';
+import { CardType, Players, ConflictType } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
-import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect, multiple, sacrifice } from '../../../GameActions/GameActions.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { atEndOfConflict, cardLastingEffect, multiple, sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const CHARACTER = 'character';
@@ -31,18 +31,12 @@ export default class ForDeathAndGlory extends DrawCard {
                         target: context.targets[CHARACTER],
                         effect: modifyMilitarySkill(4)
                     })),
-                    cardLastingEffect((context) => ({
+                    atEndOfConflict((context) => ({
                         target: context.targets[CHARACTER],
-                        duration: Duration.UntilEndOfPhase,
-                        effect: [
-                            delayedEffect({
-                                when: { onConflictFinished: () => true },
-                                message: () => msg`${context.targets[CHARACTER]} is discarded from play due to the delayed effect of ${context.source}`,
-                                gameAction: sacrifice({
-                                    target: context.targets[CHARACTER]
-                                })
-                            })
-                        ]
+                        message: () => msg`${context.targets[CHARACTER]} is discarded from play due to the delayed effect of ${context.source}`,
+                        gameAction: sacrifice({
+                            target: context.targets[CHARACTER]
+                        })
                     }))
                 ])
             })

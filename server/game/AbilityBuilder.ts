@@ -851,6 +851,10 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.cardLastingEffect(properties));
     }
 
+    atEndOfConflict(properties: FactoryProperties<'atEndOfConflict', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.atEndOfConflict(properties));
+    }
+
     /** A lasting effect on players. */
     playerLastingEffect(properties: FactoryProperties<'playerLastingEffect', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.playerLastingEffect(properties));

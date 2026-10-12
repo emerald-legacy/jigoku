@@ -1,6 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DeckType, Duration } from '../../../Constants.js';
-import { delayedEffect } from '../../../effects.js';
+import { CardType, DeckType } from '../../../Constants.js';
 import { discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -26,18 +25,12 @@ export default class KakitaRusumi extends DrawCard {
             })
             .chatText('search their dynasty deck for a character to put into play')
             .then()
-            .cardLastingEffect((context) => {
+            .atEndOfConflict((context) => {
                 const target = context.deckSearchSelected[0] ?? [];
                 return {
                     target: target,
-                    duration: Duration.UntilEndOfPhase,
-                    effect: delayedEffect({
-                        when: {
-                            onConflictFinished: () => true
-                        },
-                        message: () => msg`${target} is discarded from play due to ${context.source}'s effect`,
-                        gameAction: discardFromPlay()
-                    })
+                    message: () => msg`${target} is discarded from play due to ${context.source}'s effect`,
+                    gameAction: discardFromPlay()
                 };
             });
     }

@@ -1,8 +1,7 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Duration, Location, Players, TargetMode } from '../../../Constants.js';
-import { delayedEffect } from '../../../effects.js';
+import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import {
-    cardLastingEffect,
+    atEndOfConflict,
     putIntoConflict,
     returnToDeck,
     reveal,
@@ -35,12 +34,8 @@ export default class BayushiKotaro extends DrawCard {
                     message: (context, card) => msg`${context.player} puts ${card} into play into the conflict, aiding ${context.source} with their mission`,
                     gameAction: sequential([
                         putIntoConflict(),
-                        cardLastingEffect(() => ({
-                            duration: Duration.UntilEndOfPhase,
-                            effect: delayedEffect({
-                                when: { onConflictFinished: () => true },
-                                gameAction: returnToDeck({ bottom: true })
-                            })
+                        atEndOfConflict(() => ({
+                            gameAction: returnToDeck({ bottom: true })
                         }))
                     ])
                 }))

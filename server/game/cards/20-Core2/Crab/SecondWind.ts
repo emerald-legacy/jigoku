@@ -1,7 +1,6 @@
-import { CardType, Duration, Location, Players } from '../../../Constants.js';
-import { delayedEffect } from '../../../effects.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import {
-    cardLastingEffect,
+    atEndOfConflict,
     discardCard,
     multiple,
     putIntoConflict,
@@ -34,15 +33,9 @@ export default class SecondWind extends DrawCard {
                     targets: true,
                     gameAction: multiple([
                         putIntoConflict(),
-                        cardLastingEffect(() => ({
-                            duration: Duration.UntilEndOfPhase,
+                        atEndOfConflict(() => ({
                             location: [Location.PlayArea],
-                            effect: delayedEffect({
-                                when: {
-                                    onConflictFinished: () => true
-                                },
-                                gameAction: returnToDeck({ bottom: true })
-                            })
+                            gameAction: returnToDeck({ bottom: true })
                         }))
                     ]),
                     message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the conflict`

@@ -1,7 +1,6 @@
 import { msg } from '../../../GameChat.js';
-import { delayedEffect } from '../../../effects.js';
-import { cardLastingEffect, dishonor, honor, multiple } from '../../../GameActions/GameActions.js';
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { atEndOfConflict, dishonor, honor, multiple } from '../../../GameActions/GameActions.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class FieldsOfRollingThunder extends DrawCard {
@@ -22,18 +21,11 @@ export default class FieldsOfRollingThunder extends DrawCard {
                 cardCondition: (card) => card.isParticipating() && card.isFaction('unicorn')
             }, multiple([
                 honor(),
-                cardLastingEffect((context) => {
-                    const conflictWhenItWasTriggered = this.game.currentConflict;
+                atEndOfConflict((context) => {
+                    const conflict = context.game.currentConflict;
                     return {
-                        duration: Duration.UntilEndOfPhase,
-                        effect: delayedEffect({
-                            when: {
-                                onConflictFinished: (event, context) =>
-                                    event.conflict === conflictWhenItWasTriggered &&
-                                        event.conflict.winner === context.player.opponent
-                            },
-                            gameAction: dishonor({ target: context.target })
-                        })
+                        onlyIf: (context) => conflict?.winner === context.player.opponent,
+                        gameAction: dishonor({ target: context.target })
                     };
                 })
             ]))

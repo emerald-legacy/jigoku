@@ -1,7 +1,8 @@
 import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import { delayedEffect, doesNotBow } from '../../../effects.js';
+import { doesNotBow } from '../../../effects.js';
 import {
+    atEndOfConflict,
     cardLastingEffect,
     discardStatusToken,
     joint,
@@ -9,7 +10,7 @@ import {
     menuPrompt,
     sequential
 } from '../../../GameActions/GameActions.js';
-import { CardType, Players, Duration } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 
 class SurgingWave extends DrawCard {
     static id = 'surging-wave';
@@ -24,17 +25,11 @@ class SurgingWave extends DrawCard {
                 const kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
                 const gameActions = [];
                 gameActions.push(
-                    cardLastingEffect(() => ({
-                        duration: Duration.UntilEndOfPhase,
-                        effect: delayedEffect({
-                            when: {
-                                onConflictFinished: () => true
-                            },
-                            message: () => msg`${context.target.statusTokens} ${context.target.statusTokens.length > 1 ? 'are' : 'is'} removed from ${context.target} due to the delayed effect of ${context.source}`,
-                            gameAction: discardStatusToken(() => ({
-                                target: context.target.statusTokens
-                            }))
-                        })
+                    atEndOfConflict(() => ({
+                        message: () => msg`${context.target.statusTokens} ${context.target.statusTokens.length > 1 ? 'are' : 'is'} removed from ${context.target} due to the delayed effect of ${context.source}`,
+                        gameAction: discardStatusToken(() => ({
+                            target: context.target.statusTokens
+                        }))
                     }))
                 );
                 if(kihoPlayed) {

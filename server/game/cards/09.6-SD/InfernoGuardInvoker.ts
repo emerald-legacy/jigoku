@@ -1,8 +1,7 @@
 import { msg } from '../../GameChat.js';
-import { CardType, Duration, EventName, Players, ConflictType } from '../../Constants.js';
+import { CardType, EventName, Players, ConflictType } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import { delayedEffect } from '../../effects.js';
-import { cardLastingEffect, honor, sacrifice } from '../../GameActions/GameActions.js';
+import { atEndOfConflict, honor, sacrifice } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class InfernoGuardInvoker extends DrawCard {
@@ -24,15 +23,10 @@ export default class InfernoGuardInvoker extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            }, honor(), cardLastingEffect((context) => ({
-                duration: Duration.UntilEndOfPhase,
-                effect: delayedEffect({
-                    when: {
-                        onConflictFinished: () => this.provinceBroken
-                    },
-                    message: () => msg`${context.target} is discarded, burned to a pile of ash due to the delayed effect of ${context.source}`,
-                    gameAction: sacrifice({ target: context.target })
-                })
+            }, honor(), atEndOfConflict((context) => ({
+                onlyIf: () => this.provinceBroken,
+                message: () => msg`${context.target} is discarded, burned to a pile of ash due to the delayed effect of ${context.source}`,
+                gameAction: sacrifice({ target: context.target })
             })))
             .chatText('honor {0}. It will be discarded if a province is broken this conflict');
     }

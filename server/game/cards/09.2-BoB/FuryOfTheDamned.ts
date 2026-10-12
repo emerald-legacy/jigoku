@@ -1,8 +1,8 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, Duration, TargetMode } from '../../Constants.js';
-import { delayedEffect, modifyBaseMilitarySkillMultiplier } from '../../effects.js';
-import { cardLastingEffect, multiple, sacrifice } from '../../GameActions/GameActions.js';
+import { Players, CardType, TargetMode } from '../../Constants.js';
+import { modifyBaseMilitarySkillMultiplier } from '../../effects.js';
+import { atEndOfConflict, cardLastingEffect, multiple, sacrifice } from '../../GameActions/GameActions.js';
 
 class FuryOfTheDamned extends DrawCard {
     static id = 'fury-of-the-damned';
@@ -19,15 +19,9 @@ class FuryOfTheDamned extends DrawCard {
                 cardLastingEffect({
                     effect: modifyBaseMilitarySkillMultiplier(2)
                 }),
-                cardLastingEffect((context) => ({
-                    duration: Duration.UntilEndOfPhase,
-                    effect: delayedEffect({
-                        when: {
-                            onConflictFinished: () => true
-                        },
-                        message: () => msg`${context.targets.target} ${(Array.isArray(context.targets.target) ? context.targets.target.length : 0) > 1 ? 'are' : 'is'} sacrificed due to ${context.source}'s delayed effect`,
-                        gameAction: sacrifice()
-                    })
+                atEndOfConflict((context) => ({
+                    message: () => msg`${context.targets.target} ${(Array.isArray(context.targets.target) ? context.targets.target.length : 0) > 1 ? 'are' : 'is'} sacrificed due to ${context.source}'s delayed effect`,
+                    gameAction: sacrifice()
                 }))
             ]))
             .chatText((context) => msg`double the base ${'military'} skill of ${context.chatTarget()} and sacrifice them at the end of the conflict`);

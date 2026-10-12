@@ -37,7 +37,9 @@ import { GainFateAction, GainFateProperties } from './GainFateAction.js';
 import { GainHonorAction, GainHonorProperties } from './GainHonorAction.js';
 import { GainStatusTokenAction, GainStatusTokenProperties } from './GainStatusTokenAction.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
-import { CardType, Location, type EventName } from '../Constants.js';
+import { CardType, Duration, Location, type EventName } from '../Constants.js';
+import { delayedEffect } from '../effects.js';
+import type { GameObject } from '../GameObject.js';
 import { PerformGloryCountAction, GloryCountProperties } from './PerformGloryCountAction.js';
 import { HandlerAction, HandlerProperties } from './HandlerAction.js';
 import { HonorAction, HonorProperties } from './HonorAction.js';
@@ -132,6 +134,26 @@ export function breakProvince<C extends AbilityContext = AbilityContext>(propert
 export function cardLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectCardProperties, C>): CardLastingEffectAction<C> {
     return new CardLastingEffectAction<C>(propertyFactory);
 }
+/** Resolves `gameAction` on the target cards (the source by default) when this conflict ends; `onlyIf` is checked then. */
+export function atEndOfConflict<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AtEndOfConflictProperties, C>): CardLastingEffectAction<C> {
+    const toLastingEffect = ({ gameAction, message, onlyIf, ...rest }: AtEndOfConflictProperties): LastingEffectCardProperties => ({
+        ...rest,
+        duration: Duration.UntilEndOfPhase,
+        effect: delayedEffect({
+            when: { onConflictFinished: (_event, context) => !onlyIf || onlyIf(context) },
+            ...(message ? { message } : {}),
+            gameAction
+        })
+    });
+    return cardLastingEffect<C>(typeof propertyFactory === 'function'
+        ? (context) => toLastingEffect(propertyFactory(context))
+        : toLastingEffect(propertyFactory));
+}
+export type AtEndOfConflictProperties = Omit<LastingEffectCardProperties, 'duration' | 'until' | 'condition' | 'effect'> & {
+    gameAction: GameAction;
+    onlyIf?: (context: AbilityContext) => boolean;
+    message?: (context: AbilityContext, targets: GameObject[]) => MessageArgs;
+};
 export function claimImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ClaimFavorProperties, C>): ClaimImperialFavorAction<C> {
     return new ClaimImperialFavorAction<C>(propertyFactory);
 }

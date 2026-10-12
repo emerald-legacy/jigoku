@@ -1,8 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, Location, Element } from '../../Constants.js';
-import { delayedEffect } from '../../effects.js';
-import { cardLastingEffect, putIntoConflict, returnToDeck, sequential } from '../../GameActions/GameActions.js';
+import { Location, Element } from '../../Constants.js';
+import { atEndOfConflict, putIntoConflict, returnToDeck, sequential } from '../../GameActions/GameActions.js';
 
 const elementKey = 'feral-ningyo-water';
 
@@ -16,17 +15,11 @@ class FeralNingyo extends DrawCard {
                 putIntoConflict((context) => ({
                     target: context.source
                 })),
-                cardLastingEffect((context) => ({
+                atEndOfConflict((context) => ({
                     target: context.source,
                     location: [Location.Hand, Location.PlayArea],
-                    duration: Duration.UntilEndOfPhase,
-                    effect: delayedEffect({
-                        when: {
-                            onConflictFinished: () => true
-                        },
-                        message: (context) => msg`${context.source} returns to the deck and shuffles due to its delayed effect`,
-                        gameAction: returnToDeck({ shuffle: true })
-                    })
+                    message: (context) => msg`${context.source} returns to the deck and shuffles due to its delayed effect`,
+                    gameAction: returnToDeck({ shuffle: true })
                 }))
             ]))
             .chatText((context) => msg`put ${context.source} into play into the conflict and return ${context.chatTarget()} to the deck at the end of the conflict`)
