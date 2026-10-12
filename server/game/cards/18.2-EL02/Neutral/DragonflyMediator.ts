@@ -13,6 +13,8 @@ class DragonflyMediator extends DrawCard {
                 location: Location.Hand,
                 controller: Players.Self
             }, reveal({ chatMessage: true }))
+            .chatText('have each player reveal cards from their hand')
+            .afterwards()
             .targetCards({
                 name: 'oppCard',
                 activePromptTitle: 'Choose three cards to reveal',
@@ -21,8 +23,7 @@ class DragonflyMediator extends DrawCard {
                 player: Players.Opponent,
                 location: Location.Hand,
                 controller: Players.Opponent
-            }, reveal((context) => ({ chatMessage: true, player: context.player.opponent })))
-            .chatText('have each player reveal cards from their hand');
+            }, reveal((context) => ({ chatMessage: true, player: context.player.opponent })));
     }
 }
 

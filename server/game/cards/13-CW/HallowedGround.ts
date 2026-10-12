@@ -24,6 +24,19 @@ class HallowedGround extends DrawCard {
 
         this.persistentEffect({
             targetController: Players.Opponent,
+            condition: (context) => {
+                const conflict = context.game.currentConflict;
+                return context.game.rings[this.getCurrentElementSymbol(elementKeys.earth)].isConsideredClaimed(context.player.opponent) &&
+                    !!conflict && conflict.attackingPlayer === context.player.opponent &&
+                    conflict.getConflictProvinces().some((province) => province.isBroken);
+            },
+            effect: playerCannot({
+                cannot: RestrictionType.ClaimRings
+            })
+        });
+
+        this.persistentEffect({
+            targetController: Players.Opponent,
             condition: (context) => context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player.opponent),
             effect: playerDelayedEffect({
                 when: {

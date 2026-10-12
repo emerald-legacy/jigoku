@@ -1,3 +1,7 @@
+import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { cardLastingEffect } from '../../../../../build/server/game/GameActions/GameActions.js';
+import { modifyBaseMilitarySkillMultiplier } from '../../../../../build/server/game/effects.js';
+
 describe('Cantor of Gales', function () {
     integration(function () {
         beforeEach(function () {
@@ -44,6 +48,23 @@ describe('Cantor of Gales', function () {
                 type: 'military'
             });
             expect(this.game.currentConflict.attackerSkill).toBe(6);
+        });
+
+        it('contributes its base skill, not a fixed 2', function () {
+            const context = new ThenAbility(this.cantor, {}).createContext(this.player1.player);
+            this.game.queueSimpleStep(() => cardLastingEffect({
+                duration: 'untilEndOfRound',
+                effect: modifyBaseMilitarySkillMultiplier(2)
+            }).resolve(this.cantor, context));
+            this.game.continue();
+            expect(this.cantor.getBaseMilitarySkill()).toBe(4);
+
+            this.initiateConflict({
+                attackers: [this.adeptHonorable],
+                defenders: [],
+                type: 'military'
+            });
+            expect(this.game.currentConflict.attackerSkill).toBe(8);
         });
 
         it('does not work while participating', function () {

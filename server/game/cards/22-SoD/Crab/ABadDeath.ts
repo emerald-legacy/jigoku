@@ -24,7 +24,7 @@ export default class ABadDeath extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, dishonor())
             .cannotTargetFirst()
-            .then()
+            .afterwards()
             .draw(1)
             .message((context) => msg`${context.player} draws a card`);
     }

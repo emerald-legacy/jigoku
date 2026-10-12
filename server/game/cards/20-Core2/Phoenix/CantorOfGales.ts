@@ -1,3 +1,4 @@
+import { ConflictType } from '../../../Constants.js';
 import { changePlayerSkillModifier } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +10,10 @@ export default class CantorOfGales extends DrawCard {
             condition: (context) =>
                 context.source.isAtHome() &&
                 context.player.cardsInPlay.some((card) => card.isParticipating() && card.isHonored),
-            effect: changePlayerSkillModifier(2)
+            effect: changePlayerSkillModifier((_player, context) =>
+                context.game.currentConflict?.conflictType === ConflictType.Military
+                    ? this.getBaseMilitarySkill()
+                    : this.getBasePoliticalSkill())
         });
     }
 }
