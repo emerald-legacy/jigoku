@@ -19,7 +19,7 @@ class RaiseTheAlarm extends DrawCard {
             .then()
             .handler((context) => {
                 const card = context.target;
-                if(card.type === CardType.Character && card.allowGameAction('putIntoConflict', context)) {
+                if(card.type === CardType.Character && card.isDrawCard() && putIntoConflict().canAffect(card, context)) {
                     this.game.addMessage(msg`${card} is revealed and brought into the conflict`);
                     putIntoConflict().resolve(card, context);
                 } else {

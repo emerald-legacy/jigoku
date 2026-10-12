@@ -46,7 +46,7 @@ export default class WeightOfDuty extends ProvinceCard {
 
         return !!context.player.opponent?.cardsInPlay.some(
             (a) =>
-                !a.isUnique() && (a.allowGameAction('bow', context) || a.allowGameAction('dishonor', context))
+                !a.isUnique() && (bow().canAffect(a, context) || dishonor().canAffect(a, context))
         );
     }
 }

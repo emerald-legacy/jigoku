@@ -11,7 +11,7 @@ export default class TheEternalWatch extends ProvinceCard {
             .target({
                 name: 'character',
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isAttacking() && card.allowGameAction('bow', context)
+                cardCondition: (card, context) => card.isAttacking() && bow().canAffect(card, context)
             })
             .select({
                 name: 'select',

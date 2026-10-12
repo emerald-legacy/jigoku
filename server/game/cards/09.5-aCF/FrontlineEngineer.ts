@@ -27,7 +27,7 @@ class FrontlineEngineer extends DrawCard {
                         activePromptTitle: 'Choose a holding',
                         cardsToLookAt: 5,
                         deck: DeckType.Dynasty,
-                        cardCondition: (card) => card.getType() === CardType.Holding,
+                        cardCondition: (card) => card.type === CardType.Holding,
                         selectedCardsHandler: (context, _event, [cardFromDeck]) => this.replaceProvinceCards(context, province, cardFromDeck)
                     }).resolve(context.player, context)
                 })

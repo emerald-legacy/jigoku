@@ -33,7 +33,7 @@ export default class ShibasOath extends DrawCard {
                             // In play
                             card.location === Location.PlayArea &&
                             // Character
-                            card.getType() === CardType.Character &&
+                            card.type === CardType.Character &&
                             // Friendly
                             card.controller === context.player &&
                             // Not a Bushi

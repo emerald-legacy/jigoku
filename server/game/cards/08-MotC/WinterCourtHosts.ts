@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 
 class WinterCourtHosts extends DrawCard {
     static id = 'winter-court-hosts';
@@ -14,7 +14,7 @@ class WinterCourtHosts extends DrawCard {
                 }
             })
             .draw()
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

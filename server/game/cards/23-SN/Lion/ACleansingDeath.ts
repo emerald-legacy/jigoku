@@ -23,7 +23,7 @@ export default class ACleansingDeath extends DrawCard {
                         stage: Stage.Target
                     });
 
-                    const faceupCharacters = cardsInProvinces.filter((a) => a.isFaceup() && a.getType() === CardType.Character);
+                    const faceupCharacters = cardsInProvinces.filter((a) => a.isFaceup() && a.type === CardType.Character);
 
                     const hasValidCharacters = faceupCharacters.some((a) => {
                         return (a.printedCost || 0) <= (card.printedCost || 0) &&

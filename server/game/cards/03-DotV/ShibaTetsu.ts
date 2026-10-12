@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { modifyBothSkills } from '../../effects.js';
 import { msg } from '../../GameChat.js';
 
@@ -13,7 +13,7 @@ class ShibaTetsu extends DrawCard {
             })
             .cardLastingEffect({ effect: modifyBothSkills(1) })
             .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

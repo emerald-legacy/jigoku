@@ -1,3 +1,4 @@
+import { bow } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import * as costs from '../../costs/index.js';
@@ -21,7 +22,7 @@ class DarknessRising extends DrawCard {
     }
 
     getLegalTargetsForCard(card: DrawCard | undefined, context: AbilityContext) {
-        return context.game.requireConflict().getParticipants().filter((c) => !card || (c.militarySkill < card.militarySkill && c.allowGameAction('bow', context)));
+        return context.game.requireConflict().getParticipants().filter((c) => !card || (c.militarySkill < card.militarySkill && bow().canAffect(c, context)));
     }
 }
 

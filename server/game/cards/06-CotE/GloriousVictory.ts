@@ -11,7 +11,7 @@ class GloriousVictory extends DrawCard {
                     this.game.isDuringConflict(ConflictType.Military) && !!event.conflict && event.conflict.attackingPlayer === context.player
             })
             .honor((context) => ({
-                target: context.player.filterCardsInPlay((card) => card.getType() === CardType.Character)
+                target: context.player.filterCardsInPlay((card) => card.type === CardType.Character)
             }));
     }
 }

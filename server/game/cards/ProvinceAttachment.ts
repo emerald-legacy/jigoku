@@ -8,10 +8,10 @@ import type Ring from '../Ring.js';
 export class ProvinceAttachment extends DrawCard {
     public canPlayOn(source: BaseCard | Ring) {
         return (
-            source.getType() === CardType.Province &&
+            source.type === CardType.Province &&
             (!this.unbrokenOnly() || !(source instanceof ProvinceCard && source.isBroken)) &&
             (!this.controllerProvinceOnly() || (source instanceof BaseCard && source.controller === this.controller)) &&
-            this.getType() === CardType.Attachment
+            this.type === CardType.Attachment
         );
     }
 
@@ -24,7 +24,7 @@ export class ProvinceAttachment extends DrawCard {
             return false;
         }
 
-        return parent.getType() === CardType.Province && this.getType() === CardType.Attachment;
+        return parent.type === CardType.Province && this.type === CardType.Attachment;
     }
 
     protected controllerProvinceOnly(): boolean {

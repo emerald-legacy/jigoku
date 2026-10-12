@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, ConflictType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
-import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { unlimited } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,13 +17,13 @@ export default class JadeInfusedArrows extends DrawCard {
                 effect: modifyMilitarySkill(this.bonusAmount(context))
             }))
             .chatText((context) => msg`give +${this.bonusAmount(context)}${'military'} to ${context.source.parentCharacter ?? ''}${this.isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku' : ''}`)
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 
     private isAgainstEvil(context: AbilityContext): boolean {
         return context.player.opponent?.cardsInPlay.some(
             (card) =>
-                card.getType() === CardType.Character &&
+                card.type === CardType.Character &&
                 card.isParticipating() &&
                 (card.isTainted || card.hasTrait('shadowlands'))
         ) ?? false;

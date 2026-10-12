@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, ConflictType, type PlayType } from '../../Constants.js';
+import { CardType, ConflictType, type PlayType, SkillType } from '../../Constants.js';
 import { delayedEffect } from '../../effects.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
 
@@ -13,7 +13,7 @@ class Castigated extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: delayedEffect({
-                condition: (context) => !!context.source.parentCharacter && !context.source.parentCharacter.hasDash('political') && context.source.parentCharacter.politicalSkill < 1,
+                condition: (context) => !!context.source.parentCharacter && !context.source.parentCharacter.hasDash(SkillType.Political) && context.source.parentCharacter.politicalSkill < 1,
                 message: (context) => msg`${context.source.parentCharacter} is discarded by ${context.source}`,
                 gameAction: discardFromPlay()
             })
@@ -25,7 +25,7 @@ class Castigated extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType?: PlayType) {
-        if(!context.game.isDuringConflict(ConflictType.Political) || !context.player.cardsInPlay.some((card) => card.getType() === CardType.Character && card.hasTrait('imperial'))) {
+        if(!context.game.isDuringConflict(ConflictType.Political) || !context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait('imperial'))) {
             return false;
         }
 

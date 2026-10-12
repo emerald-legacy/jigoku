@@ -10,7 +10,7 @@ import { perRound } from '../../../AbilityLimit.js';
 
 function getNumberOfMonks(context: AbilityContext) {
     return context.player.cardsInPlay.reduce(
-        (total, card) => total + (card.getType() === CardType.Character && card.hasTrait('monk') ? 1 : 0),
+        (total, card) => total + (card.type === CardType.Character && card.hasTrait('monk') ? 1 : 0),
         0
     );
 }

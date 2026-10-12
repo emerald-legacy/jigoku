@@ -13,7 +13,7 @@ class CleanseTheEmpire extends DrawCard {
             })
             .gameAction(sequential([
                 removeFate((context) => ({
-                    target: context.player.opponent?.filterCardsInPlay((card) => card.getType() === CardType.Character) ?? []
+                    target: context.player.opponent?.filterCardsInPlay((card) => card.type === CardType.Character) ?? []
                 })),
                 selectCard({
                     activePromptTitle: 'Choose a character to bow',

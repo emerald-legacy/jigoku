@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { CardType } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { createToken } from '../../GameActions/GameActions.js';
 import SpiritOfTheRiver from '../SpiritOfTheRiver.js';
@@ -28,7 +28,7 @@ export default class ForceOfTheRiver extends DrawCard {
                         context.player.getDynastyCardsInProvince(location).filter((card) => card.isFacedown())
                     ),
                 token: SpiritOfTheRiver,
-                canEnterConflict: (type) => type === 'military'
+                canEnterConflict: (type) => type === ConflictType.Military
             })))
             .chatText(() => msg`summon ${spiritsInChat}!`);
     }

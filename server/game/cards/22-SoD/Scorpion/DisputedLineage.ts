@@ -35,7 +35,7 @@ export default class DisputedLineage extends DrawCard {
     canPlay(context: AbilityContext, playType?: PlayType) {
         return (
             context.player.cardsInPlay.some(
-                (card) => card.getType() === CardType.Character && card.hasTrait('courtier')
+                (card) => card.type === CardType.Character && card.hasTrait('courtier')
             ) && super.canPlay(context, playType)
         );
     }

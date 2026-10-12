@@ -31,7 +31,7 @@ export default class BayushiKotaro extends DrawCard {
                     cardCondition: (card) =>
                         !card.facedown &&
                         card.isFaction('scorpion') &&
-                        card.allowGameAction('putIntoConflict', context),
+                        card.isDrawCard() && putIntoConflict().canAffect(card, context),
                     message: (context, card) => msg`${context.player} puts ${card} into play into the conflict, aiding ${context.source} with their mission`,
                     gameAction: sequential([
                         putIntoConflict(),

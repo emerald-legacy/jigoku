@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { modifyBothSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration } from '../../Constants.js';
@@ -23,7 +23,7 @@ class KujirasHireling extends DrawCard {
                 })
             })
             .chatText((context) => msg`give ${context.chatTarget()} ${context.select.toLowerCase()}`)
-            .limit(unlimitedPerConflict())
+            .limit(unlimited())
             .anyPlayer();
     }
 }

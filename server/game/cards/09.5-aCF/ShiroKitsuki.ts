@@ -1,7 +1,7 @@
 import { ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { delayedEffect } from '../../effects.js';
 import { claimRing, selectRing } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
@@ -33,6 +33,6 @@ export default class ShiroKitsuki extends StrongholdCard {
                 })
             }))
             .chatText((context) => msg`claim a ring whenever ${context.player.opponent} plays a card named ${context.costs.namedCard}`)
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import { msg } from '../../GameChat.js';
 
@@ -20,7 +20,7 @@ class EruditePrestige extends DrawCard {
                 effect: modifyPoliticalSkill(1)
             }))
             .chatText((context) => msg`give +1${'political'} to ${context.source.parentCharacter}`)
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

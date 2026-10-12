@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { modifyProvinceStrength } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -26,7 +26,7 @@ class JewelOfTheKhamasin extends DrawCard {
                 }))
             })
             .chatText('reduce an attacked province strength by 1')
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

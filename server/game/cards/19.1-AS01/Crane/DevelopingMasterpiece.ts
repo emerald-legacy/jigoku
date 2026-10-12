@@ -40,7 +40,7 @@ export default class DevelopingMasterpiece extends DrawCard {
     public canAttach(card: BaseCard): boolean {
         return (
             card.controller === this.controller &&
-            card.getType() === CardType.Character &&
+            card.type === CardType.Character &&
             (card.hasTrait('courtier') || card.hasTrait('artisan') || card.isFaction('crane')) &&
             super.canAttach(card)
         );

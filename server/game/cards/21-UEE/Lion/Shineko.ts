@@ -12,7 +12,7 @@ export default class Shineko extends DrawCard {
             effect: reduceCost({
                 amount: (_, player) =>
                     player.cardsInPlay.some(
-                        (card) => card.getType() === CardType.Character && card.hasSomeTrait('scout', 'beastmaster')
+                        (card) => card.type === CardType.Character && card.hasSomeTrait('scout', 'beastmaster')
                     )
                         ? 1
                         : 0,

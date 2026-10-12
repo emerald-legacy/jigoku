@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { defendingAtKaiuWall } from '../kaiuWall.js';
 
 class WatchtowerOfValor extends DrawCard {
@@ -11,7 +11,7 @@ class WatchtowerOfValor extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.player && defendingAtKaiuWall(context.player, event.conflict)
             })
             .draw()
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

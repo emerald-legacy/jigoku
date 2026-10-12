@@ -24,7 +24,7 @@ class IkomaUjiaki extends DrawCard {
                     cardType: CardType.Character,
                     location: [Location.Provinces],
                     controller: Players.Self,
-                    cardCondition: (card) => card.isFaceup() && card.allowGameAction('putIntoConflict', context),
+                    cardCondition: (card) => card.isFaceup() && card.isDrawCard() && putIntoConflict().canAffect(card, context),
                     message: (context, cards) => msg`${context.player} puts ${cards} into play into the conflict`,
                     gameAction: putIntoConflict()
                 }))

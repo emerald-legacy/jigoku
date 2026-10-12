@@ -12,7 +12,7 @@ export default class DaidojiOta extends DrawCard {
             targetController: Players.Opponent,
             condition: (context) =>
                 context.player.cardsInPlay.some(
-                    (card) => card.getType() === CardType.Character && card.isParticipating()
+                    (card) => card.type === CardType.Character && card.isParticipating()
                 ),
             effect: reduceCost({
                 amount: (card, player) => {

@@ -13,14 +13,14 @@ class OfferTestimony extends DrawCard {
                 name: 'myCharacter',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, context) => card.isParticipating() && card.allowGameAction('bow', context)
+                cardCondition: (card, context) => card.isParticipating() && bow().canAffect(card, context)
             })
             .target({
                 name: 'oppCharacter',
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.isParticipating() && card.allowGameAction('bow', context)
+                cardCondition: (card, context) => card.isParticipating() && bow().canAffect(card, context)
             })
             .gameAction(selectCard({
                 activePromptTitle: 'Choose a card to reveal',

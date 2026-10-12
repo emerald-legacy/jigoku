@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { msg } from '../../GameChat.js';
@@ -23,6 +23,6 @@ export default class TogashiAcolyte extends DrawCard {
                 effect: modifyBothSkills(1)
             }))
             .chatText((context) => msg`give +1${'political'} and +1${'military'} to ${context.source.parentCharacter}`)
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }

@@ -1,5 +1,5 @@
 import * as costs from '../../costs/index.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import DrawCard from '../../DrawCard.js';
 
 class MantisSeafarer extends DrawCard {
@@ -12,7 +12,7 @@ class MantisSeafarer extends DrawCard {
             })
             .cost(costs.payHonor(1))
             .gainFate()
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 
 class DojiShigeru extends DrawCard {
     static id = 'doji-shigeru';
@@ -12,7 +12,7 @@ class DojiShigeru extends DrawCard {
                                                   context.source.isParticipating()
             })
             .chosenDiscard()
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

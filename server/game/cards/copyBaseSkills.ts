@@ -8,7 +8,7 @@ export function copyBaseSkillEffects(card: DrawCard, { base = false, skills = [S
         if(card.hasDash(type)) {
             return setBaseDash(type);
         }
-        if(type === 'military') {
+        if(type === SkillType.Military) {
             return setBaseMilitarySkill(base ? card.getBaseMilitarySkill() : card.militarySkill);
         }
         return setBasePoliticalSkill(base ? card.getBasePoliticalSkill() : card.politicalSkill);

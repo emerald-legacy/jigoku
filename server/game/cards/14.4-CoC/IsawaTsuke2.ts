@@ -36,7 +36,7 @@ class IsawaTsuke2 extends DrawCard {
     }
 
     private getNumberOfLegalTargets(context: AbilityContext) {
-        return countTargetable(context.game.requireConflict().getParticipants((card) => card.allowGameAction('removeFate')), context);
+        return countTargetable(context.game.requireConflict().getParticipants((card) => removeFate().canAffect(card, context)), context);
     }
 
     getPrintedElementSymbols() {

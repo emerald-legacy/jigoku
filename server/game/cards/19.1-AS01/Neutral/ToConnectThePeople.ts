@@ -16,7 +16,7 @@ export default class ToConnectThePeople extends DrawCard {
             .condition((context) =>
                 !context.game.isDuringConflict() &&
                 context.player.cardsInPlay.some(
-                    (card) => card.getType() === CardType.Character && card.hasTrait('merchant')
+                    (card) => card.type === CardType.Character && card.hasTrait('merchant')
                 ))
             .gameAction(sequential([
                 discardCard((context) => ({
@@ -51,7 +51,7 @@ export default class ToConnectThePeople extends DrawCard {
     private maxMerchantGlory(context: AbilityContext) {
         return context.player.cardsInPlay.reduce(
             (maxGlory, card) =>
-                card.getType() === CardType.Character && card.hasTrait('merchant') && card.glory > maxGlory
+                card.type === CardType.Character && card.hasTrait('merchant') && card.glory > maxGlory
                     ? card.glory
                     : maxGlory,
             0

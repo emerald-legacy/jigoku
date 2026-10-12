@@ -17,7 +17,7 @@ class ShinjoAltansarnai2 extends DrawCard {
                         card.type === CardType.Character &&
                         (card.printedCost ?? 0) <= 3 &&
                         !card.isUnique() &&
-                        card.allowGameAction('putIntoConflict', context),
+                        putIntoConflict().canAffect(card, context),
                     options: [
                         {
                             text: 'Don\'t choose a character',

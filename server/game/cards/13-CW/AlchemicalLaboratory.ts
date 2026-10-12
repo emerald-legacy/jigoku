@@ -11,7 +11,7 @@ class AlchemicalLaboratory extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => hasClaimedRing(this, elementSymbol.key, context.player),
-            match: (card, context) => card.getType() === CardType.Attachment && card.parentCharacter !== null && card.parentCharacter !== undefined && card.parentCharacter.controller !== context?.player,
+            match: (card, context) => card.type === CardType.Attachment && card.parentCharacter !== null && card.parentCharacter !== undefined && card.parentCharacter.controller !== context?.player,
             effect: addKeyword('ancestral'),
             targetController: Players.Self
         });

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { msg } from '../../GameChat.js';
 
 class HallOfVictories extends DrawCard {
@@ -14,7 +14,7 @@ class HallOfVictories extends DrawCard {
                 target: context.game.currentConflict?.winner ?? undefined
             }))
             .chatText((context) => msg`make ${context.game.currentConflict?.winner?.name ?? ''} gain 1 honor`)
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

@@ -9,7 +9,7 @@ export default class AvalancheOfStone extends ProvinceCard {
             .when({ onCardRevealed: (event, context) => event.card === context.source })
             .bow(() => ({
                 target: this.game.findAnyCardsInPlay(
-                    (card) => card.getType() === CardType.Character && card.costLessThan(3)
+                    (card) => card.type === CardType.Character && card.costLessThan(3)
                 )
             }));
     }

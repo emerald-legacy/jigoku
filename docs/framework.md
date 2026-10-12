@@ -593,7 +593,7 @@ card.getMilitarySkill()
 card.getPoliticalSkill()
 card.getGlory()
 card.location                   // Location string
-card.allowGameAction('bow', context)   // can that game action affect it; names are GameActions exports
+bow().canAffect(card, context)   // can that game action affect it
 card.checkRestrictions(RestrictionType.Break, context) // only the restrictions of that type
 ```
 

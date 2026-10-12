@@ -484,7 +484,6 @@ Limits track how many times an ability can be used per time period.
 | `perConflict(n)` | Each conflict ends |
 | `perConflictOpportunity(n)` | Conflict ends or player passes a conflict |
 | `perPhase(n)` | Each phase ends |
-| `unlimitedPerConflict()` | Each conflict ends (unlimited uses within) |
 | `unlimited()` | Never at max — truly unlimited |
 | `repeatable(n, eventName)` | On a specific `EventName` |
 

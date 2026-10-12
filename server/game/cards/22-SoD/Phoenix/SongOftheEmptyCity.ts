@@ -1,4 +1,4 @@
-import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { unlimited } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 import { ConflictsDeclaredThisRound } from '../../ConflictsDeclaredThisRound.js';
@@ -23,6 +23,6 @@ export default class SongOfTheEmptyCity extends DrawCard {
             .gainHonor((context) => ({
                 amount: declaredConflicts.countAgainst(context.player.getProvinceCardInProvince(context.source.location))
             }))
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }

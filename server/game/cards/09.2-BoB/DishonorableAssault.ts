@@ -26,6 +26,6 @@ export default class DishonorableAssault extends ProvinceCard {
             return 0;
         }
         return this.game.currentConflict.getParticipants((card) => card.isAttacking())
-            .filter((card) => card.allowGameAction('dishonor', context)).length;
+            .filter((card) => dishonor().canAffect(card, context)).length;
     }
 }

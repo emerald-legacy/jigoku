@@ -38,7 +38,7 @@ export default class TwoHands extends DrawCard {
                 return {
                     target: twoHands.targets,
                     effect:
-                            twoHands.type === 'military'
+                            twoHands.type === ConflictType.Military
                                 ? setMilitarySkill(twoHands.value)
                                 : setPoliticalSkill(twoHands.value)
                 };
@@ -55,14 +55,14 @@ function calcTwoHandsEffect(context: AbilityContext, chosen: DrawCard | DrawCard
     if(context.game.requireConflict().conflictType === ConflictType.Military) {
         return {
             targets,
-            type: 'military',
+            type: ConflictType.Military,
             value: Math.min(...targets.map((card) => card.militarySkill))
         };
     }
 
     return {
         targets,
-        type: 'political',
+        type: ConflictType.Political,
         value: Math.min(...targets.map((card) => card.politicalSkill))
     };
 }

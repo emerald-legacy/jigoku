@@ -23,7 +23,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
                     trait: 'air',
                     gameAction: cardLastingEffect((context) => ({
                         target: context.game.findAnyCardsInPlay(
-                            (card) => card.getType() === CardType.Character
+                            (card) => card.type === CardType.Character
                         ),
                         effect: cardCannot(RestrictionType.MoveToConflict)
                     })),

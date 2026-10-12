@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { unlimited } from '../../../AbilityLimit.js';
 import { chatMessage, chosenDiscard, draw, multiple } from '../../../GameActions/GameActions.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
@@ -38,6 +38,6 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                 return gameActions;
             }))
             .chatText((context) => msg`cause ${context.event.conflict?.winner} to draw a card and ${context.event.conflict?.loser} to discard a card`)
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }

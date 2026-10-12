@@ -17,7 +17,7 @@ class KaiuForges extends DrawCard {
                 activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
                 cardsToLookAt: 10,
                 deck: DeckType.Dynasty,
-                cardCondition: (card) => card.getType() === CardType.Holding,
+                cardCondition: (card) => card.type === CardType.Holding,
                 selectedCardsHandler: (context, _event, [cardFromDeck]) => this.swapWithKaiuWall(context, cardFromDeck)
             })
             .chatText('look at the top ten cards of their dynasty deck');
@@ -33,7 +33,7 @@ class KaiuForges extends DrawCard {
         }
         const provinceLocation = context.target.location;
         const cards = context.player.getDynastyCardsInProvince(provinceLocation);
-        if(!cards.some((card) => card.getType() === CardType.Holding && card.hasTrait('kaiu-wall'))) {
+        if(!cards.some((card) => card.type === CardType.Holding && card.hasTrait('kaiu-wall'))) {
             this.game.addMessage(msg`${context.player} cannot put a holding into play because there is no Kaiu Wall in the selected province`);
             return;
         }

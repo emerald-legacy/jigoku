@@ -1,4 +1,4 @@
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { loseHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { playerChoices } from '../playerChoices.js';
@@ -15,7 +15,7 @@ class SoshiShiori extends DrawCard {
                 activePromptTitle: 'Choose a player to lose 1 honor',
                 targets: true
             }, (context) => playerChoices(context.player, (player) => loseHonor({ target: player })))
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

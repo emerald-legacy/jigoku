@@ -13,7 +13,7 @@ class MiyaLibrary extends DrawCard {
                 activePromptTitle: 'select an imperial character to replace miya library',
                 cardsToLookAt: 4,
                 deck: DeckType.Dynasty,
-                cardCondition: (card) => card.hasTrait('imperial') && card.getType() === CardType.Character,
+                cardCondition: (card) => card.hasTrait('imperial') && card.type === CardType.Character,
                 doneButtonText: 'Do not replace Miya Library',
                 remainingCards: RemainingCards.TopAnyOrder,
                 selectedCardsHandler: (context, _event, [card]) => {

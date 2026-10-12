@@ -1,4 +1,4 @@
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { RestrictionType } from '../../Constants.js';
@@ -21,7 +21,7 @@ class MaraudingOni extends DrawCard {
             })
             .loseHonor((context) => ({ target: context.player }))
             .chatText('lose an honor')
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

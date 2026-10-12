@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { delayedEffect } from '../../effects.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
 
@@ -26,7 +26,7 @@ class DojiHotaru2 extends DrawCard {
             })
             .gainHonor()
             .chatText('gain 1 honor')
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

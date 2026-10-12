@@ -7,7 +7,7 @@ class PetalVillageEstate extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card) => card.getType() === CardType.Character && card.hasTrait('imperial'),
+            match: (card) => card.type === CardType.Character && card.hasTrait('imperial'),
             effect: modifyBothSkills(1)
         });
     }

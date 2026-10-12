@@ -23,7 +23,7 @@ export default class HisuMoriToride extends StrongholdCard {
             }))
             .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: additionalConflict('military')
+                effect: additionalConflict(ConflictType.Military)
             })
             .chatText((context) => msg`allow ${context.player} to declare an additional military conflict this phase`);
     }

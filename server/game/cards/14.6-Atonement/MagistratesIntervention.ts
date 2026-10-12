@@ -21,7 +21,7 @@ class MagistratesIntervention extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType?: PlayType) {
-        if(!context.player.cardsInPlay.some((card) => card.getType() === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
+        if(!context.player.cardsInPlay.some((card) => card.type === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
             return false;
         }
 

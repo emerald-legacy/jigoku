@@ -24,7 +24,7 @@ export default class OutmaneuveredByForce extends DrawCard {
     private controlsBerserkerOrBigCharacter(context: AbilityContext): boolean {
         return context.player.cardsInPlay.some(
             (card) =>
-                card.getType() === CardType.Character && (card.hasTrait('berserker') || (card.printedMilitarySkill ?? 0) >= 5)
+                card.type === CardType.Character && (card.hasTrait('berserker') || (card.printedMilitarySkill ?? 0) >= 5)
         );
     }
 }

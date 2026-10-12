@@ -11,7 +11,7 @@ class StewardOfTheRichFrog extends DrawCard {
                 !!context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length,
             targetController: Players.Self,
-            match: (card) => card.getType() === CardType.Character,
+            match: (card) => card.type === CardType.Character,
             effect: cannotReceiveDishonorToken()
         });
     }

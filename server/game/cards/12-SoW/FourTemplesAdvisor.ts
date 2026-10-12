@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 
 class FourTemplesAdvisor extends DrawCard {
     static id = 'four-temples-advisor';
@@ -11,7 +11,7 @@ class FourTemplesAdvisor extends DrawCard {
             })
             .draw()
             .chatText('draw a card')
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

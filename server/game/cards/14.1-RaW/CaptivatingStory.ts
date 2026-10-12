@@ -22,7 +22,7 @@ class CaptivatingStory extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, context) => card.isParticipating() && (context.player.getNumberOfFaceupProvinces() > 0 || card.allowGameAction('removeFate', context))
+                cardCondition: (card, context) => card.isParticipating() && (context.player.getNumberOfFaceupProvinces() > 0 || removeFate().canAffect(card, context))
             }, sequential([
                 cardLastingEffect((context) => ({
                     effect: modifyPoliticalSkill(context.player.getNumberOfFaceupProvinces())

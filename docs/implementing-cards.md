@@ -71,7 +71,7 @@ The effect declaration (for card and ring effects) takes a `match` property. In 
 ```typescript
 // Each honored Crane character you control gains Sincerity.
 this.persistentEffect({
-    match: card => card.getType() === CardType.Character && card.isHonored && card.isFaction('crane'),
+    match: card => card.type === CardType.Character && card.isHonored && card.isFaction('crane'),
     effect: addKeyword('sincerity')
 });
 ```
@@ -95,7 +95,7 @@ Some effects have a 'when', 'while' or 'if' clause within their text. These card
 // character you control gets +1M.
 this.persistentEffect({
     condition: (context) => context.source.isParticipating(),
-    match: (card, context) => card.getType() === CardType.Character && card.isParticipating() &&
+    match: (card, context) => card.type === CardType.Character && card.isParticipating() &&
                    card.isFaction('lion') && card !== context.source,
     effect: modifyMilitarySkill(1)
 });
@@ -124,7 +124,7 @@ To target all cards regardless of who controls them, set `targetController` to `
 this.persistentEffect({
     condition: (context) => context.source.isParticipating(),
     targetController: Players.Any,
-    match: card => card.getType() === CardType.Character && card.location === Location.PlayArea,
+    match: card => card.type === CardType.Character && card.location === Location.PlayArea,
     effect: cardCannot(RestrictionType.Dishonor)
 });
 ```

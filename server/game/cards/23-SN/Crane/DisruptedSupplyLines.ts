@@ -10,7 +10,7 @@ const resourcesAvailable = (context: AbilityContext) => {
     const fateAvailable = loseFate().canAffect(context.player, context);
 
     const eligibleCharacters = context.player.cardsInPlay.filter(
-        (card) => card.getType() === CardType.Character &&
+        (card) => card.type === CardType.Character &&
             dishonor().canAffect(card, context)
     );
     const freeCharacters = eligibleCharacters.filter((card) => card.hasSomeTrait('scout', 'shinobi'));
@@ -84,7 +84,7 @@ export default class DisruptedSupplyLines extends DrawCard {
         this.interrupt('Remove attachment from game')
             .when({
                 onCardAttached: (event, context) => (
-                    !!event.parent && event.parent.getType() === CardType.Character &&
+                    !!event.parent && event.parent.type === CardType.Character &&
                     event.context?.player === context.player.opponent
                 )
             })

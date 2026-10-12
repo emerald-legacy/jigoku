@@ -11,7 +11,7 @@ export default class FloodedWaste extends ProvinceCard {
             })
             .bow(() => ({
                 target: this.game.findAnyCardsInPlay(
-                    (card) => card.getType() === CardType.Character && card.isAttacking()
+                    (card) => card.type === CardType.Character && card.isAttacking()
                 )
             }));
     }

@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, SkillType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { chooseAction, conditional, discardAtRandom, discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -25,8 +25,8 @@ export default class SpiderwebPassage extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) =>
                     card.isParticipating() &&
-                    ((!card.hasDash('political') && card.politicalSkill === 0) ||
-                        (!card.hasDash('military') && card.militarySkill === 0))
+                    ((!card.hasDash(SkillType.Political) && card.politicalSkill === 0) ||
+                        (!card.hasDash(SkillType.Military) && card.militarySkill === 0))
             })
             .gameAction(conditional((context) => {
                 const discardCount = shinobiCount(context);

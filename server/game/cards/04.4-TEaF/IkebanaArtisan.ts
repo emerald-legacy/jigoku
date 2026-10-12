@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { unlimitedPerConflict } from '../../AbilityLimit.js';
+import { unlimited } from '../../AbilityLimit.js';
 import { cancel, loseFate, sequential } from '../../GameActions/GameActions.js';
 
 class IkebanaArtisan extends DrawCard {
@@ -15,7 +15,7 @@ class IkebanaArtisan extends DrawCard {
                 loseFate((context) => ({ target: context.player }))
             ]))
             .chatText('lose 1 fate rather than 1 honor for not defending the conflict')
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 }
 

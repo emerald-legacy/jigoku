@@ -1,3 +1,4 @@
+import { removeFate } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, EventName, Location } from '../../Constants.js';
@@ -14,7 +15,7 @@ class ConsumedByFiveFires extends DrawCard {
             .condition((context) =>
                 controlsShugenja(context.player) &&
                 !!context.player.opponent &&
-                context.player.opponent.cardsInPlay.some((card) => card.allowGameAction('removeFate', context)))
+                context.player.opponent.cardsInPlay.some((card) => removeFate().canAffect(card, context)))
             .handler((context) => this.chooseCard(context, {}, []))
             .chatText((context) => msg`remove fate from ${context.player.opponent}'s characters`);
     }
@@ -25,7 +26,7 @@ class ConsumedByFiveFires extends DrawCard {
             return;
         }
         const opponent = context.player.opponent;
-        if(fateRemaining === 0 || !opponent.cardsInPlay.some((card) => card.allowGameAction('removeFate', context) && !Object.keys(targets).includes(card.uuid))) {
+        if(fateRemaining === 0 || !opponent.cardsInPlay.some((card) => removeFate().canAffect(card, context) && !Object.keys(targets).includes(card.uuid))) {
             this.game.addMessage(msg`${context.player} chooses to: ${messages}`);
             const keys = Object.keys(targets);
             const events = keys.map((key) => {
@@ -41,7 +42,7 @@ class ConsumedByFiveFires extends DrawCard {
         this.game.promptForSelect(context.player, {
             context: context,
             cardType: CardType.Character,
-            cardCondition: (card) => card.location === Location.PlayArea && card.allowGameAction('removeFate', context) && card.controller !== context.player && !Object.keys(targets).includes(card.uuid),
+            cardCondition: (card) => card.location === Location.PlayArea && removeFate().canAffect(card, context) && card.controller !== context.player && !Object.keys(targets).includes(card.uuid),
             onSelect: (player, card) => {
                 const maxFate = Math.min(fateRemaining, card.getFate());
                 const amounts = Array.from({ length: maxFate }, (_, i) => i + 1);

@@ -9,7 +9,7 @@ export default class IkomaYumikosDagger extends DrawCard {
         this.wouldInterrupt('Prevent discarding the Imperial Favor')
             .when({
                 onDiscardFavor: (event, context) => event.player === context.player &&
-                    context.source.allowGameAction('discardFromPlay', context)
+                    discardFromPlay().canAffect(context.source, context)
             })
             .cancel((context) => ({
                 target: context.source,

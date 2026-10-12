@@ -12,7 +12,7 @@ export default class KitsukiShomon extends DrawCard {
                 onCardDishonored: ({ card }, context) =>
                     card.controller === context.player &&
                     card.type === CardType.Character &&
-                    context.source.allowGameAction('dishonor', context) &&
+                    dishonor().canAffect(context.source, context) &&
                     card !== context.source
             })
             .cancel((context) => ({

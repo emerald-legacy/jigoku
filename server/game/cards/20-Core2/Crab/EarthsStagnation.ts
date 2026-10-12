@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, type PlayType } from '../../../Constants.js';
-import { unlimitedPerConflict } from '../../../AbilityLimit.js';
+import { unlimited } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -29,7 +29,7 @@ export default class EarthsStagnation extends DrawCard {
                 const penalty = penaltyAmount(context);
                 return msg`give ${penalty}${'military'} and ${penalty}${'political'} to ${context.source.parentCharacter}`;
             })
-            .limit(unlimitedPerConflict());
+            .limit(unlimited());
     }
 
     public canPlay(context: AbilityContext, playType?: PlayType) {
