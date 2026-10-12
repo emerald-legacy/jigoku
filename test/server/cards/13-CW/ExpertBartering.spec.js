@@ -87,7 +87,7 @@ describe('Expert Bartering', function () {
             expect(this.player1).not.toBeAbleToSelect(this.courtMask);
             expect(this.player1).toBeAbleToSelect(this.katana);
             expect(this.player1).toBeAbleToSelect(this.fashion);
-            expect(this.player1).toBeAbleToSelect(this.river);
+            expect(this.player1).not.toBeAbleToSelect(this.river);
             expect(this.player1).not.toBeAbleToSelect(this.expert);
         });
 
@@ -101,7 +101,7 @@ describe('Expert Bartering', function () {
             expect(this.player1).toBeAbleToSelect(this.courtMask);
             expect(this.player1).toBeAbleToSelect(this.katana);
             expect(this.player1).toBeAbleToSelect(this.fashion);
-            expect(this.player1).toBeAbleToSelect(this.river);
+            expect(this.player1).not.toBeAbleToSelect(this.river);
             expect(this.player1).not.toBeAbleToSelect(this.expert);
         });
 
@@ -153,15 +153,12 @@ describe('Expert Bartering', function () {
             );
         });
 
-        it('should discard newly illegal attachments', function () {
+        it('should not offer an attachment it cannot legally switch with', function () {
             this.player1.clickCard(this.expert);
             this.player1.clickPrompt('No');
 
-            this.player1.clickCard(this.river);
-            expect(this.river.location).toBe('conflict discard pile');
-            expect(this.getChatLogs(1)).toContain(
-                'player1 uses Expert Bartering to switch Expert Bartering with Force of the River'
-            );
+            expect(this.player1).not.toBeAbleToSelect(this.river);
+            expect(this.river.location).toBe('play area');
         });
 
         it('should not prompt you to spend a fate if you do not have a fate', function () {
@@ -175,7 +172,7 @@ describe('Expert Bartering', function () {
             expect(this.player1).not.toBeAbleToSelect(this.courtMask);
             expect(this.player1).toBeAbleToSelect(this.katana);
             expect(this.player1).toBeAbleToSelect(this.fashion);
-            expect(this.player1).toBeAbleToSelect(this.river);
+            expect(this.player1).not.toBeAbleToSelect(this.river);
             expect(this.player1).not.toBeAbleToSelect(this.expert);
         });
 
@@ -208,8 +205,11 @@ describe('Expert Bartering', function () {
                 'player1 uses Expert Bartering, paying 1 fate to switch Expert Bartering with Ornate Fan'
             );
 
+            // without paying, Court Mask is player2's only attachment, and it cannot go to player1's character
+            const p2Fate = this.player2.fate;
             this.player2.clickCard(this.expert);
-            this.player2.clickPrompt('Yes');
+            expect(this.player2).toHavePrompt('Choose an attachment');
+            expect(this.player2.fate).toBe(p2Fate - 1);
 
             this.player2.clickCard(this.fan);
             expect(this.kuwanan.attachments).toContain(this.expert);
@@ -238,8 +238,11 @@ describe('Expert Bartering', function () {
                 'player1 uses Expert Bartering, paying 1 fate to switch Expert Bartering with Ornate Fan'
             );
 
+            // without paying, Court Mask is player2's only attachment, and it cannot go to player1's character
+            const p2Fate = this.player2.fate;
             this.player2.clickCard(this.expert);
-            this.player2.clickPrompt('Yes');
+            expect(this.player2).toHavePrompt('Choose an attachment');
+            expect(this.player2.fate).toBe(p2Fate - 1);
 
             this.player2.clickCard(this.fan);
             expect(this.kuwanan.attachments).toContain(this.expert);

@@ -9,7 +9,8 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
-type AttachEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardAttached, C> & { parent: BaseCard };
+// the controller after attaching is decided when the event is created, before other events of the same window change it
+type AttachEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardAttached, C> & { parent: BaseCard; newController?: Player };
 
 export interface AttachProperties extends CardActionProperties {
     attachment?: DrawCard;
@@ -94,19 +95,23 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
     }
 
     addPropertiesToEvent(event: AttachEvent<C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): void {
-        const { attachment } = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         event.parent = card;
-        if(attachment) {
-            event.card = attachment;
+        if(properties.attachment) {
+            event.card = properties.attachment;
         }
         event.context = context;
+        if(properties.takeControl) {
+            event.newController = context.player;
+        } else if(properties.giveControl) {
+            event.newController = context.player.opponent;
+        }
     }
 
     eventHandler(event: AttachEvent<C>, additionalProperties: ActionOverrides = {}): void {
         const card = event.card;
         const parent = event.parent;
         const context = event.context;
-        const properties = this.getProperties(context, additionalProperties);
         event.originalLocation = card.location;
 
         if(card.location === Location.PlayArea && card.parent) {
@@ -121,11 +126,8 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         }
         parent.attachments.push(card);
         card.parent = parent;
-        if(properties.takeControl) {
-            card.controller = context.player;
-            card.updateEffectContexts();
-        } else if(properties.giveControl && context.player.opponent) {
-            card.controller = context.player.opponent;
+        if(event.newController) {
+            card.controller = event.newController;
             card.updateEffectContexts();
         }
         if(parent.getType() === CardType.Province) {
