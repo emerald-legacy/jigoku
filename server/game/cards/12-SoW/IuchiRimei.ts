@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import { attach, discardFromPlay, ifAble, selectCard } from '../../GameActions/GameActions.js';
+import { attach, selectCard } from '../../GameActions/GameActions.js';
 
 class IuchiRimei extends DrawCard {
     static id = 'iuchi-rimei';
@@ -15,12 +15,9 @@ class IuchiRimei extends DrawCard {
             }, selectCard((context) => ({
                 cardCondition: (card) => card !== context.target?.parentCharacter && card.controller === context.target?.parentCharacter?.controller && card.type === CardType.Character,
                 message: (context, card) => msg`${context.player} moves ${context.target} to ${card}`,
-                gameAction: ifAble({
-                    ifAbleAction: attach({
-                        attachment: context.target,
-                        ignoreUniqueness: true
-                    }),
-                    otherwiseAction: discardFromPlay({ target: context.target })
+                gameAction: attach({
+                    attachment: context.target,
+                    ignoreUniqueness: true
                 })
             })))
             .chatText('move {0} to another character');

@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
-import { attach, discardFromPlay, ifAble, selectCard } from '../../../GameActions/GameActions.js';
+import { attach, selectCard } from '../../../GameActions/GameActions.js';
 
 class HiddenLineage extends DrawCard {
     static id = 'hidden-lineage';
@@ -16,11 +16,8 @@ class HiddenLineage extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card !== context.target.parentCharacter && card.controller === context.player,
                 message: (context, card) => msg`${context.player} moves ${context.target} to ${card}`,
-                gameAction: ifAble({
-                    ifAbleAction: attach({
-                        attachment: context.target
-                    }),
-                    otherwiseAction: discardFromPlay({ target: context.target })
+                gameAction: attach({
+                    attachment: context.target
                 })
             })))
             .chatText('move {0} to another character they control');

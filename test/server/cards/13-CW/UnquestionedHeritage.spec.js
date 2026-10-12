@@ -76,7 +76,7 @@ describe('Unquestioned Heritage', function () {
             expect(this.player1).not.toBeAbleToSelect(this.katana);
             expect(this.player1).not.toBeAbleToSelect(this.jade2);
             expect(this.player1).toBeAbleToSelect(this.fashion);
-            expect(this.player1).toBeAbleToSelect(this.river);
+            expect(this.player1).not.toBeAbleToSelect(this.river);
         });
 
         it('should allow moving the attachment to any other character', function () {
@@ -122,28 +122,48 @@ describe('Unquestioned Heritage', function () {
             expect(this.doomed.attachments).not.toContain(this.fan);
         });
 
-        it('should discard newly illegal attachments', function () {
+        it('should not offer an attachment with no legal destination', function () {
             this.player1.claimRing('air');
             this.player1.clickCard(this.heritage);
-            this.player1.clickCard(this.river);
-            this.player1.clickCard(this.kuwanan);
-            expect(this.river.location).toBe('conflict discard pile');
-            expect(this.getChatLogs(3)).toContain(
-                'player1 plays Unquestioned Heritage to move Force of the River to another character'
-            );
-            expect(this.getChatLogs(2)).toContain('player1 moves Force of the River to Doji Kuwanan');
+            expect(this.player1).not.toBeAbleToSelect(this.river);
         });
 
-        it('should discard newly illegal attachments (Finger of Jade)', function () {
+        it('should only offer characters the attachment can legally move to (Finger of Jade)', function () {
             this.player1.claimRing('air');
             this.player1.clickCard(this.heritage);
             this.player1.clickCard(this.finger);
-            this.player1.clickCard(this.rimei);
-            expect(this.finger.location).toBe('conflict discard pile');
-            expect(this.getChatLogs(3)).toContain(
-                'player1 plays Unquestioned Heritage to move Finger of Jade to another character'
-            );
-            expect(this.getChatLogs(2)).toContain('player1 moves Finger of Jade to Iuchi Rimei');
+            expect(this.player1).toBeAbleToSelect(this.doomed);
+            expect(this.player1).not.toBeAbleToSelect(this.rimei);
+        });
+    });
+});
+
+describe('Unquestioned Heritage and attachment restrictions', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['disciple-of-shinsei', 'tattooed-wanderer', 'doji-whisperer'],
+                    hand: ['centipede-tattoo', 'unquestioned-heritage']
+                }
+            });
+            this.disciple = this.player1.findCardByName('disciple-of-shinsei');
+            this.wanderer = this.player1.findCardByName('tattooed-wanderer');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.tattoo = this.player1.findCardByName('centipede-tattoo');
+            this.heritage = this.player1.findCardByName('unquestioned-heritage');
+
+            this.player1.claimRing('air');
+            this.player1.playAttachment(this.tattoo, this.disciple);
+            this.player2.pass();
+        });
+
+        it('only offers characters the attachment can move to', function () {
+            this.player1.clickCard(this.heritage);
+            this.player1.clickCard(this.tattoo);
+            expect(this.player1).toBeAbleToSelect(this.wanderer);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
         });
     });
 });
