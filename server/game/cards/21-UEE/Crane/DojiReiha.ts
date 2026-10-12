@@ -10,9 +10,13 @@ export default class DojiReiha extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                gameAction: (duel) =>
-                    sequential([
-                        honor({ target: duel.participants }),
+                gameAction: (duel) => {
+                    const honorContestants = honor({ target: duel.participants });
+                    if(!duel.winningPlayer) {
+                        return honorContestants;
+                    }
+                    return sequential([
+                        honorContestants,
                         chooseAction((context) => ({
                             player: duel.winningPlayer === context.player ? Players.Self : Players.Opponent,
                             choices: {
@@ -22,7 +26,8 @@ export default class DojiReiha extends DrawCard {
                                 'Do nothing': noAction()
                             }
                         }))
-                    ])
+                    ]);
+                }
             }));
     }
 }

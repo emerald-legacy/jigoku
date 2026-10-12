@@ -33,6 +33,7 @@ export enum RestrictionScope {
     OpponentsRingEffects = 'opponentsRingEffects',
     OpponentsTriggeredAbilities = 'opponentsTriggeredAbilities',
     OpponentsTriggeredActionAbilities = 'opponentsTriggeredActionAbilities',
+    OwnCardEffects = 'ownCardEffects',
     Reactions = 'reactions',
     RingEffects = 'ringEffects',
     Source = 'source',

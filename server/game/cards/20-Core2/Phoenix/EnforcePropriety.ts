@@ -22,20 +22,23 @@ export default class EnforcePropriety extends DrawCard {
                     context.player.opponent &&
                     countReadyShugenja(context.player) > countReadyShugenja(context.player.opponent)
             })
-            .chooseAction((context) => ({
-                player: Players.Opponent,
-                activePromptTitle: 'Select one',
-                choices: {
-                    [`Give 1 fate to ${context.player.name}`]: {
-                        action: takeFate({ target: context.player.opponent }),
-                        message: (context, _target, player) => msg`${player} gives 1 fate to ${context.player} - the fortunes will be appeased, order is maintained`
-                    },
-                    'Let the effects be canceled': {
-                        action: cancel(),
-                        message: (context, _target, player) => msg`${player} refuses to appease the fortunes - the effects of ${context.event.card} are canceled`
+            .chatText('enforce the proper protocol')
+            .if((context) => context.event.context.player !== context.player)
+                .chooseAction((context) => ({
+                    player: Players.Opponent,
+                    activePromptTitle: 'Select one',
+                    choices: {
+                        [`Give 1 fate to ${context.player.name}`]: {
+                            action: takeFate({ target: context.player.opponent }),
+                            message: (context, _target, player) => msg`${player} gives 1 fate to ${context.player} - the fortunes will be appeased, order is maintained`
+                        },
+                        'Let the effects be canceled': {
+                            action: cancel(),
+                            message: (context, _target, player) => msg`${player} refuses to appease the fortunes - the effects of ${context.event.card} are canceled`
+                        }
                     }
-                }
-            }))
-            .chatText('enforce the proper protocol');
+                }))
+            .otherwise()
+                .cancel();
     }
 }

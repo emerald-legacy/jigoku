@@ -142,3 +142,43 @@ describe('Village Doshin', function () {
         });
     });
 });
+
+describe('Village Doshin on its controller\'s own ability', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['mirumoto-raitsugu'],
+                    hand: ['fine-katana', 'let-go', 'dragon-s-fang', 'dragon-s-claw', 'village-doshin']
+                },
+                player2: {
+                    inPlay: ['keeper-initiate'],
+                    hand: ['clarity-of-purpose', 'against-the-waves']
+                }
+            });
+            this.player1.player.optionSettings.cancelOwnAbilities = true;
+
+            this.raitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+            this.fineKatana = this.player1.findCardByName('fine-katana');
+            this.letGo = this.player1.findCardByName('let-go');
+            this.villageDoshin = this.player1.findCardByName('village-doshin');
+        });
+
+        it('lets the initiator choose', function () {
+            this.player1.clickCard(this.fineKatana);
+            this.player1.clickCard(this.raitsugu);
+            this.player2.pass();
+
+            this.player1.clickCard(this.letGo);
+            this.player1.clickCard(this.fineKatana);
+            this.player1.clickCard(this.villageDoshin);
+            expect(this.player2).not.toHavePrompt('Select one');
+            expect(this.player1).toHavePrompt('Select one');
+
+            this.player1.clickPrompt('Let the effect be canceled');
+            expect(this.fineKatana.location).toBe('play area');
+            expect(this.player2.hand.length).toBe(2);
+        });
+    });
+});

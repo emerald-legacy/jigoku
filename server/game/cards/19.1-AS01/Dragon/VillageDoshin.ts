@@ -25,19 +25,17 @@ export default class VillageDoshin extends DrawCard {
             .chatText((context) => msg`protect ${context.event.cardTargets[0]}`)
             .location(Location.Hand)
             .if((context) => {
-                const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
-                const opponentIsAllowedToDiscardCards = !!context.player.opponent && discardAtRandom({ amount: 2 })
-                    .canAffect(context.player.opponent, context);
-                return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
+                const initiator = context.event.context.player;
+                return initiator.hand.length >= DOSHIN_TAX && discardAtRandom({ amount: DOSHIN_TAX }).canAffect(initiator, context);
             })
                 .chooseAction((context) => ({
-                    player: Players.Opponent,
+                    player: context.event.context.player === context.player ? Players.Self : Players.Opponent,
                     activePromptTitle: 'Select one',
                     choices: {
                         [`Discard ${DOSHIN_TAX} random cards from hand`]: {
                             action: discardAtRandom({
                                 amount: DOSHIN_TAX,
-                                target: context.player.opponent
+                                target: context.event.context.player
                             }),
                             message: (_context, _target, player) => msg`${player} distracts the Dōshin`
                         },

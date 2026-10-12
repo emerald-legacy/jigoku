@@ -22,7 +22,10 @@ class RampartsOfStone extends DrawCard {
                         target: context.game.currentConflict?.getCharacters(targetPlayer)
                     };
                 }),
-                'Discard three cards from hand': chosenDiscard({amount: 3})
+                'Discard three cards from hand': chosenDiscard((context) => ({
+                    amount: 3,
+                    target: context.game.currentConflict?.attackingPlayer
+                }))
             });
     }
 }

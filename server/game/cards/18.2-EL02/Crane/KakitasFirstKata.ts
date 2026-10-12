@@ -54,6 +54,8 @@ export default class KakitasFirstKata extends DrawCard {
     }
 
     public onCardBowed(event: EventPayload<EventName.OnCardBowed>) {
-        this.bowedCharactersThisConflict.add(event.card);
+        if(this.game.isDuringConflict()) {
+            this.bowedCharactersThisConflict.add(event.card);
+        }
     }
 }

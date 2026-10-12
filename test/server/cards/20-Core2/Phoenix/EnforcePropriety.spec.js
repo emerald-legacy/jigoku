@@ -85,3 +85,48 @@ describe('Enforce Propriety', function () {
         });
     });
 });
+
+describe('Enforce Propriety on its controller\'s own event', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['enforce-propriety', 'banzai']
+                }
+            });
+            this.player2.player.optionSettings.cancelOwnAbilities = true;
+
+            this.matsuBerserker = this.player1.findCardByName('matsu-berserker');
+            this.enforcePropriety = this.player2.findCardByName('enforce-propriety');
+            this.banzai = this.player2.findCardByName('banzai');
+
+            this.noMoreActions();
+        });
+
+        it('cancels the event', function () {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.matsuBerserker],
+                defenders: []
+            });
+            const initialFateP1 = this.player1.fate;
+            const initialFateP2 = this.player2.fate;
+            const initialSkill = this.matsuBerserker.militarySkill;
+
+            this.player2.clickCard(this.banzai);
+            this.player2.clickCard(this.matsuBerserker);
+            this.player2.clickCard(this.enforcePropriety);
+            expect(this.player1).not.toHavePrompt('Select one');
+            expect(this.player2).not.toHavePrompt('Select one');
+            expect(this.matsuBerserker.militarySkill).toBe(initialSkill);
+            expect(this.player1.fate).toBe(initialFateP1);
+            expect(this.player2.fate).toBe(initialFateP2);
+            expect(this.getChatLogs(5)).toContain('player2 plays Enforce Propriety to enforce the proper protocol');
+        });
+    });
+});

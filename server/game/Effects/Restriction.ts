@@ -64,17 +64,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.player === getApplyingPlayer(effect).opponent &&
         context.source.type === CardType.Attachment,
     [RestrictionScope.OpponentsCardEffects]: (context, effect) =>
-        context.player === getApplyingPlayer(effect).opponent &&
-        (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
-        [
-            CardType.Event,
-            CardType.Character,
-            CardType.Holding,
-            CardType.Attachment,
-            CardType.Stronghold,
-            CardType.Province,
-            CardType.Role
-        ].includes(context.source.type),
+        context.player === getApplyingPlayer(effect).opponent && isCardEffect(context),
     [RestrictionScope.OpponentsProvinceEffects]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent &&
         (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
@@ -93,6 +83,8 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.OpponentsTriggeredActionAbilities]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && context.ability.isTriggeredAbility() &&
         context.ability.abilityType === AbilityType.Action,
+    [RestrictionScope.OwnCardEffects]: (context, effect) =>
+        context.player === getApplyingPlayer(effect) && isCardEffect(context),
     [RestrictionScope.OpponentsCardAbilities]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && context.ability.isCardAbility(),
     [RestrictionScope.OpponentsCharacters]: (context, effect) =>
@@ -144,6 +136,18 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.UnlessMeishodo]: (context) =>
         !!context.source && context.source.hasTrait('spell') && !context.source.hasTrait('meishodo')
 };
+
+const isCardEffect = (context: AbilityContext) =>
+    (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
+    [
+        CardType.Event,
+        CardType.Character,
+        CardType.Holding,
+        CardType.Attachment,
+        CardType.Stronghold,
+        CardType.Province,
+        CardType.Role
+    ].includes(context.source.type);
 
 const getApplyingPlayer = (effect: Restriction): Player => {
     return effect.applyingPlayer || effect.requireContext().player;

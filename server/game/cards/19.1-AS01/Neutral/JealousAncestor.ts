@@ -19,24 +19,27 @@ export default class JealousAncestor extends DrawCard {
             effect: immunity({ appliesTo: RestrictionScope.Events })
         });
 
-        this.addAttachedEffectOnOpponent(
-            playerCannot({ cannot: RestrictionType.Draw, appliesTo: RestrictionScope.OpponentsCardEffects })
-        );
-        this.addAttachedEffectOnOpponent(playerCannot({ cannot: RestrictionType.Move, appliesTo: RestrictionScope.ToHand }));
-        this.addAttachedEffectOnOpponent(playerCannot({ cannot: RestrictionType.ReturnToHand }));
+        for(const targetController of [Players.Self, Players.Opponent] as const) {
+            const theirCardEffects = targetController === Players.Self ? RestrictionScope.OwnCardEffects : RestrictionScope.OpponentsCardEffects;
+            this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.Draw, appliesTo: theirCardEffects }));
+            this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.Move, appliesTo: RestrictionScope.ToHand }));
+            this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.ReturnToHand }));
+        }
     }
 
     public getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 
-    private addAttachedEffectOnOpponent(effect: EffectFactory) {
+    private restrictParentController(targetController: Players.Self | Players.Opponent, effect: EffectFactory) {
         this.persistentEffect({
             condition: (context) => {
                 const parent = context.source.parentCharacter;
-                return !!parent && parent.isParticipating() && !hasClaimedRing(this, elementSymbol.key, parent.controller);
+                return !!parent && parent.isParticipating() &&
+                    (parent.controller === context.player) === (targetController === Players.Self) &&
+                    !hasClaimedRing(this, elementSymbol.key, parent.controller);
             },
-            targetController: Players.Opponent,
+            targetController,
             effect: effect
         });
     }
