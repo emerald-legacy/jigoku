@@ -103,3 +103,37 @@ describe('Callous Ashigaru', function() {
     });
 });
 
+describe('Callous Ashigaru on an opponent\'s character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['callous-ashigaru']
+                },
+                player2: {
+                    inPlay: ['doji-hotaru']
+                }
+            });
+            this.callousAshigaru = this.player1.findCardByName('callous-ashigaru');
+            this.dojiHotaru = this.player2.findCardByName('doji-hotaru');
+            this.player1.playAttachment(this.callousAshigaru, this.dojiHotaru);
+            // player1 has no characters, so their conflict opportunity passes by itself
+            this.player2.pass();
+            this.player1.pass();
+            this.noMoreActions();
+        });
+
+        it('does not react when the opponent breaks your province', function() {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.dojiHotaru],
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.player1.findCardByName('shameful-display', 'province 1').isBroken).toBe(true);
+            this.player2.clickPrompt('No');
+            expect(this.player1).not.toBeAbleToSelect(this.callousAshigaru);
+        });
+    });
+});

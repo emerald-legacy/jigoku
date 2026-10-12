@@ -27,6 +27,7 @@ export default class ShibasOath extends DrawCard {
         this.whileAttached({
             effect: gainAbility.wouldInterrupt('Cancel an ability', {
                 onInitiateAbilityEffects: (event, context) =>
+                    event.context.player === context.player.opponent &&
                     event.cardTargets.some(
                         (card) =>
                             // In play

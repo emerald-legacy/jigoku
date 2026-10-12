@@ -19,7 +19,7 @@ export default class PromisingHohei extends DrawCard {
 
         this.reaction('return a follower to hand')
             .when({
-                onCardAttached: (event, context) => event.card === context.source
+                onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
             })
             .target({
                 controller: Players.Self,

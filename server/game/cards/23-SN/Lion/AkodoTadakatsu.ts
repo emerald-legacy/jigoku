@@ -7,7 +7,7 @@ export default class AkodoTadakatsu extends DrawCard {
     static id = 'akodo-tadakatsu';
 
     setupCardAbilities() {
-        this.reaction('Injure a character')
+        this.interrupt('Injure a character')
             .when({
                 onMoveFate: (event, context) => {
                     if(context.game.currentPhase === Phase.Fate || event.origin !== context.source || (event.fate ?? 0) <= 0) {

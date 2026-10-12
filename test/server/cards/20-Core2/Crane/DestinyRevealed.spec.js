@@ -224,3 +224,33 @@ describe('Destiny Revealed Ring Stuff', function () {
         });
     });
 });
+
+describe('Destiny Revealed own ring effects', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['destiny-revealed']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+        });
+
+        it('does not cancel your own ring effect', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [],
+                ring: 'fire'
+            });
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.challenger);
+            this.player1.clickPrompt('Honor Doji Challenger');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.challenger.isHonored).toBe(true);
+        });
+    });
+});

@@ -16,7 +16,7 @@ export default class BeguilingMaiko extends DrawCard {
     setupCardAbilities() {
         this.reaction('Employ your charm')
             .when({
-                onCharacterEntersPlay: (event, context) => event.card === context.source
+                onCardPlayed: (event, context) => event.card === context.source
             })
             .gameAction(sequentialContext((context) => {
                 const favor = context.game.getFavorSide();

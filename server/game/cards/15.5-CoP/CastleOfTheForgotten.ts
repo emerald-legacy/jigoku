@@ -10,7 +10,7 @@ export default class CastleOfTheForgotten extends StrongholdCard {
     setupCardAbilities() {
         this.reaction('Make all conflicts military')
             .when({
-                onBreakProvince: (event, context) => event.card.owner !== context.player
+                onBreakProvince: (event, context) => event.conflict?.attackingPlayer === context.player
             })
             .cost(costs.bowSelf())
             .playerLastingEffect({

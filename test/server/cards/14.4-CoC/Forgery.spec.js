@@ -58,3 +58,31 @@ describe('Forgery', function() {
         });
     });
 });
+
+describe('Forgery own events', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10
+                },
+                player2: {
+                    honor: 9,
+                    inPlay: ['doji-whisperer'],
+                    hand: ['forgery', 'way-of-the-crane']
+                }
+            });
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.player2.player.optionSettings.cancelOwnAbilities = true;
+        });
+
+        it('cannot cancel your own events', function() {
+            this.player1.pass();
+            this.player2.clickCard('way-of-the-crane');
+            this.player2.clickCard(this.whisperer);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.whisperer.isHonored).toBe(true);
+        });
+    });
+});

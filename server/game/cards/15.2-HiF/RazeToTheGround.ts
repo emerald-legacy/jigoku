@@ -11,7 +11,7 @@ export default class RazeToTheGround extends DrawCard {
         this.reaction('Break the attacked province')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military
+                    event.conflict.winner === context.player && event.conflict.attackingPlayer === context.player && event.conflict.conflictType === ConflictType.Military
             })
             .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
             .cost(costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))

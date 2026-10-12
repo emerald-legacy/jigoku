@@ -57,7 +57,7 @@ export default class Objection extends DrawCard {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: (event, context) =>
-                    event.card.type === CardType.Event && context.player.imperialFavor !== ''
+                    event.card.type === CardType.Event && event.context.player === context.player.opponent && context.player.imperialFavor !== ''
             })
             .cost(new ObjectionCost())
             .cancel()

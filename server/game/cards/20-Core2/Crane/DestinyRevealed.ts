@@ -27,6 +27,7 @@ export default class DestinyRevealed extends DrawCard {
             .when({
                 onMoveFate: (event, context) =>
                     event.context?.source instanceof Ring &&
+                    event.context.player === context.player.opponent &&
                     !!event.origin && 'controller' in event.origin &&
                     event.origin.controller === context.player &&
                     (event.fate ?? 0) > 0,
@@ -47,5 +48,5 @@ type CardStatusEvent =
     | EventPayload<EventName.OnCardReadied>;
 
 function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext) {
-    return event.card.controller === context.player && event.context?.source instanceof Ring;
+    return event.card.controller === context.player && event.context?.source instanceof Ring && event.context.player === context.player.opponent;
 }
