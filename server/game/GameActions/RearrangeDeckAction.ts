@@ -31,9 +31,6 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         activePromptTitle: 'Which card do you want to be on top?'
     };
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { amount, cards, deck } = this.getProperties(context, additionalProperties);

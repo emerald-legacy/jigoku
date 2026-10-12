@@ -93,9 +93,6 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         return amount !== 0 && this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { cardsToLookAt } = this.getProperties(context, additionalProperties);

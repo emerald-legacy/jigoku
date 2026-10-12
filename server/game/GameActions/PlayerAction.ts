@@ -18,8 +18,13 @@ export class PlayerAction<
 > extends GameAction<P, N, C, D> {
     targetType = ['player'];
 
+    /** The ability's player; actions aimed at the opponent return `opponentTargets(context)`. */
     defaultTargets(context: C): Player[] {
-        return context.player && context.player.opponent ? [context.player.opponent] : [];
+        return context.player ? [context.player] : [];
+    }
+
+    protected opponentTargets(context: C): Player[] {
+        return context.player?.opponent ? [context.player.opponent] : [];
     }
 
     checkEventCondition(event: PlayerEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {

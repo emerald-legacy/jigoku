@@ -499,7 +499,7 @@ Limits track how many times an ability can be used per time period.
 
 Game actions are named imports from `GameActions/GameActions.js` (the tables write them as `x` for grouping only). Most take a `propertyFactory`: either a plain properties object or `(context) => properties`; it is optional where every property has a default, and required otherwise (`moveCard`, `cardLastingEffect`, `deckSearch`, …). `multiple`, `sequential` and `joint` take an array of actions, `chatMessage` a function. The `target` property inside the factory sets which card/player is affected.
 
-When no `target` is provided, card actions target `context.source`, player actions target the ability's player (gain, lose, draw), take/discard actions, the Imperial Favor actions (`claimImperialFavor`, `flipImperialFavor`, `loseImperialFavor`) and `setHonorDial` target the opponent, `amount` is 1, and a target's own action targets the chosen card. Composite actions (`multiple`, `sequential`, `conditional`, …) pass their target down when they were given one (on a target, or with `target`); otherwise each action inside keeps its own default. `selectCard`, `cardMenu` and `deckSearch` hand over the chosen cards.
+When no `target` is provided, card actions target `context.source`, player actions target the ability's player (gain, lose, draw), take/discard actions and `loseImperialFavor` target the opponent, `amount` is 1, and a target's own action targets the chosen card. Composite actions (`multiple`, `sequential`, `conditional`, …) pass their target down when they were given one (on a target, or with `target`); otherwise each action inside keeps its own default. `selectCard`, `cardMenu` and `deckSearch` hand over the chosen cards.
 
 Inside the builder, a `(context) => properties` factory gets the ability's typed context, so `context.target` and `context.targets.name` have the declared card types (see [Typed Targets & Events](#typed-targets--events-typescript)):
 
@@ -555,7 +555,7 @@ The tables below cover the most-used factories; the authoritative list lives in 
 
 ### Player actions
 
-These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscard`, `chosenReturnToDeck`, `discardAtRandom`, `discardMatching`, `claimImperialFavor`, `flipImperialFavor`, `loseImperialFavor` and `setHonorDial`, which target the opponent.
+These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscard`, `chosenReturnToDeck`, `discardAtRandom`, `discardMatching` and `loseImperialFavor`, which target the opponent.
 
 | Function | Notes |
 |----------|-------|

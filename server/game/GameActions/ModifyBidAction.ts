@@ -26,9 +26,6 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
         direction: Direction.Increase
     };
 
-    defaultTargets(context: C) {
-        return [context.player];
-    }
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);

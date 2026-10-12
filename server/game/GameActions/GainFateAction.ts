@@ -18,9 +18,6 @@ export class GainFateAction<C extends AbilityContext = AbilityContext> extends P
     restriction = RestrictionType.GainFate;
     eventName = EventName.OnModifyFate;
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
     protected effectMessage(): MessageArgs {
         return ['gain {0} fate', []];

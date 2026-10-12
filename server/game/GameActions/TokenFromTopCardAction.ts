@@ -22,9 +22,6 @@ export class TokenFromTopCardAction<C extends AbilityContext = AbilityContext> e
         return ['turn the top card of {0}\'s {1} deck into a token', [deck]];
     }
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
     canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return this.#deck(player, context, additionalProperties).length > 0 && super.canAffect(player, context, additionalProperties);

@@ -33,9 +33,6 @@ export class DrawAction<C extends AbilityContext = AbilityContext> extends Playe
         return properties.amount !== 0 && super.canAffect(player, context);
     }
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDrawn, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);

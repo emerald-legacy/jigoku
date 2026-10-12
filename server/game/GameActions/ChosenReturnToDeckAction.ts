@@ -27,6 +27,10 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     restriction = RestrictionType.ReturnToDeck;
     eventName = EventName.OnCardMoved;
 
+    defaultTargets(context: C): Player[] {
+        return this.opponentTargets(context);
+    }
+
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['make {0} return {1} cards to their deck', [this.getProperties(context, additionalProperties).amount]];
     }

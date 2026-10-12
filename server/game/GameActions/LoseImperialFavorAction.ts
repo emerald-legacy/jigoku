@@ -12,6 +12,10 @@ export class LoseImperialFavorAction<C extends AbilityContext = AbilityContext> 
     cost = 'discarding the Imperial Favor';
     effect = 'make {0} lose the Imperial Favor';
 
+    defaultTargets(context: C): Player[] {
+        return this.opponentTargets(context);
+    }
+
     canAffect(player: Player, context: C): boolean {
         return !!player.imperialFavor && super.canAffect(player, context);
     }

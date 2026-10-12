@@ -18,6 +18,10 @@ export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends 
     eventName = EventName.OnTransferHonor;
     defaultProperties = { amount: 1, afterBid: false };
 
+    defaultTargets(context: C): Player[] {
+        return this.opponentTargets(context);
+    }
+
     getAmountToTransfer(givingPlayer: Player, receivingPlayer: Player, context: C, baseAmount: number) {
         let amount = baseAmount;
         const modifyGivenAmount = givingPlayer

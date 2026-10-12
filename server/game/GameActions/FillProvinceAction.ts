@@ -2,7 +2,6 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location } from '../Constants.js';
-import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 
 export interface FillProvinceProperties extends PlayerActionProperties {
@@ -19,9 +18,6 @@ export class FillProvinceAction<C extends AbilityContext = AbilityContext> exten
     name = 'fillProvince';
     effect = 'fills {0} with more cards';
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { fillTo, amount } = this.getProperties(context, additionalProperties);

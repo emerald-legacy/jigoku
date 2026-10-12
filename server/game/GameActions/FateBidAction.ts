@@ -34,9 +34,6 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
     name = 'fateBid';
     eventName = EventName.Unnamed;
 
-    defaultTargets(context: C) {
-        return [context.player];
-    }
 
     protected effectMessage(): MessageArgs {
         return ['have {0} select an amount of fate from their pool', []];

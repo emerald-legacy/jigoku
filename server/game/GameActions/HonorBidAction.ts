@@ -29,9 +29,6 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         players: Players.Any
     };
 
-    defaultTargets(context: C) {
-        return [context.player];
-    }
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return this.getProperties(context, additionalProperties).giveHonor

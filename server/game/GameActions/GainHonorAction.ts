@@ -57,9 +57,6 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
         return super.canAffect(player, context);
     }
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
     addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount, dueToStatusToken } = this.getProperties(context, additionalProperties);

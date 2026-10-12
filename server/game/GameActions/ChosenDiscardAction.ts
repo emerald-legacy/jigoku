@@ -24,6 +24,10 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
     restriction = RestrictionType.Discard;
     eventName = EventName.OnCardsDiscardedFromHand;
 
+    defaultTargets(context: C): Player[] {
+        return this.opponentTargets(context);
+    }
+
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['make {0} discard {1} cards', [this.getProperties(context, additionalProperties).amount]];
     }

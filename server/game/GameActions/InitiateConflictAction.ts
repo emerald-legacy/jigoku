@@ -24,9 +24,6 @@ export class InitiateConflictAction<C extends AbilityContext = AbilityContext> e
         return super.canAffect(player, context) && player.hasLegalConflictDeclaration({ forcedDeclaredType });
     }
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
     eventHandler(event: ActionEvent<EventName.OnConflictInitiated, C>, additionalProperties: Record<string, unknown>): void {
         const context = event.context;

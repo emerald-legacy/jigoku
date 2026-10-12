@@ -15,6 +15,10 @@ export class TakeFateAction<C extends AbilityContext = AbilityContext> extends P
     eventName = EventName.OnMoveFate;
     defaultProperties = { amount: 1 };
 
+    defaultTargets(context: C): Player[] {
+        return this.opponentTargets(context);
+    }
+
     getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['giving {1} fate to {2}', [properties.amount, context.player.opponent]];

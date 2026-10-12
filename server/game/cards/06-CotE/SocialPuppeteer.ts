@@ -16,7 +16,7 @@ class SocialPuppeteer extends DrawCard {
             .condition((context) =>
                 context.source.isParticipating() && !!context.player.opponent &&
                 context.player.showBid !== context.player.opponent.showBid)
-            .gameAction(setHonorDial((context) => ({ value: context.player.showBid })), setHonorDial((context) => ({
+            .gameAction(setHonorDial((context) => ({ target: context.player.opponent ?? [], value: context.player.showBid })), setHonorDial((context) => ({
                 target: context.player,
                 value: context.player.opponent ? context.player.opponent.showBid : 0
             })))

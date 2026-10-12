@@ -27,6 +27,10 @@ export class DiscardMatchingAction<C extends AbilityContext = AbilityContext> ex
         match: () => true
     };
 
+    defaultTargets(context: C): Player[] {
+        return this.opponentTargets(context);
+    }
+
     name = 'discardMatching';
 
     restriction = RestrictionType.Discard;
