@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { attach, cardMenu, shuffleDeck } from '../../GameActions/GameActions.js';
+import { attach, cardMenu } from '../../GameActions/GameActions.js';
 import { Players, CardType, Location } from '../../Constants.js';
 
 class AgashaShunsen extends DrawCard {
@@ -26,7 +26,7 @@ class AgashaShunsen extends DrawCard {
                 gameAction: attach(),
                 subActionProperties: (card) => ({ attachment: card })
             })))
-            .gameAction(shuffleDeck({ deck: Location.ConflictDeck }))
+            .shuffleDeck({ deck: Location.ConflictDeck })
             .chatText((context) => msg`search their deck for an attachment costing ${(context.costs.returnedRings ?? []).length} or less and attach it to ${context.chatTarget()}`);
     }
 }

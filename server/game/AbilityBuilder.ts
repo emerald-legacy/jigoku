@@ -888,6 +888,11 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.moveCard(properties));
     }
 
+    /** Shuffles the target player's (the player of the ability by default) `deck`. */
+    shuffleDeck(properties: FactoryProperties<'shuffleDeck', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.shuffleDeck(properties));
+    }
+
     /** Returns the target (the source by default) to its owner's hand. */
     returnToHand(properties: FactoryProperties<'returnToHand', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
         return this.gameAction(GameActions.returnToHand(properties));
