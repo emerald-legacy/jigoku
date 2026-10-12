@@ -11,6 +11,7 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { EffectArg, InitiateDuel, OwnContextCallback } from './Interfaces.js';
 import { msg, type MessageArgs, type MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
+import { joinEffectMessages } from './GameActions/GameAction.js';
 
 export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
     title?: string;
@@ -278,9 +279,7 @@ export class CardAbility extends ThenAbility {
         } else if(!effectMessage) {
             const gameActions = this.getGameActions(context).filter(({ action, overrides }) => action.hasLegalTarget(context, overrides));
             if(gameActions.length > 0) {
-                // effects with multiple game actions really need their own effect message
-                const { action, overrides } = gameActions[0];
-                [effectMessage, extraArgs] = action.getEffectMessage(context, overrides);
+                [effectMessage, extraArgs] = joinEffectMessages(context, gameActions);
             }
         } else {
             effectArgs.push(context.chatTarget());

@@ -4,7 +4,7 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CompositeGameAction } from './CompositeGameAction.js';
 import type { EventName } from '../Constants.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { GameAction, joinEffectMessages, type GameActionProperties } from './GameAction.js';
 
 export interface MultipleProperties extends GameActionProperties {
     gameActions: GameAction[];
@@ -20,13 +20,8 @@ export class MultipleGameAction<C extends AbilityContext = AbilityContext> exten
 
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { properties: { gameActions }, overrides } = this.getCompositeProperties(context, additionalProperties);
-        const legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context, overrides));
-        let message = '{0}';
-        for(let i = 1; i < legalGameActions.length; i++) {
-            message += i === legalGameActions.length - 1 ? ' and ' : ', ';
-            message += '{' + i + '}';
-        }
-        return [message, legalGameActions.map((action) => context.game.gameChat.nested(action.getEffectMessage(context, overrides)))];
+        const legal = gameActions.filter((action) => action.hasLegalTarget(context, overrides));
+        return joinEffectMessages(context, legal.map((action) => ({ action, overrides })));
     }
 
     protected children(properties: MultipleProperties) {

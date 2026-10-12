@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class KitsukiKagi extends DrawCard {
     static id = 'kitsuki-kagi';
@@ -37,7 +38,8 @@ class KitsukiKagi extends DrawCard {
                         card.location === context.targets.first.location &&
                         card !== context.targets.first &&
                         card !== context.targets.second
-            }, moveCard({ destination: Location.RemovedFromGame }));
+            }, moveCard({ destination: Location.RemovedFromGame }))
+            .chatText((context) => msg`remove ${[context.targets.first, context.targets.second, context.targets.third].flat().filter(Boolean)} from the game`);
     }
 }
 

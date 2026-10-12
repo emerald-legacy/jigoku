@@ -52,6 +52,15 @@ export interface HeldAction {
     overrides: ActionOverrides;
 }
 
+/** One effect message for several actions: "a, b and c". */
+export function joinEffectMessages(context: AbilityContext, actions: HeldAction[]): MessageArgs {
+    if(actions.length === 1) {
+        return actions[0].action.getEffectMessage(context, actions[0].overrides);
+    }
+    const message = actions.map((_, i) => `{${i}}`).join(', ').replace(/, (?=[^,]*$)/, ' and ');
+    return [message, actions.map(({ action, overrides }) => context.game.gameChat.nested(action.getEffectMessage(context, overrides)))];
+}
+
 const baseDefaults = { cannotBeCancelled: false, optional: false };
 
 const hasTarget = (properties: object | undefined) => !!properties && 'target' in properties;
