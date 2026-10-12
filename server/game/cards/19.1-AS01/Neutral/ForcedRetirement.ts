@@ -7,7 +7,7 @@ import {
     removeFate,
     sequentialContext
 } from '../../../GameActions/GameActions.js';
-import { CardType, Players, CharacterStatus } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ForcedRetirement extends DrawCard {
@@ -24,11 +24,7 @@ export default class ForcedRetirement extends DrawCard {
                 gameActions: [
                     multiple([
                         discardStatusToken({
-                            target: context.target.statusTokens.filter(
-                                (t) =>
-                                    t.grantedStatus === CharacterStatus.Dishonored ||
-                                    t.grantedStatus === CharacterStatus.Tainted
-                            )
+                            target: context.target.statusTokens
                         }),
                         removeFate({
                             target: context.target,

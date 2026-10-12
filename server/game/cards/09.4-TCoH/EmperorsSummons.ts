@@ -3,7 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import { msg } from '../../GameChat.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import { moveCard, selectCard } from '../../GameActions/GameActions.js';
+import { moveCard, selectCard, shuffleDeck } from '../../GameActions/GameActions.js';
 
 export default class EmperorsSummons extends ProvinceCard {
     static id = 'emperor-s-summons';
@@ -33,6 +33,8 @@ export default class EmperorsSummons extends ProvinceCard {
                     gameAction: moveCard({ discardDestinationCards: true, faceup: true })
                 })
             }))
-            .chatText('choose a character to place in a province');
+            .chatText('choose a character to place in a province')
+            .afterwards()
+            .gameAction(shuffleDeck((context) => ({ target: context.player, deck: Location.DynastyDeck })));
     }
 }

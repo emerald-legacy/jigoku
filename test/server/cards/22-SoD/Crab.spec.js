@@ -1,3 +1,6 @@
+import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { sendHome } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('SoD - Crab', function () {
     integration(function () {
         describe('A Bad Death', function () {
@@ -216,6 +219,24 @@ describe('SoD - Crab', function () {
 
                 expect(this.skirmisher.location).toBe('dynasty discard pile');
                 expect(this.getChatLogs(5)).toContain('Silent Skirmisher is sacrificed due to the delayed effect of Dead Eyes');
+            });
+
+            it('cannot be moved home by its controller\'s effects either', function () {
+                this.player1.clickCard(this.deadeyes);
+                this.player1.clickCard(this.skirmisher);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.skirmisher, this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.deadeyes);
+
+                const context = new ThenAbility(this.swordsmith, {}).createContext(this.player1.player);
+                this.game.queueSimpleStep(() => sendHome().resolve(this.skirmisher, context));
+                this.game.continue();
+                expect(this.skirmisher.isParticipating()).toBe(true);
             });
 
             it('cannot be used when the attached character is not participating', function () {

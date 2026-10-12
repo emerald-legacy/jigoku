@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players, ConflictType } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
 import { cardLastingEffect, multiple, sendHome } from '../../../GameActions/GameActions.js';
@@ -30,8 +30,8 @@ export default class Pressure extends DrawCard {
                     sendHome(),
                     cardLastingEffect({
                         effect: [
-                            cannotParticipateAsAttacker(ConflictType.Military),
-                            cannotParticipateAsDefender(ConflictType.Military)
+                            cannotParticipateAsAttacker(),
+                            cannotParticipateAsDefender()
                         ]
                     })
                 ]),

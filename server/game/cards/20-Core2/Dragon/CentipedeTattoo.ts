@@ -1,4 +1,4 @@
-import { addKeyword, doesNotBow } from '../../../effects.js';
+import { addTrait, doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CentipedeTattoo extends DrawCard {
@@ -7,7 +7,7 @@ export default class CentipedeTattoo extends DrawCard {
     setupCardAbilities() {
         this.attachmentConditions({ trait: 'monk' });
 
-        this.whileAttached({ effect: addKeyword('tattooed') });
+        this.whileAttached({ effect: addTrait('tattooed') });
 
         this.whileAttached({
             condition: () =>

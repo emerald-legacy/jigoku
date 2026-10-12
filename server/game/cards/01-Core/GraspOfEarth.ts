@@ -1,6 +1,6 @@
-import { Location, Players, PlayType, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { PlayType, RestrictionType, RestrictionScope } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
-import { cardCannot, playerCannot, reduceCost } from '../../effects.js';
+import { cardCannot, playerCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class GraspOfEarth extends DrawCard {
@@ -10,13 +10,6 @@ export default class GraspOfEarth extends DrawCard {
         this.attachmentConditions({
             myControl: true,
             trait: 'shugenja'
-        });
-
-        this.persistentEffect({
-            location: Location.Any,
-            targetController: Players.Any,
-            condition: (context) => context.player.hasAffinity('earth', context),
-            effect: reduceCost({ amount: 1, match: (card, source) => card === source })
         });
 
         this.action('Opponent\'s cards cannot join this conflict')

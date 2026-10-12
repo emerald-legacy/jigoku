@@ -38,7 +38,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                     },
                     'Sacrifice a character to perform both': {
                         action: sequentialContext((context) => {
-                            const gameActions: GameAction[] = [sendHome()];
+                            const gameActions: GameAction[] = [];
                             gameActions.push(
                                 selectCard({
                                     activePromptTitle: 'Select a character to sacrifice',

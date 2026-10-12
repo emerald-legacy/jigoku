@@ -25,7 +25,7 @@ export default class TruthIsInTheKilling extends DrawCard {
                                         removeFate({
                                             target: loser,
                                             amount: loser.getFate(),
-                                            recipient: loser.controller
+                                            recipient: loser.owner
                                         }),
                                         discardFromPlay({ target: loser })
                                     ]
@@ -33,12 +33,12 @@ export default class TruthIsInTheKilling extends DrawCard {
                                         removeFate({
                                             target: loser,
                                             amount: loser.getFate(),
-                                            recipient: loser.controller
+                                            recipient: loser.owner
                                         })
                                     ]
                             )
                         ) : noAction(),
-                chatText: (_context, duel) => msg`return all fate on ${duel.loser} to ${duel.losingPlayer}'s fate pool${applyFullEffect(duel) ? ' and discard them' : ''}`
+                chatText: (_context, duel) => msg`return all fate on ${duel.loser} to ${duel.loser?.[0]?.owner}'s fate pool${applyFullEffect(duel) ? ' and discard them' : ''}`
             }));
     }
 }

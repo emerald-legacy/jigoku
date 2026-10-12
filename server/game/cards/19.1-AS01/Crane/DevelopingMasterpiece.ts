@@ -23,11 +23,12 @@ export default class DevelopingMasterpiece extends DrawCard {
 
         this.action('Gain honor')
             .cost(captureParentCost())
-            .cost(costs.removeSelfFromGame())
+            .cost(costs.sacrificeSelf())
             .condition((context) => !!context.source.parentCharacter)
             .gainHonor((context) => ({
                 amount: capturedParent(context)?.glory ?? 0
             }))
+            .moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame }))
             .chatText((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`)
             .onResolve((context) => {
                 randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));

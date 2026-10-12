@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, RemainingCards } from '../../Constants.js';
+import { Location, RemainingCards, TargetMode } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
 class AlibiArtist extends DrawCard {
@@ -10,6 +10,8 @@ class AlibiArtist extends DrawCard {
             .condition((context) => context.player.honor <= 6)
             .deckSearch({
                 cardsToLookAt: 2,
+                mode: TargetMode.Exactly,
+                numCards: 1,
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),

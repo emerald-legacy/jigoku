@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, RemainingCards } from '../../Constants.js';
+import { Location, CardType, RemainingCards, TargetMode } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
 class ShrewdYasuki extends DrawCard {
@@ -11,6 +11,8 @@ class ShrewdYasuki extends DrawCard {
                                   this.game.allCards.some((card) => card.type === CardType.Holding && card.isInProvince() && card.isFaceup()))
             .deckSearch({
                 cardsToLookAt: 2,
+                mode: TargetMode.Exactly,
+                numCards: 1,
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),

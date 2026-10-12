@@ -1,3 +1,6 @@
+import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { takeControl } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Chikara', function() {
     integration(function() {
         describe('Chikara attachment', function() {
@@ -225,6 +228,55 @@ describe('Chikara', function() {
                     expect(this.player1).not.toBeAbleToSelect(this.yoritomo);
                 });
             });
+        });
+    });
+});
+
+describe('Chikara on a character its owner does not control', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 3,
+                    inPlay: ['hida-kisada', 'hida-o-ushi'],
+                    hand: ['chikara']
+                },
+                player2: {
+                    inPlay: ['hida-kisada', 'doji-challenger']
+                }
+            });
+            this.kisadaP1 = this.player1.findCardByName('hida-kisada');
+            this.oushi = this.player1.findCardByName('hida-o-ushi');
+            this.chikara = this.player1.findCardByName('chikara');
+            this.kisadaP2 = this.player2.findCardByName('hida-kisada');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+
+            const context = new ThenAbility(this.kisadaP1, {}).createContext(this.player1.player);
+            this.game.queueSimpleStep(() => takeControl().resolve(this.challenger, context));
+            this.game.continue();
+
+            this.player1.playAttachment(this.chikara, this.kisadaP1);
+            this.noMoreActions();
+            this.challenger.fate = 3;
+        });
+
+        it('returns the fate to the character\'s controller', function() {
+            expect(this.challenger.controller).toBe(this.player1.player);
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kisadaP1, this.oushi, this.challenger],
+                defenders: [this.kisadaP2]
+            });
+
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
+            this.noMoreActions();
+            this.player1.clickCard(this.kisadaP1);
+            this.player1.clickCard(this.challenger);
+
+            expect(this.player1.fate).toBe(p1Fate + 3);
+            expect(this.player2.fate).toBe(p2Fate);
         });
     });
 });

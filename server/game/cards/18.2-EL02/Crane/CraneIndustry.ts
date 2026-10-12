@@ -24,7 +24,7 @@ export default class CraneIndustry extends DrawCard {
                 targetController: context.player,
                 effect: reduceCost({
                     amount: 1,
-                    match: (card) => !this.hasEventBeenPlayedByThisPlayer(card)
+                    match: (card) => card.type === CardType.Event && !this.hasEventBeenPlayedByThisPlayer(card)
                 })
             }))
             .chatText('reduce the cost of the first copy of each event they play this conflict by 1')

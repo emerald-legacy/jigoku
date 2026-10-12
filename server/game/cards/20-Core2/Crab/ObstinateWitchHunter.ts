@@ -20,7 +20,7 @@ export default class ObstinateWitchHunter extends DrawCard {
             })
             .cardLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: [cardCannot(RestrictionType.RemoveFate), cardCannot(RestrictionType.DiscardFromPlay)]
+                effect: [cardCannot(RestrictionType.RemoveFate), cardCannot(RestrictionType.DiscardFromPlay), cardCannot(RestrictionType.Sacrifice)]
             })
             .chatText('stop him being discarded or losing fate in this phase');
     }

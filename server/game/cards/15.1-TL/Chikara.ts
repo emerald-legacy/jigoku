@@ -26,7 +26,7 @@ class Chikara extends DrawCard {
                 }, sequential([
                     removeFate((context) => ({
                         amount: context.target?.getFate(),
-                        recipient: context.target?.owner
+                        recipient: context.target?.controller
                     })),
                     sacrifice((context) => ({
                         target: context.target

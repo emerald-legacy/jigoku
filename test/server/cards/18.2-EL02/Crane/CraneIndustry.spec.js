@@ -121,3 +121,39 @@ describe('Crane Industry', function() {
         });
     });
 });
+
+describe('Crane Industry and other card types', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['crane-industry', 'reprieve']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.industry = this.player1.findCardByName('crane-industry');
+            this.reprieve = this.player1.findCardByName('reprieve');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+        });
+
+        it('does not reduce the cost of attachments', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.whisperer]
+            });
+            this.player1.clickCard(this.industry);
+            this.player2.pass();
+
+            const fate = this.player1.fate;
+            this.player1.playAttachment(this.reprieve, this.challenger);
+            expect(this.player1.fate).toBe(fate - 1);
+        });
+    });
+});

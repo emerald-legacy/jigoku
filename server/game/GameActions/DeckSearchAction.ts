@@ -165,7 +165,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
             properties.cardCondition(card, context) &&
             (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
             (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties));
-        if(properties.hideIfNoLegalTargets && canCancel && !cards.some(cardCondition)) {
+        if((properties.hideIfNoLegalTargets || !canCancel) && !cards.some(cardCondition)) {
             this.#handleDone(properties, context, event, selectedCards, cards);
             return;
         }

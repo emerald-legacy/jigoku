@@ -71,6 +71,7 @@ describe('Chronicler of Calamities', function () {
             this.player2.clickCard(this.toshimoko);
             this.player2.clickPrompt('Sacrifice a character to perform both');
 
+            expect(this.toshimoko.isParticipating()).toBe(true);
             expect(this.player2).toHavePrompt('Select a character to sacrifice');
             expect(this.player2).toBeAbleToSelect(this.chronicler);
             expect(this.player2).toBeAbleToSelect(this.sotorii);

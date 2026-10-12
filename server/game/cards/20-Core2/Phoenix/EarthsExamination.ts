@@ -16,9 +16,9 @@ export default class EarthsExamination extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, multiple([
                 taint(),
-                onAffinity((context) => ({
+                onAffinity(() => ({
                     trait: 'earth',
-                    prompt: context.target.isTainted ? undefined : 'Bow that character?',
+                    prompt: 'Bow that character?',
                     gameAction: bow(),
                     chatText: 'bow {0}',
                     chatTextArgs: (context) => [context.target]
