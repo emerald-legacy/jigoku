@@ -47,7 +47,7 @@ export default class WeKnow extends DrawCard {
                 ? msg`${'draw two cards and cause '}${context.player.opponent}${' to lose 1 honor'}`
                 : msg`replace ${context.tokens.token[0].card} honored status token with a dishonored status token`)
             .cannotTargetFirst()
-            .thenIf((context) => !!context.player.opponent && context.player.honor > context.player.opponent.honor)
+            .afterwardsIf((context) => !!context.player.opponent && context.player.honor > context.player.opponent.honor)
             .loseHonor(2)
             .message((context) => msg`${context.player} loses 2 honor`);
     }

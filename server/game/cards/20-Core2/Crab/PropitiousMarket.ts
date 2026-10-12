@@ -25,7 +25,7 @@ export default class PropitiousMarket extends DrawCard {
 
         this.action('Place an honor token')
             .addToken()
-            .then()
+            .afterwards()
             .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {
                 Yes: sacrifice((context) => ({ target: context.source })),
                 No: () => true

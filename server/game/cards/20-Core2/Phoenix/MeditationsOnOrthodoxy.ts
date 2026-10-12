@@ -26,7 +26,7 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
                 controller: Players.Any
             }, ready())
             .max(perConflictOpportunity(1))
-            .then()
+            .afterwards()
             .moveCard({ destination: Location.ConflictDeck, bottom: true });
     }
 }

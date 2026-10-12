@@ -22,7 +22,7 @@ export default class GreaterUnderstanding2 extends RingAttachment {
                 onPlaceFateOnUnclaimedRings: (_event, context) => context.source.parent instanceof Ring && context.source.parent.isUnclaimed()
             })
             .resolveRingEffect((context) => ({ target: context.source.parent ?? [] }))
-            .then()
+            .afterwards()
             .selectRing((context) => ({
                 activePromptTitle: 'Choose a ring to attach Greater Understanding',
                 player: Players.Opponent,

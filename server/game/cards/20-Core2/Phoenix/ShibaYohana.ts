@@ -18,7 +18,7 @@ export default class ShibaYohana extends DrawCard {
                 replacementGameAction: taint()
             }))
             .chatText((context) => msg`prevent ${context.event.card} from leaving play - vengeance and destruction sustains her in a damned existence`)
-            .then()
+            .afterwards()
             .cardLastingEffect((context) => ({
                 target: context.source,
                 duration: Duration.Custom,

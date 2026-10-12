@@ -15,7 +15,7 @@ export default class RetreatToSafety extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.isDefending()
             }, sendHome())
-            .then()
+            .afterwards()
             .if((context) => context.player.isCharacterTraitInPlay('commander'))
                 .selectCard((context) => ({
                     activePromptTitle: 'Choose a character to ready',

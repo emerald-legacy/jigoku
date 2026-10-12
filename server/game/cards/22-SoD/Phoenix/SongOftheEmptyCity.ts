@@ -12,7 +12,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
         const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
 
         moveHoldingAction(this)
-            .thenIf((context) => otherHoldingsInSameProvince(context).length > 0)
+            .afterwardsIf((context) => otherHoldingsInSameProvince(context).length > 0)
             .discardCard((context) => ({ target: otherHoldingsInSameProvince(context) }))
             .message((context) => msg`${context.source} discards the other holdings in the province`);
 

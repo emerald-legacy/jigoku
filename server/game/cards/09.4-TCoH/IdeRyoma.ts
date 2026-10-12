@@ -27,7 +27,7 @@ class IdeRyoma extends DrawCard {
                 cardCondition: (card) => Object.values(context.targets).includes(card),
                 gameAction: bow()
             })))
-            .then()
+            .afterwards()
             .ready((context) => ({
                 target: [context.targets.unicorn, context.targets.nonunicorn].filter((card) => context.previousEvents.every((event) => !('card' in event) || event.card !== card))
             }));

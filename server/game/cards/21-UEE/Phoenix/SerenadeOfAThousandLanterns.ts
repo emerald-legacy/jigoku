@@ -20,7 +20,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                 cardCondition: (card, _context) => card.isParticipating() && !card.isUnique()
             }, sendHome())
             .max(perConflict(1))
-            .then()
+            .afterwards()
             .onAffinity(Element.Fire)
             .gainHonor(1);
     }
