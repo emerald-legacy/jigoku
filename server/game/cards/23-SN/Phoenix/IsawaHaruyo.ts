@@ -1,5 +1,4 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Location } from '../../../Constants.js';
 import { lookAt, multiple } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,12 +10,8 @@ export default class IsawaHaruyo extends DrawCard {
     public setupCardAbilities() {
         this.conflictAction('Discard a card')
             .condition((context) => context.source.isDefending() && context.player.opponent !== undefined)
-            .selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
+            .selectAttackedProvince((context) => ({
+                cardCondition: (card) => card.getStrength() > 0,
                 subActionProperties: (card) => {
                     context.target = card;
                     return { target: card };

@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, DeckType } from '../../Constants.js';
+import { CardType, DeckType } from '../../Constants.js';
 import { modifyGlory } from '../../effects.js';
 import { deckSearch, handler, placeInProvince } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -16,12 +16,7 @@ class FrontlineEngineer extends DrawCard {
 
         this.action('Place a holding from your deck faceup in the defending province')
             .condition((context) => context.player.dynastyDeck.length > 0 && context.source.isDefending())
-            .selectCard({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince(),
+            .selectAttackedProvince({
                 gameAction: handler({
                     handler: (context, [province]) => deckSearch({
                         activePromptTitle: 'Choose a holding',

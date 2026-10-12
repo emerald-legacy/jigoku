@@ -15,12 +15,8 @@ export default class RazeToTheGround extends DrawCard {
             })
             .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
             .cost(costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
-            .selectCard({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
+            .selectAttackedProvince({
+                cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 message: (context, cards) => msg`${context.player} breaks ${cards}`,
                 gameAction: breakProvince()
             })

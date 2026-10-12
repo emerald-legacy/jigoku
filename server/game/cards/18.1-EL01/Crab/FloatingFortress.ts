@@ -6,7 +6,7 @@ import {
     chooseAction,
     moveCard,
     noAction,
-    selectCard,
+    selectAttackedProvince,
     sequential
 } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
@@ -32,13 +32,8 @@ export default class FloatingFortress extends DrawCard {
                 chooseAction({
                     activePromptTitle: 'Move the holding to into the attacked provinces?',
                     choices: {
-                        Yes: selectCard((context) => ({
-                            activePromptTitle: 'Choose an attacked province',
-                            hidePromptIfSingleCard: true,
-                            cardType: CardType.Province,
-                            location: Location.Provinces,
+                        Yes: selectAttackedProvince((context) => ({
                             message: (context, province, player) => msg`${player} moves ${context.source} to ${province}`,
-                            cardCondition: (card) => card.isConflictProvince(),
                             subActionProperties: (card) => ({
                                 target: context.source,
                                 destination: card.location

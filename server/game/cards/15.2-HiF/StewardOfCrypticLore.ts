@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { CardType, Element, Location } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import { modifyPoliticalSkill, modifyProvinceStrength } from '../../effects.js';
 import { cardLastingEffect, chooseAction } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -16,12 +16,7 @@ export default class StewardOfCrypticLore extends DrawCard {
 
         this.action('Changes the strength of the attacked province')
             .condition((context) => context.game.isDuringConflict(this.getCurrentElementSymbol(ELEMENT)))
-            .selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince(),
+            .selectAttackedProvince((context) => ({
                 subActionProperties: (card) => {
                     context.target = card;
                     return { target: card };
@@ -30,14 +25,12 @@ export default class StewardOfCrypticLore extends DrawCard {
                     choices: {
                         'Raise attacked province\'s strength by 3': {
                             action: cardLastingEffect(() => ({
-                                targetLocation: Location.Provinces,
                                 effect: modifyProvinceStrength(3)
                             })),
                             message: (_context, target, player) => msg`${player} chooses to increase ${target}'s strength by 3`
                         },
                         'Lower attacked province\'s strength by 3': {
                             action: cardLastingEffect(() => ({
-                                targetLocation: Location.Provinces,
                                 effect: modifyProvinceStrength(-3)
                             })),
                             message: (_context, target, player) => msg`${player} chooses to reduce ${target}'s strength by 3`

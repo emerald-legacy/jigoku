@@ -1,8 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location } from '../../Constants.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { cardLastingEffect, gainHonor, selectCard } from '../../GameActions/GameActions.js';
+import { cardLastingEffect, gainHonor, selectAttackedProvince } from '../../GameActions/GameActions.js';
 
 class HeroOfThreeTrees extends DrawCard {
     static id = 'hero-of-three-trees';
@@ -14,12 +13,7 @@ class HeroOfThreeTrees extends DrawCard {
                 && context.player.hand.length < context.player.opponent.hand.length))
             .select({}, {
                 'Gain 1 honor': gainHonor(),
-                'Lower attacked province\'s strength by 1': selectCard((context) => ({
-                    activePromptTitle: 'Choose an attacked province',
-                    hidePromptIfSingleCard: true,
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    cardCondition: (card) => card.isConflictProvince(),
+                'Lower attacked province\'s strength by 1': selectAttackedProvince((context) => ({
                     subActionProperties: (card) => {
                         context.target = card;
                         return ({ target: card });

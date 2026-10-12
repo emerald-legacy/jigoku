@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { setMilitarySkill, setPoliticalSkill } from '../../../effects.js';
-import { cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
-import { CardType, ConflictType, Location, Players } from '../../../Constants.js';
+import { cardLastingEffect, selectAttackedProvince } from '../../../GameActions/GameActions.js';
+import { CardType, ConflictType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShinjoAtagi extends DrawCard {
@@ -13,15 +13,10 @@ export default class ShinjoAtagi extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()
-            }, selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                message: (context, card) => msg`${context.source} sets the ${context.game.currentConflict?.conflictType} skill of ${context.target} to ${card.isProvinceCard() ? card.getStrength() : 0}${context.game.currentConflict?.conflictType}`,
-                cardCondition: (card) => card.isConflictProvince(),
+            }, selectAttackedProvince((context) => ({
+                message: (context, card) => msg`${context.source} sets the ${context.game.currentConflict?.conflictType} skill of ${context.target} to ${card.getStrength()}${context.game.currentConflict?.conflictType}`,
                 subActionProperties: (card) => {
-                    const provinceStrength = card.isProvinceCard() ? card.getStrength() : 0;
+                    const provinceStrength = card.getStrength();
                     const effect =
                             context.game.currentConflict?.conflictType === ConflictType.Military
                                 ? setMilitarySkill(provinceStrength)

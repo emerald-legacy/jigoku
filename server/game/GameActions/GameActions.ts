@@ -37,7 +37,7 @@ import { GainFateAction, GainFateProperties } from './GainFateAction.js';
 import { GainHonorAction, GainHonorProperties } from './GainHonorAction.js';
 import { GainStatusTokenAction, GainStatusTokenProperties } from './GainStatusTokenAction.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { EventName } from '../Constants.js';
+import { CardType, Location, type EventName } from '../Constants.js';
 import { PerformGloryCountAction, GloryCountProperties } from './PerformGloryCountAction.js';
 import { HandlerAction, HandlerProperties } from './HandlerAction.js';
 import { HonorAction, HonorProperties } from './HonorAction.js';
@@ -536,6 +536,26 @@ export function selectCard<C extends AbilityContext = AbilityContext, const K ex
         ? (context) => eraseSelectCardProperties(propertyFactory(context))
         : eraseSelectCardProperties(propertyFactory));
 }
+/** "Choose an attacked province": a selectCard limited to the conflict's provinces, without a prompt when there is only one. */
+export function selectAttackedProvince<C extends AbilityContext = AbilityContext>(
+    propertyFactory: PropsFactory<AttackedProvinceProperties<C>, C>
+): SelectCardAction<C> {
+    const withDefaults = (properties: AttackedProvinceProperties<C>): SelectCardProperties<C, CardType.Province> => {
+        const { cardCondition } = properties;
+        return {
+            activePromptTitle: 'Choose an attacked province',
+            hidePromptIfSingleCard: true,
+            ...properties,
+            cardType: CardType.Province,
+            location: Location.Provinces,
+            cardCondition: (card, context) => card.isConflictProvince() && (!cardCondition || cardCondition(card, context))
+        };
+    };
+    return selectCard<C, CardType.Province>(typeof propertyFactory === 'function'
+        ? (context) => withDefaults(propertyFactory(context))
+        : withDefaults(propertyFactory));
+}
+export type AttackedProvinceProperties<C extends AbilityContext = AbilityContext> = Omit<SelectCardProperties<C, CardType.Province>, 'cardType' | 'location'>;
 /** Several cards; `mode` says how many. */
 export function selectCards<C extends AbilityContext = AbilityContext, const K extends CardTypes = CardTypes>(propertyFactory: PropsFactory<SelectCardsProperties<C, K> & { mode: MultiCardMode }, C>): SelectCardAction<C> {
     return new SelectCardAction<C>(typeof propertyFactory === 'function'

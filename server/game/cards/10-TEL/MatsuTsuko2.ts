@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { CardType, Location } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import { breakProvince } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -15,12 +15,8 @@ export default class MatsuTsuko2 extends DrawCard {
                     context.player.isMoreHonorable() &&
                     event.conflict.getConflictProvinces().some((p) => p.location !== Location.StrongholdProvince)
             })
-            .selectCard({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
+            .selectAttackedProvince({
+                cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 message: (context, cards) => msg`${context.player} breaks ${cards}`,
                 gameAction: breakProvince()
             })

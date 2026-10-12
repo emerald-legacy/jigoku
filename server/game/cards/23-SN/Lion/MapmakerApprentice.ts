@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
-import { cardLastingEffect, chooseAction, playerLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, chooseAction, playerLastingEffect, selectAttackedProvince } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MapmakerApprentice extends DrawCard {
@@ -32,12 +32,7 @@ export default class MapmakerApprentice extends DrawCard {
                     },
                     message: () => msg`${context.player} changes the province strength of an attacked province due to the delayed effect of ${context.source}`,
                     multipleTrigger: true,
-                    gameAction: selectCard((context) => ({
-                        activePromptTitle: 'Choose an attacked province',
-                        hidePromptIfSingleCard: true,
-                        cardType: CardType.Province,
-                        location: Location.Provinces,
-                        cardCondition: (card) => card.isConflictProvince(),
+                    gameAction: selectAttackedProvince((context) => ({
                         subActionProperties: (card) => {
                             context.target = card;
                             return { target: card };
@@ -46,14 +41,12 @@ export default class MapmakerApprentice extends DrawCard {
                             choices: {
                                 'Raise attacked province\'s strength by 2': {
                                     action: cardLastingEffect({
-                                        targetLocation: Location.Provinces,
                                         effect: modifyProvinceStrength(2)
                                     }),
                                     message: (_context, target, player) => msg`${player} chooses to increase ${target}'s strength by 2`
                                 },
                                 'Lower attacked province\'s strength by 2': {
                                     action: cardLastingEffect({
-                                        targetLocation: Location.Provinces,
                                         effect: modifyProvinceStrength(-2)
                                     }),
                                     message: (_context, target, player) => msg`${player} chooses to reduce ${target}'s strength by 2`

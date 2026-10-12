@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, Element } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import { modifyProvinceStrengthMultiplier } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { isEnumValue } from '../../utils/helpers.js';
@@ -10,12 +10,8 @@ class SpecializedDefenses extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Double province strength')
-            .selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.element.some((element: string) => {
+            .selectAttackedProvince((context) => ({
+                cardCondition: (card) => card.element.some((element: string) => {
                     if(element === 'all') {
                         return true;
                     }
@@ -24,7 +20,6 @@ class SpecializedDefenses extends DrawCard {
                 }),
                 message: (context, cards) => msg`${context.player} doubles the province strength of ${cards}`,
                 gameAction: cardLastingEffect({
-                    targetLocation: Location.Provinces,
                     effect: modifyProvinceStrengthMultiplier(2)
                 })
             }))

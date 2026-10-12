@@ -863,6 +863,12 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.selectCard<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K>(properties));
     }
 
+    selectAttackedProvince(
+        properties: GameActions.AttackedProvinceProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>> | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => GameActions.AttackedProvinceProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>)
+    ): this {
+        return this.gameAction(GameActions.selectAttackedProvince(properties));
+    }
+
     /** Searches a deck: look at its top cards, choose some, and resolve `gameAction` on them. */
     deckSearch(properties: FactoryProperties<'deckSearch', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.deckSearch(properties));

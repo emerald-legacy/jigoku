@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, EventName, Location, ConflictType } from '../../Constants.js';
+import { EventName, ConflictType } from '../../Constants.js';
 import { modifyProvinceStrength } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -12,12 +12,7 @@ class RootOutHeresy extends DrawCard {
         this.conflictAction('Discard a card at random from your opponent\'s hand', { conflictType: ConflictType.Political })
             .discardAtRandom()
             .then()
-            .selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince(),
+            .selectAttackedProvince((context) => ({
                 message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by ${this.getStrengthModifier(context)}`,
                 gameAction: cardLastingEffect(() => ({
                     effect: modifyProvinceStrength(this.getStrengthModifier(context))
