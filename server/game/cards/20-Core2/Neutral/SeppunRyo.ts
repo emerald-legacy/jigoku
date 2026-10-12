@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { DuelType, Duration, FavorType } from '../../../Constants.js';
+import { DuelType, FavorType } from '../../../Constants.js';
 import { modifyDuelSkill } from '../../../effects.js';
 import { bow, claimImperialFavor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -13,9 +13,7 @@ export default class SeppunRyo extends DrawCard {
             context.player.imperialFavor !== '' && duel.participants.includes(context.source)
         )
             .duelLastingEffect((context) => ({
-                target: context.event.duel,
-                effect: modifyDuelSkill({ amount: 1, player: context.player }),
-                duration: Duration.UntilEndOfDuel
+                effect: modifyDuelSkill({ amount: 1, player: context.player })
             }))
             .chatText('add 1 to their duel total')
             .limit(unlimited());

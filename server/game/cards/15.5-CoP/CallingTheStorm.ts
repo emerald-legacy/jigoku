@@ -23,7 +23,6 @@ class CallingTheStorm extends DrawCard {
                     }, PlayType.PlayFromHand)
                 })),
                 playerLastingEffect(() => ({
-                    targetController: Players.Self,
                     duration: Duration.UntilEndOfPhase,
                     effect: showTopConflictCard(Players.Self)
                 }))

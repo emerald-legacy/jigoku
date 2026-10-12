@@ -20,11 +20,10 @@ export default class HisuMoriToride extends StrongholdCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('bushi')
             }))
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict('military')
-            }))
+            })
             .chatText((context) => msg`allow ${context.player} to declare an additional military conflict this phase`);
     }
 }

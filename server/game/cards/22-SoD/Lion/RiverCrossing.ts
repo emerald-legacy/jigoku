@@ -11,7 +11,7 @@ export default class RiverCrossing extends ProvinceCard {
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
             .playerLastingEffect({
-                targetController: Players.Any,
+                target: Players.Any,
                 effect: changeConflictSkillFunction((_card) => 1)
             })
             .chatText('make it so each character contributes 1 skill to the conflict');

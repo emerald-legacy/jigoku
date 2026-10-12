@@ -22,7 +22,7 @@ export default class DaiTsuchi extends DrawCard {
                         !!card.parentCharacter?.isParticipatingFor(context.player.opponent)
                 }, returnToHand())
                 .playerLastingEffect((context) => ({
-                    targetController: context.target?.owner,
+                    target: context.target?.owner,
                     effect: playerCannot({
                         cannot: RestrictionType.Play,
                         appliesTo: RestrictionScope.CopiesOfX,

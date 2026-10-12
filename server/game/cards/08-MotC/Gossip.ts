@@ -12,7 +12,7 @@ class Gossip extends DrawCard {
             .cost(costs.nameCard())
             .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                targetController: Players.Opponent,
+                target: Players.Opponent,
                 effect: playerCannot({
                     cannot: PlayType.PlayFromHand,
                     appliesTo: RestrictionScope.CopiesOfX,

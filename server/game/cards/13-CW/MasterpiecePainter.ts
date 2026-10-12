@@ -30,7 +30,7 @@ class MasterpiecePainter extends DrawCard {
             const topCard = player.conflictDeck[0];
 
             return {
-                targetController: player,
+                target: player,
                 duration: Duration.Custom,
                 until: {
                     onCardMoved: (event) => event.card === topCard && event.originalLocation === Location.ConflictDeck,

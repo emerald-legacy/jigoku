@@ -9,7 +9,7 @@ export default class IntoTheStorm extends DrawCard {
     public setupCardAbilities() {
         this.conflictAction('Increase the cost to play events')
             .playerLastingEffect((context) => ({
-                targetController: Players.Any,
+                target: Players.Any,
                 effect: increaseCost({
                     amount: 1,
                     match: (card) => card.type === CardType.Event

@@ -1,4 +1,4 @@
-import { CardType, Duration, Location, Players, RestrictionType } from '../../../Constants.js';
+import { CardType, Duration, Location, RestrictionType } from '../../../Constants.js';
 import { playerCannot } from '../../../effects.js';
 import { restoreProvince } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,6 @@ export default class HidaHonoka extends DrawCard {
             }, restoreProvince())
             .afterwards()
             .playerLastingEffect({
-                targetController: Players.Self,
                 duration: Duration.Custom,
                 until: {
                     // FOREVER

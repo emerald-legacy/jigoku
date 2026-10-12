@@ -27,10 +27,10 @@ export default class Kuro extends DrawCard {
                 cardCondition: (card) =>
                     (card.printedCost ?? 0) >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller })
             }, sequential([
-                playerLastingEffect((context) => ({
-                    targetController: context.player,
+                playerLastingEffect({
+                    target: Players.Self,
                     effect: reduceNextPlayedCardCost(1)
-                })),
+                }),
                 playCard((context) => ({
                     source: this,
                     payCosts: true,

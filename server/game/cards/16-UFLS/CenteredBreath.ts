@@ -19,7 +19,7 @@ class CenteredBreath extends DrawCard {
                     effect: increaseLimitOnPrintedAbilities()
                 }),
                 playerLastingEffect((context) => ({
-                    targetController: context.player,
+                    target: Players.Self,
                     duration: Duration.UntilPassPriority,
                     effect: context.player.isKihoPlayedThisConflict(context, this) ? additionalAction() : []
                 }))

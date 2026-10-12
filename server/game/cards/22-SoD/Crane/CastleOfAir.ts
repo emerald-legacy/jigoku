@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Duration, Location } from '../../../Constants.js';
+import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { modifyProvinceStrength, noUnopposedHonorLoss } from '../../../effects.js';
 import { cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
@@ -28,11 +28,11 @@ export default class CastleOfAir extends DrawCard {
                 })
             }))
             .if((context) => context.player.hasAffinity('air', context))
-            .playerLastingEffect((context) => ({
-                target: context.player,
+            .playerLastingEffect({
+                target: Players.Self,
                 duration: Duration.UntilEndOfConflict,
                 effect: noUnopposedHonorLoss()
-            }))
+            })
             .chatText((context) => context.player.hasAffinity('air', context)
                 ? msg`increase the strength of an attacked province by 4${' and prevent unopposed honor loss'}`
                 : msg`increase the strength of an attacked province by 4`);

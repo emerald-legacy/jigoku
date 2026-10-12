@@ -15,7 +15,7 @@ export default class DazzlingDuelist extends DrawCard {
                 chatText: (_context, duel) => msg`prevent ${duel.loserController ?? ''} from claiming rings this conflict`,
                 gameAction: (duel) =>
                     playerLastingEffect({
-                        targetController: duel.loserController,
+                        target: duel.loserController,
                         effect: duel.loser ? playerCannot(RestrictionType.ClaimRings) : []
                     })
             }));

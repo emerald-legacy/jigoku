@@ -36,7 +36,6 @@ export default class EarnestSculptor extends DrawCard {
                     event.context.ability.getReducedCost(event.context) > 0
             })
             .playerLastingEffect((context) => ({
-                targetController: context.player,
                 effect: reduceNextPlayedCardCost(
                     1,
                     (card) =>

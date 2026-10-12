@@ -575,7 +575,7 @@ These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscar
 | `fillProvince({ location, fillTo?, amount?, faceup? })` | `fillTo`: refill the province until it holds that many cards; `amount`: fill it that many times ("fill a province" in the RRG: top dynasty card, even onto other cards) |
 | `honorBid()` | Initiate an honor bid |
 | `initiateConflict()` | Initiate a conflict |
-| `playerLastingEffect({ effect, duration?, targetController? })` | Lasting effect on player |
+| `playerLastingEffect({ effect, duration?, target? })` | Lasting effect on players: `target` is `Players.Self` (the default), `Players.Opponent`, `Players.Any` (both players, one effect), or players. Inside a card target's actions, name it: the target's actions get the chosen card |
 | `claimImperialFavor()` | Claim the Imperial Favor |
 | `loseImperialFavor()` | Discard the Imperial Favor (defaults to the opponent: pass `target: context.player` for your own) |
 
@@ -651,7 +651,7 @@ deckSearch({
 
 ## Lasting Effects
 
-Lasting effects are applied via `cardLastingEffect`, `playerLastingEffect`, or `ringLastingEffect`. They take `effect` (one or more effects from `effects.ts`) and `duration`, which defaults to `Duration.UntilEndOfConflict`.
+Lasting effects are applied via `cardLastingEffect`, `playerLastingEffect`, `ringLastingEffect` or `duelLastingEffect`. They take `effect` (one or more effects from `effects.ts`) and `duration`, which defaults to `Duration.UntilEndOfConflict`; `duelLastingEffect` applies to the current duel until it ends by default.
 
 ```typescript
 .cardLastingEffect((context) => ({
@@ -1031,10 +1031,9 @@ this.composure({
 ### Reduce cost of next matching card
 
 ```typescript
-.playerLastingEffect((context) => ({
-    targetController: context.player,
+.playerLastingEffect({
     effect: reduceNextPlayedCardCost(1, (card) => card.hasTrait('shugenja'))
-}))
+})
 ```
 
 ### Reaction from discard pile

@@ -1,3 +1,4 @@
+import { Players } from '../../../Constants.js';
 import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { gainActionPhasePriority } from '../../../effects.js';
@@ -20,10 +21,10 @@ export default class SneakAttack extends DrawCard {
                     returnAtEndOfConflict: true,
                     message: (context, cards) => msg`${context.player.opponent} sets aside ${cards}`
                 })),
-                playerLastingEffect((context) => ({
-                    targetController: context.player,
+                playerLastingEffect({
+                    target: Players.Self,
                     effect: gainActionPhasePriority()
-                }))
+                })
             ]))
             .chatText((context) => msg`give ${context.player} the first action in this conflict${(context.player.opponent?.hand.length ?? 0) > 0 ? ' and set aside opponent\'s cards' : ''}`);
     }

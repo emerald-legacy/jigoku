@@ -1,4 +1,4 @@
-import { CardType, Element } from '../../Constants.js';
+import { CardType, Element, Players } from '../../Constants.js';
 import { reduceCost } from '../../effects.js';
 import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -17,7 +17,7 @@ export default class MantraOfVoid extends DrawCard {
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
             }, playerLastingEffect((context) => ({
-                targetController: context.player,
+                target: Players.Self,
                 effect: reduceCost({
                     amount: 1,
                     cardType: CardType.Attachment,

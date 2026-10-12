@@ -13,11 +13,10 @@ class CurrentOfTheBeryt extends DrawCard {
 
         this.action('Take two actions')
             .condition(() => this.game.isDuringConflict())
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 duration: Duration.UntilPassPriority,
                 effect: additionalAction(2)
-            }))
+            })
             .chatText('take two actions');
     }
 }

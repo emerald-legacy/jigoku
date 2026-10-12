@@ -30,7 +30,6 @@ export default class MirumotoRikitaro extends DrawCard {
                 }
             })
             .playerLastingEffect((context) => ({
-                targetController: context.player,
                 effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card === context.event.context?.source

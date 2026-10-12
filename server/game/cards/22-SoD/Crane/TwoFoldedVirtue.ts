@@ -19,7 +19,7 @@ export default class TwoFoldedVirtue extends DrawCard {
                     target: context.target
                 })),
                 playerLastingEffect((context) => ({
-                    targetController: context.player,
+                    target: Players.Self,
                     effect: delayedEffect({
                         when: {
                             afterConflict: (event) =>

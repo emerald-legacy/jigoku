@@ -496,10 +496,9 @@ cardLastingEffect((context) => ({
     effect: doesNotBow()
 }))
 
-playerLastingEffect((context) => ({
-    targetController: context.player,
+playerLastingEffect({
     effect: increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
-}))
+})
 
 // Resolve another card's ability (used by Keeper of Secret Names: the action of its province target)
 resolveAbility((context) => ({

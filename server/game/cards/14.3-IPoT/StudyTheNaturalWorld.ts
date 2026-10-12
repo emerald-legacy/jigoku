@@ -1,3 +1,4 @@
+import { Players } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
@@ -23,7 +24,7 @@ class StudyTheNaturalWorld extends DrawCard {
                     effect: addElement(this.getElementsOfAttackedProvinces(context))
                 })),
                 playerLastingEffect((context) => ({
-                    targetController: context.player,
+                    target: Players.Self,
                     effect: delayedEffect({
                         when: {
                             afterConflict: (event) =>

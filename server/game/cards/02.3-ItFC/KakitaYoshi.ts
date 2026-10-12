@@ -11,13 +11,12 @@ class KakitaYoshi extends DrawCard {
             .cost(costs.discardImperialFavor())
             .condition((context) => context.source.isParticipating())
             .draw(3)
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 effect: reduceCost({
                     amount: 2,
                     match: (card) => card.type === CardType.Event
                 })
-            }))
+            })
             .chatText('draw 3 cards, and reduce the cost of events this conflict');
     }
 }

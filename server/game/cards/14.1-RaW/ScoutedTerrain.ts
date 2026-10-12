@@ -10,7 +10,7 @@ class ScoutedTerrain extends DrawCard {
         this.action('Allow attacking the stronghold')
             .condition((context) => !!context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 4)
             .playerLastingEffect((context) => ({
-                targetController: context.player.opponent,
+                target: context.player.opponent,
                 duration: Duration.UntilEndOfPhase,
                 effect: strongholdCanBeAttacked()
             }))

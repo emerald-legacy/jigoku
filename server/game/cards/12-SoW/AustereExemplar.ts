@@ -11,11 +11,10 @@ class AustereExemplar extends DrawCard {
         this.action('Take three actions')
             .cost(costs.payFateToRing())
             .condition((context) => context.source.isAttacking())
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 duration: Duration.UntilPassPriority,
                 effect: additionalAction(3)
-            }))
+            })
             .chatText('take three actions')
             .max(perConflict(1));
     }

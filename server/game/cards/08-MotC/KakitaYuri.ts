@@ -15,7 +15,7 @@ export default class KakitaYuri extends DrawCard {
                 chatText: (_context, duel) => msg`prevent ${duel.loserController ?? 'no one'} from declaring military conflicts this phase`,
                 gameAction: (duel) =>
                     playerLastingEffect(() => ({
-                        targetController: duel.loserController,
+                        target: duel.loserController,
                         duration: Duration.UntilEndOfPhase,
                         effect: duel.loser
                             ? cannotDeclareConflictsOfType(ConflictType.Military)

@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { playerDelayedEffect } from '../../effects.js';
 import { loseHonor, multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
-import { CardType, ConflictType } from '../../Constants.js';
+import { CardType, ConflictType, Players } from '../../Constants.js';
 
 class BreachOfEtiquette extends DrawCard {
     static id = 'breach-of-etiquette';
@@ -12,7 +12,7 @@ class BreachOfEtiquette extends DrawCard {
         this.conflictAction('Force honor loss on players when their non-courtier characters use abilities', { conflictType: ConflictType.Political })
             .gameAction(multiple([
                 playerLastingEffect((context) => ({
-                    targetController: context.player,
+                    target: Players.Self,
                     effect: playerDelayedEffect({
                         when: {
                             onCardAbilityTriggered: (event) =>
@@ -24,7 +24,7 @@ class BreachOfEtiquette extends DrawCard {
                     })
                 })),
                 playerLastingEffect((context) => ({
-                    targetController: context.player.opponent,
+                    target: context.player.opponent,
                     effect: playerDelayedEffect({
                         when: {
                             onCardAbilityTriggered: (event) =>

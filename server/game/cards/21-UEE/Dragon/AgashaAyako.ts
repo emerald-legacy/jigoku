@@ -1,6 +1,6 @@
 import { reduceCost } from '../../../effects.js';
 import { playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
-import { CardType, DeckType, Duration, PlayType, Blocker } from '../../../Constants.js';
+import { CardType, DeckType, Duration, PlayType, Blocker, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 
@@ -18,7 +18,7 @@ export default class AgashaAyako extends DrawCard {
                 cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && !card.isUnique(),
                 gameAction: sequential([
                     playerLastingEffect((context) => ({
-                        targetController: context.player,
+                        target: Players.Self,
                         duration: Duration.UntilSelfPassPriority,
                         effect: reduceCost({
                             match: (card) => card === context.deckSearchSelected[0],

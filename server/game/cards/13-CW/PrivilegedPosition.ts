@@ -16,7 +16,7 @@ export default class PrivilegedPosition extends DrawCard {
             })
             .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfRound,
-                targetController: context.player.opponent,
+                target: context.player.opponent,
                 effect: setMaxConflicts(1)
             }))
             .chatText((context) => msg`limit ${context.player.opponent ?? context.player} to a single conflict this turn`);

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import { increaseCost } from '../../../effects.js';
 import { bow, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -18,13 +18,13 @@ export default class CaptureTheFalseEye extends DrawCard {
                         .some(
                             (myCard) => myCard.hasTrait('bushi') && myCard.militarySkill >= card.militarySkill
                         ) ?? false)
-            }, bow(), playerLastingEffect((context) => ({
-                targetController: context.player,
+            }, bow(), playerLastingEffect({
+                target: Players.Self,
                 effect: increaseCost({
                     amount: 1,
                     match: (card) => card.type === CardType.Event
                 })
-            })))
+            }))
             .chatText((context) => msg`bow ${context.chatTarget()}. For this conflict, ${context.player}'s events cost 1 more fate - did ${context.player} walk into a trap?`);
     }
 }

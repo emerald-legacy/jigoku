@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { Duration, EffectName, Phase } from '../../../Constants.js';
+import { Duration, EffectName, Phase, Players } from '../../../Constants.js';
 import { addPlayerFlag } from '../../../effects.js';
 import * as costs from '../../../costs/index.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -25,11 +25,11 @@ export default class PlantedFields extends DrawCard {
             .draw((context) => ({ target: context.player, amount: 2 }))
             .chatText((context) => msg`${this.hasTriggered(context) ? 'gain 2 honor' : 'gain 2 fate and draw 2 cards'}`)
             .afterwards()
-            .playerLastingEffect((context) => ({
-                target: context.player,
+            .playerLastingEffect({
+                target: Players.Self,
                 duration: Duration.UntilEndOfRound,
                 effect: addPlayerFlag(TRIGGERED)
-            }));
+            });
     }
 
     private hasTriggered(context: AbilityContext): boolean {

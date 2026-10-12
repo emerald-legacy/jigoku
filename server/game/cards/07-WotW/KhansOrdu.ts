@@ -18,7 +18,7 @@ export default class KhansOrdu extends ProvinceCard {
                     target: context.game.currentConflict ? context.game.currentConflict.ring : []
                 })),
                 playerLastingEffect({
-                    targetController: Players.Any,
+                    target: Players.Any,
                     effect: setConflictDeclarationType(ConflictType.Military),
                     duration: Duration.UntilEndOfPhase
                 })

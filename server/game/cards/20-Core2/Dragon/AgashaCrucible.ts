@@ -15,11 +15,11 @@ const options: Record<string, ChooseActionOption> = Object.fromEntries(
                     duration: Duration.UntilEndOfPhase,
                     effect: addTrait(option.toLowerCase())
                 }),
-                playerLastingEffect((context) => ({
-                    targetController: context.player,
+                playerLastingEffect({
+                    target: Players.Self,
                     duration: Duration.UntilPassPriority,
                     effect: additionalAction(1)
-                }))
+                })
             ])
         }
     ])

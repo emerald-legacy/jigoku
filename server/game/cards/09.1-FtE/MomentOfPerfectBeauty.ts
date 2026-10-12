@@ -14,7 +14,7 @@ class MomentOfPerfectBeauty extends DrawCard {
                     conflict.getNumberOfParticipantsFor(context.player.opponent, (card) => card.isHonored);
             })
             .playerLastingEffect((context) => ({
-                targetController: context.player.opponent,
+                target: context.player.opponent,
                 effect: resolveConflictEarly()
             }))
             .chatText((context) => msg`resolve the conflict after ${context.player.opponent}'s next action`);

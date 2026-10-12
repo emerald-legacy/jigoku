@@ -46,7 +46,7 @@ import { IfAbleAction, IfAbleProperties } from './IfAbleAction.js';
 import { InitiateConflictAction, InitiateConflictProperties } from './InitiateConflictAction.js';
 import { InjureAction, InjureProperties } from './InjureAction.js';
 import { JointGameAction } from './JointGameAction.js';
-import { LastingEffectAction, LastingEffectProperties } from './LastingEffectAction.js';
+import { DuelLastingEffectAction, LastingEffectAction, PlayerLastingEffectAction, type LastingEffectProperties, type PlayerLastingEffectInput } from './LastingEffectAction.js';
 import { CardLastingEffectAction, LastingEffectCardProperties } from './CardLastingEffectAction.js';
 import { RingLastingEffectAction, LastingEffectRingProperties } from './RingLastingEffectAction.js';
 import { LookAtAction, LookAtProperties } from './LookAtAction.js';
@@ -371,9 +371,9 @@ export function loseImperialFavor<C extends AbilityContext = AbilityContext>(pro
 export function modifyBid<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ModifyBidProperties, C> = {}): ModifyBidAction<C> {
     return new ModifyBidAction<C>(propertyFactory);
 } // amount = 1, direction = Direction.Increase
-export function playerLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, C>): LastingEffectAction<C> {
-    return new LastingEffectAction<C>(propertyFactory);
-} // duration = 'untilEndOfConflict', effect, targetController, condition, until
+export function playerLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlayerLastingEffectInput, C>): PlayerLastingEffectAction<C> {
+    return new PlayerLastingEffectAction<C>(propertyFactory);
+} // target = the ability's player, duration = 'untilEndOfConflict', effect, condition, until
 export function refillFaceup<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RefillFaceupProperties, C>): RefillFaceupAction<C> {
     return new RefillFaceupAction<C>(propertyFactory);
 } // location
@@ -491,9 +491,9 @@ export function conflictLastingEffect<C extends AbilityContext = AbilityContext>
 //////////////
 // DUEL
 //////////////
-export function duelLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, C>): LastingEffectAction<C> {
-    return new LastingEffectAction<C>(propertyFactory);
-} // duration = 'untilEndOfConflict', effect, targetController, condition, until
+export function duelLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, C>): DuelLastingEffectAction<C> {
+    return new DuelLastingEffectAction<C>(propertyFactory);
+} // target = the current duel, duration = 'untilEndOfDuel', effect, condition, until
 
 //////////////
 // META

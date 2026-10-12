@@ -11,11 +11,10 @@ export default class KakitaBlade2 extends DrawCard {
                 onConflictStarted: (_event, context) =>
                     context.source.isParticipating() && context.source.hasTrait('bushi')
             }, (ability) => ability
-                .playerLastingEffect((context) => ({
-                    targetController: context.player,
+                .playerLastingEffect({
                     duration: Duration.UntilSelfPassPriority,
                     effect: [gainActionPhasePriority(), additionalAction()]
-                }))
+                })
                 .chatText('take an action at the start of the conflict'))
         });
     }

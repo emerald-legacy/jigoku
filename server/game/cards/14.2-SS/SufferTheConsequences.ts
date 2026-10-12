@@ -17,11 +17,10 @@ class SufferTheConsequences extends DrawCard {
                 cardCondition: (card) => card.traits.some((trait) => validSacrificeTraits.includes(trait)) && card.bowed
             }))
             .condition((context) => context.game.currentPhase === Phase.Conflict)
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(ConflictType.Political)
-            }))
+            })
             .chatText((context) => msg`allow ${context.player} to declare an additional political conflict this phase`)
             .max(perPhase(1));
     }

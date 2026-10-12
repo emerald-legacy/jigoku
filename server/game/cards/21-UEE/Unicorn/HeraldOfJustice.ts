@@ -11,11 +11,10 @@ export default class HeraldOfJustice extends DrawCard {
         this.action('Gain another military conflict')
             .cost(costs.sacrifice({ cardType: CardType.Character }))
             .condition((context) => context.game.currentPhase === Phase.Conflict)
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(ConflictType.Military)
-            }))
+            })
             .chatText((context) => msg`allow ${context.player} to declare an additional military conflict this phase`);
     }
 }

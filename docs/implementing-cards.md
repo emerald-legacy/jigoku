@@ -654,16 +654,14 @@ Abilities that trigger during a duel are declared with `duelChallenge`, `duelFoc
 ```typescript
 this.duelFocus('Help a character with a duel', (duel, context) => duel.participants.includes(context.source))
     .duelLastingEffect((context) => ({
-        target: context.event.duel,
-        effect: modifyDuelSkill({ amount: 1, player: context.player }),
-        duration: Duration.UntilEndOfDuel
+        effect: modifyDuelSkill({ amount: 1, player: context.player })
     }))
     .chatText('add 1 to their duel total');
 ```
 
 ### Lasting effects
 
-Unlike persistent effects, lasting effects are typically applied during an action, reaction or interrupt and expire after a specified period of time.  Lasting effects are applied using `cardLastingEffect`, `ringLastingEffect` or `playerLastingEffect`, depending on what they affect. They take `effect`, and name what they affect with `target` (`cardLastingEffect`) or `targetController` (`playerLastingEffect`) instead of a `match`. The `duration:` property is one of `Duration.UntilEndOfConflict` (the default, so it can be left out), `Duration.UntilEndOfPhase`, `Duration.UntilEndOfRound`, `Duration.UntilEndOfDuel`, the pass-priority durations (`UntilPassPriority`, `UntilOpponentPassPriority`, `UntilSelfPassPriority`, `UntilNextPassPriority`), or `Duration.Custom` with an `until` that names the events that end it.
+Unlike persistent effects, lasting effects are typically applied during an action, reaction or interrupt and expire after a specified period of time.  Lasting effects are applied using `cardLastingEffect`, `ringLastingEffect` or `playerLastingEffect`, depending on what they affect. They take `effect`, and name what they affect with `target` (cards for `cardLastingEffect`; `Players.Self`, `Players.Opponent`, `Players.Any` or players for `playerLastingEffect`, by default the ability's player) instead of a `match`; `duelLastingEffect` defaults to the current duel until it ends. The `duration:` property is one of `Duration.UntilEndOfConflict` (the default, so it can be left out), `Duration.UntilEndOfPhase`, `Duration.UntilEndOfRound`, `Duration.UntilEndOfDuel`, the pass-priority durations (`UntilPassPriority`, `UntilOpponentPassPriority`, `UntilSelfPassPriority`, `UntilNextPassPriority`), or `Duration.Custom` with an `until` that names the events that end it.
 
 ```typescript
 // Action: During a conflict, bow this character. Choose another [crane] character – that character

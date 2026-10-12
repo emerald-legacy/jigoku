@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { canPlayFromOpponents, canPlayFromOwn } from '../../effects.js';
 import { cancel, lookAt, moveCard, multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
-import { Location, Duration, Phase } from '../../Constants.js';
+import { Location, Duration, Phase, Players } from '../../Constants.js';
 
 class TradingOnTheSandRoad extends DrawCard {
     static id = 'trading-on-the-sand-road';
@@ -23,7 +23,7 @@ class TradingOnTheSandRoad extends DrawCard {
                     message: (context, cards) => msg`${context.player.opponent} removes the top ${cards.length} cards from their conflict deck from the game: ${cards}`
                 })),
                 playerLastingEffect((context) => ({
-                    targetController: context.player,
+                    target: Players.Self,
                     duration: Duration.UntilEndOfRound,
                     effect: [
                         canPlayFromOwn(Location.RemovedFromGame, context.player.conflictDeck.slice(0, 4), this),
@@ -34,7 +34,7 @@ class TradingOnTheSandRoad extends DrawCard {
 
                 })),
                 playerLastingEffect((context) => ({
-                    targetController: context.player.opponent,
+                    target: context.player.opponent,
                     duration: Duration.UntilEndOfRound,
                     effect: [
                         canPlayFromOwn(Location.RemovedFromGame,

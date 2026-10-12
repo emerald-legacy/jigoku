@@ -26,7 +26,7 @@ export default class DeedsNotWords extends DrawCard {
                     effect: modifyMilitarySkill(2)
                 }),
                 playerLastingEffect((context) => ({
-                    targetController: context.player,
+                    target: Players.Self,
                     effect: delayedEffect({
                         when: {
                             afterConflict: (event) =>

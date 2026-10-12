@@ -16,7 +16,6 @@ export default class TheSunWillRiseAgain extends DrawCard {
                     (event.conflict.skillDifference ?? 0) >= 4
             })
             .playerLastingEffect((context) => ({
-                targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(context.event.conflict.conflictType)
             }))

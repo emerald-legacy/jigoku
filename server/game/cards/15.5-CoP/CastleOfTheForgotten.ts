@@ -14,7 +14,7 @@ export default class CastleOfTheForgotten extends StrongholdCard {
             })
             .cost(costs.bowSelf())
             .playerLastingEffect({
-                targetController: Players.Any,
+                target: Players.Any,
                 effect: setConflictDeclarationType(ConflictType.Military),
                 duration: Duration.UntilEndOfPhase
             })

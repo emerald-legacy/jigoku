@@ -1,4 +1,4 @@
-import { Duration, DuelType } from '../../../Constants.js';
+import { Duration, DuelType, Players } from '../../../Constants.js';
 import { additionalAction, cannotContribute } from '../../../effects.js';
 import { cardLastingEffect, draw, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -18,11 +18,11 @@ export default class UnbridledRage extends DrawCard {
                         amount: 2,
                         target: context.player
                     })),
-                    playerLastingEffect((context) => ({
-                        targetController: context.player,
+                    playerLastingEffect({
+                        target: Players.Self,
                         duration: Duration.UntilPassPriority,
                         effect: additionalAction()
-                    }))
+                    })
                 ]),
                 refusalMessage: (context, refuser) =>
                     msg`${refuser} chooses to refuse the duel, allowing ${context.player} to draw 2 cards and take an additional action`,

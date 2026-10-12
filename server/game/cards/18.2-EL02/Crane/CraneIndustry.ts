@@ -20,13 +20,12 @@ export default class CraneIndustry extends DrawCard {
             .when({
                 onConflictStarted: () => true
             })
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 effect: reduceCost({
                     amount: 1,
                     match: (card) => card.type === CardType.Event && !this.hasEventBeenPlayedByThisPlayer(card)
                 })
-            }))
+            })
             .chatText('reduce the cost of the first copy of each event they play this conflict by 1')
             .max(perConflict(1));
     }

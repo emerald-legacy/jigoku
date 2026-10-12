@@ -16,7 +16,7 @@ class BayushisWhisperers extends DrawCard {
                     message: (_context, cardName, player) => msg`${player} names ${cardName} - ${player.opponent} cannot play copies of this card this phase`,
                     gameAction: (cardName) => playerLastingEffect({
                         duration: Duration.UntilEndOfPhase,
-                        targetController: context.player.opponent,
+                        target: context.player.opponent,
                         effect: playerCannot({
                             cannot: RestrictionType.Play,
                             appliesTo: RestrictionScope.CopiesOfX,

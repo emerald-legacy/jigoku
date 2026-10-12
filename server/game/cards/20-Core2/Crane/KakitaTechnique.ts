@@ -41,7 +41,7 @@ export default class KakitaTechnique extends DrawCard {
                     })
                 })),
                 playerLastingEffect((context) => ({
-                    targetController: context.player,
+                    target: Players.Self,
                     duration: Duration.UntilPassPriority,
                     effect: additionalAction(this.getExtraActionCount(context))
                 }))

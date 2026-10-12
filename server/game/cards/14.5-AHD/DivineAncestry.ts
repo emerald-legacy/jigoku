@@ -11,9 +11,8 @@ class DivineAncestry extends DrawCard {
             .when({
                 onPhaseStarted: (event) => event.phase !== Phase.Setup
             })
-            .playerLastingEffect((context) => ({
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                targetController: context.player,
                 effect: [
                     playerCannot({
                         cannot: RestrictionType.LoseHonor
@@ -22,7 +21,7 @@ class DivineAncestry extends DrawCard {
                         cannot: RestrictionType.TakeHonor
                     })
                 ]
-            }))
+            })
             .chatText((context) => msg`prevent ${context.player} from losing honor this phase`);
     }
 }

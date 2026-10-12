@@ -17,7 +17,6 @@ export default class RediscoveredShrine extends DrawCard {
                 }
             })
             .playerLastingEffect((context) => ({
-                targetController: context.player,
                 effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card === context.event.card

@@ -53,7 +53,7 @@ export default class Retribution extends DrawCard {
                         )
                     }),
                     playerLastingEffect({
-                        targetController: context.player,
+                        target: Players.Self,
                         duration: Duration.UntilEndOfPhase,
                         effect: additionalConflict(ConflictType.Military)
                     }),

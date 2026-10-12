@@ -12,7 +12,7 @@ class WaningHostilities extends DrawCard {
             })
             .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                targetController: Players.Any,
+                target: Players.Any,
                 effect: setMaxConflicts(1)
             })
             .chatText('limit both players to a single conflict this turn');

@@ -13,11 +13,10 @@ export default class YogoNorio extends DrawCard {
                 cardType: CardType.Character
             }))
             .condition((context) => context.game.currentPhase === Phase.Conflict)
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(ConflictType.Political)
-            }))
+            })
             .chatText((context) => msg`allow ${context.player} to declare an additional political conflict this phase`);
     }
 }

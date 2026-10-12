@@ -10,7 +10,7 @@ class CourtMusician extends DrawCard {
         this.action('Decrease cost to play cards')
             .condition((context) => context.source.isParticipating())
             .playerLastingEffect({
-                targetController: Players.Any,
+                target: Players.Any,
                 duration: Duration.UntilNextPassPriority,
                 effect: reduceCost({
                     amount: 1

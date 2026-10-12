@@ -13,7 +13,7 @@ class CommandRespect extends DrawCard {
             .condition((context) => !!(context.game.isDuringConflict() && context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length))
             .playerLastingEffect((context) => ({
-                targetController: context.player.opponent,
+                target: context.player.opponent,
                 effect: additionalPlayCost((sourceContext) =>
                     sourceContext.source.type === CardType.Event ? [costs.giveHonorToOpponent(1)] : []
                 )

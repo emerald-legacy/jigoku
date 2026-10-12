@@ -48,7 +48,7 @@ export default class BayushiShinobu extends DrawCard {
                     duration: Duration.UntilEndOfPhase
                 })),
                 playerLastingEffect((context) => ({
-                    target: context.player,
+                    target: Players.Self,
                     effect: delayedEffect({
                         when: {
                             onCardLeavesPlay: (event) => event.card === context.target

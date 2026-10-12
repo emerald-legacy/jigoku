@@ -16,7 +16,7 @@ export default class ShiroKitsuki extends StrongholdCard {
             })
             .cost(costs.nameCard())
             .playerLastingEffect((playerLastingEffectContext) => ({
-                targetController: playerLastingEffectContext.player,
+                target: playerLastingEffectContext.player,
                 effect: delayedEffect({
                     when: {
                         onCardPlayed: (event, context) =>

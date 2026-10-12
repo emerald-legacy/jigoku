@@ -18,7 +18,7 @@ export default class ToShowThePath extends DrawCard {
                 controller: Players.Any,
                 cardCondition: (card) => !card.hasTrait('monk') && !card.hasTrait('shugenja')
             }, playerLastingEffect((context) => ({
-                targetController: context.player.opponent,
+                target: context.player.opponent,
                 duration: Duration.UntilEndOfPhase,
                 effect: playerFateCostToTargetCard({
                     amount: 1,

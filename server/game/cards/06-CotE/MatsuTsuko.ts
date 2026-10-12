@@ -7,10 +7,9 @@ export default class MatsuTsuko extends DrawCard {
     setupCardAbilities() {
         this.action('Reduce the cost of the next card')
             .condition((context) => context.source.isAttacking() && context.player.isMoreHonorable())
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 effect: reduceNextPlayedCardCost(2)
-            }))
+            })
             .chatText('reduce the cost of their next card played this conflict by 2');
     }
 }

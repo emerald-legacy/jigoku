@@ -16,7 +16,7 @@ class EsteemedTeaHouse extends DrawCard {
             }, returnToHand())
             .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                targetController: context.target?.owner,
+                target: context.target?.owner,
                 effect: playerCannot({
                     cannot: RestrictionType.Play,
                     appliesTo: RestrictionScope.CopiesOfX,

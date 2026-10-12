@@ -11,14 +11,13 @@ export default class FortunesField extends ProvinceCard {
                 onCardPlayed: (event, context) =>
                     event.player === context.player && event.card.type === CardType.Character
             })
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfRound,
                 effect: reduceNextPlayedCardCost(
                     1,
                     (card) => card.type === CardType.Character || card.hasTrait('follower')
                 )
-            }))
+            })
             .chatText('reduce the cost of their next character or follower this round by 1');
     }
 }

@@ -14,14 +14,14 @@ export default class UtakuSumire extends DrawCard {
             })
             .gameAction(multiple([
                 playerLastingEffect({
-                    targetController: Players.Self,
+                    target: Players.Self,
                     effect: playerCannot({
                         cannot: PlayType.PlayFromHand,
                         appliesTo: RestrictionScope.ActionEvents
                     })
                 }),
                 playerLastingEffect({
-                    targetController: Players.Self,
+                    target: Players.Self,
                     effect: delayedEffect({
                         when: {
                             afterConflict: (event, context) => event.conflict.winner === context.player

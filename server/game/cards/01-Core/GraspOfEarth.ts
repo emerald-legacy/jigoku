@@ -20,7 +20,7 @@ export default class GraspOfEarth extends DrawCard {
                 effect: cardCannot(RestrictionType.MoveToConflict)
             }))
             .playerLastingEffect((context) => ({
-                targetController: context.player.opponent,
+                target: context.player.opponent,
                 effect: playerCannot({
                     cannot: PlayType.PlayFromHand,
                     appliesTo: RestrictionScope.Characters

@@ -11,7 +11,6 @@ class ArtisanAcademy extends DrawCard {
             .playerLastingEffect((context) => {
                 const topCard = context.player.conflictDeck[0];
                 return {
-                    targetController: context.player,
                     duration: Duration.Custom,
                     until: {
                         onCardMoved: (event) => event.card === topCard && event.originalLocation === Location.ConflictDeck,

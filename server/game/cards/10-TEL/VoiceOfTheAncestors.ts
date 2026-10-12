@@ -40,10 +40,10 @@ class VoiceOfTheAncestors extends DrawCard {
                 cardCondition: (card) => card.isFaction('lion'),
                 controller: Players.Self,
                 gameAction: sequential([
-                    playerLastingEffect((context) => ({
-                        targetController: context.player,
+                    playerLastingEffect({
+                        target: Players.Self,
                         effect: reduceNextPlayedCardCost(1)
-                    })),
+                    }),
                     cardLastingEffect({
                         canChangeZoneOnce: true,
                         duration: Duration.Custom,

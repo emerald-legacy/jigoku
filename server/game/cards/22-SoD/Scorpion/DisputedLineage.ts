@@ -19,7 +19,7 @@ export default class DisputedLineage extends DrawCard {
                 })),
                 playerLastingEffect((context) => ({
                     duration: Duration.UntilEndOfRound,
-                    targetController: context.target.controller,
+                    target: context.target.controller,
                     condition: () => context.target.isParticipating(),
                     effect: playerCannot({
                         cannot: RestrictionType.Honor

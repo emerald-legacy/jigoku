@@ -1,5 +1,5 @@
-import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
 import { increaseCost } from '../../effects.js';
 
 class AsahinaMaeko extends DrawCard {
@@ -12,7 +12,7 @@ class AsahinaMaeko extends DrawCard {
                 effect: increaseCost({
                     amount: 1
                 }),
-                targetController: Players.Any
+                target: Players.Any
             })
             .chatText('increase the cost of cards this conflict for both players');
     }

@@ -20,10 +20,9 @@ class IssueAChallenge extends DrawCard {
                         context.player === conflict.attackingPlayer;
                 }
             })
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 effect: restrictNumberOfDefenders(1)
-            }))
+            })
             .chatText((context) => msg`prevent ${context.player.opponent} from declaring more than 1 defender`);
     }
 }

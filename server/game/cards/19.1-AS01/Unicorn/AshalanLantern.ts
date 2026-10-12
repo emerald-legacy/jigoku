@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DeckType, Duration, Location, PlayType, Blocker, RemainingCards } from '../../../Constants.js';
+import { CardType, DeckType, Duration, Location, PlayType, Blocker, RemainingCards, Players } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
@@ -15,8 +15,8 @@ export default class AshalanLantern extends DrawCard {
             .cost(costs.nameCard())
             .gameAction(sequential([
                 playerLastingEffect((context) => ({
+                    target: Players.Self,
                     duration: Duration.UntilPassPriority,
-                    targetController: context.player,
                     effect: reduceNextPlayedCardCost(
                         3,
                         (card) => card.name === context.costs.namedCard

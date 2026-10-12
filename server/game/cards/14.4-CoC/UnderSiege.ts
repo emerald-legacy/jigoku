@@ -30,7 +30,7 @@ class UnderSiege extends DrawCard {
                     gameActions: [
                         playerLastingEffect({
                             duration: Duration.UntilEndOfRound,
-                            targetController: defender,
+                            target: defender,
                             effect: playerDelayedEffect({
                                 when: {
                                     onConflictFinished: () => true

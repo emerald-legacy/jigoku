@@ -7,15 +7,14 @@ class ThoseWhoServe extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reduce the cost of your characters by 1 this phase')
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 effect: reduceCost({
                     match: (card) => card.type === CardType.Character,
                     amount: 1,
                     costFloor: 1
                 })
-            }))
+            })
             .chatText('reduce the cost of their characters by 1 this phase')
             .phase(Phase.Dynasty);
     }

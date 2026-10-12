@@ -17,7 +17,7 @@ export default class CourteousScheming extends DrawCard {
                 gameAction: (duel) =>
                     duel.winner
                         ? playerLastingEffect({
-                            targetController: duel.winnerController,
+                            target: duel.winnerController,
                             duration: Duration.UntilEndOfPhase,
                             effect: additionalConflict(ConflictType.Political)
                         })

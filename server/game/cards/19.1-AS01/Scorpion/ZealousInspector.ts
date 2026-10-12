@@ -18,11 +18,10 @@ export default class ZealousInspector extends DrawCard {
                     context.player === event.context?.player &&
                     !(event.context?.source instanceof Ring)
             })
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 duration: Duration.UntilPassPriority,
                 effect: additionalAction(1)
-            }))
+            })
             .chatText('gain an additional action — time to deliver swift punishment for the wicked');
     }
 }

@@ -1,4 +1,3 @@
-import { Duration } from '../../../Constants.js';
 import { modifyDuelSkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,9 +8,7 @@ export default class PromisingKohai extends DrawCard {
         this.duelChallenge('Add +2 to your duel total', (duel, context) =>
             duel.participants.some((a) => a.controller === context.source.controller && a !== context.source))
             .duelLastingEffect((context) => ({
-                target: context.event.duel,
-                effect: modifyDuelSkill({ amount: 2, player: context.player }),
-                duration: Duration.UntilEndOfDuel
+                effect: modifyDuelSkill({ amount: 2, player: context.player })
             }))
             .chatText('add 2 to their duel total');
     }

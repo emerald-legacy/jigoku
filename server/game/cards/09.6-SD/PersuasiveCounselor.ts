@@ -7,10 +7,9 @@ class PersuasiveCounselor extends DrawCard {
     setupCardAbilities() {
         this.action('Prevent your events from being cancelled')
             .condition((context) => context.source.isParticipating())
-            .playerLastingEffect((context) => ({
-                targetController: context.player,
+            .playerLastingEffect({
                 effect: eventsCannotBeCancelled()
-            }))
+            })
             .chatText('prevent their events from being cancelled this conflict');
     }
 }

@@ -18,7 +18,7 @@ export default class KakitaToshimoko extends DrawCard {
                 opponentChoosesDuelTarget: true,
                 chatText: () => msg`both players count 0 total skill for the conflict`,
                 gameAction: playerLastingEffect((context) => ({
-                    targetController: Players.Any,
+                    target: Players.Any,
                     effect:
                         context.game.currentDuel?.winner?.some((card) => card === context.source) ?? false
                             ? setConflictTotalSkill(0)
