@@ -188,7 +188,7 @@ export const Effects = {
     mustBeChosen: (properties: RestrictionProperties) =>
         EffectBuilder.card.static(
             EffectName.MustBeChosen,
-            new Restriction(Object.assign({ type: RestrictionType.Target }, properties))
+            new Restriction(Object.assign({ cannot: RestrictionType.Target }, properties))
         ),
     mustBeDeclaredAsAttacker,
     mustBeDeclaredAsAttackerIfType: (type: string = 'both') =>
@@ -299,9 +299,7 @@ export const Effects = {
         EffectBuilder.player.static(
             EffectName.AbilityRestrictions,
             new Restriction(
-                typeof properties === 'string'
-                    ? { type: properties }
-                    : Object.assign({ type: (properties.cannot ?? properties.type) }, properties)
+                typeof properties === 'string' ? { cannot: properties } : properties
             )
         ),
     playerDelayedEffect: <S extends BaseCard = BaseCard>(properties: DelayedEffectValue<S>) => EffectBuilder.player.static(EffectName.DelayedEffect, properties),
@@ -350,8 +348,8 @@ export const Effects = {
             EffectName.AbilityRestrictions,
             new Restriction(
                 typeof properties === 'string'
-                    ? { appliesTo: RestrictionScope.Characters, type: properties }
-                    : Object.assign({ appliesTo: RestrictionScope.Characters, type: (properties.cannot ?? properties.type) }, properties)
+                    ? { appliesTo: RestrictionScope.Characters, cannot: properties }
+                    : Object.assign({ appliesTo: RestrictionScope.Characters }, properties)
             )
         ),
     cannotContribute: (func: (conflict: Conflict, context: AbilityContext) => (card: DrawCard) => boolean) =>

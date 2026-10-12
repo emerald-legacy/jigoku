@@ -18,9 +18,7 @@ export function cardCannot(properties: Props) {
     return EffectBuilder.card.static(
         EffectName.AbilityRestrictions,
         new Restriction(
-            typeof properties === 'string'
-                ? { type: properties }
-                : Object.assign({ type: properties.cannot }, properties)
+            typeof properties === 'string' ? { cannot: properties } : properties
         )
     );
 }

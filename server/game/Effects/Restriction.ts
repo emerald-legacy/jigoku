@@ -170,11 +170,10 @@ const leavePlayTypes = new Set<RestrictionType | PlayType | undefined>([
 ]);
 
 export interface RestrictionProperties {
-    type?: RestrictionType | PlayType;
+    cannot?: RestrictionType | PlayType;
     appliesTo?: RestrictionAppliesTo;
     applyingPlayer?: Player;
     params?: unknown;
-    cannot?: RestrictionType | PlayType;
 }
 
 export class Restriction extends EffectValueBase<Restriction> {
@@ -189,7 +188,7 @@ export class Restriction extends EffectValueBase<Restriction> {
         if(typeof properties === 'string') {
             this.type = properties;
         } else {
-            this.type = properties.type;
+            this.type = properties.cannot;
             this.appliesTo = properties.appliesTo;
             this.applyingPlayer = properties.applyingPlayer;
             this.params = properties.params;

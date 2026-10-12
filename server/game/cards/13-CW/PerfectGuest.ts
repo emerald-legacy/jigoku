@@ -18,7 +18,7 @@ export default class PerfectGuest extends DrawCard {
             .playerLastingEffect((context) => ({
                 target: context.player.opponent,
                 duration: Duration.UntilEndOfRound,
-                effect: playerCannot({ type: RestrictionType.TriggerAbilities, appliesTo: RestrictionScope.Source })
+                effect: playerCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo: RestrictionScope.Source })
             }));
     }
 }
