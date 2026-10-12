@@ -76,12 +76,12 @@ this.persistentEffect({
 });
 ```
 
-In some cases, an effect should be applied to a specific card. While you could write a `match` function to match only that card, you can provide the `Card` (or `Ring`) object as a shorthand. Without `match`, a persistent effect applies to the card itself:
+Without `match`, a persistent effect applies to the card itself:
 
 ```typescript
 // This character gets +3P while defending.
 this.persistentEffect({
-    condition: () => this.isDefending(),
+    condition: (context) => context.source.isDefending(),
     effect: modifyPoliticalSkill(3)
 });
 ```
@@ -94,9 +94,9 @@ Some effects have a 'when', 'while' or 'if' clause within their text. These card
 // During a conflict in which this character is participating, each other participating Lion 
 // character you control gets +1M.
 this.persistentEffect({
-    condition: () => this.isParticipating(),
-    match: card => card.getType() === CardType.Character && card.isParticipating() && 
-                   card.isFaction('lion') && card !== this,
+    condition: (context) => context.source.isParticipating(),
+    match: (card, context) => card.getType() === CardType.Character && card.isParticipating() &&
+                   card.isFaction('lion') && card !== context.source,
     effect: modifyMilitarySkill(1)
 });
 ```
@@ -110,7 +110,7 @@ To target only opponent cards, set `targetController` to `Players.Opponent`:
 ```typescript
 // While  attacking, each defending character gets -1M.
 this.persistentEffect({
-    condition: () => this.isAttacking(),
+    condition: (context) => context.source.isAttacking(),
     match: card => card.isDefending(),
     targetController: Players.Opponent,
     effect: modifyMilitarySkill(-1)
@@ -122,7 +122,7 @@ To target all cards regardless of who controls them, set `targetController` to `
 ```typescript
 // While this character is participating in a conflict, characters cannot become dishonored.
 this.persistentEffect({
-    condition: () => this.isParticipating(),
+    condition: (context) => context.source.isParticipating(),
     targetController: Players.Any,
     match: card => card.getType() === CardType.Character && card.location === Location.PlayArea,
     effect: cardCannot(RestrictionType.Dishonor)
@@ -136,7 +136,7 @@ A few cards provide skill bonuses based on game state. For example, [Beastmaster
 ```typescript
 // This character has +2[military] for each ring in each opponent's claimed ring pool.
 this.persistentEffect({
-    effect: modifyMilitarySkill(() => this.getTwiceOpponentsClaimedRings())
+    effect: modifyMilitarySkill((_card, context) => context.source.getTwiceOpponentsClaimedRings())
 });
 ```
 
@@ -166,7 +166,7 @@ As a shorthand, it is possible to pass an array into the `effect` property to ap
 ```typescript
 // This character gets +1M and +1P while you are less honorable than an opponent..
 this.persistentEffect({
-    condition: () => this.isLessHonorableThanOpponent(),
+    condition: (context) => context.source.isLessHonorableThanOpponent(),
     effect: [
         modifyMilitarySkill(1),
         modifyPoliticalSkill(1)
@@ -176,15 +176,16 @@ this.persistentEffect({
 
 ### Applying effects to cards which aren't in play
 
-By default, effects will only be applied to cards in the play area.  Certain cards effects refer to cards in your hand, such as reducing their cost or providing ambush to matching cards. In these cases, set the `targetLocation` property to `Location.Hand`.
+By default, effects will only be applied to cards in the play area. Some effects refer to cards elsewhere, such as in hand or in a discard pile. In these cases, set the `targetLocation` property to that location.
 
 ```typescript
-// Each Direwolf card in your hand gains ambush (X). X is that card's printed cost.
+// You may play each event in your opponent's discard pile as if it were in your hand.
+// (Bayushi Kachiko 2, shortened)
 this.persistentEffect({
-    // Explicitly target the effect to cards in hand.
-    targetLocation: Location.Hand,
-    match: card => card.hasTrait('Direwolf'),
-    effect: gainAmbush()
+    targetLocation: Location.ConflictDiscardPile,
+    targetController: Players.Opponent,
+    match: (card) => card.type === CardType.Event,
+    effect: canPlayFromOutOfPlay((player, card) => player !== card.owner, PlayType.PlayFromHand)
 });
 ```
 
@@ -194,7 +195,7 @@ This also applies to provinces, holdings and strongholds, which the game conside
 // This province gets +5 strength during [political] conflicts.
 this.persistentEffect({
     targetLocation: Location.Provinces,
-    condition: () => this.game.isDuringConflict(ConflictType.Political),
+    condition: (context) => context.game.isDuringConflict(ConflictType.Political),
     effect: modifyProvinceStrength(5)
 });
 ```
@@ -206,7 +207,7 @@ Certain cards provide bonuses or restrictions on the player itself instead of on
 ```typescript
 // While this character is participating in a conflict, opponents cannot play events.
 this.persistentEffect({
-    condition: () => this.isParticipating(),
+    condition: (context) => context.source.isParticipating(),
     targetController: Players.Opponent,
     effect: playerCannot({ cannot: RestrictionType.Play, appliesTo: RestrictionScope.Events })
 });
@@ -242,25 +243,18 @@ card.declareAbilities(() => {
 
 ### Context object
 
-When the game starts to resolve an ability, it creates a context object for that ability. Generally, the context ability has the following structure:
+When the game starts to resolve an ability, it creates a context object (`AbilityContext`, `server/game/AbilityContext.ts`) for it. The fields used most:
 
-```typescript
-class AbilityContext {
-    constructor(properties) {
-        this.game = properties.game;
-        this.source = properties.source;
-        this.player = properties.player;
-        this.ability = properties.ability;
-        this.costs = {};
-        this.targets = {};
-        this.rings = {};
-        this.selects = {};
-        this.stage = Stage.Effect;
-    }
-}
-```
+| Field | Holds |
+|-------|-------|
+| `game`, `source`, `player`, `ability` | The game, the card with the ability, the player using it (almost always the controller of `source`), the ability |
+| `target`, `targets[name]` | The chosen card(s); `target` is the target named `target` |
+| `ring`, `rings[name]`, `select`, `selects[name]`, `token`, `tokens[name]` | Chosen rings, select choices and status tokens |
+| `costs` | What the costs recorded, under the cost's name (`costs.sacrifice` is the sacrificed card, `costs.sacrificeStateWhenChosen` a snapshot of it) |
+| `event` | For triggered abilities, the event it triggers on |
+| `stage` | `PreTarget`, `Cost`, `Target` or `Effect` |
 
-`context.source` is the card with the ability being used, and `context.player` is the player who is using the ability (almost always the controller of the `context.source`). When implementing actions and other triggered abilities, `context` should almost always be used (instead of `this`) to reference cards or players.  The only exception is that `this.game` can be used as an alternative to `context.game`.
+`context.source` is the card with the ability being used, and `context.player` is the player who is using the ability. In callbacks (`condition`, `match`, `cardCondition`, game action factories), use `context` (`context.source`, `context.player`, `context.game`) instead of `this`.
 
 The builder types `context` for you: `context.source` is the card's own class, `context.targets` holds the targets declared so far with their card types, and a triggered ability's `context.event` is the payload of the event it triggers on. No annotations or casts are needed.
 
@@ -271,7 +265,7 @@ Card abilities can only be triggered if they have the potential to modify game s
 ```typescript
 // During a conflict, give this character +2/+2
 this.action('Give this character +2/+2')
-    .condition(() => this.game.isDuringConflict())
+    .condition((context) => context.game.isDuringConflict())
     // ...
 ```
 
@@ -339,7 +333,7 @@ this.action('Return rings to put fate on character')
 
 Cards that specify to 'choose' or otherwise target a specific card should be implemented with `target(properties, ...gameActions)`. The properties should include any limitations set by the ability, using `cardType`, `location`, `controller` and/or `cardCondition`. The game actions passed after the properties restrict the card chosen to those for which the action is legal (e.g. only cards in the play area can be dishonored, only cards with fate can have fate removed from them, etc.).  If several game actions are given, the target only needs to meet the requirements of one of them.
 
-Generally, it's a good idea to pass at least a `cardType`, as that will automatically change the prompt to make it easier for the player to understand what is going on. It also types the card: with `cardType: CardType.Province`, `cardCondition` and `context.targets` see a `ProvinceCard`. Most other properties that apply to `Game.promptForSelect` are also valid here.
+Generally, it's a good idea to pass at least a `cardType`, as that will automatically change the prompt to make it easier for the player to understand what is going on. It also types the card: with `cardType: CardType.Province`, `cardCondition` and `context.targets` see a `ProvinceCard`. A target takes only the properties the builder declares for it (see the Targets section in ability_dsl.md); anything else is a compile error.
 
 Without a `name` property the target is named `target`, which is also available as `context.target`. Abilities with several targets give each a `name` and read them from `context.targets[name]`.
 
@@ -423,7 +417,7 @@ Other earlier targets may not be chosen yet when a target is checked, so they ar
 
 ### Targeting rings
 
-Rings are targeted with `ringTarget`, which takes a `ringCondition` instead of a `cardCondition`. Most of the ring selection prompt properties are valid here also, see `/server/game/gamesteps/SelectRingPrompt.ts` for more details. The chosen ring is stored in `context.rings[name]`, and a ring target without a `name` also in `context.ring`.
+Rings are targeted with `ringTarget`, which takes a `ringCondition` instead of a `cardCondition`. It takes the properties the builder declares for ring targets (see ability_dsl.md); anything else is a compile error. The chosen ring is stored in `context.rings[name]`, and a ring target without a `name` also in `context.ring`.
 
 ```typescript
 // Action: Bow a Spirit character you control – claim an unclaimed ring as if you won a political conflict.
@@ -448,7 +442,7 @@ Some abilities require the player (or their opponent) to choose between multiple
 this.action('Take 1 fate or 1 honor')
     .phase(Phase.Conflict)
     .condition((context) => !!context.player.opponent &&
-        this.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1)
+        context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1)
     .select({
         player: Players.Self
     }, {
@@ -467,7 +461,7 @@ this.action('Switch the conflict type or ring')
     .select({
         player: Players.Self
     }, {
-        'Switch the contested ring': () => Object.values(this.game.rings).some((ring) => ring.isUnclaimed()),
+        'Switch the contested ring': (context) => Object.values(context.game.rings).some((ring) => ring.isUnclaimed()),
         'Switch the conflict type': () => true
     })
     .handler((context) => {
@@ -510,7 +504,7 @@ In general, the effects of an ability should be implemented using Game Actions.
 
 ### Game Actions
 
-Actions (and other triggered abilities) often use game actions.  Available game actions can be found in `/server/game/GameActions/GameActions.ts`, along with any parameters and their defaults.  Game actions passed to `gameAction` default to targeting the card generating the ability (for cards), the ability's player (for players; the opponent for actions that make a player give or discard something, such as `takeFate` or `discardAtRandom`) and the contested ring (for rings), and an `amount` defaults to 1. Game actions passed to a `target` call default to that target, and the actions inside a composite action (`multiple`, `sequential`, `conditional`, ...) to the composite's target. You can change the target of a game action or the parameters by passing either an object with the properties you want, or a function which takes `context` and returns those properties.
+Actions (and other triggered abilities) often use game actions.  Available game actions can be found in `/server/game/GameActions/GameActions.ts`, along with any parameters and their defaults.  What a game action affects without a `target`, and the other defaults, are listed once in [ability_dsl.md, Game Actions](ability_dsl.md#game-actions). You can change the target of a game action or the parameters by passing either an object with the properties you want, or a function which takes `context` and returns those properties.
 
 ```typescript
 // Action: During a conflict, bow this attachment – move attached character to the conflict.
@@ -669,13 +663,13 @@ this.duelFocus('Help a character with a duel', (duel, context) => duel.participa
 
 ### Lasting effects
 
-Unlike persistent effects, lasting effects are typically applied during an action, reaction or interrupt and expire after a specified period of time.  Lasting effect use the same properties as persistent effects, above.  Lasting effects are applied using the `cardLastingEffect`, `ringLastingEffect` or `playerLastingEffect`, depending on what they affect.  They take a `duration:` property which is one of `Duration.UntilEndOfConflict` (the default, so it can be left out), `Duration.UntilEndOfPhase` or `Duration.UntilEndOfRound`.
+Unlike persistent effects, lasting effects are typically applied during an action, reaction or interrupt and expire after a specified period of time.  Lasting effects are applied using `cardLastingEffect`, `ringLastingEffect` or `playerLastingEffect`, depending on what they affect. They take `effect`, and name what they affect with `target` (`cardLastingEffect`) or `targetController` (`playerLastingEffect`) instead of a `match`. The `duration:` property is one of `Duration.UntilEndOfConflict` (the default, so it can be left out), `Duration.UntilEndOfPhase`, `Duration.UntilEndOfRound`, `Duration.UntilEndOfDuel`, the pass-priority durations (`UntilPassPriority`, `UntilOpponentPassPriority`, `UntilSelfPassPriority`, `UntilNextPassPriority`), or `Duration.Custom` with an `until` that names the events that end it.
 
 ```typescript
 // Action: During a conflict, bow this character. Choose another [crane] character – that character
 // gets +3 [political] until the end of the conflict.
 this.action('Give a character +0/+3')
-    .condition(() => this.game.isDuringConflict())
+    .condition((context) => context.game.isDuringConflict())
     .cost(costs.bowSelf())
     .target({
         cardType: CardType.Character,
@@ -801,12 +795,16 @@ this.forcedReaction('Can\'t be discarded or remove fate')
 To declare a forced interrupt, use the `forcedInterrupt` method.
 
 ```typescript
-this.forcedInterrupt('Draw a card')
+// Forced Interrupt: When this character leaves play – each player draws 2 cards.
+this.forcedInterrupt('Each player draws 2 cards')
     .when({
-        onCardLeavesPlay: (event, context) => event.card === context.source && context.source.hasSincerity()
+        onCardLeavesPlay: (event, context) => event.card === context.source
     })
-    .chatText('{1} draws a card due to {0}\'s Sincerity', (context) => [context.player])
-    .draw();
+    .draw((context) => ({
+        target: context.game.getPlayers(),
+        amount: 2
+    }))
+    .chatText('make both players draw 2 cards');
 ```
 
 ### 'Would' interrupts

@@ -124,7 +124,7 @@ this.action('...')
 
 ### `isDuringConflict()` is redundant with conflict movement actions
 
-`moveToConflict`, `putIntoConflict`, and `moveFromConflict` internally require a conflict to be active. Adding `.condition(() => isDuringConflict())` on an action whose sole gate is the movement action is redundant — omit it.
+`moveToConflict` and `putIntoConflict` internally require a conflict to be active. Adding `.condition(() => isDuringConflict())` on an action whose sole gate is the movement action is redundant — omit it.
 
 ```typescript
 // WRONG — condition is redundant
@@ -336,15 +336,13 @@ expect(this.juro.isParticipating()).toBe(true); // passes
 
 ## Effect Formatting
 
-Chat messages use numbered placeholders `{0}`, `{1}`, etc. The game engine applies special formatting to game objects and reserved keywords.
+Chat text is either a `msg` template (``msg`…${card}…` ``, imported from `GameChat.js`) or a string with numbered placeholders `{0}`, `{1}`, … The game engine applies special formatting to game objects and reserved keywords, so it must receive them as values.
 
 ### Rules
 
-1. **Never interpolate game objects** (cards, players) into the effect string using template literals or string concatenation.
-2. **Never interpolate the words `military` or `political`** — the engine formats these specially.
-3. Pass game objects as separate entries in the arguments of `.chatText(message, args)` and reference them via `{N}`.
-
-`{0}` is the implicit primary target. `{1}`, `{2}`, ... come from the arguments.
+1. **Use a `msg` template or `{N}` arguments; never `${}` in a plain string** (template literal or concatenation): a card or player interpolated into a plain string loses its formatting.
+2. **Never put the words `military` or `political` into plain text** — pass them as values (``msg`+2${'military'}` ``) so the engine shows the icon.
+3. With the string form, pass game objects as separate entries in the arguments of `.chatText(message, args)` and reference them via `{N}`: `{0}` is the implicit primary target, `{1}`, `{2}`, ... come from the arguments.
 
 ```typescript
 // WRONG — interpolates player name
@@ -352,6 +350,9 @@ Chat messages use numbered placeholders `{0}`, `{1}`, etc. The game engine appli
 
 // WRONG — interpolates game object
 .chatText('{1}', (context) => [`moved ${context.target.name} home`])
+
+// CORRECT — a msg template
+.chatText((context) => msg`place a fate from ${context.target.controller}'s fate pool on ${context.target}`)
 
 // CORRECT — game objects as separate args
 .chatText('place a fate from {1}\'s fate pool on {0}', (context) => [context.target.controller])
@@ -385,12 +386,11 @@ this.action('Initiate a military duel')
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `type` | required | `DuelType.Military` or `DuelType.Political` |
+| `type` | required | `DuelType.Military`, `DuelType.Political` or `DuelType.Glory` |
 | `gameAction` | none | `(duel) => GameAction` — effect on resolution |
 | `chatText` | game action's text | `(context, duel) => msg\`…\`` — chat text after "Duel Effect: " |
 | `requiresConflict` | `true` | Whether challenger and target must be participating |
 | `challengerCondition` | `isParticipating()` | Extra condition on challenger |
-| `targetCondition` | `isParticipating()` | Extra condition on duelTarget |
 | `opponentChoosesDuelTarget` | `false` | Opponent selects their own character |
 | `opponentChoosesChallenger` | `false` | Opponent selects the challenger |
 | `targetCondition` | `isParticipating()` | Extra condition on duelTarget (overrides default participation check) |
@@ -437,7 +437,7 @@ this.action('Initiate a duel')
 
 ### `duel.winner` / `duel.loser`
 
-Both are **arrays** (can be empty on a tie). Use `.length` checks in conditionals:
+Both are **arrays**, or `undefined` on a tie (as are `duel.winningPlayer` / `duel.losingPlayer`). Check them with `?.`:
 
 ```typescript
 chatText: (context, duel) => duel.loser?.length
@@ -453,7 +453,7 @@ chatText: (context, duel) => duel.loser?.length
 
 ## GameActions
 
-Without a `target`, card actions target the source, player actions the ability's player (the opponent for lose, take and discard actions), lasting effects last until the end of the conflict, `amount` is 1, and a target's own action targets the chosen card (inside `multiple`, `sequential`, `conditional` and other composites, the composite's target).
+The defaults without a `target` (which card or player an action affects, `amount`, lasting-effect duration) are listed once in [ability_dsl.md, Game Actions](ability_dsl.md#game-actions).
 
 ```typescript
 bow()
@@ -556,7 +556,7 @@ setApparentFate(0)
 ```typescript
 costs.payHonor(1)
 costs.bowSelf()
-costs.sacrifice(predicate)
+costs.sacrifice({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() })
 costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context))
 ```
 
@@ -588,7 +588,8 @@ card.isConflict                 // boolean (cardData.side === 'conflict')
 card.attachments                // array of attached cards
 card.attachments.length
 card.parent                     // parent card (for attachments)
-card.controller                 // owner player
+card.controller                 // controlling player
+card.owner                      // owning player
 card.getMilitarySkill()
 card.getPoliticalSkill()
 card.getGlory()
@@ -604,27 +605,20 @@ card.checkRestrictions(RestrictionType.Break, context) // only the restrictions 
 For cards that need to track events across turns (e.g., VengefulKami tracking which provinces have been attacked):
 
 ```typescript
-import { EventRegistrar } from '../../EventRegistrar';
-import { EventName, AbilityType } from '../../Constants';
+import { EventRegistrar } from '../../EventRegistrar.js';
+import { AbilityType, EventName } from '../../Constants.js';
 
 setupCardAbilities() {
-    this.eventRegistrar = new EventRegistrar(this.game, this);
+    const registrar = new EventRegistrar(this.game);
 
-    // Reaction to event
-    this.eventRegistrar.register([{
-        [EventName.OnConflictDeclared + ':' + AbilityType.Reaction]: 'onConflictDeclaredReaction'
-    }]);
+    // Simple event listeners: event name → handler
+    registrar.register({
+        [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+        [EventName.OnCardBowed]: (event) => this.onCardBowed(event)
+    });
 
-    // Simple event listener
-    this.eventRegistrar.register([EventName.OnRoundEnded]);
-}
-
-onRoundEnded() {
-    this.trackedData = [];
-}
-
-onConflictDeclaredReaction(event) {
-    // handle event
+    // A handler run inside an ability window of the event (here: would-interrupts of a ring effect)
+    registrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
 }
 ```
 
@@ -662,34 +656,28 @@ this.reaction('Place a fate on this character')
     })
     .placeFate();
 
+// Appeal to Sympathy
 this.wouldInterrupt('Cancel an event')
     .when({
         onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
     })
-    .cannotBeMirrored()
-    .gameAction(
+    .gameAction(multiple([
         cancel(),
-        conditional({
-            condition: (context) => context.event.card.isConflict,
-            trueGameAction: moveCard((context: TriggeredAbilityContext) => ({
-                target: context.event.card,
-                destination: Location.ConflictDeck
-            })),
-            falseGameAction: moveCard((context: TriggeredAbilityContext) => ({
-                target: context.event.card,
-                destination: Location.DynastyDiscardPile
-            }))
-        })
-    )
-    .chatText('cancel the effects of {1} and {2}', (context) => [
-        context.event.card,
-        context.event.card.isConflict
-            ? 'return it to the top of its owner\'s conflict deck'
-            : 'move it to its owner\'s dynasty discard pile'
-    ]);
+        moveCard((context) => ({
+            target: context.event.card,
+            destination: context.event.card.isConflict ? Location.ConflictDeck : Location.DynastyDiscardPile
+        }))
+    ]))
+    .chatText((context) => {
+        const card = context.event.card;
+        return card.isConflict
+            ? msg`cancel the effects of ${card} and return it to the top of its owner's conflict deck`
+            : msg`cancel the effects of ${card} and move it to its owner's dynasty discard pile`;
+    })
+    .cannotBeMirrored();
 ```
 
-An action passed to `gameAction` (or to a target) is typed with the ability's context, so `context.event` in its own properties is the triggering event. Actions nested inside it — the elements of `multiple([...])` or `sequential([...])`, `conditional`'s `trueGameAction`/`falseGameAction` — are not: their factory's `context` is a plain `AbilityContext`, so reading `context.event` there needs an annotation (`(context: TriggeredAbilityContext) => ...`, imported from `TriggeredAbilityContext.js`), as above.
+An action passed to `gameAction` (or to a target) is typed with the ability's context, so `context.event` in its own properties is the triggering event. Actions nested inside it — the elements of `multiple([...])` or `sequential([...])`, `conditional`'s `trueGameAction`/`falseGameAction` — are not: their factory's `context` is a plain `AbilityContext`, so reading `context.event` there needs an annotation (`(context: TriggeredAbilityContext) => ...`, imported from `TriggeredAbilityContext.js`).
 
 A target without a `cardType` holds a `BaseCard`, which has no `isParticipating()` or `isAttacking()`; give character targets `cardType: CardType.Character`.
 
@@ -741,9 +729,9 @@ The event window opened at step 4 fires `EventName.OnCardAbilityInitiated` for c
 ## Key Constants
 
 ```typescript
-import { CardType, Players, Location, DuelType, TargetMode, AbilityType, Duration, EventName, ConflictType, Element } from '../../Constants';
+import { CardType, Players, Location, DuelType, TargetMode, AbilityType, Duration, EventName, ConflictType, Element } from '../../Constants.js';
 
-CardType.Character / Event / Attachment / Province / Stronghold / Role / Holding
+CardType.Character / Event / Attachment / Province / Stronghold / Role / Holding / Warlord / Treaty
 
 Players.Self / Opponent / Any
 
@@ -756,7 +744,7 @@ Location.PlayArea / ConflictDiscardPile / DynastyDiscardPile / ConflictDeck / Dy
 DuelType.Military / Political / Glory
 
 TargetMode.Single / UpTo / UpToVariable / Exactly / ExactlyVariable / MaxStat / Unlimited /
-            Ring / Select / Ability / Token / ElementSymbol / AutoSingle
+            Ring / Select / Ability / Token / ElementSymbol
 
 AbilityType.Action / Reaction / ForcedReaction / Interrupt / ForcedInterrupt / WouldInterrupt /
              KeywordInterrupt / KeywordReaction / DuelReaction / Persistent / OtherEffects
@@ -777,8 +765,8 @@ Stage.Cost / Effect / PreTarget / Target
 
 ### Province Conflict Action (simple)
 ```typescript
-import { ProvinceCard } from '../../ProvinceCard';
-import { CardType } from '../../Constants';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import { CardType } from '../../Constants.js';
 import { bow } from '../../GameActions/GameActions';
 
 export default class Example extends ProvinceCard {

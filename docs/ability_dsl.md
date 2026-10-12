@@ -80,7 +80,7 @@ Builder methods shared by actions and triggered abilities:
 | `tokenTarget` / `abilityTarget` / `elementTarget` | Status tokens, a printed ability (always `context.targetAbility`, so it takes no `name`), an element symbol on a chosen card |
 | `gameAction(...actions)` | Action(s) to resolve (see [Game Actions](#game-actions)) |
 | `handler(fn)` | Low-level handler called after costs are paid (use `gameAction` when possible). It replaces the step's resolution: combined with game actions, `if()`, `onAffinity()`, a following step or resolving again, setup throws. Game actions on a target stay allowed; they only decide what can be chosen. To run code as one action among others (raising an event, so a following step can follow), use `gameAction(handler({ handler }))` |
-| `effect(message, args?)` | Chat log message. `{0}` = the target (or source), `{1}` onwards = the entries of `args(context)` |
+| `chatText(message, args?)` / `chatText(fn)` | The chat line's text after "uses X to": a string where `{0}` = the target (or source) and `{1}` onwards = the entries of `args(context)`, or `fn(context)` returning a `msg` template |
 | `then()` | Starts the next step ("Then, …"), declared with the same methods; its context holds the targets chosen so far |
 | `thenIf(fn)` | "Then, if …": the next step follows when this step resolved in full and `fn(context)` holds |
 | `afterwards()` | A next step without "then" on the card: it follows whether or not this step resolved in full |
@@ -89,7 +89,7 @@ Builder methods shared by actions and triggered abilities:
 | `mayResolveAgain({ cost?, label?, condition? })` | "Then, you may [pay] to resolve this ability again": the player may pay `cost` (button "{label} to resolve this ability again") to resolve it once more; on the second resolution the cost is offered "for no effect". Without a cost, a Yes/No question |
 | `opponentMayResolveAgain(prompt)` | "Then, your opponent may resolve this ability" |
 | `onResolve(fn)` | Runs `fn(context)` when the ability (or step) starts resolving its effects, before its handler or game actions; never during a legality check (bookkeeping: counting uses, remembering a target) |
-| `onAffinity(trait, { prompt?, chatText? })` | "With [trait] affinity" (usually an element, but any trait such as Shadow; a player has affinity to a trait while they control a character with it): the ability's or step's game actions resolve only with that affinity. `prompt` asks Yes/No first; `chatText(context)` is a `msg` template for the chat line "{player} channels their {trait} affinity to …" (by default the actions' own text). `chatText` is always the fragment after "to" ("uses X to …", "chooses to …"), `message` a whole chat line, and `effect` a game effect |
+| `onAffinity(trait, { prompt?, chatText? })` | "With [trait] affinity" (usually an element, but any trait such as Shadow; a player has affinity to a trait while they control a character with it): the ability's or step's game actions resolve only with that affinity. `prompt` asks Yes/No first; `chatText(context)` is a `msg` template for the chat line "{player} channels their {trait} affinity to …" (by default the actions' own text). `chatText` is always the fragment after "to" ("uses X to …", "chooses to …"), `message` a whole chat line |
 | `if(fn)`, `otherwise()` | "If …, otherwise …": the game actions after `if()` resolve when `fn(context)` holds, the ones after `otherwise()` (optional) when it doesn't. Targets go before `if()`; right after a card target, the branches are that target's (they resolve on the chosen card, after its own game actions if it has any); after several card targets without game actions, or once the ability has game actions of its own, they stay on the ability, and the actions name their targets. Branch lines are indented one level deeper |
 | `gainHonor(n)`, `loseHonor(n)`, `gainFate(n)`, `loseFate(n)`, `draw(n)` | The player of the ability gains honor, loses honor, gains fate, loses fate, draws cards; `n` defaults to 1. For another target or a computed amount, pass the factory's properties instead, or a function of the context returning them: `.loseHonor((context) => ({ target: context.player.opponent }))` |
 | `ready(props?)`, `bow`, `honor`, `dishonor`, `placeFate`, `removeFate`, `sendHome`, `moveToConflict`, `discardFromPlay`, `sacrifice`, `takeHonor`, `takeFate`, `refillFaceup(props)`, `cardLastingEffect(props)`, `playerLastingEffect(props)`, `selectCard(props)`, `deckSearch(props)`, `cancel(props?)` (interrupts); card movers `discardAtRandom`, `discardCard`, `chosenDiscard`, `moveCard(props)`, `shuffleDeck(props)`, `returnToHand`, `putIntoPlay`, `lookAt`, `injure`, `addToken`; rings and conflicts `resolveConflictRing`, `resolveRingEffect`, `selectRing(props)`, `switchConflictType`, `placeFateOnRing`; `modifyBid`, `duelLastingEffect(props)`, `cardMenu(props)`, `chooseAction(props)`, `tokenFromTopCard(props)` | Shortcuts for `gameAction(x(props))`: the same properties as the factory, or a function of the context returning them; `gameAction()` takes any other action |
@@ -221,6 +221,18 @@ this.composure({
 
 Sugar for `persistentEffect` with `condition: context.source.isDire()`. Active while the card is dire (has no fate).
 
+### `this.whileAttached(props)`
+
+Sugar for `persistentEffect` on an attachment: the effect applies to the attached character (narrowed by an optional `match`), whoever controls it. Takes `effect` and optional `condition` and `match`.
+
+```typescript
+this.whileAttached({ effect: addTrait('shadowlands') });
+```
+
+### `this.legendary(fate)`
+
+"Legendary X": played from a province, it enters with X fate and no fate can be added while playing it; fate can't be placed on it, card effects can't put it into play, it only enters play during the dynasty phase, and nothing can prevent it from leaving play.
+
 ### `this.attachmentConditions(props: AttachmentConditionProps)`
 
 Declares attachment restrictions. Should be called from `setupCardAbilities()` on attachment cards.
@@ -242,7 +254,7 @@ this.attachmentConditions({
 
 ## Targets
 
-Each target method takes the target's properties and the game actions that resolve on it. The chosen card is stored in `context.targets[name]`. Without a `name` property the target is named `target`, which is also `context.target` and `{0}` in the effect message (a ring target named `target` is `context.ring`, a select named `target` is `context.select`). An ability with several targets names them (`name: 'character'`), and a target can depend on an earlier one with `dependsOn: 'character'`.
+Each target method takes the target's properties and the game actions that resolve on it. The chosen card is stored in `context.targets[name]`. Without a `name` property the target is named `target`, which is also `context.target` and `{0}` in the chat text (a ring target named `target` is `context.ring`, a select named `target` is `context.select`). An ability with several targets names them (`name: 'character'`), and a target can depend on an earlier one with `dependsOn: 'character'`.
 
 ### Single card target
 
@@ -392,12 +404,12 @@ Costs come from the `costs` namespace (`import * as costs from '../../costs/inde
 | `costs.returnSelfToHand()` | Returns source to hand |
 | `costs.removeSelfFromGame()` | Removes source from game |
 | `costs.dishonorSelf()` | Dishonors the source |
-| `costs.discardStatusTokenFromSelf()` | Discards honored token from source |
+| `costs.discardStatusTokenFromSelf()` | Discards a status token from the source |
 | `costs.taintSelf()` | Taints the source |
 | `costs.breakSelf()` | Breaks the source province |
 | `costs.putSelfIntoPlay()` | Puts source into play |
-| `costs.moveHomeSelf()` | Sends source home |
 | `costs.removeFateFromSelf()` | Removes 1 fate from source |
+| `costs.discardCardsOf(fn)` | Discards the card(s) `fn(context)` returns (not chosen) |
 | `costs.removeFateFromParent()` | Removes 1 fate from parent attachment |
 | `costs.switchLocation()` | Moves source home↔conflict depending on current location |
 
@@ -407,12 +419,13 @@ Costs come from the `costs` namespace (`import * as costs from '../../costs/inde
 |----------|-------------|
 | `costs.payFate(n)` | Pay N fate (default 1). Can be a function `(context) => n` |
 | `costs.payHonor(n)` | Pay N honor (default 1) |
-| `costs.payPrintedFateCost()` | Pay card's printed cost |
 | `costs.payReduceableFateCost()` | Pay printed cost with cost reducers applied |
 | `costs.giveHonorToOpponent(n)` | Transfer N honor to opponent (default 1) |
 | `costs.giveFateToOpponent(n)` | Transfer N fate to opponent (default 1) |
 | `costs.payFateToRing(n, condition)` | Place N fate on an unclaimed ring (player picks) |
 | `costs.payOptionalFate(n)` | Prompt to optionally pay N fate |
+| `costs.payTargetDependentFateCost(targetName)` | Pay the source's cost with the reducers that apply to the card chosen as `targetName` (playing an attachment onto it) |
+| `costs.optionalTakeHonorFromOpponent(canPay?)` | The opponent may give you 1 honor; `context.costs.honorTakenFromOpponent` says whether they did |
 | `costs.payVariableFate({ maxAmount, ... })` | Prompt to pay a variable amount of fate |
 | `costs.payVariableHonor(amountFunc)` | Prompt to pay a variable amount of honor |
 
@@ -455,7 +468,7 @@ These prompt the player to pick a card, then perform the action as the cost.
 | `costs.chooseOne({ label: cost, … })` | "Pay X or Y": the player picks one of the payable costs by its label (no question when only one can be paid) |
 | `costs.chooseFate(playType)` | Standard "how much extra fate" prompt for playing characters |
 
-The `props` parameter for selection costs takes the same properties as `target:` on an ability (e.g., `cardType`, `controller`, `cardCondition`, `location`, `mode`, `numCards`).
+The `props` parameter for selection costs takes the properties of `selectCard` (e.g., `cardType`, `controller`, `cardCondition`, `location`, `mode`, `numCards`, `hidePromptIfSingleCard`, `subActionProperties`); unlike `target:` there is no `dependsOn`, `optional` or `hideIfNoLegalTargets`.
 
 ---
 
@@ -484,9 +497,9 @@ Limits track how many times an ability can be used per time period.
 
 ## Game Actions
 
-Game actions are named imports from `GameActions/GameActions.js` (the tables write them as `x` for grouping only). All accept an optional `propertyFactory`: either a plain properties object or `(context) => properties`. The `target` property inside the factory sets which card/player is affected.
+Game actions are named imports from `GameActions/GameActions.js` (the tables write them as `x` for grouping only). Most take a `propertyFactory`: either a plain properties object or `(context) => properties`; it is optional where every property has a default, and required otherwise (`moveCard`, `cardLastingEffect`, `deckSearch`, …). `multiple`, `sequential` and `joint` take an array of actions, `chatMessage` a function. The `target` property inside the factory sets which card/player is affected.
 
-When no `target` is provided, card actions target `context.source`, player actions target the ability's player (gain, lose, draw), take/discard actions and `loseImperialFavor` target the opponent, `amount` is 1, and a target's own action targets the chosen card. Composite actions (`multiple`, `sequential`, `conditional`, …) pass their target down when they were given one (on a target, or with `target`); otherwise each action inside keeps its own default. `selectCard`, `cardMenu` and `deckSearch` hand over the chosen cards.
+When no `target` is provided, card actions target `context.source`, player actions target the ability's player (gain, lose, draw), take/discard actions, the Imperial Favor actions (`claimImperialFavor`, `flipImperialFavor`, `loseImperialFavor`) and `setHonorDial` target the opponent, `amount` is 1, and a target's own action targets the chosen card. Composite actions (`multiple`, `sequential`, `conditional`, …) pass their target down when they were given one (on a target, or with `target`); otherwise each action inside keeps its own default. `selectCard`, `cardMenu` and `deckSearch` hand over the chosen cards.
 
 Inside the builder, a `(context) => properties` factory gets the ability's typed context, so `context.target` and `context.targets.name` have the declared card types (see [Typed Targets & Events](#typed-targets--events-typescript)):
 
@@ -542,7 +555,7 @@ The tables below cover the most-used factories; the authoritative list lives in 
 
 ### Player actions
 
-These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscard`, `chosenReturnToDeck`, `discardAtRandom` and `discardMatching`, which target the opponent.
+These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscard`, `chosenReturnToDeck`, `discardAtRandom`, `discardMatching`, `claimImperialFavor`, `flipImperialFavor`, `loseImperialFavor` and `setHonorDial`, which target the opponent.
 
 | Function | Notes |
 |----------|-------|
@@ -591,7 +604,7 @@ These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscar
 | `ifAble({ ifAbleAction, otherwiseAction })` | Do `ifAbleAction` if it can resolve, else `otherwiseAction` |
 | `chooseAction({ choices, activePromptTitle?, player? })` | A choice made while the ability resolves (a selection after the dash; one before the dash is `select`). `choices` maps each label to a game action, or to `{ action, message }` with `message: (context, target, chooser) => msg\`…\`` (`target` is the action's target) |
 | `optional({ gameAction, prompt, player?, acceptMessage?, declineMessage? })` | A player (default the ability's player, or `Players.Opponent`) may resolve `gameAction` (Yes/No). For "may … If they do, …", put the consequence in a `then()` step: it runs only if they did and the action resolved (Mercenary Company). The messages are `(context, chooser) => msg\`…\`` |
-| `menuPrompt({ ... })` | Show a free-form menu prompt |
+| `menuPrompt({ activePromptTitle, choices, choiceHandler, gameAction, player? })` | A menu of `choices` (labels, or a function of the properties); `choiceHandler(choice, displayMessage, properties)` returns the overrides with which `gameAction` then resolves. Prefer `chooseAction` or `select`; `menuPrompt` is for choices that only change how one action resolves |
 | `rearrangeDeck({ amount, deck?, activePromptTitle?, message? })` | The player of the ability puts the top `amount` cards of the target player's `deck` (default: their own conflict deck) back in the order they choose, one prompt per position |
 | `assignRoles({ roles, player?, pick?, pickOrder?, activePromptTitle?, message?, messages? })` | Two cards, two roles (`{ Honor: honor(), Dishonor: dishonor() }`): the chooser gives each card a role, by role then card, or with `pick` by picking that role's card from card buttons; each role's action resolves on its card, in this action's window. `message(context, assigned, chooser)` returns a `msg` template With `pickOrder`, any number of cards ("top 3: discard one, one to the bottom, one stays on top"): the chooser picks a card for each listed role from card buttons in that order ("Select a card to <role>"), each pick resolves at once, and the cards left take the one unlisted role; while there are fewer cards than roles left, a role may be skipped ("None"). `messages` gives a line per role. For the deck to choose, see `DeckChoice` (`cards/DeckChoice.ts`) |
 | `selectCard({ cardCondition?, gameAction, ... })` | Prompt to select one card, then apply `gameAction`; `message: (context, card, chooser) => msg\`…\`` and `subActionProperties` get that card |
@@ -616,7 +629,7 @@ deckSearch({
     cardsToLookAt: -1,             // -1 = entire deck (default), or a number to look at top N
     numCards: 1,                   // how many cards to select
     mode: TargetMode.UpTo,         // Single, UpTo, Exactly, Unlimited
-    deck: DeckType.Conflict,      // ConflictDeck or DynastyDeck
+    deck: DeckType.Conflict,      // Conflict or Dynasty
     cardCondition: (card) => card.hasTrait('spell'),
     gameAction: moveCard({ destination: Location.Hand }),
     takesNothingGameAction: draw(),
@@ -775,7 +788,7 @@ cardCannot({ cannot: RestrictionType.ApplyCovert, appliesTo: RestrictionScope.Op
 playerCannot({ cannot: RestrictionType.TakeFateFromRings })
 ```
 
-A restriction names a **`RestrictionType`** (`server/game/Constants/RestrictionType.ts`; a `PlayType` restricts playing that way). It only fires where the engine calls `checkRestrictions(RestrictionType.X, …)` (`server/game/Effects/Restriction.ts`). A restriction without a type (`immunity({ restricts: … })`) forbids everything. **A type only blocks the code paths that check it.** If the prohibition you want spans several game-state paths, a type that's only checked on one of them is an incomplete guard. Prefer a dedicated effect when one exists (e.g. `cannotParticipateAsAttacker()`, which covers every path, over the declaration-only `cannotBeDeclaredAsAttacker()` — see [Participation / conflict](#participation--conflict-card)). Where a type is wrapped by a named helper, call the helper.
+A restriction names a **`RestrictionType`** (`server/game/Constants/RestrictionType.ts`; a `PlayType` restricts playing that way). It only fires where the engine calls `checkRestrictions(RestrictionType.X, …)` (`server/game/Effects/Restriction.ts`). A restriction without a type (`immunity({ appliesTo: … })`) forbids everything. **A type only blocks the code paths that check it.** If the prohibition you want spans several game-state paths, a type that's only checked on one of them is an incomplete guard. Prefer a dedicated effect when one exists (e.g. `cannotParticipateAsAttacker()`, which covers every path, over the declaration-only `cannotBeDeclaredAsAttacker()` — see [Participation / conflict](#participation--conflict-card)). Where a type is wrapped by a named helper, call the helper.
 
 The types fall into two groups:
 
@@ -867,7 +880,7 @@ this.action('Duel target character')
 | `targetCondition` | Filter for legal duel targets (overrides default participation check on the target) |
 | `opponentChoosesDuelTarget` | Opponent selects the target |
 | `opponentChoosesChallenger` | Opponent selects the challenger |
-| `gameAction` | `(duel, context) => GameAction` — the effect resolved when the duel ends. `duel.winner` / `duel.loser` are `DrawCard[]` (empty array on tie) |
+| `gameAction` | `(duel, context) => GameAction` — the effect resolved when the duel ends. `duel.winner` / `duel.loser` are `DrawCard[]`, or `undefined` on a tie (as are `duel.winningPlayer` / `duel.losingPlayer`) |
 | `chatText` | `(context, duel) => msg\`…\`` — the text after "Duel Effect: " in chat; without it, the game action's own effect text |
 | `refuseGameAction` | Effect when the opponent legally refuses the duel (consult `Duel.ts`) |
 | `refusalMessage` | `(context, refuser) => msg\`…\`` — the chat line when refused; by default "<refuser> chooses to refuse the duel and <refuseGameAction's text>" |
@@ -875,7 +888,7 @@ this.action('Duel target character')
 | `challengerEffect` / `targetEffect` | Pre-resolution per-side effects |
 | `statistic` | `(card, rules) => number` — override skill statistic used in resolution |
 
-When `requiresConflict: true` (default), do not add a redundant `isDuringConflict()` condition or `source.isParticipating()` condition — the duel system enforces both. There is no `winnerHandler`/`loserHandler`/`tieHandler` indirection — express win/loss/tie effects by branching on `duel.winner.length` / `duel.loser.length` inside the single `gameAction` factory.
+When `requiresConflict: true` (default), do not add a redundant `isDuringConflict()` condition or `source.isParticipating()` condition — the duel system enforces both. There is no `winnerHandler`/`loserHandler`/`tieHandler` indirection — express win/loss/tie effects by branching on `duel.winner` / `duel.loser` (`undefined` on a tie) inside the single `gameAction` factory.
 
 ---
 
@@ -887,7 +900,7 @@ Import from `'../Constants.js'` (adjust path for nesting).
 `Setup`, `Dynasty`, `Draw`, `Conflict`, `Fate`, `Regroup`
 
 ### `CardType`
-`Stronghold`, `Role`, `Province`, `Character`, `Holding`, `Event`, `Attachment`
+`Stronghold`, `Role`, `Province`, `Character`, `Holding`, `Event`, `Attachment`, `Warlord`, `Treaty`
 
 ### `Location`
 `Any`, `Hand`, `ConflictDeck`, `DynastyDeck`, `ConflictDiscardPile`, `DynastyDiscardPile`, `PlayArea`, `Provinces` (string value `'province'`, grouping all four slots), `ProvinceOne`–`ProvinceFour`, `StrongholdProvince`, `ProvinceDeck`, `RemovedFromGame`, `UnderneathStronghold`, `OutsideTheGame`, `BeingPlayed`, `Role`
@@ -908,7 +921,7 @@ Import from `'../Constants.js'` (adjust path for nesting).
 `Cost`, `Effect`, `PreTarget`, `Target`
 
 ### `TargetMode`
-`Single` (default), `UpTo`, `UpToVariable`, `Exactly`, `ExactlyVariable`, `Unlimited`, `MaxStat`, `Ring`, `Select`, `Ability`, `Token`, `ElementSymbol`, `AutoSingle`
+`Single` (default), `UpTo`, `UpToVariable`, `Exactly`, `ExactlyVariable`, `Unlimited`, `MaxStat`, `Ring`, `Select`, `Ability`, `Token`, `ElementSymbol`
 
 ### `DuelType`
 `Military`, `Political`, `Glory`
@@ -917,7 +930,7 @@ Import from `'../Constants.js'` (adjust path for nesting).
 `Fire`, `Earth`, `Air`, `Water`, `Void`
 
 ### `DeckType`
-`ConflictDeck`, `DynastyDeck`
+`Conflict`, `Dynasty`
 
 ### `CharacterStatus`
 `Honored`, `Dishonored`, `Tainted`
