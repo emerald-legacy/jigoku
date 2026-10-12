@@ -1,16 +1,17 @@
 import { msg } from '../../../GameChat.js';
-import { Location, RemainingCards, TargetMode } from '../../../Constants.js';
+import { Location, Players, RemainingCards, TargetMode } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { deckSearch, lookAt, moveCard, sequential } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type Player from '../../../Player.js';
+import type { DeckSearchProperties } from '../../../GameActions/DeckSearchAction.js';
 import DrawCard from '../../../DrawCard.js';
 
 // the chooser puts 1 of the top 2 cards of that player's deck into its owner's hand, the other on the bottom
-function giveOneCard(context: AbilityContext, player: Player | undefined, activePromptTitle: string) {
+function giveOneCard(player: Player | undefined, activePromptTitle: string): DeckSearchProperties {
     return {
-        player,
-        choosingPlayer: context.player,
+        target: player,
+        player: Players.Self,
         activePromptTitle,
         cardsToLookAt: player ? 2 : 0,
         mode: TargetMode.Exactly,
@@ -44,8 +45,8 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 2) : [],
                     message: (context, cards) => msg`${context.player.opponent} reveals the top ${cards.length} from their conflict deck: ${cards}`
                 })),
-                deckSearch((context) => giveOneCard(context, context.player, 'Choose a card to give to yourself')),
-                deckSearch((context) => giveOneCard(context, context.player.opponent, 'Choose a card to give your opponent'))
+                deckSearch((context) => giveOneCard(context.player, 'Choose a card to give to yourself')),
+                deckSearch((context) => giveOneCard(context.player.opponent, 'Choose a card to give your opponent'))
             ]))
             .chatText('give each player a valuable good');
     }

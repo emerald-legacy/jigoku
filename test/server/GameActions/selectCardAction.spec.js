@@ -233,13 +233,13 @@ describe('SelectCardAction', function() {
             expect(action.getEffectMessage(this.context)).toEqual(['choose a target for {0}', [['tgt']]]);
         });
 
-        it('should return the custom effect with effectArgs when configured', function() {
-            const effectArgs = jasmine.createSpy('effectArgs').and.returnValue(['x']);
+        it('should return the custom chat text when configured', function() {
+            const chatText = jasmine.createSpy('chatText').and.returnValue(['custom {0}', ['x']]);
             const action = new SelectCardAction({
-                target: 'tgt', selector: this.selector, gameAction: this.gameAction,
-                chatText: 'custom', chatTextArgs: effectArgs
+                target: 'tgt', selector: this.selector, gameAction: this.gameAction, chatText
             });
-            expect(action.getEffectMessage(this.context)).toEqual(['custom', ['x']]);
+            expect(action.getEffectMessage(this.context)).toEqual(['custom {0}', ['x']]);
+            expect(chatText).toHaveBeenCalledWith(this.context);
         });
     });
 });

@@ -25,7 +25,7 @@ export default class EyesOfTheSerpent extends DrawCard {
                     gameAction: gainHonor((context) => ({
                         target: context.player
                     })),
-                    chatText: 'gain 1 honor'
+                    chatText: () => msg`gain 1 honor`
                 })
             ]))
             .chatText((context) => msg`taint ${context.target}`);

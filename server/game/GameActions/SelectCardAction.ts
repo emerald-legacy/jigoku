@@ -10,7 +10,6 @@ import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
-import type { EffectArg } from '../Interfaces.js';
 import { isCardOfType, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 
 const isCardTypeList = (cardType: CardTypes): cardType is readonly CardType[] => Array.isArray(cardType);
@@ -29,8 +28,7 @@ interface SelectCardBase<C extends AbilityContext, K extends CardTypes> extends 
     selector?: BaseCardSelector;
     hidePromptIfSingleCard?: boolean;
     cancelHandler?: () => void;
-    chatText?: string;
-    chatTextArgs?: (context: C) => EffectArg[];
+    chatText?: (context: C) => MessageArgs;
 }
 
 /** One card. An optional select that is skipped resolves with no target and no message. */
@@ -55,10 +53,10 @@ export interface SelectCardsProperties<C extends AbilityContext = AbilityContext
  * What the action works with: the card type is checked once, in `cardCondition`.
  * Callbacks taking the context use method syntax, so an action for a narrower context stays assignable.
  */
-export interface SelectCardActionProperties<C extends AbilityContext = AbilityContext> extends Omit<SelectCardBase<C, CardTypes>, 'cardType' | 'cardCondition' | 'chatTextArgs'> {
+export interface SelectCardActionProperties<C extends AbilityContext = AbilityContext> extends Omit<SelectCardBase<C, CardTypes>, 'cardType' | 'cardCondition' | 'chatText'> {
     cardType?: CardType | CardType[];
     cardCondition?(card: BaseCard, context: C): boolean;
-    chatTextArgs?(context: C): EffectArg[];
+    chatText?(context: C): MessageArgs;
     mode?: TargetMode;
     numCards?: number;
     /** Nothing means no message. */
@@ -126,11 +124,10 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         manuallyRaiseEvent: false
     };
 
-    /** A custom `chatText` brings its own arguments, from `{0}` on. */
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { chatText, chatTextArgs } = this.getProperties(context, additionalProperties);
+        const { chatText } = this.getProperties(context, additionalProperties);
         if(chatText) {
-            return [chatText, (chatTextArgs && chatTextArgs(context)) || []];
+            return chatText(context);
         }
         return super.getEffectMessage(context, additionalProperties);
     }

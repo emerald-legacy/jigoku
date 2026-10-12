@@ -10,7 +10,7 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface OptionalProperties extends GameActionProperties {
     gameAction: GameAction;
-    prompt: string;
+    activePromptTitle: string;
     /** Who decides: the ability's player (default) or their opponent. */
     player?: Players.Self | Players.Opponent;
     acceptMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
@@ -35,7 +35,7 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends C
             return;
         }
         context.game.promptWithHandlerMenu(chooser, {
-            activePromptTitle: properties.prompt,
+            activePromptTitle: properties.activePromptTitle,
             source: context.source,
             options: [
                 {

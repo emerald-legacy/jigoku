@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect, moveToConflict, multiple, onAffinity, sendHome } from '../../../GameActions/GameActions.js';
@@ -24,8 +25,7 @@ export default class WingsOfThePhoenix extends DrawCard {
                         target: context.game.currentConflict?.getCharacters(context.player.opponent),
                         effect: modifyBothSkills(-1)
                     })),
-                    chatText: 'give all participating enemies -1{1}/-1{2} until the end of the conflict',
-                    chatTextArgs: ['military', 'political']
+                    chatText: () => msg`give all participating enemies -1${'military'}/-1${'political'} until the end of the conflict`
                 })
             ]));
     }

@@ -12,17 +12,13 @@ export interface CancelProperties extends GameActionProperties {
     replacementGameAction?: GameAction;
     /** "Instead, X. Then, Y": resolves once the replacement has fully resolved. */
     thenGameAction?: GameAction;
-    chatText?: string;
 }
 
 export type CancellingContext = AbilityContext & { event?: AnyEvent; cancel(): void };
 
 export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelProperties, EventName.Unnamed, C> {
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { replacementGameAction, chatText } = this.getProperties(context, additionalProperties);
-        if(chatText) {
-            return [chatText, []];
-        }
+        const { replacementGameAction } = this.getProperties(context, additionalProperties);
         if(replacementGameAction) {
             // the replacement's target is this action's, so its `{0}` stays ours
             const [format, [, ...args]] = replacementGameAction.getEffectMessage(context, this.#replacementOverrides(context));
@@ -32,10 +28,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
     }
 
     protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
-        const { replacementGameAction, chatText } = this.getProperties(context, additionalProperties);
-        if(chatText) {
-            return undefined;
-        }
+        const { replacementGameAction } = this.getProperties(context, additionalProperties);
         return replacementGameAction ? context.target : context.event?.card;
     }
 

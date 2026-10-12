@@ -1,10 +1,11 @@
 import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { DeckType, EventName, Location, RemainingCards, TargetMode } from '../Constants.js';
+import { DeckType, EventName, Location, type Players, RemainingCards, TargetMode } from '../Constants.js';
 import { shuffle } from '../utils/random.js';
 import type DrawCard from '../DrawCard.js';
-import type { GameAction, ActionEvent, WithDefaults } from './GameAction.js';
+import { targetList, type GameAction, type ActionEvent, type WithDefaults } from './GameAction.js';
+import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type Player from '../Player.js';
 import type { Event } from '../Events/Event.js';
@@ -25,8 +26,8 @@ export interface DeckSearchProperties<C extends AbilityContext = AbilityContext>
     /** The chat line once cards are taken; without it, "<chooser> takes <cards>". */
     message?: (context: C, cards: DrawCard[], chooser: Player) => MessageArgs;
     uniqueNames?: boolean;
-    player?: Player;
-    choosingPlayer?: Player;
+    /** Who chooses the cards; by default the player whose deck is searched. */
+    player?: Players.Self | Players.Opponent;
     selectedCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
     remainingCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
@@ -71,16 +72,18 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         if(derive(properties.cardsToLookAt, context) === 0) {
             return false;
         }
-        const player = properties.player || context.player;
+        const player = this.#searched(properties, context);
         return this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { cardsToLookAt, player } = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
+        const { cardsToLookAt } = properties;
+        const player = this.#searched(properties, context);
         const amount = derive(cardsToLookAt, context);
-        const deck = player && player !== context.player ? '{1}\'s deck' : 'their deck';
+        const deck = player !== context.player ? '{1}\'s deck' : 'their deck';
         const message = amount > 0 ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of ${deck}` : `search ${deck}`;
-        return [message, player && player !== context.player ? [player] : []];
+        return [message, player !== context.player ? [player] : []];
     }
 
     protected effectMessageTarget(): MsgArg {
@@ -102,7 +105,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        const player = properties.player || context.player;
+        const player = this.#searched(properties, context);
         const event = this.getEvent(player, context, additionalProperties);
         const amount = event.amount > -1 ? event.amount : this.#getDeck(player, properties).length;
         let cards = this.#getDeck(player, properties).slice(0, amount);
@@ -111,6 +114,14 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         }
         events.push(event);
         this.#selectCard(event, additionalProperties, cards, new Set());
+    }
+
+    #searched(properties: ResolvedDeckSearchProperties<C>, context: C): Player {
+        return targetList(properties.target)[0] ?? context.player;
+    }
+
+    #chooser(properties: ResolvedDeckSearchProperties<C>, event: GameEvent<EventName.OnDeckSearch>): Player {
+        return (properties.player && resolveChoosingPlayer(event.context, properties.player)) || event.player;
     }
 
     #getDeck(player: Player, properties: ResolvedDeckSearchProperties<C>): DrawCard[] {
@@ -129,7 +140,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         const properties = this.getProperties(context, additionalProperties);
         const canCancel = properties.mode !== TargetMode.Exactly;
         let selectAmount = 1;
-        const choosingPlayer = properties.choosingPlayer || event.player;
+        const choosingPlayer = this.#chooser(properties, event);
 
         if(properties.mode === TargetMode.UpTo || properties.mode === TargetMode.UpToVariable) {
             selectAmount = derive(properties.numCards, context);
@@ -278,7 +289,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>
     ): void {
-        const choosingPlayer = (properties.choosingPlayer || event.player);
+        const choosingPlayer = this.#chooser(properties, event);
         if(selectedCards.size > 0 && properties.message) {
             return context.game.addMessage(properties.message(context, Array.from(selectedCards), choosingPlayer));
         }
@@ -295,7 +306,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     #takesNothing(properties: ResolvedDeckSearchProperties<C>, context: C, event: GameEvent<EventName.OnDeckSearch>): void {
-        const choosingPlayer = (properties.choosingPlayer || event.player);
+        const choosingPlayer = this.#chooser(properties, event);
         const message = properties.takesNothingMessage ? properties.takesNothingMessage(context, choosingPlayer) : msg`${choosingPlayer} takes nothing`;
         if(message) {
             context.game.addMessage(message);

@@ -677,12 +677,12 @@ export class AbilityBuilder<
 
     /**
      * "With [trait] affinity" (usually an element, but any trait, e.g. Shadow): this step's game actions resolve only if the player has that affinity.
-     * `prompt` asks the player first ("Pay 1 fate to swap abilities?"); `chatText` is what the chat says the affinity does.
+     * `activePromptTitle` asks the player first ("Pay 1 fate to swap abilities?"); `chatText` is what the chat says the affinity does.
      */
     onAffinity(trait: string, options: AffinityOptions<BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
         this.#once('affinity', trait, 'onAffinity()');
         this.draft.affinityOptions = {
-            ...(options.prompt !== undefined ? { prompt: options.prompt } : {}),
+            ...(options.activePromptTitle !== undefined ? { activePromptTitle: options.activePromptTitle } : {}),
             ...(options.chatText ? { chatText: this.#checked(options.chatText, this.draft.specs) } : {})
         };
         return this;
@@ -1379,7 +1379,7 @@ function withBranches(draft: AbilityDraft): AbilityDraft {
 }
 
 interface AffinityOptions<Context = AbilityContext> {
-    prompt?: string;
+    activePromptTitle?: string;
     chatText?: (context: Context) => MessageArgs;
 }
 
@@ -1394,15 +1394,12 @@ function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] 
     }
     const trait = draft.affinity;
     const gameAction = oneAction(actions);
-    const { prompt, chatText } = draft.affinityOptions ?? {};
-    return { gameAction: [GameActions.onAffinity((context) => {
-        const [format, args] = chatText ? chatText(context) : [undefined, undefined];
-        return {
-            trait,
-            gameAction,
-            ...(prompt !== undefined ? { prompt } : {}),
-            ...(format !== undefined ? { chatText: format, chatTextArgs: args } : {})
-        };
+    const { activePromptTitle, chatText } = draft.affinityOptions ?? {};
+    return { gameAction: [GameActions.onAffinity({
+        trait,
+        gameAction,
+        ...(activePromptTitle !== undefined ? { activePromptTitle } : {}),
+        ...(chatText ? { chatText } : {})
     })] };
 }
 

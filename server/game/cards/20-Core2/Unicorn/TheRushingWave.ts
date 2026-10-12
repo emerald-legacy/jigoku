@@ -46,8 +46,7 @@ export default class TheRushingWave extends DrawCard {
                     duration: Duration.UntilEndOfPhase,
                     effect: setProvinceStrength(0)
                 }),
-                chatText: 'also set the strength of {0} to 0',
-                chatTextArgs: (context) => [context.target?.isProvinceCard() ? adjacentProvinces(context.target) : []]
+                chatText: (context) => msg`also set the strength of ${context.target?.isProvinceCard() ? adjacentProvinces(context.target) : []} to 0`
             }))
             .chatText((context) => msg`set ${provinceLog(context.target)}'s strength to 0 until the end of the phase`);
     }

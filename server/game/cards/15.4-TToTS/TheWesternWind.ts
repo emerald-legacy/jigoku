@@ -16,7 +16,8 @@ class TheWesternWind extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince
-            }, deckSearch({
+            }, deckSearch((context) => ({
+                target: context.player,
                 cardCondition: (card) => card.type === CardType.Character,
                 mode: TargetMode.UpToVariable,
                 numCards: (context) => context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince),
@@ -37,7 +38,7 @@ class TheWesternWind extends DrawCard {
                         this.game.addMessage(msg`${event.player} selects no characters`);
                     }
                 }
-            }));
+            })));
     }
 }
 

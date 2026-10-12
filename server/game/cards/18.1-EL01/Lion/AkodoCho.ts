@@ -27,8 +27,7 @@ export default class AkodoCho extends DrawCard {
             }, {
                 'Discard an attachment from this character': selectCard((context) => ({
                     cardType: CardType.Attachment,
-                    chatText: 'discard an attachment on {0}',
-                    chatTextArgs: () => [context.targets[CHARACTER]],
+                    chatText: () => msg`discard an attachment on ${context.targets[CHARACTER]}`,
                     player:
                                 context.targets[CHARACTER].controller === context.player
                                     ? Players.Self

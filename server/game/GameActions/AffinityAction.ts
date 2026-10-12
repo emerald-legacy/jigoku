@@ -1,19 +1,17 @@
 import { CompositeGameAction } from './CompositeGameAction.js';
 import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { Derivable, derive } from '../utils/helpers.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface AffinityProperties extends GameActionProperties {
     gameAction: GameAction;
-    chatText?: string;
-    chatTextArgs?: Derivable<MsgArg[], AbilityContext>;
+    chatText?: (context: AbilityContext) => MessageArgs;
     trait: string;
     noAffinityGameAction?: GameAction;
-    prompt?: string;
+    activePromptTitle?: string;
 }
 
 export class AffinityAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<AffinityProperties, C> {
@@ -42,12 +40,12 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends C
             return properties.noAffinityGameAction?.addEventsToArray(events, context, overrides);
         }
 
-        if(!properties.prompt) {
+        if(!properties.activePromptTitle) {
             return this.#resolveAffinity(properties, events, context, overrides);
         }
 
         context.player.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: properties.prompt,
+            activePromptTitle: properties.activePromptTitle,
             source: context.source,
             options: [
                 { text: 'Yes', handler: () => this.#resolveAffinity(properties, events, context, overrides) },
@@ -63,15 +61,7 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends C
         overrides: ActionOverrides
     ) {
         properties.gameAction.addEventsToArray(events, context, overrides);
-        if(properties.chatText === undefined) {
-            // without an chatText text, the action's own chatText message says what the affinity does
-            const chatText = context.game.gameChat.nested(properties.gameAction.getEffectMessage(context, overrides));
-            context.game.addMessage(msg`${context.player} channels their ${properties.trait} affinity to ${chatText}`);
-            return;
-        }
-        const args = properties.chatTextArgs ? derive(properties.chatTextArgs, context) : [];
-        const nextArg = args.length;
-        const affinityMsg = `{${nextArg}} channels their ${properties.trait} affinity to ${properties.chatText}`;
-        context.game.addMessage(affinityMsg, ...args, context.player);
+        const chatText = properties.chatText ? properties.chatText(context) : properties.gameAction.getEffectMessage(context, overrides);
+        context.game.addMessage(msg`${context.player} channels their ${properties.trait} affinity to ${context.game.gameChat.nested(chatText)}`);
     }
 }

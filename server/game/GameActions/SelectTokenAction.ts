@@ -9,7 +9,6 @@ import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { GameAction } from './GameAction.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
-import type { EffectArg } from '../Interfaces.js';
 
 export interface SelectTokenProperties<C extends AbilityContext = AbilityContext> extends TokenActionProperties {
     activePromptTitle?: string;
@@ -23,8 +22,7 @@ export interface SelectTokenProperties<C extends AbilityContext = AbilityContext
     /** The chat line once the tokens are chosen. */
     message?: (context: C, tokens: StatusToken | StatusToken[], chooser: Player) => MessageArgs;
     gameAction: GameAction;
-    chatText?: string;
-    chatTextArgs?: (context: AbilityContext) => EffectArg[];
+    chatText?: (context: C) => MessageArgs;
 }
 
 export class SelectTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<
@@ -41,11 +39,10 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         subActionProperties: (tokens: StatusToken | StatusToken[]) => ({ target: tokens })
     };
 
-    /** A custom `chatText` brings its own arguments, from `{0}` on. */
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { chatText, chatTextArgs } = this.getProperties(context, additionalProperties);
+        const { chatText } = this.getProperties(context, additionalProperties);
         if(chatText) {
-            return [chatText, (chatTextArgs && chatTextArgs(context)) || []];
+            return chatText(context);
         }
         return super.getEffectMessage(context, additionalProperties);
     }

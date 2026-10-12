@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { RemainingCards, TargetMode } from '../../../Constants.js';
+import { Players, RemainingCards, TargetMode } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
 import { rearrangeDeck, setAside } from '../../../GameActions/GameActions.js';
@@ -16,8 +16,8 @@ export default class ShachihokoBay extends ProvinceCard {
             })
             .deckSearch((context) => ({
                 activePromptTitle: 'Select up to 3 cards to take',
-                player: context.player.opponent,
-                choosingPlayer: context.player,
+                target: context.player.opponent,
+                player: Players.Self,
                 cardsToLookAt: 6,
                 mode: TargetMode.UpTo,
                 numCards: 3,

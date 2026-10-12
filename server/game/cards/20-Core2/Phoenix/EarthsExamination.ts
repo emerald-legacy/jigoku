@@ -18,10 +18,9 @@ export default class EarthsExamination extends DrawCard {
                 taint(),
                 onAffinity(() => ({
                     trait: 'earth',
-                    prompt: 'Bow that character?',
+                    activePromptTitle: 'Bow that character?',
                     gameAction: bow(),
-                    chatText: 'bow {0}',
-                    chatTextArgs: (context) => [context.target]
+                    chatText: (context) => msg`bow ${context.target}`
                 }))
             ]))
             .chatText((context) => msg`reveal ${context.target ?? ''}'s corruption`);

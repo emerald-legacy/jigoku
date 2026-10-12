@@ -35,8 +35,7 @@ export default class BeguilingMaiko extends DrawCard {
                 if(favor === FavorType.Political || favor === FavorType.Both) {
                     gameActions.push(
                         selectCard({
-                            chatText: 'force {0} to dishonor one of their characters',
-                            chatTextArgs: (context) => [context.player.opponent ?? ''],
+                            chatText: (context) => msg`force ${context.player.opponent ?? ''} to dishonor one of their characters`,
                             cardType: CardType.Character,
                             player: Players.Opponent,
                             controller: Players.Opponent,

@@ -14,7 +14,8 @@ export default class TennyosBlessing extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince
-            }, deckSearch({
+            }, deckSearch((context) => ({
+                target: context.player,
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 cardsToLookAt: 4,
@@ -33,7 +34,7 @@ export default class TennyosBlessing extends DrawCard {
                         context.game.addMessage(msg`${event.player} selects no cards`);
                     }
                 }
-            }))
+            })))
             .evenDuringDynasty()
             .max(perRound(1));
     }

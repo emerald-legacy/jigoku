@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { draw, onAffinity, returnToDeck } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -20,7 +21,7 @@ export default class CounselFromYumeDo extends DrawCard {
             .afterwards()
             .gameAction(onAffinity({
                 trait: 'water',
-                chatText: 'draw a card',
+                chatText: () => msg`draw a card`,
                 gameAction: draw((context) => ({ target: context.player }))
             }));
     }

@@ -1,3 +1,4 @@
+import { msg } from '../../../GameChat.js';
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect, onAffinity, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -27,7 +28,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
                         ),
                         effect: cardCannot(RestrictionType.MoveToConflict)
                     })),
-                    chatText: 'forbid all players from moving characters into the conflict'
+                    chatText: () => msg`forbid all players from moving characters into the conflict`
                 })
             ]));
     }

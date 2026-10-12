@@ -27,9 +27,8 @@ export default class AllDistancesAreOne extends DrawCard {
             .afterwardsIf((context) => !context.costs.originalProvince?.isBroken)
             .gameAction(onAffinity((context) => ({
                 trait: 'water',
-                prompt: 'Flip the original province facedown?',
-                chatText: 'flip {0} facedown',
-                chatTextArgs: () => [context.costs.originalProvince],
+                activePromptTitle: 'Flip the original province facedown?',
+                chatText: () => msg`flip ${context.costs.originalProvince} facedown`,
                 gameAction: turnFacedown({ target: context.costs.originalProvince })
             })));
     }

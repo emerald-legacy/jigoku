@@ -34,8 +34,7 @@ class VoidWielder extends DrawCard {
                     player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
                     activePromptTitle: 'Which token do you wish to discard?',
                     message: (_context, token, player) => msg`${player} discards ${token}`,
-                    chatText: 'discard a status token from {0}',
-                    chatTextArgs: () => [context.targets.character],
+                    chatText: () => msg`discard a status token from ${context.targets.character}`,
                     gameAction: discardStatusToken()
                 })),
                 'Discard an attachment from this character': selectCard((context) => ({
@@ -44,8 +43,7 @@ class VoidWielder extends DrawCard {
                     activePromptTitle: 'Which attachment do you wish to discard?',
                     cardCondition: (card, context) => card.parentCharacter === context.targets.character,
                     gameAction: discardFromPlay(),
-                    chatText: 'discard an attachment from {0}',
-                    chatTextArgs: () => [context.targets.character],
+                    chatText: () => msg`discard an attachment from ${context.targets.character}`,
                     message: (_context, card, player) => msg`${player} discards ${card}`
                 }))
             });

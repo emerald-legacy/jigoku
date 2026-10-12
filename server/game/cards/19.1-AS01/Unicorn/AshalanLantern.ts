@@ -25,8 +25,8 @@ export default class AshalanLantern extends DrawCard {
                 deckSearch((context) => ({
                     cardsToLookAt: 3,
                     deck: DeckType.Dynasty,
-                    player: context.player.opponent,
-                    choosingPlayer: context.player,
+                    target: context.player.opponent,
+                    player: Players.Self,
                     remainingCards: RemainingCards.Top,
                     cardCondition: (card) => card.type === CardType.Character && !card.isUnique(),
                     gameAction: playCard((deckSearchContext) => {

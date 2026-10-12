@@ -176,13 +176,13 @@ describe('SelectTokenAction', function() {
             expect(action.getEffectMessage(this.context)).toEqual(['choose a status token for {0}', [['tgt']]]);
         });
 
-        it('should return the custom effect with effectArgs when configured', function() {
-            const effectArgs = jasmine.createSpy('effectArgs').and.returnValue(['x', 'y']);
+        it('should return the custom chat text when configured', function() {
+            const chatText = jasmine.createSpy('chatText').and.returnValue(['custom effect {0}', ['x']]);
             const action = new SelectTokenAction({
-                target: 'tgt', card: this.card, gameAction: this.gameAction,
-                chatText: 'custom effect', chatTextArgs: effectArgs
+                target: 'tgt', card: this.card, gameAction: this.gameAction, chatText
             });
-            expect(action.getEffectMessage(this.context)).toEqual(['custom effect', ['x', 'y']]);
+            expect(action.getEffectMessage(this.context)).toEqual(['custom effect {0}', ['x']]);
+            expect(chatText).toHaveBeenCalledWith(this.context);
         });
     });
 });

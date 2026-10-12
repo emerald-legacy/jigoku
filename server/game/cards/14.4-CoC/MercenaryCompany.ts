@@ -17,7 +17,7 @@ class MercenaryCompany extends DrawCard {
             })
             .gameAction(optional((context) => ({
                 player: Players.Opponent,
-                prompt: 'Place a fate on Mercenary Company to take control of it?',
+                activePromptTitle: 'Place a fate on Mercenary Company to take control of it?',
                 gameAction: placeFate({ origin: context.player.opponent }),
                 declineMessage: (context, chooser) => msg`${chooser} chooses not to hire ${context.source}`
             })))

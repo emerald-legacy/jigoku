@@ -47,8 +47,7 @@ export default class SanctifiedEarth extends DrawCard {
 
                 onAffinity({
                     trait: 'earth',
-                    chatText: 'make {0} invulnerable to opponent\'s send home',
-                    chatTextArgs: (context) => [context.target],
+                    chatText: (context) => msg`make ${context.target} invulnerable to opponent's send home`,
                     gameAction: cardLastingEffect((context) => ({
                         target: context.target,
                         effect: cardCannot({
