@@ -7,7 +7,7 @@ import {
     sacrifice,
     selectCard,
     sendHome,
-    sequentialContext
+    sequential
 } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
@@ -37,7 +37,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                         message: (_context, target, player) => msg`${player} chooses to send ${target} home`
                     },
                     'Sacrifice a character to perform both': {
-                        action: sequentialContext((context) => {
+                        action: sequential((context) => {
                             const gameActions: GameAction[] = [];
                             gameActions.push(
                                 selectCard({
@@ -52,7 +52,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                             gameActions.push(dishonor({ target: context.target }));
                             gameActions.push(sendHome({ target: context.target }));
 
-                            return { gameActions };
+                            return gameActions;
                         }),
                         message: (_context, target, player) => msg`${player} chooses to sacrifice a character to both dishonor and send ${target} home`
                     }

@@ -7,7 +7,7 @@ import {
     joint,
     loseFate,
     menuPrompt,
-    sequentialContext
+    sequential
 } from '../../../GameActions/GameActions.js';
 import { CardType, Players, Duration } from '../../../Constants.js';
 
@@ -20,7 +20,7 @@ class SurgingWave extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
-            }, sequentialContext((context) => {
+            }, sequential((context) => {
                 const kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
                 const gameActions = [];
                 gameActions.push(
@@ -62,9 +62,7 @@ class SurgingWave extends DrawCard {
                     );
                 }
 
-                return {
-                    gameActions: gameActions
-                };
+                return gameActions;
             }))
             .chatText('discard all status tokens from {0} at the end of the conflict');
     }

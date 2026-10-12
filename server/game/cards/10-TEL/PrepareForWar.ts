@@ -6,7 +6,7 @@ import {
     discardStatusToken,
     honor,
     menuPrompt,
-    multipleContext,
+    multiple,
     selectCards,
     sequential
 } from '../../GameActions/GameActions.js';
@@ -21,23 +21,21 @@ class PrepareForWar extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, sequential([
-                multipleContext((context) => {
+                multiple((context) => {
                     const promptActions = this.getStatusTokenPrompts(context);
-                    return {
-                        gameActions: [
-                            selectCards((context) => ({
-                                mode: TargetMode.Unlimited,
-                                cardType: CardType.Attachment,
-                                controller: Players.Any,
-                                cardCondition: (card) => card.parentCharacter === context.target,
-                                activePromptTitle: 'Choose any amount of attachments',
-                                optional: true,
-                                gameAction: discardFromPlay(),
-                                message: (context, cards) => msg`${context.player} chooses to discard ${cards.length === 0 ? 'no attachments' : cards} from ${context.target ?? ''}`
-                            })),
-                            ...promptActions
-                        ]
-                    };
+                    return [
+                        selectCards((context) => ({
+                            mode: TargetMode.Unlimited,
+                            cardType: CardType.Attachment,
+                            controller: Players.Any,
+                            cardCondition: (card) => card.parentCharacter === context.target,
+                            activePromptTitle: 'Choose any amount of attachments',
+                            optional: true,
+                            gameAction: discardFromPlay(),
+                            message: (context, cards) => msg`${context.player} chooses to discard ${cards.length === 0 ? 'no attachments' : cards} from ${context.target ?? ''}`
+                        })),
+                        ...promptActions
+                    ];
                 }),
                 honor((context) => ({
                     target: context.target?.hasTrait('commander') ? context.target : []

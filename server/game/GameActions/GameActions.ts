@@ -60,8 +60,7 @@ import { MoveCardAction, MoveCardProperties } from './MoveCardAction.js';
 import { MoveConflictAction, MoveConflictProperties } from './MoveConflictAction.js';
 import { MoveToConflictAction, MoveToConflictProperties } from './MoveToConflictAction.js';
 import { MoveStatusTokenAction, MoveTokenProperties } from './MoveStatusTokenAction.js';
-import { MultipleContextProperties, MultipleContextGameAction } from './MultipleContextGameAction.js';
-import { MultipleGameAction } from './MultipleGameAction.js';
+import { MultipleGameAction, type GameActionList } from './MultipleGameAction.js';
 import { OpponentPutIntoPlayAction, OpponentPutIntoPlayProperties } from './OpponentPutIntoPlayAction.js';
 import { PlaceCardUnderneathAction, PlaceCardUnderneathProperties } from './PlaceCardUnderneathAction.js';
 import { PlaceFateAction, PlaceFateProperties } from './PlaceFateAction.js';
@@ -92,7 +91,6 @@ import { SelectRingAction, SelectRingProperties } from './SelectRingActions.js';
 import { SelectTokenAction, SelectTokenProperties } from './SelectTokenAction.js';
 import { SendHomeAction, SendHomeProperties } from './SendHomeAction.js';
 import { SequentialAction } from './SequentialAction.js';
-import { SequentialContextAction, SequentialContextProperties } from './SequentialContextAction.js';
 import { SetHonorDialAction, SetDialProperties } from './SetHonorDialAction.js';
 import { SetAsideAction, SetAsideProperties } from './SetAsideAction.js';
 import { PlaceInProvinceAction, PlaceInProvinceProperties } from './PlaceInProvinceAction.js';
@@ -519,12 +517,9 @@ export function ifAble<C extends AbilityContext = AbilityContext>(propertyFactor
 export function joint<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): JointGameAction<C> {
     return new JointGameAction<C>(gameActions);
 } // takes an array of gameActions, not a propertyFactory
-export function multiple<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): MultipleGameAction<C> {
+export function multiple<C extends AbilityContext = AbilityContext>(gameActions: GameActionList<C>): MultipleGameAction<C> {
     return new MultipleGameAction<C>(gameActions);
-} // takes an array of gameActions, not a propertyFactory
-export function multipleContext<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MultipleContextProperties, C>): MultipleContextGameAction<C> {
-    return new MultipleContextGameAction<C>(propertyFactory);
-}
+} // a list of actions, or (context) => list
 export function menuPrompt<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, C>): MenuPromptAction<C> {
     return new MenuPromptAction<C>(propertyFactory);
 }
@@ -550,9 +545,6 @@ export function selectCards<C extends AbilityContext = AbilityContext, const K e
 export function selectToken<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectTokenProperties<C>, C>): SelectTokenAction<C> {
     return new SelectTokenAction<C>(propertyFactory);
 }
-export function sequential<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): SequentialAction<C> {
+export function sequential<C extends AbilityContext = AbilityContext>(gameActions: GameActionList<C>): SequentialAction<C> {
     return new SequentialAction<C>(gameActions);
-} // takes an array of gameActions, not a propertyFactory
-export function sequentialContext<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SequentialContextProperties, C>): SequentialContextAction<C> {
-    return new SequentialContextAction<C>(propertyFactory);
-}
+} // a list of actions, or (context) => list

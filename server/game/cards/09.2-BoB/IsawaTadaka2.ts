@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import { CardType, Location, TargetMode } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
-import { cardMenu, discardCard, lookAt, multipleContext } from '../../GameActions/GameActions.js';
+import { cardMenu, discardCard, lookAt, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/random.js';
 
@@ -16,25 +16,23 @@ export default class IsawaTadaka2 extends DrawCard {
                 mode: TargetMode.Unlimited
             }))
             .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
-            .gameAction(multipleContext((context) => {
+            .gameAction(multiple((context) => {
                 const removed = context.costs.removeFromGame;
                 const cards =
                     context.player.opponent && removed
                         ? shuffle(context.player.opponent.hand).slice(0, Array.isArray(removed) ? removed.length : 1)
                         : [context.source];
-                return {
-                    gameActions: [
-                        lookAt(() => ({
-                            target: cards.slice().sort((a, b) => a.name.localeCompare(b.name))
-                        })),
-                        cardMenu({
-                            cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
-                            targets: true,
-                            message: (context, card) => msg`${context.player} chooses ${card} to be discarded`,
-                            gameAction: discardCard()
-                        })
-                    ]
-                };
+                return [
+                    lookAt(() => ({
+                        target: cards.slice().sort((a, b) => a.name.localeCompare(b.name))
+                    })),
+                    cardMenu({
+                        cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
+                        targets: true,
+                        message: (context, card) => msg`${context.player} chooses ${card} to be discarded`,
+                        gameAction: discardCard()
+                    })
+                ];
             }))
             .chatText((context) => {
                 const removed = context.costs.removeFromGame ?? [];

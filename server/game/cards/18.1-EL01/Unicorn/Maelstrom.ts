@@ -11,7 +11,7 @@ import {
     handler,
     honor,
     moveToConflict,
-    multipleContext
+    multiple
 } from '../../../GameActions/GameActions.js';
 
 function maelstromCost(): Cost<{ maelstromCostPaid: boolean; maelstromCost: DrawCard }> {
@@ -91,29 +91,27 @@ export default class Maelstrom extends ProvinceCard {
                 controller: Players.Any,
                 cardCondition: (card, context) =>
                     context.costs.maelstromCostPaid ? true : card.controller === context.player
-            }, multipleContext((context) => {
+            }, multiple((context) => {
                 const target = context.target;
                 // the triggering player, not always the controller (Contested Countryside)
                 const triggeringPlayer = context.player;
-                return {
-                    gameActions: [
-                        moveToConflict(),
-                        cardLastingEffect({
-                            target: target,
-                            duration: Duration.UntilEndOfPhase,
-                            effect: delayedEffect({
-                                when: {
-                                    afterConflict: (event) =>
-                                        event.conflict.winner === target.controller &&
-                                            target.isParticipating() &&
-                                            target.controller === triggeringPlayer
-                                },
-                                message: () => msg`${target} is honored due to ${context.source}'s effect`,
-                                gameAction: honor()
-                            })
+                return [
+                    moveToConflict(),
+                    cardLastingEffect({
+                        target: target,
+                        duration: Duration.UntilEndOfPhase,
+                        effect: delayedEffect({
+                            when: {
+                                afterConflict: (event) =>
+                                    event.conflict.winner === target.controller &&
+                                        target.isParticipating() &&
+                                        target.controller === triggeringPlayer
+                            },
+                            message: () => msg`${target} is honored due to ${context.source}'s effect`,
+                            gameAction: honor()
                         })
-                    ]
-                };
+                    })
+                ];
             }))
             .chatText((context) => context.target.controller === context.player
                 ? msg`move ${context.chatTarget()} into the conflict. It will be honored if it wins the conflict`

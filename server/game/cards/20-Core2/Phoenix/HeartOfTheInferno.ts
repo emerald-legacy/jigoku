@@ -1,5 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
-import { bow, discardFromPlay, multipleContext } from '../../../GameActions/GameActions.js';
+import { bow, discardFromPlay, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -21,9 +21,9 @@ export default class HeartOfTheInferno extends DrawCard {
                 cardCondition: (card, context) => !!context.player.opponent &&
                     (card.isParticipatingFor(context.player.opponent) ||
                         !!card.parentCharacter?.isParticipatingFor(context.player.opponent))
-            }, multipleContext((context) => {
+            }, multiple((context) => {
                 if(!(context.target instanceof DrawCard)) {
-                    return { gameActions: [] };
+                    return [];
                 }
 
                 const gameActions: Array<GameAction> = [];
@@ -34,7 +34,7 @@ export default class HeartOfTheInferno extends DrawCard {
                     gameActions.push(discardFromPlay({ target: context.target }));
                 }
 
-                return { gameActions };
+                return gameActions;
             }));
     }
 }

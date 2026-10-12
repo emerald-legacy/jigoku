@@ -1,6 +1,6 @@
 import { AbilityType, CardType, Duration, EffectName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import { addFlag, blank, cardCannot, changeType, gainAbility } from '../../../effects.js';
-import { attach, cardLastingEffect, detach, sequentialContext } from '../../../GameActions/GameActions.js';
+import { attach, cardLastingEffect, detach, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -27,7 +27,7 @@ export default class LoyalWarhound extends DrawCard {
                 cardCondition: (card, context) =>
                     attach({ attachment: DummyHoundAttachment }).canAffect(card, context) && card !== context.source
             })
-            .gameAction(sequentialContext((context) => {
+            .gameAction(sequential((context) => {
                 const gameActions: GameAction[] = [];
 
                 gameActions.push(cardLastingEffect({
@@ -71,7 +71,7 @@ export default class LoyalWarhound extends DrawCard {
                     target: context.target
                 }));
 
-                return { gameActions };
+                return gameActions;
             }))
             .chatText('attach itself to {0}');
     }

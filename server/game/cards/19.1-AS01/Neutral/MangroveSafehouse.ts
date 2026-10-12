@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { multipleContext, sendHome, takeFate } from '../../../GameActions/GameActions.js';
+import { multiple, sendHome, takeFate } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
@@ -14,12 +14,12 @@ export default class MangroveSafehouse extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isAttacking()
-            }, multipleContext((context) => {
+            }, multiple((context) => {
                 const gameActions: GameAction[] = [sendHome()];
                 if(this.targetIsMantis(context)) {
                     gameActions.push(takeFate({ target: context.player.opponent }));
                 }
-                return { gameActions };
+                return gameActions;
             }))
             .chatText((context) => msg`move ${context.chatTarget()} home${this.targetIsMantis(context) && this.opponentHasFateToBeStolen(context) ? ' and steal 1 fate' : ''}`);
     }

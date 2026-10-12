@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { lookAt, moveCard, multipleContext, takeHonor } from '../../GameActions/GameActions.js';
+import { lookAt, moveCard, multiple, takeHonor } from '../../GameActions/GameActions.js';
 import { Location, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/random.js';
@@ -10,20 +10,18 @@ export default class Overhear extends DrawCard {
     public setupCardAbilities() {
         this.action('Place random card on top of deck')
             .condition((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.opponent !== undefined)
-            .gameAction(multipleContext((context) => {
+            .gameAction(multiple((context) => {
                 const card = context.player.opponent ? shuffle(context.player.opponent.hand).slice(0, 1) : [];
-                return {
-                    gameActions: [
-                        lookAt(() => ({
-                            target: card,
-                            message: (context, cards) => msg`${context.player} sees ${cards}`
-                        })),
-                        moveCard(() => ({
-                            target: card,
-                            destination: Location.ConflictDeck
-                        }))
-                    ]
-                };
+                return [
+                    lookAt(() => ({
+                        target: card,
+                        message: (context, cards) => msg`${context.player} sees ${cards}`
+                    })),
+                    moveCard(() => ({
+                        target: card,
+                        destination: Location.ConflictDeck
+                    }))
+                ];
             }))
             .chatText((context) => msg`reveal a random card from ${context.player.opponent}'s hand and place it on top of ${context.player.opponent}'s deck`)
             .mayResolveAgain({

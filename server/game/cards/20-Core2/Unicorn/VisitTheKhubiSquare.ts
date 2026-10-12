@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, Location, EventName, RemainingCards } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import { deckSearch, moveCard, putIntoPlay, sequentialContext } from '../../../GameActions/GameActions.js';
+import { deckSearch, moveCard, putIntoPlay, sequential } from '../../../GameActions/GameActions.js';
 
 export default class VisitTheKhubiSquare extends ProvinceCard {
     static id = 'visit-the-khubi-square';
@@ -11,39 +11,37 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .gameAction(sequentialContext((context) => {
+            .gameAction(sequential((context) => {
                 const topFive = context.player.dynastyDeck.slice(0, 5);
-                return {
-                    gameActions: [
-                        deckSearch({
-                            activePromptTitle: 'Choose a character to put into play',
-                            cardsToLookAt: 5,
-                            deck: DeckType.Dynasty,
-                            cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
-                            remainingCards: RemainingCards.Top,
-                            message: (context, cards) => {
-                                const discards = topFive.filter((a) => !cards.includes(a));
-                                return discards.length > 0
-                                    ? msg`${context.player} puts ${cards} into play and discards ${discards}`
-                                    : msg`${context.player} puts ${cards} into play`;
-                            },
-                            gameAction: putIntoPlay()
+                return [
+                    deckSearch({
+                        activePromptTitle: 'Choose a character to put into play',
+                        cardsToLookAt: 5,
+                        deck: DeckType.Dynasty,
+                        cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
+                        remainingCards: RemainingCards.Top,
+                        message: (context, cards) => {
+                            const discards = topFive.filter((a) => !cards.includes(a));
+                            return discards.length > 0
+                                ? msg`${context.player} puts ${cards} into play and discards ${discards}`
+                                : msg`${context.player} puts ${cards} into play`;
+                        },
+                        gameAction: putIntoPlay()
+                    }),
+                    moveCard((context2) => ({
+                        target: topFive.filter((a) => {
+                            const searchEvent = context2.events
+                                .filter((event) => !event.cancelled)
+                                .find((event) => event.is(EventName.OnDeckSearch));
+                            if(searchEvent && searchEvent.selectedCards) {
+                                return !searchEvent.selectedCards.includes(a);
+                            }
+                            return true;
                         }),
-                        moveCard((context2) => ({
-                            target: topFive.filter((a) => {
-                                const searchEvent = context2.events
-                                    .filter((event) => !event.cancelled)
-                                    .find((event) => event.is(EventName.OnDeckSearch));
-                                if(searchEvent && searchEvent.selectedCards) {
-                                    return !searchEvent.selectedCards.includes(a);
-                                }
-                                return true;
-                            }),
-                            faceup: true,
-                            destination: Location.DynastyDiscardPile
-                        }))
-                    ]
-                };
+                        faceup: true,
+                        destination: Location.DynastyDiscardPile
+                    }))
+                ];
             }))
             .chatText('search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play');
     }

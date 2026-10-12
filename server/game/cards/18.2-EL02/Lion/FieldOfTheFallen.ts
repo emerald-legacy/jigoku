@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { Location, ConflictType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
-import { draw, returnToDeck, selectCard, sequentialContext } from '../../../GameActions/GameActions.js';
+import { draw, returnToDeck, selectCard, sequential } from '../../../GameActions/GameActions.js';
 
 class FieldOfTheFallen extends DrawCard {
     static id = 'field-of-the-fallen';
@@ -11,7 +11,7 @@ class FieldOfTheFallen extends DrawCard {
         this.action('Discard then draw a card')
             .cost(costs.discardCard({ location: Location.Hand }))
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .gameAction(sequentialContext((context) => {
+            .gameAction(sequential((context) => {
                 const moreHonorable = context.player.isMoreHonorable();
                 const gameActions = [];
                 gameActions.push(draw((context) => ({
@@ -30,9 +30,7 @@ class FieldOfTheFallen extends DrawCard {
                     }));
                 }
 
-                return ({
-                    gameActions: gameActions
-                });
+                return gameActions;
             }));
     }
 }

@@ -3,7 +3,7 @@ import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import { cannotTriggerAbilities, changeType, gainAllAbilitiesDynamic } from '../../../effects.js';
-import { attach, cardLastingEffect, sequentialContext } from '../../../GameActions/GameActions.js';
+import { attach, cardLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 
 export default class LaughingThunder extends DrawCard {
     static id = 'laughing-thunder';
@@ -26,7 +26,7 @@ export default class LaughingThunder extends DrawCard {
                 cardCondition: (card, context) => card.hasTrait('kiho') &&
                     attach({ attachment: this.getDummyAttachment(card) }).canAffect(context.source, context)
             })
-            .gameAction(sequentialContext((context) => {
+            .gameAction(sequential((context) => {
                 const gameActions: GameAction[] = [];
 
                 gameActions.push(cardLastingEffect({
@@ -49,7 +49,7 @@ export default class LaughingThunder extends DrawCard {
                     target: context.source
                 }));
 
-                return { gameActions };
+                return gameActions;
             }))
             .chatText('claim the effects of {0} as its own');
     }

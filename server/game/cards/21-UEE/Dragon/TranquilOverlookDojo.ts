@@ -5,7 +5,7 @@ import {
     conditional,
     discardCard,
     lookAt,
-    sequentialContext
+    sequential
 } from '../../../GameActions/GameActions.js';
 import { DuelType, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
@@ -32,24 +32,22 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
             gameAction: (duel) =>
                 conditional({
                     condition: (context) => duel.winningPlayer === context.player,
-                    trueGameAction: sequentialContext((context) => {
+                    trueGameAction: sequential((context) => {
                         const revealedCards = randomHandCards(context.player.opponent, 2);
-                        return {
-                            gameActions: [
-                                lookAt({
-                                    target: revealedCards,
-                                    message: (context, cards) => msg`${context.player.opponent} reveals ${cards} from their hand`
-                                }),
-                                cardMenu({
-                                    activePromptTitle: 'Choose a card to discard',
-                                    cards: revealedCards,
-                                    targets: true,
-                                    player: Players.Self,
-                                    message: (_context, card, player) => msg`${player} discards ${card}`,
-                                    gameAction: discardCard()
-                                })
-                            ]
-                        };
+                        return [
+                            lookAt({
+                                target: revealedCards,
+                                message: (context, cards) => msg`${context.player.opponent} reveals ${cards} from their hand`
+                            }),
+                            cardMenu({
+                                activePromptTitle: 'Choose a card to discard',
+                                cards: revealedCards,
+                                targets: true,
+                                player: Players.Self,
+                                message: (_context, card, player) => msg`${player} discards ${card}`,
+                                gameAction: discardCard()
+                            })
+                        ];
                     })
                 })
         }))

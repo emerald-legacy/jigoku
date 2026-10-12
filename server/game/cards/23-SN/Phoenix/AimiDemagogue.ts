@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { addKeyword } from '../../../effects.js';
-import { cardLastingEffect, multipleContext } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -14,7 +14,7 @@ export default class AimiDemagogue extends DrawCard {
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, multipleContext((context) => {
+            }, multiple((context) => {
                 const gameActions: GameAction[] = [];
 
                 gameActions.push(cardLastingEffect({
@@ -28,7 +28,7 @@ export default class AimiDemagogue extends DrawCard {
                         target: context.source
                     }));
                 }
-                return { gameActions };
+                return gameActions;
             }))
             .chatText((context) => msg`give ${context.target.controller !== context.player ? 'itself and ' : ''}${context.chatTarget()} pride until the end of the conflict`);
     }

@@ -4,7 +4,7 @@ import {
     dishonor,
     lookAt,
     selectCard,
-    sequentialContext
+    sequential
 } from '../../../GameActions/GameActions.js';
 import { CardType, FavorType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -18,12 +18,10 @@ export default class BeguilingMaiko extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => event.card === context.source
             })
-            .gameAction(sequentialContext((context) => {
+            .gameAction(sequential((context) => {
                 const favor = context.game.getFavorSide();
                 if(favor === undefined) {
-                    return {
-                        gameActions: [claimImperialFavor((context) => ({ target: context.player }))]
-                    };
+                    return [claimImperialFavor((context) => ({ target: context.player }))];
                 }
                 const gameActions: Array<GameAction> = [];
                 if(favor === FavorType.Military || favor === FavorType.Both) {
@@ -47,7 +45,7 @@ export default class BeguilingMaiko extends DrawCard {
                         })
                     );
                 }
-                return { gameActions };
+                return gameActions;
             }));
     }
 }

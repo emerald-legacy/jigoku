@@ -1,7 +1,7 @@
 import { CardType, Location } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import * as costs from '../../../costs/index.js';
-import { discardFromPlay, moveCard, multipleContext } from '../../../GameActions/GameActions.js';
+import { discardFromPlay, moveCard, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -15,15 +15,13 @@ export default class FortifiedLumberCamp extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province
             })
-            .gameAction(multipleContext((context) => ({
-                gameActions: [
-                    moveCard({
-                        destination: Location.DynastyDiscardPile,
-                        target: this.cardsInProvince(context.target)
-                    }),
-                    discardFromPlay({ target: context.target.attachments })
-                ]
-            })))
+            .gameAction(multiple((context) => [
+                moveCard({
+                    destination: Location.DynastyDiscardPile,
+                    target: this.cardsInProvince(context.target)
+                }),
+                discardFromPlay({ target: context.target.attachments })
+            ]))
             .chatText((context) => msg`discard ${this.cardsInProvince(context.target).concat(context.target.attachments)}`);
     }
 

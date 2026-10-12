@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { chatMessage, discardCard, draw, sequentialContext } from '../../GameActions/GameActions.js';
+import { chatMessage, discardCard, draw, sequential } from '../../GameActions/GameActions.js';
 import { Phase } from '../../Constants.js';
 
 class Subterfuge extends DrawCard {
@@ -19,24 +19,22 @@ class Subterfuge extends DrawCard {
                 }
             })
             .cancel((context) => ({
-                replacementGameAction: sequentialContext(() => {
+                replacementGameAction: sequential(() => {
                     const eventAmount = context.event.amount ?? 0;
                     const discardAmount = Math.min(eventAmount, 3);
                     const cardsToDiscard = context.player.opponent?.conflictDeck.slice(0, discardAmount);
                     const drawAmount = eventAmount - discardAmount;
-                    return {
-                        gameActions: [
-                            discardCard({
-                                target: cardsToDiscard
-                            }),
-                            chatMessage((context) => msg`${context.player.opponent} discards ${cardsToDiscard}`),
-                            chatMessage((context) => drawAmount > 0 ? msg`${context.player.opponent} draws ${drawAmount} card${drawAmount > 1 ? 's' : ''}` : undefined),
-                            draw({
-                                target: context.player.opponent,
-                                amount: drawAmount
-                            })
-                        ]
-                    };
+                    return [
+                        discardCard({
+                            target: cardsToDiscard
+                        }),
+                        chatMessage((context) => msg`${context.player.opponent} discards ${cardsToDiscard}`),
+                        chatMessage((context) => drawAmount > 0 ? msg`${context.player.opponent} draws ${drawAmount} card${drawAmount > 1 ? 's' : ''}` : undefined),
+                        draw({
+                            target: context.player.opponent,
+                            amount: drawAmount
+                        })
+                    ];
                 })
             }))
             .chatText((context) => {

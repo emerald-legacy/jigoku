@@ -3,7 +3,7 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import * as costs from '../../../costs/index.js';
 import { attachmentMilitarySkillModifier, attachmentPoliticalSkillModifier } from '../../../effects.js';
-import { attach, multipleContext, shuffleDeck } from '../../../GameActions/GameActions.js';
+import { attach, multiple, shuffleDeck } from '../../../GameActions/GameActions.js';
 
 export default class APlagueOfYokai extends DrawCard {
     static id = 'a-plague-of-yokai';
@@ -29,18 +29,16 @@ export default class APlagueOfYokai extends DrawCard {
                 cardCondition: (card, context) => !!context.player.opponent &&
                     card.isParticipatingFor(context.player.opponent) &&
                     attach().canAffect(card, context, { attachment: this.getCopiesInDeck(context)[0] })
-            }, multipleContext((context) => ({
-                gameActions: [
-                    attach({
-                        target: context.target,
-                        attachment: this.getCopiesInDeck(context)[0]
-                    }),
-                    shuffleDeck({
-                        deck: Location.ConflictDeck,
-                        target: context.player
-                    })
-                ]
-            })))
+            }, multiple((context) => [
+                attach({
+                    target: context.target,
+                    attachment: this.getCopiesInDeck(context)[0]
+                }),
+                shuffleDeck({
+                    deck: Location.ConflictDeck,
+                    target: context.player
+                })
+            ]))
             .chatText('infect {0}');
     }
 

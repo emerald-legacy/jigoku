@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { addKeyword } from '../../../effects.js';
-import { cardLastingEffect, honor, multipleContext } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, honor, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CaretakerOfTheDeadEyes extends DrawCard {
@@ -11,7 +11,7 @@ export default class CaretakerOfTheDeadEyes extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.hasTrait('bushi')
             })
-            .gameAction(multipleContext((context) => {
+            .gameAction(multiple((context) => {
                 const card = context.event.card;
                 const gameActions = [];
                 if(card.isDishonored) {
@@ -25,7 +25,7 @@ export default class CaretakerOfTheDeadEyes extends DrawCard {
                     }));
                 }
 
-                return { gameActions };
+                return gameActions;
             }));
     }
 }

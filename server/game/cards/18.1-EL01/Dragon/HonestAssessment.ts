@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { discardMatching, multipleContext, reveal } from '../../../GameActions/GameActions.js';
+import { discardMatching, multiple, reveal } from '../../../GameActions/GameActions.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/random.js';
@@ -18,21 +18,19 @@ export default class HonestAssessment extends DrawCard {
                     event.card === context.source && event.originalLocation !== Location.PlayArea
             })
             .cost(costs.nameCard())
-            .gameAction(multipleContext((context) => {
+            .gameAction(multiple((context) => {
                 const hand = shuffle(context.player.opponent?.hand ?? []);
                 const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
-                return {
-                    gameActions: [
-                        reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
-                        discardMatching({
-                            target: context.player.opponent,
-                            cards,
-                            amount: -1, //all
-                            reveal: false,
-                            match: (context, card) => card.name === context.costs.namedCard
-                        })
-                    ]
-                };
+                return [
+                    reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
+                    discardMatching({
+                        target: context.player.opponent,
+                        cards,
+                        amount: -1, //all
+                        reveal: false,
+                        match: (context, card) => card.name === context.costs.namedCard
+                    })
+                ];
             }))
             .chatText((context) => msg`reveal 4 random cards from ${context.player.opponent}'s hand and discard all copies of ${context.costs.namedCard}`)
             .max(perRound(1));

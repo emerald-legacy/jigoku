@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import { blank, changeType, gainAbility, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
-import { attach, cardLastingEffect, handler, sequentialContext } from '../../GameActions/GameActions.js';
+import { attach, cardLastingEffect, handler, sequential } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, Duration, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
 import { randomItem } from '../../utils/random.js';
@@ -20,50 +20,48 @@ export default class UndeadHorror extends BaseOni {
                         (card) => card.type === CardType.Character
                     ).length > 0
             })
-            .gameAction(sequentialContext((context) => {
+            .gameAction(sequential((context) => {
                 const potentialTargets = (context.player.opponent?.dynastyDiscardPile ?? []).filter(
                     (card) => card.type === CardType.Character
                 );
                 const targetCard = randomItem(potentialTargets);
-                return {
-                    gameActions: [
-                        cardLastingEffect({
-                            target: targetCard,
-                            canChangeZoneOnce: true,
-                            duration: Duration.Custom,
-                            effect: [
-                                blank(true),
-                                changeType(CardType.Attachment),
-                                gainAbility(AbilityType.Persistent, {
-                                    match: (card, context) => {
-                                        const parent = context && context.source.parentCharacter;
-                                        return card === parent;
-                                    },
-                                    targetController: Players.Opponent,
-                                    effect: [
-                                        modifyMilitarySkill(
-                                            (_card, context) =>
-                                                (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0
-                                        ),
-                                        modifyPoliticalSkill(
-                                            (_card, context) =>
-                                                (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0
-                                        )
-                                    ]
-                                })
-                            ]
-                        }),
-                        attach({
-                            target: context.source,
-                            attachment: targetCard
-                        }),
-                        handler({
-                            handler: (context) => {
-                                context.game.addMessage(msg`${targetCard} is attached to ${context.source}`);
-                            }
-                        })
-                    ]
-                };
+                return [
+                    cardLastingEffect({
+                        target: targetCard,
+                        canChangeZoneOnce: true,
+                        duration: Duration.Custom,
+                        effect: [
+                            blank(true),
+                            changeType(CardType.Attachment),
+                            gainAbility(AbilityType.Persistent, {
+                                match: (card, context) => {
+                                    const parent = context && context.source.parentCharacter;
+                                    return card === parent;
+                                },
+                                targetController: Players.Opponent,
+                                effect: [
+                                    modifyMilitarySkill(
+                                        (_card, context) =>
+                                            (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0
+                                    ),
+                                    modifyPoliticalSkill(
+                                        (_card, context) =>
+                                            (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0
+                                    )
+                                ]
+                            })
+                        ]
+                    }),
+                    attach({
+                        target: context.source,
+                        attachment: targetCard
+                    }),
+                    handler({
+                        handler: (context) => {
+                            context.game.addMessage(msg`${targetCard} is attached to ${context.source}`);
+                        }
+                    })
+                ];
             }))
             .chatText((context) => msg`attach a random character from ${context.player.opponent}'s dynasty discard pile to ${context.source}`);
     }

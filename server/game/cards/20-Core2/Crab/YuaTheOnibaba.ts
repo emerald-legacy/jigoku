@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect, multipleContext } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
@@ -35,20 +35,18 @@ export default class YuaTheOnibaba extends DrawCard {
 
     public setupCardAbilities() {
         this.conflictAction('Weaken non-bushi, empower bushi')
-            .gameAction(multipleContext((context) => {
+            .gameAction(multiple((context) => {
                 const targets = charactersToBuffAndNerf(context.player, context.game.currentConflict);
-                return {
-                    gameActions: [
-                        cardLastingEffect({
-                            target: targets.toBuff,
-                            effect: modifyBothSkills(1)
-                        }),
-                        cardLastingEffect({
-                            target: targets.toNerf,
-                            effect: modifyBothSkills(-1)
-                        })
-                    ]
-                };
+                return [
+                    cardLastingEffect({
+                        target: targets.toBuff,
+                        effect: modifyBothSkills(1)
+                    }),
+                    cardLastingEffect({
+                        target: targets.toNerf,
+                        effect: modifyBothSkills(-1)
+                    })
+                ];
             }))
             .chatText(() => msg`give all friendly participating bushi characters +1${'military'} / +1${'political'} and give all participating non-bushi characters -1${'military'} / -1${'political'}`);
     }

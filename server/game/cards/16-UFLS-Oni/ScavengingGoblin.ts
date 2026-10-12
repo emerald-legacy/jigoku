@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import { CardType, Location } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
-import { handler, multipleContext, removeFromGame } from '../../GameActions/GameActions.js';
+import { handler, multiple, removeFromGame } from '../../GameActions/GameActions.js';
 
 export default class ScavengingGoblin extends BaseOni {
     static id = 'scavenging-goblin';
@@ -16,7 +16,7 @@ export default class ScavengingGoblin extends BaseOni {
                     context.player.opponent &&
                     context.player.opponent.conflictDeck.length > 0
             })
-            .gameAction(multipleContext((context) => {
+            .gameAction(multiple((context) => {
                 const cardsToRemove = context.player.opponent?.conflictDeck.slice(0, 3) ?? [];
                 const cardNames = cardsToRemove.map((card) => card.name);
                 const attachmentsToRemove = this.game.allCards.filter((card) => {
@@ -32,25 +32,23 @@ export default class ScavengingGoblin extends BaseOni {
                     return cardNames.includes(card.name);
                 });
 
-                return {
-                    gameActions: [
-                        removeFromGame({
-                            target: cardsToRemove,
-                            location: Location.ConflictDeck
-                        }),
-                        removeFromGame({
-                            target: attachmentsToRemove
-                        }),
-                        handler({
-                            handler: (context) => {
-                                context.game.addMessage(msg`${cardsToRemove} ${cardsToRemove.length > 1 ? 'are' : 'is'} removed from the game from the top of ${context.player.opponent}'s conflict deck`);
-                                if(attachmentsToRemove.length > 0) {
-                                    context.game.addMessage(msg`${attachmentsToRemove} ${attachmentsToRemove.length > 1 ? 'are' : 'is'} removed from the game due to sharing a name with a card that was removed from the deck`);
-                                }
+                return [
+                    removeFromGame({
+                        target: cardsToRemove,
+                        location: Location.ConflictDeck
+                    }),
+                    removeFromGame({
+                        target: attachmentsToRemove
+                    }),
+                    handler({
+                        handler: (context) => {
+                            context.game.addMessage(msg`${cardsToRemove} ${cardsToRemove.length > 1 ? 'are' : 'is'} removed from the game from the top of ${context.player.opponent}'s conflict deck`);
+                            if(attachmentsToRemove.length > 0) {
+                                context.game.addMessage(msg`${attachmentsToRemove} ${attachmentsToRemove.length > 1 ? 'are' : 'is'} removed from the game due to sharing a name with a card that was removed from the deck`);
                             }
-                        })
-                    ]
-                };
+                        }
+                    })
+                ];
             }))
             .chatText((context) => msg`remove the top 3 cards of ${context.player.opponent ?? ''}'s conflict deck from the game as well as any matching attachments`);
     }

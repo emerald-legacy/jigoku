@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { discardMatching, lookAt, multipleContext } from '../../GameActions/GameActions.js';
+import { discardMatching, lookAt, multiple } from '../../GameActions/GameActions.js';
 import { shuffle } from '../../utils/random.js';
 
 class KitsukiChiari extends DrawCard {
@@ -14,22 +14,20 @@ class KitsukiChiari extends DrawCard {
                     context.player.opponent && context.player.opponent.hand.length > 0
             })
             .cost(costs.nameCard())
-            .gameAction(multipleContext((context) => {
+            .gameAction(multiple((context) => {
                 const cards = shuffle(context.player.opponent?.hand ?? []).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
-                return ({
-                    gameActions: [
-                        lookAt(() => ({
-                            target: cards
-                        })),
-                        discardMatching((context) => ({
-                            target: context.player.opponent,
-                            cards: cards,
-                            amount: -1, //all
-                            reveal: false,
-                            match: (context, card) => card.name === context.costs.namedCard
-                        }))
-                    ]
-                });
+                return [
+                    lookAt(() => ({
+                        target: cards
+                    })),
+                    discardMatching((context) => ({
+                        target: context.player.opponent,
+                        cards: cards,
+                        amount: -1, //all
+                        reveal: false,
+                        match: (context, card) => card.name === context.costs.namedCard
+                    }))
+                ];
             }))
             .chatText((context) => msg`look at 4 random cards in ${context.player.opponent}'s hand and discard all cards named ${context.costs.namedCard}`);
     }

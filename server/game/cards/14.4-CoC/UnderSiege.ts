@@ -11,7 +11,6 @@ import {
     noAction,
     playerLastingEffect,
     sequential,
-    sequentialContext,
     setAside
 } from '../../GameActions/GameActions.js';
 
@@ -23,46 +22,44 @@ class UnderSiege extends DrawCard {
             .when({
                 onConflictDeclared: (_event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null
             })
-            .gameAction(sequentialContext((context) => {
+            .gameAction(sequential((context) => {
                 const defender = context.game.currentConflict?.defendingPlayer ?? undefined;
                 const hand = defender ? [...defender.hand] : [];
-                return {
-                    gameActions: [
-                        playerLastingEffect({
-                            duration: Duration.UntilEndOfRound,
-                            target: defender,
-                            effect: playerDelayedEffect({
-                                when: {
-                                    onConflictFinished: () => true
-                                },
-                                gameAction: sequential([
-                                    chosenDiscard(() => ({
-                                        amount: 1000 //discard the entire hand
-                                    })),
-                                    handler({
-                                        handler: (context) => {
-                                            const setAside = hand.filter((card) => card.location === Location.RemovedFromGame);
-                                            if(defender && setAside.length > 0) {
-                                                context.game.addMessage(msg`${defender} picks up their original hand`);
-                                                setAside.forEach((card) => defender.moveCard(card, Location.Hand));
-                                            }
+                return [
+                    playerLastingEffect({
+                        duration: Duration.UntilEndOfRound,
+                        target: defender,
+                        effect: playerDelayedEffect({
+                            when: {
+                                onConflictFinished: () => true
+                            },
+                            gameAction: sequential([
+                                chosenDiscard(() => ({
+                                    amount: 1000 //discard the entire hand
+                                })),
+                                handler({
+                                    handler: (context) => {
+                                        const setAside = hand.filter((card) => card.location === Location.RemovedFromGame);
+                                        if(defender && setAside.length > 0) {
+                                            context.game.addMessage(msg`${defender} picks up their original hand`);
+                                            setAside.forEach((card) => defender.moveCard(card, Location.Hand));
                                         }
-                                    })
-                                ])
-                            })
-                        }),
-                        setAside({
-                            target: hand,
-                            hidden: true,
-                            message: () => msg`${defender} sets their hand aside and draws 5 cards`
-                        }),
-                        conditional({
-                            condition: hand.length > 0,
-                            trueGameAction: draw({ target: defender, amount: 5 }),
-                            falseGameAction: noAction()
+                                    }
+                                })
+                            ])
                         })
-                    ]
-                };
+                    }),
+                    setAside({
+                        target: hand,
+                        hidden: true,
+                        message: () => msg`${defender} sets their hand aside and draws 5 cards`
+                    }),
+                    conditional({
+                        condition: hand.length > 0,
+                        trueGameAction: draw({ target: defender, amount: 5 }),
+                        falseGameAction: noAction()
+                    })
+                ];
             }))
             .chatText((context) => msg`place ${context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''} under siege`)
             .max(perConflict(1));

@@ -1,10 +1,10 @@
 import { msg } from '../../../GameChat.js';
 import { cannotParticipateAsAttacker, cardCannot } from '../../../effects.js';
-import { dishonor, draw, sequentialContext } from '../../../GameActions/GameActions.js';
+import { dishonor, draw, sequential } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { SequentialContextProperties } from '../../../GameActions/SequentialContextAction.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class AncientStoneGuardian extends DrawCard {
@@ -32,7 +32,7 @@ export default class AncientStoneGuardian extends DrawCard {
                 controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                 player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                 cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context)
-            }, sequentialContext((context) =>
+            }, sequential((context) =>
                 this.dishonorAndDraw(context.targets.firstCharacter)
             ))
             .target({
@@ -44,7 +44,7 @@ export default class AncientStoneGuardian extends DrawCard {
                 controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                 player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                 cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context)
-            }, sequentialContext((context) =>
+            }, sequential((context) =>
                 this.dishonorAndDraw(context.targets.secondCharacter)
             ))
             .chatText((context) => msg`present an opportunity to sneak around ${context.chatTarget()} and find some secrets${this.effectsForCard(context, context.targets.firstCharacter)}${this.effectsForCard(context, context.targets.secondCharacter)}`);
@@ -54,15 +54,13 @@ export default class AncientStoneGuardian extends DrawCard {
         return card !== context.source && dishonor({ target: card }).canAffect(card, context);
     }
 
-    private dishonorAndDraw(target?: BaseCard | []): SequentialContextProperties {
-        return {
-            gameActions: target instanceof DrawCard
-                ? [
-                    dishonor({ target: target }),
-                    draw({ target: target.controller })
-                ]
-                : []
-        };
+    private dishonorAndDraw(target?: BaseCard | []): GameAction[] {
+        return target instanceof DrawCard
+            ? [
+                dishonor({ target: target }),
+                draw({ target: target.controller })
+            ]
+            : [];
     }
 
     private effectsForCard(context: TriggeredAbilityContext, target?: BaseCard | []) {

@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import { lookAt, sequentialContext, setAside } from '../../../GameActions/GameActions.js';
+import { lookAt, sequential, setAside } from '../../../GameActions/GameActions.js';
 import { shuffle } from '../../../utils/random.js';
 
 export default class EaglesRestPeak extends ProvinceCard {
@@ -15,21 +15,19 @@ export default class EaglesRestPeak extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending() && (card.getCost() ?? 0) > 0
             })
-            .gameAction(sequentialContext((context) => {
+            .gameAction(sequential((context) => {
                 const opponent = context.player.opponent;
                 const setAsideCards = shuffle(opponent?.hand ?? [])
                     .slice(0, context.target.getCost() ?? 0);
 
-                return {
-                    gameActions: [
-                        lookAt({ target: setAsideCards }),
-                        setAside({
-                            target: setAsideCards,
-                            returnAtEndOfConflict: true,
-                            message: (_context, cards) => msg`${opponent} sets aside ${cards}`
-                        })
-                    ]
-                };
+                return [
+                    lookAt({ target: setAsideCards }),
+                    setAside({
+                        target: setAsideCards,
+                        returnAtEndOfConflict: true,
+                        message: (_context, cards) => msg`${opponent} sets aside ${cards}`
+                    })
+                ];
             }))
             .chatText((context) => msg`use the insight of ${context.chatTarget()}, revealing and setting aside ${context.target.getCost() ?? 0} cards from ${context.player.opponent}'s hand`);
     }

@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
-import { fillProvince, multiple, multipleContext } from '../../GameActions/GameActions.js';
+import { fillProvince, multiple } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { playerChoices } from '../playerChoices.js';
@@ -27,9 +27,7 @@ class DanceOfChikushoDo extends DrawCard {
     }
 
     fillProvinces(player: Player) {
-        return multipleContext(() => ({
-            gameActions: this.getUnbrokenProvinces(player).map((location) => fillProvince({ target: player, location, amount: 2 }))
-        }));
+        return multiple(() => this.getUnbrokenProvinces(player).map((location) => fillProvince({ target: player, location, amount: 2 })));
     }
 
     getUnbrokenProvinces(player: Player): Location[] {

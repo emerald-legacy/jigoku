@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { unlimitedPerConflict } from '../../../AbilityLimit.js';
-import { chatMessage, chosenDiscard, draw, multipleContext } from '../../../GameActions/GameActions.js';
+import { chatMessage, chosenDiscard, draw, multiple } from '../../../GameActions/GameActions.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
 
@@ -14,13 +14,13 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                     return event.conflict.winner && event.conflict.loser && context.source.parentProvince?.isConflictProvince();
                 }
             })
-            .gameAction(multipleContext((context) => {
+            .gameAction(multiple((context) => {
                 const gameActions: GameAction[] = [];
 
                 const winner = context.event.conflict?.winner;
                 const loser = context.event.conflict?.loser;
                 if(!winner || !loser) {
-                    return { gameActions };
+                    return gameActions;
                 }
 
                 gameActions.push(draw({
@@ -35,7 +35,7 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                 } else {
                     gameActions.push(chatMessage(() => msg`${loser}'s affinity to Earth prevents them from discarding a card`));
                 }
-                return { gameActions };
+                return gameActions;
             }))
             .chatText((context) => msg`cause ${context.event.conflict?.winner} to draw a card and ${context.event.conflict?.loser} to discard a card`)
             .limit(unlimitedPerConflict());

@@ -1,7 +1,7 @@
 import { Location, Phase } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { draw, gainFate, multipleContext } from '../../../GameActions/GameActions.js';
+import { draw, gainFate, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AnkokusBlessing extends DrawCard {
@@ -13,12 +13,10 @@ export default class AnkokusBlessing extends DrawCard {
                 location: Location.Hand,
                 cardCondition: (card) => !card.hasTrait('blessing')
             }))
-            .gameAction(multipleContext((context) => ({
-                gameActions: [
-                    draw({ target: context.player, amount: 2 }),
-                    gainFate({ target: context.player, amount: 2 })
-                ]
-            })))
+            .gameAction(multiple((context) => [
+                draw({ target: context.player, amount: 2 }),
+                gainFate({ target: context.player, amount: 2 })
+            ]))
             .chatText('draw 2 cards and gain 2 fate')
             .max(perRound(1))
             .phase(Phase.Fate);

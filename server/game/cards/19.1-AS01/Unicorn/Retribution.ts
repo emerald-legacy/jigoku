@@ -4,7 +4,7 @@ import {
     cardLastingEffect,
     initiateConflict,
     playerLastingEffect,
-    sequentialContext
+    sequential
 } from '../../../GameActions/GameActions.js';
 import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -40,30 +40,28 @@ export default class Retribution extends DrawCard {
                         (ring) =>
                             ring.canDeclare(context.player) && card.canDeclareAsAttacker(ConflictType.Military, ring)
                     )
-            }, sequentialContext((context) => ({
-                gameActions: [
-                    cardLastingEffect({
-                        effect: mustBeDeclaredAsAttacker(),
-                        target: context.target
-                    }),
-                    cardLastingEffect({
-                        effect: cannotBeDeclaredAsAttacker(),
-                        target: context.player.cardsInPlay.filter(
-                            (card) => card.getType() === CardType.Character && card !== context.target
-                        )
-                    }),
-                    playerLastingEffect({
-                        target: Players.Self,
-                        duration: Duration.UntilEndOfPhase,
-                        effect: additionalConflict(ConflictType.Military)
-                    }),
-                    initiateConflict({
-                        target: context.player,
-                        canPass: false,
-                        forcedDeclaredType: ConflictType.Military
-                    })
-                ]
-            })))
+            }, sequential((context) => [
+                cardLastingEffect({
+                    effect: mustBeDeclaredAsAttacker(),
+                    target: context.target
+                }),
+                cardLastingEffect({
+                    effect: cannotBeDeclaredAsAttacker(),
+                    target: context.player.cardsInPlay.filter(
+                        (card) => card.getType() === CardType.Character && card !== context.target
+                    )
+                }),
+                playerLastingEffect({
+                    target: Players.Self,
+                    duration: Duration.UntilEndOfPhase,
+                    effect: additionalConflict(ConflictType.Military)
+                }),
+                initiateConflict({
+                    target: context.player,
+                    canPass: false,
+                    forcedDeclaredType: ConflictType.Military
+                })
+            ]))
             .chatText((context) => msg`declare a military conflict, attacking with ${context.target}`)
             .max(perRound(1));
     }

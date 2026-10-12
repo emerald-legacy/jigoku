@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { DuelType } from '../../../Constants.js';
 import { modifyDuelSkill } from '../../../effects.js';
-import { dishonor, injure, multipleContext } from '../../../GameActions/GameActions.js';
+import { dishonor, injure, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -18,7 +18,7 @@ export default class IsawaHouseGuard extends DrawCard {
         this.conflictAction('Initiate a military duel to dishonor')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                gameAction: (duel) => multipleContext(() => {
+                gameAction: (duel) => multiple(() => {
                     const gameActions: GameAction[] = [];
 
                     gameActions.push(dishonor({
@@ -31,7 +31,7 @@ export default class IsawaHouseGuard extends DrawCard {
                             }));
                         }
                     });
-                    return { gameActions };
+                    return gameActions;
                 }),
                 chatText: (_context, duel) => msg`${duel.loser} is dishonored and injured if tainted`
             }));

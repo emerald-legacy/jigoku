@@ -510,7 +510,7 @@ Inside the builder, a `(context) => properties` factory gets the ability's typed
 })))
 ```
 
-The tables below cover the most-used factories; the authoritative list lives in `server/game/GameActions/GameActions.ts` (~100 exports). Niche actions not listed here include `attachToRing`, `dishonorProvince`, `putIntoProvince`, `performGloryCount`, `refillFaceup`, `selectRing`, `selectToken`, `resolveConflictRing`, `removeRingFromPlay`, `returnRingToPlay`, `moveStatusToken`, `flipImperialFavor`, `fateBid`, `setHonorDial`, `modifyBid`, `triggerAbility`, `duelAddParticipant`, `duelLastingEffect`, `cardMenu`, `chooseAction`, `onAffinity`, `multipleContext`, `sequentialContext`, `playCard`.
+The tables below cover the most-used factories; the authoritative list lives in `server/game/GameActions/GameActions.ts` (~100 exports). Niche actions not listed here include `attachToRing`, `dishonorProvince`, `putIntoProvince`, `performGloryCount`, `refillFaceup`, `selectRing`, `selectToken`, `resolveConflictRing`, `removeRingFromPlay`, `returnRingToPlay`, `moveStatusToken`, `flipImperialFavor`, `fateBid`, `setHonorDial`, `modifyBid`, `triggerAbility`, `duelAddParticipant`, `duelLastingEffect`, `cardMenu`, `chooseAction`, `onAffinity`, `playCard`.
 
 ### Card actions
 
@@ -597,8 +597,8 @@ These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscar
 
 | Function | Notes |
 |----------|-------|
-| `multiple([...actions])` | Execute multiple actions simultaneously. Takes an array, not a factory |
-| `sequential([...actions])` | Execute actions in sequence. Takes an array |
+| `multiple([...actions])` / `multiple((context) => actions)` | Execute multiple actions simultaneously: a list, or a function of the context returning one |
+| `sequential([...actions])` / `sequential((context) => actions)` | Execute actions in sequence: a list, or a function of the context returning one |
 | `joint([...actions])` | Execute actions requiring same target |
 | `conditional({ condition, trueGameAction, falseGameAction? })` | Branch on condition; `falseGameAction` defaults to doing nothing. On the ability itself, prefer `.if()`/`.otherwise()` |
 | `ifAble({ ifAbleAction, otherwiseAction })` | Do `ifAbleAction` if it can resolve, else `otherwiseAction` |
