@@ -148,3 +148,30 @@ describe('Contingency Plan', function () {
         });
     });
 });
+
+describe('Contingency Plan on a dial reveal without honor bid', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['mischievous-tanuki'],
+                    hand: ['contingency-plan']
+                },
+                player2: {
+                    inPlay: ['adept-of-the-waves']
+                }
+            });
+            this.tanuki = this.player1.findCardByName('mischievous-tanuki');
+            this.contingencyPlan = this.player1.findCardByName('contingency-plan');
+        });
+
+        it('can be played after the dials are revealed', function () {
+            this.player1.clickCard(this.tanuki);
+            this.player1.clickPrompt('3');
+            this.player2.clickPrompt('2');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.contingencyPlan);
+        });
+    });
+});

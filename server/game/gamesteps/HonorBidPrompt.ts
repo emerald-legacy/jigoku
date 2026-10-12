@@ -39,7 +39,8 @@ export class HonorBidPrompt extends AllPlayerPrompt {
         const completed = super.continue();
 
         if(completed) {
-            const isHonorBid = typeof this.costHandler !== 'function';
+            // every duel transfers honor (or a substitute); only reveals like Mischievous Tanuki's don't
+            const isHonorBid = !!this.duel || typeof this.costHandler !== 'function';
             const revealDials = () => {
                 for(const player of this.game.getPlayersInFirstPlayerOrder()) {
                     player.honorBidModifier = 0;

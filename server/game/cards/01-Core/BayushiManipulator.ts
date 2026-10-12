@@ -5,7 +5,7 @@ export default class BayushiManipulator extends DrawCard {
 
     public setupCardAbilities() {
         this.reaction('Increase bid by 1')
-            .when({ onHonorDialsRevealed: (event) => event.isHonorBid })
+            .when({ onHonorDialsRevealed: () => true })
             .modifyBid()
             .chatText('increase their bid by 1');
     }
