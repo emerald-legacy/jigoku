@@ -7,9 +7,15 @@ class MotoYouth extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.isDuringConflict(ConflictType.Military) && this.game.conflictRecord.every((conflict) => (
-                conflict.declaredType !== ConflictType.Military && !conflict.typeSwitched || !conflict.completed || conflict.uuid === this.game.currentConflict?.uuid
-            )),
+            // a switched conflict counts as both a military and a political conflict
+            condition: () => {
+                const current = this.game.currentConflict;
+                return !!current && (current.declaredType === ConflictType.Military || current.conflictTypeSwitched) &&
+                    this.game.conflictRecord.every((conflict) =>
+                        conflict.uuid === current.uuid || !conflict.completed ||
+                        conflict.declaredType !== ConflictType.Military && !conflict.typeSwitched
+                    );
+            },
             effect: modifyMilitarySkill(1)
         });
     }

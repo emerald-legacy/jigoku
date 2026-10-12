@@ -7,6 +7,7 @@ export enum RestrictionScope {
     AttackedProvinceNonForced = 'attackedProvinceNonForced',
     CardAndRingEffects = 'cardAndRingEffects',
     CardEffects = 'cardEffects',
+    CardEffectsExceptOwn = 'cardEffectsExceptOwn',
     Characters = 'characters',
     CharactersWithNoFate = 'charactersWithNoFate',
     CopiesOfDiscardEvents = 'copiesOfDiscardEvents',

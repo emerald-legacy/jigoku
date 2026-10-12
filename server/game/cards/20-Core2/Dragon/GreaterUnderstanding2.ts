@@ -12,7 +12,7 @@ export default class GreaterUnderstanding2 extends RingAttachment {
         this.persistentEffect({
             targetLocation: Location.Any,
             effect: immunity({
-                appliesTo: RestrictionScope.OpponentsCardEffects
+                appliesTo: RestrictionScope.CardEffectsExceptOwn
             })
         });
 

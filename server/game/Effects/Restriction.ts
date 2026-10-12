@@ -44,6 +44,8 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
             CardType.Province,
             CardType.Role
         ].includes(context.source.type),
+    [RestrictionScope.CardEffectsExceptOwn]: (context, effect) =>
+        checkRestrictions[RestrictionScope.CardEffects](context, effect) && context.source !== effect.context?.source,
     [RestrictionScope.RingEffects]: (context) => context.source.isRing(),
     [RestrictionScope.CardAndRingEffects]: (context, effect) => checkRestrictions[RestrictionScope.CardEffects](context, effect) || checkRestrictions[RestrictionScope.RingEffects](context, effect),
     [RestrictionScope.Characters]: (context) => context.source.type === CardType.Character,
