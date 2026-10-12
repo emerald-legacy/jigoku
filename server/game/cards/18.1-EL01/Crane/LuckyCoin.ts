@@ -38,7 +38,7 @@ export default class LuckyCoin extends DrawCard {
                     player.shuffleDynastyDeck();
                 }
             }))
-            .chatText('to replace all cards in their provinces')
+            .chatText('replace all cards in their provinces')
             .location(ACTIVE_LOCATIONS);
     }
 }

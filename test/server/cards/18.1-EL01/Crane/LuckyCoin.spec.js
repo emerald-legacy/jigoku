@@ -124,7 +124,7 @@ describe('Lucky Coin', function () {
 
                     this.player1.clickCard(this.coin);
                     expect(this.getChatLogs(3)).toContain(
-                        'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
+                        'player1 uses Lucky Coin, removing Lucky Coin from the game to replace all cards in their provinces'
                     );
                 });
 
@@ -151,7 +151,7 @@ describe('Lucky Coin', function () {
 
                     this.player1.clickCard(this.coin);
                     expect(this.getChatLogs(3)).toContain(
-                        'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
+                        'player1 uses Lucky Coin, removing Lucky Coin from the game to replace all cards in their provinces'
                     );
                 });
 
@@ -220,7 +220,7 @@ describe('Lucky Coin', function () {
 
                     this.player1.clickCard(this.coin);
                     expect(this.getChatLogs(3)).toContain(
-                        'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
+                        'player1 uses Lucky Coin, removing Lucky Coin from the game to replace all cards in their provinces'
                     );
                 });
             });
@@ -238,7 +238,7 @@ describe('Lucky Coin', function () {
 
                     this.player1.clickCard(this.coin);
                     expect(this.getChatLogs(3)).toContain(
-                        'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
+                        'player1 uses Lucky Coin, removing Lucky Coin from the game to replace all cards in their provinces'
                     );
                 });
             });
