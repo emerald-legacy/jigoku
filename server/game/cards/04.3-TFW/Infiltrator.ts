@@ -2,12 +2,13 @@ import { msg } from '../../GameChat.js';
 import { PlayType } from '../../Constants.js';
 import { discardCard, playCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 
 export default class Infiltrator extends DrawCard {
     static id = 'infiltrator';
 
     setupCardAbilities() {
+        this.playOnlyIf((context) => !!context.player.opponent && context.player.showBid > context.player.opponent.showBid);
+
         this.action('Look at the top card of an opponent\'s deck and play or discard it')
             .condition(() => this.game.isDuringConflict())
             .chooseAction((context) => {
@@ -28,12 +29,5 @@ export default class Infiltrator extends DrawCard {
                 };
             })
             .chatText('look at the top card of an opponent\'s deck and play or discard it');
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType) {
-        if(!context.player.opponent || context.player.showBid <= context.player.opponent.showBid) {
-            return false;
-        }
-        return super.canPlay(context, playType);
     }
 }

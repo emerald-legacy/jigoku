@@ -1,13 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 import { cardCannot } from '../../effects.js';
-import { RestrictionType, type PlayType, RestrictionScope } from '../../Constants.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class TsangusuriWard extends DrawCard {
     static id = 'tsangusuri-ward';
 
     setupCardAbilities() {
+        this.playOnlyIf((context) => controlsShugenja(context.player));
+
         this.attachmentConditions({
             myControl: true
         });
@@ -19,14 +20,6 @@ class TsangusuriWard extends DrawCard {
                 source: this
             })
         });
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType) {
-        if(!controlsShugenja(context.player)) {
-            return false;
-        }
-
-        return super.canPlay(context, playType);
     }
 }
 

@@ -1,15 +1,15 @@
-import { CardType, Duration, RestrictionType, type PlayType } from '../../../Constants.js';
+import { CardType, Duration, RestrictionType } from '../../../Constants.js';
 import { loseFaction, playerCannot } from '../../../effects.js';
 import { cardLastingEffect, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class DisputedLineage extends DrawCard {
     static id = 'disputed-lineage';
 
     setupCardAbilities() {
         this.action('Choose a character')
+            .playOnlyIf((context) => context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait('courtier')))
             .target({
                 cardType: CardType.Character
             }, multiple([
@@ -30,13 +30,5 @@ export default class DisputedLineage extends DrawCard {
             .afterwardsIf((context) => context.player.imperialFavor !== '')
             .draw(1)
             .message((context) => msg`${context.player} draws a card`);
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType) {
-        return (
-            context.player.cardsInPlay.some(
-                (card) => card.type === CardType.Character && card.hasTrait('courtier')
-            ) && super.canPlay(context, playType)
-        );
     }
 }

@@ -1,8 +1,7 @@
-import { CardType, Players, Location, type PlayType } from '../../../Constants.js';
+import { CardType, Players, Location } from '../../../Constants.js';
 import { reduceCost, takeControl } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class ObligationsOfHospitality extends DrawCard {
     static id = 'obligations-of-hospitality';
@@ -16,6 +15,7 @@ export default class ObligationsOfHospitality extends DrawCard {
         });
 
         this.conflictAction('Take control of a character')
+            .playOnlyIf((context) => !!context.player.opponent && context.player.isMoreHonorable())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
@@ -24,9 +24,5 @@ export default class ObligationsOfHospitality extends DrawCard {
                 effect: takeControl(context.player)
             })))
             .chatText('take control of {0}');
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType) {
-        return !!context.player.opponent && context.player.isMoreHonorable() && super.canPlay(context, playType);
     }
 }

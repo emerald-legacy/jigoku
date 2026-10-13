@@ -176,11 +176,12 @@ interface AbilityDraft {
     notPrinted?: boolean;
     anyPlayer?: boolean;
     collectiveTrigger?: boolean;
+    playCondition?: (context: AbilityContext) => boolean;
 }
 
 /** Settings of the ability itself: a then step can't have them. */
 const ABILITY_ONLY = ['condition', 'limit', 'max', 'location', 'cannotBeMirrored', 'cannotTargetFirst', 'initiateDuel', 'phase', 'evenDuringDynasty',
-    'conflictProvinceCondition', 'canTriggerOutsideConflict', 'notPrinted', 'anyPlayer', 'collectiveTrigger'] as const;
+    'conflictProvinceCondition', 'canTriggerOutsideConflict', 'notPrinted', 'anyPlayer', 'collectiveTrigger', 'playCondition'] as const;
 
 /** What only an action's context has; a trigger's or a step's `ability` isn't a `CardAction`. */
 type ActionOnly = { ability: CardAction };
@@ -672,6 +673,12 @@ export class AbilityBuilder<
 
     condition(condition: (context: Base) => boolean): this {
         this.#once('condition', this.#checked(condition, []), 'condition()');
+        return this;
+    }
+
+    /** An event's "play only if …": a play restriction, which effects ignoring triggering conditions still respect. */
+    playOnlyIf(condition: (context: Base) => boolean): this {
+        this.#once('playCondition', this.#checked(condition, []), 'playOnlyIf()');
         return this;
     }
 

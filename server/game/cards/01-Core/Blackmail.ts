@@ -1,14 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, type PlayType } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import { takeControl } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 
 class Blackmail extends DrawCard {
     static id = 'blackmail';
 
     setupCardAbilities() {
         this.conflictAction('Take control of a character')
+            .playOnlyIf((context) => !!context.player.opponent && context.player.isLessHonorable())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
@@ -17,13 +17,6 @@ class Blackmail extends DrawCard {
                 effect: takeControl(context.player)
             })))
             .chatText('take control of {0}');
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType): boolean {
-        if(context.player.opponent && context.player.isLessHonorable()) {
-            return super.canPlay(context, playType);
-        }
-        return false;
     }
 }
 

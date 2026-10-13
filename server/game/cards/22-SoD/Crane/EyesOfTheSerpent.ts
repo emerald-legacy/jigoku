@@ -1,5 +1,4 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, type PlayType } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { gainHonor, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
 import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,6 +10,7 @@ export default class EyesOfTheSerpent extends DrawCard {
 
     setupCardAbilities() {
         this.action('Taint a character')
+            .playOnlyIf((context) => controlsShugenja(context.player))
             .cost(costs.chooseOne({
                 'Spend 1 honor': costs.payHonor(1),
                 'Spend 1 fate': costs.payFate(1)
@@ -29,9 +29,5 @@ export default class EyesOfTheSerpent extends DrawCard {
                 })
             ]))
             .chatText((context) => msg`taint ${context.target}`);
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType) {
-        return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

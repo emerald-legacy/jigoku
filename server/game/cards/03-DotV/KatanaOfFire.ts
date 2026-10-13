@@ -1,6 +1,5 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Element, type PlayType } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
@@ -11,17 +10,11 @@ class KatanaOfFire extends DrawCard {
     static id = 'katana-of-fire';
 
     setupCardAbilities() {
+        this.playOnlyIf((context) => controlsShugenja(context.player));
+
         this.whileAttached({
             effect: modifyMilitarySkill(() => this.totalKatanaModifier())
         });
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType) {
-        if(!controlsShugenja(context.player)) {
-            return false;
-        }
-
-        return super.canPlay(context, playType);
     }
 
     // Helper methods for clarity - TODO: needs fixing to not use this.controller

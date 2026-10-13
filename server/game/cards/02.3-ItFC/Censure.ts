@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, PlayType } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { CardType } from '../../Constants.js';
 
 class Censure extends DrawCard {
     static id = 'censure';
@@ -10,15 +9,9 @@ class Censure extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
             })
+            .playOnlyIf((context) => context.player.imperialFavor !== '')
             .cancel()
             .cannotBeMirrored();
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType): boolean {
-        if(context.player.imperialFavor !== '') {
-            return super.canPlay(context, playType);
-        }
-        return false;
     }
 }
 

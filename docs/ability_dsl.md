@@ -101,6 +101,7 @@ Builder methods shared by actions and triggered abilities:
 | `notPrinted()` | Not printed on the card, so effects that copy or count printed abilities skip it |
 | `anyPlayer()` | Either player may trigger it (default: only the controller); not with `aggregateWhen` |
 | `condition(fn)` | Extra gate — the ability (action or triggered) can only be used while `fn(context)` returns `true` |
+| `playOnlyIf(fn)` | Events only: "play only if …", a play restriction on the card (see [`this.playOnlyIf`](#thisplayonlyifcondition)) |
 
 Each setting is given once: a second `condition()`, `chatText()`, `limit()`, `location()`, … throws, as does an ability's own setting after `then()`. Settings that would be ignored don't compile or throw at setup: the action-only methods below on a reaction, `onAffinity()` without game actions of its own (a target's aren't covered), `initiateDuel()` together with a `target()`, two targets with one name.
 
@@ -232,6 +233,18 @@ this.whileAttached({ effect: addTrait('shadowlands') });
 ### `this.legendary(fate)`
 
 "Legendary X": played from a province, it enters with X fate and no fate can be added while playing it; fate can't be placed on it, card effects can't put it into play, it only enters play during the dynasty phase, and nothing can prevent it from leaving play.
+
+### `this.playOnlyIf(condition)`
+
+"Play only if …": the card can only be played while `condition(context)` holds, on top of the usual play restrictions. An event states it on its ability instead, which is its play. Unlike `condition()`, it is a play restriction, so effects that ignore triggering conditions (The Mirror's Gaze) still respect it.
+
+```typescript
+this.playOnlyIf((context) => controlsShugenja(context.player));   // attachment, character
+
+this.conflictAction('Take control of a character')                // event
+    .playOnlyIf((context) => context.player.isLessHonorable())
+    .target({ … }, takeControl())
+```
 
 ### `this.attachmentConditions(props: AttachmentConditionProps)`
 

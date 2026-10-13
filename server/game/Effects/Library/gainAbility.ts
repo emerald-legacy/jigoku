@@ -39,10 +39,17 @@ export function gainAbility(...args: GainAbilityArgs) {
     return EffectBuilder.card.static(EffectName.GainAbility, new GainAbility(...args));
 }
 
+function rejectPlayCondition(draft: { title: string; playCondition?: unknown }): void {
+    if(draft.playCondition) {
+        throw new Error(`${draft.title}: a gained ability can't restrict playing the card`);
+    }
+}
+
 /** Grants an action written with the builder; `context.source` is the card that gains it. */
 gainAbility.action = function(title: string, build: (ability: AbilityBuilder<ActionContext<DrawCard>>) => unknown): Res {
     const draft = createDraft(title, (context) => context.ability instanceof CardAction);
     build(new AbilityBuilder<ActionContext<DrawCard>>(draft));
+    rejectPlayCondition(draft);
     return gainAbility(AbilityType.Action, toActionProps<DrawCard>(draft));
 };
 
@@ -50,6 +57,7 @@ function gainedTrigger(abilityType: AbilityType.Reaction | AbilityType.Interrupt
     return <W extends WhenType<DrawCard>>(title: string, when: W, build: (ability: AbilityBuilder<TriggerBase<DrawCard, W, false>>) => unknown): Res => {
         const draft = createDraft(title, holdsTriggerEvent(when, () => false));
         build(new AbilityBuilder<TriggerBase<DrawCard, W, false>>(draft));
+        rejectPlayCondition(draft);
         return EffectBuilder.card.static(EffectName.GainAbility, new GainAbility(abilityType, toTriggerProps<DrawCard>(draft, when)));
     };
 }

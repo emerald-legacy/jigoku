@@ -319,7 +319,7 @@ export class BaseCard extends EffectSource {
     protected actionBuilder(title: string, registrar: ActionRegistrar<this>): AbilityBuilder<ActionContext<this>> {
         this.requireSetup(title);
         const draft = createDraft(title, (context) => context.ability instanceof CardAction);
-        this.registerAbility(() => registrar.register(toActionProps<this>(draft)));
+        this.registerAbility(draft, () => registrar.register(toActionProps<this>(draft)));
         return new AbilityBuilder(draft);
     }
 
@@ -330,8 +330,16 @@ export class BaseCard extends EffectSource {
         }
     }
 
-    private registerAbility(register: () => void): void {
-        this.pendingAbilities.push(register);
+    private registerAbility(draft: { title: string; playCondition?: (context: AbilityContext) => boolean }, register: () => void): void {
+        this.pendingAbilities.push(() => {
+            if(draft.playCondition) {
+                if(!this.isDrawCard() || this.printedType !== CardType.Event) {
+                    throw new Error(`${draft.title}: playOnlyIf() on an ability is for events; other cards call this.playOnlyIf()`);
+                }
+                this.playOnlyIf(draft.playCondition);
+            }
+            register();
+        });
     }
 
     protected triggerBuilder<EventOptional extends boolean = false>(abilityType: AbilityType, title: string): TriggerBuilder<this, EventOptional> {
@@ -339,12 +347,12 @@ export class BaseCard extends EffectSource {
         return new TriggerBuilder<this, EventOptional>({
             when: (when) => {
                 const draft = createDraft(title, holdsTriggerEvent(when, () => this.isProvinceCard()));
-                this.registerAbility(() => this.addTriggeredAbility(abilityType, toTriggerProps<this>(draft, when)));
+                this.registerAbility(draft, () => this.addTriggeredAbility(abilityType, toTriggerProps<this>(draft, when)));
                 return draft;
             },
             aggregateWhen: (aggregateWhen) => {
                 const draft = createDraft(title, holdsAggregateEvents(() => this.isProvinceCard()));
-                this.registerAbility(() => this.addTriggeredAbility(abilityType, toAggregateProps<this>(draft, aggregateWhen)));
+                this.registerAbility(draft, () => this.addTriggeredAbility(abilityType, toAggregateProps<this>(draft, aggregateWhen)));
                 return draft;
             }
         });

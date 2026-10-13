@@ -1,31 +1,25 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type Ring from '../../Ring.js';
 import { cannotTriggerAbilities } from '../../effects.js';
-import { ConflictType, type PlayType } from '../../Constants.js';
+import { ConflictType } from '../../Constants.js';
 
 class PoliticalSanction extends DrawCard {
     static id = 'political-sanction';
 
     setupCardAbilities() {
-        this.whileAttached({
-            effect: cannotTriggerAbilities()
-        });
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType) {
-        if(context.game.isDuringConflict(ConflictType.Political)) {
-            const conflict = this.game.currentConflict;
-            if(!conflict) {
+        this.playOnlyIf((context) => {
+            const conflict = context.game.currentConflict;
+            if(!conflict || !context.game.isDuringConflict(ConflictType.Political)) {
                 return false;
             }
             const diff = conflict.attackerSkill - conflict.defenderSkill;
-            const hasSkillAdvantage = context.player.isAttackingPlayer() ? diff > 0 : diff < 0;
-            return hasSkillAdvantage && super.canPlay(context, playType);
-        }
+            return context.player.isAttackingPlayer() ? diff > 0 : diff < 0;
+        });
 
-        return false;
+        this.whileAttached({
+            effect: cannotTriggerAbilities()
+        });
     }
 
     canPlayOn(card: BaseCard | Ring) {

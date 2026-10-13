@@ -2,7 +2,6 @@ import { copyCard } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import { msg } from '../../GameChat.js';
 
 export default class MiyakosUndertaking extends DrawCard {
@@ -10,6 +9,7 @@ export default class MiyakosUndertaking extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make a character a copy')
+            .playOnlyIf((context) => context.player.honor <= 6)
             .target({
                 name: 'cardToCopy',
                 cardType: CardType.Character,
@@ -27,9 +27,5 @@ export default class MiyakosUndertaking extends DrawCard {
                 effect: copyCard(context.targets.cardToCopy)
             })))
             .chatText((context) => msg`make ${context.targets.myCharacter} into a copy of ${context.targets.cardToCopy}`);
-    }
-
-    canPlay(context: AbilityContext) {
-        return context.player.honor <= 6 && super.canPlay(context);
     }
 }

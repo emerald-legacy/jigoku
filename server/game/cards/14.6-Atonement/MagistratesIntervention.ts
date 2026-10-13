@@ -1,7 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, type PlayType } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 
 class MagistratesIntervention extends DrawCard {
@@ -9,6 +8,7 @@ class MagistratesIntervention extends DrawCard {
 
     setupCardAbilities() {
         this.action('Dishonor a character')
+            .playOnlyIf((context) => context.player.cardsInPlay.some((card) => card.type === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate'))))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
@@ -18,14 +18,6 @@ class MagistratesIntervention extends DrawCard {
                 context.player.opponent && context.target?.controller === context.player.opponent &&
                     context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1))
             .dishonor((context) => ({ target: context.target }));
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType) {
-        if(!context.player.cardsInPlay.some((card) => card.type === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
-            return false;
-        }
-
-        return super.canPlay(context, playType);
     }
 }
 

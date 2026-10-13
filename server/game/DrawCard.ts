@@ -116,6 +116,8 @@ export class DrawCard extends BaseCard {
     covert = false;
     allowDuplicatesOfAttachment: boolean;
     new: boolean = false;
+    /** No initializer: BaseCard's constructor runs setupCardAbilities() before DrawCard's fields would be set. */
+    playConditions?: ((context: AbilityContext) => boolean)[];
     private skillCalculator: SkillCalculator;
     private childCardHost = new ChildCardManager(this);
 
@@ -247,6 +249,11 @@ export class DrawCard extends BaseCard {
                 )
             });
         }
+    }
+
+    /** "Play only if …": the card can only be played while `condition` holds. */
+    playOnlyIf(condition: (context: AbilityContext) => boolean): void {
+        (this.playConditions ??= []).push(condition);
     }
 
     /**
@@ -412,6 +419,7 @@ export class DrawCard extends BaseCard {
         clone.allowedAttachmentTraits = this.allowedAttachmentTraits;
         clone.disguisedKeywordTraits = this.disguisedKeywordTraits;
         clone.allowDuplicatesOfAttachment = this.allowDuplicatesOfAttachment;
+        clone.playConditions = this.playConditions;
 
         // Copy game state
         clone.controller = this.controller;
@@ -576,7 +584,8 @@ export class DrawCard extends BaseCard {
             context.player.checkRestrictions(playType, context) &&
             this.checkRestrictions(RestrictionType.Play, context) &&
             context.player.checkRestrictions(RestrictionType.Play, context) &&
-            (!this.hasPrintedKeyword('peaceful') || !this.game.currentConflict)
+            (!this.hasPrintedKeyword('peaceful') || !this.game.currentConflict) &&
+            (this.playConditions ?? []).every((condition) => condition(context))
         );
     }
 

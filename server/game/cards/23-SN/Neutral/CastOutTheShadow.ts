@@ -1,7 +1,6 @@
 import { sacrifice, takeHonor } from '../../../GameActions/GameActions.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType, PlayType } from '../../../Constants.js';
+import { Players, CardType } from '../../../Constants.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class CastOutTheShadow extends DrawCard {
@@ -9,6 +8,7 @@ export default class CastOutTheShadow extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Sacrifice a character or take 2 honor')
+            .playOnlyIf((context) => controlsShugenja(context.player))
             .target({
                 name: 'character',
                 cardType: CardType.Character,
@@ -23,13 +23,5 @@ export default class CastOutTheShadow extends DrawCard {
                 'Sacrifice this character': sacrifice((context) => ({ target: context.targets.character })),
                 'Give opponent 2 honor': takeHonor({ amount: 2 })
             });
-    }
-
-    canPlay(context: AbilityContext, playType?: PlayType) {
-        if(!controlsShugenja(context.player)) {
-            return false;
-        }
-
-        return super.canPlay(context, playType);
     }
 }
