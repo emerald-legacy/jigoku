@@ -1,5 +1,4 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { discardFromPlay, multiple, removeFate } from '../../../GameActions/GameActions.js';
 import { Phase } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,14 +20,12 @@ export default class CripplingCurse extends DrawCard {
                     !context.source.parentCharacter.bowed &&
                     context.source.parentCharacter.getFate() > 0
             })
-            .gameAction(multiple([
-                discardFromPlay((context) => ({
-                    target: cardsInPlay(context, (c) => c.getFate() === 0)
-                })),
-                removeFate((context) => ({
-                    target: cardsInPlay(context, (c) => c.getFate() !== 0)
-                }))
-            ]))
+            .discardFromPlay((context) => ({
+                target: cardsInPlay(context, (c) => c.getFate() === 0)
+            }))
+            .removeFate((context) => ({
+                target: cardsInPlay(context, (c) => c.getFate() !== 0)
+            }))
             .chatText('discard all characters without fate and remove 1 fate from each character with fate');
     }
 }

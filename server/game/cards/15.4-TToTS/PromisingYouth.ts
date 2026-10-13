@@ -1,7 +1,7 @@
 import { CardType, Duration } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import { changeType, modifyBothSkills } from '../../effects.js';
-import { cardLastingEffect, detach, multiple } from '../../GameActions/GameActions.js';
+import { detach } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class PromisingYouth extends DrawCard {
@@ -16,13 +16,11 @@ export default class PromisingYouth extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter
             })
-            .gameAction(multiple([
-                cardLastingEffect((context) => ({
-                    target: context.source,
-                    duration: Duration.Custom,
-                    effect: changeType(CardType.Character)
-                })),
-                detach((context) => ({ target: context.source }))
-            ]));
+            .cardLastingEffect((context) => ({
+                target: context.source,
+                duration: Duration.Custom,
+                effect: changeType(CardType.Character)
+            }))
+            .gameAction(detach((context) => ({ target: context.source })));
     }
 }

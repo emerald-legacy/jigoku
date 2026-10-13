@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { playerDelayedEffect } from '../../effects.js';
-import { loseHonor, multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
+import { loseHonor } from '../../GameActions/GameActions.js';
 import { CardType, ConflictType, Players } from '../../Constants.js';
 
 class BreachOfEtiquette extends DrawCard {
@@ -10,32 +10,30 @@ class BreachOfEtiquette extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Force honor loss on players when their non-courtier characters use abilities', { conflictType: ConflictType.Political })
-            .gameAction(multiple([
-                playerLastingEffect((context) => ({
-                    target: Players.Self,
-                    effect: playerDelayedEffect({
-                        when: {
-                            onCardAbilityTriggered: (event) =>
-                                event.player === context.player && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
-                        },
-                        message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player}`,
-                        multipleTrigger: true,
-                        gameAction: loseHonor()
-                    })
-                })),
-                playerLastingEffect((context) => ({
-                    target: context.player.opponent,
-                    effect: playerDelayedEffect({
-                        when: {
-                            onCardAbilityTriggered: (event) =>
-                                event.player === context.player.opponent && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
-                        },
-                        message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player.opponent}`,
-                        multipleTrigger: true,
-                        gameAction: loseHonor()
-                    })
-                }))
-            ]))
+            .playerLastingEffect((context) => ({
+                target: Players.Self,
+                effect: playerDelayedEffect({
+                    when: {
+                        onCardAbilityTriggered: (event) =>
+                            event.player === context.player && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
+                    },
+                    message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player}`,
+                    multipleTrigger: true,
+                    gameAction: loseHonor()
+                })
+            }))
+            .playerLastingEffect((context) => ({
+                target: context.player.opponent,
+                effect: playerDelayedEffect({
+                    when: {
+                        onCardAbilityTriggered: (event) =>
+                            event.player === context.player.opponent && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
+                    },
+                    message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player.opponent}`,
+                    multipleTrigger: true,
+                    gameAction: loseHonor()
+                })
+            }))
             .chatText('force honor loss on players when their non-courtier characters use abilities during this conflict')
             .max(perConflict(1));
     }

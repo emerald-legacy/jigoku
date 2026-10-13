@@ -2,7 +2,6 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
-import { cancel, discardAtRandom, multiple } from '../../GameActions/GameActions.js';
 
 class SeppunHiddenGuard extends DrawCard {
     static id = 'seppun-hidden-guard';
@@ -20,10 +19,8 @@ class SeppunHiddenGuard extends DrawCard {
                     )
             })
             .cost(costs.sacrificeSelf())
-            .gameAction(multiple([
-                cancel(),
-                discardAtRandom((context) => ({ target: context.event.context.player }))
-            ]))
+            .cancel()
+            .discardAtRandom((context) => ({ target: context.event.context.player }))
             .chatText((context) => msg`cancel the effects of ${context.event.card}, and force ${context.event.context.player} to discard a card at random`);
     }
 }

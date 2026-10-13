@@ -4,10 +4,7 @@ import { CardType, Element } from '../../../Constants.js';
 import {
     conditional,
     draw,
-    gainFate,
-    gainHonor,
     honor,
-    multiple,
     ready,
     selectCard
 } from '../../../GameActions/GameActions.js';
@@ -27,43 +24,41 @@ class AsakoReina extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain boons based on your currently claimed rings')
-            .gameAction(multiple([
-                gainHonor((context) => ({
-                    target: context.player,
-                    amount: hasClaimedRing(this, elementKeys.air, context.player) ? 1 : 0
-                })),
-                draw((context) => ({
-                    target: context.player,
-                    amount: hasClaimedRing(this, elementKeys.earth, context.player) ? 1 : 0
-                })),
-                gainFate((context) => ({
-                    target: context.player,
-                    amount: hasClaimedRing(this, elementKeys.void, context.player) ? 1 : 0
-                })),
-                conditional({
-                    condition: (context) => hasClaimedRing(this, elementKeys.water, context.player),
-                    trueGameAction: selectCard({
-                        activePromptTitle: 'Choose a 2 cost or lower character to ready',
-                        cardCondition: (card) => card.isCharacter() && card.costLessThan(3),
-                        cardType: CardType.Character,
-                        gameAction: ready(),
-                        targets: false,
-                        message: (context, card, player) => msg`${player} chooses to ready ${card} with ${context.source}'s effect`
-                    }),
-                    falseGameAction: draw(() => ({ amount: 0 }))
+            .gainHonor((context) => ({
+                target: context.player,
+                amount: hasClaimedRing(this, elementKeys.air, context.player) ? 1 : 0
+            }))
+            .draw((context) => ({
+                target: context.player,
+                amount: hasClaimedRing(this, elementKeys.earth, context.player) ? 1 : 0
+            }))
+            .gainFate((context) => ({
+                target: context.player,
+                amount: hasClaimedRing(this, elementKeys.void, context.player) ? 1 : 0
+            }))
+            .gameAction(conditional({
+                condition: (context) => hasClaimedRing(this, elementKeys.water, context.player),
+                trueGameAction: selectCard({
+                    activePromptTitle: 'Choose a 2 cost or lower character to ready',
+                    cardCondition: (card) => card.isCharacter() && card.costLessThan(3),
+                    cardType: CardType.Character,
+                    gameAction: ready(),
+                    targets: false,
+                    message: (context, card, player) => msg`${player} chooses to ready ${card} with ${context.source}'s effect`
                 }),
-                conditional({
-                    condition: (context) => hasClaimedRing(this, elementKeys.fire, context.player),
-                    trueGameAction: selectCard({
-                        activePromptTitle: 'Choose a character to honor',
-                        cardType: CardType.Character,
-                        gameAction: honor(),
-                        targets: false,
-                        message: (context, card, player) => msg`${player} chooses to honor ${card} with ${context.source}'s effect`
-                    }),
-                    falseGameAction: draw(() => ({ amount: 0 }))
-                })
-            ]))
+                falseGameAction: draw(() => ({ amount: 0 }))
+            }))
+            .gameAction(conditional({
+                condition: (context) => hasClaimedRing(this, elementKeys.fire, context.player),
+                trueGameAction: selectCard({
+                    activePromptTitle: 'Choose a character to honor',
+                    cardType: CardType.Character,
+                    gameAction: honor(),
+                    targets: false,
+                    message: (context, card, player) => msg`${player} chooses to honor ${card} with ${context.source}'s effect`
+                }),
+                falseGameAction: draw(() => ({ amount: 0 }))
+            }))
             .chatText((context) => msg`${this.createEffectMessage(context)}`);
     }
 

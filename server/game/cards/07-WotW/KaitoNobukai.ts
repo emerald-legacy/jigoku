@@ -2,7 +2,6 @@ import DrawCard from '../../DrawCard.js';
 import { CardType, RestrictionType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { cardCannot } from '../../effects.js';
-import { bow, cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
 
 class KaitoNobukai extends DrawCard {
     static id = 'kaito-nobukai';
@@ -11,15 +10,13 @@ class KaitoNobukai extends DrawCard {
         this.action('Bow each participating characters')
             .cost(costs.sacrificeSelf())
             .condition((context) => context.source.isParticipating())
-            .gameAction(multiple([
-                bow(() => ({
-                    target: this.game.findAnyCardsInPlay((card) => card.type === CardType.Character && card.isParticipating())
-                })),
-                cardLastingEffect(() => ({
-                    target: this.game.findAnyCardsInPlay((card) => card.type === CardType.Character),
-                    effect: cardCannot(RestrictionType.MoveToConflict)
-                }))
-            ]))
+            .bow(() => ({
+                target: this.game.findAnyCardsInPlay((card) => card.type === CardType.Character && card.isParticipating())
+            }))
+            .cardLastingEffect(() => ({
+                target: this.game.findAnyCardsInPlay((card) => card.type === CardType.Character),
+                effect: cardCannot(RestrictionType.MoveToConflict)
+            }))
             .chatText('bow all participating characters and prevent characters from moving into this conflict');
     }
 }

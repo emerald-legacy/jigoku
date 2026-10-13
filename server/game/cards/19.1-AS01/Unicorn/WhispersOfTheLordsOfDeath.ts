@@ -1,5 +1,4 @@
 import { changePlayerGloryModifier } from '../../../effects.js';
-import { claimImperialFavor, multiple, putIntoPlay } from '../../../GameActions/GameActions.js';
 import { CardType, FavorType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -20,13 +19,11 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
                     event.cardStateWhenLeftPlay?.location === Location.PlayArea &&
                     context.game.isDuringConflict()
             })
-            .gameAction(multiple([
-                putIntoPlay((context) => ({ target: context.source })),
-                claimImperialFavor((context) => ({
-                    target: context.player,
-                    side: FavorType.Military
-                }))
-            ]))
+            .putIntoPlay((context) => ({ target: context.source }))
+            .claimImperialFavor((context) => ({
+                target: context.player,
+                side: FavorType.Military
+            }))
             .chatText('put {0} into play and claim the Imperial Favor')
             .location([Location.Hand]);
     }

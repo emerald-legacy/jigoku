@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, Element, Location, Players, TargetMode } from '../../../Constants.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { deckSearch, multiple, putIntoPlay, selectCards } from '../../../GameActions/GameActions.js';
+import { putIntoPlay, selectCards } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { claimedRingSymbols, hasClaimedRing } from '../../claimedRings.js';
@@ -24,28 +24,26 @@ export default class CinderSalamander extends DrawCard {
 
         this.action('Search other copies of this character and put them into play')
             .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
-            .gameAction(multiple([
-                deckSearch({
-                    activePromptTitle: 'Select characters to put into play from your deck',
-                    deck: DeckType.Dynasty,
-                    mode: TargetMode.UpTo,
-                    numCards: 3,
-                    cardCondition: (card) => this.isSalamanderCard(card),
-                    gameAction: putIntoPlay(),
-                    message: (context, cards) => msg`${context.player} finds ${this.salamanderCountToText(cards.length)} in their deck`
-                }),
-                selectCards({
-                    activePromptTitle: 'Select characters to put into play from your provinces',
-                    controller: Players.Self,
-                    cardType: CardType.Character,
-                    location: Location.Provinces,
-                    mode: TargetMode.UpTo,
-                    numCards: 3,
-                    cardCondition: (card) => this.isSalamanderCard(card),
-                    gameAction: putIntoPlay(),
-                    message: (_context, cards, player) => msg`${player} finds ${this.salamanderCountToText(cards.length)} in their provinces`
-                })
-            ]))
+            .deckSearch({
+                activePromptTitle: 'Select characters to put into play from your deck',
+                deck: DeckType.Dynasty,
+                mode: TargetMode.UpTo,
+                numCards: 3,
+                cardCondition: (card) => this.isSalamanderCard(card),
+                gameAction: putIntoPlay(),
+                message: (context, cards) => msg`${context.player} finds ${this.salamanderCountToText(cards.length)} in their deck`
+            })
+            .gameAction(selectCards({
+                activePromptTitle: 'Select characters to put into play from your provinces',
+                controller: Players.Self,
+                cardType: CardType.Character,
+                location: Location.Provinces,
+                mode: TargetMode.UpTo,
+                numCards: 3,
+                cardCondition: (card) => this.isSalamanderCard(card),
+                gameAction: putIntoPlay(),
+                message: (_context, cards, player) => msg`${player} finds ${this.salamanderCountToText(cards.length)} in their provinces`
+            }))
             .chatText('search their deck and provinces for other copies of {0} and put them into play')
             .max(perRound(1));
     }

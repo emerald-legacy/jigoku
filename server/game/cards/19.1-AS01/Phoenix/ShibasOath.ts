@@ -1,7 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { gainAbility } from '../../../effects.js';
-import { cancel, moveCard, multiple } from '../../../GameActions/GameActions.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -41,13 +40,11 @@ export default class ShibasOath extends DrawCard {
                     )
             }, (ability) => ability
                 .cost(costs.sacrificeSelf())
-                .gameAction(multiple([
-                    cancel(),
-                    moveCard({
-                        target: this,
-                        destination: Location.Hand
-                    })
-                ]))
+                .cancel()
+                .moveCard({
+                    target: this,
+                    destination: Location.Hand
+                })
                 .chatText((context) => msg`cancel the effects of ${context.event.card} and return ${this} to their hand`))
         });
     }

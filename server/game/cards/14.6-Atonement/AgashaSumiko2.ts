@@ -1,4 +1,3 @@
-import { chosenDiscard, loseFate, loseHonor, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import { msg } from '../../GameChat.js';
@@ -12,20 +11,18 @@ export default class AgashaSumiko2 extends DrawCard {
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
             })
-            .gameAction(multiple([
-                loseHonor((context) => ({
-                    target: context.player.opponent,
-                    amount: context.player.opponent?.isMoreHonorable() ? 2 : 0
-                })),
-                loseFate((context) => ({
-                    target: context.player.opponent,
-                    amount: (context.player.opponent?.fate ?? 0) > context.player.fate ? 2 : 0
-                })),
-                chosenDiscard((context) => ({
-                    target: context.player.opponent,
-                    amount: (context.player.opponent?.hand.length ?? 0) > context.player.hand.length ? 2 : 0
-                }))
-            ]))
+            .loseHonor((context) => ({
+                target: context.player.opponent,
+                amount: context.player.opponent?.isMoreHonorable() ? 2 : 0
+            }))
+            .loseFate((context) => ({
+                target: context.player.opponent,
+                amount: (context.player.opponent?.fate ?? 0) > context.player.fate ? 2 : 0
+            }))
+            .chosenDiscard((context) => ({
+                target: context.player.opponent,
+                amount: (context.player.opponent?.hand.length ?? 0) > context.player.hand.length ? 2 : 0
+            }))
             .chatText((context) => msg`make ${context.player.opponent} ${this.getChatMessage(context)}`);
     }
 

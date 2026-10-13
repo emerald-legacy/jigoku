@@ -1,7 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
 import { duelIgnorePrintedSkill, setMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShosuroTechnique extends DrawCard {
@@ -29,12 +28,10 @@ export default class ShosuroTechnique extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             })
-            .gameAction(multiple([
-                cardLastingEffect((context) => ({
-                    target: context.targets.shinobi,
-                    effect: setMilitarySkill(context.targets.enemy.militarySkill)
-                }))
-            ]))
+            .cardLastingEffect((context) => ({
+                target: context.targets.shinobi,
+                effect: setMilitarySkill(context.targets.enemy.militarySkill)
+            }))
             .chatText((context) => {
                 const shinobi = context.targets.shinobi;
                 const enemy = context.targets.enemy;
