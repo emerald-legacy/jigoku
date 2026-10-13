@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
 import { gainAbility } from '../../effects.js';
-import { menuPrompt, removeFate } from '../../GameActions/GameActions.js';
+import { chooseAmount, removeFate } from '../../GameActions/GameActions.js';
 
 class YogoJunzo extends DrawCard {
     static id = 'yogo-junzo';
@@ -22,16 +22,11 @@ class YogoJunzo extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, menuPrompt((context) => ({
+            }, chooseAmount((context) => ({
                 activePromptTitle: 'Select fate amount:',
-                choices: Array.from(Array(context.target.getFate()), (_x, i) => (i + 1).toString()),
-                choiceHandler: (choice, displayMessage) => {
-                    if(displayMessage) {
-                        this.game.addMessage(msg`${context.player} chooses to move ${choice} fate from ${context.target} to ${context.player}'s pool`);
-                    }
-                    return { target: context.target, amount: parseInt(choice), recipient:context.target.controller };
-                },
-                gameAction: removeFate()
+                max: context.target.getFate(),
+                gameAction: (amount) => removeFate({ amount, recipient: context.target.controller }),
+                message: (context, amount) => msg`${context.player} chooses to move ${amount} fate from ${context.target} to ${context.player}'s pool`
             })));
     }
 }

@@ -12,6 +12,7 @@ import { BreakProvinceAction, BreakProperties } from './BreakProvinceAction.js';
 import { CancelAction, CancelProperties, type CancellingContext } from './CancelAction.js';
 import { CardMenuAction, CardMenuProperties } from './CardMenuAction.js';
 import { ChooseActionProperties, ChooseGameAction } from './ChooseGameAction.js';
+import { ChooseAmountAction, ChooseAmountProperties } from './ChooseAmountAction.js';
 import { ChosenDiscardAction, ChosenDiscardProperties } from './ChosenDiscardAction.js';
 import { ChosenReturnToDeckAction, ChosenReturnToDeckProperties } from './ChosenReturnToDeckAction.js';
 import { ClaimImperialFavorAction, ClaimFavorProperties } from './ClaimImperialFavorAction.js';
@@ -56,7 +57,6 @@ import { LoseFateAction, LoseFateProperties } from './LoseFateAction.js';
 import { LoseHonorAction, LoseHonorProperties } from './LoseHonorAction.js';
 import { OptionalAction, OptionalProperties } from './OptionalAction.js';
 import { DiscardMatchingAction, MatchingDiscardProperties } from './DiscardMatchingAction.js';
-import { MenuPromptAction, MenuPromptProperties } from './MenuPromptAction.js';
 import { ModifyBidAction, ModifyBidProperties } from './ModifyBidAction.js';
 import { MoveCardAction, MoveCardProperties } from './MoveCardAction.js';
 import { MoveConflictAction, MoveConflictProperties } from './MoveConflictAction.js';
@@ -524,6 +524,9 @@ export function cardMenu<C extends AbilityContext = AbilityContext>(propertyFact
 export function chooseAction<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChooseActionProperties<C>, C>): ChooseGameAction<C> {
     return new ChooseGameAction<C>(propertyFactory);
 } // options, activePromptTitle = 'Select an action:'
+export function chooseAmount<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChooseAmountProperties<C>, C>): ChooseAmountAction<C> {
+    return new ChooseAmountAction<C>(propertyFactory);
+}
 export function conditional<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ConditionalProperties<C>, C>): ConditionalAction<C> {
     return new ConditionalAction<C>(propertyFactory);
 }
@@ -542,9 +545,6 @@ export function joint<C extends AbilityContext = AbilityContext>(gameActions: Ga
 export function multiple<C extends AbilityContext = AbilityContext>(gameActions: GameActionList<C>): MultipleGameAction<C> {
     return new MultipleGameAction<C>(gameActions);
 } // a list of actions, or (context) => list
-export function menuPrompt<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, C>): MenuPromptAction<C> {
-    return new MenuPromptAction<C>(propertyFactory);
-}
 /** The player puts the top cards of a deck (by default their own) back in the order they choose. */
 export function rearrangeDeck<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RearrangeDeckProperties, C>): RearrangeDeckAction<C> {
     return new RearrangeDeckAction<C>(propertyFactory);

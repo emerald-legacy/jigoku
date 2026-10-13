@@ -6,7 +6,7 @@ import {
     dishonor,
     joint,
     loseFate,
-    menuPrompt,
+    optional,
     resolveAbility,
     sequential
 } from '../../GameActions/GameActions.js';
@@ -24,17 +24,11 @@ export default class StoriedDefeat extends DrawCard {
                 cardCondition: (card) => duelLosers.has(card)
             }, sequential([
                 bow(),
-                menuPrompt((context) => ({
+                optional((context) => ({
                     activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
-                    choices: ['Yes'].concat(
-                        context.events.some((event) => event.name === EventName.OnCardBowed) ? ['No'] : []
-                    ),
-                    choiceHandler: (choice, displayMessage) => {
-                        if(displayMessage) {
-                            context.game.addMessage(msg`${context.player} chooses ${choice === 'No' ? 'not ' : ''}to spend a fate to dishonor ${context.target}`);
-                        }
-                        return { amount: choice === 'Yes' ? 1 : 0 };
-                    },
+                    required: !context.events.some((event) => event.name === EventName.OnCardBowed),
+                    acceptMessage: () => msg`${context.player} chooses to spend a fate to dishonor ${context.target}`,
+                    declineMessage: () => msg`${context.player} chooses not to spend a fate to dishonor ${context.target}`,
                     gameAction: joint([
                         loseFate({ target: context.player }),
                         resolveAbility({

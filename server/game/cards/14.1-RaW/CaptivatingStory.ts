@@ -5,7 +5,7 @@ import {
     cardLastingEffect,
     honor,
     joint,
-    menuPrompt,
+    optional,
     removeFate,
     resolveAbility,
     sequential
@@ -27,15 +27,11 @@ class CaptivatingStory extends DrawCard {
                 cardLastingEffect((context) => ({
                     effect: modifyPoliticalSkill(context.player.getNumberOfFaceupProvinces())
                 })),
-                menuPrompt((context) => ({
+                optional((context) => ({
                     activePromptTitle: 'Remove 1 fate from ' + context.target.name + ' to honor them?',
-                    choices: ['Yes'].concat(context.player.getNumberOfFaceupProvinces() > 0 ? ['No'] : []),
-                    choiceHandler: (choice, displayMessage) => {
-                        if(displayMessage) {
-                            context.game.addMessage(msg`${context.player} chooses ${choice === 'No' ? 'not ' : ''}to remove a fate from ${context.target} to honor them`);
-                        }
-                        return { amount: choice === 'Yes' ? 1 : 0 };
-                    },
+                    required: context.player.getNumberOfFaceupProvinces() === 0,
+                    acceptMessage: () => msg`${context.player} chooses to remove a fate from ${context.target} to honor them`,
+                    declineMessage: () => msg`${context.player} chooses not to remove a fate from ${context.target} to honor them`,
                     gameAction: joint([
                         removeFate((context) => ({
                             target: context.target

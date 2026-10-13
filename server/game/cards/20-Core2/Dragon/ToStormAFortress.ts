@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, Players, ConflictType } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect, discardCard, menuPrompt, sequential } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, discardCard, optional, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ToStormAFortress extends DrawCard {
@@ -17,23 +17,16 @@ export default class ToStormAFortress extends DrawCard {
                 cardLastingEffect({
                     effect: modifyMilitarySkill(2)
                 }),
-                menuPrompt((context) => ({
-                    activePromptTitle: 'Discard each card in the attacked province?',
-                    choices: ['Yes', 'No'],
-                    choiceHandler: (choice, displayMessage) => {
-                        const cardsToDiscard = context.game.requireConflict()
-                            .getConflictProvinces()
-                            .flatMap((province) =>
-                                province.controller.getDynastyCardsInProvince(province.location)
-                            );
-
-                        if(displayMessage && choice === 'Yes') {
-                            context.game.addMessage(msg`${context.player}'s ${context.source} discards ${cardsToDiscard}`);
-                        }
-                        return { target: choice === 'Yes' ? cardsToDiscard : [] };
-                    },
-                    gameAction: discardCard()
-                }))
+                optional((context) => {
+                    const cardsToDiscard = context.game.requireConflict()
+                        .getConflictProvinces()
+                        .flatMap((province) => province.controller.getDynastyCardsInProvince(province.location));
+                    return {
+                        activePromptTitle: 'Discard each card in the attacked province?',
+                        gameAction: discardCard({ target: cardsToDiscard }),
+                        acceptMessage: () => msg`${context.player}'s ${context.source} discards ${cardsToDiscard}`
+                    };
+                })
             ]))
             .chatText((context) => msg`grant +2${'military'} to ${context.chatTarget()}`);
     }

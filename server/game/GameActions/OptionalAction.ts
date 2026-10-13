@@ -10,8 +10,9 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 export interface OptionalProperties extends GameActionProperties {
     gameAction: GameAction;
     activePromptTitle: string;
-    /** Who decides: the ability's player (default) or their opponent. */
     player?: Chooser;
+    /** Resolves without asking, when declining isn't allowed (the rest of the ability did nothing). */
+    required?: boolean;
     acceptMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
     declineMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
 }
@@ -33,19 +34,21 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends C
         if(!chooser) {
             return;
         }
+        const accept = () => {
+            properties.gameAction.addEventsToArray(events, context, overrides);
+            if(properties.acceptMessage) {
+                context.game.addMessage(properties.acceptMessage(context, chooser));
+            }
+        };
+        if(properties.required) {
+            accept();
+            return;
+        }
         context.game.promptWithHandlerMenu(chooser, {
             activePromptTitle: properties.activePromptTitle,
             source: context.source,
             options: [
-                {
-                    text: 'Yes',
-                    handler: () => {
-                        properties.gameAction.addEventsToArray(events, context, overrides);
-                        if(properties.acceptMessage) {
-                            context.game.addMessage(properties.acceptMessage(context, chooser));
-                        }
-                    }
-                },
+                { text: 'Yes', handler: accept },
                 {
                     text: 'No',
                     handler: () => {

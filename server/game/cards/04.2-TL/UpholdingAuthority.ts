@@ -1,9 +1,10 @@
 import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { modifyProvinceStrength } from '../../effects.js';
-import { cardMenu, discardCard, lookAt, menuPrompt, sequential } from '../../GameActions/GameActions.js';
+import { cardMenu, chooseAmount, discardCard, lookAt, sequential } from '../../GameActions/GameActions.js';
+import { targetList, type GameActionTarget } from '../../GameActions/GameAction.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import type { MenuPromptProperties } from '../../GameActions/MenuPromptAction.js';
 
 export default class UpholdingAuthority extends ProvinceCard {
     static id = 'upholding-authority';
@@ -14,24 +15,12 @@ export default class UpholdingAuthority extends ProvinceCard {
             effect: modifyProvinceStrength(2)
         });
 
-        const gameAction = menuPrompt((context) => ({
+        const gameAction = chooseAmount((context) => ({
             activePromptTitle: 'Choose how many cards to discard',
-            choices: (properties) =>
-                (context.game.currentConflict?.attackingPlayer.hand ?? [])
-                    .filter((card) => card.name === this.chosenCard(properties)?.name)
-                    .map((_, idx) => (idx + 1).toString()),
-            gameAction: discardCard(),
-            choiceHandler: (choice, displayMessage, properties) => {
-                const chosenCard = this.chosenCard(properties);
-                if(displayMessage) {
-                    this.game.addMessage(msg`${context.player} chooses to discard ${choice} cop${choice === '1' ? 'y' : 'ies'} of ${chosenCard}`);
-                }
-                return {
-                    target: context.game.currentConflict?.attackingPlayer.hand
-                        .filter((card) => card.name === chosenCard?.name)
-                        .slice(0, parseInt(choice))
-                };
-            }
+            max: (target) => this.copiesInHand(context, target).length,
+            gameAction: (amount, target) => discardCard({ target: this.copiesInHand(context, target).slice(0, amount) }),
+            message: (context, amount, _chooser, target) =>
+                msg`${context.player} chooses to discard ${amount} cop${amount === 1 ? 'y' : 'ies'} of ${targetList(target)[0]}`
         }));
 
         this.interrupt('Look at the attacking player\'s hand and discard all copies of a card')
@@ -59,8 +48,10 @@ export default class UpholdingAuthority extends ProvinceCard {
             .chatText('look at the attacking player\'s hand and choose a card to be discarded');
     }
 
-    private chosenCard(properties: MenuPromptProperties): DrawCard | undefined {
-        const card = Array.isArray(properties.target) ? properties.target[0] : properties.target;
-        return card instanceof DrawCard ? card : undefined;
+    private copiesInHand(context: AbilityContext, target: GameActionTarget | GameActionTarget[] | undefined): DrawCard[] {
+        const card = targetList(target)[0];
+        return card instanceof DrawCard
+            ? context.game.currentConflict?.attackingPlayer.hand.filter((copy) => copy.name === card.name) ?? []
+            : [];
     }
 }

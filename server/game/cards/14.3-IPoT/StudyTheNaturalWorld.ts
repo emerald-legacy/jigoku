@@ -4,7 +4,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { addElement, delayedEffect } from '../../effects.js';
 import {
-    menuPrompt,
+    optional,
     multiple,
     playerLastingEffect,
     resolveRingEffect,
@@ -30,16 +30,10 @@ class StudyTheNaturalWorld extends DrawCard {
                             afterConflict: (event) =>
                                 context.player === event.conflict.winner
                         },
-                        gameAction: menuPrompt({
+                        gameAction: optional({
                             activePromptTitle: 'Resolve Ring Effects?',
-                            choices: ['Yes', 'No'],
-                            choiceHandler: (choice, displayMessage) => {
-                                if(displayMessage && choice === 'Yes') {
-                                    context.game.addMessage(msg`${context.player} chooses to resolve all elements of the contested ring due to the delayed effect of ${context.source}`);
-                                }
-                                return { target: (choice === 'Yes' ? (context.game.currentConflict?.ring?.getElements() ?? []) : []) };
-                            },
-                            gameAction: resolveRingEffect()
+                            gameAction: resolveRingEffect(() => ({ target: (context.game.currentConflict?.ring?.getElements() ?? []).map((element) => context.game.rings[element]) })),
+                            acceptMessage: () => msg`${context.player} chooses to resolve all elements of the contested ring due to the delayed effect of ${context.source}`
                         })
                     })
                 }))

@@ -1,8 +1,7 @@
 import { msg } from '../../GameChat.js';
-import { CardType, DuelType, Location, Blocker } from '../../Constants.js';
-import { menuPrompt, selectCard, triggerAbility } from '../../GameActions/GameActions.js';
+import { DuelType, Blocker } from '../../Constants.js';
+import { optional, selectAttackedProvince, triggerAbility } from '../../GameActions/GameActions.js';
 import type { ResolvedAbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
@@ -17,28 +16,12 @@ export default class CunningNegotiator extends DrawCard {
                 opponentChoosesDuelTarget: true,
                 chatText: () => msg`resolve the action ability of an attacked province`,
                 gameAction: (duel) =>
-                    menuPrompt((context) => ({
+                    optional({
                         activePromptTitle: 'Do you want to trigger a province ability?',
-                        choices: ['Yes', 'No'],
                         player: duel.winnerController,
-                        choiceHandler: (choice, displayMessage) => {
-                            if(displayMessage) {
-                                if(choice === 'Yes') {
-                                    context.game.addMessage(msg`${duel.winnerController} chooses to trigger a province ability`);
-                                } else {
-                                    context.game.addMessage(msg`${duel.winnerController} chooses not to trigger a province ability`);
-                                }
-                            }
-                            return {
-                                cardCondition: (card: BaseCard) =>
-                                    choice === 'Yes' ? card.isConflictProvince() : false
-                            };
-                        },
-                        gameAction: selectCard((context) => ({
-                            activePromptTitle: 'Choose an attacked province',
-                            hidePromptIfSingleCard: true,
-                            cardType: CardType.Province,
-                            location: Location.Provinces,
+                        acceptMessage: (_context, chooser) => msg`${chooser} chooses to trigger a province ability`,
+                        declineMessage: (_context, chooser) => msg`${chooser} chooses not to trigger a province ability`,
+                        gameAction: selectAttackedProvince((context) => ({
                             subActionProperties: (card) => {
                                 context.target = card;
                                 return { target: card };
@@ -49,7 +32,7 @@ export default class CunningNegotiator extends DrawCard {
                                 ignoredBlockers: [Blocker.LimitReached]
                             }))
                         }))
-                    }))
+                    })
             }));
     }
 }

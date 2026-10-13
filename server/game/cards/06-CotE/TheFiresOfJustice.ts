@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
-import { menuPrompt, placeFate, removeFate } from '../../GameActions/GameActions.js';
+import { chooseAmount, placeFate, removeFate } from '../../GameActions/GameActions.js';
 
 class TheFiresOfJustice extends DrawCard {
     static id = 'the-fires-of-justice';
@@ -23,16 +23,11 @@ class TheFiresOfJustice extends DrawCard {
                 dependsOn: 'character'
             }, {
                 'Remove all fate': removeFate((context) => ({ target: context.targets.character, amount: context.targets.character.getFate() })),
-                'Move fate to character': menuPrompt((context) => ({
+                'Move fate to character': chooseAmount((context) => ({
                     activePromptTitle: 'Select fate amount:',
-                    choices: Array.from(Array(context.player.opponent?.fate), (_x, i) => (i + 1).toString()),
-                    choiceHandler: (choice, displayMessage) => {
-                        if(displayMessage) {
-                            this.game.addMessage(msg`${context.player} chooses to move ${choice} fate from ${context.player.opponent}'s pool to ${context.targets.character}`);
-                        }
-                        return { target: context.targets.character, amount: parseInt(choice) };
-                    },
-                    gameAction: placeFate({ origin: context.player.opponent })
+                    max: context.player.opponent?.fate ?? 0,
+                    gameAction: (amount) => placeFate({ target: context.targets.character, amount, origin: context.player.opponent }),
+                    message: (context, amount) => msg`${context.player} chooses to move ${amount} fate from ${context.player.opponent}'s pool to ${context.targets.character}`
                 }))
             })
             .chatText((context) => msg`${context.selects.select.choice === 'Remove all fate' ? 'remove all fate from' : 'place fate on'} ${context.targets.character}`);

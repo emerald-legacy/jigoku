@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
-import { bow, menuPrompt, sendHome } from '../../../GameActions/GameActions.js';
+import { bow, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DojiShigenobu extends DrawCard {
@@ -19,16 +19,10 @@ export default class DojiShigenobu extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, bow())
             .afterwards()
-            .gameAction(menuPrompt((context) => ({
+            .optional({
                 activePromptTitle: 'Do you want to move home?',
-                choices: ['Yes', 'No'],
-                choiceHandler: (choice, displayMessage) => {
-                    if(displayMessage && choice === 'Yes') {
-                        context.game.addMessage(msg`${context.player} chooses to move ${context.source} home`);
-                    }
-                    return { target: choice === 'Yes' ? context.source : [] };
-                },
-                gameAction: sendHome()
-            })));
+                gameAction: sendHome(),
+                acceptMessage: (context) => msg`${context.player} chooses to move ${context.source} home`
+            });
     }
 }

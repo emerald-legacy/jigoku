@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import { menuPrompt, placeFate } from '../../../GameActions/GameActions.js';
+import { chooseAmount, placeFate } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
 
 const DONOR = 'donor';
@@ -23,24 +23,11 @@ export default class LastJudgmentPlains extends ProvinceCard {
                 activePromptTitle: 'Choose a recipient character',
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, menuPrompt(({ targets }) => ({
+            }, chooseAmount(({ targets }) => ({
                 activePromptTitle: 'How much fate do you want to move?',
-                choices: this.createChoiceArray(targets[DONOR].getFate()),
-                choiceHandler: (choice) => ({
-                    amount: parseInt(choice, 10),
-                    origin: targets[DONOR],
-                    target: targets[RECIPIENT]
-                }),
-                gameAction: placeFate()
+                max: targets[DONOR].getFate(),
+                gameAction: (amount) => placeFate({ amount, origin: targets[DONOR], target: targets[RECIPIENT] })
             })))
             .chatText(({ targets }) => msg`move fate from ${targets[DONOR]} to ${targets[RECIPIENT]}`);
-    }
-
-    private createChoiceArray(fate: number): string[] {
-        const choices: string[] = [];
-        for(let i = 1; i <= fate; i++) {
-            choices.push(i.toString());
-        }
-        return choices;
     }
 }

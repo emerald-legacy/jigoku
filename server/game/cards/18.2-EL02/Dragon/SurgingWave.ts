@@ -7,7 +7,7 @@ import {
     discardStatusToken,
     joint,
     loseFate,
-    menuPrompt,
+    optional,
     sequential
 } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
@@ -34,18 +34,13 @@ class SurgingWave extends DrawCard {
                 );
                 if(kihoPlayed) {
                     gameActions.push(
-                        menuPrompt(() => ({
+                        optional({
                             activePromptTitle:
                                     'Spend 1 fate to prevent ' +
                                     context.target.name +
                                     ' from bowing at the end of the conflict?',
-                            choices: ['Yes', 'No'],
-                            choiceHandler: (choice, displayMessage) => {
-                                if(displayMessage) {
-                                    context.game.addMessage(msg`${context.player} chooses ${choice === 'No' ? 'not ' : ''}to spend a fate to prevent ${context.target} from bowing during conflict resolution`);
-                                }
-                                return { amount: choice === 'Yes' ? 1 : 0 };
-                            },
+                            acceptMessage: () => msg`${context.player} chooses to spend a fate to prevent ${context.target} from bowing during conflict resolution`,
+                            declineMessage: () => msg`${context.player} chooses not to spend a fate to prevent ${context.target} from bowing during conflict resolution`,
                             gameAction: joint([
                                 loseFate({ target: context.player }),
                                 cardLastingEffect(() => ({
@@ -53,7 +48,7 @@ class SurgingWave extends DrawCard {
                                     target: context.target
                                 }))
                             ])
-                        }))
+                        })
                     );
                 }
 

@@ -5,7 +5,7 @@ import {
     discardFromPlay,
     discardStatusToken,
     honor,
-    menuPrompt,
+    optional,
     multiple,
     selectCards,
     sequential
@@ -70,19 +70,11 @@ class PrepareForWar extends DrawCard {
 
     private getStatusTokenPrompts(context: AbilityContext) {
         return (context.target?.statusTokens ?? []).map((token) =>
-            menuPrompt((context) => ({
+            optional((context) => ({
                 activePromptTitle: `Do you wish to discard ${token.name}?`,
-                choices: ['Yes', 'No'],
                 optional: true,
-                choiceHandler: (choice, displayMessage) => {
-                    if(displayMessage && choice === 'Yes') {
-                        this.game.addMessage(msg`${context.player} chooses to discard ${token} from ${context.target}`);
-                    }
-
-                    return { target: choice === 'Yes' ? token : [] };
-                },
-                player: Players.Self,
-                gameAction: discardStatusToken()
+                gameAction: discardStatusToken({ target: token }),
+                acceptMessage: () => msg`${context.player} chooses to discard ${token} from ${context.target}`
             }))
         );
     }

@@ -12,6 +12,7 @@ import type { SelectCardProperties } from './GameActions/SelectCardAction.js';
 import type { CancellingContext } from './GameActions/CancelAction.js';
 import type { CardMenuProperties } from './GameActions/CardMenuAction.js';
 import type { ChooseActionProperties } from './GameActions/ChooseGameAction.js';
+import type { ChooseAmountProperties } from './GameActions/ChooseAmountAction.js';
 import type { SelectRingProperties } from './GameActions/SelectRingActions.js';
 import type { SelectTokenProperties } from './GameActions/SelectTokenAction.js';
 import type { GameEvent } from './Events/EventPayloads.js';
@@ -1032,6 +1033,16 @@ export class AbilityBuilder<
     /** A choice between game actions while the ability resolves (a selection after the dash). */
     chooseAction(properties: ContextProps<ChooseActionProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.chooseAction(properties));
+    }
+
+    /** A number is chosen while the ability resolves, and `gameAction(amount)` resolves. */
+    chooseAmount(properties: ContextProps<ChooseAmountProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.chooseAmount(properties));
+    }
+
+    /** A player may resolve `gameAction` (Yes/No). */
+    optional(properties: FactoryProperties<'optional', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.optional(properties));
     }
 
     /** The top card of a deck becomes a token, then `gameAction(token)` resolves. */
