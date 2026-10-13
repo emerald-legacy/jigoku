@@ -3,16 +3,15 @@ import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CompositeGameAction } from './CompositeGameAction.js';
-import type { Players } from '../Constants.js';
 import type Player from '../Player.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
+import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface OptionalProperties extends GameActionProperties {
     gameAction: GameAction;
     activePromptTitle: string;
     /** Who decides: the ability's player (default) or their opponent. */
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     acceptMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
     declineMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
 }

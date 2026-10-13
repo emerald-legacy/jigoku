@@ -2,8 +2,8 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
-import { Players, type EventName } from '../Constants.js';
+import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
+import type { EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -12,7 +12,7 @@ import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 
 export interface CardMenuProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
     activePromptTitle?: string;
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     cards: DrawCard[];
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     options?: HandlerMenuOption[];

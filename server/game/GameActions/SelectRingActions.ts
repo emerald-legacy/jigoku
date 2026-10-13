@@ -2,8 +2,8 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Event } from '../Events/Event.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
-import { Players, type EventName } from '../Constants.js';
+import { isChosenByAbilityPlayer, resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
+import type { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { GameAction } from './GameAction.js';
@@ -11,7 +11,7 @@ import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export interface SelectRingProperties<C extends AbilityContext = AbilityContext> extends RingActionProperties {
     activePromptTitle?: string;
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     targets?: boolean;
     ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
     cancelHandler?: () => void;
@@ -95,6 +95,6 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        return !!properties.targets && properties.player !== Players.Opponent;
+        return !!properties.targets && isChosenByAbilityPlayer(context, properties.player);
     }
 }

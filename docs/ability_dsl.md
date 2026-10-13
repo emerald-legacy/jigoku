@@ -608,6 +608,8 @@ These target the ability's player, except `takeFate`, `takeHonor`, `chosenDiscar
 
 ### Meta / control flow actions
 
+A prompt's `player` (who chooses) is `Players.Self` (the default), `Players.Opponent`, or a player: `player: duel.winnerController`.
+
 | Function | Notes |
 |----------|-------|
 | `multiple([...actions])` / `multiple((context) => actions)` | Execute multiple actions simultaneously: a list, or a function of the context returning one |
@@ -896,15 +898,16 @@ this.action('Duel target character')
 | `targetCondition` | Filter for legal duel targets (overrides default participation check on the target) |
 | `opponentChoosesDuelTarget` | Opponent selects the target |
 | `opponentChoosesChallenger` | Opponent selects the challenger |
-| `gameAction` | `(duel, context) => GameAction` — the effect resolved when the duel ends. `duel.winner` / `duel.loser` are `DrawCard[]`, or `undefined` on a tie (as are `duel.winningPlayer` / `duel.losingPlayer`) |
-| `chatText` | `(context, duel) => msg\`…\`` — the text after "Duel Effect: " in chat; without it, the game action's own effect text |
+| `gameAction` | `(duel, context) => GameAction` — the effect resolved when the duel has a winner. `duel.winner`, `duel.winningPlayer` and `duel.winnerController` are set; `duel.loser` / `duel.loserController` can still be `undefined` (a loser that can't lose duels, or one that left play) |
+| `onTie` | `(duel, context) => GameAction` — the effect on a tie (no winner, no loser); without it a tie has no effect (Doji Reiha) |
+| `chatText` | `(context, duel) => msg\`…\`` — the text after "Duel Effect: " in chat for `gameAction`; without it, the game action's own effect text |
 | `refuseGameAction` | Effect when the opponent legally refuses the duel (consult `Duel.ts`) |
 | `refusalMessage` | `(context, refuser) => msg\`…\`` — the chat line when refused; by default "<refuser> chooses to refuse the duel and <refuseGameAction's text>" |
 | `costHandler` | Custom focus-cost handler |
 | `challengerEffect` / `targetEffect` | Pre-resolution per-side effects |
 | `statistic` | `(card, rules) => number` — override skill statistic used in resolution |
 
-When `requiresConflict: true` (default), do not add a redundant `isDuringConflict()` condition or `source.isParticipating()` condition — the duel system enforces both. There is no `winnerHandler`/`loserHandler`/`tieHandler` indirection — express win/loss/tie effects by branching on `duel.winner` / `duel.loser` (`undefined` on a tie) inside the single `gameAction` factory.
+When `requiresConflict: true` (default), do not add a redundant `isDuringConflict()` condition or `source.isParticipating()` condition — the duel system enforces both. Win and loss effects branch on `duel.winner` / `duel.loser` inside `gameAction`; prompts for "the controller of the duel's winner" take the player itself: `selectCard({ player: duel.winnerController, … })`.
 
 ---
 

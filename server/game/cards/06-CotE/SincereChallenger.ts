@@ -14,7 +14,7 @@ class SincereChallenger extends DrawCard {
         this.action('Initiate a Political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,
-                chatText: (_context, duel) => msg`${duel.winner?.[0]} is immune to events until the end of the conflict`,
+                chatText: (_context, duel) => msg`${duel.winner[0]} is immune to events until the end of the conflict`,
                 gameAction: (duel) => cardLastingEffect({
                     target: duel.winner,
                     effect: immunity({ appliesTo: RestrictionScope.Events })

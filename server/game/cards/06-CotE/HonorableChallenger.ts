@@ -11,7 +11,7 @@ class HonorableChallenger extends DrawCard {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                chatText: (_context, duel) => msg`${duel.winner?.[0]} will not bow as a result of this conflict's resolution`,
+                chatText: (_context, duel) => msg`${duel.winner[0]} will not bow as a result of this conflict's resolution`,
                 gameAction: (duel) => cardLastingEffect({
                     target: duel.winner,
                     effect: doesNotBow()

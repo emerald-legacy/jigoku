@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { CardType, DuelType, Location, Players, Blocker } from '../../Constants.js';
+import { CardType, DuelType, Location, Blocker } from '../../Constants.js';
 import { menuPrompt, selectCard, triggerAbility } from '../../GameActions/GameActions.js';
 import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
@@ -19,8 +19,8 @@ export default class CunningNegotiator extends DrawCard {
                 gameAction: (duel) =>
                     menuPrompt((context) => ({
                         activePromptTitle: 'Do you want to trigger a province ability?',
-                        choices: duel.winner ? ['Yes', 'No'] : [],
-                        player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
+                        choices: ['Yes', 'No'],
+                        player: duel.winnerController,
                         choiceHandler: (choice, displayMessage) => {
                             if(displayMessage) {
                                 if(choice === 'Yes') {
@@ -44,7 +44,7 @@ export default class CunningNegotiator extends DrawCard {
                                 return { target: card };
                             },
                             gameAction: triggerAbility((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
-                                player: duel.winnerController ?? context.source.controller,
+                                player: duel.winnerController,
                                 ability: context.target.abilities.actions[0],
                                 ignoredBlockers: [Blocker.LimitReached]
                             }))

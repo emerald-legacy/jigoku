@@ -15,7 +15,7 @@ class DefendYourHonor extends DrawCard {
             .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                gameAction: (duel) => (duel.winner && duel.winningPlayer === context.player) ? cancel() : noAction()
+                gameAction: (duel) => duel.winningPlayer === context.player ? cancel() : noAction()
             }));
     }
 }

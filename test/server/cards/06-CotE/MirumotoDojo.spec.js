@@ -124,7 +124,7 @@ describe('Mirumoto Dojo', function() {
                 this.player2.clickPrompt('1');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.getChatLogs(10)).toContain('The duel ends in a draw');
-                expect(this.getChatLogs(10)).toContain('Duel Effect: no effect');
+                expect(this.getChatLogs(10)).toContain('The duel has no effect');
             });
         });
     });

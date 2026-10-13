@@ -1,11 +1,11 @@
 import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { DeckType, EventName, Location, type Players, RemainingCards, TargetMode } from '../Constants.js';
+import { DeckType, EventName, Location, RemainingCards, TargetMode } from '../Constants.js';
 import { shuffle } from '../utils/random.js';
 import type DrawCard from '../DrawCard.js';
 import { targetList, type GameAction, type ActionEvent, type WithDefaults } from './GameAction.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
+import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type Player from '../Player.js';
 import type { Event } from '../Events/Event.js';
@@ -27,7 +27,7 @@ export interface DeckSearchProperties<C extends AbilityContext = AbilityContext>
     message?: (context: C, cards: DrawCard[], chooser: Player) => MessageArgs;
     uniqueNames?: boolean;
     /** Who chooses the cards; by default the player whose deck is searched. */
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     selectedCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
     remainingCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;

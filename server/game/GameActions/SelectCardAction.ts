@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
+import { isChosenByAbilityPlayer, resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { CardSelector, type SingleCardMode } from '../CardSelector.js';
 import type { BaseCardSelector } from '../CardSelectors/BaseCardSelector.js';
 import { CardType, EffectName, Location, Players, TargetMode, type EventName, RestrictionType } from '../Constants.js';
@@ -17,7 +17,7 @@ const isCardTypeList = (cardType: CardTypes): cardType is readonly CardType[] =>
 /** `K` is the declared `cardType`, which fixes the class of card the callbacks receive. */
 interface SelectCardBase<C extends AbilityContext, K extends CardTypes> extends CardActionProperties {
     activePromptTitle?: string;
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     cardType?: K;
     controller?: Players;
     location?: Location | Location[];
@@ -219,6 +219,6 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        return properties.targets && properties.player !== Players.Opponent;
+        return properties.targets && isChosenByAbilityPlayer(context, properties.player);
     }
 }

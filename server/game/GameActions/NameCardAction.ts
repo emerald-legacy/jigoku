@@ -1,14 +1,14 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName, Players } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type { MessageArgs } from '../GameChat.js';
 import type Player from '../Player.js';
 import { GameAction, type ActionOverrides, type GameActionProperties } from './GameAction.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
+import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 
 export interface NameCardProperties extends GameActionProperties {
     /** Who names the card: the ability's player (default) or their opponent. */
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     activePromptTitle?: string;
     gameAction: (cardName: string) => GameAction;
     message?: (context: AbilityContext, cardName: string, chooser: Player) => MessageArgs;

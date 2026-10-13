@@ -4,14 +4,13 @@ import type Player from '../Player.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CompositeGameAction } from './CompositeGameAction.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
-import { Players } from '../Constants.js';
+import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { GameAction, type GameActionProperties, type GameActionTarget } from './GameAction.js';
 
 export interface ChooseActionProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     activePromptTitle?: string;
     waitingPromptTitle?: string;
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     /** One button per label: its game action, or the action with a chat line. Like `select`'s choices, but chosen while resolving. */
     choices: { [label: string]: GameAction | ChooseActionOption<C> };
 }

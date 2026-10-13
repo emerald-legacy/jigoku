@@ -11,7 +11,7 @@ class MakeYourCase extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                chatText: (_context, duel) => msg`${duel.winner}${duel.winner ? ' gains a fate' : ''}`,
+                chatText: (_context, duel) => msg`${duel.winner} gains a fate`,
                 gameAction: (duel) => placeFate({
                     target: duel.winner
                 })

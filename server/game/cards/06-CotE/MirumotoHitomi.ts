@@ -15,9 +15,9 @@ export default class MirumotoHitomi extends DrawCard {
                 cardCondition: (card) => card.isParticipating(),
                 mode: TargetMode.UpTo,
                 numCards: 2
-            }, duel((context) => ({
+            }, duel(() => ({
                 type: DuelType.Military,
-                chatText: (_context, duel) => msg`${duel.winner?.includes(context.source) ? context.player.opponent : context.player} chooses whether to dishonor or bow ${duel.loser}`,
+                chatText: (_context, duel) => msg`${duel.loserController} chooses whether to dishonor or bow ${duel.loser}`,
                 gameAction: (duel) => {
                     if(!duel.loser) {
                         return noAction();
@@ -26,7 +26,7 @@ export default class MirumotoHitomi extends DrawCard {
                         duel.loser.map((card) =>
                             chooseAction({
                                 target: card,
-                                player: context.player !== card.controller ? Players.Opponent : Players.Self,
+                                player: card.controller,
                                 choices: {
                                     'Dishonor this character': {
                                         action: dishonor(),

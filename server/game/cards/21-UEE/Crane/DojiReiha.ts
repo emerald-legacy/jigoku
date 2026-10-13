@@ -1,5 +1,5 @@
 import { chooseAction, honor, noAction, sendHome, sequential } from '../../../GameActions/GameActions.js';
-import { DuelType, Players } from '../../../Constants.js';
+import { DuelType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DojiReiha extends DrawCard {
@@ -10,24 +10,19 @@ export default class DojiReiha extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                gameAction: (duel) => {
-                    const honorContestants = honor({ target: duel.participants });
-                    if(!duel.winningPlayer) {
-                        return honorContestants;
-                    }
-                    return sequential([
-                        honorContestants,
-                        chooseAction((context) => ({
-                            player: duel.winningPlayer === context.player ? Players.Self : Players.Opponent,
-                            choices: {
-                                'Move all duel participants home': sendHome({
-                                    target: duel.participants
-                                }),
-                                'Do nothing': noAction()
-                            }
-                        }))
-                    ]);
-                }
+                gameAction: (duel) => sequential([
+                    honor({ target: duel.participants }),
+                    chooseAction({
+                        player: duel.winnerController,
+                        choices: {
+                            'Move all duel participants home': sendHome({
+                                target: duel.participants
+                            }),
+                            'Do nothing': noAction()
+                        }
+                    })
+                ]),
+                onTie: (duel) => honor({ target: duel.participants })
             }));
     }
 }

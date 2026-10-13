@@ -2,8 +2,8 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
-import { Players, type EventName } from '../Constants.js';
+import { isChosenByAbilityPlayer, resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
+import type { EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
@@ -13,7 +13,7 @@ import { TokenAction, type TokenActionProperties } from './TokenAction.js';
 export interface SelectTokenProperties<C extends AbilityContext = AbilityContext> extends TokenActionProperties {
     activePromptTitle?: string;
     card?: BaseCard;
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     targets?: boolean;
     singleToken?: boolean;
     tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;
@@ -135,6 +135,6 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = super.getProperties(context, additionalProperties);
-        return !!properties.targets && properties.player !== Players.Opponent;
+        return !!properties.targets && isChosenByAbilityPlayer(context, properties.player);
     }
 }

@@ -33,7 +33,7 @@ export default class PolicyDebate extends DrawCard {
                         }),
                         cardMenu({
                             activePromptTitle: 'Choose card to discard',
-                            player: duel.loserController === context.player ? Players.Opponent : Players.Self,
+                            player: duel.loserController?.opponent,
                             cards: this.losersHand(duel),
                             targets: true,
                             message: (_context, card) => msg`${duel.loserController?.opponent ?? ''} chooses ${card} to be discarded`,

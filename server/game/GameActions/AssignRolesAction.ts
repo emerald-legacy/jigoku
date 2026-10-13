@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import BaseCard from '../BaseCard.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
+import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { EventName, Players } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type { MessageArgs } from '../GameChat.js';
@@ -14,7 +14,7 @@ export interface AssignRolesProperties<R extends string = string> extends CardAc
     /** Each role's action, resolved on the card given that role: two roles for two cards. */
     roles: Record<R, GameAction>;
     /** Who gives the roles. */
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     /** The chooser picks this role's card from card buttons, and the other card gets the other role. */
     pick?: NoInfer<R>;
     /**
@@ -36,7 +36,7 @@ export interface AssignRolesProperties<R extends string = string> extends CardAc
  */
 export class AssignRolesAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AssignRolesProperties, EventName.Unnamed, C, 'player'> {
     name = 'assignRoles';
-    defaultProperties: { player: Players.Self | Players.Opponent } = { player: Players.Self };
+    defaultProperties: { player: Chooser } = { player: Players.Self };
 
     #canTake(role: string, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const action = this.getProperties(context, additionalProperties).roles[role];

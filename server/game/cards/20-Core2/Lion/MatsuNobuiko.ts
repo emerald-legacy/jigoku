@@ -17,7 +17,7 @@ export default class MatsuNobuiko extends DrawCard {
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 gameAction: (duel) =>
-                    duel.winner && duel.winningPlayer === context.player ? cancel() : noAction()
+                    duel.winningPlayer === context.player ? cancel() : noAction()
             }));
     }
 }

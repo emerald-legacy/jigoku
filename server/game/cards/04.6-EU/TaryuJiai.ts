@@ -29,8 +29,7 @@ export default class TaryuJiai extends DrawCard {
                 gameAction: (duel) =>
                     selectRing({
                         activePromptTitle: 'Choose a ring effect to resolve',
-                        player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
-                        ringCondition: () => (duel.winner?.length ?? 0) > 0,
+                        player: duel.winnerController,
                         targets: true,
                         message: (_context, ring) => msg`${duel.winnerController} chooses to resolve ${ring}'s effect`,
                         gameAction: resolveRingEffect({

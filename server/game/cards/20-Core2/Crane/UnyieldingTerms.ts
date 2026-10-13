@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { DuelType } from '../../../Constants.js';
-import type { Duel } from '../../../Duel.js';
+import type { ResolvedDuel } from '../../../Duel.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { bow, chosenDiscard, multiple, removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -30,7 +30,7 @@ export default class UnyieldingTerms extends DrawCard {
             .max(perRound(1));
     }
 
-    wonByDuelist(duel: Duel): boolean {
-        return duel.winner?.some((char) => char.hasTrait('duelist')) ?? false;
+    wonByDuelist(duel: ResolvedDuel): boolean {
+        return duel.winner.some((char) => char.hasTrait('duelist'));
     }
 }

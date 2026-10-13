@@ -5,7 +5,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, Duration, EventName, Location, type DuelType, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { Duel } from '../Duel.js';
+import { Duel, type ResolvedDuel } from '../Duel.js';
 import type { Event } from '../Events/Event.js';
 import { DuelFlow } from '../gamesteps/DuelFlow.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
@@ -17,9 +17,11 @@ export interface DuelProperties extends CardActionProperties {
     challenger?: DrawCard;
     challengerCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     requiresConflict?: boolean;
-    gameAction: GameAction | ((duel: Duel, context: AbilityContext) => GameAction);
+    /** Resolved only when the duel has a winner. */
+    gameAction: GameAction | ((duel: ResolvedDuel, context: AbilityContext) => GameAction);
+    onTie?: GameAction | ((duel: Duel, context: AbilityContext) => GameAction);
     /** What the chat says the duel does, after "Duel Effect: "; by default its game action's own text. */
-    chatText?: (context: AbilityContext, duel: Duel) => MessageArgs;
+    chatText?: (context: AbilityContext, duel: ResolvedDuel) => MessageArgs;
     costHandler?: (context: AbilityContext, prompt: unknown) => void;
     statistic?: (card: DrawCard, duelRules: 'currentSkill' | 'printedSkill' | 'skirmish') => number;
     challengerEffect?: EffectFactory | EffectFactory[];
@@ -78,13 +80,13 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
     }
 
     resolveDuel(duel: Duel, context: C, additionalProperties: ActionOverrides = {}): void {
-        const properties = this.getProperties(context, additionalProperties);
-        const gameAction =
-            typeof properties.gameAction === 'function' ? properties.gameAction(duel, context) : properties.gameAction;
-        const isNoAction = !!gameAction.isNoAction;
-        if(!isNoAction && gameAction.hasLegalTarget(context)) {
-            const [message, messageArgs]: MessageArgs = properties.chatText
-                ? properties.chatText(context, duel)
+        const { gameAction: onWin, onTie, chatText } = this.getProperties(context, additionalProperties);
+        const gameAction = duel.hasWinner()
+            ? (typeof onWin === 'function' ? onWin(duel, context) : onWin)
+            : (typeof onTie === 'function' ? onTie(duel, context) : onTie);
+        if(gameAction && !gameAction.isNoAction && gameAction.hasLegalTarget(context)) {
+            const [message, messageArgs]: MessageArgs = chatText && duel.hasWinner()
+                ? chatText(context, duel)
                 : gameAction.getEffectMessage(context);
             context.game.addMessage('Duel Effect: ' + message, ...messageArgs);
             gameAction.resolve(undefined, context);
@@ -215,6 +217,10 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
+        if(typeof properties.gameAction !== 'function') {
+            return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
+        }
+        // As if the challenger won: the result isn't known yet.
         const mockDuel = new Duel(
             context.game,
             properties.challenger,
@@ -224,10 +230,8 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
             properties.statistic,
             context.player
         );
-        const gameAction =
-            typeof properties.gameAction === 'function'
-                ? properties.gameAction(mockDuel, context)
-                : properties.gameAction;
-        return gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
+        mockDuel.winner = [properties.challenger];
+        mockDuel.winningPlayer = context.player;
+        return mockDuel.hasWinner() && properties.gameAction(mockDuel, context).hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
     }
 }

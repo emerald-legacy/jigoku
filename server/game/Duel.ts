@@ -28,6 +28,9 @@ type StatisticTotal = typeof InvalidStats | number;
 
 const listFormatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
+/** A duel with a winner; its loser can still be missing. */
+export type ResolvedDuel = Duel & { winner: DrawCard[]; winningPlayer: Player; readonly winnerController: Player };
+
 export class Duel extends GameObject {
     #bidFinished = false;
     #modifiers = new WeakMap<Player, DuelAbilities>();
@@ -61,6 +64,10 @@ export class Duel extends GameObject {
 
     get loserController(): undefined | Player {
         return this.loser?.[0].controller;
+    }
+
+    hasWinner(): this is ResolvedDuel {
+        return !!this.winner && !!this.winningPlayer;
     }
 
     get participants(): DrawCard[] {

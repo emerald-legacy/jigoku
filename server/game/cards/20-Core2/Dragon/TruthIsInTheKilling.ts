@@ -2,10 +2,10 @@ import { msg } from '../../../GameChat.js';
 import { DuelType, ConflictType } from '../../../Constants.js';
 import { discardFromPlay, noAction, removeFate, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Duel } from '../../../Duel.js';
+import type { ResolvedDuel } from '../../../Duel.js';
 
-function applyFullEffect(duel: Duel) {
-    return duel.winner?.some((winner) => winner.hasTrait('duelist')) ?? false;
+function applyFullEffect(duel: ResolvedDuel) {
+    return duel.winner.some((winner) => winner.hasTrait('duelist'));
 }
 
 export default class TruthIsInTheKilling extends DrawCard {

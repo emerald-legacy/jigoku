@@ -3,13 +3,13 @@ import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
-import { resolveChoosingPlayer } from './resolveChoosingPlayer.js';
-import { Players, type EventName } from '../Constants.js';
+import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
+import type { EventName } from '../Constants.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface MenuPromptProperties extends GameActionProperties {
     activePromptTitle: string;
-    player?: Players.Self | Players.Opponent;
+    player?: Chooser;
     gameAction: GameAction;
     choices: string[] | ((properties: MenuPromptProperties) => string[]);
     choiceHandler: (choice: string, displayMessage: boolean, properties: MenuPromptProperties) => ActionOverrides;

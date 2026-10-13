@@ -11,7 +11,7 @@ class ReturnTheOffense extends DrawCard {
         this.action('Initiate a political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,
-                chatText: (_context, duel) => msg`${duel.winner}${duel.winner?.length ? ' does not bow as a result of conflict resolution' : ''}${duel.loser?.length ? ' and ' : ''}${duel.loser}${duel.loser?.length ? ' cannot be readied' : ''}`,
+                chatText: (_context, duel) => msg`${duel.winner} does not bow as a result of conflict resolution${duel.loser?.length ? ' and ' : ''}${duel.loser}${duel.loser?.length ? ' cannot be readied' : ''}`,
                 gameAction: (duel) => multiple([
                     cardLastingEffect({
                         target: duel.winner,
