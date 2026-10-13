@@ -111,9 +111,6 @@ import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbility
 import { TurnFacedownAction, TurnCardFacedownProperties } from './TurnFacedownAction.js';
 import type { Derivable } from '../utils/helpers.js';
 
-//////////////
-// CARD
-//////////////
 export function addToken<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<AddTokenProperties, C> = {}): AddTokenAction<C> {
     return new AddTokenAction<C>(propertyFactory);
 }
@@ -309,9 +306,6 @@ export function placeCardUnderneath<C extends AbilityContext = AbilityContext>(p
     return new PlaceCardUnderneathAction<C>(propertyFactory);
 }
 
-//////////////
-// PLAYER
-//////////////
 /**
  * default amount = 1
  */
@@ -424,9 +418,6 @@ export function takeHonor<C extends AbilityContext = AbilityContext>(propertyFac
     return new TakeHonorAction<C>(propertyFactory);
 } // amount = 1
 
-//////////////
-// RING
-//////////////
 export function placeFateOnRing<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PlaceFateRingProperties, C> = {}): PlaceFateOnRingAction<C> {
     return new PlaceFateOnRingAction<C>(propertyFactory);
 } // amount = 1, origin
@@ -467,9 +458,6 @@ export function returnRingToPlay<C extends AbilityContext = AbilityContext>(prop
     return new ReturnRingToPlayAction<C>(propertyFactory);
 }
 
-//////////////
-// STATUS TOKEN
-//////////////
 export function discardStatusToken<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<DiscardStatusProperties, C> = {}): DiscardStatusTokenAction<C> {
     return new DiscardStatusTokenAction<C>(propertyFactory);
 }
@@ -477,9 +465,6 @@ export function moveStatusToken<C extends AbilityContext = AbilityContext>(prope
     return new MoveStatusTokenAction<C>(propertyFactory);
 }
 
-//////////////
-// GENERIC
-//////////////
 export function cancel<C extends CancellingContext = TriggeredAbilityContext>(propertyFactory: Derivable<CancelProperties, C> = {}): CancelAction<C> {
     return new CancelAction<C>(propertyFactory);
 }
@@ -499,23 +484,14 @@ export function chatMessage<C extends AbilityContext = AbilityContext>(message: 
 }
 export { noAction } from './HandlerAction.js';
 
-//////////////
-// CONFLICT
-//////////////
 export function conflictLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<LastingEffectProperties<C>, C>): LastingEffectAction<C> {
     return new LastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, targetController, condition, until
 
-//////////////
-// DUEL
-//////////////
 export function duelLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<LastingEffectProperties<C>, C>): DuelLastingEffectAction<C> {
     return new DuelLastingEffectAction<C>(propertyFactory);
 } // target = the current duel, duration = 'untilEndOfDuel', effect, condition, until
 
-//////////////
-// META
-//////////////
 export function cardMenu<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<CardMenuProperties<C>, C>): CardMenuAction<C> {
     return new CardMenuAction<C>(propertyFactory);
 }
