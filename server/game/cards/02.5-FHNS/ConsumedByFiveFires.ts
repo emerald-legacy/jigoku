@@ -65,7 +65,7 @@ class ConsumedByFiveFires extends DrawCard {
             onCancel: () => {
                 this.game.addMessage(msg`${context.player} chooses to: ${messages}`);
                 const keys = Object.keys(targets);
-                const events = this.game.applyGameAction(context, { removeFate: opponent.cardsInPlay.filter((card) => keys.includes(card.uuid)) });
+                const events = this.game.resolveActions([removeFate({ target: opponent.cardsInPlay.filter((card) => keys.includes(card.uuid)) })], context);
                 events.forEach((event) => {
                     if(event.is(EventName.OnMoveFate) && event.card) {
                         event.fate = targets[event.card.uuid];

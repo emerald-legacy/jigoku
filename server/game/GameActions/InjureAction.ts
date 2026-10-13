@@ -5,7 +5,7 @@ import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties, targetList } from './GameAction.js';
 import { RemoveFateAction } from './RemoveFateAction.js';
 import { CardType, Location, type EventName } from '../Constants.js';
-import { DiscardFromPlayAction } from './DiscardFromPlayAction.js';
+import { DiscardFromPlayAction } from './LeavesPlayAction.js';
 import DrawCard from '../DrawCard.js';
 import type BaseCard from '../BaseCard.js';
 

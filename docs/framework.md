@@ -524,6 +524,20 @@ resolveAbility((context) => ({
 | `Blocker.MaxReached` | Per-title `max` cap |
 | `Blocker.TriggeringRestricted` | Triggering restriction checks |
 
+### Running game actions from engine code
+
+An action first collects its events (`action.addEventsToArray(events, context)`: one per legal target), and something else opens them in an event window. Open them one step later, as the entry points below do: some actions add their events only after a prompt.
+
+| Entry point | Use |
+|---|---|
+| `game.resolveActions([bow({ target }), dishonor({ target })], context?)` | Several actions in one window, then emptied provinces refill (it returns the events): rules, rings, keywords, prompts, and a handler resolving things that happen together. Without a context, the game's own (`game.getGameContext()`) |
+| `action.resolve(target, context)` | One action inside an ability, such as in a handler; the ability refills at its end |
+| `game.openEventWindow(events)` | Events already collected (costs, contingent events) |
+| `game.openThenEventWindow(events)` | Events resolved while another event window is open; their reactions wait for that window |
+| `game.raiseEvent(name, params, handler)` | A framework event without a game action |
+
+Engine code imports the factories by name. Files whose own names clash with them (the costs, `AbilityBuilder`) use `import * as GameActions`. The modules in `GameActions/` and `AbilityResolver` construct the action classes instead (`new MoveCardAction(…)`): the factory module imports them, so importing it back closes an import cycle that only breaks when such a module happens to load first.
+
 ---
 
 ## Lasting Effects

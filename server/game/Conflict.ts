@@ -8,6 +8,7 @@ import Game from './Game.js';
 import Player from './Player.js';
 import type Ring from './Ring.js';
 import DrawCard from './DrawCard.js';
+import { bow, sendHome } from './GameActions/GameActions.js';
 
 type Predicate = (card: DrawCard) => boolean;
 
@@ -247,7 +248,7 @@ export class Conflict extends GameObject {
         );
         if(illegal.length > 0) {
             this.game.addMessage(msg`${illegal} cannot participate in the conflict any more and ${illegal.length > 1 ? 'are' : 'is'} sent home bowed`);
-            this.game.applyGameAction(null, { sendHome: illegal, bow: illegal });
+            this.game.resolveActions([sendHome({ target: illegal }), bow({ target: illegal })]);
         }
     }
 

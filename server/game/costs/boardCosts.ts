@@ -273,8 +273,8 @@ export function switchLocation(): Cost<{ switchLocation: DrawCard }> {
     return {
         promptsPlayer: false,
         canPay(context: AbilityContext<DrawCard>) {
-            const canMoveHome = context.game.actions.sendHome().canAffect(context.source, context);
-            const canMoveToConflict = context.game.actions.moveToConflict().canAffect(context.source, context);
+            const canMoveHome = GameActions.sendHome().canAffect(context.source, context);
+            const canMoveToConflict = GameActions.moveToConflict().canAffect(context.source, context);
 
             return canMoveHome || canMoveToConflict;
         },
@@ -292,8 +292,8 @@ export function switchLocation(): Cost<{ switchLocation: DrawCard }> {
         },
         payEvent(context: SwitchLocationContext) {
             const action = context.source.isParticipating()
-                ? context.game.actions.sendHome({ target: context.costs.switchLocation })
-                : context.game.actions.moveToConflict({ target: context.costs.switchLocation });
+                ? GameActions.sendHome({ target: context.costs.switchLocation })
+                : GameActions.moveToConflict({ target: context.costs.switchLocation });
             return action.getEvent(context.costs.switchLocation, context);
         }
     };

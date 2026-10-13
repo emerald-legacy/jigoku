@@ -1,6 +1,5 @@
 import { PlayType } from '../Constants.js';
 import * as GameActions from '../GameActions/GameActions.js';
-import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -71,7 +70,7 @@ export function payVariableHonor(amountFunc: (context: AbilityContext) => number
     return {
         promptsPlayer: true,
         canPay(context) {
-            return amountFunc(context) > 0 && context.game.actions.loseHonor().canAffect(context.player, context);
+            return amountFunc(context) > 0 && GameActions.loseHonor().canAffect(context.player, context);
         },
         resolve(context, result) {
             const amount = amountFunc(context);
@@ -95,7 +94,7 @@ export function payVariableHonor(amountFunc: (context: AbilityContext) => number
             });
         },
         payEvent(context) {
-            const action = context.game.actions.loseHonor({ amount: context.costs.honorPaid });
+            const action = GameActions.loseHonor({ amount: context.costs.honorPaid });
             return action.getEvent(context.player, context);
         }
     };
@@ -122,7 +121,7 @@ export function payVariableFate(properties: {
             return (
                 costModifiers < 0 ||
                 (context.player.fate >= deriveMinAmount(context) + costModifiers &&
-                    context.game.actions.loseFate().canAffect(context.player, context))
+                    GameActions.loseFate().canAffect(context.player, context))
             );
         },
         resolve(context: AbilityContext<DrawCard>, result) {
@@ -136,7 +135,7 @@ export function payVariableFate(properties: {
             if(maxAmount >= 0) {
                 max = Math.min(maxAmount, context.player.fate - costModifiers);
             }
-            if(!context.game.actions.loseFate().canAffect(context.player, context)) {
+            if(!GameActions.loseFate().canAffect(context.player, context)) {
                 max = Math.min(max, -costModifiers);
             }
             const choices = Array.from({ length: max + 1 - min }, (_, idx) => String(idx + min));
@@ -160,7 +159,7 @@ export function payVariableFate(properties: {
             });
         },
         payEvent(context: CostContext<{ fatePaid: number }, AbilityContext<DrawCard>>) {
-            const payZeroFate = new HandlerAction({});
+            const payZeroFate = GameActions.handler();
             if(context.ignoreFateCost) {
                 return payZeroFate.getEvent(context.player, context);
             }
@@ -168,7 +167,7 @@ export function payVariableFate(properties: {
             const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
             const cost = (context.costs.fatePaid ?? 0) + Math.min(0, costModifiers); //+ve cost modifiers are applied by the engine
             if(cost > 0) {
-                const action = context.game.actions.loseFate({ amount: cost });
+                const action = GameActions.loseFate({ amount: cost });
                 return action.getEvent(context.player, context);
             }
 

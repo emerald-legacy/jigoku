@@ -56,8 +56,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
     executeHandler(context: AbilityContext<DrawCard>) {
         const cardPlayedEvent = createCardPlayedEvent(context, context.source, context.playType);
         context.game.openEventWindow([
-            context.game.actions
-                .attach({ attachment: context.source, takeControl: context.source.controller !== context.player })
+            attach({ attachment: context.source, takeControl: context.source.controller !== context.player })
                 .getEvent(context.target, context),
             cardPlayedEvent
         ]);

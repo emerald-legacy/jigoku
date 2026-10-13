@@ -3,6 +3,7 @@ import { TargetMode } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 import { EARTH_CHOICE, type GameRules } from '../GameRules.js';
+import { discardAtRandom, draw } from '../GameActions/GameActions.js';
 
 export class EarthRingAbility extends BaseAbility {
     public title = 'Earth Ring Effect';
@@ -32,17 +33,17 @@ export class EarthRingAbility extends BaseAbility {
             context.game.addMessage(msg`${context.player} resolves the ${'earth'} ring, forcing ${context.player.opponent} to discard a card at random`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'earth', playerName: context.player.name, effect: 'force-discard' });
-            context.game.actions.discardAtRandom().resolve(context.player.opponent, context);
+            discardAtRandom().resolve(context.player.opponent, context);
         } else if(context.select === EARTH_CHOICE.DRAW_AND_FORCE_DISCARD && context.player.opponent) {
             context.game.addMessage(msg`${context.player} resolves the ${'earth'} ring, drawing a card and forcing ${context.player.opponent} to discard a card at random`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'earth', playerName: context.player.name, effect: 'draw-discard' });
-            context.game.applyGameAction(context, { draw: context.player, discardAtRandom: context.player.opponent });
+            context.game.resolveActions([draw({ target: context.player }), discardAtRandom({ target: context.player.opponent })], context);
         } else if(context.select === EARTH_CHOICE.DRAW) {
             context.game.addMessage(msg`${context.player} resolves the ${'earth'} ring, drawing a card`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'earth', playerName: context.player.name, effect: 'draw' });
-            context.game.applyGameAction(context, { draw: context.player });
+            context.game.resolveActions([draw({ target: context.player })], context);
         }
     }
 }

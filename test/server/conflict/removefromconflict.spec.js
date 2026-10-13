@@ -6,7 +6,7 @@ import DrawCard from '../../../build/server/game/DrawCard.js';
 describe('Conflict', function () {
     beforeEach(function () {
         this.gameSpy = jasmine.createSpyObj('game', [
-            'applyGameAction',
+            'resolveActions',
             'findAnyCardsInAnyList',
             'on',
             'raiseEvent',
@@ -14,9 +14,6 @@ describe('Conflict', function () {
             'getFrameworkContext'
         ]);
         this.gameSpy.rules = rulesFor('stronghold');
-        this.gameSpy.applyGameAction.and.callFake((type, card, handler) => {
-            handler(card);
-        });
         this.gameSpy.findAnyCardsInAnyList.and.returnValue([]);
         this.effectEngineSpy = jasmine.createSpyObj('effectEngine', ['checkEffects']);
         this.gameSpy.effectEngine = this.effectEngineSpy;

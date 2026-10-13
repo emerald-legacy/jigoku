@@ -23,7 +23,7 @@ import { DeckSearchAction, DeckSearchProperties } from './DeckSearchAction.js';
 import { DetachAction, DetachProperties } from './DetachAction.js';
 import { DiscardCardAction, DiscardCardProperties } from './DiscardCardAction.js';
 import { LoseImperialFavorAction, DiscardFavorProperties } from './LoseImperialFavorAction.js';
-import { DiscardFromPlayAction, DiscardFromPlayProperties } from './DiscardFromPlayAction.js';
+import { DiscardFromPlayAction, DiscardFromPlayProperties } from './LeavesPlayAction.js';
 import { DiscardStatusTokenAction, DiscardStatusProperties } from './DiscardStatusTokenAction.js';
 import { DishonorAction, DishonorProperties } from './DishonorAction.js';
 import { DishonorProvinceAction, DishonorProvinceProperties } from './DishonorProvinceAction.js';

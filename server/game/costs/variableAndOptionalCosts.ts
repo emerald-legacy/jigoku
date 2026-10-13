@@ -1,7 +1,6 @@
 import { msg } from '../GameChat.js';
 import { EventName, Location, Players, PlayType, TargetMode, RestrictionType } from '../Constants.js';
 import { Event } from '../Events/Event.js';
-import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -9,6 +8,7 @@ import type Player from '../Player.js';
 import Ring from '../Ring.js';
 import type { Cost, Result } from './Cost.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
+import * as GameActions from '../GameActions/GameActions.js';
 
 export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context: AbilityContext) => true): Cost<{ returnedRings: Ring[] }> {
     return {
@@ -77,7 +77,7 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
             promptPlayer();
         },
         payEvent(context) {
-            return context.game.actions.returnRing({ target: context.costs.returnedRings }).getEventArray(context);
+            return GameActions.returnRing({ target: context.costs.returnedRings }).getEventArray(context);
         }
     };
 }
@@ -177,7 +177,7 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Abi
         canPay(context) {
             return (
                 derive(amountDerivable, context) > 0 &&
-                context.game.actions.chosenDiscard().canAffect(context.player, context)
+                GameActions.chosenDiscard().canAffect(context.player, context)
             );
         },
         resolve(context, result) {
@@ -204,7 +204,7 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Abi
             });
         },
         payEvent(context) {
-            const action = context.game.actions.discardCard({ target: context.costs.discardCardsUpToVariableX });
+            const action = GameActions.discardCard({ target: context.costs.discardCardsUpToVariableX });
             return action.getEvent(context.costs.discardCardsUpToVariableX ?? [], context);
         }
     };
@@ -214,13 +214,13 @@ export function discardHand(): Cost<{ discardHand: DrawCard[] }> {
     return {
         promptsPlayer: true,
         canPay(context) {
-            return context.game.actions.chosenDiscard().canAffect(context.player, context);
+            return GameActions.chosenDiscard().canAffect(context.player, context);
         },
         resolve(context, _result) {
             context.costs.discardHand = context.player.hand.slice();
         },
         payEvent(context) {
-            const action = context.game.actions.discardCard({ target: context.costs.discardHand });
+            const action = GameActions.discardCard({ target: context.costs.discardHand });
             return action.getEvent(context.costs.discardHand, context);
         }
     };
@@ -271,7 +271,7 @@ export function optional(cost: Cost): Cost {
         payEvent: (context) => {
             const actionName = getActionName(context);
             if(!context.costs[actionName]) {
-                const doNothing = new HandlerAction({});
+                const doNothing = GameActions.handler();
                 return doNothing.getEvent(context.player, context);
             }
 
@@ -297,7 +297,7 @@ export function unless(condition: (context: AbilityContext) => boolean, cost: Co
         },
         payEvent: (context) => {
             if(skipped.get(context)) {
-                return new HandlerAction({}).getEvent(context.player, context);
+                return GameActions.handler().getEvent(context.player, context);
             }
             if(cost.addEventsToArray) {
                 const events: Event[] = [];
@@ -442,7 +442,7 @@ export function optionalOpponentLoseHonor(
                 return;
             }
 
-            const honorAvailable = context.game.actions.loseHonor().canAffect(context.player.opponent, context);
+            const honorAvailable = GameActions.loseHonor().canAffect(context.player.opponent, context);
             if(honorAvailable) {
                 context.game.promptWithHandlerMenu(context.player.opponent, {
                     activePromptTitle: prompt,
@@ -455,13 +455,12 @@ export function optionalOpponentLoseHonor(
             if(context.costs[NAME]) {
                 context.game.addMessage(msg`${context.player.opponent} chooses to lose 1 honor`);
                 return [
-                    context.game.actions
-                        .loseHonor({ target: context.player.opponent })
+                    GameActions.loseHonor({ target: context.player.opponent })
                         .getEvent(context.player.opponent, context)
                 ];
             }
 
-            return context.game.actions.noAction().getEvent(context.player, context);
+            return GameActions.noAction().getEvent(context.player, context);
         }
     };
 }
@@ -485,8 +484,8 @@ export function optionalTakeHonorFromOpponent(canPayFunc = (_context: AbilityCon
 
             let honorAvailable = true;
             if(
-                !context.game.actions.loseHonor().canAffect(context.player.opponent, context) ||
-                !context.game.actions.gainHonor().canAffect(context.player, context)
+                !GameActions.loseHonor().canAffect(context.player.opponent, context) ||
+                !GameActions.gainHonor().canAffect(context.player, context)
             ) {
                 honorAvailable = false;
             }
@@ -507,13 +506,13 @@ export function optionalTakeHonorFromOpponent(canPayFunc = (_context: AbilityCon
                 const events = [];
 
                 context.game.addMessage(msg`${context.player.opponent} chooses to give ${context.player} 1 honor`);
-                const honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
+                const honorAction = GameActions.takeHonor({ target: context.player.opponent });
                 events.push(honorAction.getEvent(context.player.opponent, context));
 
                 return events;
             }
 
-            const doNothing = new HandlerAction({});
+            const doNothing = GameActions.handler();
             return doNothing.getEvent(context.player, context);
         }
     };

@@ -10,6 +10,7 @@ import { AbilityContext } from './AbilityContext.js';
 import Player from './Player.js';
 import type { Cost, Result } from './costs/Cost.js';
 import type { Event } from './Events/Event.js';
+import { attach, discardFromPlay, moveStatusToken, placeFate, putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 
 /** The character the disguised one replaces, once chosen. */
 function chosenCharacter(context: AbilityContext): DrawCard | undefined {
@@ -129,35 +130,31 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         context.game.queueSimpleStep(() => {
             context.game.addMessage(msg`${context.player} plays ${context.source}${intoConflict ? ' into the conflict' : ''} using Disguised, choosing to replace ${replacedCharacter}`);
             const gameAction = intoConflict
-                ? context.game.actions.putIntoConflict({ target: context.source, fate: extraFate, status })
-                : context.game.actions.putIntoPlay({ target: context.source, fate: extraFate, status });
+                ? putIntoConflict({ target: context.source, fate: extraFate, status })
+                : putIntoPlay({ target: context.source, fate: extraFate, status });
             gameAction.addEventsToArray(events, context);
             events.push(
                 context.game.getEvent(EventName.Unnamed, {}, () => {
                     const moveEvents: Event[] = [];
-                    context.game.actions
-                        .placeFate({
-                            target: context.source,
-                            origin: replacedCharacter,
-                            amount: replacedCharacter.fate
-                        })
+                    placeFate({
+                        target: context.source,
+                        origin: replacedCharacter,
+                        amount: replacedCharacter.fate
+                    })
                         .addEventsToArray(moveEvents, context);
                     for(const attachment of replacedCharacter.attachments) {
-                        context.game.actions
-                            .attach({ target: context.source, attachment: attachment, viaDisguised: true })
+                        attach({ target: context.source, attachment: attachment, viaDisguised: true })
                             .addEventsToArray(moveEvents, context);
                     }
                     for(const token of replacedCharacter.statusTokens) {
-                        context.game.actions
-                            .moveStatusToken({ target: token, recipient: context.source })
+                        moveStatusToken({ target: token, recipient: context.source })
                             .addEventsToArray(moveEvents, context);
                     }
                     moveEvents.push(
                         context.game.getEvent(EventName.Unnamed, {}, () => {
                             context.game.checkGameState(true);
                             context.game.openThenEventWindow(
-                                context.game.actions
-                                    .discardFromPlay({ cannotBeCancelled: true })
+                                discardFromPlay({ cannotBeCancelled: true })
                                     .getEvent(replacedCharacter, context)
                             );
                         })

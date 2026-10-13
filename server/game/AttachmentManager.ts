@@ -3,6 +3,7 @@ import { CardType, EffectName } from './Constants.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
+import { discardFromPlay } from './GameActions/GameActions.js';
 
 export class AttachmentManager {
     attachments: DrawCard[] = [];
@@ -86,7 +87,7 @@ export class AttachmentManager {
                     }
 
                     illegalAttachments.add(card);
-                    game.applyGameAction(context, { discardFromPlay: Array.from(illegalAttachments) });
+                    game.resolveActions([discardFromPlay({ target: Array.from(illegalAttachments) })], context);
                     return true;
                 },
                 source: 'Too many Restricted attachments'
@@ -95,7 +96,7 @@ export class AttachmentManager {
         } else if(illegalAttachments.size > 0) {
             const plural = illegalAttachments.size > 1;
             game.addMessage(msg`${Array.from(illegalAttachments)} ${plural ? 'are' : 'is'} discarded from ${host} as ${plural ? 'they' : 'it'} ${plural ? 'are' : 'is'} no longer legally attached`);
-            game.applyGameAction(context, { discardFromPlay: Array.from(illegalAttachments) });
+            game.resolveActions([discardFromPlay({ target: Array.from(illegalAttachments) })], context);
             return true;
         }
         return false;

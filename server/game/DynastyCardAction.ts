@@ -2,7 +2,7 @@ import { msg } from './GameChat.js';
 import { BaseAction } from './BaseAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
-import * as GameActions from './GameActions/GameActions.js';
+import { putIntoPlay } from './GameActions/GameActions.js';
 import { EffectName, Phase, PlayType, EventName, Blocker, RestrictionType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
@@ -59,7 +59,7 @@ export class DynastyCardAction extends BaseAction {
         }
         extraFate = extraFate + legendaryFate;
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
-        const enterPlayEvent = GameActions.putIntoPlay({ fate: context.chooseFate + extraFate, status }).getEvent(
+        const enterPlayEvent = putIntoPlay({ fate: context.chooseFate + extraFate, status }).getEvent(
             context.source,
             context
         );

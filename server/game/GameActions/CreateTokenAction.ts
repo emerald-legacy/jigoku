@@ -7,6 +7,8 @@ import { Effects } from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import SpiritOfTheRiver from '../cards/SpiritOfTheRiver.js';
 import type { ActionEvent } from './GameAction.js';
+import { CardLastingEffectAction } from './CardLastingEffectAction.js';
+import { DiscardFromPlayAction } from './LeavesPlayAction.js';
 
 export interface CreateTokenProperties extends CardActionProperties {
     token: new (card: DrawCard) => DrawCard;
@@ -61,17 +63,16 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
             }
         }
 
-        context.game.actions
-            .cardLastingEffect({
-                duration: Duration.UntilEndOfPhase,
-                effect: Effects.delayedEffect({
-                    when: {
-                        onConflictFinished: () => true
-                    },
-                    message: () => [leavingPlayMessage, [token]],
-                    gameAction: context.game.actions.discardFromPlay()
-                })
+        new CardLastingEffectAction({
+            duration: Duration.UntilEndOfPhase,
+            effect: Effects.delayedEffect({
+                when: {
+                    onConflictFinished: () => true
+                },
+                message: () => [leavingPlayMessage, [token]],
+                gameAction: new DiscardFromPlayAction({})
             })
+        })
             .resolve(token, context);
 
         event.tokenCharacter = token;

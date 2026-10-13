@@ -10,12 +10,8 @@ function makeContext(overrides = {}) {
         game: {
             addAnimation: jasmine.createSpy('addAnimation'),
             addMessage: jasmine.createSpy('addMessage'),
-            applyGameAction: jasmine.createSpy('applyGameAction'),
-            actions: {
-                gainHonor: jasmine.createSpy('gainHonor').and.returnValue({ resolve: jasmine.createSpy('resolve') }),
-                takeHonor: jasmine.createSpy('takeHonor').and.returnValue({ resolve: jasmine.createSpy('resolve') }),
-                discardAtRandom: jasmine.createSpy('discardAtRandom').and.returnValue({ resolve: jasmine.createSpy('resolve') })
-            },
+            resolveActions: jasmine.createSpy('resolveActions'),
+            queueSimpleStep: jasmine.createSpy('queueSimpleStep'),
             promptWithHandlerMenu: jasmine.createSpy('promptWithHandlerMenu'),
             roundNumber: 1,
             currentPhase: 'conflict',
@@ -23,7 +19,7 @@ function makeContext(overrides = {}) {
         },
         player: {
             name: 'player1',
-            opponent: { name: 'player2' },
+            opponent: { name: 'player2', hand: [] },
             resolveRingEffects: jasmine.createSpy('resolveRingEffects'),
             checkRestrictions: jasmine.createSpy('checkRestrictions').and.returnValue(true)
         },

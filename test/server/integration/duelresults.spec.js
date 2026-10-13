@@ -1,3 +1,5 @@
+import * as GameActions from '../../../build/server/game/GameActions/GameActions.js';
+
 describe('Duel results', function() {
     integration(function() {
         describe('a duel\'s game action', function() {
@@ -18,7 +20,7 @@ describe('Duel results', function() {
                     this.whisperer.action('Test duel')
                         .initiateDuel(() => ({
                             type: 'political',
-                            gameAction: this.game.actions.draw()
+                            gameAction: GameActions.draw()
                         }));
                 });
                 this.noMoreActions();
@@ -62,8 +64,8 @@ describe('Duel results', function() {
                     .chooseAction((context) => ({
                         player: context.player.opponent,
                         choices: {
-                            'Gain 1 honor': this.game.actions.gainHonor(),
-                            'Do nothing': this.game.actions.noAction()
+                            'Gain 1 honor': GameActions.gainHonor(),
+                            'Do nothing': GameActions.noAction()
                         }
                     }));
             });

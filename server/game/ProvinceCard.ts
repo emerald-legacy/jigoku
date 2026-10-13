@@ -11,6 +11,7 @@ import { isEffectOf } from './Effects/types.js';
 import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { NumericEffectName } from './Effects/EffectValueMap.js';
 import type { StateViewer } from './types/StateViewer.js';
+import { discardCard } from './GameActions/GameActions.js';
 
 export class ProvinceCard extends BaseCard {
     isProvince = true;
@@ -254,7 +255,7 @@ export class ProvinceCard extends BaseCard {
                         text: 'Yes',
                         handler: () => {
                             this.game.addMessage(msg`${choosingPlayer} chooses to discard ${cardLabel()}`);
-                            this.game.applyGameAction(this.game.getGameContext(), { discardCard: dynastyCard });
+                            this.game.resolveActions([discardCard({ target: dynastyCard })]);
                         }
                     },
                     { text: 'No', handler: () => this.game.addMessage(msg`${choosingPlayer} chooses not to discard ${cardLabel()}`) }

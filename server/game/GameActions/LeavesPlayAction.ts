@@ -1,12 +1,14 @@
-import { msg } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { EffectName, EventName, Location } from '../Constants.js';
+import { CardType, EffectName, EventName, Location, RestrictionType } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import { isEnumValue } from '../utils/helpers.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
+import { RemoveFateAction } from './RemoveFateAction.js';
 
 /** A leaves-play event this action created: `updateEvent` always sets its destination. */
 export type LeavesPlayEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardLeavesPlay, C> & { destination: Location };
@@ -49,8 +51,7 @@ export class LeavesPlayAction<
             for(const attachment of evCard.attachments) {
                 // we only need to add events for attachments that are in play.
                 if(attachment.location === Location.PlayArea) {
-                    const attachmentEvent = context.game.actions
-                        .discardFromPlay()
+                    const attachmentEvent = new DiscardFromPlayAction({})
                         .getEvent(attachment, context.game.getGameContext());
                     attachmentEvent.order = event.order - 1;
                     const previousCondition = attachmentEvent.condition;
@@ -63,8 +64,7 @@ export class LeavesPlayAction<
 
             // Add an imminent triggering condition for removing fate
             if(evCard.allowGameAction('removeFate', context.game.getGameContext())) {
-                const fateEvent = context.game.actions
-                    .removeFate({ amount: evCard.getFate() })
+                const fateEvent = new RemoveFateAction({ amount: evCard.getFate() })
                     .getEvent(evCard, context.game.getGameContext());
                 fateEvent.order = event.order - 1;
                 fateEvent.isContingent = true;
@@ -82,5 +82,42 @@ export class LeavesPlayAction<
             event.destination = card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
         }
         card.owner.moveCard(card, event.destination, event.options || {});
+    }
+}
+
+// next to LeavesPlayAction, which discards attachments with it: in a module of its own, each would import the other
+export type DiscardFromPlayProperties = CardActionProperties;
+
+export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<DiscardFromPlayProperties, C> {
+    name = 'discardFromPlay';
+    restriction = RestrictionType.DiscardFromPlay;
+    cost = 'sacrificing {0}';
+    targetType = [CardType.Character, CardType.Attachment, CardType.Holding];
+
+    constructor(propertyFactory: DiscardFromPlayProperties | ((context: C) => DiscardFromPlayProperties), isSacrifice = false) {
+        super(propertyFactory);
+        if(isSacrifice) {
+            this.name = 'sacrifice';
+            this.restriction = RestrictionType.Sacrifice;
+            this.isSacrifice = true;
+        }
+    }
+
+    protected effectMessage(): MessageArgs {
+        return [this.isSacrifice ? 'sacrifice {0}' : 'discard {0}', []];
+    }
+
+    canAffect(card: BaseCard, context: C): boolean {
+        if(card.type === CardType.Holding) {
+            if(this.isSacrifice && card.facedown) {
+                return false;
+            }
+            if(!card.isInProvince()) {
+                return false;
+            }
+        } else if(card.location !== Location.PlayArea) {
+            return false;
+        }
+        return super.canAffect(card, context);
     }
 }

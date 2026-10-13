@@ -6,6 +6,7 @@ import type Player from '../Player.js';
 import { PhaseStep } from './PhaseStep.js';
 import { SimpleStep } from './SimpleStep.js';
 import { ActionWindow } from './ActionWindow.js';
+import { discardCard, discardFromPlay, ready, removeFate, returnRing } from '../GameActions/GameActions.js';
 
 function characterShouldBeDiscarded(character: DrawCard) {
     return character.fate === 0 && character.allowGameAction('discardFromPlay');
@@ -68,7 +69,7 @@ export class FatePhase extends PhaseStep {
             controller: Players.Self,
             buttons: [{ text: 'Done', arg: 'cancel' }],
             onSelect: (player: Player, selectedCard: DrawCard) => {
-                this.game.applyGameAction(null, { discardFromPlay: selectedCard });
+                this.game.resolveActions([discardFromPlay({ target: selectedCard })]);
 
                 cardsToDiscard.delete(selectedCard);
 
@@ -77,17 +78,16 @@ export class FatePhase extends PhaseStep {
             },
             onCancel: () => {
                 for(const character of cardsToDiscard) {
-                    this.game.applyGameAction(null, { discardFromPlay: character });
+                    this.game.resolveActions([discardFromPlay({ target: character })]);
                 }
             }
         });
     }
 
     removeFateFromCharacters() {
-        const context = this.game.getGameContext();
-        const events = this.game.applyGameAction(context, {
-            removeFate: this.game.findAnyCardsInPlay((card) => card.allowGameAction('removeFate'))
-        });
+        const events = this.game.resolveActions([
+            removeFate({ target: this.game.findAnyCardsInPlay((card) => card.allowGameAction('removeFate')) })
+        ]);
         let processed = false;
         this.game.queueSimpleStep(() => {
             for(const player of this.game.getPlayersInFirstPlayerOrder()) {
@@ -151,21 +151,21 @@ export class FatePhase extends PhaseStep {
                     cardsToDiscard = cardsToDiscard.concat(cards.filter((card) => card.isDrawCard()));
                     if(cardsToDiscard.length > 0) {
                         this.game.addMessage(msg`${player} discards ${cardsToDiscard} from their provinces`);
-                        this.game.applyGameAction(this.game.getGameContext(), { discardCard: cardsToDiscard });
+                        this.game.resolveActions([discardCard({ target: cardsToDiscard })]);
                     }
                     return true;
                 },
                 onCancel: () => {
                     if(cardsToDiscard.length > 0) {
                         this.game.addMessage(msg`${player} discards ${cardsToDiscard} from their provinces`);
-                        this.game.applyGameAction(this.game.getGameContext(), { discardCard: cardsToDiscard });
+                        this.game.resolveActions([discardCard({ target: cardsToDiscard })]);
                     }
                     return true;
                 }
             });
         } else if(cardsToDiscard.length > 0) {
             this.game.addMessage(msg`${player} discards ${cardsToDiscard} from their provinces`);
-            this.game.applyGameAction(this.game.getGameContext(), { discardCard: cardsToDiscard });
+            this.game.resolveActions([discardCard({ target: cardsToDiscard })]);
         }
 
         this.game.queueSimpleStep(() => {
@@ -180,12 +180,12 @@ export class FatePhase extends PhaseStep {
 
     readyCards() {
         const cardsToReady = this.game.allCards.filter((card) => card.bowed && card.readiesDuringReadyPhase());
-        this.game.actions.ready().resolve(cardsToReady, this.game.getGameContext());
+        ready().resolve(cardsToReady, this.game.getGameContext());
     }
 
     returnRings() {
         const claimedRings = Object.values(this.game.rings).filter((ring) => ring.claimed);
-        this.game.actions.returnRing().resolve(claimedRings, this.game.getGameContext());
+        returnRing().resolve(claimedRings, this.game.getGameContext());
     }
 
     passFirstPlayer() {

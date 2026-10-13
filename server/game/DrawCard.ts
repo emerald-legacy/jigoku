@@ -34,6 +34,7 @@ import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { StateViewer } from './types/StateViewer.js';
+import { discardStatusToken, gainHonor, loseHonor, removeFate } from './GameActions/GameActions.js';
 
 interface MenuItem {
     command: string;
@@ -134,13 +135,13 @@ export class DrawCard extends BaseCard {
             const events: Event[] = [];
             if(this.fate > 0) {
                 this.game.addMessage(msg`${this.fate} fate is removed from ${this} as it can no longer legally have fate`);
-                this.game.actions.removeFate({ target: this, amount: this.fate }).addEventsToArray(events, context);
+                removeFate({ target: this, amount: this.fate }).addEventsToArray(events, context);
                 result = true;
             }
             if(this.statusTokens.length > 0) {
                 this.game.addMessage(msg`Status tokens are removed from ${this} as it can no longer legally have status tokens`);
                 for(const token of this.statusTokens) {
-                    this.game.actions.discardStatusToken({ target: token }).addEventsToArray(events, context);
+                    discardStatusToken({ target: token }).addEventsToArray(events, context);
                 }
                 result = true;
             }
@@ -651,12 +652,12 @@ export class DrawCard extends BaseCard {
         if(!ignoreHonorStatus) {
             if(this.isDishonored) {
                 this.applyPersonalHonor(
-                    this.game.actions.loseHonor({ amount: 1, dueToStatusToken: true }),
+                    loseHonor({ amount: 1, dueToStatusToken: true }),
                     '{0} loses 1 honor due to {1}\'s personal honor'
                 );
             } else if(this.isHonored) {
                 this.applyPersonalHonor(
-                    this.game.actions.gainHonor({ amount: 1, dueToStatusToken: true }),
+                    gainHonor({ amount: 1, dueToStatusToken: true }),
                     '{0} gains 1 honor due to {1}\'s personal honor'
                 );
             }

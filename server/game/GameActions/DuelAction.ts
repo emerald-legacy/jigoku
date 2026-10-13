@@ -11,6 +11,7 @@ import { DuelFlow } from '../gamesteps/DuelFlow.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { targetList, type GameAction, type ActionEvent } from './GameAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
+import { CardLastingEffectAction } from './CardLastingEffectAction.js';
 
 export interface DuelProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
     type: DuelType;
@@ -178,25 +179,23 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         }
         const duel = event.duel;
         if(properties.challengerEffect) {
-            context.game.actions
-                .cardLastingEffect({
-                    effect: properties.challengerEffect,
-                    duration: Duration.Custom,
-                    until: {
-                        onDuelFinished: (event) => event.duel === duel
-                    }
-                })
+            new CardLastingEffectAction({
+                effect: properties.challengerEffect,
+                duration: Duration.Custom,
+                until: {
+                    onDuelFinished: (event) => event.duel === duel
+                }
+            })
                 .resolve(properties.challenger, context);
         }
         if(properties.targetEffect) {
-            context.game.actions
-                .cardLastingEffect({
-                    effect: properties.targetEffect,
-                    duration: Duration.Custom,
-                    until: {
-                        onDuelFinished: (event) => event.duel === duel
-                    }
-                })
+            new CardLastingEffectAction({
+                effect: properties.targetEffect,
+                duration: Duration.Custom,
+                until: {
+                    onDuelFinished: (event) => event.duel === duel
+                }
+            })
                 .resolve(properties.target, context);
         }
         context.game.queueStep(

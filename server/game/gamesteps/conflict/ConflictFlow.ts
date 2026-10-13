@@ -6,7 +6,7 @@ import { discardCard } from '../../costs/boardCosts.js';
 import type BaseCard from '../../BaseCard.js';
 import { payFate, payFateToRing, payHonor } from '../../costs/fateAndHonorCosts.js';
 import { CovertAbility } from '../../KeywordAbilities/CovertAbility.js';
-import { bow, loseHonor, resolveConflictRing } from '../../GameActions/GameActions.js';
+import { bow, breakProvince, loseHonor, resolveConflictRing, reveal, takeFateFromRing } from '../../GameActions/GameActions.js';
 import { SimpleStep } from '../SimpleStep.js';
 import { ConflictActionWindow } from './ConflictActionWindow.js';
 import { InitiateConflictPrompt } from './InitiateConflictPrompt.js';
@@ -334,11 +334,10 @@ export class ConflictFlow extends BaseStepWithPipeline {
                         )
                     ) {
                         this.game.addMessage(msg`${this.conflict.attackingPlayer} takes ${this.conflict.ring.fate} fate from ${this.conflict.ring}`);
-                        this.game.actions
-                            .takeFateFromRing({
-                                target: this.conflict.ring,
-                                amount: this.conflict.ring.fate
-                            })
+                        takeFateFromRing({
+                            target: this.conflict.ring,
+                            amount: this.conflict.ring.fate
+                        })
                             .addEventsToArray(events, this.game.getFrameworkContext(this.conflict.attackingPlayer));
                     }
                     events.push(
@@ -553,12 +552,11 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         const events: Event[] = [];
-        this.game.actions
-            .reveal({
-                chatMessage: true,
-                target: this.conflict.conflictProvince ?? undefined,
-                onDeclaration: true
-            })
+        reveal({
+            chatMessage: true,
+            target: this.conflict.conflictProvince ?? undefined,
+            onDeclaration: true
+        })
             .addEventsToArray(events, this.game.getFrameworkContext(this.conflict.attackingPlayer));
         this.game.openThenEventWindow(events);
     }
@@ -799,7 +797,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 this.conflict.skillDifference !== undefined && this.conflict.skillDifference >= strength &&
                 !province.isBroken
             ) {
-                this.game.applyGameAction(null, { break: province });
+                this.game.resolveActions([breakProvince({ target: province })]);
             }
         });
     }

@@ -5,6 +5,7 @@ import type Game from '../Game.js';
 import { PhaseStep } from './PhaseStep.js';
 import { SimpleStep } from './SimpleStep.js';
 import { DynastyActionWindow } from './dynasty/DynastyActionWindow.js';
+import { flipDynasty } from '../GameActions/GameActions.js';
 
 /*
 I Dynasty Phase
@@ -51,7 +52,7 @@ export class DynastyPhase extends PhaseStep {
             for(const province of this.game.getProvinceArray()) {
                 for(const card of player.getDynastyCardsInProvince(province)) {
                     if(card.isFacedown()) {
-                        this.game.applyGameAction(null, { flipDynasty: card });
+                        this.game.resolveActions([flipDynasty({ target: card })]);
                         revealedCards.add(card);
                         allRevealedCards.add(card);
                     }

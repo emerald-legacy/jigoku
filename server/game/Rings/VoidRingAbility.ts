@@ -3,6 +3,7 @@ import { AbilityContext } from '../AbilityContext.js';
 import { CardType } from '../Constants.js';
 import { BaseAbility } from '../BaseAbility.js';
 import DrawCard from '../DrawCard.js';
+import { removeFate } from '../GameActions/GameActions.js';
 
 export class VoidRingAbility extends BaseAbility {
     public title = 'Void Ring Effect';
@@ -31,7 +32,7 @@ export class VoidRingAbility extends BaseAbility {
             context.game.addMessage(msg`${context.player} resolves the ${'void'} ring, removing a fate from ${context.target}`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'void', targetUuid: context.target.uuid, effect: 'remove-fate' });
-            context.game.applyGameAction(context, { removeFate: context.target });
+            context.game.resolveActions([removeFate({ target: context.target })], context);
         } else {
             context.game.addMessage(msg`${context.player} chooses not to resolve the ${'void'} ring`);
             this.onResolution(false);

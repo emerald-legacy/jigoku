@@ -4,6 +4,7 @@ import { CardType, Element } from '../Constants.js';
 import { BaseAbility } from '../BaseAbility.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import DrawCard from '../DrawCard.js';
+import { dishonor, honor } from '../GameActions/GameActions.js';
 
 export class FireRingAbility extends BaseAbility {
     public title = 'Fire Ring Effect';
@@ -42,7 +43,7 @@ export class FireRingAbility extends BaseAbility {
                     context.game.addMessage(msg`${context.player} resolves the ${'fire'} ring, honoring ${target}`);
                     this.onResolution(true);
                     context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'honor' });
-                    context.game.applyGameAction(context, { honor: target });
+                    context.game.resolveActions([honor({ target })], context);
                 }
             });
         }
@@ -54,7 +55,7 @@ export class FireRingAbility extends BaseAbility {
                     context.game.addMessage(msg`${context.player} resolves the ${'fire'} ring, dishonoring ${target}`);
                     this.onResolution(true);
                     context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'dishonor' });
-                    context.game.applyGameAction(context, { dishonor: target });
+                    context.game.resolveActions([dishonor({ target })], context);
                 }
             });
         }

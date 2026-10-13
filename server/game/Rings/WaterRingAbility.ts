@@ -3,6 +3,7 @@ import type { GameRules } from '../GameRules.js';
 import { CardType } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
+import { bow, ready } from '../GameActions/GameActions.js';
 
 export class WaterRingAbility extends BaseAbility {
     public title = 'Water Ring Effect';
@@ -35,12 +36,12 @@ export class WaterRingAbility extends BaseAbility {
             context.game.addMessage(msg`${context.player} resolves the ${'water'} ring, readying ${context.target}`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'water', targetUuid: context.target.uuid, effect: 'ready' });
-            context.game.applyGameAction(context, { ready: context.target });
+            context.game.resolveActions([ready({ target: context.target })], context);
         } else {
             context.game.addMessage(msg`${context.player} resolves the ${'water'} ring, bowing ${context.target}`);
             this.onResolution(true);
             context.game.addAnimation({ type: 'water', targetUuid: context.target.uuid, effect: 'bow' });
-            context.game.applyGameAction(context, { bow: context.target });
+            context.game.resolveActions([bow({ target: context.target })], context);
         }
     }
 }

@@ -57,7 +57,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     executeHandler(context: AbilityContext<DrawCard>) {
         const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         context.game.openEventWindow([
-            context.game.actions.attachToRing({ attachment: context.source }).getEvent(context.ring, context),
+            attachToRing({ attachment: context.source }).getEvent(context.ring, context),
             cardPlayedEvent
         ]);
     }

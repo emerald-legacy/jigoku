@@ -7,6 +7,7 @@ import type Player from '../Player.js';
 import type { GameAction, ActionEvent } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { queuePostBidSteps } from './FateBidAction.js';
+import { SetHonorDialAction } from './SetHonorDialAction.js';
 
 export interface HonorBidProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     giveHonor?: boolean;
@@ -96,7 +97,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
                 context: context,
                 options: [1, 2, 3, 4, 5].map((value) => ({
                     text: value.toString(),
-                    handler: () => context.game.actions.setHonorDial({ value }).resolve(player, context)
+                    handler: () => new SetHonorDialAction({ value }).resolve(player, context)
                 }))
             });
         }

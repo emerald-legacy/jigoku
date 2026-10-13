@@ -9,6 +9,7 @@ import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
 import type { BaseAbility } from '../BaseAbility.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import { MoveCardAction } from '../GameActions/MoveCardAction.js';
 
 type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
 
@@ -224,7 +225,7 @@ export class AbilityResolver extends BaseStepWithPipeline {
         if(this.context.ability.isTriggeredAbility()) {
             // If this is an event, move it to 'being played', and queue a step to send it to the discard pile after it resolves
             if(this.context.ability.isCardPlayed()) {
-                this.game.actions.moveCard({ destination: Location.BeingPlayed }).resolve(this.context.source, this.context);
+                new MoveCardAction({ destination: Location.BeingPlayed }).resolve(this.context.source, this.context);
             }
             this.game.openThenEventWindow(new InitiateCardAbilityEvent({ card: this.context.source, context: this.context }, () => this.initiateAbility = true));
         } else {

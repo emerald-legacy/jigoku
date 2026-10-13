@@ -530,7 +530,7 @@ A handler that asks the player something uses `promptWithHandlerMenu` (buttons) 
 
 - Work out which options are possible first, and skip the menu when only one is.
 - Check legality with the game actions themselves (`honor().canAffect(card, context)`), the same way the targets were checked.
-- Resolve everything that happens together in one `applyGameAction` call, so it opens one event window.
+- Resolve everything that happens together in one `game.resolveActions([...], context)` call, so it opens one event window.
 
 ```typescript
 // Action: During a conflict at this province, choose 2 participating characters – honor one of those characters and dishonor the other.

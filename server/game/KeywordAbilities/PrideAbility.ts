@@ -6,6 +6,7 @@ import type DrawCard from '../DrawCard.js';
 import { TriggeredAbility } from '../TriggeredAbility.js';
 
 import type { EventPayload } from '../Events/EventPayloads.js';
+import { dishonor, honor } from '../GameActions/GameActions.js';
 export class PrideAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordReaction, {
@@ -29,9 +30,9 @@ export class PrideAbility extends TriggeredAbility<DrawCard> {
                     return;
                 }
                 if(conflict.winner === context.player) {
-                    this.game.applyGameAction(context, { honor: context.source });
+                    this.game.resolveActions([honor({ target: context.source })], context);
                 } else {
-                    this.game.applyGameAction(context, { dishonor: context.source });
+                    this.game.resolveActions([dishonor({ target: context.source })], context);
                 }
             }
         });

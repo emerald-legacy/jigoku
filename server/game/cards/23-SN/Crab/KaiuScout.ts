@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Location, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { handler } from '../../../GameActions/GameActions.js';
+import { flipDynasty, handler } from '../../../GameActions/GameActions.js';
 
 export default class KaiuScout extends DrawCard {
     static id = 'kaiu-scout';
@@ -31,7 +31,7 @@ export default class KaiuScout extends DrawCard {
         const turnFaceup = () => {
             if(chosen.length > 0) {
                 this.game.addMessage(msg`${context.player} turns ${chosen} faceup`);
-                context.game.applyGameAction(context, { flipDynasty: chosen });
+                context.game.resolveActions([flipDynasty({ target: chosen })], context);
             } else {
                 this.game.addMessage(msg`${context.player} does not turn any cards faceup`);
             }

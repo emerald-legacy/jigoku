@@ -10,7 +10,7 @@ import { AttachmentPrompt } from './gamesteps/AttachmentPrompt.js';
 import { clockFor, type ClockConfig } from './Clocks/ClockSelector.js';
 import { CostReducer, type CostReducerProps } from './CostReducer.js';
 import type { AbilityLimit } from './AbilityLimit.js';
-import * as GameActions from './GameActions/GameActions.js';
+import { loseHonor } from './GameActions/GameActions.js';
 import { RingAbilities } from './RingAbilities.js';
 import { PlayableLocation } from './PlayableLocation.js';
 import { PlayerCostManager } from './PlayerCostManager.js';
@@ -634,7 +634,7 @@ export class Player extends GameObject {
 
     deckRanOutOfCards(deck: string): void {
         const discardPile = this.getSourceList(deck + ' discard pile');
-        const action = GameActions.loseHonor({ amount: this.game.rules.deckoutHonorLoss });
+        const action = loseHonor({ amount: this.game.rules.deckoutHonorLoss });
         if(action.canAffect(this, this.game.getFrameworkContext(this))) {
             this.game.addMessage(msg`${this}'s ${deck} deck has run out of cards, so they lose ${this.game.rules.deckoutHonorLoss} honor`);
         } else {

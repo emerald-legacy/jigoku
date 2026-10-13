@@ -1,11 +1,11 @@
 import { msg } from '../GameChat.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
-import { TakeHonorAction } from '../GameActions/TakeHonorAction.js';
 import { EventName, EffectName } from '../Constants.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type { Duel } from '../Duel.js';
+import { setHonorDial, takeHonor } from '../GameActions/GameActions.js';
 
 type HonorBidCostHandler = (prompt: HonorBidPrompt) => void;
 
@@ -44,8 +44,7 @@ export class HonorBidPrompt extends AllPlayerPrompt {
             const revealDials = () => {
                 for(const player of this.game.getPlayersInFirstPlayerOrder()) {
                     player.honorBidModifier = 0;
-                    this.game.actions
-                        .setHonorDial({ value: this.bid[player.uuid] })
+                    setHonorDial({ value: this.bid[player.uuid] })
                         .resolve(player, this.game.getFrameworkContext(player));
                 }
             };
@@ -90,7 +89,7 @@ export class HonorBidPrompt extends AllPlayerPrompt {
 
         var [, amountToTransfer] = CalculateHonorLimit(receivingPlayer, context.game.roundNumber, context.game.currentPhase, amount);
         this.game.addMessage(msg`${givingPlayer} gives ${receivingPlayer} ${amountToTransfer} honor`);
-        const gameAction = new TakeHonorAction({ amount: Math.abs(difference), afterBid: true });
+        const gameAction = takeHonor({ amount: Math.abs(difference), afterBid: true });
         gameAction.resolve(givingPlayer, context);
     }
 

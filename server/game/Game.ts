@@ -16,7 +16,7 @@ import { FatePhase } from './gamesteps/FatePhase.js';
 import { EndRoundPrompt } from './gamesteps/regroup/EndRoundPrompt.js';
 import { SimpleStep } from './gamesteps/SimpleStep.js';
 import { GameWonPrompt } from './gamesteps/GameWonPrompt.js';
-import * as GameActions from './GameActions/GameActions.js';
+import type { GameAction } from './GameActions/GameAction.js';
 import { Event } from './Events/Event.js';
 import type { EventParams, GameEvent } from './Events/EventPayloads.js';
 import { EventWindow } from './Events/EventWindow.js';
@@ -51,7 +51,7 @@ import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import type { ChoiceWindow } from './TriggeredAbility.js';
 import { rulesFor, type GameRules } from './GameRules.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
-import { isEnumValue, isOwnKey } from './utils/helpers.js';
+import { isEnumValue } from './utils/helpers.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
@@ -92,40 +92,6 @@ interface GameOptions {
     cardLibrary?: CardLibrary;
     router?: GameRouter;
 }
-
-type ApplyGameActionCardTarget = BaseCard | BaseCard[];
-type ApplyGameActionPlayerTarget = Player | Player[];
-
-/*
- * The game actions reachable through `applyGameAction`, keyed by the name callers pass.
- * Each entry adapts the caller's bare target to that action's own properties type, so
- * the lookup stays typed instead of indexing the `GameActions` namespace dynamically.
- */
-const APPLY_CARD_ACTIONS = {
-    bow: (target: ApplyGameActionCardTarget) => GameActions.bow({ target }),
-    break: (target: ApplyGameActionCardTarget) => GameActions.breakProvince({ target }),
-    discardCard: (target: ApplyGameActionCardTarget) => GameActions.discardCard({ target }),
-    discardFromPlay: (target: ApplyGameActionCardTarget) => GameActions.discardFromPlay({ target }),
-    dishonor: (target: ApplyGameActionCardTarget) => GameActions.dishonor({ target }),
-    flipDynasty: (target: ApplyGameActionCardTarget) => GameActions.flipDynasty({ target }),
-    honor: (target: ApplyGameActionCardTarget) => GameActions.honor({ target }),
-    placeFate: (target: ApplyGameActionCardTarget) => GameActions.placeFate({ target }),
-    ready: (target: ApplyGameActionCardTarget) => GameActions.ready({ target }),
-    removeFate: (target: ApplyGameActionCardTarget) => GameActions.removeFate({ target }),
-    sendHome: (target: ApplyGameActionCardTarget) => GameActions.sendHome({ target }),
-    turnFacedown: (target: ApplyGameActionCardTarget) => GameActions.turnFacedown({ target })
-};
-
-const APPLY_PLAYER_ACTIONS = {
-    discardAtRandom: (target: ApplyGameActionPlayerTarget) => GameActions.discardAtRandom({ target }),
-    draw: (target: ApplyGameActionPlayerTarget) => GameActions.draw({ target }),
-    gainFate: (target: ApplyGameActionPlayerTarget) => GameActions.gainFate({ target })
-};
-
-type GameActionRequest = Partial<
-    { [K in keyof typeof APPLY_CARD_ACTIONS]: ApplyGameActionCardTarget } &
-    { [K in keyof typeof APPLY_PLAYER_ACTIONS]: ApplyGameActionPlayerTarget }
->;
 
 export class Game {
     private readonly events = new GameEventManager(this);
@@ -444,10 +410,6 @@ export class Game {
         this.allCards.push(tokenCard);
         this.cardsByUuid.set(tokenCard.uuid, tokenCard);
         return tokenCard;
-    }
-
-    get actions(): typeof GameActions {
-        return GameActions;
     }
 
     requireConflict(): Conflict {
@@ -864,30 +826,19 @@ export class Game {
     }
 
     /**
-     * Checks whether a game action can be performed on a card or an array of
-     * cards, and performs it on all legal targets.
+     * Resolves game actions together: their events on all legal targets open in one window, then emptied provinces refill.
+     * A single action inside an ability uses `action.resolve()`; the ability refills at its end.
      */
-    applyGameAction(context: AbilityContext | null, actions: GameActionRequest): Event[] {
-        const resolvedContext = context ?? this.getGameContext();
+    resolveActions(actions: GameAction[], context: AbilityContext = this.getGameContext()): Event[] {
         const events: Event[] = [];
-        for(const action of Object.keys(actions)) {
-            if(isOwnKey(APPLY_CARD_ACTIONS, action)) {
-                const target = actions[action];
-                if(target) {
-                    APPLY_CARD_ACTIONS[action](target).addEventsToArray(events, resolvedContext);
-                }
-            } else if(isOwnKey(APPLY_PLAYER_ACTIONS, action)) {
-                const target = actions[action];
-                if(target) {
-                    APPLY_PLAYER_ACTIONS[action](target).addEventsToArray(events, resolvedContext);
-                }
-            }
+        for(const action of actions) {
+            action.addEventsToArray(events, context);
         }
         // an action may still add its event in a queued step (after an "unless" cost), so the window opens after those
         this.queueSimpleStep(() => {
             if(events.length > 0) {
                 this.openEventWindow(events);
-                this.queueSimpleStep(() => resolvedContext.refill());
+                this.queueSimpleStep(() => context.refill());
             }
         });
         return events;

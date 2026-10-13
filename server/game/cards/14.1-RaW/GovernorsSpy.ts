@@ -3,7 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
-import { handler } from '../../GameActions/GameActions.js';
+import { handler, turnFacedown } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import { playerChoices } from '../playerChoices.js';
 
@@ -26,7 +26,7 @@ class GovernorsSpy extends DrawCard {
             .getDynastyCardsInProvince(Location.Provinces)
             .sort((a, b) => a.name.localeCompare(b.name));
         cards.forEach((card) => {
-            this.game.applyGameAction(context, { turnFacedown: card });
+            this.game.resolveActions([turnFacedown({ target: card })], context);
         });
         const ownedCards = cards.filter((card) => card.owner === targetPlayer);
 

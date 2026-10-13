@@ -1,6 +1,6 @@
 import { msg } from './GameChat.js';
 import { rollDie } from './utils/random.js';
-import * as GameActions from './GameActions/GameActions.js';
+import { discardAtRandom, moveCard, reveal } from './GameActions/GameActions.js';
 import { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
 import { Location, CardType, Players, TargetMode } from './Constants.js';
 import type Game from './Game.js';
@@ -195,7 +195,7 @@ export class ChatCommands {
 
         this.game.addMessage(msg`${player} uses the /discard command to discard ${num} card${num > 1 ? 's' : ''} at random`);
 
-        GameActions.discardAtRandom({ amount: num }).resolve(player, this.game.getFrameworkContext(player));
+        discardAtRandom({ amount: num }).resolve(player, this.game.getFrameworkContext(player));
     }
 
     moveCardToDeckBottom(player: Player): void {
@@ -209,7 +209,7 @@ export class ChatCommands {
                 const cardNewLocation = card.isConflict
                     ? Location.ConflictDeck
                     : Location.DynastyDeck;
-                GameActions.moveCard({ target: card, bottom: true, destination: cardNewLocation }).resolve(
+                moveCard({ target: card, bottom: true, destination: cardNewLocation }).resolve(
                     player,
                     this.game.getFrameworkContext(player)
                 );
@@ -251,7 +251,7 @@ export class ChatCommands {
             controller: Players.Self,
             cardCondition: (card: BaseCard) => card.isFacedown(),
             onSelect: (p: Player, card: BaseCard) => {
-                GameActions.reveal({ target: card }).resolve(p, this.game.getFrameworkContext(p));
+                reveal({ target: card }).resolve(p, this.game.getFrameworkContext(p));
                 this.game.addMessage(msg`${p} reveals ${card}`);
                 return true;
             }

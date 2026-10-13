@@ -1,4 +1,5 @@
 import { SincerityAbility } from '../../../build/server/game/KeywordAbilities/SincerityAbility.js';
+import { DrawAction } from '../../../build/server/game/GameActions/DrawAction.js';
 
 describe('SincerityAbility', function() {
     let card, ability;
@@ -35,11 +36,15 @@ describe('SincerityAbility', function() {
 
     describe('the handler', function() {
         it('makes the controlling player draw a card', function() {
-            const game = jasmine.createSpyObj('game', ['applyGameAction']);
+            const game = jasmine.createSpyObj('game', ['resolveActions']);
             const player = { name: 'self' };
             const context = { game: game, player: player };
             ability.handler(context);
-            expect(game.applyGameAction).toHaveBeenCalledWith(context, { draw: player });
+            const [actions, resolvedContext] = game.resolveActions.calls.mostRecent().args;
+            expect(resolvedContext).toBe(context);
+            expect(actions.length).toBe(1);
+            expect(actions[0]).toEqual(jasmine.any(DrawAction));
+            expect(actions[0].properties.target).toBe(player);
         });
     });
 });
