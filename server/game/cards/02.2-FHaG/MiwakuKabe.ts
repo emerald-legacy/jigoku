@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { returnToDeck } from '../../GameActions/GameActions.js';
+import { Location } from '../../Constants.js';
 
 class MiwakuKabe extends DrawCard {
     static id = 'miwaku-kabe';
@@ -9,7 +9,7 @@ class MiwakuKabe extends DrawCard {
             .when({
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location
             })
-            .gameAction(returnToDeck({ shuffle: true }))
+            .returnToDeck({ shuffle: true, location: Location.Provinces })
             .chatText('shuffle itself back into the dynasty deck');
     }
 }

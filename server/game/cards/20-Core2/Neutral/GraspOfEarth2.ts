@@ -1,7 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import { gainAbility, reduceCost } from '../../../effects.js';
-import { cancel } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class GraspOfEarth2 extends DrawCard {
@@ -25,7 +24,7 @@ export default class GraspOfEarth2 extends DrawCard {
                 onMoveToConflict: (event, context) =>
                     event.card.type === CardType.Character && context.source.isParticipating()
             }, (ability) => ability
-                .gameAction(cancel())
+                .cancel()
                 .chatText((context) => msg`deny ${context.event.card}'s movement`))
         });
     }

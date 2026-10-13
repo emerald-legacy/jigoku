@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import { attach, draw } from '../../GameActions/GameActions.js';
+import { draw } from '../../GameActions/GameActions.js';
 
 class Logistics extends DrawCard {
     static id = 'logistics';
@@ -36,10 +36,10 @@ class Logistics extends DrawCard {
                 }
             }, draw((context) => ({ target: context.game.isTraitInPlay('battlefield') ? context.player : [] })))
             .if((context) => context.targets.cardInProvince.type === CardType.Attachment)
-            .gameAction(attach((context) => ({
+            .attach((context) => ({
                 target: context.targets.province,
                 attachment: context.targets.cardInProvince
-            })))
+            }))
             .otherwise()
             .moveCard((context) => ({
                 target: context.targets.cardInProvince,

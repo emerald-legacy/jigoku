@@ -1,14 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, PlayType, Players, Blocker } from '../../../Constants.js';
-import {
-    chooseAction,
-    injure,
-    placeCardUnderneath,
-    playCard,
-    sacrifice,
-    selectCard,
-    sequential
-} from '../../../GameActions/GameActions.js';
+import { chooseAction, injure, playCard, sacrifice, selectCard, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -25,10 +17,10 @@ export default class StrangeMirror extends DrawCard {
                     // the event is only movable once it has finished resolving
                     event.card.location === Location.ConflictDiscardPile
             })
-            .gameAction(placeCardUnderneath((context) => ({
+            .placeCardUnderneath((context) => ({
                 target: context.event.card,
                 destination: context.source.parentCharacter ?? undefined
-            })))
+            }))
             .chatText((context) => msg`put ${context.event.card} facedown underneath ${context.source.parentCharacter}`);
 
         const chooseEvent = selectCard((context: AbilityContext<this>) => ({

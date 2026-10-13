@@ -1,6 +1,5 @@
 import { ConflictType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import { initiateConflict } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class IvoryKingdomsUnicorn extends DrawCard {
@@ -20,10 +19,10 @@ export default class IvoryKingdomsUnicorn extends DrawCard {
             .when({
                 onConflictFinished: () => this.provinceBroken && this.attackingAtConflictResolution
             })
-            .gameAction(initiateConflict({
+            .initiateConflict({
                 canPass: false,
                 forcedDeclaredType: ConflictType.Military
-            }));
+            });
     }
 
     public afterConflict() {

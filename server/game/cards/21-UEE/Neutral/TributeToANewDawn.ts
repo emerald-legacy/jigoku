@@ -1,6 +1,5 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { removeFromGame } from '../../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -34,9 +33,9 @@ export default class TributeToANewDawn extends DrawCard {
                 controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                 player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self)
             })
-            .gameAction(removeFromGame((context) => ({
+            .removeFromGame((context) => ({
                 target: this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])
-            })))
+            }))
             .chatText((context) => msg`remove ${this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])} from the game`);
     }
 

@@ -1,7 +1,6 @@
 import { Duration } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { cannotDeclareRing } from '../../../effects.js';
-import { ringLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -16,11 +15,11 @@ export default class YoungIseZumi extends DrawCard {
                     context.source.isParticipating()
             })
             .cost(costs.payFateToRing(1, () => true))
-            .gameAction(ringLastingEffect((context) => ({
+            .ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: context.costs.ringPaidFateTo || context.game.rings.air,
                 effect: cannotDeclareRing(() => true)
-            })))
+            }))
             .chatText((context) => msg`prevent conflicts from being declared with the ${context.costs.ringPaidFateTo}`);
     }
 }

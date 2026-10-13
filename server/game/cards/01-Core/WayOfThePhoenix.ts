@@ -2,7 +2,6 @@ import { msg } from '../../GameChat.js';
 import { Duration } from '../../Constants.js';
 import { perPhase } from '../../AbilityLimit.js';
 import { cannotDeclareRing } from '../../effects.js';
-import { ringLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class WayOfThePhoenix extends DrawCard {
@@ -14,11 +13,11 @@ export default class WayOfThePhoenix extends DrawCard {
             .ringTarget({
                 ringCondition: () => true
             })
-            .gameAction(ringLastingEffect((context) => ({
+            .ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: context.ring.getElements().map((element) => this.game.rings[element]),
                 effect: cannotDeclareRing((player) => player === context.player.opponent)
-            })))
+            }))
             .chatText((context) => msg`prevent ${context.player.opponent ?? ''} from declaring a conflict with ${context.chatTarget()}`)
             .max(perPhase(1));
     }

@@ -13,6 +13,7 @@ import type { CancellingContext } from './GameActions/CancelAction.js';
 import type { CardMenuProperties } from './GameActions/CardMenuAction.js';
 import type { ChooseActionProperties } from './GameActions/ChooseGameAction.js';
 import type { SelectRingProperties } from './GameActions/SelectRingActions.js';
+import type { SelectTokenProperties } from './GameActions/SelectTokenAction.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import { toGameAction, type DeclaredGameAction } from './BaseAbility.js';
@@ -808,6 +809,11 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.dishonor(properties));
     }
 
+    /** Taints the target (the source by default). */
+    taint(properties: FactoryProperties<'taint', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.taint(properties));
+    }
+
     /** Places fate on the target (the source by default). */
     placeFate(properties: FactoryProperties<'placeFate', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
         return this.gameAction(GameActions.placeFate(properties));
@@ -867,6 +873,14 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.playerLastingEffect(properties));
     }
 
+    ringLastingEffect(properties: FactoryProperties<'ringLastingEffect', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.ringLastingEffect(properties));
+    }
+
+    conflictLastingEffect(properties: FactoryProperties<'conflictLastingEffect', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.conflictLastingEffect(properties));
+    }
+
     /** The player (or `player`) chooses a card when the ability resolves, and `gameAction` resolves on it. */
     selectCard<const K extends CardTypes = CardTypes>(
         properties: SelectCardProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K> | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => SelectCardProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K>)
@@ -920,6 +934,31 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.putIntoPlay(properties));
     }
 
+    /** Puts the target (the source by default) into play in the conflict. */
+    putIntoConflict(properties: FactoryProperties<'putIntoConflict', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.putIntoConflict(properties));
+    }
+
+    /** Attaches `attachment` to the target (the source by default). */
+    attach(properties: FactoryProperties<'attach', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.attach(properties));
+    }
+
+    /** Places the target (the source by default) underneath `destination`. */
+    placeCardUnderneath(properties: FactoryProperties<'placeCardUnderneath', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.placeCardUnderneath(properties));
+    }
+
+    /** Removes the target (the source by default) from the game. */
+    removeFromGame(properties: FactoryProperties<'removeFromGame', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.removeFromGame(properties));
+    }
+
+    /** Returns the target (the source by default) to its owner's deck. */
+    returnToDeck(properties: FactoryProperties<'returnToDeck', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.returnToDeck(properties));
+    }
+
     /** Resolves the conflict ring's effect. */
     resolveConflictRing(properties: FactoryProperties<'resolveConflictRing', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
         return this.gameAction(GameActions.resolveConflictRing(properties));
@@ -930,9 +969,24 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.selectRing(properties));
     }
 
+    /** A token is chosen while the ability resolves, and `gameAction` resolves on it. */
+    selectToken(properties: ContextProps<SelectTokenProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+        return this.gameAction(GameActions.selectToken(properties));
+    }
+
     /** Switches the type of the current conflict. */
     switchConflictType(properties: FactoryProperties<'switchConflictType', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
         return this.gameAction(GameActions.switchConflictType(properties));
+    }
+
+    /** The target player (the player of the ability by default) claims the Imperial Favor. */
+    claimImperialFavor(properties: FactoryProperties<'claimImperialFavor', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.claimImperialFavor(properties));
+    }
+
+    /** The target player (the player of the ability by default) declares a conflict. */
+    initiateConflict(properties: FactoryProperties<'initiateConflict', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.initiateConflict(properties));
     }
 
     /** Resolves the target ring's effect. */

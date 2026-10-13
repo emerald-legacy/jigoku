@@ -1,7 +1,6 @@
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { perConflictOpportunity } from '../../../AbilityLimit.js';
-import { removeFromGame } from '../../../GameActions/GameActions.js';
 
 export default class PrayersOnTheEveOfBattle extends DrawCard {
     static id = 'prayers-on-the-eve-of-battle';
@@ -16,7 +15,7 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
                 .gainFate(1)
                 .discardFromPlay((context) => ({ target: context.source }))
             .otherwise()
-                .gameAction(removeFromGame((context) => ({ target: context.source })));
+                .removeFromGame((context) => ({ target: context.source }));
 
         this.reaction('Return to hand')
             .when({
