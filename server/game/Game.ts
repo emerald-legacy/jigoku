@@ -901,9 +901,6 @@ export class Game {
         ) {
             return;
         }
-        if(!player || !player.cardsInPlay) {
-            return;
-        }
         card.controller.removeCardFromPile(card);
         player.cardsInPlay.push(card);
         card.controller = player;
