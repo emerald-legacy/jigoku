@@ -165,7 +165,7 @@ export function chooseFate(type: PlayType): Cost {
             });
         },
         pay(context) {
-            context.player.fate -= context.chooseFate;
+            context.player.modifyFate(-context.chooseFate);
         },
         promptsPlayer: true
     };
@@ -422,7 +422,7 @@ export function payOptionalFate(amount: number, forcePayment: (context: AbilityC
             }
         },
         pay(context) {
-            context.player.fate -= context.costs.optionalFatePaid ?? 0;
+            context.player.modifyFate(-(context.costs.optionalFatePaid ?? 0));
         }
     };
 }

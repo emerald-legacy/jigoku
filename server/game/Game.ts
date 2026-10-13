@@ -227,6 +227,20 @@ export class Game {
     }
 
     addAnimation(event: AnimationEvent): void {
+        // a player's fate changes within one update show as one (a character's cost and its extra fate)
+        if(event.type === 'fate') {
+            const index = this.pendingAnimations.findIndex((pending) => pending.type === 'fate' && pending.playerName === event.playerName);
+            const earlier = this.pendingAnimations[index];
+            if(earlier?.type === 'fate') {
+                const amount = earlier.amount + event.amount;
+                if(amount === 0) {
+                    this.pendingAnimations.splice(index, 1);
+                } else {
+                    this.pendingAnimations[index] = { ...earlier, amount };
+                }
+                return;
+            }
+        }
         this.pendingAnimations.push(event);
     }
 

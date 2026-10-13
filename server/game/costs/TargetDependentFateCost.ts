@@ -46,10 +46,10 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
                     context.source,
                     this.#target(context)
                 );
-                context.player.fate -= this.getFinalFatecost(context, amount);
-                if(context.player.opponent) {
-                    context.player.opponent.fate += this.getFinalFatecost(context, amount);
-                }
+                // once: it takes the fate from any alternate pools
+                const cost = this.getFinalFatecost(context, amount);
+                context.player.modifyFate(-cost);
+                context.player.opponent?.modifyFate(cost);
             });
         }
 
@@ -59,7 +59,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
                 context.source,
                 this.#target(context)
             );
-            context.player.fate -= this.getFinalFatecost(context, amount);
+            context.player.modifyFate(-this.getFinalFatecost(context, amount));
         });
     }
 
