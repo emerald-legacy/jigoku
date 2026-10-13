@@ -13,19 +13,12 @@ class HeroOfThreeTrees extends DrawCard {
                 && context.player.hand.length < context.player.opponent.hand.length))
             .select({}, {
                 'Gain 1 honor': gainHonor(),
-                'Lower attacked province\'s strength by 1': selectAttackedProvince((context) => ({
-                    subActionProperties: (card) => {
-                        context.target = card;
-                        return ({ target: card });
-                    },
+                'Lower attacked province\'s strength by 1': selectAttackedProvince({
                     message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by 1`,
-                    gameAction: cardLastingEffect(() => ({
-                        effect: (
-                            (context.target?.isProvinceCard() ? context.target.getStrength() : 0) > 0 ?
-                                modifyProvinceStrength(-1) : []
-                        )
+                    gameAction: (province) => cardLastingEffect(() => ({
+                        effect: province.getStrength() > 0 ? modifyProvinceStrength(-1) : []
                     }))
-                }))
+                })
             })
             .chatText((context) => msg`${context.select === 'Gain 1 honor' ? 'gain 1 honor' : 'reduce the strength of '}${context.select === 'Gain 1 honor' ? '' : 'an attacked province by 1'}`);
     }

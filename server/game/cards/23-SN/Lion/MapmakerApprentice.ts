@@ -32,11 +32,7 @@ export default class MapmakerApprentice extends DrawCard {
                     },
                     message: () => msg`${context.player} changes the province strength of an attacked province due to the delayed effect of ${context.source}`,
                     multipleTrigger: true,
-                    gameAction: selectAttackedProvince((context) => ({
-                        subActionProperties: (card) => {
-                            context.target = card;
-                            return { target: card };
-                        },
+                    gameAction: selectAttackedProvince({
                         gameAction: chooseAction({
                             choices: {
                                 'Raise attacked province\'s strength by 2': {
@@ -53,7 +49,7 @@ export default class MapmakerApprentice extends DrawCard {
                                 }
                             }
                         })
-                    }))
+                    })
                 }),
                 duration: Duration.UntilEndOfRound
             })))

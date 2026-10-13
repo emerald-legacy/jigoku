@@ -29,12 +29,6 @@ export default class SupportingCast extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) =>
                     context.event.cardTargets.some((eventCard) => eventCard === card),
-                subActionProperties: (card) => {
-                    if(card.isDrawCard()) {
-                        context.target = card;
-                    }
-                    return { target: card };
-                },
                 gameAction: bow()
             })), cardLastingEffect({
                 effect: modifyMilitarySkill(3)

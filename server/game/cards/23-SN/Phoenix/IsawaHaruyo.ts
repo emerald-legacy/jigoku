@@ -1,6 +1,5 @@
 import { msg } from '../../../GameChat.js';
 import { lookAt, multiple } from '../../../GameActions/GameActions.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
 
@@ -12,13 +11,8 @@ export default class IsawaHaruyo extends DrawCard {
             .condition((context) => context.source.isDefending() && context.player.opponent !== undefined)
             .selectAttackedProvince((context) => ({
                 cardCondition: (card) => card.getStrength() > 0,
-                subActionProperties: (card) => {
-                    context.target = card;
-                    return { target: card };
-                },
-                gameAction: multiple((context: AbilityContext<this>) => {
-                    const cardNumber = context.target?.isProvinceCard() ? context.target.getStrength() : 0;
-                    const cards = randomHandCards(context.player.opponent, cardNumber);
+                gameAction: (province) => multiple(() => {
+                    const cards = randomHandCards(context.player.opponent, province.getStrength());
                     return [
                         lookAt(() => ({
                             target: cards

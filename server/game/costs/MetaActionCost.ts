@@ -3,7 +3,7 @@ import BaseCard from '../BaseCard.js';
 import { Location, Players } from '../Constants.js';
 import type { Cost, CostMessage, Result } from './Cost.js';
 import type { Event } from '../Events/Event.js';
-import type { SelectCardAction } from '../GameActions/SelectCardAction.js';
+import { actionFor, type SelectCardAction } from '../GameActions/SelectCardAction.js';
 import type { SelectRingAction } from '../GameActions/SelectRingActions.js';
 import Ring from '../Ring.js';
 import { randomItem } from '../utils/random.js';
@@ -44,7 +44,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
         if(chosen) {
             context.costs[name] = chosen;
             context.costs[name + 'StateWhenChosen'] = chosen.createSnapshot();
-            return properties.gameAction.addEventsToArray(events, context, {
+            return actionFor(properties.gameAction, chosen).addEventsToArray(events, context, {
                 target: chosen
             });
         }
@@ -74,6 +74,6 @@ export class MetaActionCost extends GameActionCost implements Cost {
 
     getCostMessage(context: AbilityContext): CostMessage {
         const properties = this.action.getProperties(context);
-        return properties.gameAction.getCostMessage(context) ?? [];
+        return typeof properties.gameAction === 'function' ? [] : properties.gameAction.getCostMessage(context) ?? [];
     }
 }

@@ -16,11 +16,7 @@ export default class StewardOfCrypticLore extends DrawCard {
 
         this.action('Changes the strength of the attacked province')
             .condition((context) => context.game.isDuringConflict(this.getCurrentElementSymbol(ELEMENT)))
-            .selectAttackedProvince((context) => ({
-                subActionProperties: (card) => {
-                    context.target = card;
-                    return { target: card };
-                },
+            .selectAttackedProvince(() => ({
                 gameAction: chooseAction(() => ({
                     choices: {
                         'Raise attacked province\'s strength by 3': {

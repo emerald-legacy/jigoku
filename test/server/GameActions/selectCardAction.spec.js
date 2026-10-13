@@ -242,4 +242,26 @@ describe('SelectCardAction', function() {
             expect(chatText).toHaveBeenCalledWith(this.context);
         });
     });
+
+    describe('with gameAction as a function of the chosen card', function() {
+        beforeEach(function() {
+            this.gameActionFor = jasmine.createSpy('gameActionFor').and.returnValue(this.gameAction);
+            this.action = new SelectCardAction({ selector: this.selector, gameAction: this.gameActionFor });
+        });
+
+        it('resolves the action built for the chosen card', function() {
+            const events = [];
+            this.action.addEventsToArray(events, this.context);
+            lastPromptArgs(this.game.promptForSelect).onSelect(this.player, this.cardA);
+            expect(this.gameActionFor).toHaveBeenCalledWith(this.cardA);
+            expect(this.gameAction.addEventsToArray).toHaveBeenCalledWith(events, this.context, jasmine.objectContaining({ target: this.cardA }));
+        });
+
+        it('resolves nothing when an optional select is skipped', function() {
+            this.action.addEventsToArray([], this.context);
+            lastPromptArgs(this.game.promptForSelect).onSelect(this.player, []);
+            expect(this.gameActionFor).not.toHaveBeenCalled();
+            expect(this.gameAction.addEventsToArray).not.toHaveBeenCalled();
+        });
+    });
 });
