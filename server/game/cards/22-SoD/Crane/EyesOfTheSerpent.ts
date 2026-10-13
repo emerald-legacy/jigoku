@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import { gainHonor, multiple, onAffinity, taint } from '../../../GameActions/GameActions.js';
+import { taint } from '../../../GameActions/GameActions.js';
 import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -18,16 +18,9 @@ export default class EyesOfTheSerpent extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.isDishonored
-            }, multiple([
-                taint(),
-                onAffinity({
-                    trait: 'air',
-                    gameAction: gainHonor((context) => ({
-                        target: context.player
-                    })),
-                    chatText: () => msg`gain 1 honor`
-                })
-            ]))
+            }, taint())
+            .onAffinity('air', { chatText: () => msg`gain 1 honor` })
+            .gainHonor()
             .chatText((context) => msg`taint ${context.target}`);
     }
 }

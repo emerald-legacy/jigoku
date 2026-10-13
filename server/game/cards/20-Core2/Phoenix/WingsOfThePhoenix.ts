@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect, moveToConflict, multiple, onAffinity, sendHome } from '../../../GameActions/GameActions.js';
+import { moveToConflict, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
@@ -16,17 +16,13 @@ export default class WingsOfThePhoenix extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, multiple([
-                sendHome(),
-                moveToConflict(),
-                onAffinity({
-                    trait: 'fire',
-                    gameAction: cardLastingEffect((context) => ({
-                        target: context.game.currentConflict?.getCharacters(context.player.opponent),
-                        effect: modifyBothSkills(-1)
-                    })),
-                    chatText: () => msg`give all participating enemies -1${'military'}/-1${'political'} until the end of the conflict`
-                })
-            ]));
+            }, sendHome(), moveToConflict())
+            .onAffinity('fire', {
+                chatText: () => msg`give all participating enemies -1${'military'}/-1${'political'} until the end of the conflict`
+            })
+            .cardLastingEffect((context) => ({
+                target: context.game.currentConflict?.getCharacters(context.player.opponent),
+                effect: modifyBothSkills(-1)
+            }));
     }
 }

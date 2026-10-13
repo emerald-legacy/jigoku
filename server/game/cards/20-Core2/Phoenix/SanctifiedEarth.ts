@@ -1,5 +1,5 @@
 import { cardCannot, modifyBothSkills } from '../../../effects.js';
-import { cardLastingEffect, multiple, onAffinity } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, onAffinity } from '../../../GameActions/GameActions.js';
 import { CardType, EventName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -40,23 +40,18 @@ export default class SanctifiedEarth extends DrawCard {
                 cardType: CardType.Character,
                 player: Players.Self,
                 cardCondition: (card, context) => Object.entries(trigger).find(([name]) => name === context.event.name)?.[1].cardCondition(card, context) ?? false
-            }, multiple([
-                cardLastingEffect({
-                    effect: modifyBothSkills(2)
-                }),
-
-                onAffinity({
-                    trait: 'earth',
-                    chatText: (context) => msg`make ${context.target} invulnerable to opponent's send home`,
-                    gameAction: cardLastingEffect((context) => ({
-                        target: context.target,
-                        effect: cardCannot({
-                            cannot: RestrictionType.SendHome,
-                            appliesTo: RestrictionScope.OpponentsCardEffects
-                        })
-                    }))
+            }, cardLastingEffect({
+                effect: modifyBothSkills(2)
+            }), onAffinity({
+                trait: 'earth',
+                chatText: (context) => msg`make ${context.target} invulnerable to opponent's send home`,
+                gameAction: cardLastingEffect({
+                    effect: cardCannot({
+                        cannot: RestrictionType.SendHome,
+                        appliesTo: RestrictionScope.OpponentsCardEffects
+                    })
                 })
-            ]))
+            }))
             .chatText((context) => msg`give +2${'military'} and +2${'political'} to ${context.target}`);
     }
 }

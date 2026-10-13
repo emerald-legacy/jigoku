@@ -235,6 +235,23 @@ describe('SoD - Crane', function () {
                 expect(this.player1.fate).toBe(fate);
                 expect(this.player1.honor).toBe(honor);
             });
+
+            it('cannot choose a character it cannot taint, even with air affinity', function () {
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.challenger],
+                    defenders: [this.kuwanan],
+                    type: 'military',
+                    province: this.pilgrimage
+                });
+                this.kuwanan.taint();
+
+                this.player1.clickCard(this.serpent);
+                expect(this.player1).not.toHavePrompt('Eyes of the Serpent');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+            });
         });
 
         describe('Ancestral Kabuto', function () {
