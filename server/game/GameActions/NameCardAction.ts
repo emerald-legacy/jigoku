@@ -6,12 +6,12 @@ import type Player from '../Player.js';
 import { GameAction, type ActionOverrides, type GameActionProperties } from './GameAction.js';
 import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 
-export interface NameCardProperties extends GameActionProperties {
+export interface NameCardProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     /** Who names the card: the ability's player (default) or their opponent. */
     player?: Chooser;
     activePromptTitle?: string;
     gameAction: (cardName: string) => GameAction;
-    message?: (context: AbilityContext, cardName: string, chooser: Player) => MessageArgs;
+    message?(context: C, cardName: string, chooser: Player): MessageArgs;
 }
 
 export class NameCardAction<C extends AbilityContext = AbilityContext> extends GameAction<NameCardProperties, EventName.Unnamed, C> {

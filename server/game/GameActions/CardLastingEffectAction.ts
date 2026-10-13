@@ -8,12 +8,12 @@ import type { ActionEvent } from './GameAction.js';
 import { toEffectList, type LastingEffectFields } from './LastingEffectAction.js';
 import type { TargetLocation } from '../Interfaces.js';
 
-export interface LastingEffectCardProperties extends CardActionProperties, LastingEffectFields {
+export interface LastingEffectCardProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties, LastingEffectFields<C> {
     targetLocation?: TargetLocation;
     canChangeZoneOnce?: boolean;
     canChangeZoneNTimes?: number;
     /** The ability's chat text for this effect, after "to"; without it, "apply a lasting effect to <target>". */
-    chatText?: (context: AbilityContext) => MessageArgs;
+    chatText?(context: C): MessageArgs;
 }
 
 export class CardLastingEffectAction<C extends AbilityContext = AbilityContext> extends CardGameAction<

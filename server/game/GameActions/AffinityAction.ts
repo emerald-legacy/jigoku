@@ -6,9 +6,9 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
-export interface AffinityProperties extends GameActionProperties {
+export interface AffinityProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     gameAction: GameAction;
-    chatText?: (context: AbilityContext) => MessageArgs;
+    chatText?(context: C): MessageArgs;
     trait: string;
     noAffinityGameAction?: GameAction;
     activePromptTitle?: string;

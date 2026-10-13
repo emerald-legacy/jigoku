@@ -10,7 +10,7 @@ import type Player from '../Player.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { targetList, type GameAction } from './GameAction.js';
 
-export interface AssignRolesProperties<R extends string = string> extends CardActionProperties {
+export interface AssignRolesProperties<R extends string = string, C extends AbilityContext = AbilityContext> extends CardActionProperties {
     /** Each role's action, resolved on the card given that role: two roles for two cards. */
     roles: Record<R, GameAction>;
     /** Who gives the roles. */
@@ -27,7 +27,7 @@ export interface AssignRolesProperties<R extends string = string> extends CardAc
     messages?: Partial<Record<NoInfer<R>, (context: AbilityContext, card: BaseCard, chooser: Player) => MessageArgs>>;
     activePromptTitle?: string;
     /** Printed once each card has its role. Method syntax, so a card's narrower role names fit. */
-    message?(context: AbilityContext, assigned: Record<NoInfer<R>, BaseCard>, chooser: Player): MessageArgs;
+    message?(context: C, assigned: Record<NoInfer<R>, BaseCard>, chooser: Player): MessageArgs;
 }
 
 /**

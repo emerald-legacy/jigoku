@@ -11,14 +11,14 @@ import { type CardActionProperties, type CardEvent, CardGameAction } from './Car
 import { targetList, type ActionOverrides } from './GameAction.js';
 import { HandlerAction } from './HandlerAction.js';
 
-export interface SetAsideProperties extends CardActionProperties {
+export interface SetAsideProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
     /** Facedown to the other players while set aside. */
     hidden?: boolean;
     /** Back to the owner's hand when the conflict ends. */
     returnAtEndOfConflict?: boolean;
     /** Controls the cards and may play them as if they were in their hand while they are set aside. */
     playableBy?: Player;
-    message?: (context: AbilityContext, cards: DrawCard[]) => MessageArgs;
+    message?(context: C, cards: DrawCard[]): MessageArgs;
 }
 
 export class SetAsideAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SetAsideProperties, EventName.Unnamed, C, 'hidden' | 'returnAtEndOfConflict'> {

@@ -8,8 +8,8 @@ import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
-export interface LookAtProperties extends CardActionProperties {
-    message?: (context: AbilityContext, cards: BaseCard[]) => MessageArgs;
+export interface LookAtProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
+    message?(context: C, cards: BaseCard[]): MessageArgs;
 }
 
 export class LookAtAction<C extends AbilityContext = AbilityContext> extends CardGameAction<LookAtProperties, EventName.OnLookAtCards, C, 'message'> {

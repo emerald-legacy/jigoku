@@ -5,7 +5,7 @@ import { Duration, EventName } from '../Constants.js';
 import type { LastingEffectGeneralProperties } from './LastingEffectAction.js';
 import type { ActionEvent } from './GameAction.js';
 
-export type LastingEffectRingProperties = LastingEffectGeneralProperties;
+export type LastingEffectRingProperties<C extends AbilityContext = AbilityContext> = LastingEffectGeneralProperties<C>;
 
 export class RingLastingEffectAction<C extends AbilityContext = AbilityContext> extends RingAction<LastingEffectRingProperties, EventName.OnEffectApplied, C, 'duration' | 'effect'> {
     name = 'ringLastingEffect';

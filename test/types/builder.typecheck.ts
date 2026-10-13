@@ -4,9 +4,12 @@ import type { ProvinceCard } from '../../server/game/ProvinceCard.js';
 import type Ring from '../../server/game/Ring.js';
 import type Player from '../../server/game/Player.js';
 import type { ResolvedDuel } from '../../server/game/Duel.js';
+import type { AbilityContext } from '../../server/game/AbilityContext.js';
+import type { AbilityBuilder } from '../../server/game/AbilityBuilder.js';
 import { CardType, DuelType, Location, Phase, TargetMode } from '../../server/game/Constants.js';
 import { msg } from '../../server/game/GameChat.js';
 import { captureCost } from '../../server/game/cards/captureCost.js';
+import type * as GameActions from '../../server/game/GameActions/GameActions.js';
 import {
     bow,
     chooseAmount,
@@ -22,6 +25,11 @@ import {
 function expectType<T>(): <V extends T>(value: 0 extends 1 & V ? never : V) => void {
     return () => undefined;
 }
+
+// every entry of the shortcut properties map is a builder shortcut and a game action
+type Shortcut = keyof GameActions.ActionProps<AbilityContext>;
+export const builderShortcutsCovered: Shortcut extends keyof AbilityBuilder<AbilityContext> ? true : false = true;
+export const gameActionsCovered: Shortcut extends keyof typeof GameActions ? true : false = true;
 
 export function builderTypeTests(card: DrawCard, province: ProvinceCard): void {
     // cardType decides the class of the chosen card
@@ -179,6 +187,48 @@ export function builderTypeTests(card: DrawCard, province: ProvinceCard): void {
             return placeFate({ amount });
         }
     });
+
+    // callbacks inside a shortcut's properties get the ability's typed context
+    card.action('Callbacks')
+        .target({ cardType: CardType.Province }, noAction())
+        .deckSearch({
+            cardCondition: (_card, context) => {
+                expectType<ProvinceCard>()(context.target);
+                return true;
+            },
+            message: (context) => {
+                expectType<ProvinceCard>()(context.target);
+                return msg`${context.target}`;
+            }
+        })
+        .lookAt({
+            message: (context) => {
+                expectType<ProvinceCard>()(context.target);
+                return msg`${context.target}`;
+            }
+        })
+        .cardLastingEffect({
+            condition: (context) => {
+                expectType<ProvinceCard>()(context.target);
+                return true;
+            },
+            chatText: (context) => msg`${context.target}`
+        })
+        .atEndOfConflict({
+            gameAction: bow(),
+            onlyIf: (context) => {
+                expectType<ProvinceCard>()(context.target);
+                return true;
+            }
+        })
+        .optional({
+            activePromptTitle: 'Bow?',
+            gameAction: bow(),
+            acceptMessage: (context) => {
+                expectType<ProvinceCard>()(context.target);
+                return msg`${context.target}`;
+            }
+        });
 
     // a duel's game action gets a duel with a winner
     card.action('Duel')

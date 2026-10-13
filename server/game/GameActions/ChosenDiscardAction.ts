@@ -8,10 +8,10 @@ import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
 
-export interface ChosenDiscardProperties extends PlayerActionProperties {
+export interface ChosenDiscardProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     amount?: number;
     targets?: boolean;
-    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
+    cardCondition?(card: BaseCard, context: C): boolean;
 }
 
 export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount' | 'targets' | 'cardCondition'> {

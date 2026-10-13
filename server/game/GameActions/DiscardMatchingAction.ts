@@ -7,11 +7,11 @@ import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
 
-export interface MatchingDiscardProperties extends PlayerActionProperties {
+export interface MatchingDiscardProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     amount?: number;
     reveal?: boolean;
     cards?: BaseCard[];
-    match?: (context: AbilityContext, card: BaseCard) => boolean;
+    match?(context: C, card: BaseCard): boolean;
 }
 
 /** A discard event this action created: `addPropertiesToEvent` always sets its amount and match. */

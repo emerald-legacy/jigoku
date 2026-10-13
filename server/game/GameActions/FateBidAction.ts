@@ -9,10 +9,10 @@ import { FateBidPrompt } from '../gamesteps/FateBidPrompt.js';
 import { LoseFateAction } from './LoseFateAction.js';
 import { JointGameAction } from './JointGameAction.js';
 
-export interface FateBidProperties extends PlayerActionProperties {
+export interface FateBidProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     postBidAction?: GameAction;
     /** The chat line after the bids; without it, the post-bid action's own text. */
-    message?: (context: AbilityContext) => MessageArgs;
+    message?(context: C): MessageArgs;
 }
 
 type PostBid = Pick<FateBidProperties, 'postBidAction' | 'message'>;

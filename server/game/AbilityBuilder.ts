@@ -10,11 +10,6 @@ import type Player from './Player.js';
 import * as GameActions from './GameActions/GameActions.js';
 import type { SelectCardProperties } from './GameActions/SelectCardAction.js';
 import type { CancellingContext } from './GameActions/CancelAction.js';
-import type { CardMenuProperties } from './GameActions/CardMenuAction.js';
-import type { ChooseActionProperties } from './GameActions/ChooseGameAction.js';
-import type { ChooseAmountProperties } from './GameActions/ChooseAmountAction.js';
-import type { SelectRingProperties } from './GameActions/SelectRingActions.js';
-import type { SelectTokenProperties } from './GameActions/SelectTokenAction.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import { toGameAction, type DeclaredGameAction } from './BaseAbility.js';
@@ -48,6 +43,7 @@ import type { ThenAbilityProperties } from './ThenAbility.js';
 import type { SelectChoice } from './AbilityTargets/SelectChoice.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from './types/CardOfType.js';
+import type { Derivable } from './utils/helpers.js';
 
 /** A skipped optional target holds `[]`, or nothing if its prompt was hidden (`hideIfNoLegalTargets`). */
 type ChosenCard<K, O> = true extends O ? CardOfType<K> | [] | undefined : CardOfType<K>;
@@ -128,12 +124,9 @@ type TargetEntry = SingleCardEntry | MultiCardEntry | TokenEntry | AbilityEntry 
 
 /** The properties a game action factory takes, or a function of the builder's context returning them. */
 /** Properties whose callbacks see the builder's context (the factory types them with a context parameter), or a function of that context returning them. */
-type ContextProps<P, Context> = P | ((context: Context) => P);
 
-type FactoryProperties<K extends keyof typeof GameActions, Context> =
-    (typeof GameActions)[K] extends (factory: infer F) => unknown
-        ? Exclude<NonNullable<F>, (...args: never[]) => unknown> | ((context: Context) => Exclude<NonNullable<F>, (...args: never[]) => unknown>)
-        : never;
+type FactoryProperties<K extends keyof GameActions.ActionProps<AbilityContext>, Context extends AbilityContext> =
+    Derivable<GameActions.ActionProps<Context>[K], Context>;
 
 interface AbilityDraft {
     readonly title: string;
@@ -889,9 +882,7 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.selectCard<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K>(properties));
     }
 
-    selectAttackedProvince(
-        properties: GameActions.AttackedProvinceProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>> | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => GameActions.AttackedProvinceProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>)
-    ): this {
+    selectAttackedProvince(properties: FactoryProperties<'selectAttackedProvince', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.selectAttackedProvince(properties));
     }
 
@@ -966,12 +957,12 @@ export class AbilityBuilder<
     }
 
     /** A ring is chosen while the ability resolves, and `gameAction` resolves on it. */
-    selectRing(properties: ContextProps<SelectRingProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+    selectRing(properties: FactoryProperties<'selectRing', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.selectRing(properties));
     }
 
     /** A token is chosen while the ability resolves, and `gameAction` resolves on it. */
-    selectToken(properties: ContextProps<SelectTokenProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+    selectToken(properties: FactoryProperties<'selectToken', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.selectToken(properties));
     }
 
@@ -1026,17 +1017,17 @@ export class AbilityBuilder<
     }
 
     /** One of `cards` is chosen from card buttons while the ability resolves, and `gameAction` resolves on it. */
-    cardMenu(properties: ContextProps<CardMenuProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+    cardMenu(properties: FactoryProperties<'cardMenu', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.cardMenu(properties));
     }
 
     /** A choice between game actions while the ability resolves (a selection after the dash). */
-    chooseAction(properties: ContextProps<ChooseActionProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+    chooseAction(properties: FactoryProperties<'chooseAction', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.chooseAction(properties));
     }
 
     /** A number is chosen while the ability resolves, and `gameAction(amount)` resolves. */
-    chooseAmount(properties: ContextProps<ChooseAmountProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>>, BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
+    chooseAmount(properties: FactoryProperties<'chooseAmount', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.chooseAmount(properties));
     }
 

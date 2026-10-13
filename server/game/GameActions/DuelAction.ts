@@ -12,23 +12,23 @@ import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { targetList, type GameAction, type ActionEvent } from './GameAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
-export interface DuelProperties extends CardActionProperties {
+export interface DuelProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
     type: DuelType;
     challenger?: DrawCard;
-    challengerCondition?: (card: DrawCard, context: AbilityContext) => boolean;
+    challengerCondition?(card: DrawCard, context: C): boolean;
     requiresConflict?: boolean;
     /** Resolved only when the duel has a winner. */
     gameAction: GameAction | ((duel: ResolvedDuel, context: AbilityContext) => GameAction);
     onTie?: GameAction | ((duel: Duel, context: AbilityContext) => GameAction);
     /** What the chat says the duel does, after "Duel Effect: "; by default its game action's own text. */
-    chatText?: (context: AbilityContext, duel: ResolvedDuel) => MessageArgs;
-    costHandler?: (context: AbilityContext, prompt: unknown) => void;
+    chatText?(context: C, duel: ResolvedDuel): MessageArgs;
+    costHandler?(context: C, prompt: unknown): void;
     statistic?: (card: DrawCard, duelRules: 'currentSkill' | 'printedSkill' | 'skirmish') => number;
     challengerEffect?: EffectFactory | EffectFactory[];
     targetEffect?: EffectFactory | EffectFactory[];
     refuseGameAction?: GameAction;
     /** The chat line when the opponent refuses; by default "<refuser> chooses to refuse the duel and <refuseGameAction's text>". */
-    refusalMessage?: (context: AbilityContext, refuser: Player) => MessageArgs;
+    refusalMessage?(context: C, refuser: Player): MessageArgs;
 }
 
 export class DuelAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DuelProperties, EventName.OnDuelInitiated, C> {

@@ -8,13 +8,13 @@ import type { GameAction, ActionEvent } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { queuePostBidSteps } from './FateBidAction.js';
 
-export interface HonorBidProperties extends PlayerActionProperties {
+export interface HonorBidProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     giveHonor?: boolean;
     prohibitedBids?: Array<number>;
     players?: Players;
     postBidAction?: GameAction;
     /** The chat line after the bids; without it, the post-bid action's own text. */
-    message?: (context: AbilityContext) => MessageArgs;
+    message?(context: C): MessageArgs;
 }
 
 /** An honor bid event this action created: `addPropertiesToEvent` always sets its prohibited bids. */

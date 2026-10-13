@@ -14,14 +14,14 @@ export interface CardMenuProperties<C extends AbilityContext = AbilityContext> e
     activePromptTitle?: string;
     player?: Chooser;
     cards: DrawCard[];
-    cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
+    cardCondition?(card: DrawCard, context: C): boolean;
     options?: HandlerMenuOption[];
     targets?: boolean;
     /** The chat line once a card is chosen. */
-    message?: (context: C, card: DrawCard, chooser: Player) => MessageArgs;
+    message?(context: C, card: DrawCard, chooser: Player): MessageArgs;
     subActionProperties?: (card: DrawCard) => Record<string, unknown>;
     gameAction: GameAction;
-    gameActionHasLegalTarget?: (context: AbilityContext) => boolean;
+    gameActionHasLegalTarget?(context: C): boolean;
 }
 
 export class CardMenuAction<C extends AbilityContext = AbilityContext> extends CardGameAction<

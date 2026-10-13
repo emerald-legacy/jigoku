@@ -10,15 +10,15 @@ import type { Event } from '../Events/Event.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
 /** The lasting-effect fields, shared by the player, card and ring variants. */
-export interface LastingEffectFields {
+export interface LastingEffectFields<C extends AbilityContext = AbilityContext> {
     duration?: Duration;
-    condition?: (context: AbilityContext) => boolean;
+    condition?(context: C): boolean;
     until?: EffectUntil;
     effect?: EffectFactory | EffectFactory[];
     ability?: BaseAbility;
 }
 
-export interface LastingEffectGeneralProperties extends GameActionProperties, LastingEffectFields {}
+export interface LastingEffectGeneralProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties, LastingEffectFields<C> {}
 
 /** A single effect factory becomes a one-element list; a missing one becomes an empty list. */
 export function toEffectList(effect: EffectFactory | EffectFactory[] | undefined): EffectFactory[] {
@@ -28,14 +28,14 @@ export function toEffectList(effect: EffectFactory | EffectFactory[] | undefined
     return Array.isArray(effect) ? effect : [effect];
 }
 
-export type LastingEffectProperties = LastingEffectGeneralProperties;
+export type LastingEffectProperties<C extends AbilityContext = AbilityContext> = LastingEffectGeneralProperties<C>;
 
-export interface PlayerLastingEffectProperties extends LastingEffectGeneralProperties {
+export interface PlayerLastingEffectProperties<C extends AbilityContext = AbilityContext> extends LastingEffectGeneralProperties<C> {
     target?: Player | Player[];
 }
 
 /** As written on cards: `target` may also be relative to the ability's player (`Players.Any` for both). */
-export type PlayerLastingEffectInput = Omit<PlayerLastingEffectProperties, 'target'> & { target?: Players | Player | Player[] };
+export type PlayerLastingEffectInput<C extends AbilityContext = AbilityContext> = Omit<PlayerLastingEffectProperties<C>, 'target'> & { target?: Players | Player | Player[] };
 
 function playersFor(target: Players | Player | Player[], context: AbilityContext): Player | Player[] {
     switch(target) {
@@ -97,7 +97,7 @@ export class DuelLastingEffectAction<C extends AbilityContext = AbilityContext> 
 
 /** A lasting effect on players: by default the ability's player. */
 export class PlayerLastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<PlayerLastingEffectProperties, EventName.OnEffectApplied, C, 'duration'> {
-    constructor(propertyFactory: PlayerLastingEffectInput | ((context: C) => PlayerLastingEffectInput)) {
+    constructor(propertyFactory: PlayerLastingEffectInput<C> | ((context: C) => PlayerLastingEffectInput<C>)) {
         super((context: C) => {
             const { target, ...properties } = typeof propertyFactory === 'function' ? propertyFactory(context) : propertyFactory;
             // without a target the default (the ability's player) applies

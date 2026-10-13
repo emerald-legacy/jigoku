@@ -11,7 +11,7 @@ import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './P
 
 const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth'];
 
-export interface RearrangeDeckProperties extends PlayerActionProperties {
+export interface RearrangeDeckProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     /** How many cards from the top of the deck. */
     amount?: Derivable<number, AbilityContext>;
     /** Instead of the top `amount`: these cards of the deck, which then go on top in the chosen order. */
@@ -20,7 +20,7 @@ export interface RearrangeDeckProperties extends PlayerActionProperties {
     /** The title of the first prompt; the later ones ask for the second, third… card. */
     activePromptTitle?: string;
     /** Printed once the cards are back, with the cards top card first. Method syntax, so a narrower context fits. */
-    message?(context: AbilityContext, cards: DrawCard[]): MessageArgs;
+    message?(context: C, cards: DrawCard[]): MessageArgs;
 }
 
 /** The player of the ability puts the top cards of the target player's deck back in the order they choose. */

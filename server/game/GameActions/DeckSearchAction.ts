@@ -16,28 +16,28 @@ import { RearrangeDeckAction } from './RearrangeDeckAction.js';
 export interface DeckSearchProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     mode?: TargetMode;
     activePromptTitle?: string;
-    cardsToLookAt?: Derivable<number, AbilityContext>;
-    numCards?: Derivable<number, AbilityContext>;
+    cardsToLookAt?: Derivable<number, C>;
+    numCards?: Derivable<number, C>;
     reveal?: boolean;
     deck?: DeckType;
     /** What happens to the looked-at cards not taken, once the taken ones are dealt with; `remainingCardsHandler` replaces it. */
-    remainingCards?: Derivable<RemainingCards, AbilityContext>;
+    remainingCards?: Derivable<RemainingCards, C>;
     gameAction?: GameAction;
     /** The chat line once cards are taken; without it, "<chooser> takes <cards>". */
-    message?: (context: C, cards: DrawCard[], chooser: Player) => MessageArgs;
+    message?(context: C, cards: DrawCard[], chooser: Player): MessageArgs;
     uniqueNames?: boolean;
     /** Who chooses the cards; by default the player whose deck is searched. */
     player?: Chooser;
-    selectedCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
-    remainingCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
-    cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
+    selectedCardsHandler?(context: C, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
+    remainingCardsHandler?(context: C, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
+    cardCondition?(card: DrawCard, context: C): boolean;
     takesNothingGameAction?: GameAction;
     /** The button that ends the choice; by default "Take nothing", or "Done" once a card is taken. */
     doneButtonText?: string;
     /** No prompt while none of the looked-at cards can be taken. */
     hideIfNoLegalTargets?: boolean;
     /** Replaces "<chooser> takes nothing"; `undefined` for no chat line. */
-    takesNothingMessage?: (context: C, chooser: Player) => MessageArgs | undefined;
+    takesNothingMessage?(context: C, chooser: Player): MessageArgs | undefined;
 }
 
 type DeckSearchDefaults =

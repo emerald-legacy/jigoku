@@ -7,14 +7,14 @@ import type Player from '../Player.js';
 import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
-export interface OptionalProperties extends GameActionProperties {
+export interface OptionalProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     gameAction: GameAction;
     activePromptTitle: string;
     player?: Chooser;
     /** Resolves without asking, when declining isn't allowed (the rest of the ability did nothing). */
     required?: boolean;
-    acceptMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
-    declineMessage?: (context: AbilityContext, chooser: Player) => MessageArgs;
+    acceptMessage?(context: C, chooser: Player): MessageArgs;
+    declineMessage?(context: C, chooser: Player): MessageArgs;
 }
 
 /** A player may resolve its game action; a `then()` step after it runs only if they did and it resolved. */
