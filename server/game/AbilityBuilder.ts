@@ -1050,6 +1050,11 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.tokenFromTopCard(properties));
     }
 
+    /** A chat line as one of the step's actions; nothing when the function returns `undefined`. */
+    chatMessage(message: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => MessageArgs | undefined): this {
+        return this.gameAction(GameActions.chatMessage(this.#checked(message, this.draft.specs)));
+    }
+
     /** Cancels the triggering event (interrupts only), optionally replacing it with `replacementGameAction`. */
     cancel<B extends Base & CancellingContext>(
         this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>,

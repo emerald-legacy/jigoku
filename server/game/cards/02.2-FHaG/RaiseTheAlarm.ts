@@ -17,15 +17,11 @@ class RaiseTheAlarm extends DrawCard {
             .chatText('flip the card in the conflict province faceup')
             .cannotBeMirrored()
             .then()
-            .handler((context) => {
-                const card = context.target;
-                if(card.type === CardType.Character && card.isDrawCard() && putIntoConflict().canAffect(card, context)) {
-                    this.game.addMessage(msg`${card} is revealed and brought into the conflict`);
-                    putIntoConflict().resolve(card, context);
-                } else {
-                    this.game.addMessage(msg`${card} is revealed but cannot be brought into the conflict`);
-                }
-            });
+            .if((context) => context.target.type === CardType.Character && context.target.isDrawCard() && putIntoConflict().canAffect(context.target, context))
+            .chatMessage((context) => msg`${context.target} is revealed and brought into the conflict`)
+            .putIntoConflict((context) => ({ target: context.target }))
+            .otherwise()
+            .chatMessage((context) => msg`${context.target} is revealed but cannot be brought into the conflict`);
     }
 }
 
