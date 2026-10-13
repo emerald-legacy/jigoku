@@ -797,6 +797,7 @@ Match the effect to the card text: *"cannot participate … as an attacker"* →
 | `cannotApplyLastingEffects(condition)` | Block lasting effects on this card |
 | `honorStatusDoesNotModifySkill()` | Honored/dishonored status doesn't affect skill |
 | `honorStatusDoesNotAffectLeavePlay()` | Status tokens don't trigger on leave-play |
+| `removeFromGameInsteadOfLeavingPlay({ message? })` | "When this would leave play, remove it from the game instead": any leave-play sends the card to the removed-from-game pile; `message(card)` is the chat line when it does. Persistent for printed text (Bloodthirsty Onryō), a lasting effect until the end of the round for "the next time … this round" |
 
 ### Restrictions: `cardCannot` / `playerCannot`
 

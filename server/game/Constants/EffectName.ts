@@ -148,6 +148,7 @@ export enum EffectName {
     ParticipatesFromHome = 'participatesFromHome',
     AdditionalAttackedProvince = 'additionalAttackedProvince',
     ReplacePrintedElement = 'replacePrintedElement',
+    RemoveFromGameInsteadOfLeavingPlay = 'removeFromGameInsteadOfLeavingPlay',
     ProvinceCannotHaveSkillIncreased = 'provinceCannotHaveSkillIncreased',
     ConsideredLessHonorable = 'consideredLessHonorable',
     CustomFatePhaseFateRemoval = 'customFatePhaseFateRemoval',

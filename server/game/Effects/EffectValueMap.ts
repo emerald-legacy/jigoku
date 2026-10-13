@@ -234,6 +234,7 @@ export interface EffectValueMap {
     [EffectName.ParticipatesFromHome]: true;
     [EffectName.AdditionalAttackedProvince]: ProvinceCard;
     [EffectName.ReplacePrintedElement]: Pick<ElementSymbolInfo, 'key' | 'element'>;
+    [EffectName.RemoveFromGameInsteadOfLeavingPlay]: { message?: (card: DrawCard) => MessageArgs };
     [EffectName.ProvinceCannotHaveSkillIncreased]: true;
     [EffectName.ConsideredLessHonorable]: boolean;
     [EffectName.CustomFatePhaseFateRemoval]: (player: Player, numFate: number) => void;

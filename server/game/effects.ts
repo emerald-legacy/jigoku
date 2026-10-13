@@ -226,6 +226,9 @@ export const Effects = {
     participatesFromHome: () => EffectBuilder.card.static(EffectName.ParticipatesFromHome, true),
     unlessActionCost: (properties: UnlessActionCostValue) => EffectBuilder.card.static(EffectName.UnlessActionCost, properties),
     replacePrintedElement: (value: EffectValueMap[EffectName.ReplacePrintedElement]) => EffectBuilder.card.static(EffectName.ReplacePrintedElement, value),
+    /** "When this would leave play, remove it from the game instead"; `message` is the chat line when it does. */
+    removeFromGameInsteadOfLeavingPlay: (value: EffectValueMap[EffectName.RemoveFromGameInsteadOfLeavingPlay] = {}) =>
+        EffectBuilder.card.static(EffectName.RemoveFromGameInsteadOfLeavingPlay, value),
     winDuel: (duel: Duel) => EffectBuilder.card.static(EffectName.WinDuel, duel),
     winDuelTies: () => EffectBuilder.card.static(EffectName.WinDuelTies, true),
     ignoreDuelSkill: () => EffectBuilder.card.static(EffectName.IgnoreDuelSkill, true),
@@ -397,7 +400,7 @@ export const {
     mustBeDeclaredAsDefender, refillProvinceTo, setApparentFate, setBaseDash, setBaseMilitarySkill,
     setBasePoliticalSkill, setBaseProvinceStrength, setDash, setGlory, setBaseGlory, setMilitarySkill,
     setPoliticalSkill, setProvinceStrength, setProvinceStrengthBonus, provinceCannotHaveSkillIncreased,
-    switchBaseSkills, suppressEffects, takeControl, treatStatusTokenAs, participatesFromHome, unlessActionCost, replacePrintedElement,
+    switchBaseSkills, suppressEffects, takeControl, treatStatusTokenAs, participatesFromHome, unlessActionCost, replacePrintedElement, removeFromGameInsteadOfLeavingPlay,
     winDuel, winDuelTies, ignoreDuelSkill, addElement, cannotBidInDuels, cannotDeclareRing, considerRingAsClaimed,
     additionalAction, addPlayerFlag, additionalCardPlayed, additionalCharactersInConflict, additionalConflict,
     additionalTriggerCost, additionalPlayCost, alternateFatePool, cannotDeclareConflictsOfType,

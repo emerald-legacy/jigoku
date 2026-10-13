@@ -2,7 +2,7 @@ import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
-import { EventName, Location } from '../Constants.js';
+import { EffectName, EventName, Location } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import { isEnumValue } from '../utils/helpers.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
@@ -32,6 +32,13 @@ export class LeavesPlayAction<
             if(evCard.isAncestral() && event.isContingent) {
                 event.destination = Location.Hand;
                 context.game.addMessage(msg`${evCard} returns to ${evCard.owner}'s hand due to its Ancestral keyword`);
+            }
+            const removal = evCard.mostRecentEffect(EffectName.RemoveFromGameInsteadOfLeavingPlay);
+            if(removal) {
+                event.destination = Location.RemovedFromGame;
+                if(removal.message) {
+                    context.game.addMessage(removal.message(evCard));
+                }
             }
         };
         event.createContingentEvents = () => {

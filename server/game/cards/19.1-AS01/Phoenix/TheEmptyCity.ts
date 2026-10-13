@@ -1,25 +1,15 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, ConflictType, Duration, EventName, Location, Players } from '../../../Constants.js';
-import { EventRegistrar } from '../../../EventRegistrar.js';
+import { CardType, ConflictType, Duration, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { cannotTriggerAbilities } from '../../../effects.js';
+import { cannotTriggerAbilities, removeFromGameInsteadOfLeavingPlay } from '../../../effects.js';
 import { cardLastingEffect, claimRing, joint, putIntoPlay } from '../../../GameActions/GameActions.js';
-import type BaseCard from '../../../BaseCard.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class TheEmptyCity extends ProvinceCard {
     static id = 'the-empty-city';
 
-    private invokedSpirit?: BaseCard;
-
     public setupCardAbilities() {
-        new EventRegistrar(this.game).register({
-            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
-            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
-        });
-
         const sharedLimit = perRound(1);
 
         this.action('Claim a ring')
@@ -53,21 +43,15 @@ export default class TheEmptyCity extends ProvinceCard {
                 }))
             ]))
             .chatText('put {0} into play')
-            .onResolve((context) => {
-                this.invokedSpirit = context.target;
-            })
             .limit(sharedLimit)
-            .canTriggerOutsideConflict();
-    }
-
-    public onRoundEnded() {
-        this.invokedSpirit = undefined;
-    }
-
-    public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
-        if(this.invokedSpirit && this.invokedSpirit === event.card && this.location !== Location.RemovedFromGame) {
-            this.game.addMessage(msg`${event.card} is removed from the game, as it was invoked by the ${this} this round`);
-            this.owner.moveCard(event.card, Location.RemovedFromGame);
-        }
+            .canTriggerOutsideConflict()
+            .afterwardsIf((context) => context.target.location === Location.PlayArea)
+            .cardLastingEffect((context) => ({
+                target: context.target,
+                duration: Duration.UntilEndOfRound,
+                effect: removeFromGameInsteadOfLeavingPlay({
+                    message: (card) => msg`${card} is removed from the game, as it was invoked by the ${context.source} this round`
+                })
+            }));
     }
 }
