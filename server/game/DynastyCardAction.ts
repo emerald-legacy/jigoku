@@ -3,11 +3,12 @@ import { BaseAction } from './BaseAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoPlay } from './GameActions/GameActions.js';
-import { EffectName, Phase, PlayType, EventName, Blocker, RestrictionType } from './Constants.js';
+import { EffectName, Phase, PlayType, Blocker, RestrictionType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf } from './Effects/types.js';
+import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
 
 export class DynastyCardAction extends BaseAction {
     title = 'Play this character';
@@ -51,7 +52,7 @@ export class DynastyCardAction extends BaseAction {
         }
     }
 
-    executeHandler(context: AbilityContext): void {
+    executeHandler(context: AbilityContext<DrawCard>): void {
         let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
         const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
         if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
@@ -63,14 +64,7 @@ export class DynastyCardAction extends BaseAction {
             context.source,
             context
         );
-        const card = this.card;
-        context.game.openEventWindow([enterPlayEvent, context.game.getEvent(EventName.OnCardPlayed, {
-            player: context.player,
-            card,
-            context: context,
-            originalLocation: card.location,
-            playType: PlayType.PlayFromProvince
-        })]);
+        context.game.openEventWindow([enterPlayEvent, createCardPlayedEvent(context, context.source, PlayType.PlayFromProvince)]);
     }
 
     isCardPlayed(): boolean {
