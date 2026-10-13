@@ -3,7 +3,7 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import * as costs from '../../../costs/index.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { handler, placeInProvince } from '../../../GameActions/GameActions.js';
+import { assignRoles, moveCard, placeInProvince } from '../../../GameActions/GameActions.js';
 
 export default class MiokosSong extends StrongholdCard {
     static id = 'mioko-s-song';
@@ -31,29 +31,18 @@ export default class MiokosSong extends StrongholdCard {
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 cardType: CardType.Province
-            }, handler({
-                handler: (context) => {
-                    const opponent = context.player.opponent;
-                    if(!opponent) {
-                        return;
-                    }
-                    const province = context.target;
-                    const topCards = opponent.dynastyDeck.slice(0, 2);
-                    this.game.promptWithHandlerMenu(context.player, {
-                        activePromptTitle: 'Which card do you want to put in the province?',
-                        context: context,
-                        cards: topCards,
-                        cardHandler: (selectedCard) => {
-                            const cardsFromProvince = province.cardsInSelf();
-                            placeInProvince({ destination: province.location, discard: 'all' }).resolve(selectedCard, context);
-                            for(const goToBottom of topCards.filter((c) => c !== selectedCard)) {
-                                opponent.moveCard(goToBottom, Location.DynastyDeck, { bottom: true });
-                            }
-
-                            context.game.addMessage(msg`${context.player} puts ${selectedCard} into ${province.isFacedown() ? province.location : province}, discarding ${cardsFromProvince}`);
-                        }
-                    });
+            })
+            .gameAction(assignRoles((context) => ({
+                target: context.player.opponent?.dynastyDeck.slice(0, 2) ?? [],
+                roles: {
+                    'put into the province faceup': placeInProvince({ destination: context.target.location, discard: 'all' }),
+                    'put on the bottom of the deck': moveCard({ destination: Location.DynastyDeck, bottom: true })
+                },
+                pickOrder: ['put into the province faceup'],
+                messages: {
+                    'put into the province faceup': (_context, card) =>
+                        msg`${context.player} puts ${card} into ${context.target.isFacedown() ? context.target.location : context.target}, discarding ${context.target.cardsInSelf()}`
                 }
-            }));
+            })));
     }
 }

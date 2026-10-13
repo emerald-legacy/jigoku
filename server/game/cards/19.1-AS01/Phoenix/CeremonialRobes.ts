@@ -1,6 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { modifyGlory } from '../../../effects.js';
-import { assignRoles, handler, loseHonor, moveCard, placeInProvince } from '../../../GameActions/GameActions.js';
+import { assignRoles, chatMessage, conditional, discardCard, loseHonor, moveCard, placeInProvince, sequential } from '../../../GameActions/GameActions.js';
+import { targetList } from '../../../GameActions/GameAction.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -30,18 +31,16 @@ export default class CeremonialRobes extends DrawCard {
                 roles: {
                     'put into the province faceup': placeInProvince({ destination: context.target.location }),
                     'put on the bottom of the deck': moveCard({ destination: Location.DynastyDeck, bottom: true }),
-                    'discard': handler({
-                        handler: (context, [card]) => {
-                            if(!(card instanceof DrawCard)) {
-                                return;
-                            }
-                            context.player.moveCard(card, Location.DynastyDiscardPile);
-                            if(card.hasTrait('spirit')) {
-                                this.game.addMessage(msg`${card} was a Spirit! ${context.player} and ${context.player.opponent} lose 1 honor`);
-                                loseHonor((innerContext) => ({ target: innerContext.game.getPlayers() })).resolve(card, context);
-                            }
-                        }
-                    })
+                    'discard': sequential([
+                        discardCard(),
+                        conditional({
+                            condition: (_context, properties) => targetList(properties.target).some((card) => card.isCard() && card.hasTrait('spirit')),
+                            trueGameAction: sequential([
+                                chatMessage((context, [card]) => msg`${card} was a Spirit! ${context.player} and ${context.player.opponent} lose 1 honor`),
+                                loseHonor((context) => ({ target: context.game.getPlayers() }))
+                            ])
+                        })
+                    ])
                 },
                 pickOrder: ['put into the province faceup', 'put on the bottom of the deck'],
                 messages: {

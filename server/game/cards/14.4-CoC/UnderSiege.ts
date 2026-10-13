@@ -4,10 +4,11 @@ import { Location, Duration } from '../../Constants.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { playerDelayedEffect } from '../../effects.js';
 import {
+    chatMessage,
     chosenDiscard,
     conditional,
     draw,
-    handler,
+    moveCard,
     noAction,
     playerLastingEffect,
     sequential,
@@ -25,6 +26,7 @@ class UnderSiege extends DrawCard {
             .gameAction(sequential((context) => {
                 const defender = context.game.currentConflict?.defendingPlayer ?? undefined;
                 const hand = defender ? [...defender.hand] : [];
+                const setAsideHand = () => hand.filter((card) => card.location === Location.RemovedFromGame);
                 return [
                     playerLastingEffect({
                         duration: Duration.UntilEndOfRound,
@@ -37,15 +39,8 @@ class UnderSiege extends DrawCard {
                                 chosenDiscard(() => ({
                                     amount: 1000 //discard the entire hand
                                 })),
-                                handler({
-                                    handler: (context) => {
-                                        const setAside = hand.filter((card) => card.location === Location.RemovedFromGame);
-                                        if(defender && setAside.length > 0) {
-                                            context.game.addMessage(msg`${defender} picks up their original hand`);
-                                            setAside.forEach((card) => defender.moveCard(card, Location.Hand));
-                                        }
-                                    }
-                                })
+                                chatMessage(() => setAsideHand().length > 0 ? msg`${defender} picks up their original hand` : undefined),
+                                moveCard(() => ({ target: setAsideHand(), destination: Location.Hand }))
                             ])
                         })
                     }),

@@ -37,7 +37,7 @@ import { FlipImperialFavorAction, FlipFavorProperties } from './FlipImperialFavo
 import { GainFateAction, GainFateProperties } from './GainFateAction.js';
 import { GainHonorAction, GainHonorProperties } from './GainHonorAction.js';
 import { GainStatusTokenAction, GainStatusTokenProperties } from './GainStatusTokenAction.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { GameAction, type GameActionProperties, type GameActionTarget } from './GameAction.js';
 import { CardType, Duration, Location, type EventName } from '../Constants.js';
 import { delayedEffect } from '../effects.js';
 import type { GameObject } from '../GameObject.js';
@@ -488,11 +488,11 @@ export function cancel<C extends CancellingContext = TriggeredAbilityContext>(pr
 export function handler<C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HandlerProperties<C>, C> = {}): HandlerAction<C> {
     return new HandlerAction<C>(propertyFactory);
 }
-/** A chat line as a step of its own: a `msg` template, or nothing. */
-export function chatMessage<C extends AbilityContext = AbilityContext>(message: (context: C) => MessageArgs | undefined): HandlerAction<C> {
+/** A chat line as a step of its own: a `msg` template, or nothing; `targets` as for `handler()`. */
+export function chatMessage<C extends AbilityContext = AbilityContext>(message: (context: C, targets: GameActionTarget[]) => MessageArgs | undefined): HandlerAction<C> {
     return new HandlerAction<C>({
-        handler: (context) => {
-            const line = message(context);
+        handler: (context, targets) => {
+            const line = message(context, targets);
             if(line) {
                 context.game.addMessage(line);
             }

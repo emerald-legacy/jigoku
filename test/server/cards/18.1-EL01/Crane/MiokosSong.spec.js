@@ -81,7 +81,7 @@ describe('Mioko\'s Song', function () {
                 this.player1.clickCard(this.yoshi);
                 expect(this.yoshi.isDishonored).toBe(true);
 
-                expect(this.player1).toHavePrompt('Which card do you want to put in the province?');
+                expect(this.player1).toHavePrompt('Select a card to put into the province faceup');
                 expect(this.player1).toHavePromptButton(this.motoYouth.name);
                 expect(this.player1).toHavePromptButton(this.borderRider.name);
 
