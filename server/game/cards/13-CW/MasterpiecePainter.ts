@@ -1,10 +1,9 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import { canPlayFromOwn, showTopConflictCard } from '../../effects.js';
 import { multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
-import { Duration, Location, DeckType } from '../../Constants.js';
 import { playerChoices } from '../playerChoices.js';
+import { revealedTopCardPlayable } from '../revealedTopCardPlayable.js';
 
 class MasterpiecePainter extends DrawCard {
     static id = 'masterpiece-painter';
@@ -26,23 +25,7 @@ class MasterpiecePainter extends DrawCard {
     }
 
     revealAndMayPlayAbility(player: Player) {
-        return playerLastingEffect(() => {
-            const topCard = player.conflictDeck[0];
-
-            return {
-                target: player,
-                duration: Duration.Custom,
-                until: {
-                    onCardMoved: (event) => event.card === topCard && event.originalLocation === Location.ConflictDeck,
-                    onPhaseEnded: () => true,
-                    onDeckShuffled: (event) => event.player === player && event.deck === DeckType.Conflict
-                },
-                effect: [
-                    showTopConflictCard(),
-                    canPlayFromOwn(Location.ConflictDeck, [topCard], this)
-                ]
-            };
-        });
+        return playerLastingEffect(() => revealedTopCardPlayable(player, this, 'phase'));
     }
 }
 

@@ -32,6 +32,8 @@ describe('Time For War', function () {
                 expect(this.player2).toBeAbleToSelect('kamayari');
                 this.kamayari = this.player2.clickCard('kamayari');
                 expect(this.matsuBerserker.attachments).toContain(this.kamayari);
+                expect(this.getChatLogs(5)).toContain('player2 plays Time for War to attach a weapon to Matsu Berserker');
+                expect(this.getChatLogs(5)).toContain('player2 chooses to attach Kamayari to Matsu Berserker');
             });
         });
     });

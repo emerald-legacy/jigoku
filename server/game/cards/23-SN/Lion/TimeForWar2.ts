@@ -29,6 +29,6 @@ export default class TimeForWar2 extends DrawCard {
                 subActionProperties: (card) => ({ attachment: card }),
                 gameAction: attachAction
             })))
-            .chatText('attach a weapon to {0}');
+            .chatText('attach an attachment to {0}');
     }
 }

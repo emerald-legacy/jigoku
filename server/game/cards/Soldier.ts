@@ -1,17 +1,16 @@
 import { CardType, Location } from '../Constants.js';
 import DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
+import { TokenCard } from './TokenCard.js';
 
-export default class Soldier extends DrawCard {
-    facedownCard: DrawCard;
-
+export default class Soldier extends TokenCard {
     static createDummy(owner: Player) {
         const dummyCard = new DrawCard(owner, { id: '', name: '', type: CardType.Attachment });
         return new Soldier(dummyCard);
     }
 
     constructor(facedownCard: DrawCard) {
-        super(facedownCard.owner, {
+        super(facedownCard, {
             clan: 'neutral',
             cost: null,
             glory: null,
@@ -28,25 +27,9 @@ export default class Soldier extends DrawCard {
             is_unique: false,
             attachment_allow_duplicates: true
         });
-        this.facedownCard = facedownCard;
     }
 
-    leavesPlay(destination = Location.ConflictDiscardPile): void {
-        this.owner.moveCard(this.facedownCard, destination);
-        this.game.queueSimpleStep(() => {
-            this.owner.removeCardFromPile(this);
-            this.game.allCards = this.game.allCards.filter((card) => card.uuid !== this.uuid);
-        });
-        super.leavesPlay();
-    }
-
-    getSummary(activePlayer: Player, hideWhenFaceup: boolean) {
-        const summary = super.getSummary(activePlayer, hideWhenFaceup);
-        const tokenProps: Record<string, unknown> = { isToken: true };
-        if(activePlayer === this.controller) {
-            tokenProps.facedownId = this.facedownCard.cardData.id;
-            tokenProps.facedownPackId = this.facedownCard.packId;
-        }
-        return Object.assign(summary, tokenProps);
+    protected facedownDestination(destination: string = Location.ConflictDiscardPile): string {
+        return destination;
     }
 }
