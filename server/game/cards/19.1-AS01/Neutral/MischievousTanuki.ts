@@ -22,6 +22,7 @@ export default class MischievousTanuki extends DrawCard {
         this.legendary(0);
 
         this.action('Set honor dials')
+            .phase(Phase.Conflict)
             .gameAction(honorBid({
                 message: (context: TanukiContext) => {
                     if(context.player.showBid % 2 === (context.player.opponent?.showBid ?? 0) % 2) {
@@ -56,7 +57,6 @@ export default class MischievousTanuki extends DrawCard {
                     ])
                 })
             }))
-            .chatText('play a game')
-            .phase(Phase.Conflict);
+            .chatText('play a game');
     }
 }

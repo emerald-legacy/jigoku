@@ -8,9 +8,9 @@ class ArtisanAcademy extends DrawCard {
     setupCardAbilities() {
         this.action('Make top card of conflict deck playable')
             .condition((context) => context.player.conflictDeck.length > 0)
+            .phase(Phase.Conflict)
             .playerLastingEffect((context) => revealedTopCardPlayable(context.player, this, 'phase'))
-            .chatText('reveal the top card of their conflict deck')
-            .phase(Phase.Conflict);
+            .chatText('reveal the top card of their conflict deck');
     }
 }
 

@@ -17,6 +17,7 @@ class Stinger extends DrawCard {
         });
 
         this.conflictAction('Attach this to an attacking character', { conflictType: ConflictType.Military })
+            .location(Location.Hand)
             .cost(costs.payHonor(1))
             .target({
                 player: Players.Self,
@@ -24,8 +25,7 @@ class Stinger extends DrawCard {
                 cardCondition: (card) => card.isAttacking()
             }, attach((context) => ({
                 attachment: context.source
-            })))
-            .location(Location.Hand);
+            })));
     }
 }
 

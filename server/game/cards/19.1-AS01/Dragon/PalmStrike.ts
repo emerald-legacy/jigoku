@@ -39,12 +39,12 @@ export default class PalmStrike extends DrawCard {
             .cardLastingEffect({
                 effect: cardCannot({ cannot: RestrictionType.Ready })
             })
-            .chatText((context) => msg`bow ${context.targets[TARGET_TO_BOW]}`)
             .onResolve((context) => {
                 if(context.targets[TARGET_MONK].hasTrait('tattooed')) {
                     context.game.addMessage(msg`${context.targets[TARGET_TO_BOW]} cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of ${context.targets[TARGET_MONK].isUnique() ? '' : 'the '}${context.targets[TARGET_MONK]}`);
                 }
-            });
+            })
+            .chatText((context) => msg`bow ${context.targets[TARGET_TO_BOW]}`);
     }
 
     private cardHasNoWeapons(card: BaseCard) {

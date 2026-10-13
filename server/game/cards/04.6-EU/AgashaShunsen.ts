@@ -9,8 +9,8 @@ class AgashaShunsen extends DrawCard {
 
     setupCardAbilities() {
         this.action('Return rings to fetch an attachment')
-            .cost(costs.returnRings())
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.returnRings())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

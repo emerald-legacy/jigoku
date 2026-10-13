@@ -20,6 +20,7 @@ export default class CeremonialRobes extends DrawCard {
         });
 
         this.action('Place a card from your deck faceup on a province')
+            .evenDuringDynasty()
             .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
@@ -49,7 +50,6 @@ export default class CeremonialRobes extends DrawCard {
                     'discard': (context, card) => msg`${context.player} discards ${card}`
                 }
             })))
-            .chatText('look at the top 3 cards of their dynasty deck')
-            .evenDuringDynasty();
+            .chatText('look at the top 3 cards of their dynasty deck');
     }
 }

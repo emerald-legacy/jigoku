@@ -12,16 +12,16 @@ export default class AppeasingTheRestless extends DrawCard {
 
     setupCardAbilities() {
         this.action('Place fates on spirits')
+            .condition((context) => this.canMoveFate(context) && context.player.cardsInPlay.some((card) => this.canReceiveFate(card, context)))
             .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('shugenja')
             }))
-            .condition((context) => this.canMoveFate(context) && context.player.cardsInPlay.some((card) => this.canReceiveFate(card, context)))
-            .cannotTargetFirst()
             .gameAction(handler({ handler: (context) => this.moveFate(context, MAX_FATE) }))
             .chatText((context) => context.player.hasAffinity('void', context)
                 ? msg`move up to 3 fate onto Spirit characters`
                 : msg`move up to 3 fate onto Spirit characters and injure ${context.costs.bow}`)
+            .cannotTargetFirst()
             .afterwards()
             .if((context) => !context.player.hasAffinity('void', context))
             .injure((context) => ({ target: context.costs.bow }));

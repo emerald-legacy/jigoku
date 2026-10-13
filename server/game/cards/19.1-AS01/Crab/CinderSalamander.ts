@@ -16,11 +16,11 @@ export default class CinderSalamander extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
+            .location(Location.DynastyDiscardPile)
             .moveCard({
                 destination: Location.DynastyDeck,
                 shuffle: true
-            })
-            .location(Location.DynastyDiscardPile);
+            });
 
         this.action('Search other copies of this character and put them into play')
             .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))

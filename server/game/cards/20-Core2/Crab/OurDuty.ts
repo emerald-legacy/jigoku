@@ -10,11 +10,11 @@ export default class OurDuty extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Make your opponent sacrifice a character')
+            .condition((context) => context.game.roundNumber > 1 && Boolean(context.player.opponent))
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isFaction('crab')
             }))
-            .condition((context) => context.game.roundNumber > 1 && Boolean(context.player.opponent))
             .selectCard({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
@@ -27,11 +27,11 @@ export default class OurDuty extends DrawCard {
             .max(perGame(1));
 
         this.action('Move an attacker home')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }))
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()

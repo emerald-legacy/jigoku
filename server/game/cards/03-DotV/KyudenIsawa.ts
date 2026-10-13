@@ -9,11 +9,11 @@ export default class KyudenIsawa extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Play a spell event from discard')
+            .condition(() => this.game.isDuringConflict())
             .cost(costs.bowSelf())
             .cost(costs.discardCard({
                 cardCondition: (card) => card.hasTrait('spell') && card.type === CardType.Event
             }))
-            .condition(() => this.game.isDuringConflict())
             .selectCard((context) => ({
                 activePromptTitle: 'Choose a spell event',
                 cardType: CardType.Event,

@@ -16,8 +16,8 @@ export default class SteadfastOrator extends DrawCard {
                 'Discard a card from your hand': costs.discardCard(),
                 'Discard the Imperial Favor': costs.discardImperialFavor()
             }))
-            .cannotBeMirrored()
             .moveToConflict((context) => ({ target: context.event.card }))
+            .cannotBeMirrored()
             .limit(perRound(1));
     }
 }

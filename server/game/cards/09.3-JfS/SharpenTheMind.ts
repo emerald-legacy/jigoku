@@ -9,8 +9,8 @@ class SharpenTheMind extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give +3/+3 to attached character')
-            .cost(costs.discardCard({ location: Location.Hand }))
             .condition((context) => context.game.isDuringConflict())
+            .cost(costs.discardCard({ location: Location.Hand }))
             .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: modifyBothSkills(3)

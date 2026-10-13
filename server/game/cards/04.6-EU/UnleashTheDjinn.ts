@@ -8,8 +8,8 @@ class UnleashTheDjinn extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make all participating characters 3/3')
-            .cost(costs.payHonor(3))
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.payHonor(3))
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants(),
                 effect: [

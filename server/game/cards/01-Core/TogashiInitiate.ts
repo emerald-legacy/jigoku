@@ -6,8 +6,8 @@ class TogashiInitiate extends DrawCard {
 
     setupCardAbilities() {
         this.action('Honor this character')
-            .cost(costs.payFateToRing(1))
             .condition((context) => context.source.isAttacking())
+            .cost(costs.payFateToRing(1))
             .honor();
     }
 }

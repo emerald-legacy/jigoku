@@ -8,7 +8,6 @@ export default class DiplomatOfTheSteppes extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Change the conflict to military', { conflictType: ConflictType.Political })
-            .cost(costs.payHonor(1))
             .condition((context) => {
                 const conflict = this.game.currentConflict;
                 if(!conflict) {
@@ -17,6 +16,7 @@ export default class DiplomatOfTheSteppes extends DrawCard {
                 const diff = conflict.attackerSkill - conflict.defenderSkill;
                 return context.player.isAttackingPlayer() ? diff >= 0 : diff <= 0;
             })
+            .cost(costs.payHonor(1))
             .switchConflictType({ targetConflictType: ConflictType.Military })
             .chatText(() => msg`switch the conflict type to ${'military'}`);
     }

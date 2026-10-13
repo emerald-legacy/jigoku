@@ -9,6 +9,7 @@ class DaimyosGunbai extends DrawCard {
 
     setupCardAbilities() {
         this.action('Initiate a military duel and attach this to the winner')
+            .location(Location.Hand)
             .cost(costs.revealCardsOf((context) => [context.source]))
             .initiateDuel((context) => ({
                 type: DuelType.Military,
@@ -18,7 +19,6 @@ class DaimyosGunbai extends DrawCard {
                     attachment: context.source
                 })
             }))
-            .location(Location.Hand)
             .afterwards()
             .discardCard((context) => ({ target: context.source.location === Location.Hand ? context.source : [] }))
             .message((context) => context.source.location === Location.Hand ? msg`${context.player} discards ${context.source}` : undefined);

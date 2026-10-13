@@ -10,11 +10,11 @@ export default class CastleOfAir extends DrawCard {
 
     setupCardAbilities() {
         this.action('Add Province Strength')
+            .condition((context) => context.game.isDuringConflict())
             .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('shugenja')
             }))
-            .condition((context) => context.game.isDuringConflict())
             .selectAttackedProvince({
                 message: (context, cards) => msg`${context.player} increases the strength of ${cards}`,
                 gameAction: cardLastingEffect({

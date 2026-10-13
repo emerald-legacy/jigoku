@@ -10,9 +10,9 @@ class KitsukiInvestigator extends DrawCard {
 
     setupCardAbilities() {
         this.action('Look at opponent\'s hand')
-            .cost(costs.payFateToRing())
             .condition((context) => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Political) &&
                                   !!context.player.opponent && context.player.opponent.hand.length > 0)
+            .cost(costs.payFateToRing())
             .lookAt((context) => ({
                 target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name))
             }))

@@ -8,8 +8,8 @@ class KakitaYoshi extends DrawCard {
 
     setupCardAbilities() {
         this.action('Draw 3 cards')
-            .cost(costs.discardImperialFavor())
             .condition((context) => context.source.isParticipating())
+            .cost(costs.discardImperialFavor())
             .draw(3)
             .playerLastingEffect({
                 effect: reduceCost({

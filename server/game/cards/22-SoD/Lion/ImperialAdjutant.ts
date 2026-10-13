@@ -12,8 +12,8 @@ export default class ImperialAdjutant extends DrawCard {
         });
 
         this.conflictAction('Move or dishonor a character')
-            .cost(costs.sacrificeSelf())
             .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
+            .cost(costs.sacrificeSelf())
             .target({
                 name: 'character',
                 cardType: CardType.Character,

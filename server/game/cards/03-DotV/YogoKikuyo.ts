@@ -12,9 +12,9 @@ class YogoKikuyo extends DrawCard {
                     this.game.isDuringConflict() && event.card.type === CardType.Event &&
                     event.card.hasTrait('spell') && event.card.controller === context.player.opponent
             })
+            .location(Location.Hand)
             .cost(costs.putSelfIntoPlay())
-            .cancel()
-            .location(Location.Hand);
+            .cancel();
     }
 }
 

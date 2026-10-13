@@ -10,13 +10,13 @@ class AkodoMastermind extends DrawCard {
 
     setupCardAbilities() {
         this.action('Remove tactics to bow a character')
+            .condition((context) => context.source.isParticipating())
             .cost(costs.removeFromGame({
                 cardType: [CardType.Event, CardType.Character, CardType.Attachment],
                 location: Location.ConflictDiscardPile,
                 mode: TargetMode.Unlimited,
                 cardCondition: (card) => card.hasTrait('tactic')
             }))
-            .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.glory <= this.getGloryCheck(context.player, context.costs.removeFromGame)

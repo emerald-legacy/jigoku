@@ -9,6 +9,7 @@ export default class AnkokusBlessing extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain 2 fate and draw 2 cards')
+            .phase(Phase.Fate)
             .cost(costs.discardCard({
                 location: Location.Hand,
                 cardCondition: (card) => !card.hasTrait('blessing')
@@ -18,7 +19,6 @@ export default class AnkokusBlessing extends DrawCard {
                 gainFate({ target: context.player, amount: 2 })
             ]))
             .chatText('draw 2 cards and gain 2 fate')
-            .max(perRound(1))
-            .phase(Phase.Fate);
+            .max(perRound(1));
     }
 }

@@ -11,6 +11,7 @@ export default class ParanoidHososhi extends DrawCard {
         this.legendary(2);
 
         this.action('Steal fate from a character')
+            .phase(Phase.Conflict)
             .cost(costs.bowSelf())
             .target({
                 controller: Players.Any,
@@ -19,8 +20,7 @@ export default class ParanoidHososhi extends DrawCard {
             }, removeFate((context) => ({
                 recipient: context.player
             })))
-            .chatText('take 1 fate from {0} — evil begone')
-            .phase(Phase.Conflict);
+            .chatText('take 1 fate from {0} — evil begone');
     }
 
     private getHighestCostOfCharactersInPlay(context: AbilityContext) {

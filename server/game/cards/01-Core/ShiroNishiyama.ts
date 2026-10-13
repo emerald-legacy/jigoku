@@ -8,8 +8,8 @@ export default class ShiroNishiyama extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Give defending characters +1/+1')
-            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.bowSelf())
             .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => card.isDefending()),
                 effect: modifyBothSkills(1)

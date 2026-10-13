@@ -7,8 +7,8 @@ class GuardianKami extends DrawCard {
 
     setupCardAbilities() {
         this.action('Resolve ring effect')
-            .cost(costs.sacrificeSelf())
             .condition((context) => context.source.isDefending())
+            .cost(costs.sacrificeSelf())
             .resolveConflictRing()
             .max(perConflict(1));
     }

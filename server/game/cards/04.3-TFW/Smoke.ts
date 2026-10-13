@@ -8,9 +8,9 @@ class Smoke extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give non-unique characters -2/+0')
+            .condition((context) => !!(this.game.isDuringConflict() && context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .cost(costs.bowSelf())
             .cost(costs.sacrificeSelf())
-            .condition((context) => !!(this.game.isDuringConflict() && context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants().filter((card) => !card.isUnique()) ?? [],
                 effect: modifyMilitarySkill(-2)

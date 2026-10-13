@@ -9,8 +9,8 @@ export default class Desolation extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Blank opponent\'s provinces')
-            .cost(costs.payHonor(2))
             .condition((context) => context.player.opponent !== undefined)
+            .cost(costs.payHonor(2))
             .cardLastingEffect((context) => ({
                 target: this.game.provinceCards.filter((a) => a.controller === context.player.opponent),
                 duration: Duration.UntilEndOfPhase,

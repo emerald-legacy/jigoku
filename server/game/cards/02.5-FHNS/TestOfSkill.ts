@@ -7,9 +7,9 @@ class TestOfSkill extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
+            .condition((context) => context.player.conflictDeck.length >= revealCount(context, 'duelist'))
             .cost(costs.revealCardsOf((context) => context.player.conflictDeck.slice(0, revealCount(context, 'duelist'))))
             .cost(nameCardType())
-            .condition((context) => context.player.conflictDeck.length >= revealCount(context, 'duelist'))
             .deckSearch((context) => takeUpToTwoOfNamedType(context, 'duelist'))
             .chatText('take cards into their hand')
             .cannotBeMirrored();

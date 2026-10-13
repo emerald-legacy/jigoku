@@ -9,6 +9,7 @@ export default class TennyosBlessing extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Look at your dynasty deck')
+            .evenDuringDynasty()
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
@@ -35,7 +36,6 @@ export default class TennyosBlessing extends DrawCard {
                     }
                 }
             })))
-            .evenDuringDynasty()
             .max(perRound(1));
     }
 }

@@ -8,8 +8,8 @@ class KabukiHero extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain military bonus')
-            .cost(costs.payFate(1))
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.payFate(1))
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(context.source.politicalSkill)
             }))

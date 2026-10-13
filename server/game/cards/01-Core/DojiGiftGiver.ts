@@ -8,8 +8,8 @@ export default class DojiGiftGiver extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow a character')
-            .cost(costs.giveFateToOpponent(1))
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
+            .cost(costs.giveFateToOpponent(1))
             .target({
                 player: Players.Opponent,
                 cardType: CardType.Character,

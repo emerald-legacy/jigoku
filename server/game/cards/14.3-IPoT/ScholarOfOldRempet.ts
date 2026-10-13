@@ -9,8 +9,8 @@ class ScholarOfOldRempet extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make character immune to events')
-            .cost(costs.payHonor(1))
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.payHonor(1))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isUnique()

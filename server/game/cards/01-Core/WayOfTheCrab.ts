@@ -10,11 +10,11 @@ export default class WayOfTheCrab extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Make your opponent sacrifice a character')
+            .condition((context) => context.player.opponent !== undefined)
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isFaction('crab')
             }))
-            .condition((context) => context.player.opponent !== undefined)
             .selectCard({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',

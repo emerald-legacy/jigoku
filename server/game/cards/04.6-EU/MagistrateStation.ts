@@ -7,10 +7,10 @@ export default class MagistrateStation extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Ready an honored character')
+            .canTriggerOutsideConflict()
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isHonored
-            }, ready())
-            .canTriggerOutsideConflict();
+            }, ready());
     }
 }

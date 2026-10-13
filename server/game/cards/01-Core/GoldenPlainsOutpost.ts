@@ -8,8 +8,8 @@ export default class GoldenPlainsOutpost extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Move a cavalry character to the conflict')
-            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

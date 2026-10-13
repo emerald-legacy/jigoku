@@ -12,9 +12,9 @@ export default class SoshiAya extends DrawCard {
                     event.card.hasTrait('courtier') && event.card.controller === context.player.opponent &&
                     event.context.ability instanceof CardAbility && event.context.ability.printedAbility
             })
+            .location(Location.Hand)
             .cost(costs.putSelfIntoPlay())
             .cancel()
-            .location(Location.Hand)
             .then()
             .placeFate();
     }

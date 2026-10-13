@@ -10,14 +10,14 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('switch a character\'s base skills')
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.hasDash()
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))
-            .chatText('switch {0}\'s military and political skill')
-            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)));
+            .chatText('switch {0}\'s military and political skill');
     }
 
     getPrintedElementSymbols() {

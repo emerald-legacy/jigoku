@@ -11,6 +11,7 @@ class KujirasHireling extends DrawCard {
 
     setupCardAbilities() {
         this.action('+1/+1 or -1/-1')
+            .anyPlayer()
             .cost(costs.payFate())
             .select({}, {
                 '+1/+1': cardLastingEffect({
@@ -23,8 +24,7 @@ class KujirasHireling extends DrawCard {
                 })
             })
             .chatText((context) => msg`give ${context.chatTarget()} ${context.select.toLowerCase()}`)
-            .limit(unlimited())
-            .anyPlayer();
+            .limit(unlimited());
     }
 }
 

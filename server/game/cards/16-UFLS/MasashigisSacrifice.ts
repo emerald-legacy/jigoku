@@ -8,11 +8,11 @@ class MasashigisSacrifice extends DrawCard {
 
     setupCardAbilities() {
         this.action('Defending characters do not bow as a result of conflict resolution')
+            .condition(() => this.game.isDuringConflict())
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasStatusTokens
             }))
-            .condition(() => this.game.isDuringConflict())
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getDefenders(),
                 effect: doesNotBow()

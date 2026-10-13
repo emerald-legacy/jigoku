@@ -8,6 +8,7 @@ class WayfarersCamp extends DrawCard {
 
     setupCardAbilities() {
         this.action('Play two characters')
+            .phase(Phase.Dynasty)
             .gameAction(sequential([
                 selectCard({
                     activePromptTitle: 'Choose a character to play',
@@ -31,8 +32,7 @@ class WayfarersCamp extends DrawCard {
                     message: (_context, card, player) => msg`${player} turns ${card} faceup`
                 })
             ]))
-            .chatText('play two cards from their provinces')
-            .phase(Phase.Dynasty);
+            .chatText('play two cards from their provinces');
     }
 }
 

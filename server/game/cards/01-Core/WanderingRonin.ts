@@ -9,8 +9,8 @@ class WanderingRonin extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give this character +2/+2')
-            .cost(costs.removeFateFromSelf())
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.removeFateFromSelf())
             .cardLastingEffect({ effect: modifyBothSkills(2) })
             .chatText(() => msg`give himself +2${'military'}/+2${'political'}`)
             .limit(perConflict(2));

@@ -8,8 +8,8 @@ export default class ShizukaToshi extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Bow a character')
-            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.politicalSkill <= 2

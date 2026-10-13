@@ -12,19 +12,19 @@ export default class WeightOfDuty extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Bow & dishonor a character')
+            .condition((context) => context.player.opponent !== undefined)
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && this.hasValidTarget(card, context)
             }))
-            .condition((context) => context.player.opponent !== undefined)
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     context.costs.sacrifice && !context.costs.sacrifice.isUnique() ? !card.isUnique() : true
             }, multiple([bow(), dishonor()]))
-            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
             .cannotTargetFirst();
     }
 

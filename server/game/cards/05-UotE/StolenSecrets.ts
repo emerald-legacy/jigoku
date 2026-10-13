@@ -10,11 +10,11 @@ class StolenSecrets extends DrawCard {
 
     setupCardAbilities() {
         this.action('Steal one of opponent\'s top 4 cards')
+            .condition((context) => this.game.isDuringConflict(ConflictType.Political) && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0)
             .cost(costs.removeFate({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))
-            .condition((context) => this.game.isDuringConflict(ConflictType.Political) && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0)
             .deckSearch((context) => ({
                 activePromptTitle: 'Choose a card to remove from the game',
                 target: context.player.opponent,

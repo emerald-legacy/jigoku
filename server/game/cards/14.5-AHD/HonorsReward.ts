@@ -10,6 +10,7 @@ export default class HonorsReward extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('give target character +3 glory')
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
@@ -17,8 +18,7 @@ export default class HonorsReward extends ProvinceCard {
             }, cardLastingEffect(() => ({
                 effect: modifyGlory(3)
             })))
-            .chatText('give {0} +3 glory')
-            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
+            .chatText('give {0} +3 glory');
     }
 
     getPrintedElementSymbols() {

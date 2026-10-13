@@ -18,8 +18,8 @@ export default class SpiderwebPassage extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard a participating character with 0 skill')
-            .cost(costs.sacrificeSelf())
             .condition((context) => shinobiCount(context) > 0)
+            .cost(costs.sacrificeSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

@@ -21,8 +21,8 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
             .when({
                 onConflictPass: (event, context) => context.player.opponent && event.conflict.attackingPlayer === context.player.opponent && context.player.opponent.cardsInPlay.some((card) => card.type === CardType.Character && !card.bowed)
             })
+            .location(Location.ConflictDiscardPile)
             .moveCard((context) => ({ target: context.source, destination: Location.Hand }))
-            .max(perConflictOpportunity(1))
-            .location(Location.ConflictDiscardPile);
+            .max(perConflictOpportunity(1));
     }
 }

@@ -17,6 +17,7 @@ export default class IllusionaryDecoy extends DrawCard {
             .when({
                 onConflictStarted: (_event, context) => controlsShugenja(context.player)
             })
+            .location(Location.Hand)
             .putIntoConflict((context) => ({ target: context.source }))
             .chooseAction({
                 choices: {
@@ -31,8 +32,7 @@ export default class IllusionaryDecoy extends DrawCard {
                 }
             })
             .chatText('put {0} into play in the conflict')
-            .max(perConflict(1))
-            .location(Location.Hand);
+            .max(perConflict(1));
 
         this.action('Return to hand')
             .condition((context) => {

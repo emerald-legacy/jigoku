@@ -8,8 +8,8 @@ class CountrysideTrader extends DrawCard {
 
     setupCardAbilities() {
         this.action('Resolve the attacked province ability')
-            .cost(costs.payFate(1))
             .condition((context) => context.game.isDuringConflict() && context.source.isAttacking())
+            .cost(costs.payFate(1))
             .abilityTarget({
                 activePromptTitle: 'Select a province to trigger from',
                 location: Location.Provinces,

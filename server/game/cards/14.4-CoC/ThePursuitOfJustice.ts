@@ -9,11 +9,11 @@ export default class ThePursuitOfJustice extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Ready a character')
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, ready())
-            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
+            }, ready());
     }
 
     getPrintedElementSymbols() {

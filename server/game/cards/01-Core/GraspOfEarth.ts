@@ -13,8 +13,8 @@ export default class GraspOfEarth extends DrawCard {
         });
 
         this.action('Opponent\'s cards cannot join this conflict')
-            .cost(costs.bowSelf())
             .condition((context) => this.game.isDuringConflict() && context.player.opponent !== undefined)
+            .cost(costs.bowSelf())
             .cardLastingEffect((context) => ({
                 target: context.player.opponent?.cardsInPlay.slice(),
                 effect: cardCannot(RestrictionType.MoveToConflict)

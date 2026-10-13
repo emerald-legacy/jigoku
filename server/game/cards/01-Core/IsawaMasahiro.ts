@@ -10,8 +10,8 @@ class IsawaMasahiro extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow to discard an enemy character')
-            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.costLessThan(3) && card.isParticipating()

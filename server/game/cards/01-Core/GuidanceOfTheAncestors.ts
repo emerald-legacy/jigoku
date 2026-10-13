@@ -7,10 +7,10 @@ class GuidanceOfTheAncestors extends DrawCard {
 
     setupCardAbilities() {
         this.action('Play this from the discard pile')
+            .location(Location.ConflictDiscardPile)
             .gameAction(playCard({
                 source: this
-            }))
-            .location(Location.ConflictDiscardPile);
+            }));
     }
 }
 

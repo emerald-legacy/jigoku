@@ -11,7 +11,7 @@ export default class VengefulOathkeeper2 extends DrawCard {
                     event.conflict.attackingPlayer === context.player.opponent &&
                     event.conflict.winner === context.player.opponent
             })
-            .putIntoPlay()
-            .location(Location.Hand);
+            .location(Location.Hand)
+            .putIntoPlay();
     }
 }

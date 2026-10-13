@@ -9,6 +9,7 @@ export default class CourteousGreeting extends ProvinceCard {
     static id = 'courteous-greeting';
     setupCardAbilities() {
         this.action('Bow a character from each side')
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character,
@@ -21,8 +22,7 @@ export default class CourteousGreeting extends ProvinceCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, bow())
-            .chatText((context) => msg`bow ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
-            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
+            .chatText((context) => msg`bow ${context.targets.myCharacter} and ${context.targets.oppCharacter}`);
     }
 
     getPrintedElementSymbols() {

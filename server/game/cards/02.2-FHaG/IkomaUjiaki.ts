@@ -9,8 +9,8 @@ class IkomaUjiaki extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put characters into play')
-            .cost(costs.discardImperialFavor())
             .condition((context) => context.source.isParticipating())
+            .cost(costs.discardImperialFavor())
             .gameAction(sequential([
                 reveal((context) => ({
                     target: context.player.getDynastyCardsInProvince(Location.Provinces)

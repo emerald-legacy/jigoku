@@ -9,8 +9,8 @@ class FieldOfTheFallen extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard then draw a card')
-            .cost(costs.discardCard({ location: Location.Hand }))
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .cost(costs.discardCard({ location: Location.Hand }))
             .gameAction(sequential((context) => {
                 const moreHonorable = context.player.isMoreHonorable();
                 const gameActions = [];

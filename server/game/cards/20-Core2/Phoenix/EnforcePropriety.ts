@@ -22,7 +22,6 @@ export default class EnforcePropriety extends DrawCard {
                     context.player.opponent &&
                     countReadyShugenja(context.player) > countReadyShugenja(context.player.opponent)
             })
-            .chatText('enforce the proper protocol')
             .if((context) => context.event.context.player !== context.player)
                 .chooseAction((context) => ({
                     player: Players.Opponent,
@@ -39,6 +38,7 @@ export default class EnforcePropriety extends DrawCard {
                     }
                 }))
             .otherwise()
-                .cancel();
+                .cancel()
+            .chatText('enforce the proper protocol');
     }
 }

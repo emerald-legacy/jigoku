@@ -10,8 +10,8 @@ class DoomThrower extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reduce Province Strength')
-            .cost(costs.sacrifice({ cardType: CardType.Character }))
             .condition((context) => context.game.isDuringConflict())
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
             .selectAttackedProvince((context) => ({
                 message: (context, cards) => msg`${context.player} reduces the strength of ${cards}`,
                 gameAction: cardLastingEffect({

@@ -10,8 +10,8 @@ class VengefulOathkeeper extends DrawCard {
                 afterConflict: (event, context) => event.conflict.loser === context.player &&
                                                    event.conflict.conflictType === ConflictType.Military
             })
-            .putIntoPlay()
-            .location(Location.Hand);
+            .location(Location.Hand)
+            .putIntoPlay();
     }
 }
 

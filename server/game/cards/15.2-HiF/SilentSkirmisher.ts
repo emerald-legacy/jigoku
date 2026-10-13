@@ -9,11 +9,11 @@ class SilentSkirmisher extends DrawCard {
 
     setupCardAbilities() {
         this.action('Sacrifice another for +2 military')
+            .condition((context) => context.game.isDuringConflict())
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source
             }))
-            .condition((context) => context.game.isDuringConflict())
             .cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             })

@@ -10,8 +10,8 @@ class JewelOfTheKhamasin extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reduce province strength')
-            .cost(costs.payHonor(1))
             .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
+            .cost(costs.payHonor(1))
             .selectAttackedProvince({
                 cardCondition: (card) => card.getStrength() > 0,
                 message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by 1`,

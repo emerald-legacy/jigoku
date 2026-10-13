@@ -7,6 +7,7 @@ class SakeHouseSmuggler extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reduce cost of next non-event card by 1')
+            .phase(Phase.Conflict)
             .playerLastingEffect({
                 target: Players.Self,
                 duration: Duration.UntilEndOfPhase,
@@ -17,8 +18,7 @@ class SakeHouseSmuggler extends DrawCard {
                 target: context.player.opponent,
                 effect: reduceNextPlayedCardCost(1, (card) => card.type !== CardType.Event)
             }))
-            .chatText('reduce the cost of each player\'s next non-event card by 1')
-            .phase(Phase.Conflict);
+            .chatText('reduce the cost of each player\'s next non-event card by 1');
     }
 }
 

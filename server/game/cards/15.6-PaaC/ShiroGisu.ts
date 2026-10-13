@@ -10,8 +10,8 @@ export default class ShiroGisu extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Draw a card')
-            .cost(costs.bowSelf())
             .condition((context) => !!(this.getCharactersWithoutFate(context) && context.player.conflictDeck.length > 0))
+            .cost(costs.bowSelf())
             .deckSearch({
                 cardsToLookAt: (context) => this.getCharactersWithoutFate(context),
                 activePromptTitle: 'Choose a card to put in your hand',

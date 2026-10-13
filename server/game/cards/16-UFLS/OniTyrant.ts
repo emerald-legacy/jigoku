@@ -50,9 +50,9 @@ class OniTyrant extends DrawCard {
 
     setupCardAbilities() {
         this.action('Summon a Shadowlands Creature')
+            .condition((context) => context.source.isParticipating())
             .cost(costs.payHonor(1))
             .cost(oniTyrantCost())
-            .condition((context) => context.source.isParticipating())
             .gameAction(putIntoConflict((context) => ({
                 target: context.costs.oniTyrantCostCreature || context.player.outsideTheGameCards[1]
             })))

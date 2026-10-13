@@ -7,8 +7,8 @@ class CaptiveAudience extends DrawCard {
 
     setupCardAbilities() {
         this.action('Change the conflict to military')
-            .cost(costs.payHonor(1))
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
+            .cost(costs.payHonor(1))
             .switchConflictType({ targetConflictType: ConflictType.Military });
     }
 }

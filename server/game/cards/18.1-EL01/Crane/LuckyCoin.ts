@@ -22,6 +22,7 @@ export default class LuckyCoin extends DrawCard {
                     return totalCost < 6 || totalCost > 12;
                 }
             })
+            .location(ACTIVE_LOCATIONS)
             .cost(costs.removeSelfFromGame({ location: ACTIVE_LOCATIONS }))
             .gameAction(handler({
                 handler: ({ player, game }) => {
@@ -38,7 +39,6 @@ export default class LuckyCoin extends DrawCard {
                     player.shuffleDynastyDeck();
                 }
             }))
-            .chatText('replace all cards in their provinces')
-            .location(ACTIVE_LOCATIONS);
+            .chatText('replace all cards in their provinces');
     }
 }

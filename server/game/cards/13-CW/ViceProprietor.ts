@@ -8,8 +8,8 @@ export default class ViceProprietor extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Bow a character')
-            .cost(costs.dishonorSelf())
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
+            .cost(costs.dishonorSelf())
             .target({
                 player: Players.Opponent,
                 cardType: CardType.Character,

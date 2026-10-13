@@ -13,6 +13,7 @@ class KeenWarrior extends DrawCard {
                 onLookAtCards: (event, context) =>
                     event.stateBeforeResolution.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent)
             })
+            .collectiveTrigger()
             .gameAction(sequential([
                 draw((context) => ({ target: context.player, amount: 2 })),
                 chosenReturnToDeck((context) => ({
@@ -22,8 +23,7 @@ class KeenWarrior extends DrawCard {
                     bottom: true
                 }))
             ]))
-            .chatText('draw 2 cards, then place a card on the bottom of their deck')
-            .collectiveTrigger();
+            .chatText('draw 2 cards, then place a card on the bottom of their deck');
     }
 }
 

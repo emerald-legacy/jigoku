@@ -13,12 +13,12 @@ class TenguSensei extends DrawCard {
                     return (event.card === context.source || (Array.isArray(event.card) && event.card.includes(context.source)));
                 }
             })
-            .chatText((context) => msg`prevent ${context.event.context.target} from attacking this phase`)
             .cardLastingEffect((context) => ({
                 target: context.event.context.target ?? [],
                 duration: Duration.UntilEndOfPhase,
                 effect: cannotBeDeclaredAsAttacker()
-            }));
+            }))
+            .chatText((context) => msg`prevent ${context.event.context.target} from attacking this phase`);
     }
 }
 

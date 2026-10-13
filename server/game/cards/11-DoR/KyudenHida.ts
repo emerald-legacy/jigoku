@@ -9,8 +9,9 @@ export default class KyudenHida extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Play a Character')
-            .cost(costs.bowSelf())
             .condition((context) => context.player.dynastyDeck.length > 0)
+            .phase(Phase.Dynasty)
+            .cost(costs.bowSelf())
             .gameAction(sequential((context) => {
                 const topCards = context.player.dynastyDeck.slice(0, 3);
                 return [cardMenu({
@@ -53,7 +54,6 @@ export default class KyudenHida extends StrongholdCard {
                     ])
                 })];
             }))
-            .chatText('look at the top three cards of their dynasty deck')
-            .phase(Phase.Dynasty);
+            .chatText('look at the top three cards of their dynasty deck');
     }
 }

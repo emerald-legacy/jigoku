@@ -18,8 +18,8 @@ class KuniYori extends DrawCard {
         });
 
         this.action('Select a player to discard a card at random')
-            .cost(costs.payHonor(1))
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.payHonor(1))
             .selectFrom({
                 activePromptTitle: 'Select a player to discard a random card from his/her hand',
                 targets: true

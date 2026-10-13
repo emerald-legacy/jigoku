@@ -10,8 +10,8 @@ class FulfillYourDuty extends DrawCard {
 
     setupCardAbilities() {
         this.action('Add Province Strength')
-            .cost(costs.sacrifice({ cardType: CardType.Character }))
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
             .selectAttackedProvince((context) => ({
                 message: (context, cards) => msg`${context.player} increases the strength of ${cards}`,
                 gameAction: cardLastingEffect(() => ({

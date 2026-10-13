@@ -8,8 +8,8 @@ class HeavyBallista extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow or remove 1 fate')
-            .cost(costs.discardCard({ location: Location.Hand }))
             .condition((context) => this.game.isDuringConflict(ConflictType.Military) && context.player.isDefendingPlayer())
+            .cost(costs.discardCard({ location: Location.Hand }))
             .target({
                 name: 'character',
                 cardType: CardType.Character,

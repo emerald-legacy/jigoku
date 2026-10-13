@@ -13,11 +13,11 @@ class DiscerningYoriki extends DrawCard {
                 onLookAtCards: (event, context) =>
                     event.stateBeforeResolution.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent)
             })
+            .collectiveTrigger()
             .target({
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character
-            }, honor())
-            .collectiveTrigger();
+            }, honor());
     }
 }
 

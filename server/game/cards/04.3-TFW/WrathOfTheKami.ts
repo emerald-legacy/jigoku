@@ -10,8 +10,8 @@ class WrathOfTheKami extends DrawCard {
 
     setupCardAbilities() {
         this.action('Add Province Strength')
-            .cost(costs.payHonor(1))
             .condition((context) => this.game.isDuringConflict() && context.source.isInConflictProvince())
+            .cost(costs.payHonor(1))
             .cardLastingEffect((context) => ({
                 target: context.source.controller.getProvinceCardInProvince(context.source.location),
                 targetLocation: Location.Provinces,

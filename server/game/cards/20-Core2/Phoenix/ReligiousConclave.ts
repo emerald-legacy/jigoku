@@ -9,8 +9,8 @@ export default class ReligiousConclave extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Prevent an opponent contesting a ring')
-            .cost(costs.sacrificeSelf())
             .condition((context) => context.player.opponent !== undefined)
+            .cost(costs.sacrificeSelf())
             .ringTarget({
                 ringCondition: () => true
             })

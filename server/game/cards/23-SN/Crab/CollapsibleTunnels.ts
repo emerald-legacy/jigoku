@@ -19,8 +19,8 @@ export default class CollapsibleTunnels extends DrawCard {
             .chatText('increase the strength of an attacked province by 2');
 
         this.action('Bow a character')
-            .cost(costs.sacrificeSelf())
             .condition((context) => context.game.isDuringConflict())
+            .cost(costs.sacrificeSelf())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking() && card.getBaseMilitarySkill() <= 2

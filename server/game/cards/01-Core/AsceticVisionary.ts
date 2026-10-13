@@ -8,8 +8,8 @@ export default class AsceticVisionary extends DrawCard {
 
     setupCardAbilities() {
         this.action('Ready a character')
-            .cost(costs.payFateToRing(1))
             .condition((context) => context.source.isAttacking())
+            .cost(costs.payFateToRing(1))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) =>

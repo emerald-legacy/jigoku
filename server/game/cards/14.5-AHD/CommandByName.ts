@@ -10,9 +10,9 @@ class CommandByName extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reduce province strength')
+            .condition((context) => context.game.isDuringConflict())
             .cost(costs.payHonor(1))
             .cost(costs.discardCard({ location: Location.Hand }))
-            .condition((context) => context.game.isDuringConflict())
             .selectAttackedProvince({
                 message: (context, cards) => msg`${context.player} reduces the strength of ${cards} to 0`,
                 gameAction: cardLastingEffect(() => ({

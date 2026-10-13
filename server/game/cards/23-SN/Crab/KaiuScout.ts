@@ -9,6 +9,7 @@ export default class KaiuScout extends DrawCard {
 
     setupCardAbilities() {
         this.action('Look at cards in a province')
+            .evenDuringDynasty()
             .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
@@ -20,8 +21,7 @@ export default class KaiuScout extends DrawCard {
                     this.chooseCardsToTurnFaceup(context, cards.filter((a) => a.isFacedown()));
                 }
             }))
-            .chatText((context) => msg`look at facedown dynasty cards in ${context.target.isFacedown() ? context.target.location : context.target}`)
-            .evenDuringDynasty();
+            .chatText((context) => msg`look at facedown dynasty cards in ${context.target.isFacedown() ? context.target.location : context.target}`);
     };
 
     private chooseCardsToTurnFaceup(context: AbilityContext, facedownCards: DrawCard[]) {

@@ -10,6 +10,7 @@ export default class CornerThePrey extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Sacrifice followers to kill')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .cost(costs.sacrifice({
                 cardType: [CardType.Character, CardType.Attachment],
                 mode: TargetMode.Unlimited,
@@ -18,7 +19,6 @@ export default class CornerThePrey extends DrawCard {
                     card.hasTrait('follower') &&
                     (card.isParticipating() || !!card.parentCharacter?.isParticipating())
             }))
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>

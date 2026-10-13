@@ -11,14 +11,14 @@ export default class PathOfReflection extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('switch a character\'s base skills')
+            .conflictProvinceCondition((province, context) =>
+                province.isElement(this.getCurrentElementSymbol(this.provinceElement)) ||
+                (context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(this.conflictElement)) ?? false))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.hasDash()
             }, cardLastingEffect({ effect: switchBaseSkills() }))
-            .chatText('switch {0}\'s military and political skill')
-            .conflictProvinceCondition((province, context) =>
-                province.isElement(this.getCurrentElementSymbol(this.provinceElement)) ||
-                (context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(this.conflictElement)) ?? false));
+            .chatText('switch {0}\'s military and political skill');
     }
 
     getPrintedElementSymbols() {

@@ -33,8 +33,8 @@ class ExposedCourtyard extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make an event in your conflict discard playable')
-            .cost(exposedCourtyardCost())
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .cost(exposedCourtyardCost())
             .gameAction(sequential([
                 // always legal, so this can trigger when only the cards the cost discards give it a choice
                 handler({

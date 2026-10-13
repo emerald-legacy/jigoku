@@ -9,8 +9,8 @@ class StoicGunso extends DrawCard {
 
     setupCardAbilities() {
         this.action('Sacrifice a character for +3/+0')
-            .cost(costs.sacrifice({ cardType: CardType.Character }))
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
             .cardLastingEffect({ effect: modifyMilitarySkill(3) })
             .chatText(() => msg`give himself +3${'military'}/+0${'political'}`);
     }

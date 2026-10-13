@@ -9,6 +9,7 @@ class PeasantsAdvice extends DrawCard {
 
     setupCardAbilities() {
         this.action('look at a province and return its dynasty card to deck')
+            .phase(Phase.Conflict)
             .cost(costs.dishonor())
             .target({
                 cardType: CardType.Province,
@@ -32,8 +33,7 @@ class PeasantsAdvice extends DrawCard {
                     })
                 }))
             ]))
-            .chatText((context) => msg`look at ${context.target.controller}'s ${context.target.location}`)
-            .phase(Phase.Conflict);
+            .chatText((context) => msg`look at ${context.target.controller}'s ${context.target.location}`);
     }
 }
 

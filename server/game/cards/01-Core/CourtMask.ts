@@ -10,9 +10,9 @@ class CourtMask extends DrawCard {
         });
 
         this.action('Return court mask to hand')
-            .chatText((context) => msg`return ${context.chatTarget()} to hand, dishonoring ${context.source.parentCharacter ?? ''}`)
             .returnToHand()
-            .dishonor((context) => ({ target: context.source.parentCharacter ?? [] }));
+            .dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))
+            .chatText((context) => msg`return ${context.chatTarget()} to hand, dishonoring ${context.source.parentCharacter ?? ''}`);
     }
 }
 

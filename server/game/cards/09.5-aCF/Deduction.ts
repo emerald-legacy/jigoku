@@ -8,8 +8,8 @@ class Deduction extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow a character')
-            .cost(costs.returnRings(1))
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
+            .cost(costs.returnRings(1))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,

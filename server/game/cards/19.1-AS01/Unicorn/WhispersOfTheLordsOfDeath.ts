@@ -19,13 +19,13 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
                     event.cardStateWhenLeftPlay?.location === Location.PlayArea &&
                     context.game.isDuringConflict()
             })
+            .location([Location.Hand])
             .putIntoPlay((context) => ({ target: context.source }))
             .claimImperialFavor((context) => ({
                 target: context.player,
                 side: FavorType.Military
             }))
-            .chatText('put {0} into play and claim the Imperial Favor')
-            .location([Location.Hand]);
+            .chatText('put {0} into play and claim the Imperial Favor');
     }
 
     private highestMilitaryForPlayer(player: Player) {

@@ -21,9 +21,8 @@ export default class VillageDoshin extends DrawCard {
                         return attachment && onCharacterYouControl && inPlay;
                     })
             })
-            .cost(costs.discardSelf())
-            .chatText((context) => msg`protect ${context.event.cardTargets[0]}`)
             .location(Location.Hand)
+            .cost(costs.discardSelf())
             .if((context) => {
                 const initiator = context.event.context.player;
                 return initiator.hand.length >= DOSHIN_TAX && discardAtRandom({ amount: DOSHIN_TAX }).canAffect(initiator, context);
@@ -46,6 +45,7 @@ export default class VillageDoshin extends DrawCard {
                     }
                 }))
             .otherwise()
-                .cancel();
+                .cancel()
+            .chatText((context) => msg`protect ${context.event.cardTargets[0]}`);
     }
 }

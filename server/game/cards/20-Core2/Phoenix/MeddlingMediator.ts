@@ -10,10 +10,10 @@ export default class MeddlingMediator extends DrawCard {
             .condition((context) =>
                 context.player.opponent !== undefined &&
                 this.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1)
+            .phase(Phase.Conflict)
             .select({}, {
                 'Take 1 fate': takeFate(),
                 'Take 1 honor': takeHonor()
-            })
-            .phase(Phase.Conflict);
+            });
     }
 }

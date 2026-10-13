@@ -8,8 +8,8 @@ class YasukiOguri2 extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a character in')
-            .cost(costs.payFate(1))
             .condition((context) => context.source.isDefending())
+            .cost(costs.payFate(1))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.getFate() > 0

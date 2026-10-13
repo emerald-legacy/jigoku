@@ -9,13 +9,13 @@ class ScoutedTerrain extends DrawCard {
     setupCardAbilities() {
         this.action('Allow attacking the stronghold')
             .condition((context) => !!context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 4)
+            .phase(Phase.Conflict)
             .playerLastingEffect((context) => ({
                 target: context.player.opponent,
                 duration: Duration.UntilEndOfPhase,
                 effect: strongholdCanBeAttacked()
             }))
-            .chatText((context) => msg`allow ${context.player.opponent}'s stronghold to be attacked this phase`)
-            .phase(Phase.Conflict);
+            .chatText((context) => msg`allow ${context.player.opponent}'s stronghold to be attacked this phase`);
     }
 }
 

@@ -19,12 +19,12 @@ export default class SoshiShadowshaper extends DrawCard {
         });
 
         this.action('Return a character to owner\'s hand')
+            .phase(Phase.Conflict)
             .cost(costs.payHonor(1))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => (card.getCost() ?? 0) < 3 && this.charactersPlayedThisPhase.has(card)
-            }, returnToHand())
-            .phase(Phase.Conflict);
+            }, returnToHand());
     }
 
     public onPhaseStarted() {

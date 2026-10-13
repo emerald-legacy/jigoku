@@ -13,8 +13,8 @@ export default class HighHouseOfLight extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Prevent a monk from being targeted by opponent\'s events')
-            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

@@ -85,6 +85,7 @@ export default class Maelstrom extends ProvinceCard {
     static id = 'maelstrom';
     setupCardAbilities() {
         this.action('Move a character into the conflict')
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .cost(maelstromCost())
             .target({
                 cardType: CardType.Character,
@@ -116,7 +117,6 @@ export default class Maelstrom extends ProvinceCard {
             .chatText((context) => context.target.controller === context.player
                 ? msg`move ${context.chatTarget()} into the conflict. It will be honored if it wins the conflict`
                 : msg`move ${context.chatTarget()} into the conflict`)
-            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .cannotTargetFirst();
     }
 

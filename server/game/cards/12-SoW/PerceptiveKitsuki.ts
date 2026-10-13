@@ -7,8 +7,8 @@ export default class PerceptiveKitsuki extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Look at your opponent\'s hand')
-            .cost(costs.returnRings(1))
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
+            .cost(costs.returnRings(1))
             .lookAt((context) => ({
                 target: (context.player.opponent?.hand ?? []).slice().sort((a, b) => a.name.localeCompare(b.name)),
                 chatMessage: true

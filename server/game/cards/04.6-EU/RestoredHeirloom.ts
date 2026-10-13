@@ -13,14 +13,14 @@ class RestoredHeirloom extends DrawCard {
             .when({
                 onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             })
+            .location([Location.Hand,Location.ConflictDiscardPile])
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, cancel((context) => ({
                 replacementGameAction: attach({ attachment: context.source })
             })))
-            .chatText((context) => msg`attach ${context.source} to ${context.chatTarget()} instead of resolving the ${context.event.ring}`)
-            .location([Location.Hand,Location.ConflictDiscardPile]);
+            .chatText((context) => msg`attach ${context.source} to ${context.chatTarget()} instead of resolving the ${context.event.ring}`);
     }
 
 

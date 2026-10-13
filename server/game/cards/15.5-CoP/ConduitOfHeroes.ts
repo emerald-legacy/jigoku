@@ -10,8 +10,8 @@ class ConduitOfHeroes extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character +3/+1/+1')
-            .cost(costs.unless((context) => !!context.player.opponent && context.player.honor >= context.player.opponent.honor + 5, costs.bowSelf()))
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.unless((context) => !!context.player.opponent && context.player.honor >= context.player.opponent.honor + 5, costs.bowSelf()))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,

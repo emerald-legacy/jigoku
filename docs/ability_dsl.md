@@ -62,11 +62,22 @@ this.action('Bow a character')
         cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating()
     }, bow())
-    .limit(perConflict(1))
-    .chatText('bow {0}');
+    .chatText('bow {0}')
+    .limit(perConflict(1));
 ```
 
 The builder fixes its types from left to right: each call sees what earlier calls declared. Declare targets and costs before the `gameAction`, `handler`, `chatText` and `then` that read them.
+
+A chain follows the order of the card text ("During a conflict, bow this character – choose a character – bow it. (Max 1 per conflict.)"):
+
+1. `when()` / `aggregateWhen()` (triggered abilities)
+2. When and where the ability can be used: `phase()`, `location()`, `condition()`, `playOnlyIf()`, `anyPlayer()`, `collectiveTrigger()`, `evenDuringDynasty()`, `canTriggerOutsideConflict()`, `conflictProvinceCondition()`
+3. `cost()`
+4. Targets
+5. Effects: game actions, `if()`/`otherwise()`, `onAffinity()`, `initiateDuel()`, `handler()`, `message()`, `onResolve()`
+6. `chatText()`
+7. `limit()` / `max()`, `cannotTargetFirst()`, `cannotBeMirrored()`, `notPrinted()`
+8. `then()` and the other next steps; a following step uses the same order, without the ability's settings
 
 Builder methods shared by actions and triggered abilities:
 

@@ -6,8 +6,8 @@ export default class CityOfTheOpenHand extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Gain an honor')
-            .cost(costs.bowSelf())
             .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
+            .cost(costs.bowSelf())
             .gainHonor();
     }
 
@@ -16,8 +16,8 @@ export default class CityOfTheOpenHand extends StrongholdCard {
         this.abilities.actions = [];
         this.declareAbilities(() => {
             this.action('Steal an honor')
-                .cost(costs.bowSelf())
                 .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
+                .cost(costs.bowSelf())
                 .takeHonor();
         });
     }

@@ -13,8 +13,8 @@ class TatteredMissive extends DrawCard {
         });
 
         this.action('Search top 5 cards')
-            .cost(costs.bowParent())
             .condition((context) => context.player.conflictDeck.length > 0)
+            .cost(costs.bowParent())
             .deckSearch({
                 cardsToLookAt: 5,
                 gameAction: moveCard({

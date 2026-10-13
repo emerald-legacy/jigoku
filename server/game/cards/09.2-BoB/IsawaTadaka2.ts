@@ -10,12 +10,12 @@ export default class IsawaTadaka2 extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Remove discarded characters to discard a card')
+            .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
             .cost(costs.removeFromGame({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 mode: TargetMode.Unlimited
             }))
-            .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
             .gameAction(multiple((context) => {
                 const removed = context.costs.removeFromGame;
                 const cards =

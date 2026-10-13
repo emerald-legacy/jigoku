@@ -10,12 +10,12 @@ class IdeTrader extends DrawCard {
             .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()
             })
+            .collectiveTrigger()
             .select({}, {
                 'Gain 1 fate': gainFate(),
                 'Draw 1 card': draw()
             })
-            .limit(perConflict(1))
-            .collectiveTrigger();
+            .limit(perConflict(1));
     }
 }
 

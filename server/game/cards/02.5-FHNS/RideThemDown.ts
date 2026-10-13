@@ -9,8 +9,8 @@ class RideThemDown extends DrawCard {
 
     setupCardAbilities() {
         this.action('Reduce province strength')
-            .cost(costs.discardImperialFavor())
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.discardImperialFavor())
             .selectAttackedProvince({
                 message: (context, cards) => msg`${context.player} reduces the strength of ${cards} to 1`,
                 gameAction: cardLastingEffect({

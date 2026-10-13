@@ -11,6 +11,7 @@ class FeralNingyo extends DrawCard {
     setupCardAbilities() {
         this.action('Put into play')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
+            .location(Location.Hand)
             .gameAction(sequential([
                 putIntoConflict((context) => ({
                     target: context.source
@@ -22,8 +23,7 @@ class FeralNingyo extends DrawCard {
                     gameAction: returnToDeck({ shuffle: true })
                 }))
             ]))
-            .chatText((context) => msg`put ${context.source} into play into the conflict and return ${context.chatTarget()} to the deck at the end of the conflict`)
-            .location(Location.Hand);
+            .chatText((context) => msg`put ${context.source} into play into the conflict and return ${context.chatTarget()} to the deck at the end of the conflict`);
     }
 
     getPrintedElementSymbols() {

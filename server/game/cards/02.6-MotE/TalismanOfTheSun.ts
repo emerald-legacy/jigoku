@@ -9,8 +9,8 @@ class TalismanOfTheSun extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move conflict to a different province')
-            .cost(costs.bowSelf())
             .condition((context) => context.player.isDefendingPlayer())
+            .cost(costs.bowSelf())
             .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,

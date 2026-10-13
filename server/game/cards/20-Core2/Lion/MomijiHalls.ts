@@ -7,9 +7,9 @@ export default class MomijiHalls extends StrongholdCard {
 
     setupCardAbilities() {
         this.action('Draw 2 cards')
+            .condition((context) => context.player.cardsInPlay.some((card) => card.isAttacking(ConflictType.Military)))
             .cost(costs.bowSelf())
             .cost(costs.discardCard())
-            .condition((context) => context.player.cardsInPlay.some((card) => card.isAttacking(ConflictType.Military)))
             .draw(2);
     }
 }

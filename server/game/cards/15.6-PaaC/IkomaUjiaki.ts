@@ -6,8 +6,8 @@ class IkomaUjiaki2 extends DrawCard {
 
     setupCardAbilities() {
         this.action('Switch the conflict type')
-            .cost(costs.payHonor(2))
             .condition((context) => context.source.isParticipating())
+            .cost(costs.payHonor(2))
             .switchConflictType()
             .chatText('switch the conflict type');
     }

@@ -12,7 +12,7 @@ export default class ReadyForBattle extends DrawCard {
                     (event.context?.source instanceof Ring ||
                         (context.player.opponent && event.context?.player === context.player.opponent))
             })
-            .cannotBeMirrored()
-            .ready((context) => ({ target: context.event.card }));
+            .ready((context) => ({ target: context.event.card }))
+            .cannotBeMirrored();
     }
 }

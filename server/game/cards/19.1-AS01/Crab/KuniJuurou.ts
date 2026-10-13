@@ -23,11 +23,11 @@ export default class KuniJuurou extends DrawCard {
         this.action('Taint a character')
             .condition((context) =>
                 !!(context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length))
+            .phase(Phase.Conflict)
             .target({
                 cardType: CardType.Character
             }, taint())
-            .chatText('identify the source of Crab\'s misfortune… it is {0}! {0} is tainted')
-            .phase(Phase.Conflict);
+            .chatText('identify the source of Crab\'s misfortune… it is {0}! {0} is tainted');
     }
 
     private controllerCannotPayHonorCostsEffect() {

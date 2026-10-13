@@ -9,8 +9,8 @@ class AustereExemplar extends DrawCard {
 
     setupCardAbilities() {
         this.action('Take three actions')
-            .cost(costs.payFateToRing())
             .condition((context) => context.source.isAttacking())
+            .cost(costs.payFateToRing())
             .playerLastingEffect({
                 duration: Duration.UntilPassPriority,
                 effect: additionalAction(3)

@@ -13,12 +13,6 @@ export default class InsultToInjury extends DrawCard {
                         (card) => card.controller === context.player && card.hasTrait('duelist')
                     ) ?? false
             })
-            .chatText((context) => {
-                const loser = context.event.loser;
-                return (loser?.length ?? 0) > 1
-                    ? msg`choose to dishonor a loser of the duel`
-                    : msg`dishonor ${loser ?? []}`;
-            })
             .if((context) => (context.event.loser ?? []).length > 1)
                 .cardMenu((context) => ({
                     activePromptTitle: 'Choose a character to dishonor',
@@ -27,6 +21,12 @@ export default class InsultToInjury extends DrawCard {
                     message: (_context, card, player) => msg`${player} chooses to dishonor ${card}`
                 }))
             .otherwise()
-                .dishonor((context) => ({ target: context.event.loser?.[0] }));
+                .dishonor((context) => ({ target: context.event.loser?.[0] }))
+            .chatText((context) => {
+                const loser = context.event.loser;
+                return (loser?.length ?? 0) > 1
+                    ? msg`choose to dishonor a loser of the duel`
+                    : msg`dishonor ${loser ?? []}`;
+            });
     }
 }

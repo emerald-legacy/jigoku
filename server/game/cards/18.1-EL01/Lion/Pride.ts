@@ -12,8 +12,8 @@ export default class Pride extends StrongholdCard {
         const canAttachSoldier = soldierAttachCheck(this.controller);
 
         this.action('Give a character a +1/+1 attachment')
-            .cost(costs.bowSelf())
             .condition((context) => context.player.conflictDeck.length > 0)
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

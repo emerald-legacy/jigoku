@@ -15,6 +15,7 @@ class ChampionsOfYomi extends DrawCard {
                     && event.conflict.defendingPlayer !== context.player
                     && event.conflict.getAttackers().length !== 0
             })
+            .location(Location.DynastyDiscardPile)
             .cost(costs.bow({
                 cardType: CardType.Stronghold
             }))
@@ -34,8 +35,7 @@ class ChampionsOfYomi extends DrawCard {
                     })
                 }))
             ]))
-            .chatText('put {0} into play and remove {0} from the game at the end of the phase')
-            .location(Location.DynastyDiscardPile);
+            .chatText('put {0} into play and remove {0} from the game at the end of the phase');
     }
 }
 

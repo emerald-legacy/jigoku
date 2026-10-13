@@ -10,8 +10,8 @@ class AsahinaArtisan extends DrawCard {
 
     setupCardAbilities() {
         this.action('Give a character +0/+3')
-            .cost(costs.bowSelf())
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source && card.isFaction('crane')

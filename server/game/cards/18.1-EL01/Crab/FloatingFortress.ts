@@ -18,8 +18,8 @@ export default class FloatingFortress extends DrawCard {
 
     setupCardAbilities() {
         this.action('Become another holding')
-            .cost(costs.payFate(1))
             .condition((context) => context.player.isDefendingPlayer())
+            .cost(costs.payFate(1))
             .target({
                 cardType: CardType.Holding,
                 controller: Players.Self,

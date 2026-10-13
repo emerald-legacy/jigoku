@@ -22,19 +22,19 @@ export default class DevelopingMasterpiece extends DrawCard {
         });
 
         this.action('Gain honor')
+            .condition((context) => !!context.source.parentCharacter)
+            .phase(Phase.Fate)
             .cost(captureParentCost())
             .cost(costs.sacrificeSelf())
-            .condition((context) => !!context.source.parentCharacter)
             .gainHonor((context) => ({
                 amount: capturedParent(context)?.glory ?? 0
             }))
             .moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame }))
-            .chatText((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`)
             .onResolve((context) => {
                 randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));
                 context.game.addMessage('>>>> Matsuo Bashō <<<<');
             })
-            .phase(Phase.Fate);
+            .chatText((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`);
     }
 
     public canAttach(card: BaseCard): boolean {

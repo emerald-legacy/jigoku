@@ -13,6 +13,7 @@ export default class TheEmptyCity extends ProvinceCard {
         const sharedLimit = perRound(1);
 
         this.action('Claim a ring')
+            .canTriggerOutsideConflict()
             .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('spirit')
@@ -25,10 +26,10 @@ export default class TheEmptyCity extends ProvinceCard {
                 type: ConflictType.Political
             }))
             .chatText('claim {0} as a political ring')
-            .limit(sharedLimit)
-            .canTriggerOutsideConflict();
+            .limit(sharedLimit);
 
         this.action('Put a Spirit character into play')
+            .canTriggerOutsideConflict()
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
@@ -44,7 +45,6 @@ export default class TheEmptyCity extends ProvinceCard {
             ]))
             .chatText('put {0} into play')
             .limit(sharedLimit)
-            .canTriggerOutsideConflict()
             .afterwardsIf((context) => context.target.location === Location.PlayArea)
             .cardLastingEffect((context) => ({
                 target: context.target,

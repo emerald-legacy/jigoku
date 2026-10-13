@@ -17,12 +17,12 @@ export default class APlagueOfYokai extends DrawCard {
         });
 
         this.conflictAction('Spread the plague')
+            .condition((context) => this.getCopiesInDeck(context).length > 0)
             .cost(costs.dishonor({
                 controller: Players.Self,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('shinobi')
             }))
-            .condition((context) => this.getCopiesInDeck(context).length > 0)
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,

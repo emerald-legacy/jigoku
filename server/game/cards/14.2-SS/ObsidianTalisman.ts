@@ -9,8 +9,8 @@ class ObsidianTalisman extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard attached character\'s token')
-            .cost(costs.payHonor(1))
             .condition((context) => !!context.source.parentCharacter)
+            .cost(costs.payHonor(1))
             .selectToken((context) => ({
                 card: context.source.parentCharacter ?? undefined,
                 activePromptTitle: 'Which token do you wish to discard?',

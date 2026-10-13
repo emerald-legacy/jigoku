@@ -8,10 +8,10 @@ class TheSpearRushesForth extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow a participating character')
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .cost(costs.discardStatusToken({
                 cardCondition: (card) => card.isHonored && card.isDrawCard() && card.isParticipating()
             }))
-            .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

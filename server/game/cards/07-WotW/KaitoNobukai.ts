@@ -8,8 +8,8 @@ class KaitoNobukai extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow each participating characters')
-            .cost(costs.sacrificeSelf())
             .condition((context) => context.source.isParticipating())
+            .cost(costs.sacrificeSelf())
             .bow(() => ({
                 target: this.game.findAnyCardsInPlay((card) => card.type === CardType.Character && card.isParticipating())
             }))

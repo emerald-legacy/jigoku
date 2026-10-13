@@ -11,8 +11,8 @@ export default class MasterAlchemist extends DrawCard {
 
     setupCardAbilities() {
         this.action('Honor or dishonor a character')
-            .cost(costs.payFateToRing(1, (ring) => ring.hasElement(this.getCurrentElementSymbol(ELEMENT))))
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.payFateToRing(1, (ring) => ring.hasElement(this.getCurrentElementSymbol(ELEMENT))))
             .target({
                 activePromptTitle: 'Choose a character to honor or dishonor',
                 cardType: CardType.Character
