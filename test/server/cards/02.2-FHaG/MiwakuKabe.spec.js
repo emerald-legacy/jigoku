@@ -23,9 +23,17 @@ describe('Miwaku Kabe', function() {
         });
 
         it('shuffles itself into the dynasty deck when its province is broken', function() {
+            // the broken province refills from the shuffled deck, which can draw Kabe again
+            let kabeLocationWhenShuffled;
+            const shuffle = this.player2.player.shuffleDynastyDeck.bind(this.player2.player);
+            spyOn(this.player2.player, 'shuffleDynastyDeck').and.callFake(() => {
+                kabeLocationWhenShuffled = this.kabe.location;
+                shuffle();
+            });
             expect(this.player2).toHavePrompt('Triggered Abilities');
             this.player2.clickCard(this.kabe);
-            expect(this.kabe.location).toBe('dynasty deck');
+            expect(this.player2.player.shuffleDynastyDeck).toHaveBeenCalledTimes(1);
+            expect(kabeLocationWhenShuffled).toBe('dynasty deck');
             expect(this.province.isBroken).toBe(true);
             expect(this.player1).not.toHavePrompt('Do you wish to discard Miwaku Kabe?');
             expect(this.getChatLogs(5)).toContain('player2 uses Miwaku Kabe to shuffle itself back into the dynasty deck');
