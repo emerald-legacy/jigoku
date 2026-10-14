@@ -20,11 +20,11 @@ class AgashaProdigys extends DrawCard {
                     target: context.player.conflictDeck[0]
                 })),
                 ifAble((context) => ({
-                    ifAbleAction: attach({
+                    ifAbleGameAction: attach({
                         target: context.targets.myCharacter,
                         attachment: this.getDiscardedCards(context)[0]
                     }),
-                    otherwiseAction: discardFromPlay({ target: [] })
+                    otherwiseGameAction: discardFromPlay({ target: [] })
                 }))
             ]))
             .target({
@@ -39,11 +39,11 @@ class AgashaProdigys extends DrawCard {
                     target: this.oppCharacterChosen(context) ? context.player.opponent?.conflictDeck[0] : []
                 })),
                 ifAble((context) => ({
-                    ifAbleAction: attach({
+                    ifAbleGameAction: attach({
                         target: context.targets.oppCharacter,
                         attachment: this.getDiscardedCards(context)[1]
                     }),
-                    otherwiseAction: discardFromPlay({ target: [] })
+                    otherwiseGameAction: discardFromPlay({ target: [] })
                 }))
             ]))
             .chatText((context) => msg`discard the top card of their deck and attempt to attach it to ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) => 'discard the top card of their deck and attempt to attach it to ' + name)}`);

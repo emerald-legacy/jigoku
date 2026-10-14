@@ -30,7 +30,7 @@ describe('composite game actions and default targets', function() {
                 (a, b) => multiple([a, b]),
                 (a, b) => joint([a, b]),
                 (a, b) => sequential([a, b]),
-                (a, b) => ifAble({ ifAbleAction: a, otherwiseAction: b }),
+                (a, b) => ifAble({ ifAbleGameAction: a, otherwiseGameAction: b }),
                 (a, b) => chooseAction({ choices: { A: a, B: b } })
             ];
             for(const build of composites) {

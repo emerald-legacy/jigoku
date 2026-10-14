@@ -45,8 +45,8 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
 
                         const sequence: GameAction[] = replacedCharacter.attachments.map((attachment) =>
                             ifAble({
-                                ifAbleAction: attach({ attachment, target: newCharacter }),
-                                otherwiseAction: discardFromPlay({ target: attachment })
+                                ifAbleGameAction: attach({ attachment, target: newCharacter }),
+                                otherwiseGameAction: discardFromPlay({ target: attachment })
                             })
                         );
                         sequence.push(

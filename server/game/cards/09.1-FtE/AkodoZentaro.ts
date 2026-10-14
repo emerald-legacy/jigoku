@@ -14,7 +14,7 @@ class AkodoZentaro extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.isInConflictProvince() && !card.isUnique() && card.isFaceup()
             }, ifAble((context) => ({
-                ifAbleAction: selectCard({
+                ifAbleGameAction: selectCard({
                     cardType: CardType.Province,
                     location: Location.Provinces,
                     controller: Players.Self,
@@ -28,7 +28,7 @@ class AkodoZentaro extends DrawCard {
                         discardCard()
                     ])
                 }),
-                otherwiseAction: discardCard({ target: context.target })
+                otherwiseGameAction: discardCard({ target: context.target })
             })))
             .chatText('take control of {0} and move it one of their provinces');
     }

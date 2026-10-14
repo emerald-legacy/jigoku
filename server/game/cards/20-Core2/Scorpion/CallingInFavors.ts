@@ -14,12 +14,12 @@ export default class CallingInFavors extends DrawCard {
                 controller: Players.Opponent
             })
             .gameAction(ifAble((context) => ({
-                ifAbleAction: attach({
+                ifAbleGameAction: attach({
                     target: context.costs.dishonor,
                     attachment: context.target,
                     takeControl: true
                 }),
-                otherwiseAction: discardFromPlay({ target: context.target })
+                otherwiseGameAction: discardFromPlay({ target: context.target })
             })));
     }
 }

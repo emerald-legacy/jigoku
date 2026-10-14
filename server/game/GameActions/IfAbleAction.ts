@@ -6,25 +6,25 @@ import { CompositeGameAction } from './CompositeGameAction.js';
 import type { GameAction, GameActionProperties } from './GameAction.js';
 
 export interface IfAbleProperties extends GameActionProperties {
-    ifAbleAction: GameAction;
-    otherwiseAction: GameAction;
+    ifAbleGameAction: GameAction;
+    otherwiseGameAction: GameAction;
 }
 
 export class IfAbleAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<IfAbleProperties, C> {
     protected children(properties: IfAbleProperties) {
-        return [properties.ifAbleAction, properties.otherwiseAction];
+        return [properties.ifAbleGameAction, properties.otherwiseGameAction];
     }
 
     getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { properties: { ifAbleAction, otherwiseAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
-        return ifAbleAction.hasLegalTarget(context, overrides)
-            ? ifAbleAction.getEffectMessage(context, overrides)
-            : otherwiseAction.getEffectMessage(context, overrides);
+        const { properties: { ifAbleGameAction, otherwiseGameAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
+        return ifAbleGameAction.hasLegalTarget(context, overrides)
+            ? ifAbleGameAction.getEffectMessage(context, overrides)
+            : otherwiseGameAction.getEffectMessage(context, overrides);
     }
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}) {
-        const { properties: { ifAbleAction, otherwiseAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
-        const gameAction = ifAbleAction.hasLegalTarget(context, overrides) ? ifAbleAction : otherwiseAction;
+        const { properties: { ifAbleGameAction, otherwiseGameAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
+        const gameAction = ifAbleGameAction.hasLegalTarget(context, overrides) ? ifAbleGameAction : otherwiseGameAction;
         gameAction.addEventsToArray(events, context, overrides);
     }
 }

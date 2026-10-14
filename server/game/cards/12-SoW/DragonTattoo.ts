@@ -32,7 +32,7 @@ export default class DragonTattoo extends DrawCard {
                 const played = context.event.context;
                 const respondingTo = played instanceof TriggeredAbilityContext ? played.event : undefined;
                 return {
-                    ifAbleAction: playCard(() => {
+                    ifAbleGameAction: playCard(() => {
                         this.cardPlayed = true;
                         return {
                             source: this,
@@ -45,7 +45,7 @@ export default class DragonTattoo extends DrawCard {
                             event: respondingTo
                         };
                     }),
-                    otherwiseAction: moveCard(() => {
+                    otherwiseGameAction: moveCard(() => {
                         this.cardPlayed = false;
                         return {
                             target: card,

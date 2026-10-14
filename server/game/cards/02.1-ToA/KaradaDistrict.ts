@@ -15,7 +15,7 @@ class KaradaDistrict extends DrawCard {
                 cardCondition: (card, context) => Boolean(card.parentCharacter && card.parentCharacter.controller === context.player.opponent)
             })
             .gameAction(ifAble((context) => ({
-                ifAbleAction: selectCard({
+                ifAbleGameAction: selectCard({
                     target: context.target,
                     cardType: CardType.Character,
                     controller: Players.Self,
@@ -25,7 +25,7 @@ class KaradaDistrict extends DrawCard {
                     }),
                     message: (context, cards, player) => msg`${player} chooses to attach ${context.target} to ${cards}`
                 }),
-                otherwiseAction: discardFromPlay({ target: context.target })
+                otherwiseGameAction: discardFromPlay({ target: context.target })
             })));
     }
 }

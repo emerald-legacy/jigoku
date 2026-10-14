@@ -36,12 +36,12 @@ export default class JakIthith extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, ifAble((context) => ({
-                ifAbleAction: attach({
+                ifAbleGameAction: attach({
                     attachment: context.targets[ATTACHMENT],
                     target: context.targets[RECEIVER],
                     takeControl: true
                 }),
-                otherwiseAction: discardFromPlay({ target: context.targets[ATTACHMENT] })
+                otherwiseGameAction: discardFromPlay({ target: context.targets[ATTACHMENT] })
             })));
     }
 }
