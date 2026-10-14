@@ -8,8 +8,7 @@ class Assassination extends DrawCard {
     static id = 'assassination';
 
     setupCardAbilities() {
-        this.action('Discard a character')
-            .condition(() => this.game.isDuringConflict())
+        this.conflictAction('Discard a character')
             .cost(costs.payHonor(3))
             .target({
                 cardType: CardType.Character,
