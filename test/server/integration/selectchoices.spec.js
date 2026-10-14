@@ -45,6 +45,12 @@ describe('select() in the ability builder', function() {
             expect(this.choose('Gain 1 fate')).toBeUndefined();
         });
 
+        it('rejects chatText choices in a then step', function() {
+            this.builder.gainHonor().then().select({ 'Gain 1 fate': { action: gainFate(), chatText: 'gain 1 fate' } });
+
+            expect(() => toActionProps(this.draft)).toThrowError('Test: a then step prints its message with message()');
+        });
+
         it('rejects chatText() next to chatText choices', function() {
             this.builder.select({ 'Gain 1 honor': { action: gainHonor(), chatText: 'gain 1 honor' } }).chatText('gain honor');
 

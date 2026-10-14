@@ -1588,7 +1588,7 @@ function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
     checkHandler(draft);
     const step = withBranches(draft);
     checkCombinations(step);
-    if(step.chatText !== undefined) {
+    if(step.chatText !== undefined || step.choiceChatText !== undefined) {
         throw new Error(`${step.title}: a then step prints its message with message()`);
     }
     const abilityOnly = ABILITY_ONLY.filter((key) => step[key] !== undefined);
