@@ -15,8 +15,7 @@
 <aside class="sidebar">
     <p class="brand">Jigoku <small>Card builder reference</small></p>
     <div class="search">
-        <input type="search" id="search" placeholder="Search everything (press /)" aria-label="Search the reference" autocomplete="off">
-        <div class="count" id="search-count" aria-live="polite"></div>
+        <input type="search" id="search" placeholder="Jump to… (press /)" aria-label="Jump to an entry" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="jump" aria-autocomplete="list">
     </div>
     <nav class="pages" id="pages" aria-label="Pages"></nav>
     <nav class="toc" id="toc" aria-label="On this page"></nav>
@@ -146,9 +145,10 @@ setupCardAbilities() {
     <li><code>unregisterAll()</code> removes the listeners; the duel uses it for its own registrar.</li>
 </ul>
 
-<div class="results" id="results"></div>
 </main>
 </div>
+<div class="jump" id="jump" role="listbox" aria-label="Matches" hidden></div>
+<script src="assets/search-index.js"></script>
 <script src="assets/docs.js"></script>
 </body>
 </html>

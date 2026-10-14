@@ -85,105 +85,137 @@ function buildNavigation() {
     toc.appendChild(top);
 }
 
-// every reference entry of the other pages, loaded on the first search
-let otherEntries = null;
-async function loadOtherEntries() {
-    if(otherEntries) {
-        return otherEntries;
+// assets/search-index.js lists every entry and section of every page
+const searchIndex = (window.SEARCH_INDEX || []).map((entry) => ({
+    ...entry,
+    name: entry.name.toLowerCase(),
+    title: entry.signature.toLowerCase(),
+    text: `${entry.name} ${entry.signature} ${entry.summary}`.toLowerCase()
+}));
+const pageOrder = new Map(PAGES.map(([file], index) => [file, index]));
+// this page first, then the pages in order
+const rank = (entry) => (entry.file === currentPage ? -1 : pageOrder.get(entry.file));
+
+// how well an entry matches: its name first, then its signature or heading, then its summary
+function score(entry, terms, compact) {
+    if(!terms.every((term) => entry.text.includes(term)) && !`${entry.name} ${entry.title}`.includes(compact)) {
+        return 0;
     }
-    const parser = new DOMParser();
-    const loaded = await Promise.all(PAGES.filter(([file]) => file !== currentPage).map(async ([file, title]) => {
-        try {
-            const response = await fetch(file);
-            const doc = parser.parseFromString(await response.text(), 'text/html');
-            return [...doc.querySelectorAll('.ref')].map((entry) => ({
-                file,
-                title,
-                id: entry.id,
-                name: entry.dataset.name || '',
-                signature: entry.querySelector('h3 code')?.textContent || entry.dataset.name || '',
-                summary: entry.querySelector('p')?.textContent || '',
-                text: entry.textContent.toLowerCase()
-            }));
-        } catch(_) {
-            return [];
-        }
-    }));
-    otherEntries = loaded.flat();
-    return otherEntries;
+    const bare = entry.title.replace(/\(.*$/, '');
+    if(entry.name === compact || bare === compact) {
+        return 100;
+    }
+    if(entry.name.startsWith(compact) || entry.title.startsWith(compact)) {
+        return 80;
+    }
+    if(entry.name.includes(compact) || entry.title.includes(compact)) {
+        return 60;
+    }
+    return terms.every((term) => entry.title.includes(term)) ? 40 : 20;
+}
+
+function marked(text, terms) {
+    const pattern = new RegExp(`(${terms.map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+    return text.split(pattern).map((part, index) => (index % 2 ? `<mark>${escapeHtml(part)}</mark>` : escapeHtml(part))).join('');
 }
 
 function setUpSearch() {
     const input = document.getElementById('search');
-    const count = document.getElementById('search-count');
-    const results = document.getElementById('results');
-    const entries = [...document.querySelectorAll('.ref')];
-    const groups = [...document.querySelectorAll('section.group')];
-    const texts = entries.map((entry) => entry.textContent.toLowerCase());
-    let run = 0;
+    const list = document.getElementById('jump');
+    let matches = [];
+    let selected = 0;
 
-    async function search() {
-        const query = input.value.trim().toLowerCase();
-        const thisRun = ++run;
-        let shown = 0;
-        entries.forEach((entry, index) => {
-            const hit = !query || (entry.dataset.name || '').toLowerCase().includes(query) || texts[index].includes(query);
-            entry.hidden = !hit;
-            if(hit) {
-                shown++;
+    function place() {
+        const box = input.getBoundingClientRect();
+        list.style.top = `${box.bottom + 6}px`;
+        list.style.left = `${Math.max(8, Math.min(box.left, window.innerWidth - list.offsetWidth - 8))}px`;
+    }
+
+    function close() {
+        list.hidden = true;
+        input.setAttribute('aria-expanded', 'false');
+        input.removeAttribute('aria-activedescendant');
+    }
+
+    function select(index) {
+        selected = index;
+        list.querySelectorAll('[role="option"]').forEach((option, optionIndex) => {
+            option.setAttribute('aria-selected', String(optionIndex === index));
+            if(optionIndex === index) {
+                option.scrollIntoView({ block: 'nearest' });
+                input.setAttribute('aria-activedescendant', option.id);
             }
         });
-        groups.forEach((group) => {
-            group.hidden = query !== '' && !group.querySelector('.ref:not([hidden])') && group.querySelector('.ref') !== null;
-        });
-        results.innerHTML = '';
-        if(!query) {
-            count.textContent = entries.length ? `${entries.length} entries on this page` : '';
-            return;
-        }
-        count.textContent = `${shown} on this page`;
-        const others = (await loadOtherEntries()).filter((entry) => entry.name.toLowerCase().includes(query) || entry.text.includes(query));
-        if(thisRun !== run) {
-            return;
-        }
-        if(others.length === 0) {
-            count.textContent = `${shown} on this page, none on other pages`;
-            return;
-        }
-        count.innerHTML = `${shown} on this page, <a href="#results">${others.length} on other pages</a>`;
-        // name matches first
-        others.sort((a, b) => Number(!a.name.toLowerCase().includes(query)) - Number(!b.name.toLowerCase().includes(query)));
-        const heading = document.createElement('h2');
-        heading.textContent = 'On other pages';
-        results.appendChild(heading);
-        for(const entry of others.slice(0, 60)) {
-            const hit = document.createElement('div');
-            hit.className = 'hit';
-            hit.innerHTML = `<div class="page">${escapeHtml(entry.title)}</div><a href="${entry.file}#${entry.id}"><code>${escapeHtml(entry.signature)}</code></a><div>${escapeHtml(shorten(entry.summary, 220))}</div>`;
-            results.appendChild(hit);
-        }
     }
 
-    try {
-        input.value = sessionStorage.getItem('jigoku-docs-search') || '';
-    } catch(_) {
-        // storage can be blocked; the search still works
-    }
-    input.addEventListener('input', () => {
-        try {
-            sessionStorage.setItem('jigoku-docs-search', input.value);
-        } catch(_) {
-            // see above
+    function update() {
+        const query = input.value.trim().toLowerCase();
+        if(!query) {
+            close();
+            return;
         }
-        search();
+        const terms = query.split(/\s+/);
+        const compact = terms.join('');
+        matches = searchIndex
+            .map((entry) => ({ entry, score: score(entry, terms, compact) }))
+            .filter((match) => match.score > 0)
+            .sort((a, b) => b.score - a.score || rank(a.entry) - rank(b.entry) || a.entry.title.length - b.entry.title.length)
+            .slice(0, 40)
+            .map((match) => match.entry);
+        if(matches.length === 0) {
+            list.innerHTML = '<div class="empty">Nothing matches. Try a function name, such as <code>sendHome</code>.</div>';
+        } else {
+            list.innerHTML = matches.map((entry, index) => {
+                const href = entry.file === currentPage ? `#${entry.id}` : `${entry.file}#${entry.id}`;
+                const where = entry.section ? `${entry.page}, section` : entry.page;
+                return `<a role="option" id="jump-${index}" href="${href}" class="${entry.section ? 'section' : ''}">` +
+                    `<span class="name">${marked(entry.signature, terms)}</span><span class="where">${escapeHtml(where)}</span>` +
+                    `<span class="summary">${marked(shorten(entry.summary, 200), terms)}</span></a>`;
+            }).join('');
+        }
+        list.hidden = false;
+        input.setAttribute('aria-expanded', 'true');
+        place();
+        select(0);
+    }
+
+    input.addEventListener('input', update);
+    input.addEventListener('focus', update);
+    input.addEventListener('keydown', (event) => {
+        if(event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            if(matches.length) {
+                select((selected + (event.key === 'ArrowDown' ? 1 : matches.length - 1)) % matches.length);
+            }
+        } else if(event.key === 'Enter') {
+            const option = list.querySelector('[aria-selected="true"]');
+            if(option && !list.hidden) {
+                event.preventDefault();
+                close();
+                location.href = option.getAttribute('href');
+            }
+        } else if(event.key === 'Escape') {
+            input.value = '';
+            close();
+        }
     });
+    list.addEventListener('mousedown', (event) => {
+        // keep the focus in the input until the link is followed
+        event.preventDefault();
+    });
+    list.addEventListener('click', (event) => {
+        if(event.target.closest('a')) {
+            close();
+        }
+    });
+    input.addEventListener('blur', close);
+    window.addEventListener('resize', () => !list.hidden && place());
     document.addEventListener('keydown', (event) => {
         if(event.key === '/' && document.activeElement !== input) {
             event.preventDefault();
             input.focus();
         }
     });
-    search();
 }
 
 // the start page's card text and code light up together, part by part
