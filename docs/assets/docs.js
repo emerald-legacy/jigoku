@@ -12,6 +12,13 @@ const PAGES = [
 
 const currentPage = location.pathname.split('/').pop() || 'index.html';
 
+function shorten(text, length) {
+    if(text.length <= length) {
+        return text;
+    }
+    return text.slice(0, text.lastIndexOf(' ', length)) + ' …';
+}
+
 function escapeHtml(text) {
     return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -139,10 +146,11 @@ function setUpSearch() {
         if(thisRun !== run) {
             return;
         }
-        count.textContent = `${shown} on this page, ${others.length} on other pages`;
         if(others.length === 0) {
+            count.textContent = `${shown} on this page, none on other pages`;
             return;
         }
+        count.innerHTML = `${shown} on this page, <a href="#results">${others.length} on other pages</a>`;
         // name matches first
         others.sort((a, b) => Number(!a.name.toLowerCase().includes(query)) - Number(!b.name.toLowerCase().includes(query)));
         const heading = document.createElement('h2');
@@ -151,7 +159,7 @@ function setUpSearch() {
         for(const entry of others.slice(0, 60)) {
             const hit = document.createElement('div');
             hit.className = 'hit';
-            hit.innerHTML = `<div class="page">${escapeHtml(entry.title)}</div><a href="${entry.file}#${entry.id}"><code>${escapeHtml(entry.signature)}</code></a><div>${escapeHtml(entry.summary.slice(0, 220))}</div>`;
+            hit.innerHTML = `<div class="page">${escapeHtml(entry.title)}</div><a href="${entry.file}#${entry.id}"><code>${escapeHtml(entry.signature)}</code></a><div>${escapeHtml(shorten(entry.summary, 220))}</div>`;
             results.appendChild(hit);
         }
     }
