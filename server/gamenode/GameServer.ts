@@ -91,7 +91,13 @@ export class GameServer implements GameRouter, LobbyHandlers {
             : { origin: true, credentials: true };
 
         this.io = new socketio.Server(server, {
-            perMessageDeflate: false,
+            // level 1 shrinks a ~60 KB state update ~9x; it exceeds zlib's window, so context takeover gains little
+            perMessageDeflate: {
+                threshold: 1024,
+                zlibDeflateOptions: { level: 1, memLevel: 7 },
+                serverNoContextTakeover: true,
+                clientNoContextTakeover: true
+            },
             path: `/${env.gameNodeName}/socket.io`,
             pingTimeout: 30000,
             pingInterval: 25000,
