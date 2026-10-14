@@ -40,6 +40,27 @@ describe('Retreat to Safety', () => {
             ikomaProdigy.bowed = true;
         });
 
+        it('lets the player decline to ready a character', () => {
+            noMoreActions();
+            initiateConflict({
+                attackers: [borderRider],
+                defenders: [matsuBerserker, kitsuMotso]
+            });
+            matsuBerserker.bowed = true;
+            kitsuMotso.bowed = true;
+
+            player2.clickCard(retreatToSafety);
+            player2.clickCard(matsuBerserker);
+            player2.clickCard(kitsuMotso);
+            player2.clickPrompt('Done');
+
+            expect(player2).toHavePrompt('Choose a character to ready');
+            expect(player2).toHavePromptButton('Done');
+            player2.clickPrompt('Done');
+            expect(matsuBerserker.bowed).toBe(true);
+            expect(kitsuMotso.bowed).toBe(true);
+        });
+
         it('sends defenders home', () => {
             noMoreActions();
             initiateConflict({

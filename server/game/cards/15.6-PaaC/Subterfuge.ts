@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { chatMessage, discardCard, draw, sequential } from '../../GameActions/GameActions.js';
+import { chatMessage, chooseAmount, discardCard, draw, sequential } from '../../GameActions/GameActions.js';
 import { Phase } from '../../Constants.js';
 
 class Subterfuge extends DrawCard {
@@ -18,28 +18,34 @@ class Subterfuge extends DrawCard {
                     );
                 }
             })
+            // "up to 3": the player picks how many of the drawn cards are discarded
             .cancel((context) => ({
-                replacementGameAction: sequential(() => {
-                    const eventAmount = context.event.amount ?? 0;
-                    const discardAmount = Math.min(eventAmount, 3);
-                    const cardsToDiscard = context.player.opponent?.conflictDeck.slice(0, discardAmount);
-                    const drawAmount = eventAmount - discardAmount;
-                    return [
-                        discardCard({
-                            target: cardsToDiscard
-                        }),
-                        chatMessage((context) => msg`${context.player.opponent} discards ${cardsToDiscard}`),
-                        chatMessage((context) => drawAmount > 0 ? msg`${context.player.opponent} draws ${drawAmount} card${drawAmount > 1 ? 's' : ''}` : undefined),
-                        draw({
-                            target: context.player.opponent,
-                            amount: drawAmount
-                        })
-                    ];
+                replacementGameAction: chooseAmount({
+                    activePromptTitle: 'Choose how many cards to discard',
+                    max: Math.min(context.event.amount ?? 0, 3),
+                    gameAction: (discardAmount) => sequential(() => {
+                        const eventAmount = context.event.amount ?? 0;
+                        const cardsToDiscard = context.player.opponent?.conflictDeck.slice(0, discardAmount);
+                        const drawAmount = eventAmount - discardAmount;
+                        return [
+                            discardCard({
+                                target: cardsToDiscard
+                            }),
+                            chatMessage((context) => msg`${context.player.opponent} discards ${cardsToDiscard}`),
+                            chatMessage((context) => drawAmount > 0 ? msg`${context.player.opponent} draws ${drawAmount} card${drawAmount > 1 ? 's' : ''}` : undefined),
+                            draw({
+                                target: context.player.opponent,
+                                amount: drawAmount
+                            })
+                        ];
+                    })
                 })
             }))
             .chatText((context) => {
                 const amount = context.event.amount ?? 0;
-                return msg`prevent ${Math.min(amount, 3)} card${amount > 1 ? 's' : ''} from being drawn, discarding ${amount > 1 ? 'them' : 'it'} instead`;
+                return amount > 1
+                    ? msg`prevent up to ${Math.min(amount, 3)} cards from being drawn, discarding them instead`
+                    : msg`prevent 1 card from being drawn, discarding it instead`;
             });
     }
 }

@@ -11,14 +11,12 @@ export default class TributeToANewDawn extends DrawCard {
 
     setupCardAbilities() {
         this.action('Remove multiple attachments from the game')
-            .condition((context) =>
-                context.player.anyCardsInPlay((card) => card.type === CardType.Attachment) &&
-                (!context.player.opponent ||
-                    context.player.opponent.anyCardsInPlay((card) => card.type === CardType.Attachment)))
+            .condition((context) => context.game.allCards.some((card) => card.type === CardType.Attachment && card.isInPlay()))
             .targetCards({
                 name: FIRST,
                 activePromptTitle: 'Choose up to 2 attachments to keep',
                 cardType: CardType.Attachment,
+                optional: true,
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
@@ -28,6 +26,7 @@ export default class TributeToANewDawn extends DrawCard {
                 name: SECOND,
                 activePromptTitle: 'Choose up to 2 attachments to keep',
                 cardType: CardType.Attachment,
+                optional: true,
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),

@@ -125,3 +125,47 @@ describe('Tribute to a New Dawn', function () {
         });
     });
 });
+
+describe('Tribute to a New Dawn without attachments of your own', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker'],
+                    hand: ['fine-katana', 'ornate-fan', 'compass']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar'],
+                    hand: ['tribute-to-a-new-dawn']
+                }
+            });
+
+            this.matsuBerserker = this.player1.findCardByName('matsu-berserker');
+            this.fineKatana = this.player1.findCardByName('fine-katana');
+            this.ornateFan = this.player1.findCardByName('ornate-fan');
+            this.compass = this.player1.findCardByName('compass');
+            this.tributeToANewDawn = this.player2.findCardByName('tribute-to-a-new-dawn');
+
+            this.player1.playAttachment(this.fineKatana, this.matsuBerserker);
+            this.player2.pass();
+            this.player1.playAttachment(this.ornateFan, this.matsuBerserker);
+            this.player2.pass();
+            this.player1.playAttachment(this.compass, this.matsuBerserker);
+        });
+
+        it('can still be played, as choosing up to 2 allows choosing none, and keeps just one', function () {
+            this.player2.clickCard(this.tributeToANewDawn);
+            expect(this.player1).toHavePrompt('Choose up to 2 attachments to keep');
+            this.player1.clickCard(this.fineKatana);
+            this.player1.clickPrompt('Done');
+            if(this.player2.currentButtons.includes('Done')) {
+                this.player2.clickPrompt('Done');
+            }
+
+            expect(this.fineKatana.location).toBe('play area');
+            expect(this.ornateFan.location).toBe('removed from game');
+            expect(this.compass.location).toBe('removed from game');
+        });
+    });
+});
