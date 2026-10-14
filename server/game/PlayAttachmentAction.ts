@@ -1,7 +1,7 @@
 import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { CardType, Location, Phase, Blocker } from './Constants.js';
+import { CardType, Location, Phase, Blocker, RestrictionType } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attach } from './GameActions/GameActions.js';
 import type BaseCard from './BaseCard.js';
@@ -19,7 +19,9 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
                 ignoreType: ignoreType,
                 takeControl: context.source.controller !== context.player
             })),
-            cardCondition: (card: BaseCard, context: AbilityContext) => context.source.canPlayOn(card)
+            // only playing checks this; putting into play and moving bypass it (RRG "Play and Put into Play")
+            cardCondition: (card: BaseCard, context: AbilityContext) =>
+                context.source.canPlayOn(card) && card.checkRestrictions(RestrictionType.Play, context)
         });
     }
 

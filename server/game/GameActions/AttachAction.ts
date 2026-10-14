@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
+import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -68,8 +68,6 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         } else if(properties.takeControl && attachment.controller === context.player) {
             return false;
         } else if(properties.giveControl && attachment.controller !== context.player) {
-            return false;
-        } else if(!card.checkRestrictions(RestrictionType.Play, context)) {
             return false;
         }
         return card.allowAttachment(attachment) && super.canAffect(card, context);
