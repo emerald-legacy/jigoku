@@ -41,6 +41,9 @@ export class PhaseStep extends BaseStepWithPipeline {
 
     endPhase(): void {
         this.game.raiseEvent(EventName.OnPhaseEnded, { phase: this.name });
-        this.game.currentPhase = '';
+        // abilities that trigger on the end of the phase still happen in it
+        this.game.queueSimpleStep(() => {
+            this.game.currentPhase = '';
+        });
     }
 }
