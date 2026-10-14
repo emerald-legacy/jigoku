@@ -1,7 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Phase } from '../../Constants.js';
-import { reveal } from '../../GameActions/GameActions.js';
 
 class DaidojiMarketplace extends DrawCard {
     static id = 'daidoji-marketplace';
@@ -11,9 +10,9 @@ class DaidojiMarketplace extends DrawCard {
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
-            .gameAction(reveal((context) => ({
+            .reveal((context) => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
-            })))
+            }))
             .chatText((context) => msg`reveal ${context.player.getProvinceCardInProvince(context.source.location)}`);
     }
 }

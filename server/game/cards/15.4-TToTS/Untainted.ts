@@ -1,6 +1,5 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { discardStatusToken } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
@@ -21,9 +20,9 @@ class Untainted extends ProvinceAttachment {
                     return !!token.card && (token.card === parent || (token.card instanceof DrawCard && token.card.isParticipating()));
                 }
             })
-            .gameAction(discardStatusToken((context) => ({
+            .discardStatusToken((context) => ({
                 target: context.token
-            })))
+            }))
             .gainHonor((context) => ({
                 target: context.player
             }))

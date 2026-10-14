@@ -583,6 +583,7 @@ export interface ActionProps<C extends AbilityContext> {
     discardAtRandom: RandomDiscardProperties;
     discardCard: DiscardCardProperties;
     discardFromPlay: DiscardFromPlayProperties;
+    discardStatusToken: DiscardStatusProperties;
     dishonor: DishonorProperties;
     draw: DrawProperties;
     duelLastingEffect: LastingEffectProperties<C>;
@@ -601,6 +602,7 @@ export interface ActionProps<C extends AbilityContext> {
     placeCardUnderneath: PlaceCardUnderneathProperties;
     placeFate: PlaceFateProperties;
     placeFateOnRing: PlaceFateRingProperties;
+    playCard: PlayCardProperties;
     playerLastingEffect: PlayerLastingEffectInput<C>;
     putIntoConflict: PutIntoPlayProperties;
     putIntoPlay: PutIntoPlayProperties;
@@ -612,6 +614,7 @@ export interface ActionProps<C extends AbilityContext> {
     resolveRingEffect: ResolveElementProperties;
     returnToDeck: ReturnToDeckProperties;
     returnToHand: ReturnToHandProperties;
+    reveal: RevealProperties;
     ringLastingEffect: LastingEffectRingProperties<C>;
     sacrifice: DiscardFromPlayProperties;
     selectAttackedProvince: AttackedProvinceProperties<C>;

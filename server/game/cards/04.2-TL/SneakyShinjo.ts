@@ -1,4 +1,3 @@
-import { playCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 
@@ -11,7 +10,7 @@ class SneakyShinjo extends DrawCard {
                 onPassDuringDynasty: (event, context) => event.player === context.player
             })
             .location(Location.Provinces)
-            .gameAction(playCard({ location: Location.ProvinceOne, source: this }))
+            .playCard({ location: Location.ProvinceOne, source: this })
             .chatText('play {0}');
     }
 }

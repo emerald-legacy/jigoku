@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, Element, Location, Players, TargetMode } from '../../../Constants.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { putIntoPlay, selectCards } from '../../../GameActions/GameActions.js';
+import { putIntoPlay } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { claimedRingSymbols, hasClaimedRing } from '../../claimedRings.js';
@@ -33,7 +33,7 @@ export default class CinderSalamander extends DrawCard {
                 gameAction: putIntoPlay(),
                 message: (context, cards) => msg`${context.player} finds ${this.salamanderCountToText(cards.length)} in their deck`
             })
-            .gameAction(selectCards({
+            .selectCards({
                 activePromptTitle: 'Select characters to put into play from your provinces',
                 controller: Players.Self,
                 cardType: CardType.Character,
@@ -43,7 +43,7 @@ export default class CinderSalamander extends DrawCard {
                 cardCondition: (card) => this.isSalamanderCard(card),
                 gameAction: putIntoPlay(),
                 message: (_context, cards, player) => msg`${player} finds ${this.salamanderCountToText(cards.length)} in their provinces`
-            }))
+            })
             .chatText('search their deck and provinces for other copies of {0} and put them into play')
             .max(perRound(1));
     }

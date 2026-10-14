@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { reveal, selectCards } from '../../GameActions/GameActions.js';
+import { reveal } from '../../GameActions/GameActions.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
@@ -11,7 +11,7 @@ class Aranat extends DrawCard {
             .when({
                 onCardPlayed: (event, context) => context.player.opponent && event.card === context.source
             })
-            .gameAction(selectCards({
+            .selectCards({
                 cardType: CardType.Province,
                 location: this.game.getProvinceArray(false),
                 controller: Players.Opponent,
@@ -21,7 +21,7 @@ class Aranat extends DrawCard {
                 cardCondition: (card) => card.isFacedown(),
                 message: (_context, card, player) => msg`${player} chooses to reveal ${card}`,
                 gameAction: reveal()
-            }))
+            })
             .chatText((context) => msg`give ${context.player.opponent ?? ''} the opportunity to reveal provinces`)
             .afterwards()
             .placeFate((context) => ({ amount: context.player.getNumberOfOpponentsFacedownProvinces() }))

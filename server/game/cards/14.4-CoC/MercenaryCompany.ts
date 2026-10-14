@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Duration, Players } from '../../Constants.js';
 import { unlimited } from '../../AbilityLimit.js';
 import { takeControl } from '../../effects.js';
-import { loseFate, optional, placeFate } from '../../GameActions/GameActions.js';
+import { loseFate, placeFate } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 class MercenaryCompany extends DrawCard {
@@ -15,12 +15,12 @@ class MercenaryCompany extends DrawCard {
                     && loseFate().canAffect(context.player.opponent, context)
                     && placeFate().canAffect(context.source, context)
             })
-            .gameAction(optional((context) => ({
+            .optional((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Place a fate on Mercenary Company to take control of it?',
                 gameAction: placeFate({ origin: context.player.opponent }),
                 declineMessage: (context, chooser) => msg`${chooser} chooses not to hire ${context.source}`
-            })))
+            }))
             .chatText((context) => msg`let ${context.player.opponent} hire their services`)
             .limit(unlimited())
             .then()

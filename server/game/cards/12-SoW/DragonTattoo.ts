@@ -1,6 +1,5 @@
 import { msg } from '../../GameChat.js';
 import { addTrait } from '../../effects.js';
-import { playCard } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, Location, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -28,7 +27,7 @@ export default class DragonTattoo extends DrawCard {
                         this.isValidTargetForTattoo(card, context))
             })
             .ifAble()
-            .gameAction(playCard((context) => {
+            .playCard((context) => {
                 this.cardPlayed = true;
                 const played = context.event.context;
                 return {
@@ -41,7 +40,7 @@ export default class DragonTattoo extends DrawCard {
                     allowReactions: true,
                     event: played instanceof TriggeredAbilityContext ? played.event : undefined
                 };
-            }))
+            })
             .otherwise()
             .moveCard((context) => {
                 this.cardPlayed = false;

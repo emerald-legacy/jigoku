@@ -8,7 +8,8 @@ import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
 import * as GameActions from './GameActions/GameActions.js';
-import type { SelectCardProperties } from './GameActions/SelectCardAction.js';
+import type { SelectCardProperties, SelectCardsProperties } from './GameActions/SelectCardAction.js';
+import type { MultiCardMode } from './CardSelector.js';
 import type { CancellingContext } from './GameActions/CancelAction.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { GameAction } from './GameActions/GameAction.js';
@@ -926,6 +927,14 @@ export class AbilityBuilder<
         return this.gameAction(GameActions.selectCard<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K>(properties));
     }
 
+    /** The player (or `player`) chooses several cards, by `mode`, when the ability resolves, and `gameAction` resolves on them. */
+    selectCards<const K extends CardTypes = CardTypes>(
+        properties: SelectCardsProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K> & { mode: MultiCardMode }
+            | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => SelectCardsProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K> & { mode: MultiCardMode })
+    ): this {
+        return this.gameAction(GameActions.selectCards<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K>(properties));
+    }
+
     selectAttackedProvince(properties: FactoryProperties<'selectAttackedProvince', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
         return this.gameAction(GameActions.selectAttackedProvince(properties));
     }
@@ -1043,6 +1052,18 @@ export class AbilityBuilder<
     /** The player looks at the target cards (the source by default). */
     lookAt(properties: FactoryProperties<'lookAt', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
         return this.gameAction(GameActions.lookAt(properties));
+    }
+
+    reveal(properties: FactoryProperties<'reveal', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.reveal(properties));
+    }
+
+    discardStatusToken(properties: FactoryProperties<'discardStatusToken', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.discardStatusToken(properties));
+    }
+
+    playCard(properties: FactoryProperties<'playCard', BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+        return this.gameAction(GameActions.playCard(properties));
     }
 
     /** Removes a fate from the target character, or discards it if it has none (the source by default). */
