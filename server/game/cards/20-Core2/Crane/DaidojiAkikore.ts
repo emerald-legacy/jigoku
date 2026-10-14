@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { DuelType, ConflictType } from '../../../Constants.js';
-import { changePlayerSkillModifier, modifyDuelSkill } from '../../../effects.js';
+import { changePlayerSkillModifier, modifyDuelTotal } from '../../../effects.js';
 import { conditional, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,7 +11,7 @@ export default class DaidojiAkikore extends DrawCard {
         this.duelFocus('Add +1 to your duel total', (duel, context) =>
             context.game.isDuringConflict(ConflictType.Political) && duel.participants.includes(context.source))
             .duelLastingEffect((context) => ({
-                effect: modifyDuelSkill({ amount: 1, player: context.player })
+                effect: modifyDuelTotal({ amount: 1, player: context.player })
             }))
             .chatText('add 1 to their duel total');
 

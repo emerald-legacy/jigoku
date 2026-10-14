@@ -248,7 +248,7 @@ export interface EffectValueMap {
     [EffectName.ModifyUnopposedHonorLoss]: number;
     [EffectName.NoUnopposedHonorLoss]: boolean;
     [EffectName.TreatStatusTokenAs]: boolean;
-    [EffectName.ModifyDuelSkill]: { player?: Player; amount: number };
+    [EffectName.ModifyDuelTotal]: { player?: Player; amount: number };
     [EffectName.ApplyStatusTokensToDuel]: boolean;
     [EffectName.DuelIgnorePrintedSkill]: boolean;
 }

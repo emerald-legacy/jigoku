@@ -220,7 +220,7 @@ export class Duel extends GameObject {
     #getStatsTotal(charactersOnSameSide: DrawCard[], player?: Player): StatisticTotal {
         let result = 0;
         const ignoreSkill = this.participants.filter((card) => card.anyEffect(EffectName.IgnoreDuelSkill)).length > 0;
-        const duelLevelModifier = this.getRawEffects().filter((effect) => isEffectOf(effect, EffectName.ModifyDuelSkill));
+        const duelLevelModifier = this.getRawEffects().filter((effect) => isEffectOf(effect, EffectName.ModifyDuelTotal));
 
         for(const effect of duelLevelModifier) {
             const effectProps = effect.getValue(this);

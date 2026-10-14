@@ -163,7 +163,7 @@ export enum EffectName {
     NoUnopposedHonorLoss = 'noUnopposedHonorLoss',
     TreatStatusTokenAs = 'treatStatusTokenAs',
     // New Duel effects
-    ModifyDuelSkill = 'modifyDuelSkill',
+    ModifyDuelTotal = 'modifyDuelTotal',
     ApplyStatusTokensToDuel = 'applyStatusTokensToDuel',
     DuelIgnorePrintedSkill = 'duelIgnorePrintedSkill'
 }

@@ -184,6 +184,9 @@ const ABILITY_ONLY = ['condition', 'limit', 'max', 'location', 'cannotBeMirrored
 /** What only an action's context has; a trigger's or a step's `ability` isn't a `CardAction`. */
 type ActionOnly = { ability: CardAction };
 
+/** What only a trigger's context has. */
+type TriggerOnly = Pick<TriggeredAbilityContext, 'cancel'>;
+
 export function createDraft(title: string, holdsBase: (context: AbilityContext) => boolean): AbilityDraft {
     return { title, holdsBase, targets: {}, specs: [], costs: [], gameActions: [] };
 }
@@ -1287,7 +1290,7 @@ export class AbilityBuilder<
     }
 
     /** Triggers only: triggers once for events that happen together. */
-    collectiveTrigger<B extends Base & CancellingContext>(this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
+    collectiveTrigger<B extends Base & TriggerOnly>(this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
         this.#once('collectiveTrigger', true, 'collectiveTrigger()');
         return this;
     }

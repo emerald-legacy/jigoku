@@ -665,7 +665,7 @@ Abilities that trigger during a duel are declared with `duelChallenge`, `duelFoc
 ```typescript
 this.duelFocus('Help a character with a duel', (duel, context) => duel.participants.includes(context.source))
     .duelLastingEffect((context) => ({
-        effect: modifyDuelSkill({ amount: 1, player: context.player })
+        effect: modifyDuelTotal({ amount: 1, player: context.player })
     }))
     .chatText('add 1 to their duel total');
 ```

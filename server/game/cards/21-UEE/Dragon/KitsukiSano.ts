@@ -1,4 +1,4 @@
-import { modifyDuelSkill } from '../../../effects.js';
+import { modifyDuelTotal } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KitsukiSano extends DrawCard {
@@ -11,7 +11,7 @@ export default class KitsukiSano extends DrawCard {
                     (participant) => participant.controller === context.player.opponent && participant.isDishonored
                 ))
             .duelLastingEffect((context) => ({
-                effect: modifyDuelSkill({
+                effect: modifyDuelTotal({
                     amount: 2,
                     player: context.player
                 })

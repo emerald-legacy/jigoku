@@ -332,8 +332,7 @@ this.action('Bow or honor a character')
     })
     .select({
         name: 'choice',
-        dependsOn: 'character',
-        player: Players.Self
+        dependsOn: 'character'
     }, {
         'Bow': bow((context) => ({ target: context.targets.character })),
         'Honor': honor((context) => ({ target: context.targets.character }))
@@ -493,6 +492,27 @@ These prompt the player to pick a card, then perform the action as the cost.
 | `costs.chooseFate(playType)` | Standard "how much extra fate" prompt for playing characters |
 
 The `props` parameter for selection costs takes the properties of `selectCard` (e.g., `cardType`, `controller`, `cardCondition`, `location`, `mode`, `numCards`, `hidePromptIfSingleCard`, `subActionProperties`); unlike `target:` there is no `dependsOn`, `optional` or `hideIfNoLegalTargets`.
+
+### What costs record
+
+Once paid, some costs record what was paid in `context.costs` (your editor shows the keys). A selection cost records the chosen card(s) under its own name and a snapshot of them under `<name>StateWhenChosen`: `costs.dishonor()` → `context.costs.dishonor`, `context.costs.dishonorStateWhenChosen`. The others:
+
+| Cost | Key | Value |
+|------|-----|-------|
+| `costs.discardCardsOf(fn)` | `discardCard` | the discarded cards |
+| `costs.discardTopCardsFromDeck(…)` | `discardTopCardsFromDeck` | the discarded cards |
+| `costs.discardCardsUpToVariableX(n)` | `discardCardsUpToVariableX` | the discarded cards |
+| `costs.discardHand()` | `discardHand` | the discarded cards |
+| `costs.switchLocation()` | `switchLocation` | the moved card |
+| `costs.payFateToRing(n, condition)` | `ringPaidFateTo` | the ring |
+| `costs.returnRings(n, condition)` | `returnedRings` | the returned rings |
+| `costs.payVariableFate(…)` | `fatePaid` | the amount |
+| `costs.payVariableHonor(…)` | `honorPaid` | the amount |
+| `costs.payOptionalFate(n)` | `optionalFatePaid` | the amount |
+| `costs.optionalTakeHonorFromOpponent()` | `honorTakenFromOpponent` | whether they gave it |
+| `costs.optionalOpponentLoseHonor(prompt)` | `optionalOpponentLoseHonorPaid` | whether they lost it |
+| `costs.chooseOne({ … })` | `chosenCostLabel` | the chosen label |
+| `costs.nameCard()` | `namedCard` | the name |
 
 ---
 
