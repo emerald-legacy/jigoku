@@ -21,6 +21,6 @@ export default class PromisingYouth extends DrawCard {
                 duration: Duration.Custom,
                 effect: changeType(CardType.Character)
             }))
-            .gameAction(detach((context) => ({ target: context.source })));
+            .gameAction(detach());
     }
 }

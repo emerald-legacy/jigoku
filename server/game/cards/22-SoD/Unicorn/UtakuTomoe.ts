@@ -23,7 +23,7 @@ export default class UtakuTomoe extends DrawCard {
             .if((context) => context.event.conflict.winner === context.source.controller)
                 .gainHonor(2)
             .otherwise()
-                .ready((context) => ({ target: context.source }));
+                .ready();
     }
 
     public afterConflict() {

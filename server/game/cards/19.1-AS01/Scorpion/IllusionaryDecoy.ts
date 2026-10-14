@@ -18,7 +18,7 @@ export default class IllusionaryDecoy extends DrawCard {
                 onConflictStarted: (_event, context) => controlsShugenja(context.player)
             })
             .location(Location.Hand)
-            .putIntoConflict((context) => ({ target: context.source }))
+            .putIntoConflict()
             .chooseAction({
                 choices: {
                     'Move another of your characters home': selectCard({

@@ -44,8 +44,8 @@ export default class Kuro extends DrawCard {
             .chatText((context) => msg`seek the lost treasure '${context.target}'. ${context.source.isParticipating() ? 'Kuro returns home with their treasure' : 'Kuro swoops into the conflict'}`)
             .afterwards()
             .if((context) => context.source.isDrawCard() && context.source.isParticipating())
-            .sendHome((context) => ({ target: context.source }))
+            .sendHome()
             .otherwise()
-            .moveToConflict((context) => ({ target: context.source }));
+            .moveToConflict();
     }
 }

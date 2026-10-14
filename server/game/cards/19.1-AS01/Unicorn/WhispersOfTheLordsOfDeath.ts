@@ -20,7 +20,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
                     context.game.isDuringConflict()
             })
             .location([Location.Hand])
-            .putIntoPlay((context) => ({ target: context.source }))
+            .putIntoPlay()
             .claimImperialFavor((context) => ({
                 target: context.player,
                 side: FavorType.Military

@@ -31,7 +31,7 @@ class DistinguishedDojo extends DrawCard {
             .limit(perRound(3))
             .afterwards()
             .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {
-                Yes: sacrifice((context) => ({ target: context.source })),
+                Yes: sacrifice(),
                 No: () => true
             })
             .message((context) => msg`${context.player} chooses ${context.select === 'No' ? 'not ' : ''}to sacrifice ${context.source}`)

@@ -13,9 +13,9 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
             .if((context) => !!context.source.parentCharacter?.isParticipating() &&
                 context.event.conflict.winner === context.source.parentCharacter?.controller)
                 .gainFate(1)
-                .discardFromPlay((context) => ({ target: context.source }))
+                .discardFromPlay()
             .otherwise()
-                .removeFromGame((context) => ({ target: context.source }));
+                .removeFromGame();
 
         this.reaction('Return to hand')
             .when({
