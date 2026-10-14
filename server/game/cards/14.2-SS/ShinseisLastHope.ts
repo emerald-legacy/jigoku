@@ -9,6 +9,7 @@ export default class ShinseisLastHope extends ProvinceCard {
         this.persistentEffect({
             effect: reduceCost({
                 amount: 2,
+                cardType: CardType.Character,
                 match: (card, source) => card.location === source.location,
                 playingTypes: PlayType.PlayFromProvince
             })
