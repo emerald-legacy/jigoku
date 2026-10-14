@@ -662,7 +662,7 @@ export class AbilityBuilder<
     selectFrom<const Name extends string = never, D extends Dependency<Targets, Rings, Tokens, SelectNames> = never>(
         props: Named<Name> & SelectTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>, D>,
         choices: (context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => Record<string, BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>>
-    ): AbilityBuilder<Base, Targets, Rings, Costs, Tokens, SelectNames | TargetName<Name>> {
+    ): AbilityBuilder<Base & Selected<TargetName<Name>, string>, Targets, Rings, Costs, Tokens, SelectNames | TargetName<Name>> {
         const name = props.name ?? 'target';
         const [required, optional] = this.#earlier(props.dependsOn);
         const checked = this.#checked(choices, required, optional);

@@ -9,15 +9,18 @@ import type { AbilityBuilder } from '../../server/game/AbilityBuilder.js';
 import { CardType, DuelType, Location, Phase, TargetMode } from '../../server/game/Constants.js';
 import { msg } from '../../server/game/GameChat.js';
 import { captureCost } from '../../server/game/cards/captureCost.js';
+import * as costs from '../../server/game/costs/index.js';
 import type * as GameActions from '../../server/game/GameActions/GameActions.js';
 import {
     bow,
     chooseAmount,
+    conditional,
     honor,
     noAction,
     placeFate,
     selectAttackedProvince,
     selectCard,
+    sequential,
     triggerAbility
 } from '../../server/game/GameActions/GameActions.js';
 
@@ -45,6 +48,34 @@ export function builderTypeTests(card: DrawCard, province: ProvinceCard): void {
             expectType<DrawCard>()(context.target);
             return msg`${context.target}`;
         });
+
+    // actions nested in composites get the ability's context too
+    card.reaction('Nested')
+        .when({ onCardPlayed: () => true })
+        .target({ name: 'character', cardType: CardType.Character })
+        .gameAction(sequential([
+            bow((context) => {
+                expectType<DrawCard>()(context.targets.character);
+                expectType<DrawCard>()(context.event.card);
+                return { target: context.targets.character };
+            }),
+            conditional({
+                condition: (context) => !!context.event.card,
+                trueGameAction: bow((context) => ({ target: context.targets.character })),
+                falseGameAction: noAction()
+            })
+        ]));
+
+    // a selection cost's condition sees the ability's context
+    card.action('Bow another character')
+        .cost(costs.bow({
+            cardType: CardType.Character,
+            cardCondition: (chosen, context) => {
+                expectType<DrawCard>()(context.source);
+                return chosen !== context.source;
+            }
+        }))
+        .chatText('bow a character');
 
     // an optional target may be skipped
     card.action('Optional target')
@@ -93,11 +124,29 @@ export function builderTypeTests(card: DrawCard, province: ProvinceCard): void {
 
     // select labels
     card.action('Select')
-        .select({}, { A: bow(), B: honor() })
+        .select({ A: bow(), B: honor() })
         .chatText((context) => {
             expectType<'A' | 'B'>()(context.select);
             // @ts-expect-error: not a label
             expectType<'C'>()(context.select);
+            return msg`${context.select}`;
+        });
+
+    // a choice's chatText sees the select's earlier targets
+    card.action('Select with text')
+        .target({ cardType: CardType.Character }, noAction())
+        .select({ name: 'choice', dependsOn: 'target' }, {
+            Bow: { action: bow(), chatText: (context) => msg`bow ${context.targets.target}` },
+            Honor: honor()
+        });
+
+    // selectFrom's labels are computed, but chosen once it resolves
+    card.action('Select from')
+        .selectFrom({}, (context) => ({ [context.player.name]: bow() }))
+        .chatText((context) => {
+            expectType<string>()(context.select);
+            // @ts-expect-error: no longer possibly undefined
+            expectType<undefined>()(context.select);
             return msg`${context.select}`;
         });
 

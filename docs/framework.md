@@ -692,7 +692,7 @@ this.wouldInterrupt('Cancel an event')
     .cannotBeMirrored();
 ```
 
-An action passed to `gameAction` (or to a target) is typed with the ability's context, so `context.event` in its own properties is the triggering event. Actions nested inside it — the elements of `multiple([...])` or `sequential([...])`, `conditional`'s `trueGameAction`/`falseGameAction` — are not: their factory's `context` is a plain `AbilityContext`, so reading `context.event` there needs an annotation (`(context: TriggeredAbilityContext) => ...`, imported from `TriggeredAbilityContext.js`).
+An action passed to `gameAction` (or to a target) is typed with the ability's context, so `context.event` in its own properties is the triggering event. The same holds for actions nested inside it (the elements of `multiple([...])` or `sequential([...])`, `conditional`'s `trueGameAction`/`falseGameAction`): the context type flows down from the ability, so they need no annotation.
 
 A target without a `cardType` holds a `BaseCard`, which has no `isParticipating()` or `isAttacking()`; give character targets `cardType: CardType.Character`.
 
