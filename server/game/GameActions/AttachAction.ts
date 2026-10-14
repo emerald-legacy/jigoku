@@ -54,25 +54,25 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
             return true;
         }
 
-        if(!context.player || (card.location !== Location.PlayArea && card.type !== CardType.Province)) {
+        const attachment = properties.attachment;
+        if(!context.player || (card.location !== Location.PlayArea && card.type !== CardType.Province) || !attachment) {
             return false;
-        } else if(
-            !properties.attachment ||
-            (!properties.ignoreUniqueness && properties.attachment.anotherUniqueInPlay(context.player)) ||
-            !properties.attachment.canAttach(card, {
-                ignoreType: properties.ignoreType,
-                controller: this.getFinalController(properties, context) ?? properties.attachment.controller
-            })
+        }
+        const controller = this.getFinalController(properties, context) ?? attachment.controller;
+        if(
+            (!properties.ignoreUniqueness && attachment.anotherUniqueInPlay(context.player)) ||
+            !attachment.canAttach(card, { ignoreType: properties.ignoreType, controller }) ||
+            card.hasCopyOfAttachment(attachment, controller)
         ) {
             return false;
-        } else if(properties.takeControl && properties.attachment.controller === context.player) {
+        } else if(properties.takeControl && attachment.controller === context.player) {
             return false;
-        } else if(properties.giveControl && properties.attachment.controller !== context.player) {
+        } else if(properties.giveControl && attachment.controller !== context.player) {
             return false;
         } else if(!card.checkRestrictions(RestrictionType.Play, context)) {
             return false;
         }
-        return card.allowAttachment(properties.attachment) && super.canAffect(card, context);
+        return card.allowAttachment(attachment) && super.canAffect(card, context);
     }
 
     getFinalController(properties: AttachProperties, context: C): Player | undefined {

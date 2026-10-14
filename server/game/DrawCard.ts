@@ -826,23 +826,6 @@ export class DrawCard extends BaseCard {
         //empty function so playcardaction doesn't crash the game
     }
 
-    allowAttachment(attachment: BaseCard): boolean {
-        if(
-            this.game.rules.attachmentsMaxOneCopyPerName &&
-            this.type === CardType.Character &&
-            this.attachments.some(
-                (a) =>
-                    !a.allowDuplicatesOfAttachment &&
-                    a.id === attachment.id &&
-                    a.controller === attachment.controller &&
-                    a !== attachment
-            )
-        ) {
-            return false;
-        }
-        return super.allowAttachment(attachment);
-    }
-
     getEffectMarkers(): Array<{ source: string; kind: 'delayed' | 'modifier' }> {
         const engine = this.game?.effectEngine;
         if(!engine || !Array.isArray(engine.effects)) {

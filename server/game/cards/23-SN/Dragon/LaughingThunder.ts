@@ -62,7 +62,7 @@ export default class LaughingThunder extends DrawCard {
             side: 'conflict',
             text: '',
             type: CardType.Attachment,
-            name: 'Kiho',
+            name: card.name,
             id: card.id,
             traits: ['kiho']
         });

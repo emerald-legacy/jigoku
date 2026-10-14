@@ -14,6 +14,11 @@ export class AttachmentManager {
         this.attachments = this.attachments.filter((card) => card.uuid !== attachment.uuid);
     }
 
+    hasCopyOf(attachment: DrawCard, controller: Player): boolean {
+        return this.host.game.rules.attachmentsMaxOneCopyPerName && !attachment.allowDuplicatesOfAttachment &&
+            this.attachments.some((other) => other !== attachment && isCopy(other, attachment) && other.controller === controller);
+    }
+
     allowAttachment(attachment: DrawCard): boolean {
         if(this.host.allowedAttachmentTraits.some((trait) => attachment.hasTrait(trait))) {
             return true;
@@ -42,21 +47,6 @@ export class AttachmentManager {
             const matchingAttachments = this.attachments.filter((attachment) => attachment.id === card.id);
             for(const overflow of matchingAttachments.slice(0, -limit)) {
                 illegalAttachments.add(overflow);
-            }
-        }
-
-        const frameworkLimitsAttachmentsWithRepeatedNames = game.rules.attachmentsMaxOneCopyPerName;
-        if(frameworkLimitsAttachmentsWithRepeatedNames) {
-            for(const card of this.attachments) {
-                const matchingAttachments = this.attachments.filter(
-                    (attachment) =>
-                        !attachment.allowDuplicatesOfAttachment &&
-                        attachment.id === card.id &&
-                        attachment.controller === card.controller
-                );
-                for(const overflow of matchingAttachments.slice(0, -1)) {
-                    illegalAttachments.add(overflow);
-                }
             }
         }
 
@@ -93,6 +83,29 @@ export class AttachmentManager {
                 source: 'Too many Restricted attachments'
             });
             return true;
+        }
+        const copies = this.copiesOverTheLimit(illegalAttachments);
+        if(copies.length > 0) {
+            // RRG: the card's controller discards copies until only one is attached
+            game.promptForSelect(host.controller, {
+                activePromptTitle: `Choose which ${copies[0].name} to keep`,
+                waitingPromptTitle: 'Waiting for opponent to choose an attachment to keep',
+                cardType: CardType.Attachment,
+                cardCondition: (card) => copies.includes(card),
+                onSelect: (player: Player, kept) => {
+                    const discarded = copies.filter((card) => card !== kept);
+                    game.addMessage(msg`${player} discards ${discarded} from ${host}, as only one copy can be attached`);
+                    if(illegalAttachments.size > 0) {
+                        const plural = illegalAttachments.size > 1;
+                        game.addMessage(msg`${Array.from(illegalAttachments)} ${plural ? 'are' : 'is'} discarded from ${host} as ${plural ? 'they' : 'it'} ${plural ? 'are' : 'is'} no longer legally attached`);
+                    }
+                    discarded.forEach((card) => illegalAttachments.add(card));
+                    game.resolveActions([discardFromPlay({ target: Array.from(illegalAttachments) })], context);
+                    return true;
+                },
+                source: 'Copies of an attachment'
+            });
+            return true;
         } else if(illegalAttachments.size > 0) {
             const plural = illegalAttachments.size > 1;
             game.addMessage(msg`${Array.from(illegalAttachments)} ${plural ? 'are' : 'is'} discarded from ${host} as ${plural ? 'they' : 'it'} ${plural ? 'are' : 'is'} no longer legally attached`);
@@ -101,4 +114,23 @@ export class AttachmentManager {
         }
         return false;
     }
+
+    /** The first set of copies controlled by one player that are attached together, except ones discarded anyway. */
+    private copiesOverTheLimit(illegalAttachments: Set<DrawCard>): DrawCard[] {
+        if(!this.host.game.rules.attachmentsMaxOneCopyPerName) {
+            return [];
+        }
+        const candidates = this.attachments.filter((card) => !card.allowDuplicatesOfAttachment && !illegalAttachments.has(card));
+        for(const card of candidates) {
+            const copies = candidates.filter((other) => isCopy(other, card) && other.controller === card.controller);
+            if(copies.length > 1) {
+                return copies;
+            }
+        }
+        return [];
+    }
+}
+
+function isCopy(card: DrawCard, other: DrawCard): boolean {
+    return card.name === other.name;
 }

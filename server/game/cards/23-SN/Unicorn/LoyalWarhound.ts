@@ -14,7 +14,7 @@ export default class LoyalWarhound extends DrawCard {
             side: 'dynasty',
             text: '',
             type: CardType.Attachment,
-            name: 'War Hound',
+            name: 'Loyal Warhound',
             id: 'loyal-warhound',
             traits: ['creature']
         });

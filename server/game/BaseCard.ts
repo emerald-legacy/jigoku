@@ -914,6 +914,11 @@ export class BaseCard extends EffectSource {
         return true;
     }
 
+    /** Another copy (by name) of the attachment, controlled by `controller`, is attached here: the rules allow only one. */
+    hasCopyOfAttachment(attachment: DrawCard, controller: Player): boolean {
+        return this.attachmentHost.hasCopyOf(attachment, controller);
+    }
+
     /**
      * Checks 'no attachment' restrictions for this card when attempting to
      * attach the passed attachment card.
