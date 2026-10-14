@@ -10,6 +10,7 @@ import type { Event } from '../Events/Event.js';
 import type { BaseAbility } from '../BaseAbility.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { MoveCardAction } from '../GameActions/MoveCardAction.js';
+import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from '../GameActions/targetingCosts.js';
 
 type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
 
@@ -200,6 +201,17 @@ export class AbilityResolver extends BaseStepWithPipeline {
             return;
         }
 
+        // paid with the costs, so cancelling the effects doesn't undo it
+        const costsToTarget = targetingCosts(this.context, Object.values(this.context.targets).flat());
+        if(!canPayTargetingCosts(this.context, costsToTarget)) {
+            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
+            this.cancelled = true;
+            for(const event of this.events) {
+                event.cancel();
+            }
+            return;
+        }
+
         const source = this.context.source;
         // a played card is always a draw card
         if(this.context.ability.isCardPlayed() && source.isDrawCard()) {
@@ -221,6 +233,7 @@ export class AbilityResolver extends BaseStepWithPipeline {
             this.context.player.incrementAbilityMax(maxIdentifier);
         }
         this.context.ability.displayMessage(this.context);
+        payTargetingCosts(this.context, costsToTarget);
 
         if(this.context.ability.isTriggeredAbility()) {
             // If this is an event, move it to 'being played', and queue a step to send it to the discard pile after it resolves

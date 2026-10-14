@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { isChosenByAbilityPlayer, resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
@@ -11,6 +11,7 @@ import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
 import { isCardOfType, type CardOfType, type CardTypes } from '../types/CardOfType.js';
+import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from './targetingCosts.js';
 
 const isCardTypeList = (cardType: CardTypes): cardType is readonly CardType[] => Array.isArray(cardType);
 
@@ -205,10 +206,16 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
             buttons: properties.cancelHandler ? [{ text: 'Cancel', arg: 'cancel' }] : [],
             onCancel: properties.cancelHandler,
             onSelect: (player: Player, cards: BaseCard | BaseCard[]) => {
+                const costsToTarget = properties.targets ? targetingCosts(context, Array.isArray(cards) ? cards : [cards]) : [];
+                if(!canPayTargetingCosts(context, costsToTarget)) {
+                    context.game.addMessage(msg`${context.player} attempted to use ${context.source}, but did not successfully pay the required costs`);
+                    return true;
+                }
                 const text = properties.message?.(context, cards, player);
                 if(text) {
                     context.game.addMessage(text);
                 }
+                payTargetingCosts(context, costsToTarget);
                 if(typeof properties.gameAction !== 'function' || !Array.isArray(cards) || cards.length > 0) {
                     actionFor(properties.gameAction, cards).addEventsToArray(
                         events,
