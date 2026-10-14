@@ -1,7 +1,7 @@
 import { msg } from '../GameChat.js';
 import type { GameRules } from '../GameRules.js';
 import { CardType } from '../Constants.js';
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 import { bow, ready } from '../GameActions/GameActions.js';
 

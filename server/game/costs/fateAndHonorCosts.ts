@@ -1,9 +1,9 @@
 import { PlayType } from '../Constants.js';
 import * as GameActions from '../GameActions/GameActions.js';
-import { Derivable, derive } from '../utils/helpers.js';
+import { type Derivable, derive } from '../utils/helpers.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
-import Ring from '../Ring.js';
+import type Ring from '../Ring.js';
 import type { Cost, CostContext } from './Cost.js';
 import { GameActionCost } from './GameActionCost.js';
 import { MetaActionCost } from './MetaActionCost.js';

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import type { EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type { MessageArgs } from '../GameChat.js';
 import type Player from '../Player.js';

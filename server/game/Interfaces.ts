@@ -1,4 +1,4 @@
-import { ConflictType } from './Constants.js';
+import type { ConflictType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EventPayload } from './Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';

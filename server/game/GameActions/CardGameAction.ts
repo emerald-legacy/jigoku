@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EffectName, EventName, Location } from '../Constants.js';
+import { CardType, EffectName, type EventName, Location } from '../Constants.js';
 import { GameAction, type GameActionProperties, targetList, type ActionEvent } from './GameAction.js';
 import { payAdditionalCost } from '../costs/additionalCost.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';

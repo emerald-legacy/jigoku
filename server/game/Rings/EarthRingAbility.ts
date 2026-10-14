@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
 import { TargetMode } from '../Constants.js';
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 import { EARTH_CHOICE, type GameRules } from '../GameRules.js';
 import { discardAtRandom, draw } from '../GameActions/GameActions.js';

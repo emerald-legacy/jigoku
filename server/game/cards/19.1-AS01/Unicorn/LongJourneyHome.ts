@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { cardCannot } from '../../../effects.js';
 import { bow, cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
-import { CardType, Duration, EventName, RestrictionType } from '../../../Constants.js';
+import { CardType, Duration, type EventName, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';

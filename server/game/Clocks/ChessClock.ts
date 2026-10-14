@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
-import Player from '../Player.js';
-import { Clock, Mode } from './Clock.js';
+import type Player from '../Player.js';
+import { Clock, type Mode } from './Clock.js';
 import type { ClockInterface } from './types.js';
 
 export class ChessClock extends Clock implements ClockInterface {

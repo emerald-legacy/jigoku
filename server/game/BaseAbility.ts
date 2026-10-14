@@ -5,7 +5,7 @@ import { AbilityTargetRing } from './AbilityTargets/AbilityTargetRing.js';
 import { AbilityTargetSelect } from './AbilityTargets/AbilityTargetSelect.js';
 import { AbilityTargetToken } from './AbilityTargets/AbilityTargetToken.js';
 import { AbilityTargetElementSymbol } from './AbilityTargets/AbilityTargetElementSymbol.js';
-import { Stage, TargetMode, AbilityType, Players, EventName, Blocker } from './Constants.js';
+import { Stage, TargetMode, AbilityType, type Players, EventName, Blocker } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';

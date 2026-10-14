@@ -1,7 +1,7 @@
 import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, Duration, EventName, Location } from '../Constants.js';
+import { CardType, Duration, type EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { canPlayFromOwn } from '../Effects/Library/canPlayFromOwn.js';
 import { playerDelayedEffect } from '../Effects/Library/delayedEffect.js';

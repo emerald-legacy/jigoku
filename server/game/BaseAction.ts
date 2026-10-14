@@ -1,4 +1,4 @@
-import { AbilityContext } from './AbilityContext.js';
+import type { AbilityContext } from './AbilityContext.js';
 import { AbilityType, Blocker } from './Constants.js';
 import { BaseCardAbility } from './BaseCardAbility.js';
 import type BaseCard from './BaseCard.js';

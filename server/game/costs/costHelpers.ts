@@ -1,4 +1,4 @@
-import { CardGameAction } from '../GameActions/CardGameAction.js';
+import type { CardGameAction } from '../GameActions/CardGameAction.js';
 import { eraseSelectCardsProperties, SelectCardAction, type SelectCardsProperties } from '../GameActions/SelectCardAction.js';
 import type { TargetMode } from '../Constants.js';
 import type { CardOfType, CardTypes } from '../types/CardOfType.js';

@@ -1,6 +1,6 @@
 import { Blocker } from './Constants.js';
 import type { MessageArgs } from './GameChat.js';
-import { AbilityContext } from './AbilityContext.js';
+import type { AbilityContext } from './AbilityContext.js';
 import { BaseCardAbility } from './BaseCardAbility.js';
 import type { BaseAbilityProperties, DeclaredGameAction } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';

@@ -1,6 +1,6 @@
 import type { EntersPlayStatus } from '../Constants.js';
 import type { CardType, ConflictType, Element, EventName, Players, PlayType, RestrictionType, SkillType } from '../Constants.js';
-import { EffectName } from '../Constants.js';
+import type { EffectName } from '../Constants.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';

@@ -1,5 +1,5 @@
 import type BaseCard from './BaseCard.js';
-import { CardType } from './Constants.js';
+import type { CardType } from './Constants.js';
 
 interface EffectLike {
     context?: { source?: { name?: string; type?: string } };

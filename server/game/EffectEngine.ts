@@ -6,7 +6,7 @@ import type { DelayedEffectValue, DelayedEffectWhen } from './Effects/EffectValu
 import type { AbilityContext } from './AbilityContext.js';
 import { eventNamesIn, isEnumValue } from './utils/helpers.js';
 import type { EffectSource } from './EffectSource.js';
-import { Event } from './Events/Event.js';
+import type { Event } from './Events/Event.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type Game from './Game.js';

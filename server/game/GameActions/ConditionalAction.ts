@@ -3,7 +3,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CompositeGameAction } from './CompositeGameAction.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { GameAction, GameActionProperties } from './GameAction.js';
 import { noAction } from './HandlerAction.js';
 
 export interface ConditionalProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {

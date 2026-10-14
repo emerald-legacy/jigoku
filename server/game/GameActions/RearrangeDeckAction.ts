@@ -1,6 +1,6 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { DeckType, EventName } from '../Constants.js';
+import { DeckType, type EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type { MessageArgs } from '../GameChat.js';

@@ -1,13 +1,13 @@
 import { msg } from './GameChat.js';
 import * as Settings from '../settings.js';
-import { CardType, ConflictType, EffectName, Element, EventName, Location, RestrictionType } from './Constants.js';
+import { CardType, type ConflictType, EffectName, type Element, EventName, Location, RestrictionType } from './Constants.js';
 import { GameObject } from './GameObject.js';
-import { ProvinceCard } from './ProvinceCard.js';
-import BaseCard from './BaseCard.js';
-import Game from './Game.js';
+import type { ProvinceCard } from './ProvinceCard.js';
+import type BaseCard from './BaseCard.js';
+import type Game from './Game.js';
 import Player from './Player.js';
 import type Ring from './Ring.js';
-import DrawCard from './DrawCard.js';
+import type DrawCard from './DrawCard.js';
 import { bow, sendHome } from './GameActions/GameActions.js';
 
 type Predicate = (card: DrawCard) => boolean;

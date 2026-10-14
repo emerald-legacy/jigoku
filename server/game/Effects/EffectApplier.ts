@@ -1,4 +1,4 @@
-import { CardType, EffectName, Duration } from '../Constants.js';
+import { CardType, EffectName, type Duration } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';

@@ -4,7 +4,7 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CompositeGameAction } from './CompositeGameAction.js';
 import type { EventName } from '../Constants.js';
-import { GameAction, joinEffectMessages, type GameActionProperties } from './GameAction.js';
+import { type GameAction, joinEffectMessages, type GameActionProperties } from './GameAction.js';
 
 export interface MultipleProperties extends GameActionProperties {
     gameActions: GameAction[];

@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, RestrictionType } from '../Constants.js';
 import type { Cost } from './Cost.js';
-import { Event } from '../Events/Event.js';
+import type { Event } from '../Events/Event.js';
 import { ReduceableFateCost } from './ReduceableFateCost.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';

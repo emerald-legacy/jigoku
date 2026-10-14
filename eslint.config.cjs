@@ -99,6 +99,7 @@ module.exports = [
             ...tseslint.configs.recommended.rules,
             'no-unused-vars': 'off',
             '@typescript-eslint/no-explicit-any': 'error',
+            '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
             '@typescript-eslint/no-unnecessary-type-assertion': 'error',
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
@@ -182,6 +183,7 @@ module.exports = [
             'no-unused-vars': 'off',
             // stub-based unit tests opt out with a file-level eslint-disable
             '@typescript-eslint/no-explicit-any': 'error',
+            '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
             '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',

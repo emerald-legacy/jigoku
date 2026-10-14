@@ -3,7 +3,7 @@ import { changeType } from './effects.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { Duration, CardType } from './Constants.js';
 import { PlayAttachmentAction } from './PlayAttachmentAction.js';
-import DrawCard from './DrawCard.js';
+import type DrawCard from './DrawCard.js';
 
 export class PlayCharacterAsAttachment extends PlayAttachmentAction {
     constructor(card: DrawCard) {

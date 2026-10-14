@@ -1,4 +1,4 @@
-import { Element } from './Constants.js';
+import type { Element } from './Constants.js';
 import { EffectSource } from './EffectSource.js';
 import type BaseCard from './BaseCard.js';
 import type Game from './Game.js';

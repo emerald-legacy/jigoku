@@ -1,4 +1,4 @@
-import { CardType, EventName, Players } from '../../../Constants.js';
+import { CardType, type EventName, Players } from '../../../Constants.js';
 import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';

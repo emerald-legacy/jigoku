@@ -1,9 +1,9 @@
 import { msg } from '../GameChat.js';
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, Element } from '../Constants.js';
 import { BaseAbility } from '../BaseAbility.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
-import DrawCard from '../DrawCard.js';
+import type DrawCard from '../DrawCard.js';
 import { dishonor, honor } from '../GameActions/GameActions.js';
 
 export class FireRingAbility extends BaseAbility {

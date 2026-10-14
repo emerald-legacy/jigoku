@@ -1,6 +1,6 @@
 import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { CardSelector } from '../CardSelector.js';
-import { Stage, Players, EffectName, TargetMode, RestrictionType } from '../Constants.js';
+import { Stage, type Players, EffectName, type TargetMode, RestrictionType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';

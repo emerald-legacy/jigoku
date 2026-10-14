@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import { AbilityType, EventName } from '../Constants.js';
+import { AbilityType, type EventName } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import { TriggeredAbility } from '../TriggeredAbility.js';

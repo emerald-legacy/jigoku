@@ -8,29 +8,29 @@ import { GameObject } from './GameObject.js';
 import { Deck } from './Deck.js';
 import { AttachmentPrompt } from './gamesteps/AttachmentPrompt.js';
 import { clockFor, type ClockConfig } from './Clocks/ClockSelector.js';
-import { CostReducer, type CostReducerProps } from './CostReducer.js';
+import type { CostReducer, CostReducerProps } from './CostReducer.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import { loseHonor } from './GameActions/GameActions.js';
 import { RingAbilities } from './RingAbilities.js';
-import { PlayableLocation } from './PlayableLocation.js';
+import type { PlayableLocation } from './PlayableLocation.js';
 import { PlayerCostManager } from './PlayerCostManager.js';
 import { PlayerConflictManager, type ConflictDeclarationProperties } from './PlayerConflictManager.js';
 import { PlayerStateBuilder } from './PlayerStateBuilder.js';
 import { PlayerPromptState } from './PlayerPromptState.js';
-import { RoleCard } from './RoleCard.js';
+import type { RoleCard } from './RoleCard.js';
 import { StrongholdCard } from './StrongholdCard.js';
 
 import {
     CardType,
-    ConflictType,
+    type ConflictType,
     DeckType,
     EffectName,
-    Element,
+    type Element,
     EventName,
     FavorType,
     Location,
     Players,
-    PlayType,
+    type PlayType,
     RestrictionType
 } from './Constants.js';
 import type Game from './Game.js';

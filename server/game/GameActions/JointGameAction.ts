@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CompositeGameAction } from './CompositeGameAction.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { GameAction, GameActionProperties } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
 export interface JointGameProperties extends GameActionProperties {

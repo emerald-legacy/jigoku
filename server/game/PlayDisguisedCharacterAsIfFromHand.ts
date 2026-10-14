@@ -1,9 +1,9 @@
-import { AbilityContext } from './AbilityContext.js';
+import type { AbilityContext } from './AbilityContext.js';
 import { PlayType, Blocker } from './Constants.js';
 import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
 import { PlayIntoLocation } from './PlayCharacterAction.js';
-import DrawCard from './DrawCard.js';
-import Player from './Player.js';
+import type DrawCard from './DrawCard.js';
+import type Player from './Player.js';
 
 export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAction {
     constructor(card: DrawCard, intoLocation = PlayIntoLocation.Any) {

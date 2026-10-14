@@ -4,7 +4,7 @@ import { EventRegistrar } from './EventRegistrar.js';
 import type DrawCard from './DrawCard.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
-import { AbilityContext } from './AbilityContext.js';
+import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import { isEffectOf } from './Effects/types.js';
 

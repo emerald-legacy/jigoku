@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName, Location } from '../Constants.js';
+import { type EventName, Location } from '../Constants.js';
 import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 
 export interface FillProvinceProperties extends PlayerActionProperties {

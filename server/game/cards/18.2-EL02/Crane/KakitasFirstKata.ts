@@ -3,7 +3,7 @@ import { CardType, EventName, Players, RestrictionType, RestrictionScope } from 
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
-import BaseCard from '../../../BaseCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 

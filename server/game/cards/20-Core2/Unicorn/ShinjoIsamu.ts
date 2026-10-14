@@ -1,4 +1,4 @@
-import { EventName } from '../../../Constants.js';
+import type { EventName } from '../../../Constants.js';
 import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';

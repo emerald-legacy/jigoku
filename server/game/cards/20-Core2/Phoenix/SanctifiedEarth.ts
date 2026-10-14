@@ -1,6 +1,6 @@
 import { cardCannot, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect, onAffinity } from '../../../GameActions/GameActions.js';
-import { CardType, EventName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
+import { CardType, type EventName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';

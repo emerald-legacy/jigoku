@@ -1,8 +1,8 @@
 import { msg } from '../GameChat.js';
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { CardType } from '../Constants.js';
 import { BaseAbility } from '../BaseAbility.js';
-import DrawCard from '../DrawCard.js';
+import type DrawCard from '../DrawCard.js';
 import { removeFate } from '../GameActions/GameActions.js';
 
 export class VoidRingAbility extends BaseAbility {

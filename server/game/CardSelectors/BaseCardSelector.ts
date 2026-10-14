@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, Location, Players } from '../Constants.js';
+import { type CardType, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { isCardTypeList } from '../types/CardOfType.js';

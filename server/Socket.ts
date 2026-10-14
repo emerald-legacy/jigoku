@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Socket as IOSocket } from 'socket.io';
+import type { Socket as IOSocket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { logger } from './logger.js';

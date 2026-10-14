@@ -4,8 +4,8 @@ import { FireRingAbility } from './Rings/FireRingAbility.js';
 import { VoidRingAbility } from './Rings/VoidRingAbility.js';
 import { WaterRingAbility } from './Rings/WaterRingAbility.js';
 import { AbilityContext } from './AbilityContext.js';
-import { BaseAbility } from './BaseAbility.js';
-import Player from './Player.js';
+import type { BaseAbility } from './BaseAbility.js';
+import type Player from './Player.js';
 import type { GameRules } from './GameRules.js';
 import { Element } from './Constants.js';
 

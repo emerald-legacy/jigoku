@@ -1,8 +1,8 @@
 import { msg } from '../GameChat.js';
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location, Players, RestrictionType } from '../Constants.js';
 import type { Cost, CostContext, Result } from './Cost.js';
-import { Event } from '../Events/Event.js';
+import type { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';

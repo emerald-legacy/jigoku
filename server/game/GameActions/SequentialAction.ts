@@ -3,7 +3,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import { CompositeGameAction } from './CompositeGameAction.js';
 import type { GameActionList } from './MultipleGameAction.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { GameAction, GameActionProperties } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 
 export interface SequentialProperties extends GameActionProperties {

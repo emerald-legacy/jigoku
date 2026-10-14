@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { ConflictType, EventName } from '../Constants.js';
+import { type ConflictType, EventName } from '../Constants.js';
 import type Player from '../Player.js';
-import { ProvinceCard } from '../ProvinceCard.js';
+import type { ProvinceCard } from '../ProvinceCard.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent, ActionOverrides } from './GameAction.js';
 

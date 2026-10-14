@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
-import { EventName, Players } from '../Constants.js';
+import { type EventName, Players } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { GameObject } from '../GameObject.js';

@@ -1,11 +1,11 @@
 import { msg } from '../GameChat.js';
 import { EventName, Location, Players, PlayType, TargetMode, RestrictionType } from '../Constants.js';
-import { Event } from '../Events/Event.js';
-import { Derivable, derive } from '../utils/helpers.js';
+import type { Event } from '../Events/Event.js';
+import { type Derivable, derive } from '../utils/helpers.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
-import Ring from '../Ring.js';
+import type Ring from '../Ring.js';
 import type { Cost, Result } from './Cost.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import * as GameActions from '../GameActions/GameActions.js';

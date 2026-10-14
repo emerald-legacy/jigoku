@@ -1,5 +1,5 @@
 import { AbilityTargetBase } from './AbilityTargetBase.js';
-import { Stage, Players } from '../Constants.js';
+import { Stage, type Players } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
 import type Player from '../Player.js';

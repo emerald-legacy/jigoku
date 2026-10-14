@@ -1,7 +1,7 @@
 import type { AbilityContext } from './AbilityContext.js';
 import type { GameActionName } from './GameActions/GameActionRegistry.js';
 import BaseCard from './BaseCard.js';
-import { EffectName, Element } from './Constants.js';
+import { EffectName, type Element } from './Constants.js';
 import type { StateViewer } from './types/StateViewer.js';
 
 const illegalActions = new Set([

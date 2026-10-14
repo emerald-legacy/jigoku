@@ -6,7 +6,7 @@ import { eventNamesIn, isEnumValue } from './utils/helpers.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
-import { Event } from './Events/Event.js';
+import type { Event } from './Events/Event.js';
 import type { OwnContextCallback, WhenType } from './Interfaces.js';
 
 type AggregateContext<S extends BaseCard = BaseCard> = TriggeredAbilityContext<S, BaseCard, Event[]>;

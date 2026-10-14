@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
 import { fillProvince, multiple } from '../../GameActions/GameActions.js';
-import { Location } from '../../Constants.js';
+import type { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { playerChoices } from '../playerChoices.js';
 

@@ -5,7 +5,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { CompositeGameAction } from './CompositeGameAction.js';
 import type Player from '../Player.js';
 import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { GameAction, GameActionProperties } from './GameAction.js';
 
 export interface OptionalProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     gameAction: GameAction;

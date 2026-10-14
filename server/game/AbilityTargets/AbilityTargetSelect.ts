@@ -1,6 +1,6 @@
 import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { SelectChoice } from './SelectChoice.js';
-import { Stage, Players } from '../Constants.js';
+import { Stage, type Players } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { ChoicesInput, ChoicesInterface } from '../Interfaces.js';

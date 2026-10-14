@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Phase, Players, PlayType } from '../../../Constants.js';
+import { CardType, Phase, Players, type PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OutmaneuveredByForce extends DrawCard {

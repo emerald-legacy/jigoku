@@ -1,7 +1,7 @@
 import { msg } from '../GameChat.js';
 import { TargetMode } from '../Constants.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
-import { AbilityContext } from '../AbilityContext.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 import { AIR_CHOICE, type GameRules } from '../GameRules.js';
 import { gainHonor, takeHonor } from '../GameActions/GameActions.js';

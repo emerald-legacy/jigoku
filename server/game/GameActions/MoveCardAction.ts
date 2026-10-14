@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
+import { CardType, type EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, type CardEvent, CardGameAction } from './CardGameAction.js';
 import { targetList } from './GameAction.js';

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, type EventName, Location } from '../Constants.js';
 import { type CardActionProperties, type CardEvent, CardGameAction } from './CardGameAction.js';
 import type { ActionOverrides } from './GameAction.js';
 

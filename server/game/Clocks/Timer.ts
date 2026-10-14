@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import { Clock, Mode } from './Clock.js';
+import { Clock, type Mode } from './Clock.js';
 import type { ClockInterface } from './types.js';
 
 export class Timer extends Clock implements ClockInterface {

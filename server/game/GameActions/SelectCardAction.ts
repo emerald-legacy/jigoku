@@ -5,7 +5,7 @@ import type BaseCard from '../BaseCard.js';
 import { isChosenByAbilityPlayer, resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { CardSelector, type SingleCardMode } from '../CardSelector.js';
 import type { BaseCardSelector } from '../CardSelectors/BaseCardSelector.js';
-import { CardType, EffectName, Location, Players, TargetMode, type EventName, RestrictionType } from '../Constants.js';
+import { type CardType, EffectName, type Location, type Players, type TargetMode, type EventName, RestrictionType } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';

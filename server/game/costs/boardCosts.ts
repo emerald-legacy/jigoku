@@ -1,7 +1,7 @@
 import { CharacterStatus, DeckType, Location, TargetMode } from '../Constants.js';
 import * as GameActions from '../GameActions/GameActions.js';
 import { eraseSelectCardsProperties, SelectCardAction } from '../GameActions/SelectCardAction.js';
-import { ReturnToDeckProperties } from '../GameActions/ReturnToDeckAction.js';
+import type { ReturnToDeckProperties } from '../GameActions/ReturnToDeckAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';

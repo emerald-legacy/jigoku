@@ -3,7 +3,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName } from '../Constants.js';
+import { CardType, type EventName } from '../Constants.js';
 import { hideWhenFaceUp } from '../Effects/Library/hideWhenFaceUp.js';
 import { type CardActionProperties, type CardEvent, CardGameAction } from './CardGameAction.js';
 

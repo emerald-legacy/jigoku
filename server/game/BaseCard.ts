@@ -4,29 +4,23 @@ import { addKeyword, cardCannot, legendaryFate, playerCannot } from './effects.j
 import { Effects } from './effects.js';
 import { EffectSource } from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
-import { CardAbility } from './CardAbility.js';
+import type { CardAbility } from './CardAbility.js';
 import { TriggeredAbility } from './TriggeredAbility.js';
 import type { TriggeredAbilityProperties } from './TriggeredAbility.js';
 import type { BaseCardAbility } from './BaseCardAbility.js';
-import Game from './Game.js';
+import type Game from './Game.js';
 
 import { type ActionContext, AbilityBuilder, TriggerBuilder, toActionProps, toAggregateProps, createDraft, holdsTriggerEvent, holdsAggregateEvents, toTriggerProps } from './AbilityBuilder.js';
-import { AbilityContext } from './AbilityContext.js';
+import type { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
-import { AbilityType, CardType, CharacterStatus, Duration, EffectName, type Element, EventName, Location, Players, type PlayType, Blocker, RestrictionType, RestrictionScope } from './Constants.js';
+import { AbilityType, CardType, type CharacterStatus, Duration, EffectName, type Element, EventName, Location, type Players, type PlayType, Blocker, RestrictionType, RestrictionScope } from './Constants.js';
 import { ElementSymbol, type ElementSymbolInfo } from './ElementSymbol.js';
-import {
-    ActionProps,
-    AttachmentConditionProps,
-    PersistentEffectProps,
-    TargetLocation,
-    TriggeredAbilityProps
-} from './Interfaces.js';
+import type { ActionProps, AttachmentConditionProps, PersistentEffectProps, TargetLocation, TriggeredAbilityProps } from './Interfaces.js';
 import type { GameObject } from './GameObject.js';
-import { StatusToken } from './StatusToken.js';
-import Player from './Player.js';
+import type { StatusToken } from './StatusToken.js';
+import type Player from './Player.js';
 import type { BaseAction } from './BaseAction.js';
-import Ring from './Ring.js';
+import type Ring from './Ring.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type { StrongholdCard } from './StrongholdCard.js';
 import type { RoleCard } from './RoleCard.js';
