@@ -1,6 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
 import { cannotReceiveTaintedToken, immunity } from '../../../effects.js';
-import { attach, discardFromPlay, ifAble } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const ATTACHMENT = 'attachment';
@@ -35,13 +34,14 @@ export default class JakIthith extends DrawCard {
                 dependsOn: ATTACHMENT,
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, ifAble((context) => ({
-                ifAbleGameAction: attach({
-                    attachment: context.targets[ATTACHMENT],
-                    target: context.targets[RECEIVER],
-                    takeControl: true
-                }),
-                otherwiseGameAction: discardFromPlay({ target: context.targets[ATTACHMENT] })
-            })));
+            })
+            .ifAble()
+            .attach((context) => ({
+                attachment: context.targets[ATTACHMENT],
+                target: context.targets[RECEIVER],
+                takeControl: true
+            }))
+            .otherwise()
+            .discardFromPlay((context) => ({ target: context.targets[ATTACHMENT] }));
     }
 }

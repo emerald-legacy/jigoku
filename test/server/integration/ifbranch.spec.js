@@ -1,8 +1,9 @@
 import { AbilityBuilder, toActionProps, createDraft } from '../../../build/server/game/AbilityBuilder.js';
 import { ConditionalAction } from '../../../build/server/game/GameActions/ConditionalAction.js';
+import { IfAbleAction } from '../../../build/server/game/GameActions/IfAbleAction.js';
 import { bow } from '../../../build/server/game/GameActions/GameActions.js';
 
-describe('if() and otherwise() in the ability builder', function() {
+describe('if(), ifAble() and otherwise() in the ability builder', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
@@ -51,7 +52,7 @@ describe('if() and otherwise() in the ability builder', function() {
         });
 
         it('rejects otherwise() without if(), a second if() and targets after if()', function() {
-            expect(() => this.builder.otherwise()).toThrowError('Test: otherwise() follows an if()');
+            expect(() => this.builder.otherwise()).toThrowError('Test: otherwise() follows an if() or ifAble()');
             this.builder.if(() => true);
             expect(() => this.builder.if(() => true)).toThrowError('Test: one if() per step');
             expect(() => this.builder.select({}, {})).toThrowError('Test: targets come before if()');
@@ -110,6 +111,36 @@ describe('if() and otherwise() in the ability builder', function() {
             this.builder.if(() => true).otherwise().gainFate(1);
 
             expect(() => toActionProps(this.draft)).toThrowError('Test: if() and otherwise() each need a game action');
+        });
+
+        it('puts ifAble() branches in one ifAble action', function() {
+            this.builder.draw(1)
+                .ifAble()
+                .gainHonor(2)
+                .otherwise()
+                .gainFate(2);
+
+            const [draw, branches] = toActionProps(this.draft).gameAction;
+            expect(draw).not.toEqual(jasmine.any(IfAbleAction));
+            expect(branches).toEqual(jasmine.any(IfAbleAction));
+        });
+
+        it('keeps ifAble() branches on the ability after a card target without game actions', function() {
+            this.builder.target({ cardType: 'character' })
+                .ifAble()
+                .gainHonor(1)
+                .otherwise()
+                .draw(1);
+
+            const properties = toActionProps(this.draft);
+            expect(properties.gameAction[0]).toEqual(jasmine.any(IfAbleAction));
+            expect(properties.target.gameAction).toBeUndefined();
+        });
+
+        it('rejects ifAble() without otherwise() and a second branch', function() {
+            this.builder.ifAble().gainHonor(1);
+            expect(() => this.builder.ifAble()).toThrowError('Test: one if() per step');
+            expect(() => toActionProps(this.draft)).toThrowError('Test: ifAble() needs an otherwise()');
         });
     });
 });

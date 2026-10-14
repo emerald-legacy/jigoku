@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import { addTrait } from '../../effects.js';
-import { ifAble, moveCard, playCard } from '../../GameActions/GameActions.js';
+import { playCard } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, Location, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -27,33 +27,29 @@ export default class DragonTattoo extends DrawCard {
                     (event.context?.triggeringContext.chosenCardTargets ?? []).some((card) =>
                         this.isValidTargetForTattoo(card, context))
             })
-            .gameAction(ifAble((context) => {
-                const card = context.event.card;
+            .ifAble()
+            .gameAction(playCard((context) => {
+                this.cardPlayed = true;
                 const played = context.event.context;
-                const respondingTo = played instanceof TriggeredAbilityContext ? played.event : undefined;
                 return {
-                    ifAbleGameAction: playCard(() => {
-                        this.cardPlayed = true;
-                        return {
-                            source: this,
-                            target: card,
-                            resetOnCancel: true,
-                            playType: PlayType.Other,
-                            destination: Location.RemovedFromGame,
-                            payCosts: true,
-                            allowReactions: true,
-                            event: respondingTo
-                        };
-                    }),
-                    otherwiseGameAction: moveCard(() => {
-                        this.cardPlayed = false;
-                        return {
-                            target: card,
-                            destination: Location.RemovedFromGame
-                        };
-                    })
+                    source: this,
+                    target: context.event.card,
+                    resetOnCancel: true,
+                    playType: PlayType.Other,
+                    destination: Location.RemovedFromGame,
+                    payCosts: true,
+                    allowReactions: true,
+                    event: played instanceof TriggeredAbilityContext ? played.event : undefined
                 };
             }))
+            .otherwise()
+            .moveCard((context) => {
+                this.cardPlayed = false;
+                return {
+                    target: context.event.card,
+                    destination: Location.RemovedFromGame
+                };
+            })
             .chatText((context) => msg`${this.cardPlayed ? 'play ' : 'remove '}${context.event.card.name}${this.cardPlayed ? '' : ' from the game'}`);
     }
 

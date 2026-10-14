@@ -636,6 +636,17 @@ Right after a card target, the branches belong to that target: their actions res
 
 Elsewhere, a game action in a branch targets what it would target on its own: the source card for card actions, the player for player actions. The same holds inside `multiple`, `conditional`, `onAffinity` and the other composite actions when they have no target of their own; under a target, they pass the chosen target on.
 
+"Do A, if able. Otherwise, do B" is `ifAble()` and `otherwise()`: there is no condition, the actions after `ifAble()` resolve when they can, the ones after `otherwise()` when they can't, and `otherwise()` is required. The branches always stay on the ability, so their actions name their targets:
+
+```typescript
+// Calling in Favors: … Choose an opponent's attachment – take control of that attachment and attach it to that character, if able. Otherwise, discard the attachment.
+.target({ cardType: CardType.Attachment, controller: Players.Opponent })
+.ifAble()
+    .attach((context) => ({ target: context.costs.dishonor, attachment: context.target, takeControl: true }))
+.otherwise()
+    .discardFromPlay((context) => ({ target: context.target }));
+```
+
 ### Duels
 
 An ability that initiates a duel passes a function returning the duel's properties to `initiateDuel`. Its `gameAction` receives the resolved duel:

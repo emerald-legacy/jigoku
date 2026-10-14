@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { discardCard, ifAble, moveCard, multiple, selectCard } from '../../GameActions/GameActions.js';
+import { discardCard, moveCard, multiple } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
 
 class AkodoZentaro extends DrawCard {
@@ -13,23 +13,24 @@ class AkodoZentaro extends DrawCard {
                 controller: Players.Opponent,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isInConflictProvince() && !card.isUnique() && card.isFaceup()
-            }, ifAble((context) => ({
-                ifAbleGameAction: selectCard({
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    controller: Players.Self,
-                    cardCondition: (card) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
-                    subActionProperties: (card) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
-                    gameAction: multiple([
-                        moveCard({
-                            target: context.target,
-                            changePlayer: true
-                        }),
-                        discardCard()
-                    ])
-                }),
-                otherwiseGameAction: discardCard({ target: context.target })
-            })))
+            })
+            .ifAble()
+            .selectCard((context) => ({
+                cardType: CardType.Province,
+                location: Location.Provinces,
+                controller: Players.Self,
+                cardCondition: (card) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
+                subActionProperties: (card) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
+                gameAction: multiple([
+                    moveCard({
+                        target: context.target,
+                        changePlayer: true
+                    }),
+                    discardCard()
+                ])
+            }))
+            .otherwise()
+            .discardCard((context) => ({ target: context.target }))
             .chatText('take control of {0} and move it one of their provinces');
     }
 }

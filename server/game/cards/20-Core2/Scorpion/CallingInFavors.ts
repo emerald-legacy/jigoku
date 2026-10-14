@@ -1,6 +1,5 @@
 import { CardType, Players } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
-import { attach, discardFromPlay, ifAble } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CallingInFavors extends DrawCard {
@@ -13,13 +12,13 @@ export default class CallingInFavors extends DrawCard {
                 cardType: CardType.Attachment,
                 controller: Players.Opponent
             })
-            .gameAction(ifAble((context) => ({
-                ifAbleGameAction: attach({
-                    target: context.costs.dishonor,
-                    attachment: context.target,
-                    takeControl: true
-                }),
-                otherwiseGameAction: discardFromPlay({ target: context.target })
-            })));
+            .ifAble()
+            .attach((context) => ({
+                target: context.costs.dishonor,
+                attachment: context.target,
+                takeControl: true
+            }))
+            .otherwise()
+            .discardFromPlay((context) => ({ target: context.target }));
     }
 }

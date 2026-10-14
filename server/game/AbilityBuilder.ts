@@ -159,8 +159,11 @@ interface AbilityDraft {
     affinity?: string;
     /** From `onAffinity()`: a Yes/No question before using the affinity, and what the chat says it does. */
     affinityOptions?: AffinityOptions;
-    /** From `if()` / `otherwise()`: the game actions from `from` on are the branches, on `target` when they follow a card target without game actions. */
-    branch?: { condition: (context: AbilityContext) => boolean; from: number; otherwiseFrom?: number; target?: string };
+    /**
+     * From `if()` / `ifAble()` / `otherwise()`: the game actions from `from` on are the branches, on `target` when they follow a card target
+     * without game actions. Without a condition, the first branch resolves when it can (`ifAble()`).
+     */
+    branch?: { condition?: (context: AbilityContext) => boolean; from: number; otherwiseFrom?: number; target?: string };
     /** The names of the card targets, in order. */
     cardTargets?: string[];
     initiateDuel?: (context: AbilityContext) => InitiateDuel;
@@ -715,6 +718,18 @@ export class AbilityBuilder<
     }
 
     /**
+     * "…, if able. Otherwise, …": the game actions after it resolve when they can, the ones after otherwise() when they can't.
+     * They stay on the ability, also after a card target, so they name their targets.
+     */
+    ifAble(): this {
+        if(this.draft.branch) {
+            throw new Error(`${this.draft.title}: one if() per step`);
+        }
+        this.draft.branch = { from: this.draft.gameActions.length };
+        return this;
+    }
+
+    /**
      * The card target the branches belong to: the last target, when it is the only card target without game actions,
      * or when it has game actions of its own and the ability none yet. With several bare card targets, none is meant
      * more than another, so the branches stay on the ability.
@@ -734,10 +749,10 @@ export class AbilityBuilder<
         return bare.length === 1 && bare[0] === last ? bare[0] : undefined;
     }
 
-    /** "Otherwise, …": the game actions after it resolve when the if() condition doesn't hold. */
+    /** "Otherwise, …": the game actions after it resolve when the if() condition doesn't hold, or the ifAble() ones can't resolve. */
     otherwise(): this {
         if(!this.draft.branch || this.draft.branch.otherwiseFrom !== undefined) {
-            throw new Error(`${this.draft.title}: otherwise() follows an if()`);
+            throw new Error(`${this.draft.title}: otherwise() follows an if() or ifAble()`);
         }
         this.draft.branch.otherwiseFrom = this.draft.gameActions.length;
         return this;
@@ -1433,14 +1448,18 @@ function withBranches(draft: AbilityDraft): AbilityDraft {
         return draft;
     }
     const actions = draft.gameActions;
+    const condition = branch.condition;
+    if(!condition && branch.otherwiseFrom === undefined) {
+        throw new Error(`${draft.title}: ifAble() needs an otherwise()`);
+    }
     const yes = actions.slice(branch.from, branch.otherwiseFrom);
     const no = branch.otherwiseFrom === undefined ? [GameActions.noAction()] : actions.slice(branch.otherwiseFrom);
     if(yes.length === 0 || no.length === 0) {
         throw new Error(`${draft.title}: if() and otherwise() each need a game action`);
     }
-    const condition = branch.condition;
-    const conditional = (trueActions: GameAction[], falseActions: GameAction[]) =>
-        GameActions.conditional({ condition: (context) => condition(context), trueGameAction: oneAction(trueActions), falseGameAction: oneAction(falseActions) });
+    const conditional = (trueActions: GameAction[], falseActions: GameAction[]) => condition
+        ? GameActions.conditional({ condition: (context) => condition(context), trueGameAction: oneAction(trueActions), falseGameAction: oneAction(falseActions) })
+        : GameActions.ifAble({ ifAbleGameAction: oneAction(trueActions), otherwiseGameAction: oneAction(falseActions) });
     const before = actions.slice(0, branch.from);
     if(branch.target === undefined) {
         return { ...draft, branch: undefined, gameActions: [...before, conditional(yes, no)] };
