@@ -9,8 +9,7 @@ export default class KagiNawa extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             match: (card) => card.hasTrait('shinobi'),
-            effect: gainAbility.action('Move a character to the conflict', (ability) => ability
-                .condition((context) => context.source.isParticipating())
+            effect: gainAbility.conflictAction('Move a character to the conflict', (ability) => ability
                 .target({
                     cardType: CardType.Character,
                     controller: Players.Any,

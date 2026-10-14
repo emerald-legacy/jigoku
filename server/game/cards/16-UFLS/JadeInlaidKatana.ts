@@ -8,10 +8,11 @@ class JadeInlaidKatana extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: gainAbility.reaction('Remove 1 fate from a character', {
-                afterConflict: (event, context) =>
-                    context.source.isParticipating() && event.conflict.winner === context.source.controller
-            }, (ability) => ability
+            effect: gainAbility.reaction('Remove 1 fate from a character', (ability) => ability
+                .when({
+                    afterConflict: (event, context) =>
+                        context.source.isParticipating() && event.conflict.winner === context.source.controller
+                })
                 .target({
                     cardType: CardType.Character,
                     controller: Players.Any,

@@ -24,21 +24,22 @@ export default class ShibasOath extends DrawCard {
             .chatText((context) => msg`honor ${context.source.parentCharacter}`);
 
         this.whileAttached({
-            effect: gainAbility.wouldInterrupt('Cancel an ability', {
-                onInitiateAbilityEffects: (event, context) =>
-                    event.context.player === context.player.opponent &&
-                    event.cardTargets.some(
-                        (card) =>
-                            // In play
-                            card.location === Location.PlayArea &&
-                            // Character
-                            card.type === CardType.Character &&
-                            // Friendly
-                            card.controller === context.player &&
-                            // Not a Bushi
-                            !card.hasTrait('bushi')
-                    )
-            }, (ability) => ability
+            effect: gainAbility.wouldInterrupt('Cancel an ability', (ability) => ability
+                .when({
+                    onInitiateAbilityEffects: (event, context) =>
+                        event.context.player === context.player.opponent &&
+                        event.cardTargets.some(
+                            (card) =>
+                                // In play
+                                card.location === Location.PlayArea &&
+                                // Character
+                                card.type === CardType.Character &&
+                                // Friendly
+                                card.controller === context.player &&
+                                // Not a Bushi
+                                !card.hasTrait('bushi')
+                        )
+                })
                 .cost(costs.sacrificeSelf())
                 .cancel()
                 .moveCard({

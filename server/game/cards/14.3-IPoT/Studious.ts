@@ -14,10 +14,12 @@ class Studious extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility.reaction('Draw a card', {
-                afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller && context.source.isParticipating()
-            }, (ability) => ability.draw())
+            effect: gainAbility.reaction('Draw a card', (ability) => ability
+                .when({
+                    afterConflict: (event, context) =>
+                        event.conflict.winner === context.source.controller && context.source.isParticipating()
+                })
+                .draw())
         });
     }
 }

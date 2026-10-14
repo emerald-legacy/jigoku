@@ -11,11 +11,13 @@ class Kikyo extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility.reaction('Make opponent discard a card at random', {
-                onCardsDrawn: (event, context) => {
-                    return context.player.opponent && event.player === context.player && context.source.isParticipating();
-                }
-            }, (ability) => ability.discardAtRandom())
+            effect: gainAbility.reaction('Make opponent discard a card at random', (ability) => ability
+                .when({
+                    onCardsDrawn: (event, context) => {
+                        return context.player.opponent && event.player === context.player && context.source.isParticipating();
+                    }
+                })
+                .discardAtRandom())
         });
     }
 }

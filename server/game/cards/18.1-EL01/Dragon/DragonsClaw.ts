@@ -9,8 +9,7 @@ export default class DragonsClaw extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             match: (card) => card.attachments.some((a) => a.name === 'Dragon\'s Fang'),
-            effect: gainAbility.action('Bow and send home a participating character with lower military skill', (ability) => ability
-                .condition((context) => context.source.isParticipating())
+            effect: gainAbility.conflictAction('Bow and send home a participating character with lower military skill', (ability) => ability
                 .target({
                     cardType: CardType.Character,
                     controller: Players.Any,

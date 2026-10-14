@@ -13,16 +13,17 @@ export default class Naginata extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility.reaction('Bow a character', {
-                onMoveToConflict: (event, context) =>
-                    context.source.isParticipating(ConflictType.Military) &&
-                    event.card.type === CardType.Character &&
-                    event.card.isParticipating(),
-                onSendHome: (event, context) =>
-                    context.source.isParticipating(ConflictType.Military) &&
-                    event.card.type === CardType.Character &&
-                    !event.card.isParticipating()
-            }, (ability) => ability
+            effect: gainAbility.reaction('Bow a character', (ability) => ability
+                .when({
+                    onMoveToConflict: (event, context) =>
+                        context.source.isParticipating(ConflictType.Military) &&
+                        event.card.type === CardType.Character &&
+                        event.card.isParticipating(),
+                    onSendHome: (event, context) =>
+                        context.source.isParticipating(ConflictType.Military) &&
+                        event.card.type === CardType.Character &&
+                        !event.card.isParticipating()
+                })
                 .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>

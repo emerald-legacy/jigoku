@@ -18,8 +18,7 @@ export default class WritOfSurvey extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility.action('Bow a participating dishonored character', (ability) => ability
-                .condition((context) => context.source.isParticipating())
+            effect: gainAbility.conflictAction('Bow a participating dishonored character', (ability) => ability
                 .target({
                     cardType: CardType.Character,
                     controller: Players.Any,

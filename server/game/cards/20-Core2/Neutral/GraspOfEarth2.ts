@@ -20,10 +20,11 @@ export default class GraspOfEarth2 extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility.wouldInterrupt('Block a character\'s movement to the conflict', {
-                onMoveToConflict: (event, context) =>
-                    event.card.type === CardType.Character && context.source.isParticipating()
-            }, (ability) => ability
+            effect: gainAbility.wouldInterrupt('Block a character\'s movement to the conflict', (ability) => ability
+                .when({
+                    onMoveToConflict: (event, context) =>
+                        event.card.type === CardType.Character && context.source.isParticipating()
+                })
                 .cancel()
                 .chatText((context) => msg`deny ${context.event.card}'s movement`))
         });

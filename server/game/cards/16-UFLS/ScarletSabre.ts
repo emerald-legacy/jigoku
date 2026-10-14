@@ -7,12 +7,14 @@ export default class ScarletSabre extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             match: (card) => card.controller.firstPlayer,
-            effect: gainAbility.reaction('Make opponent lose 1 fate', {
-                afterConflict: (event, context) =>
-                    context.player.opponent &&
-                    context.source.isParticipating() &&
-                    event.conflict.winner === context.source.controller
-            }, (ability) => ability.loseFate((context) => ({ target: context.player.opponent })))
+            effect: gainAbility.reaction('Make opponent lose 1 fate', (ability) => ability
+                .when({
+                    afterConflict: (event, context) =>
+                        context.player.opponent &&
+                        context.source.isParticipating() &&
+                        event.conflict.winner === context.source.controller
+                })
+                .loseFate((context) => ({ target: context.player.opponent })))
         });
     }
 }

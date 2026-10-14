@@ -15,11 +15,12 @@ class Chikara extends DrawCard {
 
         this.whileAttached({
             match: (card) => card.hasTrait('champion'),
-            effect: gainAbility.reaction('Return all fate from, then sacrifice a character', {
-                afterConflict: (event, context) => {
-                    return event.conflict.winner === context.source.controller && context.source.isParticipating();
-                }
-            }, (ability) => ability
+            effect: gainAbility.reaction('Return all fate from, then sacrifice a character', (ability) => ability
+                .when({
+                    afterConflict: (event, context) => {
+                        return event.conflict.winner === context.source.controller && context.source.isParticipating();
+                    }
+                })
                 .target({
                     cardType: CardType.Character,
                     cardCondition: (card) => card.isParticipating()

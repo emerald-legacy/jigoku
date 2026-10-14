@@ -43,7 +43,7 @@ interface MenuItem {
 
 type StatSummary = { stat?: string; modifiers?: StatModifierSummary[] };
 type DuelCondition = (duel: Duel, context: AbilityContext<DrawCard>) => boolean;
-type ConflictActionOptions = Pick<ConflictActionProps, 'conflictType' | 'evenFromHome'>;
+export type ConflictActionOptions = Pick<ConflictActionProps, 'conflictType' | 'evenFromHome'>;
 
 const EPHEMERAL_TRIGGER: Partial<Record<string, EventName.OnCardPlayed | EventName.OnCardLeavesPlay>> = {
     [CardType.Event]: EventName.OnCardPlayed,
@@ -922,26 +922,19 @@ export class DrawCard extends BaseCard {
                 const condition = properties.condition;
                 this.abilities.actions.push(this.createAction({
                     ...properties,
-                    condition: (context: AbilityContext<this>) => {
-                        const participant = context.source.conflictActionParticipant();
-                        return context.source.game.isDuringConflict(options.conflictType ?? null) &&
-                            (options.evenFromHome || !participant || participant.isParticipating(options.conflictType)) &&
-                            (condition?.(context) ?? true);
-                    }
+                    condition: (context: AbilityContext<this>) => context.source.allowsConflictAction(options) && (condition?.(context) ?? true)
                 }));
             }
         });
     }
 
-    /** The character whose participation this card's conflict actions need, if any. */
-    private conflictActionParticipant(): DrawCard | undefined {
-        if(this.type === CardType.Character) {
-            return this;
-        }
-        if(this.type === CardType.Attachment && this.location === Location.PlayArea) {
-            return this.parentCharacter ?? undefined;
-        }
-        return undefined;
+    /** Whether a "Conflict Action" of this card (its own or gained) can be used now; see `conflictAction()`. */
+    allowsConflictAction(options: ConflictActionOptions = {}): boolean {
+        const participant = this.type === CardType.Character
+            ? this
+            : this.type === CardType.Attachment && this.location === Location.PlayArea ? this.parentCharacter : null;
+        return this.game.isDuringConflict(options.conflictType ?? null) &&
+            (!!options.evenFromHome || !participant || participant.isParticipating(options.conflictType));
     }
 }
 

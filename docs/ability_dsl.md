@@ -757,7 +757,8 @@ The authoritative list lives in `server/game/effects.ts`. Tables below cover the
 | `loseAllNonKeywordAbilities()` | Remove non-keyword abilities |
 | `copyCard(card)` | Copy all abilities from another card |
 | `gainAbility.action(title, (ability) => ability…)` | Grant an action, written with the builder (`context.source` is the card that gains it) |
-| `gainAbility.reaction(title, when, (ability) => ability…)` | Grant a triggered ability; also `.interrupt`, `.wouldInterrupt`, `.forcedReaction`, `.forcedInterrupt` |
+| `gainAbility.conflictAction(title, (ability) => ability…, options?)` | Grant a "Conflict Action", with the rules of the card's own `conflictAction(title, options)` |
+| `gainAbility.reaction(title, (ability) => ability.when({ … })…)` | Grant a triggered ability, started like the card's own with `when()` or `aggregateWhen()`; also `.interrupt`, `.wouldInterrupt`, `.forcedReaction`, `.forcedInterrupt` |
 | `gainAbility(AbilityType.Persistent, props)` | Grant a persistent effect; `gainAbility(ability.abilityType, ability)` copies an existing ability |
 | `gainAllAbilities(card)` | Copy all abilities from a specific card |
 | `takeControl(player)` | Change controller |

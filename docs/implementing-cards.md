@@ -850,13 +850,13 @@ Abilities given to other cards by an effect are written with the same builder, i
 
 ```typescript
 this.whileAttached({
-    effect: gainAbility.reaction('Gain 1 fate', {
-        afterConflict: (event, context) => event.conflict.winner === context.source.controller
-    }, (ability) => ability.gainFate())
+    effect: gainAbility.reaction('Gain 1 fate', (ability) => ability
+        .when({ afterConflict: (event, context) => event.conflict.winner === context.source.controller })
+        .gainFate())
 });
 ```
 
-`gainAbility.action(title, …)` grants an action; `.reaction`, `.interrupt`, `.wouldInterrupt`, `.forcedReaction` and `.forcedInterrupt` take the `when` first. A persistent effect is still `gainAbility(AbilityType.Persistent, { … })`, and `gainAbility(ability.abilityType, ability)` copies an existing ability.
+`gainAbility.action(title, …)` grants an action and `gainAbility.conflictAction(title, …, options?)` a "Conflict Action" (the rules of the card's own `conflictAction()`); `.reaction`, `.interrupt`, `.wouldInterrupt`, `.forcedReaction` and `.forcedInterrupt` start with `when()` or `aggregateWhen()`, like the card's own. A persistent effect is still `gainAbility(AbilityType.Persistent, { … })`, and `gainAbility(ability.abilityType, ability)` copies an existing ability.
 
 ## Ability limits
 

@@ -25,9 +25,10 @@ class CraftyTsukumogami extends RingAttachment {
                     target: context.source,
                     effect: [
                         changeType(CardType.Attachment),
-                        gainAbility.forcedReaction('Discard a card', {
-                            onConflictDeclared: (event, context) => !!context.source.parent && context.source.parent === event.ring
-                        }, (ability) => ability
+                        gainAbility.forcedReaction('Discard a card', (ability) => ability
+                            .when({
+                                onConflictDeclared: (event, context) => !!context.source.parent && context.source.parent === event.ring
+                            })
                             .chosenDiscard((context) => ({
                                 target: context.game.currentConflict?.attackingPlayer
                             }))

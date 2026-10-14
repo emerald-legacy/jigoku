@@ -13,14 +13,15 @@ class Daikyu extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility.reaction('Bow a character', {
-                onConflictDeclared: (_event, context) =>
-                    context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
-                onDefendersDeclared: (_event, context) =>
-                    context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
-                onMoveToConflict: (_event, context) =>
-                    context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
-            }, (ability) => ability
+            effect: gainAbility.reaction('Bow a character', (ability) => ability
+                .when({
+                    onConflictDeclared: (_event, context) =>
+                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
+                    onDefendersDeclared: (_event, context) =>
+                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
+                    onMoveToConflict: (_event, context) =>
+                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
+                })
                 .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>

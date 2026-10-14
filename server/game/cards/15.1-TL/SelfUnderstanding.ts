@@ -15,10 +15,11 @@ export default class SelfUnderstanding extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility.reaction('Resolve all claimed ring effects', {
-                afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller && context.source.isParticipating()
-            }, (ability) => ability
+            effect: gainAbility.reaction('Resolve all claimed ring effects', (ability) => ability
+                .when({
+                    afterConflict: (event, context) =>
+                        event.conflict.winner === context.source.controller && context.source.isParticipating()
+                })
                 .resolveRingEffect((context) => ({
                     player: context.player,
                     target: context.player.getClaimedRings()

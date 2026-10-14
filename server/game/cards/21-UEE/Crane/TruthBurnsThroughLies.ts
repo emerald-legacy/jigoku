@@ -10,8 +10,7 @@ export default class TruthBurnsThroughLies extends DrawCard {
         this.attachmentConditions({ trait: ['courtier', 'magistrate'] });
 
         this.whileAttached({
-            effect: gainAbility.action('Dishonor a character', (ability) => ability
-                .condition((context) => context.source.isParticipating())
+            effect: gainAbility.conflictAction('Dishonor a character', (ability) => ability
                 .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>

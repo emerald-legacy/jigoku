@@ -13,8 +13,7 @@ export default class DaiTsuchi extends DrawCard {
         });
 
         this.whileAttached({
-            effect: gainAbility.action('Return attachment to owners hand', (ability) => ability
-                .condition((context) => context.source.isParticipating(ConflictType.Military))
+            effect: gainAbility.conflictAction('Return attachment to owners hand', (ability) => ability
                 .target({
                     cardType: CardType.Attachment,
                     cardCondition: (card, context) =>
@@ -29,7 +28,7 @@ export default class DaiTsuchi extends DrawCard {
                         params: context.target?.name
                     })
                 }))
-                .chatText((context) => msg`return ${context.chatTarget()} to ${context.target?.owner ?? ''}'s hand and prevent them from playing copies this conflict`))
+                .chatText((context) => msg`return ${context.chatTarget()} to ${context.target?.owner ?? ''}'s hand and prevent them from playing copies this conflict`), { conflictType: ConflictType.Military })
         });
     }
 }

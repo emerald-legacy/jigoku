@@ -8,10 +8,12 @@ export default class CollectorOfFavors extends DrawCard {
         this.attachmentConditions({ trait: 'courtier' });
 
         this.whileAttached({
-            effect: gainAbility.reaction('Gain 1 fate', {
-                afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller && context.source.isParticipating()
-            }, (ability) => ability.gainFate())
+            effect: gainAbility.reaction('Gain 1 fate', (ability) => ability
+                .when({
+                    afterConflict: (event, context) =>
+                        event.conflict.winner === context.source.controller && context.source.isParticipating()
+                })
+                .gainFate())
         });
     }
 }

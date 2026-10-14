@@ -12,8 +12,7 @@ export default class ArmorOfTheFallen extends DrawCard {
         this.attachmentConditions({ trait: 'bushi' });
 
         this.whileAttached({
-            effect: gainAbility.action('Remove characters from your discard pile to bow a character', (ability) => ability
-                .condition((context) => context.source.isParticipating())
+            effect: gainAbility.conflictAction('Remove characters from your discard pile to bow a character', (ability) => ability
                 .cost(costs.removeFromGame({
                     cardType: CardType.Character,
                     location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],

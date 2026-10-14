@@ -7,10 +7,11 @@ export default class KakitaBlade2 extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: gainAbility.reaction('Take an action', {
-                onConflictStarted: (_event, context) =>
-                    context.source.isParticipating() && context.source.hasTrait('bushi')
-            }, (ability) => ability
+            effect: gainAbility.reaction('Take an action', (ability) => ability
+                .when({
+                    onConflictStarted: (_event, context) =>
+                        context.source.isParticipating() && context.source.hasTrait('bushi')
+                })
                 .playerLastingEffect({
                     duration: Duration.UntilSelfPassPriority,
                     effect: [gainActionPhasePriority(), additionalAction()]

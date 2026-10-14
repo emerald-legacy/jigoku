@@ -7,13 +7,15 @@ class WayWithWords extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: gainAbility.reaction('Take 1 honor', {
-                afterConflict: (event, context) =>
-                    context.source.isParticipating() &&
-                    event.conflict.winner === context.source.controller &&
-                    context.player.opponent &&
-                    event.conflict.conflictType === ConflictType.Political
-            }, (ability) => ability.takeHonor())
+            effect: gainAbility.reaction('Take 1 honor', (ability) => ability
+                .when({
+                    afterConflict: (event, context) =>
+                        context.source.isParticipating() &&
+                        event.conflict.winner === context.source.controller &&
+                        context.player.opponent &&
+                        event.conflict.conflictType === ConflictType.Political
+                })
+                .takeHonor())
         });
     }
 }

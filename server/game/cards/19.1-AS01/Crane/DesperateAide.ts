@@ -11,8 +11,7 @@ export default class DesperateAide extends DrawCard {
 
     public setupCardAbilities() {
         this.composure({
-            effect: gainAbility.action('Draw a card', (ability) => ability
-                .condition((context) => context.source.isParticipating())
+            effect: gainAbility.conflictAction('Draw a card', (ability) => ability
                 .gameAction(sequential([
                     draw((context) => ({ target: context.player })),
                     gainHonor((context) => ({
