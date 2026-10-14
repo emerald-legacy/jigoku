@@ -52,14 +52,14 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
                     const event = this.getEvent(player, context, additionalProperties);
                     event.cards = availableHand;
                     events.push(event);
-                    return;
+                    continue;
                 }
 
                 if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
                     const event = this.getEvent(player, context, additionalProperties);
                     event.cards = availableHand.slice(0, amount);
                     events.push(event);
-                    return;
+                    continue;
                 }
                 context.game.promptForSelect(player, {
                     activePromptTitle: 'Choose ' + (amount === 1 ? 'a card' : amount + ' cards') + ' to discard',
