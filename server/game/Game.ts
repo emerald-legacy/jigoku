@@ -44,7 +44,6 @@ import type { MenuItem } from './MenuCommands.js';
 import type { MenuArg, Step } from './gamesteps/Step.js';
 import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
-import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
 import { AbilityType, EventName, Location, ConflictType, Element, Players, Phase, RestrictionType } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
@@ -414,13 +413,8 @@ export class Game {
         return array;
     }
 
-    createToken(card: DrawCard, token?: new (card: DrawCard) => DrawCard): DrawCard {
-        let tokenCard: DrawCard;
-        if(!token) {
-            tokenCard = new SpiritOfTheRiver(card);
-        } else {
-            tokenCard = new token(card);
-        }
+    createToken(card: DrawCard, token: new (card: DrawCard) => DrawCard): DrawCard {
+        const tokenCard = new token(card);
         this.allCards.push(tokenCard);
         this.cardsByUuid.set(tokenCard.uuid, tokenCard);
         return tokenCard;

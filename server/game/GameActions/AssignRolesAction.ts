@@ -1,6 +1,6 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import BaseCard from '../BaseCard.js';
+import type BaseCard from '../BaseCard.js';
 import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { EventName, Players } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
@@ -45,7 +45,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
 
     canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { roles } = this.getProperties(context, additionalProperties);
-        return target instanceof BaseCard && Object.keys(roles).some((role) => this.#canTake(role, target, context, additionalProperties));
+        return target.isCard() && Object.keys(roles).some((role) => this.#canTake(role, target, context, additionalProperties));
     }
 
     #chooser(context: C, additionalProperties: ActionOverrides = {}): Player | undefined {
@@ -54,7 +54,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
 
     addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        const cards = targetList(properties.target).filter((target) => target instanceof BaseCard);
+        const cards = targetList(properties.target).filter((target) => target.isCard());
         const [first, second] = Object.keys(properties.roles);
         const chooser = this.#chooser(context, additionalProperties);
         if(properties.pickOrder && chooser) {

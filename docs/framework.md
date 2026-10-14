@@ -538,6 +538,8 @@ An action first collects its events (`action.addEventsToArray(events, context)`:
 
 Engine code imports the factories by name. Files whose own names clash with them (the costs, `AbilityBuilder`) use `import * as GameActions`. The modules in `GameActions/` and `AbilityResolver` construct the action classes instead (`new MoveCardAction(…)`): the factory module imports them, so importing it back closes an import cycle that only breaks when such a module happens to load first.
 
+A class must not share an import cycle with the class it extends: `class DrawCard extends BaseCard` needs `BaseCard` loaded, so nothing that `BaseCard`, `CardAbility` or `ReduceableFateCost` imports may import their subclasses as values. Engine code tells cards and abilities apart with the guards (`isCard()`, `isDrawCard()`, `isTriggeredAbilityInstance()`; `value instanceof GameObject && value.isCard()` for an `unknown`), not with `instanceof` on the class. The modules in `GameActions/` import their effects from `Effects/Library/`, not the `effects` index, which pulls in the ability builder.
+
 ---
 
 ## Lasting Effects

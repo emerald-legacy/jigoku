@@ -6,7 +6,8 @@ import type { ThenAbilityProperties } from './ThenAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { Location, CardType, EffectName, Phase, Blocker } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
-import BaseCard from './BaseCard.js';
+import type BaseCard from './BaseCard.js';
+import { GameObject } from './GameObject.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EffectArg, InitiateDuel, OwnContextCallback } from './Interfaces.js';
 import { msg, type MessageArgs, type MsgArg } from './GameChat.js';
@@ -253,7 +254,7 @@ export class CardAbility extends ThenAbility {
                 if(costMsg && costMsg.length !== 0) {
                     const paid = cost.getActionName ? context.costs[cost.getActionName(context)] : undefined;
                     let card: MsgArg = isMsgArg(paid) ? paid : undefined;
-                    if(paid instanceof BaseCard && paid.isFacedown()) {
+                    if(paid instanceof GameObject && paid.isCard() && paid.isFacedown()) {
                         card = 'a facedown card';
                     }
                     const [format, args] = costMsg;

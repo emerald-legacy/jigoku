@@ -4,7 +4,7 @@ import { EventName, Location, Players, RestrictionType } from '../Constants.js';
 import type { Cost, CostContext, Result } from './Cost.js';
 import { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
-import BaseCard from '../BaseCard.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import Ring from '../Ring.js';
 import { waitingPromptTitle } from '../AbilityTargets/TargetPrompt.js';
@@ -224,7 +224,7 @@ export class ReduceableFateCost implements Cost {
 
         const pool = properties.pool;
         // a ring pool is not a card: it only clears the selection
-        context.player.setSelectableCards(pool instanceof BaseCard ? [pool] : []);
+        context.player.setSelectableCards(pool.isCard() ? [pool] : []);
         context.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: `Choose amount of fate to spend from ${pool.name}`,
             choices: choices,

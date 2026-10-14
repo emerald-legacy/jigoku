@@ -3,7 +3,9 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, Duration, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
-import { Effects } from '../effects.js';
+import { canPlayFromOwn } from '../Effects/Library/canPlayFromOwn.js';
+import { playerDelayedEffect } from '../Effects/Library/delayedEffect.js';
+import { hideWhenFaceUp } from '../Effects/Library/hideWhenFaceUp.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
@@ -66,8 +68,8 @@ export class SetAsideAction<C extends AbilityContext = AbilityContext> extends C
             card.owner.moveCard(card, Location.RemovedFromGame);
         }
         const effects = [
-            ...(hidden ? [Effects.hideWhenFaceUp()] : []),
-            ...(playableBy ? [Effects.canPlayFromOwn(Location.RemovedFromGame, [card], context.source)] : [])
+            ...(hidden ? [hideWhenFaceUp()] : []),
+            ...(playableBy ? [canPlayFromOwn(Location.RemovedFromGame, [card], context.source)] : [])
         ];
         if(effects.length > 0) {
             context.source.lastingEffect({
@@ -85,7 +87,7 @@ export class SetAsideAction<C extends AbilityContext = AbilityContext> extends C
             const own = cards.filter((card) => card.owner === owner);
             context.source.applyDurationEffect(Duration.UntilEndOfRound, {
                 targetController: owner,
-                effect: Effects.playerDelayedEffect({
+                effect: playerDelayedEffect({
                     when: { onConflictFinished: () => true },
                     gameAction: new HandlerAction({
                         handler: (context) => {

@@ -2,7 +2,8 @@ import { msg } from './GameChat.js';
 import { CardType, EffectName, EventName, Phase, Players, Blocker, RestrictionType } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import BaseCard from './BaseCard.js';
+import type BaseCard from './BaseCard.js';
+import { GameObject } from './GameObject.js';
 import type DrawCard from './DrawCard.js';
 import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
 import { PlayIntoLocation } from './PlayCharacterAction.js';
@@ -15,7 +16,7 @@ import { attach, discardFromPlay, moveStatusToken, placeFate, putIntoConflict, p
 /** The character the disguised one replaces, once chosen. */
 function chosenCharacter(context: AbilityContext): DrawCard | undefined {
     const card = context.costs.chooseDisguisedCharacter;
-    return card instanceof BaseCard && card.isDrawCard() ? card : undefined;
+    return card instanceof GameObject && card.isCard() && card.isDrawCard() ? card : undefined;
 }
 
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayIntoLocation) {

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import BaseCard from '../BaseCard.js';
+import type BaseCard from '../BaseCard.js';
 import { Location, Players } from '../Constants.js';
 import type { Cost, CostMessage, Result } from './Cost.js';
 import type { Event } from '../Events/Event.js';
@@ -56,7 +56,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
             cancelHandler: !result.canCancel ? null : () => (result.cancelled = true),
             subActionProperties: (target: BaseCard | BaseCard[] | Ring) => {
                 context.costs[name] = target;
-                if(target instanceof BaseCard) {
+                if(!Array.isArray(target) && target.isCard()) {
                     context.costs[name + 'StateWhenChosen'] = target.createSnapshot();
                 }
                 if('ringCondition' in properties) {

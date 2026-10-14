@@ -7,7 +7,6 @@ import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import type Player from '../Player.js';
-import { TriggeredAbility } from '../TriggeredAbility.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { EventName } from '../Constants.js';
 import type { ActionEvent } from './GameAction.js';
@@ -30,7 +29,7 @@ interface AbilityToResolve {
 export function abilityContext(properties: AbilityToResolve, context: AbilityContext) {
     const ability = properties.ability;
     const player = properties.player || context.player;
-    return ability instanceof TriggeredAbility ? ability.createContext(player, properties.event) : ability.createContext(player);
+    return ability.isTriggeredAbilityInstance() ? ability.createContext(player, properties.event) : ability.createContext(player);
 }
 
 export function canResolveAbility(properties: AbilityToResolve, context: AbilityContext, ignoredBlockers: Blocker[]): boolean {

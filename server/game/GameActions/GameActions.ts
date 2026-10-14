@@ -39,7 +39,7 @@ import { GainHonorAction, GainHonorProperties } from './GainHonorAction.js';
 import { GainStatusTokenAction, GainStatusTokenProperties } from './GainStatusTokenAction.js';
 import { GameAction, type GameActionProperties, type GameActionTarget } from './GameAction.js';
 import { CardType, Duration, Location, type EventName } from '../Constants.js';
-import { delayedEffect } from '../effects.js';
+import { delayedEffect } from '../Effects/Library/delayedEffect.js';
 import type { GameObject } from '../GameObject.js';
 import { PerformGloryCountAction, GloryCountProperties } from './PerformGloryCountAction.js';
 import { HandlerAction, HandlerProperties } from './HandlerAction.js';

@@ -125,6 +125,10 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
         });
     }
 
+    isTriggeredAbilityInstance(): this is TriggeredAbility {
+        return true;
+    }
+
     isTriggeredByEvent(event: Event, context: TriggeredAbilityContext): boolean {
         return Boolean(this.when && isEnumValue(EventName, event.name) && fireWhen(this.when, event.name, event, context));
     }

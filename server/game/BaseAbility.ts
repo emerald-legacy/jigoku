@@ -14,6 +14,7 @@ import type { TargetPropertiesInput } from './Interfaces.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type BaseCard from './BaseCard.js';
 import type { CardAbility } from './CardAbility.js';
+import type { TriggeredAbility } from './TriggeredAbility.js';
 
 interface AbilityTargetProperties {
     dependsOn?: string;
@@ -326,6 +327,10 @@ export class BaseAbility {
     }
 
     isCardAbilityInstance(): this is CardAbility {
+        return false;
+    }
+
+    isTriggeredAbilityInstance(): this is TriggeredAbility {
         return false;
     }
 

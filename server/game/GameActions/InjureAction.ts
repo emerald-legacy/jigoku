@@ -6,7 +6,6 @@ import { GameAction, type GameActionProperties, targetList } from './GameAction.
 import { RemoveFateAction } from './RemoveFateAction.js';
 import { CardType, Location, type EventName } from '../Constants.js';
 import { DiscardFromPlayAction } from './LeavesPlayAction.js';
-import DrawCard from '../DrawCard.js';
 import type BaseCard from '../BaseCard.js';
 
 export interface InjureProperties extends GameActionProperties {
@@ -31,7 +30,7 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
     }
 
     canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
-        if(!(target instanceof DrawCard)) {
+        if(!target.isCard() || !target.isDrawCard()) {
             return false;
         }
 

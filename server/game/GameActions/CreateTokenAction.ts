@@ -3,9 +3,8 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { CardType, Duration, EventName, Location, ConflictType } from '../Constants.js';
-import { Effects } from '../effects.js';
+import { delayedEffect } from '../Effects/Library/delayedEffect.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import SpiritOfTheRiver from '../cards/SpiritOfTheRiver.js';
 import type { ActionEvent } from './GameAction.js';
 import { CardLastingEffectAction } from './CardLastingEffectAction.js';
 import { DiscardFromPlayAction } from './LeavesPlayAction.js';
@@ -20,14 +19,13 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
     CreateTokenProperties,
     EventName.OnCreateTokenCharacter,
     C,
-    'token' | 'leavingPlayMessage' | 'canEnterConflict'
+    'leavingPlayMessage' | 'canEnterConflict'
 > {
     name = 'createToken';
     effect = 'create a token';
     eventName = EventName.OnCreateTokenCharacter;
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
     defaultProperties = {
-        token: SpiritOfTheRiver,
         leavingPlayMessage: '{0} returns to the deep',
         canEnterConflict: () => true
     };
@@ -65,7 +63,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
 
         new CardLastingEffectAction({
             duration: Duration.UntilEndOfPhase,
-            effect: Effects.delayedEffect({
+            effect: delayedEffect({
                 when: {
                     onConflictFinished: () => true
                 },

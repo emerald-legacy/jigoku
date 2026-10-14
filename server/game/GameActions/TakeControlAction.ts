@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Duration, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
-import { Effects } from '../effects.js';
+import { takeControl } from '../Effects/Library/takeControl.js';
 import type { EffectUntil } from '../Effects/ActiveEffect.js';
 import type { CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -31,7 +31,7 @@ export class TakeControlAction<C extends AbilityContext = AbilityContext> extend
     getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         if(properties.effect.length === 0) {
-            properties.effect = [Effects.takeControl(context.player)];
+            properties.effect = [takeControl(context.player)];
         }
         return properties;
     }
