@@ -219,10 +219,12 @@ export function discardStatusToken<const Types extends CardTypes = undefined, co
 }
 
 /**
- * Cost that will discard the status token on a card to be selected by the player
+ * Cost that discards the source's status token of the given status
  */
-export function discardStatusTokenFromSelf(): Cost {
-    return new GameActionCost(GameActions.discardStatusToken());
+export function discardStatusTokenFromSelf(status: CharacterStatus): Cost {
+    return new GameActionCost(GameActions.discardStatusToken((context) => ({
+        target: context.source.getStatusToken(status) ?? []
+    })));
 }
 
 /**

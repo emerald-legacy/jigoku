@@ -181,11 +181,16 @@ this.wouldInterrupt('Protect attachment from leaving play')
   </div>
 
   <div class="ref" id="co-discardStatusTokenFromSelf" data-name="discardStatusTokenFromSelf">
-    <h3><code>discardStatusTokenFromSelf()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardStatusTokenFromSelf">#</a></h3>
-    <p>"Discard a status token from this character": discards the source's status tokens.</p>
+    <h3><code>discardStatusTokenFromSelf(status)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardStatusTokenFromSelf">#</a></h3>
+    <p>"Discard an honored status token from this character": discards the source's status token of that status. Its other tokens stay.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>status</code></td><td><a href="types.html#en-CharacterStatus"><code>CharacterStatus</code></a></td><td>required</td><td>Which token: <code>Honored</code>, <code>Dishonored</code> or <code>Tainted</code>.</td></tr>
+      </tbody>
+    </table>
     <ul class="edge">
-      <li>Can't be paid when the source has no status token. Restrictions are not checked.</li>
-      <li>It discards every status token on the source, not one: a character that is honored and tainted loses both. Check the token you need in the ability's condition or trigger (Master of the Court checks <code>context.source.isHonored</code>).</li>
+      <li>Can't be paid when the source has no token of that status. Restrictions are not checked.</li>
       <li>Chat: <code>discarding a status token</code>.</li>
     </ul>
     <pre><code>// Master of the Court: Interrupt: When the effects of an event would initiate, discard an honored status token from this character - cancel those effects.
@@ -193,7 +198,7 @@ this.wouldInterrupt('Cancel an event')
     .when({
         onInitiateAbilityEffects: (event, context) =&gt; event.card.type === CardType.Event &amp;&amp; context.source.isHonored
     })
-    .cost(costs.discardStatusTokenFromSelf())
+    .cost(costs.discardStatusTokenFromSelf(CharacterStatus.Honored))
     .cancel();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/MasterOfTheCourt.ts">Master of the Court</a></p>
   </div>
