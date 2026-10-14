@@ -51,5 +51,40 @@ describe('Shinjo Scout 2', function () {
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.revels);
         });
+
+    });
+});
+
+describe('Shinjo Scout 2 when a province that isn\'t attacked is revealed', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-scout-2']
+                },
+                player2: {
+                    provinces: ['border-fortress', 'public-forum']
+                }
+            });
+            this.shinjoScout = this.player1.findCardByName('shinjo-scout-2');
+            this.fortress = this.player2.findCardByName('border-fortress', 'province 1');
+            this.forum = this.player2.findCardByName('public-forum', 'province 2');
+            this.fortress.facedown = false;
+        });
+
+        it('does not trigger', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.shinjoScout],
+                type: 'military',
+                province: this.fortress,
+                defenders: []
+            });
+            this.player2.clickCard(this.fortress);
+            this.player2.clickCard(this.forum);
+            expect(this.forum.facedown).toBe(false);
+            expect(this.player1).not.toBeAbleToSelect(this.shinjoScout);
+        });
     });
 });

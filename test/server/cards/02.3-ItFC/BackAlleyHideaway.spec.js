@@ -168,5 +168,26 @@ describe('Back-Alley Hideaway', function() {
                 )).toBe(false);
             });
         });
+
+        describe('when a character returns to hand', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['adept-of-shadows'],
+                        dynastyDiscard: ['back-alley-hideaway']
+                    }
+                });
+                this.adept = this.player1.findCardByName('adept-of-shadows');
+                this.backAlley = this.player1.placeCardInProvince('back-alley-hideaway', 'province 1');
+            });
+
+            it('isn\'t offered, as the character doesn\'t go to the discard pile', function() {
+                this.player1.clickCard(this.adept);
+                expect(this.player1).not.toHavePrompt('Any interrupts to Adept of Shadows leaving play?');
+                expect(this.adept.location).toBe('hand');
+                expect(this.backAlley.attachments.length).toBe(0);
+            });
+        });
     });
 });

@@ -11,7 +11,7 @@ export default class UnbridledRage extends DrawCard {
         this.action('Military duel to stop contribution')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                challengerCondition: (card) => card.hasTrait('berserker'),
+                challengerCondition: (card) => card.hasTrait('berserker') && card.isParticipating(),
                 chatText: (_context, duel) => msg`prevent ${duel.loser?.[0]} from contributing to resolution of this conflict`,
                 refuseGameAction: multiple([
                     draw((context) => ({

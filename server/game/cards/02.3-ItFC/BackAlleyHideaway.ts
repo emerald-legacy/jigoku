@@ -121,7 +121,8 @@ export default class BackAlleyHideaway extends DrawCard {
                     event.card.isFaction('scorpion') &&
                     event.card.type === CardType.Character &&
                     event.card.controller === context.player &&
-                    event.card.location === Location.PlayArea
+                    event.card.location === Location.PlayArea &&
+                    (event.destination === Location.DynastyDiscardPile || event.destination === Location.ConflictDiscardPile)
             })
             .handler((context) => {
                 const event = context.event;

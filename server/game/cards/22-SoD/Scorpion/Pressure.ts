@@ -18,7 +18,7 @@ export default class Pressure extends DrawCard {
             .selectCard({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
-                controller: Players.Opponent,
+                controller: Players.Any,
                 targets: false,
                 hidePromptIfSingleCard: true,
                 cardCondition: (card, context) => card.isCharacter() && card.isDishonored && card.isParticipating() && (

@@ -370,6 +370,19 @@ describe('SoD - Crab', function () {
                 this.yokuni = this.player2.findCardByName('togashi-yokuni');
             });
 
+            it('needs a participating Berserker', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+
+                this.player1.clickCard(this.rage);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.rage.location).toBe('hand');
+            });
+
             it('refuse duel', function () {
                 this.noMoreActions();
                 this.initiateConflict({

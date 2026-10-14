@@ -12,7 +12,7 @@ export default class AllDistancesAreOne extends DrawCard {
             .condition((context) =>
                 !!(context.game.currentConflict
                     ?.getConflictProvinces()
-                    .every((province) => province.location !== Location.StrongholdProvince) &&
+                    .every((province) => province.location !== Location.StrongholdProvince && !province.isBroken) &&
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
                 )))

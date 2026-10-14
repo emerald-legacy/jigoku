@@ -148,6 +148,19 @@ describe('SoD - Scorpion', function () {
                 this.player2.player.moveCard(this.training, 'conflict deck');
             });
 
+            it('should work on your own dishonored character', function () {
+                this.rumormonger.dishonor();
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rumormonger]
+                });
+
+                expect(this.player1).toBeAbleToSelect(this.pressure);
+                this.player1.clickCard(this.pressure);
+                expect(this.rumormonger.isParticipating()).toBe(false);
+            });
+
             it('should work on defenders', function () {
                 this.keeper.dishonor();
 
