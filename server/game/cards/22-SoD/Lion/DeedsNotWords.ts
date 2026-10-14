@@ -39,7 +39,7 @@ export default class DeedsNotWords extends DrawCard {
             ]))
             .chatText((context) => msg`give ${context.chatTarget()} +2${'military'}`)
             .afterwardsIf((context) => context.player.imperialFavor !== '')
-            .select({}, {
+            .select({
                 'Discard the Imperial Favor': joint([
                     loseImperialFavor((context) => ({ target: context.player })),
                     honor((context) => ({ target: context.target }))

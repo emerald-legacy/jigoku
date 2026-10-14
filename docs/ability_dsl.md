@@ -87,7 +87,7 @@ Builder methods shared by actions and triggered abilities:
 | `target(props, ...actions)` | A card target (see [Targets](#targets)) |
 | `targetCards(props, ...actions)` | Several cards, by `mode` |
 | `ringTarget(props, ...actions)` | A ring target |
-| `select(props, choices)` / `selectFrom` | A choice between labelled options; a `select` choice is a game action, or a condition for a choice without game actions (`No: () => true`) |
+| `select(props, choices)` / `select(choices)` / `selectFrom` | A choice between labelled options; a `select` choice is a game action, a condition for a choice without game actions (`No: () => true`), or `{ action, chatText }` when the ability's chat line depends on the choice |
 | `tokenTarget` / `abilityTarget` / `elementTarget` | Status tokens, a printed ability (always `context.targetAbility`, so it takes no `name`), an element symbol on a chosen card |
 | `gameAction(...actions)` | Action(s) to resolve (see [Game Actions](#game-actions)) |
 | `handler(fn)` | Low-level handler called after costs are paid (use `gameAction` when possible). It replaces the step's resolution: combined with game actions, `if()`, `onAffinity()`, a following step or resolving again, setup throws. Game actions on a target stay allowed; they only decide what can be chosen. To run code as one action among others (raising an event, so a following step can follow), use `gameAction(handler({ handler }))` |
@@ -339,7 +339,7 @@ this.action('Bow or honor a character')
     });
 ```
 
-The choices object maps button labels to game actions or conditions `(context) => boolean`. A game action choice is shown only if it has a legal target, a condition while it holds; a handler reads the pick from `context.select`; `selectFrom` takes a function returning the choices, when they depend on the context.
+The choices object maps button labels to game actions or conditions `(context) => boolean`. A game action choice is shown only if it has a legal target, a condition while it holds; a handler reads the pick from `context.select`; `selectFrom` takes a function returning the choices, when they depend on the context. Without other properties, pass the choices alone: `.select({ … })`. When the chat line depends on the choice, a choice is `{ action, chatText }`: the ability's line uses the chosen one's `chatText` (a format whose `{0}` is the target, or a `(context) => msg\`…\``), and such an ability has no `chatText()` of its own.
 
 ### Dependent targets
 
@@ -1112,7 +1112,7 @@ this.action('Bow, then choose an effect')
         cardType: CardType.Character
     }, bow())
     .then()
-    .select({}, {
+    .select({
         'Gain 1 honor': gainHonor(),
         'Draw 1 card': draw()
     });

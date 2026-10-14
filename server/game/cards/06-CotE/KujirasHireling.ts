@@ -13,7 +13,7 @@ class KujirasHireling extends DrawCard {
         this.action('+1/+1 or -1/-1')
             .anyPlayer()
             .cost(costs.payFate())
-            .select({}, {
+            .select({
                 '+1/+1': cardLastingEffect({
                     effect: modifyBothSkills(1),
                     duration: Duration.UntilEndOfPhase

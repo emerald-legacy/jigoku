@@ -174,7 +174,8 @@ interface AbilityProps<Context> {
     cannotBeMirrored?: boolean;
     printedAbility?: boolean;
     cannotTargetFirst?: boolean;
-    chatText?: string | OwnContextCallback<[context: Context], MessageArgs>;
+    /** `undefined` from the function: the game actions' own text. */
+    chatText?: string | OwnContextCallback<[context: Context], MessageArgs | undefined>;
     evenDuringDynasty?: boolean;
     chatTextArgs?: EffectArg | OwnContextCallback<[context: Context], EffectArg>;
     gameAction?: NoInfer<DeclaredGameAction<Context> | DeclaredGameAction<Context>[]>;

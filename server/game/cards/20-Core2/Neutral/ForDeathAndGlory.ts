@@ -22,27 +22,30 @@ export default class ForDeathAndGlory extends DrawCard {
                 name: 'select',
                 dependsOn: CHARACTER
             }, {
-                'Gain +2 skill': cardLastingEffect((context) => ({
-                    target: context.targets[CHARACTER],
-                    effect: modifyMilitarySkill(2)
-                })),
-                'Gain +4 skill, and get discarded when the conflict ends': multiple([
-                    cardLastingEffect((context) => ({
+                'Gain +2 skill': {
+                    action: cardLastingEffect((context) => ({
                         target: context.targets[CHARACTER],
-                        effect: modifyMilitarySkill(4)
+                        effect: modifyMilitarySkill(2)
                     })),
-                    atEndOfConflict((context) => ({
-                        target: context.targets[CHARACTER],
-                        message: () => msg`${context.targets[CHARACTER]} is discarded from play due to the delayed effect of ${context.source}`,
-                        gameAction: sacrifice({
-                            target: context.targets[CHARACTER]
-                        })
-                    }))
-                ])
+                    chatText: (context) => msg`${'grant 2 military skill to '}${context.targets[CHARACTER]}`
+                },
+                'Gain +4 skill, and get discarded when the conflict ends': {
+                    action: multiple([
+                        cardLastingEffect((context) => ({
+                            target: context.targets[CHARACTER],
+                            effect: modifyMilitarySkill(4)
+                        })),
+                        atEndOfConflict((context) => ({
+                            target: context.targets[CHARACTER],
+                            message: () => msg`${context.targets[CHARACTER]} is discarded from play due to the delayed effect of ${context.source}`,
+                            gameAction: sacrifice({
+                                target: context.targets[CHARACTER]
+                            })
+                        }))
+                    ]),
+                    chatText: (context) => msg`${'grant 4 military skill to '}${context.targets[CHARACTER]}, sacrificing them at the end of the conflict`
+                }
             })
-            .chatText((context) => context.selects.select.choice === 'Gain +2 skill'
-                ? msg`${'grant 2 military skill to '}${context.targets[CHARACTER]}`
-                : msg`${'grant 4 military skill to '}${context.targets[CHARACTER]}, sacrificing them at the end of the conflict`)
             .max(perConflict(1));
     }
 }

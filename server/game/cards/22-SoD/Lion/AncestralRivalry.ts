@@ -21,17 +21,20 @@ export default class AncestralRivalry extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Give the character +3/+3': cardLastingEffect((context) => ({
-                    target: context.targets.character,
-                    effect: modifyBothSkills(3)
-                })),
-                'Let opponent claim favor': claimImperialFavor((context) => ({
-                    target: context.player
-                }))
+                'Give the character +3/+3': {
+                    action: cardLastingEffect((context) => ({
+                        target: context.targets.character,
+                        effect: modifyBothSkills(3)
+                    })),
+                    chatText: (context) => msg`give ${context.targets.character}${' +3'}${'military'}${'/+3'}${'political'}`
+                },
+                'Let opponent claim favor': {
+                    action: claimImperialFavor((context) => ({
+                        target: context.player
+                    })),
+                    chatText: () => msg`claim the Imperial Favor`
+                }
             })
-            .chatText((context) => context.selects.select.choice === 'Let opponent claim favor'
-                ? msg`claim the Imperial Favor`
-                : msg`give ${context.targets.character}${' +3'}${'military'}${'/+3'}${'political'}`)
             .max(perConflict(1));
     }
 }

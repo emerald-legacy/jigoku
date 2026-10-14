@@ -18,13 +18,16 @@ export default class TheEternalWatch extends ProvinceCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Bow this character': bow((context) => ({
-                    target: context.targets.character
-                })),
-                'Give your opponent 1 honor': takeHonor()
-            })
-            .chatText((context) => context.selects.select.choice === 'Give your opponent 1 honor'
-                ? msg`${'take 1 honor from '}${context.player.opponent}`
-                : msg`bow ${context.targets.character}`);
+                'Bow this character': {
+                    action: bow((context) => ({
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`bow ${context.targets.character}`
+                },
+                'Give your opponent 1 honor': {
+                    action: takeHonor(),
+                    chatText: (context) => msg`${'take 1 honor from '}${context.player.opponent}`
+                }
+            });
     }
 }

@@ -28,7 +28,7 @@ export interface CardAbilityProperties<C extends AbilityContext = AbilityContext
     condition?: (context: AbilityContext) => boolean;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     /** A format whose `{0}` is the target, or a message without positions (`msg` template). */
-    chatText?: string | OwnContextCallback<[context: C], MessageArgs>;
+    chatText?: string | OwnContextCallback<[context: C], MessageArgs | undefined>;
     chatTextArgs?: EffectArg | OwnContextCallback<[context: C], EffectArg>;
 }
 
@@ -272,19 +272,21 @@ export class CardAbility extends ThenAbility {
             messageArgs.push('', '');
         }
         const effect = this.properties.chatText;
-        let effectMessage = typeof effect === 'function' ? undefined : effect;
+        let effectMessage: string | undefined;
         let effectArgs: MsgArg[] = [];
         let extraArgs: MsgArg[] | EffectArg | ((context: AbilityContext) => EffectArg) | null | undefined = null;
         if(typeof effect === 'function') {
-            [effectMessage, effectArgs] = effect(context);
-        } else if(!effectMessage) {
+            [effectMessage, effectArgs] = effect(context) ?? [undefined, []];
+        } else if(effect) {
+            effectMessage = effect;
+            effectArgs.push(context.chatTarget());
+            extraArgs = this.properties.chatTextArgs;
+        }
+        if(!effectMessage) {
             const gameActions = this.getGameActions(context).filter(({ action, overrides }) => action.hasLegalTarget(context, overrides));
             if(gameActions.length > 0) {
                 [effectMessage, extraArgs] = joinEffectMessages(context, gameActions);
             }
-        } else {
-            effectArgs.push(context.chatTarget());
-            extraArgs = this.properties.chatTextArgs;
         }
 
         if(extraArgs) {

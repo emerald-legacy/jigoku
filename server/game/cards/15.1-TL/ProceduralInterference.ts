@@ -20,17 +20,20 @@ class ProceduralInterference extends DrawCard {
                 dependsOn: 'province',
                 player: Players.Opponent
             }, {
-                'Discard each card in the province': moveCard((context) => ({
-                    destination: Location.DynastyDiscardPile,
-                    target: context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)
-                })),
-                'Let opponent gain 2 honor': gainHonor({
-                    amount: 2
-                })
-            })
-            .chatText((context) => context.selects.select.choice === 'Let opponent gain 2 honor'
-                ? msg`${'gain 2 honor'}`
-                : msg`discard ${context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)}`);
+                'Discard each card in the province': {
+                    action: moveCard((context) => ({
+                        destination: Location.DynastyDiscardPile,
+                        target: context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)
+                    })),
+                    chatText: (context) => msg`discard ${context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)}`
+                },
+                'Let opponent gain 2 honor': {
+                    action: gainHonor({
+                        amount: 2
+                    }),
+                    chatText: () => msg`${'gain 2 honor'}`
+                }
+            });
     }
 }
 

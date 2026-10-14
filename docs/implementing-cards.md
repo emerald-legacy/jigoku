@@ -444,8 +444,6 @@ this.action('Take 1 fate or 1 honor')
     .condition((context) => !!context.player.opponent &&
         context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1)
     .select({
-        player: Players.Self
-    }, {
         'Take 1 fate': takeFate(),
         'Take 1 honor': takeHonor()
     });
@@ -459,14 +457,25 @@ When the options aren't game actions, give `select` conditions as choices and re
 this.action('Switch the conflict type or ring')
     .condition((context) => context.source.isConflictProvince())
     .select({
-        player: Players.Self
-    }, {
         'Switch the contested ring': (context) => Object.values(context.game.rings).some((ring) => ring.isUnclaimed()),
         'Switch the conflict type': () => true
     })
     .handler((context) => {
         // ... read context.select
     });
+```
+
+When the chat line depends on the choice, give each choice its text with `{ action, chatText }` instead of a `chatText()` that tests `context.select`:
+
+```typescript
+// Hero of Three Trees: … select one - either gain 1 honor, or the attacked province gets -1 strength until the end of the conflict (to a minimum of 0).
+.select({
+    'Gain 1 honor': { action: gainHonor(), chatText: 'gain 1 honor' },
+    'Lower attacked province\'s strength by 1': {
+        action: selectAttackedProvince({ … }),
+        chatText: 'reduce the strength of an attacked province by 1'
+    }
+})
 ```
 
 ### Choosing while the ability resolves

@@ -92,14 +92,17 @@ export default class DisruptedSupplyLines extends DrawCard {
             .select({
                 player: Players.Opponent
             }, {
-                'Give your opponent 1 fate': takeFate(),
-                'Remove attachment from the game': cancel((context) => ({
-                    target: context.source,
-                    replacementGameAction: removeFromGame({ target: context.event.card, location: Location.Any })
-                }))
-            })
-            .chatText((context) => context.select === 'Give your opponent 1 fate'
-                ? msg`${'take 1 fate from '}${context.player.opponent}`
-                : msg`remove ${context.event.card} from the game`);
+                'Give your opponent 1 fate': {
+                    action: takeFate(),
+                    chatText: (context) => msg`${'take 1 fate from '}${context.player.opponent}`
+                },
+                'Remove attachment from the game': {
+                    action: cancel((context) => ({
+                        target: context.source,
+                        replacementGameAction: removeFromGame({ target: context.event.card, location: Location.Any })
+                    })),
+                    chatText: (context) => msg`remove ${context.event.card} from the game`
+                }
+            });
     }
 }

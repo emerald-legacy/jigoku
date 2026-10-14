@@ -20,22 +20,25 @@ class SoshiAoi extends DrawCard {
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Give +1/+0 and the Bushi trait': cardLastingEffect((context) => ({
-                    target: context.targets.character,
-                    duration: Duration.UntilEndOfPhase,
-                    effect: [modifyMilitarySkill(1),
-                        addTrait('bushi')]
-                })),
-                'Give +0/+1 and the Courtier trait': cardLastingEffect((context) => ({
-                    target: context.targets.character,
-                    duration: Duration.UntilEndOfPhase,
-                    effect: [modifyPoliticalSkill(1),
-                        addTrait('courtier')]
-                }))
-            })
-            .chatText((context) => context.selects.select.choice === 'Give +1/+0 and the Bushi trait'
-                ? msg`give +1/+0 and the bushi trait to ${context.targets.character}`
-                : msg`give +0/+1 and the courtier trait to ${context.targets.character}`);
+                'Give +1/+0 and the Bushi trait': {
+                    action: cardLastingEffect((context) => ({
+                        target: context.targets.character,
+                        duration: Duration.UntilEndOfPhase,
+                        effect: [modifyMilitarySkill(1),
+                            addTrait('bushi')]
+                    })),
+                    chatText: (context) => msg`give +1/+0 and the bushi trait to ${context.targets.character}`
+                },
+                'Give +0/+1 and the Courtier trait': {
+                    action: cardLastingEffect((context) => ({
+                        target: context.targets.character,
+                        duration: Duration.UntilEndOfPhase,
+                        effect: [modifyPoliticalSkill(1),
+                            addTrait('courtier')]
+                    })),
+                    chatText: (context) => msg`give +0/+1 and the courtier trait to ${context.targets.character}`
+                }
+            });
     }
 }
 

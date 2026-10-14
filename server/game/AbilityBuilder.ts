@@ -139,6 +139,8 @@ interface AbilityDraft {
     condition?: (context: AbilityContext) => boolean;
     chatText?: string | ((context: AbilityContext) => MessageArgs);
     chatTextArgs?: (context: AbilityContext) => EffectArg;
+    /** From a select's `{ action, chatText }` choices: the ability's chat line for the chosen label. */
+    choiceChatText?: { select: string; texts: Record<string, string | ((context: AbilityContext) => MessageArgs)> };
     limit?: AbilityLimit;
     max?: AbilityLimit;
     location?: Location | Location[];
@@ -194,14 +196,21 @@ export function createDraft(title: string, holdsBase: (context: AbilityContext) 
 /** A target's name in `context.targets` (or `context.selects`); 'target' is also `context.target` and `{0}` in the effect message. */
 type Named<Name extends string> = { name?: Name };
 
-/** A select's choice: a game action, or a condition for a choice without game actions. */
+/**
+ * A select's choice: a game action, a condition for a choice without game actions, or a game action with the
+ * ability's chat text when it is chosen (a format whose `{0}` is the target, or a `msg` template).
+ */
 type SelectChoiceValue<Base extends AbilityContext, Targets, Rings, Costs, Tokens, D> =
     | BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>
-    | ((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => boolean);
+    | ((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => boolean)
+    | {
+        action: BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>;
+        chatText: string | ((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => MessageArgs);
+    };
 
 /** The label chosen in a select: `context.selects[name].choice`, and `context.select` for the select named 'target'. */
-type Selected<Name extends string, L extends string> =
-    { selects: { [P in Name]: SelectChoice<L> } } & ('target' extends Name ? { select: L } : unknown);
+type Selected<Name extends string, Label extends string> =
+    { selects: { [P in Name]: SelectChoice<Label> } } & ('target' extends Name ? { select: Label } : unknown);
 
 /** A target given no name is named 'target'. */
 type TargetName<Name> = [Name] extends [never] ? 'target' : Name;
@@ -616,16 +625,33 @@ export class AbilityBuilder<
     }
 
     /** The choice lands in `context.selects`, not in `targets`. A choice is a game action, or a condition (no game action) offered while it holds. */
-    select<const Name extends string = never, D extends Dependency<Targets, Rings, Tokens, SelectNames> = never, const L extends string = string>(
+    /** The player chooses one of the labelled choices when the ability initiates; `select(choices)` without other properties. */
+    select<const Label extends string = string>(
+        choices: Record<Label, NoInfer<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, never>>>
+    ): AbilityBuilder<Base & Selected<'target', Label>, Targets, Rings, Costs, Tokens, SelectNames | 'target'>;
+    select<const Name extends string = never, D extends Dependency<Targets, Rings, Tokens, SelectNames> = never, const Label extends string = string>(
         props: Named<Name> & SelectTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>, D>,
-        choices: Record<L, NoInfer<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, D>>>
-    ): AbilityBuilder<Base & Selected<TargetName<Name>, L>, Targets, Rings, Costs, Tokens, SelectNames | TargetName<Name>> {
+        choices: Record<Label, NoInfer<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, D>>>
+    ): AbilityBuilder<Base & Selected<TargetName<Name>, Label>, Targets, Rings, Costs, Tokens, SelectNames | TargetName<Name>>;
+    select(...args: [choices: Record<string, unknown>] | [props: Named<string> & SelectTargetProps<never, string>, choices: Record<string, unknown>]): unknown {
+        const [props, choices] = args.length === 1 ? [{}, args[0]] : args;
         const name = props.name ?? 'target';
         const [required, optional] = this.#earlier(props.dependsOn);
         const entries: Record<string, GameAction | ((context: AbilityContext) => boolean)> = {};
-        for(const [label, choice] of Object.entries<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, D>>(choices)) {
-            // a condition is a choice without game actions ("No"), available while it holds
-            entries[label] = typeof choice === 'function' ? this.#checked(choice, required, optional) : this.#toAction(choice);
+        const texts: Record<string, string | ((context: AbilityContext) => MessageArgs)> = {};
+        for(const [label, choice] of Object.entries(choices)) {
+            if(isCondition(choice)) {
+                // a condition is a choice without game actions ("No"), available while it holds
+                entries[label] = this.#checked(choice, required, optional);
+            } else if(isTextChoice(choice)) {
+                entries[label] = this.#toAction(choice.action);
+                texts[label] = typeof choice.chatText === 'string' ? choice.chatText : this.#checked(choice.chatText, required, optional);
+            } else {
+                entries[label] = this.#toAction(choice instanceof Object ? choice : {});
+            }
+        }
+        if(Object.keys(texts).length > 0) {
+            this.#once('choiceChatText', { select: name, texts }, 'a select with chatText choices');
         }
         this.#select(name, props, entries);
         return new AbilityBuilder(this.draft);
@@ -1376,6 +1402,33 @@ function checkCombinations(draft: AbilityDraft): void {
     }
 }
 
+/** A select choice that is a condition: a choice without game actions. */
+function isCondition(choice: unknown): choice is (context: AbilityContext) => boolean {
+    return typeof choice === 'function';
+}
+
+/** A `{ action, chatText }` select choice; a game action has neither field. */
+function isTextChoice(choice: unknown): choice is { action: object; chatText: string | ((context: AbilityContext) => MessageArgs) } {
+    return choice instanceof Object && 'action' in choice && 'chatText' in choice;
+}
+
+/** The chat text: the ability's own, or the chosen select choice's (the game actions' text for a choice without one). */
+function chatTextProperties(draft: AbilityDraft): { chatText?: AbilityDraft['chatText'] | ((context: AbilityContext) => MessageArgs | undefined) } {
+    const choices = draft.choiceChatText;
+    if(!choices) {
+        return draft.chatText !== undefined ? { chatText: draft.chatText } : {};
+    }
+    if(draft.chatText !== undefined) {
+        throw new Error(`${draft.title}: chatText() and a select's chatText choices both say what the ability does`);
+    }
+    return {
+        chatText: (context) => {
+            const text = choices.texts[context.selects[choices.select]?.choice ?? ''];
+            return typeof text === 'string' ? [text, [context.chatTarget()]] : text?.(context);
+        }
+    };
+}
+
 function commonProperties(ability: AbilityDraft) {
     checkHandler(ability);
     const draft = withBranches(ability);
@@ -1386,7 +1439,7 @@ function commonProperties(ability: AbilityDraft) {
         ...gameActionProperties(draft),
         ...(draft.handler ? { handler: draft.handler } : {}),
         ...(draft.onResolve ? { onResolve: draft.onResolve } : {}),
-        ...(draft.chatText !== undefined ? { chatText: draft.chatText } : {}),
+        ...chatTextProperties(draft),
         ...(draft.chatTextArgs ? { chatTextArgs: draft.chatTextArgs } : {}),
         ...(draft.limit ? { limit: draft.limit } : {}),
         ...(draft.max ? { max: draft.max } : {}),

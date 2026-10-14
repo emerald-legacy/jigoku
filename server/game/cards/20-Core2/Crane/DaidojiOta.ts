@@ -31,17 +31,20 @@ export default class DaidojiOta extends DrawCard {
             .select({
                 player: Players.Opponent
             }, {
-                'Discard an event': chosenDiscard({
-                    cardCondition: (card) => card.type === CardType.Event
-                }),
-                'Reveal your hand': lookAt((context) => ({
-                    target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
-                    chatMessage: true,
-                    message: (context, cards) => msg`${context.player.opponent} reveals their hand: ${cards}`
-                }))
-            })
-            .chatText((context) => context.select === 'Discard an event'
-                ? msg`make ${context.player.opponent} discard an event`
-                : msg`make ${context.player.opponent} reveal their hand`);
+                'Discard an event': {
+                    action: chosenDiscard({
+                        cardCondition: (card) => card.type === CardType.Event
+                    }),
+                    chatText: (context) => msg`make ${context.player.opponent} discard an event`
+                },
+                'Reveal your hand': {
+                    action: lookAt((context) => ({
+                        target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
+                        chatMessage: true,
+                        message: (context, cards) => msg`${context.player.opponent} reveals their hand: ${cards}`
+                    })),
+                    chatText: (context) => msg`make ${context.player.opponent} reveal their hand`
+                }
+            });
     }
 }

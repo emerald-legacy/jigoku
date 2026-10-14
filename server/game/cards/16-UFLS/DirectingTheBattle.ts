@@ -19,30 +19,30 @@ class DirectingTheBattle extends DrawCard {
                 dependsOn: 'character',
                 player: (context) => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
-                'Move this character home': sendHome((context) => ({
-                    target: context.targets.character
-                })),
-                'Give +3 Military': cardLastingEffect((context) => ({
-                    effect: modifyMilitarySkill(3),
-                    target: context.targets.character
-                })),
-                'Prevent bowing during conflict': cardLastingEffect((context) => ({
-                    effect: cardCannot({
-                        cannot: RestrictionType.Bow,
-                        appliesTo: RestrictionScope.OpponentsCardEffects,
-                        applyingPlayer: context.player
-                    }),
-                    target: context.targets.character
-                }))
-            })
-            .chatText((context) => {
-                if(context.selects.select.choice === 'Move this character home') {
-                    return msg`send ${context.targets.character} home`;
+                'Move this character home': {
+                    action: sendHome((context) => ({
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`send ${context.targets.character} home`
+                },
+                'Give +3 Military': {
+                    action: cardLastingEffect((context) => ({
+                        effect: modifyMilitarySkill(3),
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`give ${context.targets.character} +3${'military'}`
+                },
+                'Prevent bowing during conflict': {
+                    action: cardLastingEffect((context) => ({
+                        effect: cardCannot({
+                            cannot: RestrictionType.Bow,
+                            appliesTo: RestrictionScope.OpponentsCardEffects,
+                            applyingPlayer: context.player
+                        }),
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`prevent ${context.targets.character}${' from being bowed by opponent\'s card effects'}`
                 }
-                if(context.selects.select.choice === 'Give +3 Military') {
-                    return msg`give ${context.targets.character} +3${'military'}`;
-                }
-                return msg`prevent ${context.targets.character}${' from being bowed by opponent\'s card effects'}`;
             });
     }
 }
