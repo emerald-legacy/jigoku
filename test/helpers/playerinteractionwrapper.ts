@@ -35,6 +35,23 @@ function promptUuid(item: Record<string, unknown>): string {
     return item.uuid;
 }
 
+const SERIALIZABLE_TYPES = new Set(['Array', 'Boolean', 'Date', 'Number', 'Object', 'String']);
+
+/** detectBinary's rule without building a path for every value: it runs after every click. */
+function isPlainData(value: unknown): boolean {
+    if(!value) {
+        return true;
+    }
+    const type = Object.getPrototypeOf(value)?.constructor?.name;
+    if(!SERIALIZABLE_TYPES.has(type)) {
+        return false;
+    }
+    if(Array.isArray(value)) {
+        return value.every(isPlainData);
+    }
+    return type !== 'Object' || typeof value !== 'object' || Object.values(value).every(isPlainData);
+}
+
 class PlayerInteractionWrapper {
     game: Game;
     player: Player;
@@ -700,9 +717,8 @@ class PlayerInteractionWrapper {
 
     checkUnserializableGameState(): void {
         const state = this.game.getState(this.player.name);
-        const results = detectBinary(state);
-        if(results.length !== 0) {
-            throw new Error('Unable to serialize game state back to client:\n' + JSON.stringify(results));
+        if(!isPlainData(state)) {
+            throw new Error('Unable to serialize game state back to client:\n' + JSON.stringify(detectBinary(state)));
         }
     }
 
