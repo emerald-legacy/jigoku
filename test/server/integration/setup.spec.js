@@ -130,7 +130,7 @@ describe('setup phase', function() {
 
             it('should present both players with a dynasty mulligan prompt', function() {
                 expect(this.player1).toHavePrompt('Select dynasty cards to mulligan');
-                expect(this.player1).toHavePrompt('Select dynasty cards to mulligan');
+                expect(this.player2).toHavePrompt('Select dynasty cards to mulligan');
             });
 
             describe('if a player clicks Done', function() {
