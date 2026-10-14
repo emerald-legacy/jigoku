@@ -124,11 +124,20 @@ describe('Castle of the Forgotten other breaks', function() {
             this.opponentsProvince = this.player2.findCardByName('shameful-display', 'province 1');
         });
 
-        it('does not react when the opponent breaks their own province', function() {
+        it('reacts when the opponent\'s province breaks outside a conflict, as you broke it', function() {
             const context = new ThenAbility(this.rider, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => breakProvince().resolve(this.opponentsProvince, context));
             this.game.continue();
             expect(this.opponentsProvince.isBroken).toBe(true);
+            expect(this.player1).toBeAbleToSelect(this.castle);
+        });
+
+        it('does not react when your own province breaks', function() {
+            const ownProvince = this.player1.findCardByName('shameful-display', 'province 1');
+            const context = new ThenAbility(this.rider, {}).createContext(this.player2.player);
+            this.game.queueSimpleStep(() => breakProvince().resolve(ownProvince, context));
+            this.game.continue();
+            expect(ownProvince.isBroken).toBe(true);
             expect(this.player1).not.toBeAbleToSelect(this.castle);
         });
     });
