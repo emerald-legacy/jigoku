@@ -165,9 +165,9 @@ export function ringMenuClick(menuItem: MenuItem, game: Game, player: Player, ri
             if(game.currentActionWindow && game.currentActionWindow.windowName === 'preConflict') {
                 game.addMessage(msg`${player} initiates a conflict`);
                 const conflict = new Conflict(game, player, player.opponent, ring);
-                game.currentConflict = conflict;
+                game.updateCurrentConflict(conflict);
                 game.queueStep(new ConflictFlow(game, conflict));
-                game.queueSimpleStep(() => (game.currentConflict = null));
+                game.queueSimpleStep(() => game.updateCurrentConflict(null));
             } else {
                 game.addMessage(msg`${player} tried to initiate a conflict, but game can only be done in a pre-conflict action window`);
             }

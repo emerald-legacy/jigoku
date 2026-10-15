@@ -893,7 +893,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     abort(): void {
         super.abort();
         if(this.game.currentConflict === this.conflict) {
-            this.game.currentConflict = null;
+            this.game.updateCurrentConflict(null);
         }
     }
 
@@ -902,7 +902,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        this.game.currentConflict = null;
+        this.game.updateCurrentConflict(null);
         this.game.raiseEvent(EventName.OnConflictFinished, { conflict: this.conflict });
         this.game.queueSimpleStep(() => this.resetCards());
     }
