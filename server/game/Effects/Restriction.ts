@@ -173,7 +173,8 @@ export interface RestrictionProperties {
     cannot?: RestrictionType | PlayType;
     appliesTo?: RestrictionAppliesTo;
     applyingPlayer?: Player;
-    params?: unknown;
+    /** The card name `RestrictionScope.CopiesOfX` compares with. */
+    params?: string;
 }
 
 export class Restriction extends EffectValueBase<Restriction> {
@@ -181,7 +182,7 @@ export class Restriction extends EffectValueBase<Restriction> {
     /** Which attempts it applies to; all of them without one. */
     appliesTo?: RestrictionAppliesTo;
     applyingPlayer?: Player;
-    params: unknown;
+    params?: string;
 
     constructor(properties: RestrictionType | PlayType | RestrictionProperties) {
         super();
