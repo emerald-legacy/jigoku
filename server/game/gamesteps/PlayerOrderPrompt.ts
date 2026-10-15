@@ -26,7 +26,7 @@ export class PlayerOrderPrompt extends UiPrompt {
         this.players = (this.players ?? []).filter((p) => !this.skipCondition(p));
     }
 
-    private skipCondition(_player: Player): boolean {
+    protected skipCondition(_player: Player): boolean {
         return false;
     }
 

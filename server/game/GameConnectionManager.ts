@@ -15,8 +15,7 @@ export class GameConnectionManager {
             return false;
         }
 
-        game.playersAndSpectators[user.username] = new Spectator(socketId, user);
-        game.invalidatePlayerCaches();
+        game.addPlayerOrSpectator(user.username, new Spectator(socketId, user));
         game.addMessage(msg`${user.username} has joined the game as a spectator`);
 
         return true;
@@ -28,8 +27,7 @@ export class GameConnectionManager {
             return false;
         }
 
-        game.playersAndSpectators[user.username] = new Player(socketId, user, game.owner === user.username, game);
-        game.invalidatePlayerCaches();
+        game.addPlayerOrSpectator(user.username, new Player(socketId, user, game.owner === user.username, game));
 
         return true;
     }
@@ -57,8 +55,7 @@ export class GameConnectionManager {
         game.addMessage(msg`${playerName} has left the game`);
 
         if(game.isSpectator(player) || !game.started) {
-            delete game.playersAndSpectators[playerName];
-            game.invalidatePlayerCaches();
+            game.removePlayerOrSpectator(playerName);
         } else {
             player.left = true;
 
@@ -79,8 +76,7 @@ export class GameConnectionManager {
         game.addMessage(msg`${player} has disconnected`);
 
         if(game.isSpectator(player)) {
-            delete game.playersAndSpectators[playerName];
-            game.invalidatePlayerCaches();
+            game.removePlayerOrSpectator(playerName);
         } else {
             player.disconnected = true;
         }
@@ -97,8 +93,7 @@ export class GameConnectionManager {
         }
 
         if(game.isSpectator(player) || !game.started) {
-            delete game.playersAndSpectators[playerName];
-            game.invalidatePlayerCaches();
+            game.removePlayerOrSpectator(playerName);
         } else {
             game.addMessage(msg`${player} has failed to connect to the game`);
 

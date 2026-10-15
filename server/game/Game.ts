@@ -126,7 +126,7 @@ export class Game {
     roundNumber: number;
     initialFirstPlayer: string | null;
     private conflictTracker: ConflictTracker;
-    readonly prompts: GamePromptHelper;
+    private readonly prompts: GamePromptHelper;
     private readonly input: GameInputHandler;
     private readonly serializer: GameStateSerializer;
     private readonly connections: GameConnectionManager;
@@ -280,9 +280,19 @@ export class Game {
         return player.constructor === Spectator;
     }
 
-    invalidatePlayerCaches(): void {
+    private invalidatePlayerCaches(): void {
         this._playersCache = null;
         this._spectatorsCache = null;
+    }
+
+    addPlayerOrSpectator(name: string, playerOrSpectator: Player | Spectator): void {
+        this.playersAndSpectators[name] = playerOrSpectator;
+        this.invalidatePlayerCaches();
+    }
+
+    removePlayerOrSpectator(name: string): void {
+        delete this.playersAndSpectators[name];
+        this.invalidatePlayerCaches();
     }
 
     /**
