@@ -6,8 +6,7 @@ import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
-import type { PromptButton } from '../PlayerPromptState.js';
-import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
+import type { CardSelectorInstance } from './TargetPrompt.js';
 
 interface AbilityTargetCardProperties {
     gameAction: GameAction[];
@@ -52,10 +51,7 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
     }
 
     getGameAction(context: AbilityContext): HeldAction[] {
-        const overrides = this.actionOverrides(context);
-        return this.properties.gameAction
-            .filter((action) => action.hasLegalTarget(context, overrides))
-            .map((action) => ({ action, overrides }));
+        return this.heldActions(this.properties.gameAction, context);
     }
 
     protected actionOverrides(context: AbilityContext): ActionOverrides {
@@ -74,35 +70,17 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
         const { player } = chooser;
         const { cardCondition: _cardCondition, player: _playerProp, ...otherProperties } = this.properties;
 
-        const buttons: PromptButton[] = [];
-        if(context.stage === Stage.PreTarget) {
-            buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
-            buttons.push({ text: 'Cancel', arg: 'cancel' });
-        }
         const mustSelect = this.selector.getAllLegalTargets(context, player).filter((card: BaseCard) =>
             card.getEffects(EffectName.MustBeChosen).some((restriction) => restriction.isMatch(RestrictionType.Target, context))
         );
         const promptProperties = {
-            waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
-            context: context,
+            ...this.targetPromptProperties(context, targetResults),
             selector: this.selector,
-            buttons: buttons,
             mustSelect: mustSelect,
             onSelect: (_player: Player, card: BaseCard | BaseCard[]) => {
                 context.targets[this.name] = card;
                 if(this.name === 'target') {
                     context.target = Array.isArray(card) ? undefined : card;
-                }
-                return true;
-            },
-            onCancel: () => {
-                targetResults.cancelled = true;
-                return true;
-            },
-            onMenuCommand: (_player: Player, arg: string) => {
-                if(arg === 'costsFirst') {
-                    targetResults.payCostsFirst = true;
-                    return true;
                 }
                 return true;
             }

@@ -2,7 +2,9 @@ import { Players, Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbility.js';
 import type Player from '../Player.js';
-import type { ActionOverrides, HeldAction } from '../GameActions/GameAction.js';
+import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
+import type { PromptButton } from '../PlayerPromptState.js';
+import { waitingPromptTitle } from './TargetPrompt.js';
 
 export interface AbilityTargetBaseProperties {
     dependsOn?: string;
@@ -45,6 +47,38 @@ export abstract class AbilityTargetBase<P extends AbilityTargetBaseProperties> {
             playerProp = playerProp(context);
         }
         return playerProp === Players.Opponent ? context.player.opponent : context.player;
+    }
+
+    /** The game actions that can resolve now, each with what was chosen for this target. */
+    protected heldActions(actions: GameAction[], context: AbilityContext): HeldAction[] {
+        const overrides = this.actionOverrides(context);
+        return actions
+            .filter((action) => action.hasLegalTarget(context, overrides))
+            .map((action) => ({ action, overrides }));
+    }
+
+    /** What a prompt for this target always has: before costs are paid, the buttons to pay them first or cancel. */
+    protected targetPromptProperties(context: AbilityContext, targetResults: TargetResults) {
+        const buttons: PromptButton[] = [];
+        if(context.stage === Stage.PreTarget) {
+            buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
+            buttons.push({ text: 'Cancel', arg: 'cancel' });
+        }
+        return {
+            waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
+            context,
+            buttons,
+            onCancel: () => {
+                targetResults.cancelled = true;
+                return true;
+            },
+            onMenuCommand: (_player: Player, arg: string) => {
+                if(arg === 'costsFirst') {
+                    targetResults.payCostsFirst = true;
+                }
+                return true;
+            }
+        };
     }
 
     /**

@@ -5,8 +5,6 @@ import type Ring from '../Ring.js';
 import type Player from '../Player.js';
 import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
-import type { PromptButton } from '../PlayerPromptState.js';
-import { waitingPromptTitle } from './TargetPrompt.js';
 
 interface AbilityTargetRingProperties {
     gameAction: GameAction[];
@@ -40,10 +38,7 @@ export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProper
     }
 
     getGameAction(context: AbilityContext): HeldAction[] {
-        const overrides = this.actionOverrides(context);
-        return this.properties.gameAction
-            .filter((action) => action.hasLegalTarget(context, overrides))
-            .map((action) => ({ action, overrides }));
+        return this.heldActions(this.properties.gameAction, context);
     }
 
     protected actionOverrides(context: AbilityContext): ActionOverrides {
@@ -60,30 +55,12 @@ export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProper
             return;
         }
         const { player } = chooser;
-        const buttons: PromptButton[] = [];
-        if(context.stage === Stage.PreTarget) {
-            buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
-            buttons.push({ text: 'Cancel', arg: 'cancel' });
-        }
         const promptProperties = {
-            waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
-            context: context,
-            buttons: buttons,
+            ...this.targetPromptProperties(context, targetResults),
             onSelect: (_player: Player, ring: Ring) => {
                 context.rings[this.name] = ring;
                 if(this.name === 'target') {
                     context.ring = ring;
-                }
-                return true;
-            },
-            onCancel: () => {
-                targetResults.cancelled = true;
-                return true;
-            },
-            onMenuCommand: (_player: Player, arg: string) => {
-                if(arg === 'costsFirst') {
-                    targetResults.payCostsFirst = true;
-                    return true;
                 }
                 return true;
             }

@@ -1,13 +1,12 @@
 import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { CardSelector } from '../CardSelector.js';
-import { CardType, Stage, type Players, Location } from '../Constants.js';
+import { CardType, type Players, Location } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
-import type { PromptButton } from '../PlayerPromptState.js';
-import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
+import type { CardSelectorInstance } from './TargetPrompt.js';
 
 interface AbilityTargetElementSymbolProperties {
     gameAction: GameAction[];
@@ -50,10 +49,7 @@ export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetE
     }
 
     getGameAction(context: AbilityContext): HeldAction[] {
-        const overrides = this.actionOverrides(context);
-        return this.properties.gameAction
-            .filter((action) => action.hasLegalTarget(context, overrides))
-            .map((action) => ({ action, overrides }));
+        return this.heldActions(this.properties.gameAction, context);
     }
 
     protected actionOverrides(context: AbilityContext): ActionOverrides {
@@ -66,15 +62,8 @@ export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetE
             return;
         }
         const { player } = chooser;
-        const buttons: PromptButton[] = [];
-        if(context.stage === Stage.PreTarget) {
-            buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
-            buttons.push({ text: 'Cancel', arg: 'cancel' });
-        }
         const promptProperties = {
-            waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
-            buttons: buttons,
-            context: context,
+            ...this.targetPromptProperties(context, targetResults),
             selector: this.selector,
             onSelect: (player: Player, card: BaseCard | BaseCard[]) => {
                 if(Array.isArray(card)) {
@@ -101,16 +90,6 @@ export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetE
                     if(this.name === 'target') {
                         context.element = validElements[0];
                     }
-                }
-                return true;
-            },
-            onCancel: () => {
-                targetResults.cancelled = true;
-                return true;
-            },
-            onMenuCommand: (_player: Player, arg: string) => {
-                if(arg === 'costsFirst') {
-                    targetResults.payCostsFirst = true;
                 }
                 return true;
             }

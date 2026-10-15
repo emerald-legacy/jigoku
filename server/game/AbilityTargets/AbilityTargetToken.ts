@@ -7,8 +7,7 @@ import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
-import type { PromptButton } from '../PlayerPromptState.js';
-import { type CardSelectorInstance, waitingPromptTitle } from './TargetPrompt.js';
+import type { CardSelectorInstance } from './TargetPrompt.js';
 
 interface AbilityTargetTokenProperties {
     gameAction: GameAction[];
@@ -70,10 +69,7 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
     }
 
     getGameAction(context: AbilityContext): HeldAction[] {
-        const overrides = this.actionOverrides(context);
-        return this.properties.gameAction
-            .filter((action) => action.hasLegalTarget(context, overrides))
-            .map((action) => ({ action, overrides }));
+        return this.heldActions(this.properties.gameAction, context);
     }
 
     protected actionOverrides(context: AbilityContext): ActionOverrides {
@@ -86,15 +82,8 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
             return;
         }
         const { player } = chooser;
-        const buttons: PromptButton[] = [];
-        if(context.stage === Stage.PreTarget) {
-            buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
-            buttons.push({ text: 'Cancel', arg: 'cancel' });
-        }
         const promptProperties = {
-            waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
-            buttons: buttons,
-            context: context,
+            ...this.targetPromptProperties(context, targetResults),
             selector: this.selector,
             onSelect: (player: Player, card: BaseCard | BaseCard[]) => {
                 if(!card || (Array.isArray(card) && card.length === 0)) {
@@ -123,16 +112,6 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
                     if(this.name === 'target') {
                         context.token = validTokens;
                     }
-                }
-                return true;
-            },
-            onCancel: () => {
-                targetResults.cancelled = true;
-                return true;
-            },
-            onMenuCommand: (_player: Player, arg: string) => {
-                if(arg === 'costsFirst') {
-                    targetResults.payCostsFirst = true;
                 }
                 return true;
             }
