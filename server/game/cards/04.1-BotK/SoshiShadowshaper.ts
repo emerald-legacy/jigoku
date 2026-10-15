@@ -15,7 +15,9 @@ export default class SoshiShadowshaper extends DrawCard {
         const eventRegistrar = new EventRegistrar(this.game);
         eventRegistrar.register({
             [EventName.OnPhaseStarted]: () => this.onPhaseStarted(),
-            [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event)
+            [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event),
+            // a card that left play is a new instance when it comes back
+            [EventName.OnCardLeavesPlay]: (event) => this.charactersPlayedThisPhase.delete(event.card)
         });
 
         this.action('Return a character to owner\'s hand')
