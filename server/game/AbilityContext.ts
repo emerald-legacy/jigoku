@@ -85,6 +85,10 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
     cardStateWhenInitiated: BaseCard | null = null;
     /** Extra fate to place on a character being played, chosen by the `chooseFate` cost. */
     chooseFate = 0;
+    /** The character a character played with Disguise replaces, once its play cost has chosen it. */
+    disguisedCharacter: DrawCard | undefined;
+    /** The cards already paid for as "an additional cost to choose … as a target". A following step keeps them. */
+    targetingCostPaid: BaseCard[] = [];
     ignoreFateCost?: boolean;
     payFateCostToOpponent?: boolean;
     onPlayCardSource?: BaseCard;
@@ -145,6 +149,8 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         copy.playType = this.playType;
         copy.ignoreFateCost = this.ignoreFateCost;
         copy.previousEvents = this.previousEvents;
+        copy.disguisedCharacter = this.disguisedCharacter;
+        copy.targetingCostPaid = this.targetingCostPaid;
         return copy;
     }
 

@@ -62,6 +62,7 @@ export class ThenAbility extends BaseCardAbility {
             context.rings = { ...parent.rings };
             context.tokens = { ...parent.tokens };
             context.costs = { ...parent.costs };
+            context.targetingCostPaid = parent.targetingCostPaid;
             context.target = parent.target;
             context.select = parent.select;
             context.ring = parent.ring;
