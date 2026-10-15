@@ -1,6 +1,6 @@
 import { msg } from './GameChat.js';
 import * as Settings from '../settings.js';
-import { CardType, type ConflictType, EffectName, type Element, EventName, Location, RestrictionType } from './Constants.js';
+import { CardType, type ConflictType, EffectName, type Element, EventName, favorAppliesTo, Location, RestrictionType } from './Constants.js';
 import { GameObject } from './GameObject.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type BaseCard from './BaseCard.js';
@@ -416,11 +416,7 @@ export class Conflict extends GameObject {
             this.attackerSkill =
                 this.calculateSkillFor(this.getAttackers().concat(additionalAttackers)) +
                 this.attackingPlayer.skillModifier;
-            if(
-                (this.attackingPlayer.imperialFavor === this.conflictType ||
-                    this.attackingPlayer.imperialFavor === 'both') &&
-                this.#attackers.size > 0
-            ) {
+            if(favorAppliesTo(this.attackingPlayer.imperialFavor, this.conflictType) && this.#attackers.size > 0) {
                 this.attackerSkill++;
             }
         }
@@ -435,11 +431,7 @@ export class Conflict extends GameObject {
             this.defenderSkill =
                 this.calculateSkillFor(this.getDefenders().concat(additionalDefenders)) +
                 this.defendingPlayer.skillModifier;
-            if(
-                (this.defendingPlayer.imperialFavor === this.conflictType ||
-                    this.defendingPlayer.imperialFavor === 'both') &&
-                this.#defenders.size > 0
-            ) {
+            if(favorAppliesTo(this.defendingPlayer.imperialFavor, this.conflictType) && this.#defenders.size > 0) {
                 this.defenderSkill++;
             }
         }

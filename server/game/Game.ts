@@ -45,7 +45,7 @@ import type { MenuArg, Step } from './gamesteps/Step.js';
 import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 
-import { type AbilityType, EventName, Location, ConflictType, Element, type Players, type Phase, RestrictionType, type Trait } from './Constants.js';
+import { type AbilityType, EventName, Location, ConflictType, Element, type Players, type Phase, RestrictionType, type Trait, type FavorType } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import type { ChoiceWindow } from './TriggeredAbility.js';
 import { rulesFor, type GameRules } from './GameRules.js';
@@ -920,7 +920,7 @@ export class Game {
         this.checkGameState(true);
     }
 
-    getFavorSide(): string | undefined {
+    getFavorSide(): FavorType | undefined {
         for(const player of this.getPlayers()) {
             if(player.imperialFavor) {
                 return player.imperialFavor;

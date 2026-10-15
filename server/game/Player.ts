@@ -54,7 +54,7 @@ export interface PlayerState extends Partial<ReturnType<PlayerPromptState['getSt
     firstPlayer: boolean;
     hideProvinceDeck: boolean;
     id: string;
-    imperialFavor: string;
+    imperialFavor: FavorType | '';
     left: boolean;
     name: string;
     numConflictCards: number;
@@ -161,7 +161,7 @@ export class Player extends GameObject {
     showBid: number;
     conflictManager: PlayerConflictManager;
     stateBuilder: PlayerStateBuilder;
-    imperialFavor: string;
+    imperialFavor: FavorType | '';
 
     clock: ClockInterface;
 
@@ -1089,13 +1089,13 @@ export class Player extends GameObject {
         );
     }
 
-    claimImperialFavor(favorType?: string): void {
+    claimImperialFavor(favorType?: FavorType): void {
         if(this.opponent) {
             this.opponent.loseImperialFavor();
         }
         const sovereign = this.game.rules.imperialFavorSovereign;
         if(!this.game.rules.imperialFavorHasSides) {
-            this.imperialFavor = 'both';
+            this.imperialFavor = FavorType.Both;
             this.game.addMessage(msg`${this} claims the ${sovereign} favor!`);
             return;
         }
@@ -1105,7 +1105,7 @@ export class Player extends GameObject {
             return;
         }
 
-        const claim = (type: string) => () => {
+        const claim = (type: FavorType) => () => {
             this.imperialFavor = type;
             this.game.addMessage(msg`${this} claims the ${sovereign} ${type} favor!`);
         };
@@ -1113,8 +1113,8 @@ export class Player extends GameObject {
             activePromptTitle: 'Which side of the Imperial Favor would you like to claim?',
             source: 'Imperial Favor',
             options: [
-                { text: 'Military', handler: claim('military') },
-                { text: 'Political', handler: claim('political') }
+                { text: 'Military', handler: claim(FavorType.Military) },
+                { text: 'Political', handler: claim(FavorType.Political) }
             ]
         });
     }

@@ -5,7 +5,7 @@ describe('ChatCommands', function() {
         this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'promptForSelect', 'getFrameworkContext', 'queueStep','queueSimpleStep', 'openEventWindow']);
         this.gameSpy.getFrameworkContext.and.returnValue({ game: this.gameSpy, player: this.playerSpy });
 
-        this.playerSpy = jasmine.createSpyObj('player', ['drawCardsToHand', 'discardAtRandom', 'discardFromDraw']);
+        this.playerSpy = jasmine.createSpyObj('player', ['drawCardsToHand', 'discardAtRandom', 'discardFromDraw', 'claimImperialFavor', 'loseImperialFavor']);
         this.chatCommands = new ChatCommands(this.gameSpy);
     });
 
@@ -83,6 +83,26 @@ describe('ChatCommands', function() {
 
                     expect(this.playerSpy.drawCardsToHand).toHaveBeenCalledWith(4);
                 });
+            });
+        });
+
+        describe('with a /claim-favor command', function() {
+            it('should claim the military favor with no argument', function () {
+                this.chatCommands.executeCommand(this.playerSpy, '/claim-favor', ['/claim-favor']);
+
+                expect(this.playerSpy.claimImperialFavor).toHaveBeenCalledWith('military');
+            });
+
+            it('should claim the favor that was named', function () {
+                this.chatCommands.executeCommand(this.playerSpy, '/claim-favor', ['/claim-favor', 'political']);
+
+                expect(this.playerSpy.claimImperialFavor).toHaveBeenCalledWith('political');
+            });
+
+            it('should claim the military favor when the argument is not a favor', function () {
+                this.chatCommands.executeCommand(this.playerSpy, '/claim-favor', ['/claim-favor', 'sideways']);
+
+                expect(this.playerSpy.claimImperialFavor).toHaveBeenCalledWith('military');
             });
         });
     });

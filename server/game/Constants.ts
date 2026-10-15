@@ -16,7 +16,7 @@ export { Element } from './Constants/Element.js';
 export { Trait, elementTrait } from './Constants/Trait.js';
 export { ConflictType } from './Constants/ConflictType.js';
 export { TokenType } from './Constants/TokenType.js';
-export { FavorType } from './Constants/FavorType.js';
+export { FavorType, favorAppliesTo } from './Constants/FavorType.js';
 export { SkillType } from './Constants/SkillType.js';
 export { Blocker } from './Constants/Blocker.js';
 export { RestrictionType } from './Constants/RestrictionType.js';

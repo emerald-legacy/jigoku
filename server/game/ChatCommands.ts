@@ -1,8 +1,9 @@
+import { isEnumValue } from './utils/helpers.js';
 import { msg } from './GameChat.js';
 import { rollDie } from './utils/random.js';
 import { discardAtRandom, moveCard, reveal } from './GameActions/GameActions.js';
 import { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
-import { Location, CardType, Players, TargetMode } from './Constants.js';
+import { Location, CardType, Players, TargetMode, FavorType } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
@@ -86,7 +87,8 @@ export class ChatCommands {
     }
 
     claimFavor(player: Player, args: string[]): void {
-        const type = args[1] || 'military';
+        const requested = args[1] ?? '';
+        const type = isEnumValue(FavorType, requested) ? requested : FavorType.Military;
         this.game.addMessage(msg`${player} uses /claim-favor to claim the emperor's ${type} favor`);
         player.claimImperialFavor(type);
         const otherPlayer = player.opponent;
