@@ -20,6 +20,7 @@ import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
 import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType, RestrictionType } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
+import { TutoredAbility } from './KeywordAbilities/TutoredAbility.js';
 import type Player from './Player.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
@@ -201,6 +202,10 @@ export class DrawCard extends BaseCard {
         }
 
         this.applyAttachmentBonus();
+    }
+
+    tutored(attachmentName: string): void {
+        this.abilities.reactions.push(new TutoredAbility(this, attachmentName));
     }
 
     isDrawCard(): this is DrawCard {
