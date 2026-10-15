@@ -7,7 +7,7 @@ class TradingOnTheSandRoad extends DrawCard {
     static id = 'trading-on-the-sand-road';
 
     override setupCardAbilities() {
-        this.interrupt('Take top 4 cards from both players\' decks')
+        this.wouldInterrupt('Take top 4 cards from both players\' decks')
             .when({
                 onPhaseCreated: (event) => event.phase === Phase.Draw
             })
