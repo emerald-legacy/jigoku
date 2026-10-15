@@ -50,6 +50,35 @@ describe('Way of the Chrysanthemum', function () {
             });
         });
 
+        describe('against Silent Ones Monastery', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'draw',
+                    player1: {
+                        honor: 10,
+                        hand: ['way-of-the-chrysanthemum']
+                    },
+                    player2: {
+                        honor: 10,
+                        provinces: ['silent-ones-monastery']
+                    }
+                });
+                this.chrysanthemum = this.player1.findCardByName('way-of-the-chrysanthemum');
+            });
+
+            it('does not trigger and prints no honor line when the limit prevents all of the honor given', function () {
+                this.player1.player.modifyHonor(2);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('5');
+
+                expect(this.player1.honor).toBe(12);
+                expect(this.player2.honor).toBe(10);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1).toHavePrompt('Initiate an action');
+                expect(this.getChatLogs(10).filter((line) => line.includes(' gives '))).toEqual([]);
+            });
+        });
+
         describe('during a duel', function () {
             beforeEach(function () {
                 this.setupTest({

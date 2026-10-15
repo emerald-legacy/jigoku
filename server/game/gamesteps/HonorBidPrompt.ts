@@ -1,7 +1,6 @@
 import { msg } from '../GameChat.js';
-import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
-import { EventName, EffectName } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type { Duel } from '../Duel.js';
@@ -76,21 +75,8 @@ export class HonorBidPrompt extends AllPlayerPrompt {
         if(difference === 0) {
             return;
         }
-        let amount = Math.abs(difference);
         const givingPlayer: Player = difference > 0 ? firstPlayer : firstPlayer.opponent;
-        const receivingPlayer = givingPlayer.opponent;
-        if(!receivingPlayer) {
-            return;
-        }
-
-        const modifyGivenAmount = givingPlayer.sumEffects(EffectName.ModifyHonorTransferGiven);
-        const modifyReceivedAmount = receivingPlayer.sumEffects(EffectName.ModifyHonorTransferReceived);
-        amount = amount + modifyGivenAmount + modifyReceivedAmount;
-
-        var [, amountToTransfer] = CalculateHonorLimit(receivingPlayer, context.game.roundNumber, context.game.currentPhase, amount);
-        this.game.addMessage(msg`${givingPlayer} gives ${receivingPlayer} ${amountToTransfer} honor`);
-        const gameAction = takeHonor({ amount: Math.abs(difference), afterBid: true });
-        gameAction.resolve(givingPlayer, context);
+        takeHonor({ amount: Math.abs(difference), afterBid: true }).resolve(givingPlayer, context);
     }
 
     activePrompt(player: Player) {

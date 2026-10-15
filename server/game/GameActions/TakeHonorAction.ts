@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectName, EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
@@ -105,6 +105,9 @@ export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends 
         const amountToTransfer = this.getAmountToTransfer(player, opponent, event.context, event.amount);
         player.modifyHonor(-amountToTransfer);
         opponent.modifyHonor(amountToTransfer);
+        if(amountToTransfer && event.afterBid) {
+            event.context.game.addMessage(msg`${player} gives ${opponent} ${amountToTransfer} honor`);
+        }
         if(amountToTransfer) {
             event.context.game.addAnimation({ type: 'honor', playerName: player.name, amount: -amountToTransfer });
             event.context.game.addAnimation({ type: 'honor', playerName: opponent.name, amount: amountToTransfer });
