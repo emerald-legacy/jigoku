@@ -8,6 +8,7 @@ import {
     resolveRingEffect
 } from '../../GameActions/GameActions.js';
 import type { Element } from '../../Constants.js';
+import { capitalize } from '../../utils/capitalize.js';
 
 class StudyTheNaturalWorld extends DrawCard {
     static id = 'study-the-natural-world';
@@ -45,14 +46,6 @@ class StudyTheNaturalWorld extends DrawCard {
     }
 
     private getElements(context: AbilityContext) {
-        const capitalize: Record<string, string> = {
-            air: 'Air',
-            water: 'Water',
-            earth: 'Earth',
-            fire: 'Fire',
-            void: 'Void'
-        };
-
         let string = '';
         const elements = this.getElementsOfAttackedProvinces(context);
         for(let i = 0; i < elements.length; i++) {
@@ -63,7 +56,7 @@ class StudyTheNaturalWorld extends DrawCard {
                     string += ', ';
                 }
             }
-            string += capitalize[elements[i]];
+            string += capitalize(elements[i]);
         }
 
         return string;

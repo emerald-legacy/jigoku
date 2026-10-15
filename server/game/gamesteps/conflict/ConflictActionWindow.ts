@@ -5,16 +5,7 @@ import type { ProvinceCard } from '../../ProvinceCard.js';
 import type { AbilityResolver } from '../AbilityResolver.js';
 import type { Conflict } from '../../Conflict.js';
 import { RestrictionType } from '../../Constants.js';
-
-const capitalize: Record<string, string> = {
-    military: 'Military',
-    political: 'Political',
-    air: 'Air',
-    water: 'Water',
-    earth: 'Earth',
-    fire: 'Fire',
-    void: 'Void'
-};
+import { capitalize } from '../../utils/capitalize.js';
 
 export class ConflictActionWindow extends ActionWindow {
     conflict: Conflict;
@@ -26,10 +17,14 @@ export class ConflictActionWindow extends ActionWindow {
         this.displayTotals = true;
     }
 
+    private conflictText(): string {
+        return capitalize(this.conflict.conflictType ?? '') + ' ' + capitalize(this.conflict.element ?? '') + ' conflict';
+    }
+
     continue(): boolean {
         const completed = super.continue();
         if(!completed && this.displayTotals) {
-            const conflictText = capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' conflict';
+            const conflictText = this.conflictText();
             this.game.addMessage(msg`${conflictText} - Attacker: ${this.conflict.attackerSkill} Defender: ${this.conflict.defenderSkill}`);
             let winnerText = 'Attacker is winning the conflict';
             const breakingProvinces: ProvinceCard[] = [];
@@ -59,7 +54,7 @@ export class ConflictActionWindow extends ActionWindow {
     activePrompt() {
         const props = super.activePrompt();
 
-        const conflictText = capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' conflict';
+        const conflictText = this.conflictText();
         const skillText = 'Attacker: ' + this.conflict.attackerSkill + ' Defender: ' + this.conflict.defenderSkill;
         return {
             menuTitle: [conflictText, skillText].join('\n'),

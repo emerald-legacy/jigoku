@@ -8,16 +8,7 @@ import type Ring from '../../Ring.js';
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
 import type { Conflict } from '../../Conflict.js';
-
-const capitalize: Record<string, string> = {
-    military: 'Military',
-    political: 'Political',
-    air: 'Air',
-    water: 'Water',
-    earth: 'Earth',
-    fire: 'Fire',
-    void: 'Void'
-};
+import { capitalize } from '../../utils/capitalize.js';
 
 export class InitiateConflictPrompt extends UiPrompt {
     conflict: Conflict;
@@ -103,7 +94,7 @@ export class InitiateConflictPrompt extends UiPrompt {
             menuTitle = this.conflict.forcedDeclaredType ? 'Choose an elemental ring' : 'Choose an elemental ring\n(click the ring again to change conflict type)';
             promptTitle = 'Initiate Conflict';
         } else {
-            promptTitle = capitalize[ring.conflictType] + ' ' + capitalize[ring.element] + ' Conflict';
+            promptTitle = capitalize(ring.conflictType) + ' ' + capitalize(ring.element) + ' Conflict';
             if(!this.conflict.conflictProvince && !this.conflict.isSinglePlayer) {
                 menuTitle = 'Choose province to attack';
             } else if(this.conflict.attackers.length === 0) {
@@ -112,7 +103,7 @@ export class InitiateConflictPrompt extends UiPrompt {
                 if(this.covertRemaining && !this.game.rules.covertUnified) {
                     menuTitle = 'Choose defenders to Covert';
                 } else {
-                    menuTitle = capitalize[ring.conflictType] + ' skill: '.concat(String(this.conflict.attackerSkill));
+                    menuTitle = capitalize(ring.conflictType) + ' skill: '.concat(String(this.conflict.attackerSkill));
                 }
                 if(this.conflict.attackers.length === this.attackerMatrix.requiredNumberOfAttackers || this.attackerMatrix.requiredNumberOfAttackers <= 0) {
                     buttons.unshift({ text: 'Initiate Conflict', arg: 'done' });

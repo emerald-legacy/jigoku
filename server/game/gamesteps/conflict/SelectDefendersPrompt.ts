@@ -4,16 +4,7 @@ import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type DrawCard from '../../DrawCard.js';
 import type { Conflict } from '../../Conflict.js';
-
-const capitalize: Record<string, string> = {
-    military: 'Military',
-    political: 'Political',
-    air: 'Air',
-    water: 'Water',
-    earth: 'Earth',
-    fire: 'Fire',
-    void: 'Void'
-};
+import { capitalize } from '../../utils/capitalize.js';
 
 export class SelectDefendersPrompt extends UiPrompt {
     player: Player;
@@ -38,7 +29,7 @@ export class SelectDefendersPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let promptTitle = (capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' Conflict: '
+        let promptTitle = (capitalize(this.conflict.conflictType ?? '') + ' ' + capitalize(this.conflict.element ?? '') + ' Conflict: '
             + this.conflict.attackerSkill + ' vs ' + this.conflict.defenderSkill);
 
         if(!this.conflict.conflictType || !this.conflict.element) {
