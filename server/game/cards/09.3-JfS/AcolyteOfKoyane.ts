@@ -20,18 +20,21 @@ class AcolyteOfKoyane extends DrawCard {
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Gain Pride': cardLastingEffect((context) => ({
-                    effect: addKeyword('pride'),
-                    target: context.targets.character
-                })),
-                'Lose Pride': cardLastingEffect((context) => ({
-                    effect: loseKeyword('pride'),
-                    target: context.targets.character
-                }))
-            })
-            .chatText((context) => context.selects.select.choice === 'Gain Pride'
-                ? msg`give ${context.targets.character} Pride until the end of the conflict`
-                : msg`make ${context.targets.character} lose Pride until the end of the conflict`);
+                'Gain Pride': {
+                    action: cardLastingEffect((context) => ({
+                        effect: addKeyword('pride'),
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`give ${context.targets.character} Pride until the end of the conflict`
+                },
+                'Lose Pride': {
+                    action: cardLastingEffect((context) => ({
+                        effect: loseKeyword('pride'),
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`make ${context.targets.character} lose Pride until the end of the conflict`
+                }
+            });
     }
 }
 
