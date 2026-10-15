@@ -1000,6 +1000,7 @@ if(card.getType() === CardType.Event &amp;&amp; !this.isKeywordAbility()) {
     <ul class="edge">
       <li>The target only offers cards the cost can be paid for. Before the target is chosen, the cost counts as payable.</li>
       <li>When the fate goes to the opponent (playing with <code>payFateToOpponent</code>), it can't be paid if the opponent can't gain fate.</li>
+      <li>A Temptations Mahō card can only be paid for a target that reduces its cost to 0 (with the fate on your characters), as with <a href="#co-payReduceableFateCost"><code>payReduceableFateCost</code></a>.</li>
       <li>Records <code>targetDependentFate</code>: the reduced cost. No cost text.</li>
     </ul>
     <pre><code>// PlayAttachmentAction (engine)

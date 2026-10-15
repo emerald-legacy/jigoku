@@ -26,6 +26,10 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             this.ignoreType
         );
 
+        if(reducedCost !== 0 && context.source.isTemptationsMaho()) {
+            return false;
+        }
+
         if(reducedCost !== 0 && context.payFateCostToOpponent && (!context.player.opponent || !context.player.opponent.checkRestrictions(RestrictionType.GainFate, context))) {
             return false;
         }

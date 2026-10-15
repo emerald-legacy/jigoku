@@ -40,6 +40,14 @@ describe('Shadow Steed', function() {
             expect(this.player1.honor).toBe(9);
         });
 
+        it('should not be playable when no character has fate to pay for it', function() {
+            this.kuwanan.fate = 0;
+            this.whisperer.fate = 0;
+            this.player1.clickCard(this.steed);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.steed.location).toBe('hand');
+        });
+
         it('should not ready the attached character when it has no fate on it ', function() {
             this.player1.playAttachment(this.steed, this.kuwanan);
             this.player1.clickCard(this.whisperer);
