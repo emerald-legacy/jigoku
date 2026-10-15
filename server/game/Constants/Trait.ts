@@ -25,6 +25,7 @@ export enum Trait {
     City = 'city',
     Commander = 'commander',
     Condition = 'condition',
+    Courthouse = 'courthouse',
     Courtier = 'courtier',
     Crab = 'crab',
     Crane = 'crane',
