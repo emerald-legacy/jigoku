@@ -114,3 +114,42 @@ describe('The Maidens Icy Grasp', function () {
         });
     });
 });
+
+describe('The Maidens Icy Grasp and a character put into play when the conflict is declared', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic'],
+                    hand: ['the-maiden-s-icy-grasp']
+                },
+                player2: {
+                    inPlay: ['moto-beastmaster'],
+                    dynastyDiscard: ['border-rider']
+                }
+            });
+            this.grasp = this.player1.findCardByName('the-maiden-s-icy-grasp');
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.beastmaster = this.player2.findCardByName('moto-beastmaster');
+            this.rider = this.player2.placeCardInProvince('border-rider', 'province 1');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.beastmaster]
+            });
+            this.player2.clickCard(this.beastmaster);
+            this.player2.clickCard(this.rider);
+            this.player1.clickCard(this.mystic);
+            this.player1.clickPrompt('Done');
+        });
+
+        it('can choose it, as it entered play during this conflict', function () {
+            expect(this.rider.isParticipating()).toBe(true);
+            this.player1.clickCard(this.grasp);
+            expect(this.player1).toBeAbleToSelect(this.rider);
+        });
+    });
+});
