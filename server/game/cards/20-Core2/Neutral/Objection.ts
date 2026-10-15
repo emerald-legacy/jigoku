@@ -39,7 +39,7 @@ class ObjectionCost implements Cost {
     pay(context: AbilityContext): void {
         const fateCost = currentObjectionCost(context.player);
         if(fateCost > 0) {
-            loseFate({ target: context.player, amount: fateCost }).resolve(context.player, context);
+            loseFate({ amount: fateCost }).resolve(context.player, context);
         }
 
         increaseObjectionCost(context.player);

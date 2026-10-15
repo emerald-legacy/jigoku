@@ -10,10 +10,8 @@ import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
-import { isCardOfType, type CardOfType, type CardTypes } from '../types/CardOfType.js';
+import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from './targetingCosts.js';
-
-const isCardTypeList = (cardType: CardTypes): cardType is readonly CardType[] => Array.isArray(cardType);
 
 /** `K` is the declared `cardType`, which fixes the class of card the callbacks receive. */
 interface SelectCardBase<C extends AbilityContext, K extends CardTypes> extends CardActionProperties {

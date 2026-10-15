@@ -34,7 +34,7 @@ export default class GloryOfTheFiveRivers extends DrawCard {
                             bidResult = result;
                             for(const [player, amount] of result.bids) {
                                 context.game.addMessage(msg`${player} spends ${amount} fate`);
-                                loseFate({ amount, target: player }).resolve(player, context);
+                                loseFate({ amount }).resolve(player, context);
                             }
                         })
                     );

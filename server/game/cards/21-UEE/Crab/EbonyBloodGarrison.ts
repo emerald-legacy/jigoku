@@ -35,8 +35,8 @@ export default class EbonyBloodGarrison extends StrongholdCard {
             })
             .handler((context) => {
                 const provinces = [context.targets[MY_PROVINCE], context.targets[OPP_PROVINCE]];
-                context.game.queueSimpleStep(() => reveal({ target: provinces }).resolve(provinces, context));
-                context.game.queueSimpleStep(() => breakProvince({ target: provinces }).resolve(provinces, context));
+                context.game.queueSimpleStep(() => reveal().resolve(provinces, context));
+                context.game.queueSimpleStep(() => breakProvince().resolve(provinces, context));
             })
             .chatText((context) => msg`drag ${context.player.opponent} into chaos, as a crisis strikes ${context.targets[MY_PROVINCE]} and ${context.targets[OPP_PROVINCE]}`);
     }

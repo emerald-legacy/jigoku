@@ -1,7 +1,16 @@
 import { AttachmentManager } from './AttachmentManager.js';
 import type DrawCard from './DrawCard.js';
 import { addKeyword, cardCannot, legendaryFate, playerCannot } from './effects.js';
-import { Effects } from './effects.js';
+import {
+    attachmentCardCondition,
+    attachmentFactionRestriction,
+    attachmentLimit,
+    attachmentMyControlOnly,
+    attachmentOpponentControlOnly,
+    attachmentRestrictTraitAmount,
+    attachmentTraitRestriction,
+    attachmentUniqueRestriction
+} from './effects.js';
 import { EffectSource } from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
 import type { CardAbility } from './CardAbility.js';
@@ -421,30 +430,30 @@ export class BaseCard extends EffectSource {
     attachmentConditions(properties: AttachmentConditionProps): void {
         const effects = [];
         if(properties.limit) {
-            effects.push(Effects.attachmentLimit(properties.limit));
+            effects.push(attachmentLimit(properties.limit));
         }
         if(properties.myControl) {
-            effects.push(Effects.attachmentMyControlOnly());
+            effects.push(attachmentMyControlOnly());
         }
         if(properties.opponentControlOnly) {
-            effects.push(Effects.attachmentOpponentControlOnly());
+            effects.push(attachmentOpponentControlOnly());
         }
         if(properties.unique) {
-            effects.push(Effects.attachmentUniqueRestriction());
+            effects.push(attachmentUniqueRestriction());
         }
         if(properties.faction) {
-            effects.push(Effects.attachmentFactionRestriction([properties.faction].flat()));
+            effects.push(attachmentFactionRestriction([properties.faction].flat()));
         }
         if(properties.trait) {
-            effects.push(Effects.attachmentTraitRestriction([properties.trait].flat()));
+            effects.push(attachmentTraitRestriction([properties.trait].flat()));
         }
         if(properties.limitTrait) {
             for(const traitLimit of [properties.limitTrait].flat()) {
-                effects.push(Effects.attachmentRestrictTraitAmount(traitLimit));
+                effects.push(attachmentRestrictTraitAmount(traitLimit));
             }
         }
         if(properties.cardCondition) {
-            effects.push(Effects.attachmentCardCondition(properties.cardCondition));
+            effects.push(attachmentCardCondition(properties.cardCondition));
         }
         if(effects.length > 0) {
             this.persistentEffect({

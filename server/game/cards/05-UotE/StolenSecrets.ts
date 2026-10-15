@@ -29,7 +29,7 @@ class StolenSecrets extends DrawCard {
     }
 
     private stealCard(card: DrawCard, context: AbilityContext) {
-        setAside({ target: card, hidden: true, playableBy: context.player }).resolve(card, context);
+        setAside({ hidden: true, playableBy: context.player }).resolve(card, context);
     }
 }
 

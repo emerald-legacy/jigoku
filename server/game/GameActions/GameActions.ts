@@ -319,7 +319,7 @@ export function chosenReturnToDeck<C extends AbilityContext = AbilityContext>(pr
     return new ChosenReturnToDeckAction<C>(propertyFactory);
 }
 /**
- * default amount = -1 (whole deck)
+ * default cardsToLookAt = -1 (whole deck)
  * default reveal = true
  * default cardCondition = always true
  */
