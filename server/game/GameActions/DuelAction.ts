@@ -8,6 +8,7 @@ import type DrawCard from '../DrawCard.js';
 import { Duel, type ResolvedDuel } from '../Duel.js';
 import type { Event } from '../Events/Event.js';
 import { DuelFlow } from '../gamesteps/DuelFlow.js';
+import type { HonorBidPrompt } from '../gamesteps/HonorBidPrompt.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { targetList, type GameAction, type ActionEvent } from './GameAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
@@ -23,7 +24,7 @@ export interface DuelProperties<C extends AbilityContext = AbilityContext> exten
     onTie?: GameAction | ((duel: Duel, context: AbilityContext) => GameAction);
     /** What the chat says the duel does, after "Duel Effect: "; by default its game action's own text. */
     chatText?(context: C, duel: ResolvedDuel): MessageArgs;
-    costHandler?(context: C, prompt: unknown): void;
+    costHandler?(context: C, prompt: HonorBidPrompt): void;
     statistic?: (card: DrawCard, duelRules: 'currentSkill' | 'printedSkill' | 'skirmish') => number;
     challengerEffect?: EffectFactory | EffectFactory[];
     targetEffect?: EffectFactory | EffectFactory[];
@@ -96,7 +97,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         }
     }
 
-    honorCosts(prompt: unknown, context: C, additionalProperties: ActionOverrides = {}): void {
+    honorCosts(prompt: HonorBidPrompt, context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.costHandler) {
             properties.costHandler(context, prompt);
@@ -204,7 +205,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
                 duel,
                 (duel: Duel) => this.resolveDuel(duel, context, additionalProperties),
                 properties.costHandler
-                    ? (prompt: unknown) => this.honorCosts(prompt, context, additionalProperties)
+                    ? (prompt: HonorBidPrompt) => this.honorCosts(prompt, context, additionalProperties)
                     : undefined
             )
         );

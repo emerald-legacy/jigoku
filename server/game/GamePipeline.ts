@@ -47,7 +47,7 @@ export class GamePipeline {
         if(this.length === 0) {
             this.pipeline.push(step);
         } else {
-            var currentStep = this.getCurrentStep();
+            const currentStep = this.getCurrentStep();
             if(currentStep.queueStep) {
                 currentStep.queueStep(step);
             } else {
@@ -61,7 +61,7 @@ export class GamePipeline {
             return;
         }
 
-        var step = this.getCurrentStep();
+        const step = this.getCurrentStep();
 
         if(step.cancelStep && step.isComplete) {
             step.cancelStep();
@@ -75,7 +75,7 @@ export class GamePipeline {
 
     handleCardClicked(player: Player, card: BaseCard) {
         if(this.length > 0) {
-            var step = this.getCurrentStep();
+            const step = this.getCurrentStep();
             if(step.onCardClicked(player, card) !== false) {
                 return true;
             }

@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
 import { TargetMode } from '../Constants.js';
-import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
+import { calculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 import { AIR_CHOICE, type GameRules } from '../GameRules.js';
@@ -28,7 +28,7 @@ export class AirRingAbility extends BaseAbility {
 
     public executeHandler(context: AbilityContext): void {
         if(context.select === AIR_CHOICE.GAIN_2) {
-            const [, amountToTransfer] = CalculateHonorLimit(
+            const [, amountToTransfer] = calculateHonorLimit(
                 context.player,
                 context.game.roundNumber,
                 context.game.currentPhase,

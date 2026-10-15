@@ -4,7 +4,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { onlyThePlayer, PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-import { CalculateHonorLimit } from './Shared/HonorLogic.js';
+import { calculateHonorLimit } from './Shared/HonorLogic.js';
 import { type ActionEvent, targetList } from './GameAction.js';
 
 export interface GainHonorProperties extends PlayerActionProperties {
@@ -24,7 +24,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
         const properties = this.getProperties(context, additionalProperties);
         const players = targetList(properties.target);
         // capped by the honor limit of the player who gains it
-        const [, amountToTransfer] = CalculateHonorLimit(
+        const [, amountToTransfer] = calculateHonorLimit(
             players[0] ?? context.player,
             context.game.roundNumber,
             context.game.currentPhase,
@@ -46,7 +46,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
             return false;
         }
 
-        const [hasHonorLimit, amountToTransfer] = CalculateHonorLimit(
+        const [hasHonorLimit, amountToTransfer] = calculateHonorLimit(
             player,
             context.game.roundNumber,
             context.game.currentPhase,
@@ -71,7 +71,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
         const context = event.context;
         const player = event.player;
-        const [, amountToTransfer] = CalculateHonorLimit(
+        const [, amountToTransfer] = calculateHonorLimit(
             player,
             context.game.roundNumber,
             context.game.currentPhase,
