@@ -37,9 +37,8 @@ export default class SpiderwebPassage extends DrawCard {
                 const killAction = discardFromPlay({ target: context.target });
 
                 return {
-                    condition: () =>
-                        (context.player.opponent?.hand.length ?? 0) >= discardCount &&
-                        !!context.player.opponent && discardFromHandAction.canAffect(context.player.opponent, context),
+                    // a smaller hand can still be discarded: the option changes the game state (RRG Select)
+                    condition: () => !!context.player.opponent && discardFromHandAction.canAffect(context.player.opponent, context),
                     falseGameAction: killAction,
                     trueGameAction: chooseAction((context) => ({
                         player: Players.Opponent,

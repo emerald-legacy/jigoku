@@ -50,7 +50,7 @@ describe('Inquisitorial Initiate', function() {
             expect(this.player1).toBeAbleToSelect(this.initiate);
         });
 
-        it('should not prompt if your opponent has less cards than characters with fate', function() {
+        it('should reveal the whole hand if your opponent has fewer cards than characters without fate', function() {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.initiate],
@@ -60,6 +60,26 @@ describe('Inquisitorial Initiate', function() {
             this.player2.playAttachment(this.fan, this.whisperer);
             this.player1.pass();
             this.player2.playAttachment(this.katana, this.whisperer);
+            this.noMoreActions();
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.initiate);
+            expect(this.player2).toHavePrompt('Choose cards to reveal');
+            this.player2.clickCard(this.banzai);
+            expect(this.player1).toHavePromptButton('Banzai!');
+            this.player1.clickPrompt('Banzai!');
+            expect(this.banzai.location).toBe('conflict discard pile');
+        });
+
+        it('should not prompt if your opponent has no cards in hand', function() {
+            this.player2.moveCard(this.fan, 'conflict deck');
+            this.player2.moveCard(this.katana, 'conflict deck');
+            this.player2.moveCard(this.banzai, 'conflict deck');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.initiate],
+                defenders: [],
+                type: 'political'
+            });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
         });

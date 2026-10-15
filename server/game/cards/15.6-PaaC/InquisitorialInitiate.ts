@@ -1,7 +1,17 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Location, Players, TargetMode } from '../../Constants.js';
 import { discardCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { msg } from '../../GameChat.js';
+
+// RRG Effects: a non-targeting effect engages as many entities as possible, so a smaller hand reveals all of it
+function revealCount(context: AbilityContext): number {
+    const opponent = context.player.opponent;
+    if(!opponent) {
+        return 0;
+    }
+    return Math.min(opponent.cardsInPlay.filter((card) => card.getFate() === 0).length, opponent.hand.length);
+}
 
 export default class InquisitorialInitiate extends DrawCard {
     static id = 'inquisitorial-initiate';
@@ -12,13 +22,12 @@ export default class InquisitorialInitiate extends DrawCard {
                 afterConflict: (event, context) =>
                     context.source.isParticipating() &&
                     event.conflict.winner === context.source.controller &&
-                    context.player.opponent !== undefined
+                    revealCount(context) > 0
             })
             .targetCards({
                 activePromptTitle: 'Choose cards to reveal',
                 player: Players.Opponent,
-                numCardsFunc: (context) =>
-                    context.player.opponent?.cardsInPlay.filter((card) => card.getFate() === 0).length ?? 0,
+                numCardsFunc: revealCount,
                 mode: TargetMode.ExactlyVariable,
                 location: Location.Hand
             })
