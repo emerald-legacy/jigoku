@@ -95,7 +95,7 @@ const Stronghold: GameRules = {
     }),
     ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) =>
         card.location === Location.PlayArea &&
-        (card.bowed || (card.getFate() === 0 && card.allowGameAction('bow', context))),
+        ((card.bowed && card.allowGameAction('ready', context)) || (card.getFate() === 0 && card.allowGameAction('bow', context))),
     winConReachedConquestVictory: (provinceBeingBroken: ProvinceCard) =>
         provinceBeingBroken.location === Location.StrongholdProvince,
     winConRequiredHonorForWin: 25
