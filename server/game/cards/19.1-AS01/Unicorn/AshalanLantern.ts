@@ -1,10 +1,10 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DeckType, Duration, Location, PlayType, Blocker, RemainingCards, Players } from '../../../Constants.js';
+import { CardType, DeckType, Duration, PlayType, Blocker, RemainingCards, Players } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
-import { deckSearch, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
+import { deckSearch, discardFromPlay, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AshalanLantern extends DrawCard {
@@ -43,7 +43,7 @@ export default class AshalanLantern extends DrawCard {
                                 ]
                                 : undefined,
                             ignoredBlockers: [Blocker.WrongPhase],
-                            postHandler: () => context.player.moveCard(context.source, Location.ConflictDiscardPile)
+                            postHandler: () => discardFromPlay({ target: context.source }).resolve(context.player, context)
                         };
                     }),
                     remainingCardsHandler: (context, _event, cards) => {

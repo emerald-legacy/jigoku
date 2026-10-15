@@ -22,9 +22,7 @@ export default class KyudenHida extends StrongholdCard {
                         {
                             text: 'Take nothing',
                             handler: () => {
-                                topCards.forEach((card) => {
-                                    context.player.moveCard(card, Location.DynastyDiscardPile);
-                                });
+                                moveCard({ target: topCards, destination: Location.DynastyDiscardPile }).resolve(context.player, context);
                                 this.game.addMessage(msg`${context.player} chooses not to play a character`);
                                 this.game.addMessage(msg`${context.player} discards ${topCards}`);
                                 return true;

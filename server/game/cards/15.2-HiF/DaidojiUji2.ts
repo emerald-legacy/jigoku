@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { hideWhenFaceUp } from '../../effects.js';
+import { placeCardUnderneath } from '../../GameActions/GameActions.js';
 import { TargetMode, DeckType } from '../../Constants.js';
 import { playableFromUnderneath } from '../cardsUnderneath.js';
 
@@ -18,20 +18,7 @@ class DaidojiUji2 extends DrawCard {
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length > 0) {
                         this.game.addMessage(msg`${event.player} selects ${cards.length} cards`);
-                        cards.forEach((card) => {
-                            context.player.placeUnderneath(card, this);
-                            card.controller = context.source.controller;
-                            card.facedown = false;
-                            card.lastingEffect({
-                                until: {
-                                    onCardMoved: (event) => event.card === card && event.originalLocation === this.uuid
-                                },
-                                match: card,
-                                effect: [
-                                    hideWhenFaceUp()
-                                ]
-                            });
-                        });
+                        cards.forEach((card) => placeCardUnderneath({ destination: this }).resolve(card, context));
                     } else {
                         this.game.addMessage(msg`${event.player} selects no cards`);
                     }
