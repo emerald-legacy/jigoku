@@ -1,5 +1,4 @@
 import { msg } from '../../GameChat.js';
-import { GameMode } from '../../../GameMode.js';
 import { CardType, TargetMode, DeckType, Location, Players } from '../../Constants.js';
 import { hideWhenFaceUp } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
@@ -12,7 +11,7 @@ export default class KaiuShihobu extends DrawCard {
         this.reaction('Look at your dynasty deck')
             .when({
                 onCharacterEntersPlay: (event, context) =>
-                    event.card === context.source && context.game.rules.name !== GameMode.Skirmish
+                    event.card === context.source && context.game.rules.setupHaveStrongholds
             })
             .deckSearch({
                 cardCondition: (card) => card.type === CardType.Holding,
@@ -40,7 +39,7 @@ export default class KaiuShihobu extends DrawCard {
             });
 
         this.action('Put a holding in a province')
-            .condition((context) => context.game.rules.name !== GameMode.Skirmish)
+            .condition((context) => context.game.rules.setupHaveStrongholds)
             .target({
                 name: 'first',
                 activePromptTitle: 'Choose a holding',
