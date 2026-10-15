@@ -9,7 +9,7 @@ export default class MeddlingMediator extends DrawCard {
         this.action('Take 1 fate or 1 honor')
             .condition((context) =>
                 context.player.opponent !== undefined &&
-                this.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1)
+                this.game.getDeclaredConflictCount(context.player.opponent) > 1)
             .phase(Phase.Conflict)
             .select({
                 'Take 1 fate': takeFate(),

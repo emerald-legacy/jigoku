@@ -2021,7 +2021,7 @@ this.reaction('Declare a new conflict')
     .when({
         onConflictFinished: (event, context) =&gt;
             event.conflict.attackingPlayer === context.player &amp;&amp; event.conflict.winner === context.player &amp;&amp;
-            this.game.getConflicts(context.player).filter((conflict) =&gt; !conflict.passed).length === 1 &amp;&amp;
+            this.game.getDeclaredConflictCount(context.player) === 1 &amp;&amp;
             event.conflict.getConflictProvinces().some((a) =&gt; a.isBroken)
     })
     .initiateConflict({ canPass: false });</code></pre>
@@ -2211,7 +2211,7 @@ this.reaction('Gain a fate/card')
       </table>
   <pre><code>// Curry Favor: Reaction: After a character you control bows as a result of conflict resolution from the second conflict you declared this round – ready that character.
 onReturnHome: (event, context) =&gt; {
-    if(this.game.getConflicts(context.player).filter((conflict) =&gt; !conflict.passed).length !== 2) {
+    if(this.game.getDeclaredConflictCount(context.player) !== 2) {
         return false;
     }
     return event.conflict.attackingPlayer === context.player &amp;&amp; event.card.controller === context.player &amp;&amp; !event.bowEvent.cancelled;
@@ -3031,7 +3031,7 @@ if(
 </div>
 <div class="ref" id="ctx-game" data-name="game">
   <h3><code>context.game</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-game">#</a></h3>
-  <p>The <code>Game</code>: <code>currentConflict</code>, <code>currentDuel</code>, <code>currentPhase</code>, <code>rings</code>, <code>isDuringConflict(type?)</code>, <code>getConflicts(player)</code>, <code>getPlayers()</code>, <code>addMessage()</code>, <code>queueSimpleStep()</code>, …</p>
+  <p>The <code>Game</code>: <code>currentConflict</code>, <code>currentDuel</code>, <code>currentPhase</code>, <code>rings</code>, <code>isDuringConflict(type?)</code>, <code>getConflicts(player)</code>, <code>getDeclaredConflictCount(player)</code>, <code>getPlayers()</code>, <code>addMessage()</code>, <code>queueSimpleStep()</code>, …</p>
   <ul class="edge">
     <li>Inside a card class <code>this.game</code> is the same object.</li>
   </ul>

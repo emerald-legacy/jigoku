@@ -13,10 +13,10 @@ class MagistratesIntervention extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, dishonor())
-            .chatText((context) => msg`dishonor ${context.chatTarget()}${context.player.opponent && context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1 ? ', then dishonor it again' : ''}`)
+            .chatText((context) => msg`dishonor ${context.chatTarget()}${context.player.opponent && context.game.getDeclaredConflictCount(context.player.opponent) > 1 ? ', then dishonor it again' : ''}`)
             .afterwardsIf((context) => !!(
                 context.player.opponent && context.target?.controller === context.player.opponent &&
-                    context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1))
+                    context.game.getDeclaredConflictCount(context.player.opponent) > 1))
             .dishonor((context) => ({ target: context.target }));
     }
 }

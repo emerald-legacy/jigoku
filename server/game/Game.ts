@@ -447,6 +447,11 @@ export class Game {
         return this.conflictTracker.getForPlayer(player);
     }
 
+    /** The number of conflicts the player declared this round, not counting passed ones. */
+    getDeclaredConflictCount(player: Player): number {
+        return this.getConflicts(player).filter((conflict) => !conflict.passed).length;
+    }
+
     recordConflictWinner(conflict: Conflict): void {
         this.conflictTracker.recordWinner(conflict);
     }

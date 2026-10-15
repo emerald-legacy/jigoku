@@ -1931,14 +1931,29 @@ target: this.game.findAnyCardsInPlay((card) =&gt; card.getFate() &gt; 0)</code><
 
   <div class="ref" id="q-getConflicts" data-name="getConflicts">
     <h3><code>game.getConflicts(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getConflicts">#</a></h3>
-    <p>The conflicts declared this round by <code>player</code> (or by anyone with <code>Players.All</code>), as records: <code>attackingPlayer</code>, <code>declaredType</code>, <code>passed</code>, <code>uuid</code>, <code>completed</code>, <code>winner</code>, <code>typeSwitched</code>.</p>
+    <p>The conflicts declared this round by <code>player</code> (or by anyone with <code>Players.All</code>), as records: <code>attackingPlayer</code>, <code>declaredType</code>, <code>passed</code>, <code>uuid</code>, <code>completed</code>, <code>winner</code>, <code>typeSwitched</code>, <code>brokenProvinces</code>.</p>
     <ul class="edge">
-      <li>Passed conflict opportunities are in the list too, with <code>passed: true</code>; filter them out to count declared conflicts.</li>
+      <li>Passed conflict opportunities are in the list too, with <code>passed: true</code>. To count declared conflicts use <a href="#q-getDeclaredConflictCount"><code>getDeclaredConflictCount</code></a>.</li>
+      <li><code>brokenProvinces</code> is the conflict's own <a href="#q-brokenProvinces">list</a>, so it also fills while the conflict is running.</li>
       <li>The list is cleared when the dynasty phase starts.</li>
     </ul>
-    <pre><code>// Breakthrough: Reaction: After the resolution of your first conflict this phase as the attacking player, …
-this.game.getConflicts(context.player).filter((conflict) =&gt; !conflict.passed).length === 1 &amp;&amp;</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/CurryFavor.ts">Curry Favor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/ShibaPureheart.ts">Shiba Pureheart</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/OutmaneuveredByForce.ts">Outmaneuvered by Force</a> (6 card files)</p>
+    <pre><code>// Ikoma Anakazu: During each conflict in which this character is participating, it gets +3[conflict-military] and +3[conflict-political] if your opponent has broken one or more of your provinces this phase.
+context.game.getConflicts(context.player.opponent).some((record) =&gt; record.brokenProvinces.length &gt; 0)</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IkomaAnakazu.ts">Ikoma Anakazu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/OutmaneuveredByForce.ts">Outmaneuvered by Force</a></p>
+  </div>
+
+  <div class="ref" id="q-getDeclaredConflictCount" data-name="getDeclaredConflictCount">
+    <h3><code>game.getDeclaredConflictCount(player)</code> <span class="kind">Count</span> <a class="anchor" href="#q-getDeclaredConflictCount">#</a></h3>
+    <p>How many conflicts <code>player</code> declared this round. Passed conflict opportunities don't count.</p>
+    <ul class="edge">
+      <li>The conflict that is being declared is already counted when <code>onConflictDeclared</code> is raised, and a finished conflict stays counted in <code>onConflictFinished</code>: "the second conflict" is <code>=== 2</code>.</li>
+      <li>The count is cleared when the dynasty phase starts.</li>
+    </ul>
+    <pre><code>// Shiba Pureheart: Reaction: After your opponent declares their second conflict this phase - honor a character.
+if(attacker === controller.opponent) {
+    return this.game.getDeclaredConflictCount(attacker) === 2;
+}</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/CurryFavor.ts">Curry Favor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/ShibaPureheart.ts">Shiba Pureheart</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/MeddlingMediator.ts">Meddling Mediator</a></p>
   </div>
 
   <div class="ref" id="q-getFavorSide" data-name="getFavorSide">
@@ -2101,6 +2116,19 @@ target: context.event.conflict
     <pre><code>// Silent Suburb: Reaction: After you win a conflict at this province - resolve the ring effect of that conflict.
 event.conflict.getConflictProvinces().some((p) =&gt; p === context.source)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/DiversionaryManeuver.ts">Diversionary Maneuver</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/StudentOfTheTao.ts">Student of the Tao</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crab/DeployedGarrison.ts">Deployed Garrison</a> (20 card files)</p>
+  </div>
+
+  <div class="ref" id="q-brokenProvinces" data-name="brokenProvinces attackersAtResolution defendersAtResolution">
+    <h3><code>conflict.brokenProvinces</code>, <code>conflict.attackersAtResolution</code>, <code>conflict.defendersAtResolution</code> <span class="kind">Field</span> <a class="anchor" href="#q-brokenProvinces">#</a></h3>
+    <p>What happened in a conflict, kept on the <code>Conflict</code> so a card needs no state of its own: the provinces broken while it was the current conflict, and the characters attacking and defending when the winner was determined.</p>
+    <ul class="edge">
+      <li><code>brokenProvinces</code> also records a province broken by an ability during the conflict. A province broken outside a conflict is in no conflict's list.</li>
+      <li><code>attackersAtResolution</code> and <code>defendersAtResolution</code> are copies taken when the winner is determined and stay empty until then; characters that leave the conflict afterwards remain in them. Read them in <code>onConflictFinished</code> for "a conflict in which this character was attacking/defending".</li>
+      <li>The current conflict is <code>context.game.currentConflict</code>; finished ones are the records of <a href="#q-getConflicts"><code>game.getConflicts(player)</code></a>, which share <code>brokenProvinces</code>.</li>
+    </ul>
+    <pre><code>// Utaku Tomoe: Reaction: After the resolution of a conflict in which this character was defending - if you won the conflict, gain 2 honor. Otherwise, ready this character.
+onConflictFinished: (event, context) =&gt; event.conflict.defendersAtResolution.includes(context.source)</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IvoryKingdomsUnicorn.ts">Ivory Kingdoms Unicorn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/MotoChagatai.ts">Moto Chagatai</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/InfernoGuardInvoker.ts">Inferno Guard Invoker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/UtakuTomoe.ts">Utaku Tomoe</a></p>
   </div>
 
   <div class="ref" id="q-getNumberOfCardsPlayed" data-name="getNumberOfCardsPlayed getCardsPlayed">

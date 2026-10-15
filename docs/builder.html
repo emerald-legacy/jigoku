@@ -1223,7 +1223,7 @@ this.reaction('Put this into play')
     .chatText(…)
     .afterwardsIf((context) =&gt; !!(
         context.player.opponent &amp;&amp; context.target?.controller === context.player.opponent &amp;&amp;
-            context.game.getConflicts(context.player.opponent).filter((conflict) =&gt; !conflict.passed).length &gt; 1))
+            context.game.getDeclaredConflictCount(context.player.opponent) &gt; 1))
     .dishonor((context) =&gt; ({ target: context.target }));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DaidojiAmbusher.ts">Daidōji Ambusher</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/RelentlessGloryseeker.ts">Relentless Gloryseeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/TheEmptyCity.ts">The Empty City</a></p>
   </div>
