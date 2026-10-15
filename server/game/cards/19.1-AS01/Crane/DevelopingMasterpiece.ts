@@ -1,8 +1,6 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, Phase, PlayType } from '../../../Constants.js';
+import { Location, Phase, PlayType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { canPlayFromOwn, cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
-import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureParentCost, capturedParent } from '../../captureParentCost.js';
 import { msg } from '../../../GameChat.js';
@@ -12,6 +10,13 @@ export default class DevelopingMasterpiece extends DrawCard {
     static id = 'developing-masterpiece';
 
     public setupCardAbilities() {
+        this.playOnlyIf((context) => context.game.currentPhase === Phase.Draw);
+
+        this.attachmentConditions({
+            myControl: true,
+            cardCondition: (card) => card.hasTrait('courtier') || card.hasTrait('artisan') || card.isFaction('crane')
+        });
+
         this.whileAttached({
             effect: [cannotParticipateAsAttacker(), cannotParticipateAsDefender()]
         });
@@ -37,18 +42,6 @@ export default class DevelopingMasterpiece extends DrawCard {
             .chatText((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`);
     }
 
-    public canAttach(card: BaseCard): boolean {
-        return (
-            card.controller === this.controller &&
-            card.type === CardType.Character &&
-            (card.hasTrait('courtier') || card.hasTrait('artisan') || card.isFaction('crane')) &&
-            super.canAttach(card)
-        );
-    }
-
-    public canPlay(context: AbilityContext, playType?: PlayType): boolean {
-        return context.game.currentPhase === Phase.Draw && super.canPlay(context, playType);
-    }
 }
 
 /**

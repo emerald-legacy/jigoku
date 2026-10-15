@@ -1,7 +1,6 @@
 import { cancel, gainHonor, sequential } from '../../../GameActions/GameActions.js';
-import { FavorType, Phase, Stage, type PlayType } from '../../../Constants.js';
+import { FavorType, Phase, Stage } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class Funeral extends DrawCard {
     static id = 'funeral';
@@ -22,15 +21,8 @@ export default class Funeral extends DrawCard {
                 cancel(),
                 gainHonor((context) => ({ target: context.player }))
             ]))
+            .condition((context) => context.game.currentPhase !== Phase.Draw && context.game.getFavorSide() === FavorType.Political)
             .chatText('cancel their honor loss, then gain 1 honor')
             .cannotBeMirrored();
-    }
-
-    public canPlay(context: AbilityContext, playType?: PlayType) {
-        return (
-            context.game.currentPhase !== Phase.Draw &&
-            context.game.getFavorSide() === FavorType.Political &&
-            super.canPlay(context, playType)
-        );
     }
 }

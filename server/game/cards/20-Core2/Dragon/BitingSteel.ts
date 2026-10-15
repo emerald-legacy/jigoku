@@ -1,9 +1,8 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DuelType, Duration, Players, ConflictType, type PlayType } from '../../../Constants.js';
+import { CardType, DuelType, Duration, Players, ConflictType } from '../../../Constants.js';
 import { modifyDuelistSkill } from '../../../effects.js';
 import { cardLastingEffect, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
 function getAttachmentSkill(card: DrawCard) {
@@ -26,6 +25,8 @@ export default class BitingSteel extends DrawCard {
     static id = 'biting-steel';
 
     public setupCardAbilities() {
+        this.playOnlyIf((context) => controlsShugenja(context.player));
+
         this.attachmentConditions({
             myControl: true,
             cardCondition: (card) => card.attachments.some((attachment) => attachment.hasTrait('weapon'))
@@ -55,9 +56,5 @@ export default class BitingSteel extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)
             }, sendHome());
-    }
-
-    public canPlay(context: AbilityContext, playType?: PlayType) {
-        return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }

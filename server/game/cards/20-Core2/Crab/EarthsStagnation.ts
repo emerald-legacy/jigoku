@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, type PlayType } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { unlimited } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,6 +14,8 @@ export default class EarthsStagnation extends DrawCard {
     static id = 'earth-s-stagnation';
 
     public setupCardAbilities() {
+        this.playOnlyIf((context) => controlsShugenja(context.player));
+
         this.forcedReaction('Give attached character a skill penalty')
             .when({
                 onCardPlayed: (event, context) =>
@@ -30,9 +32,5 @@ export default class EarthsStagnation extends DrawCard {
                 return msg`give ${penalty}${'military'} and ${penalty}${'political'} to ${context.source.parentCharacter}`;
             })
             .limit(unlimited());
-    }
-
-    public canPlay(context: AbilityContext, playType?: PlayType) {
-        return controlsShugenja(context.player) && super.canPlay(context, playType);
     }
 }
