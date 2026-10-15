@@ -43,6 +43,22 @@ describe('Disguised Protector', function() {
                 expect(this.player2.player.skillModifier).toBe(3);
             });
 
+            it('should not let a defender without participating characters win with their bid', function() {
+                this.player1.player.showBid = 1;
+                this.player2.player.showBid = 5;
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: ['disguised-protector'],
+                    defenders: []
+                });
+                this.player2.pass();
+                this.player1.clickCard('disguised-protector');
+                this.player2.pass();
+                this.player1.pass();
+                expect(this.getChatLogs(20)).toContain('Attacker is winning the conflict');
+                expect(this.getChatLogs(20).some((line) => line.startsWith('player1 won a military conflict'))).toBe(true);
+            });
+
             it('should not add each players bid to their conflict skill modifier when disguised protector is not particiating', function() {
                 this.initiateConflict({
                     type: 'military',

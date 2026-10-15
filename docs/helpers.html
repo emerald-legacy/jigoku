@@ -2131,6 +2131,16 @@ onConflictFinished: (event, context) =&gt; event.conflict.defendersAtResolution.
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IvoryKingdomsUnicorn.ts">Ivory Kingdoms Unicorn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/MotoChagatai.ts">Moto Chagatai</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/InfernoGuardInvoker.ts">Inferno Guard Invoker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/UtakuTomoe.ts">Utaku Tomoe</a></p>
   </div>
 
+  <div class="ref" id="q-getWinningPlayer" data-name="getWinningPlayer">
+    <h3><code>conflict.getWinningPlayer()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getWinningPlayer">#</a></h3>
+    <p>The player who wins the conflict at the current skills, or <code>undefined</code> if nobody does. <code>conflict.winner</code> is set from it when the conflict resolves.</p>
+    <ul class="edge">
+      <li>RRG "Winning a Conflict": a side needs at least 1 skill and at least one participating character. A tie goes to the attacker.</li>
+      <li>A player skill modifier (Disguised Protector) counts toward the total but does not make a side without characters win. Then <code>conflict.skillDifference</code> is 0, never negative.</li>
+    </ul>
+    <p class="seen">Used by the engine: the conflict result and the "is winning" chat line. No card reads it.</p>
+  </div>
+
   <div class="ref" id="q-getNumberOfCardsPlayed" data-name="getNumberOfCardsPlayed getCardsPlayed">
     <h3><code>conflict.getNumberOfCardsPlayed(player, predicate?)</code>, <code>conflict.getCardsPlayed(player, predicate?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getNumberOfCardsPlayed">#</a></h3>
     <p>The cards <code>player</code> played during this conflict (as snapshots), and how many.</p>

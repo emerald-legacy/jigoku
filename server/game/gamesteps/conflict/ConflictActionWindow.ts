@@ -28,9 +28,10 @@ export class ConflictActionWindow extends ActionWindow {
             this.game.addMessage(msg`${conflictText} - Attacker: ${this.conflict.attackerSkill} Defender: ${this.conflict.defenderSkill}`);
             let winnerText = 'Attacker is winning the conflict';
             const breakingProvinces: ProvinceCard[] = [];
-            if(this.conflict.attackerSkill === 0 && this.conflict.defenderSkill === 0) {
+            const winner = this.conflict.getWinningPlayer();
+            if(!winner) {
                 winnerText = 'No-one is winning the conflict';
-            } else if(this.conflict.defenderSkill > this.conflict.attackerSkill) {
+            } else if(winner === this.conflict.defendingPlayer) {
                 winnerText = 'Defender is winning the conflict';
             } else {
                 const provinces = this.conflict.getConflictProvinces();

@@ -487,26 +487,30 @@ export class Conflict extends GameObject {
                 });
             });
 
-        if(this.attackerSkill === 0 && this.defenderSkill === 0) {
+        const winner = this.getWinningPlayer();
+        if(!winner) {
             this.loser = undefined;
             this.winner = undefined;
             this.loserSkill = this.winnerSkill = 0;
             this.skillDifference = 0;
             return;
         }
-        if(this.attackerSkill >= this.defenderSkill) {
-            this.loser = this.defendingPlayer;
-            this.loserSkill = this.defenderSkill;
-            this.winner = this.attackingPlayer;
-            this.winnerSkill = this.attackerSkill;
-        } else {
-            this.loser = this.attackingPlayer;
-            this.loserSkill = this.attackerSkill;
-            this.winner = this.defendingPlayer;
-            this.winnerSkill = this.defenderSkill;
-        }
+        const attackerWon = winner === this.attackingPlayer;
+        this.winner = winner;
+        this.loser = attackerWon ? this.defendingPlayer : this.attackingPlayer;
+        this.winnerSkill = attackerWon ? this.attackerSkill : this.defenderSkill;
+        this.loserSkill = attackerWon ? this.defenderSkill : this.attackerSkill;
+        this.skillDifference = Math.max(0, this.winnerSkill - this.loserSkill);
+    }
 
-        this.skillDifference = this.winnerSkill - this.loserSkill;
+    /** Who wins now. RRG "Winning a Conflict": a side needs at least 1 skill and a participating character; a tie goes to the attacker. */
+    getWinningPlayer(): Player | undefined {
+        const attackerCanWin = this.attackerSkill > 0 && this.getAttackers().length > 0;
+        const defenderCanWin = this.defenderSkill > 0 && this.getDefenders().length > 0;
+        if(attackerCanWin && (!defenderCanWin || this.attackerSkill >= this.defenderSkill)) {
+            return this.attackingPlayer;
+        }
+        return defenderCanWin ? this.defendingPlayer : undefined;
     }
 
     isAttackerTheWinner() {
