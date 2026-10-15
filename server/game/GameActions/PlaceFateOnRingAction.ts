@@ -4,7 +4,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
-import type Ring from '../Ring.js';
+import Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
@@ -38,6 +38,10 @@ export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> ex
             properties.origin &&
             (!properties.origin.checkRestrictions(RestrictionType.SpendFate, context) || properties.origin.fate === 0)
         ) {
+            return false;
+        }
+        // moving fate off a ring removes it from that ring (The Stone of Sorrows)
+        if(properties.origin instanceof Ring && !context.player.checkRestrictions(RestrictionType.TakeFateFromRings, context)) {
             return false;
         }
         return properties.amount > 0 && super.canAffect(ring, context);

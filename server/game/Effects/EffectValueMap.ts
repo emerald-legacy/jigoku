@@ -138,6 +138,7 @@ export interface EffectValueMap {
     [EffectName.HideWhenFaceUp]: boolean;
     [EffectName.HonorStatusDoesNotAffectLeavePlay]: boolean;
     [EffectName.HonorStatusDoesNotModifySkill]: boolean;
+    [EffectName.StatusTokensDoNotDecreaseSkill]: boolean;
     [EffectName.TaintedStatusDoesNotCostHonor]: boolean;
     [EffectName.HonorStatusReverseModifySkill]: boolean;
     [EffectName.IncreaseLimitOnAbilities]: AbilityLimitIncrease | true;

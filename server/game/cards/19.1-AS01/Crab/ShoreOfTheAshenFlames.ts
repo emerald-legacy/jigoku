@@ -2,7 +2,7 @@ import { CardType, ConflictType, EffectName, Players } from '../../../Constants.
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { changeConflictSkillFunctionPlayer } from '../../../effects.js';
 import type { Conflict } from '../../../Conflict.js';
-import { isEffectOf } from '../../../Effects/types.js';
+import { isEffectOf, isEffectOfAny } from '../../../Effects/types.js';
 import type { EffectApplier } from '../../../Effects/EffectApplier.js';
 
 export default class ShoreOfTheAshenFlames extends ProvinceCard {
@@ -22,16 +22,9 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
                         const value = effect.getValue(card);
                         return value > 0;
                     }
-                    if(
-                        effect.type === EffectName.ModifyMilitarySkill ||
-                        effect.type === EffectName.ModifyPoliticalSkill ||
-                        effect.type === EffectName.ModifyBothSkills
-                    ) {
-                        if(effect.context && effect.context.source) {
-                            const source = effect.context.source;
-                            return source && source.type === CardType.Attachment;
-                        }
-                        return false;
+                    if(isEffectOfAny(effect, [EffectName.ModifyMilitarySkill, EffectName.ModifyPoliticalSkill, EffectName.ModifyBothSkills])) {
+                        // only increases are blocked; a penalty from an attachment still applies
+                        return effect.context?.source?.type === CardType.Attachment && (effect.getValue(card) ?? 0) > 0;
                     }
                     return false;
                 };

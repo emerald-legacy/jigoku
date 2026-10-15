@@ -1,4 +1,4 @@
-import { addKeyword, honorStatusDoesNotModifySkill } from '../../../effects.js';
+import { addKeyword, statusTokensDoNotDecreaseSkill } from '../../../effects.js';
 import { Phase } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,8 +17,7 @@ export default class TheLionsShadow extends DrawCard {
         });
 
         this.whileAttached({
-            condition: (context) => !!context.source.parentCharacter?.isDishonored,
-            effect: honorStatusDoesNotModifySkill()
+            effect: statusTokensDoNotDecreaseSkill()
         });
 
         this.whileAttached({

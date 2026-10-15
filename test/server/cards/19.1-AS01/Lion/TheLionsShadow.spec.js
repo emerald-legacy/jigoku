@@ -143,3 +143,25 @@ describe('The Lions Shadow', function () {
         });
     });
 });
+
+describe('The Lion\'s Shadow and status tokens that increase skills', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'ikoma-message-runner', attachments: ['the-lion-s-shadow'] }]
+                }
+            });
+            this.runner = this.player1.findCardByName('ikoma-message-runner');
+        });
+
+        it('keeps the tainted bonus of a dishonored character', function () {
+            this.runner.dishonor();
+            this.runner.taint();
+            this.game.checkGameState(true);
+            expect(this.runner.militarySkill).toBe(this.runner.getBaseMilitarySkill() + 2);
+            expect(this.runner.politicalSkill).toBe(this.runner.getBasePoliticalSkill() + 2);
+        });
+    });
+});

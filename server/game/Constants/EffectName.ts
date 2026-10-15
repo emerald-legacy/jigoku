@@ -54,6 +54,7 @@ export enum EffectName {
     HideWhenFaceUp = 'hideWhenFaceUp',
     HonorStatusDoesNotAffectLeavePlay = 'honorStatusDoesNotAffectLeavePlay',
     HonorStatusDoesNotModifySkill = 'honorStatusDoesNotModifySkill',
+    StatusTokensDoNotDecreaseSkill = 'statusTokensDoNotDecreaseSkill',
     TaintedStatusDoesNotCostHonor = 'taintedStatusDoesNotCostHonor',
     HonorStatusReverseModifySkill = 'honorStatusReverseModifySkill',
     IncreaseLimitOnAbilities = 'increaseLimitOnAbilities',

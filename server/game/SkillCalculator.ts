@@ -267,6 +267,17 @@ export class SkillCalculator {
                 }
             });
         }
+        const doesNotDecreaseEffects = this.card.getRawEffects().filter(
+            (effect) => effect.type === EffectName.StatusTokensDoNotDecreaseSkill
+        );
+        if(doesNotDecreaseEffects.length > 0) {
+            modifiers.forEach((modifier) => {
+                if(modifier.type === 'token' && modifier.amount < 0) {
+                    modifier.amount = 0;
+                    modifier.name += ` (${StatModifier.getEffectName(doesNotDecreaseEffects[0])})`;
+                }
+            });
+        }
     }
 
     getStatusTokenModifiers(): StatModifier[] {
