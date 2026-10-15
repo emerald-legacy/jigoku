@@ -1,4 +1,4 @@
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Element } from '../../../Constants.js';
 import { modifyProvinceStrength } from '../../../effects.js';
 import { removeFate } from '../../../GameActions/GameActions.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -13,7 +13,7 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Any,
-            condition: (context) => context.source.controller.hasAffinity('earth', context),
+            condition: (context) => context.source.controller.hasAffinity(Element.Earth, context),
             match: (card, context) => card.type === CardType.Province && card === context?.source.parent,
             effect: modifyProvinceStrength(1)
         });

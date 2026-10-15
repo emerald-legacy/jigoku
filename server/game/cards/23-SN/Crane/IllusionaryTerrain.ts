@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, Players, Location } from '../../../Constants.js';
+import { CardType, Players, Location, Element } from '../../../Constants.js';
 import { copyProvince, reduceCost } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 
@@ -28,7 +28,7 @@ export default class IllusionaryTerrain extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: (context) => {
-                    if(context.player.hasAffinity('air', context)) {
+                    if(context.player.hasAffinity(Element.Air, context)) {
                         return Players.Any;
                     }
                     return context.event.conflict.defendingPlayer === context.player ? Players.Self : Players.Opponent;

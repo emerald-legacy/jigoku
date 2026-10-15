@@ -7,7 +7,7 @@ import {
     moveCard,
     sequential
 } from '../../../GameActions/GameActions.js';
-import { Location, Players } from '../../../Constants.js';
+import { Location, Players, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/random.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -37,7 +37,7 @@ export default class DrawingTheVoid extends DrawCard {
                         gameAction: moveCard({ destination: Location.RemovedFromGame })
                     })),
                     conditional((context) => ({
-                        condition: context.player.hasAffinity('void', context),
+                        condition: context.player.hasAffinity(Element.Void, context),
                         trueGameAction: draw()
                     }))
                 ];

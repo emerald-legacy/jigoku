@@ -1770,7 +1770,7 @@ effect: modifyBothSkills(2 * context.player.getNumberOfHoldingsInPlay())</code><
       <li>For an affinity step, prefer the builder's <code>.onAffinity(…)</code>, which also handles the prompt and chat.</li>
     </ul>
     <pre><code>// Appeasing the Restless: … Then, unless you have Void affinity, injure the bowed character.
-.if((context) =&gt; !context.player.hasAffinity('void', context))</code></pre>
+.if((context) =&gt; !context.player.hasAffinity(Element.Void, context))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/EarthsStagnation.ts">Earth's Stagnation</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/CloudTheMind2.ts">Cloud the Mind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/HeartOfTheInferno.ts">Heart of the Inferno</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/AppeasingTheRestless.ts">Appeasing the Restless</a> (13 card files)</p>
   </div>
 

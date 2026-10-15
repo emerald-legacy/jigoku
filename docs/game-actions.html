@@ -1791,7 +1791,7 @@ this.action('Remove a ring from the unclaimed ring pool')
 }))
 
 // Wings of the Phoenix: … With Fire affinity, each character on the enemy side gets -1[conflict-military] and -1[conflict-political] for this conflict.
-.onAffinity('fire', {
+.onAffinity(Element.Fire, {
     chatText: () =&gt; msg`give all participating enemies -1${'military'}/-1${'political'} until the end of the conflict`
 })
 .cardLastingEffect((context) =&gt; ({ … }));</code></pre>

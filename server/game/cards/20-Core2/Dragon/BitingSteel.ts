@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DuelType, Duration, Players, ConflictType } from '../../../Constants.js';
+import { CardType, DuelType, Duration, Players, ConflictType, Element } from '../../../Constants.js';
 import { modifyDuelistSkill } from '../../../effects.js';
 import { cardLastingEffect, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -50,7 +50,7 @@ export default class BitingSteel extends DrawCard {
             .chatText((context) => msg`add the skill bonus of ${context.chatTarget()} (${getAttachmentSkill(context.target)}) to their duel total`);
 
         this.conflictAction('Send an enemy home', { conflictType: ConflictType.Military })
-            .condition((context) => context.player.hasAffinity('fire', context))
+            .condition((context) => context.player.hasAffinity(Element.Fire, context))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

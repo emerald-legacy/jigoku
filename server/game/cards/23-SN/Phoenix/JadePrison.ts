@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { reduceCost } from '../../../effects.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Element } from '../../../Constants.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class JadePrison extends DrawCard {
@@ -10,7 +10,7 @@ export default class JadePrison extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            condition: (context) => context.player.hasAffinity('earth', context),
+            condition: (context) => context.player.hasAffinity(Element.Earth, context),
             effect: reduceCost({ amount: 1, match: (card, source) => card === source })
         });
 

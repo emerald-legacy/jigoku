@@ -1,3 +1,4 @@
+import { Element } from '../../../Constants.js';
 import { blank, loseGainedAbilities } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -13,7 +14,7 @@ export default class CloudTheMind2 extends DrawCard {
         });
 
         this.whileAttached({
-            condition: (context) => context.source.controller.hasAffinity('air', context),
+            condition: (context) => context.source.controller.hasAffinity(Element.Air, context),
             effect: loseGainedAbilities()
         });
     }

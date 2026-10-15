@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Location } from '../../../Constants.js';
+import { CardType, Location, Element } from '../../../Constants.js';
 import { moveConflict, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureCost } from '../../captureCost.js';
@@ -25,7 +25,7 @@ export default class AllDistancesAreOne extends DrawCard {
             })
             .chatText('move the conflict to another eligible province')
             .afterwardsIf((context) => !context.costs.originalProvince?.isBroken)
-            .onAffinity('water', {
+            .onAffinity(Element.Water, {
                 activePromptTitle: 'Flip the original province facedown?',
                 chatText: (context) => msg`flip ${context.costs.originalProvince} facedown`
             })

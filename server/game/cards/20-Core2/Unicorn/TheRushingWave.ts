@@ -1,6 +1,6 @@
 import { setProvinceStrength } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
-import { CardType, Duration, Location } from '../../../Constants.js';
+import { CardType, Duration, Location, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
@@ -30,7 +30,7 @@ export default class TheRushingWave extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: setProvinceStrength(0)
             }))
-            .onAffinity('water', {
+            .onAffinity(Element.Water, {
                 chatText: (context) => msg`also set the strength of ${adjacentProvinces(context.target).map(provinceLog)} to 0`
             })
             .cardLastingEffect((context) => ({

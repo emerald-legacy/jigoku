@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { Players, CardType, RestrictionType } from '../../../Constants.js';
+import { Players, CardType, RestrictionType, Element } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import * as costs from '../../../costs/index.js';
 import { handler, placeFate } from '../../../GameActions/GameActions.js';
@@ -18,12 +18,12 @@ export default class AppeasingTheRestless extends DrawCard {
                 cardCondition: (card) => card.hasTrait('shugenja')
             }))
             .gameAction(handler({ handler: (context) => this.moveFate(context, MAX_FATE) }))
-            .chatText((context) => context.player.hasAffinity('void', context)
+            .chatText((context) => context.player.hasAffinity(Element.Void, context)
                 ? msg`move up to 3 fate onto Spirit characters`
                 : msg`move up to 3 fate onto Spirit characters and injure ${context.costs.bow}`)
             .cannotTargetFirst()
             .afterwards()
-            .if((context) => !context.player.hasAffinity('void', context))
+            .if((context) => !context.player.hasAffinity(Element.Void, context))
             .injure((context) => ({ target: context.costs.bow }));
     }
 

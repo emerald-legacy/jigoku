@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Element } from '../../../Constants.js';
 import { bow, discardFromPlay, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
@@ -30,7 +30,7 @@ export default class HeartOfTheInferno extends DrawCard {
                 if(context.target.type === CardType.Character && context.target.attachments.length === 0) {
                     gameActions.push(bow({ target: context.target }));
                 }
-                if(context.target.type === CardType.Attachment && context.player.hasAffinity('fire', context)) {
+                if(context.target.type === CardType.Attachment && context.player.hasAffinity(Element.Fire, context)) {
                     gameActions.push(discardFromPlay({ target: context.target }));
                 }
 

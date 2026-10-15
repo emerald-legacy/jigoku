@@ -1,3 +1,4 @@
+import { Element } from '../../../Constants.js';
 import { msg } from '../../../GameChat.js';
 import { unlimited } from '../../../AbilityLimit.js';
 import { chatMessage, chosenDiscard, draw, multiple } from '../../../GameActions/GameActions.js';
@@ -27,7 +28,7 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                     target: winner
                 }));
 
-                const hasAffinity = loser.hasAffinity('earth', context);
+                const hasAffinity = loser.hasAffinity(Element.Earth, context);
                 if(!hasAffinity) {
                     gameActions.push(chosenDiscard({
                         target: loser

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, Element } from '../../../Constants.js';
 import { unlimited } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -7,7 +7,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
 function penaltyAmount(context: AbilityContext): number {
-    return context.player.hasAffinity('earth', context) ? -2 : -1;
+    return context.player.hasAffinity(Element.Earth, context) ? -2 : -1;
 }
 
 export default class EarthsStagnation extends DrawCard {

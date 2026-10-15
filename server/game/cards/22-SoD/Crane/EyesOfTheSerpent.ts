@@ -1,4 +1,4 @@
-import { CardType } from '../../../Constants.js';
+import { CardType, Element } from '../../../Constants.js';
 import { taint } from '../../../GameActions/GameActions.js';
 import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
@@ -19,7 +19,7 @@ export default class EyesOfTheSerpent extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.isDishonored
             }, taint())
-            .onAffinity('air', { chatText: () => msg`gain 1 honor` })
+            .onAffinity(Element.Air, { chatText: () => msg`gain 1 honor` })
             .gainHonor()
             .chatText((context) => msg`taint ${context.target}`);
     }

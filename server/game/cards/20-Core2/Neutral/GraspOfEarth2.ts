@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Element } from '../../../Constants.js';
 import { gainAbility, reduceCost } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -14,7 +14,7 @@ export default class GraspOfEarth2 extends DrawCard {
             targetController: Players.Any,
             effect: reduceCost({
                 amount: 1,
-                targetCondition: (target, _, context) => target.controller.hasAffinity('earth', context),
+                targetCondition: (target, _, context) => target.controller.hasAffinity(Element.Earth, context),
                 match: (card, source) => card === source
             })
         });

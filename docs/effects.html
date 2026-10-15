@@ -2855,7 +2855,7 @@ this.whileAttached({
 });
 
 this.whileAttached({
-    condition: (context) =&gt; context.source.controller.hasAffinity('air', context),
+    condition: (context) =&gt; context.source.controller.hasAffinity(Element.Air, context),
     effect: loseGainedAbilities()
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/CloudTheMind2.ts">Cloud the Mind</a></p>
@@ -3303,7 +3303,7 @@ this.persistentEffect({
       <li>Read from the player who lost the conflict; the chat names the effect's source.</li>
     </ul>
     <pre><code>// Castle of Air: Conflict Action: Bow a Shugenja character - the attacked province gets +4 strength this conflict. With Air affinity, you do not lose honor from this conflict being unopposed.
-.if((context) =&gt; context.player.hasAffinity('air', context))
+.if((context) =&gt; context.player.hasAffinity(Element.Air, context))
 .playerLastingEffect({
     target: Players.Self,
     duration: Duration.UntilEndOfConflict,
