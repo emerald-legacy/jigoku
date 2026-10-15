@@ -6,7 +6,7 @@ class MotoJuro extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Move this character to the conflict or home from the conflict')
-            .if((context) => context.source.isDrawCard() && context.source.isParticipating())
+            .if((context) => context.source.isParticipating())
                 .sendHome()
             .otherwise()
                 .moveToConflict()

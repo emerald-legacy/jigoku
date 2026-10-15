@@ -27,7 +27,7 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                     }, cardLastingEffect({
                         effect: modifyMilitarySkill(2)
                     }))
-                    .if((context) => context.source.isDrawCard() && context.source.isParticipating())
+                    .if((context) => context.source.isParticipating())
                     .moveToConflict()
                     .otherwise()
                     .sendHome()

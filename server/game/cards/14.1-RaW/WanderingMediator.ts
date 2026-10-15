@@ -9,7 +9,7 @@ class WanderingMediator extends DrawCard {
     override setupCardAbilities() {
         this.action('Move in/out the conflict')
             .condition((context) => context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false)
-            .if((context) => context.source.isDrawCard() && context.source.isParticipating())
+            .if((context) => context.source.isParticipating())
                 .sendHome()
             .otherwise()
                 .moveToConflict();
