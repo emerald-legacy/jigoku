@@ -7,16 +7,9 @@ import { SimpleStep } from './SimpleStep.js';
 import type { HonorBidPrompt } from './HonorBidPrompt.js';
 
 /**
-D. Duel Timing
-D.1 Duel begins.
-D.2 Establish challenger and challengee.
-D.3 Duel honor bid.
-D.4 Reveal honor dials.
-D.5 Transfer honor.
-D.6 Modify dueling skill.
-D.7 Compare skill value and determine results.
-D.8 Apply duel results.
-D.9 Duel ends.
+ * RRG Duel Timing: D.1 Initiate a duel (the ability's targets), D.2 Challenge (onDuelChallenge),
+ * D.3 Focus (honor bids, duel totals, the winner: afterDuel), D.4 Strike (onDuelStrike, then the
+ * consequences: onDuelResolution), D.5 Duel ends (onDuelFinished).
  */
 export class DuelFlow extends BaseStepWithPipeline {
     constructor(
