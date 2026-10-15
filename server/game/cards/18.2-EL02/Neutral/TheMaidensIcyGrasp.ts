@@ -1,6 +1,6 @@
 import { cannotContribute } from '../../../effects.js';
 import { cardLastingEffect, onAffinity, removeFate } from '../../../GameActions/GameActions.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { CharactersEnteredThisConflict } from '../../CharactersEnteredThisConflict.js';
 
@@ -20,7 +20,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: [cannotContribute(() => (card) => card === context.target)]
             })), onAffinity({
-                trait: 'water',
+                trait: Element.Water,
                 gameAction: removeFate()
             }))
             .chatText('prevent {0} from contributing to resolution of this conflict');

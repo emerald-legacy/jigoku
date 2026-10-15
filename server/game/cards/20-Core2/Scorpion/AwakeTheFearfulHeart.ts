@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect, onAffinity, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardType, RestrictionType } from '../../../Constants.js';
+import { CardType, RestrictionType, Element } from '../../../Constants.js';
 
 export default class AwakeTheFearfulHeart extends DrawCard {
     static id = 'awake-the-fearful-heart';
@@ -21,7 +21,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
                         ) ?? []
                 })),
                 onAffinity({
-                    trait: 'air',
+                    trait: Element.Air,
                     gameAction: cardLastingEffect((context) => ({
                         target: context.game.findAnyCardsInPlay(
                             (card) => card.type === CardType.Character

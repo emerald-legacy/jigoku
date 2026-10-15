@@ -1,13 +1,12 @@
 import { CardType, Players, Element } from '../../../Constants.js';
-import { bow, discardFromPlay, multiple } from '../../../GameActions/GameActions.js';
+import { discardFromPlay, onAffinity } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class HeartOfTheInferno extends DrawCard {
     static id = 'heart-of-the-inferno';
 
     setupCardAbilities() {
-        this.action('Bow a card')
+        this.conflictAction('Bow a card')
             .condition((context) =>
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
@@ -20,21 +19,12 @@ export default class HeartOfTheInferno extends DrawCard {
                 // card attached to a ring or province has no `parentCharacter`, so it is on no side at all.
                 cardCondition: (card, context) => !!context.player.opponent &&
                     (card.isParticipatingFor(context.player.opponent) ||
-                        !!card.parentCharacter?.isParticipatingFor(context.player.opponent))
-            }, multiple((context) => {
-                if(!(context.target instanceof DrawCard)) {
-                    return [];
-                }
-
-                const gameActions: Array<GameAction> = [];
-                if(context.target.type === CardType.Character && context.target.attachments.length === 0) {
-                    gameActions.push(bow({ target: context.target }));
-                }
-                if(context.target.type === CardType.Attachment && context.player.hasAffinity(Element.Fire, context)) {
-                    gameActions.push(discardFromPlay({ target: context.target }));
-                }
-
-                return gameActions;
-            }));
+                        !!card.parentCharacter?.isParticipatingFor(context.player.opponent)) &&
+                    card.attachments.length === 0
+            })
+            .if((context) => context.target?.type === CardType.Character)
+            .bow()
+            .otherwise()
+            .gameAction(onAffinity({ trait: Element.Fire, gameAction: discardFromPlay() }));
     }
 }

@@ -1784,7 +1784,7 @@ this.action('Remove a ring from the unclaimed ring pool')
     </ul>
     <pre><code>// Earth's Examination: [conflict-political] Conflict Action: If you control a Shugenja character, choose a participating character - taint it, if able. With Earth affinity, you may bow that character. …
 .target({ … }, taint(), onAffinity({
-    trait: 'earth',
+    trait: Element.Earth,
     activePromptTitle: 'Bow that character?',
     gameAction: bow(),
     chatText: (context) =&gt; msg`bow ${context.target}`

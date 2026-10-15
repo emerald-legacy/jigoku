@@ -1,4 +1,4 @@
-import { CardType, ConflictType } from '../../../Constants.js';
+import { CardType, ConflictType, Element } from '../../../Constants.js';
 import { bow, onAffinity, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
@@ -15,7 +15,7 @@ export default class EarthsExamination extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }, taint(), onAffinity({
-                trait: 'earth',
+                trait: Element.Earth,
                 activePromptTitle: 'Bow that character?',
                 gameAction: bow(),
                 chatText: (context) => msg`bow ${context.target}`
