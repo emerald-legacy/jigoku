@@ -23,10 +23,20 @@ describe('PlayerZones', function () {
             expect(result).toContain(sh);
         });
 
-        it('lazily creates and returns an additional pile for an unknown source', function () {
-            const result = this.zones.getSourceList('customPile');
-            expect(result).toEqual([]);
-            expect(this.zones.additionalPiles.customPile).toBeDefined();
+        it('returns an empty list for an unknown source without creating a pile', function () {
+            expect(this.zones.getSourceList('customPile')).toEqual([]);
+            expect(this.zones.additionalPiles.customPile).toBeUndefined();
+        });
+
+        it('returns the cards of an additional pile that was created', function () {
+            const card = { uuid: 'x' };
+            this.zones.createAdditionalPile('customPile').cards.push(card);
+            expect(this.zones.getSourceList('customPile')).toEqual([card]);
+        });
+
+        it('does not treat the name of an inherited property as a pile', function () {
+            expect(this.zones.getSourceList('constructor')).toEqual([]);
+            expect(this.zones.hasAdditionalPile('constructor')).toBe(false);
         });
 
         it('returns an empty array for an empty source name', function () {
@@ -40,6 +50,11 @@ describe('PlayerZones', function () {
             this.zones.hand.push(kept, { uuid: 'y' });
             this.zones.removeCard(Location.Hand, 'y');
             expect(this.zones.hand).toEqual([kept]);
+        });
+
+        it('does not create a pile when removing from an unknown source', function () {
+            this.zones.removeCard('customPile', 'y');
+            expect(this.zones.additionalPiles.customPile).toBeUndefined();
         });
 
         it('removes the card from an additional pile', function () {

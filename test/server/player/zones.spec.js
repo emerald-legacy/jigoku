@@ -134,10 +134,10 @@ describe('Player getSourceList', function() {
         expect(result).toContain(cardB);
     });
 
-    it('creates an additional pile when source is unknown but non-empty', function() {
+    it('returns an empty list without creating a pile when the source is unknown', function() {
         const list = this.player.getSourceList('some custom pile');
-        expect(Array.isArray(list)).toBe(true);
-        expect(this.player.additionalPiles['some custom pile']).toBeDefined();
+        expect(list).toEqual([]);
+        expect(this.player.additionalPiles['some custom pile']).toBeUndefined();
     });
 });
 

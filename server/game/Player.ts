@@ -936,7 +936,7 @@ export class Player extends GameObject {
             return false;
         }
 
-        if(this.additionalPiles[location]) {
+        if(this.zones.hasAdditionalPile(location)) {
             return true;
         }
 
@@ -979,6 +979,12 @@ export class Player extends GameObject {
         }
 
         return !!legalLocations[category]?.some((legal) => legal === location);
+    }
+
+    /** Puts the card in the pile underneath `host`, which is created on first use. */
+    placeUnderneath(card: BaseCard, host: BaseCard): void {
+        this.zones.ensureAdditionalPile(host.uuid);
+        this.moveCard(card, host.uuid);
     }
 
     promptForAttachment(card: DrawCard): void {
@@ -1134,8 +1140,6 @@ export class Player extends GameObject {
     }
 
     moveCard(card: BaseCard, targetLocation: string, options: MoveCardOptions = {}): void {
-        // creates the pile underneath a card on first use, which makes it a legal location
-        this.getSourceList(targetLocation);
         if(!this.isLegalLocationForCard(card, targetLocation)) {
             return;
         }

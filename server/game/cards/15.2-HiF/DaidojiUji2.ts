@@ -19,7 +19,7 @@ class DaidojiUji2 extends DrawCard {
                     if(cards.length > 0) {
                         this.game.addMessage(msg`${event.player} selects ${cards.length} cards`);
                         cards.forEach((card) => {
-                            context.player.moveCard(card, this.uuid);
+                            context.player.placeUnderneath(card, this);
                             card.controller = context.source.controller;
                             card.facedown = false;
                             card.lastingEffect({

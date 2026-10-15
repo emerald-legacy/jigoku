@@ -45,7 +45,7 @@ export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext
         }
         const destination = properties.destination.uuid;
 
-        context.player.moveCard(card, destination);
+        context.player.placeUnderneath(card, properties.destination);
         card.controller = context.source.controller;
         card.facedown = false;
         if(properties.hideWhenFaceup) {

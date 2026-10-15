@@ -78,7 +78,7 @@ describe('Honest Assessment', function() {
         });
 
         it('shoud work with less than 4 cards', function() {
-            this.player1.moveCard(this.ornateFan, 'conflict disard pile');
+            this.player1.moveCard(this.ornateFan, 'conflict discard pile');
             const hand = this.player1.hand.length;
             this.player2.clickCard(this.assessment);
             this.player2.clickCard(this.diplomat);

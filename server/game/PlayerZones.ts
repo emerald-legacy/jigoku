@@ -33,7 +33,7 @@ export class PlayerZones {
     additionalPiles: Record<string, AdditionalPile> = {};
     underneathStronghold: BaseCard[] = [];
 
-    /** The pile at `source`; a pile unknown so far is created (custom piles are keyed by the uuid of the card they belong to). */
+    /** The pile at `source`; a pile unknown so far is empty (custom piles are keyed by the uuid of the card they belong to). */
     getSourceList(source: DrawCardPile): DrawCard[];
     getSourceList(source: Location.ProvinceDeck): ProvinceCard[];
     getSourceList(source: string): BaseCard[];
@@ -71,13 +71,7 @@ export class PlayerZones {
             case Location.UnderneathStronghold:
                 return this.underneathStronghold;
             default:
-                if(source) {
-                    if(!this.additionalPiles[source]) {
-                        this.createAdditionalPile(source);
-                    }
-                    return this.additionalPiles[source].cards;
-                }
-                return [];
+                return this.hasAdditionalPile(source) ? this.additionalPiles[source].cards : [];
         }
     }
 
@@ -98,7 +92,7 @@ export class PlayerZones {
         }
     }
 
-    /** Takes the card out of the pile at `source`; a pile unknown so far is created, as `getSourceList` does. */
+    /** Takes the card out of the pile at `source`. */
     removeCard(source: string, uuid: string): void {
         const without = <T extends BaseCard>(cards: T[]) => cards.filter((card) => card.uuid !== uuid);
         switch(source) {
@@ -147,16 +141,24 @@ export class PlayerZones {
             case Location.Provinces:
                 break;
             default:
-                if(source) {
-                    const pile = this.additionalPiles[source] ?? this.createAdditionalPile(source);
-                    pile.cards = without(pile.cards);
+                if(this.hasAdditionalPile(source)) {
+                    this.additionalPiles[source].cards = without(this.additionalPiles[source].cards);
                 }
         }
+    }
+
+    hasAdditionalPile(name: string): boolean {
+        return Object.hasOwn(this.additionalPiles, name);
     }
 
     createAdditionalPile(name: string, properties?: Record<string, unknown>): AdditionalPile {
         this.additionalPiles[name] = Object.assign({ cards: [] }, properties);
         return this.additionalPiles[name];
+    }
+
+    /** The additional pile called `name`, created when there is none yet. */
+    ensureAdditionalPile(name: string): AdditionalPile {
+        return this.hasAdditionalPile(name) ? this.additionalPiles[name] : this.createAdditionalPile(name);
     }
 
     getDynastyCardInProvince(location: string): DrawCard | undefined {
