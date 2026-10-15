@@ -86,6 +86,20 @@ describe('ChatCommands', function() {
             });
         });
 
+        describe('with a /roll command', function() {
+            it('should roll a die with the passed number of sides', function () {
+                this.chatCommands.executeCommand(this.playerSpy, '/roll', ['/roll', '6']);
+
+                expect(this.gameSpy.addMessage).toHaveBeenCalledTimes(1);
+            });
+
+            it('should not roll a die with more than 1000 sides', function () {
+                expect(() => this.chatCommands.executeCommand(this.playerSpy, '/roll', ['/roll', '99999999999999999999'])).not.toThrow();
+
+                expect(this.gameSpy.addMessage).not.toHaveBeenCalled();
+            });
+        });
+
         describe('with a /claim-favor command', function() {
             it('should claim the military favor with no argument', function () {
                 this.chatCommands.executeCommand(this.playerSpy, '/claim-favor', ['/claim-favor']);

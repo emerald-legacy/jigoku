@@ -11,6 +11,8 @@ import type Ring from './Ring.js';
 
 type CommandHandler = (player: Player, args: string[]) => boolean | void;
 
+const MAX_DIE_SIDES = 1000;
+
 export class ChatCommands {
     game: Game;
     commands: Record<string, CommandHandler>;
@@ -73,7 +75,7 @@ export class ChatCommands {
 
     random(player: Player, args: string[]): void {
         const num = this.getNumberOrDefault(args[1], 4);
-        if(num > 1) {
+        if(num > 1 && num <= MAX_DIE_SIDES) {
             this.game.addMessage(msg`${player} rolls a d${num}: ${rollDie(num)}`);
         }
     }
