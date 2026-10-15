@@ -9,9 +9,9 @@ import {
 } from '../../../GameActions/GameActions.js';
 import { Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { shuffle } from '../../../utils/random.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import { msg } from '../../../GameChat.js';
+import { randomHandCards } from '../../randomHandCards.js';
 
 export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';
@@ -20,9 +20,7 @@ export default class DrawingTheVoid extends DrawCard {
         this.action('Gaze into the void')
             .condition((context) => controlsShugenja(context.player))
             .gameAction(sequential((context) => {
-                const revealedCards = shuffle(context.player.opponent?.hand ?? [])
-                    .slice(0, 2)
-                    .sort((a, b) => a.name.localeCompare(b.name));
+                const revealedCards = randomHandCards(context.player.opponent, 2);
                 return [
                     lookAt({
                         target: revealedCards,

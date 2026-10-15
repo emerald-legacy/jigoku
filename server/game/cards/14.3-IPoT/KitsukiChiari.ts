@@ -3,7 +3,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { discardMatching, lookAt, multiple } from '../../GameActions/GameActions.js';
-import { shuffle } from '../../utils/random.js';
+import { randomHandCards } from '../randomHandCards.js';
 
 class KitsukiChiari extends DrawCard {
     static id = 'kitsuki-chiari';
@@ -16,7 +16,7 @@ class KitsukiChiari extends DrawCard {
             })
             .cost(costs.nameCard())
             .gameAction(multiple((context) => {
-                const cards = shuffle(context.player.opponent?.hand ?? []).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
+                const cards = randomHandCards(context.player.opponent, 4);
                 return [
                     lookAt(() => ({
                         target: cards

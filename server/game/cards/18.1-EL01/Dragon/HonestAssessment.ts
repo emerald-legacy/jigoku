@@ -4,7 +4,7 @@ import { perRound } from '../../../AbilityLimit.js';
 import { discardMatching, multiple, reveal } from '../../../GameActions/GameActions.js';
 import { Location, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { shuffle } from '../../../utils/random.js';
+import { randomHandCards } from '../../randomHandCards.js';
 
 export default class HonestAssessment extends DrawCard {
     static id = 'honest-assessment';
@@ -19,8 +19,7 @@ export default class HonestAssessment extends DrawCard {
             })
             .cost(costs.nameCard())
             .gameAction(multiple((context) => {
-                const hand = shuffle(context.player.opponent?.hand ?? []);
-                const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
+                const cards = randomHandCards(context.player.opponent, 4);
                 return [
                     reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
                     discardMatching({
