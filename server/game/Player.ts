@@ -614,7 +614,7 @@ export class Player extends GameObject {
         if(numCards > this.conflictDeck.length) {
             remainingCards = numCards - this.conflictDeck.length;
             const cards = this.conflictDeck.slice();
-            this.deckRanOutOfCards('conflict');
+            this.deckRanOutOfCards(DeckType.Conflict);
             this.game.queueSimpleStep(() => {
                 for(const card of cards) {
                     this.moveCard(card, Location.Hand);
@@ -632,22 +632,21 @@ export class Player extends GameObject {
         }
     }
 
-    deckRanOutOfCards(deck: string): void {
-        const discardPile = this.getSourceList(deck + ' discard pile');
+    deckRanOutOfCards(deck: DeckType): void {
+        const [deckLocation, discardLocation] = deck === DeckType.Dynasty
+            ? [Location.DynastyDeck, Location.DynastyDiscardPile]
+            : [Location.ConflictDeck, Location.ConflictDiscardPile];
+        const discardPile = this.getSourceList(discardLocation);
         const action = loseHonor({ amount: this.game.rules.deckoutHonorLoss });
         if(action.canAffect(this, this.game.getFrameworkContext(this))) {
-            this.game.addMessage(msg`${this}'s ${deck} deck has run out of cards, so they lose ${this.game.rules.deckoutHonorLoss} honor`);
+            this.game.addMessage(msg`${this}'s ${deck} has run out of cards, so they lose ${this.game.rules.deckoutHonorLoss} honor`);
         } else {
-            this.game.addMessage(msg`${this}'s ${deck} deck has run out of cards`);
+            this.game.addMessage(msg`${this}'s ${deck} has run out of cards`);
         }
         action.resolve(this, this.game.getFrameworkContext(this));
         this.game.queueSimpleStep(() => {
-            discardPile.forEach((card: BaseCard) => this.moveCard(card, deck + ' deck'));
-            if(deck === 'dynasty') {
-                this.shuffleDynastyDeck();
-            } else {
-                this.shuffleConflictDeck();
-            }
+            discardPile.forEach((card: BaseCard) => this.moveCard(card, deckLocation));
+            this.shuffleDeck(deckLocation);
         });
     }
 
@@ -658,7 +657,7 @@ export class Player extends GameObject {
             return false;
         }
         if(this.dynastyDeck.length === 0) {
-            this.deckRanOutOfCards('dynasty');
+            this.deckRanOutOfCards(DeckType.Dynasty);
             this.game.queueSimpleStep(() => {
                 if(this.dynastyDeck.length > 0) {
                     this.replaceDynastyCard(location);
@@ -680,7 +679,7 @@ export class Player extends GameObject {
 
     putTopDynastyCardInProvince(location: string, facedown: boolean = false): boolean {
         if(this.dynastyDeck.length === 0) {
-            this.deckRanOutOfCards('dynasty');
+            this.deckRanOutOfCards(DeckType.Dynasty);
             this.game.queueSimpleStep(() => {
                 if(this.dynastyDeck.length > 0) {
                     this.putTopDynastyCardInProvince(location, facedown);
@@ -701,7 +700,7 @@ export class Player extends GameObject {
         }
 
         if(this.dynastyDeck.length === 0) {
-            this.deckRanOutOfCards('dynasty');
+            this.deckRanOutOfCards(DeckType.Dynasty);
             this.game.queueSimpleStep(() => {
                 if(this.dynastyDeck.length > 0) {
                     this.refillProvince(location, refillAmount);

@@ -13,7 +13,7 @@ import type { TargetLocation } from '../Interfaces.js';
 const provinceCardTypes: readonly string[] = [CardType.Province, CardType.Stronghold, CardType.Holding];
 
 export class CardEffect extends ActiveEffect<BaseCard> {
-    targetController: string | Player;
+    targetController: Players | Player;
     targetLocation: TargetLocation;
 
     constructor(game: Game, source: EffectSource, properties: EffectProperties<BaseCard>, effect: EffectApplier<EffectName, BaseCard>) {

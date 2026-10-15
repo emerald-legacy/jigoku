@@ -1,5 +1,5 @@
 import { Location, Duration } from '../Constants.js';
-import type { EffectName } from '../Constants.js';
+import type { EffectName, Players } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { BaseAbility } from '../BaseAbility.js';
 import type { EffectSource } from '../EffectSource.js';
@@ -37,7 +37,7 @@ export interface EffectProperties<T extends GameObject = GameObject> {
     ability?: BaseAbility;
     endingMessage?: string;
     // a player, or which players relative to the source's controller
-    targetController?: string | Player;
+    targetController?: Players | Player;
     targetLocation?: TargetLocation;
     target?: GameObject | GameObject[];
 }

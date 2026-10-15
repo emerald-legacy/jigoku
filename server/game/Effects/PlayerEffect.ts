@@ -7,7 +7,7 @@ import type Player from '../Player.js';
 import type { EffectApplier } from './EffectApplier.js';
 
 export class PlayerEffect extends ActiveEffect<Player> {
-    targetController: string | Player;
+    targetController: Players | Player;
 
     constructor(game: Game, source: EffectSource, properties: EffectProperties<Player>, effect: EffectApplier<EffectName, Player>) {
         super(game, source, properties, effect);
