@@ -461,3 +461,39 @@ describe('Shosuro Deceiver -  Two Deceivers', function() {
         });
     });
 });
+
+describe('Shosuro Deceiver - copying an action and a reaction', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-deceiver'],
+                    hand: ['let-go']
+                },
+                player2: {
+                    inPlay: ['emissary-of-the-five-rivers']
+                }
+            });
+
+            this.deceiver = this.player1.findCardByName('shosuro-deceiver');
+            this.emissary = this.player2.findCardByName('emissary-of-the-five-rivers');
+        });
+
+        it('should gain the action without confusing it with the reaction', function() {
+            this.emissary.dishonor();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.deceiver],
+                defenders: [this.emissary],
+                type: 'military'
+            });
+            this.emissary.bowed = true;
+
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.deceiver);
+            expect(this.player1).toBeAbleToSelect(this.emissary);
+        });
+    });
+});
