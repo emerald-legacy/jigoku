@@ -1,4 +1,4 @@
-import { Players } from '../../Constants.js';
+import { Players, Trait } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
@@ -14,7 +14,7 @@ class StudyTheNaturalWorld extends DrawCard {
 
     setupCardAbilities() {
         this.action('Add elements to the conflict ring')
-            .condition((context) => context.player.anyCardsInPlay((card) => card.isAttacking() && card.hasTrait('scholar')))
+            .condition((context) => context.player.anyCardsInPlay((card) => card.isAttacking() && card.hasTrait(Trait.Scholar)))
             .ringLastingEffect((context) => ({
                 target: context.game.currentConflict?.ring,
                 effect: addElement(this.getElementsOfAttackedProvinces(context))

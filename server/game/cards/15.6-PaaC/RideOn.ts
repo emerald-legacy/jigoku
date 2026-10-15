@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { moveToConflict, sendHome } from '../../GameActions/GameActions.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, Trait } from '../../Constants.js';
 
 class RideOn extends DrawCard {
     static id = 'ride-on';
@@ -11,7 +11,7 @@ class RideOn extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('cavalry')
+                cardCondition: (card) => card.hasTrait(Trait.Cavalry)
             })
             .select({
                 name: 'select',

@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import { injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,7 +11,7 @@ export default class KinutanukiYoite extends DrawCard {
                 onCardPlayed: (event, context) =>
                     event.player === context.player &&
                     context.source.isParticipating() &&
-                    event.card.hasEveryTrait('fire', 'spell')
+                    event.card.hasEveryTrait(Trait.Fire, Trait.Spell)
             })
             .target({
                 activePromptTitle: 'Choose a character',

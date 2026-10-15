@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import { addTrait, blank, loseTrait } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,9 +8,9 @@ export default class SeijisFate extends DrawCard {
     public setupCardAbilities() {
         this.whileAttached({
             effect: [
-                addTrait('creature'),
-                loseTrait('bushi'),
-                loseTrait('courtier'),
+                addTrait(Trait.Creature),
+                loseTrait(Trait.Bushi),
+                loseTrait(Trait.Courtier),
                 blank()
             ]
         });

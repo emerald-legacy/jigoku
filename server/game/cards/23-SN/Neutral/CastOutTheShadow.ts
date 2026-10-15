@@ -1,6 +1,6 @@
 import { sacrifice, takeHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType } from '../../../Constants.js';
+import { Players, CardType, Trait } from '../../../Constants.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class CastOutTheShadow extends DrawCard {
@@ -13,7 +13,7 @@ export default class CastOutTheShadow extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating() && (card.isTainted || card.hasSomeTrait('corrupt', 'shadowlands'))
+                cardCondition: (card) => card.isParticipating() && (card.isTainted || card.hasTrait(Trait.Corrupt))
             })
             .select({
                 name: 'select',

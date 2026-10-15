@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { gainPlayAction } from '../../../effects.js';
 import { cardLastingEffect, discardCard, playCard, selectCard, sequential } from '../../../GameActions/GameActions.js';
-import { CardType, Location, Players, TargetMode, Blocker } from '../../../Constants.js';
+import { CardType, Location, Players, TargetMode, Blocker, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
@@ -16,7 +16,7 @@ export default class ToConnectThePeople extends DrawCard {
             .condition((context) =>
                 !context.game.isDuringConflict() &&
                 context.player.cardsInPlay.some(
-                    (card) => card.type === CardType.Character && card.hasTrait('merchant')
+                    (card) => card.type === CardType.Character && card.hasTrait(Trait.Merchant)
                 ))
             .gameAction(sequential([
                 discardCard((context) => ({
@@ -51,7 +51,7 @@ export default class ToConnectThePeople extends DrawCard {
     private maxMerchantGlory(context: AbilityContext) {
         return context.player.cardsInPlay.reduce(
             (maxGlory, card) =>
-                card.type === CardType.Character && card.hasTrait('merchant') && card.glory > maxGlory
+                card.type === CardType.Character && card.hasTrait(Trait.Merchant) && card.glory > maxGlory
                     ? card.glory
                     : maxGlory,
             0

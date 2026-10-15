@@ -1,4 +1,4 @@
-import { CardType, Players, TargetMode, ConflictType } from '../../../Constants.js';
+import { CardType, Players, TargetMode, ConflictType, Trait } from '../../../Constants.js';
 import { moveToConflict, multiple, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class TwentyFourSteps extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('bushi') && card.attachments.length >= 2
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && card.attachments.length >= 2
             }, multiple([
                 ready(),
                 moveToConflict()
@@ -24,7 +24,7 @@ export default class TwentyFourSteps extends DrawCard {
                 numCards: 2,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('monk')
+                cardCondition: (card) => card.hasTrait(Trait.Monk)
             }, moveToConflict());
     }
 }

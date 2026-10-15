@@ -1,4 +1,4 @@
-import { DuelType, ConflictType } from '../../../Constants.js';
+import { DuelType, ConflictType, Trait } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyDuelTotal } from '../../../effects.js';
 import { injure } from '../../../GameActions/GameActions.js';
@@ -9,7 +9,7 @@ export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
 
     private getWeaponCount(context: AbilityContext) {
-        return context.source.attachments.filter((card) => card.hasTrait('weapon')).length;
+        return context.source.attachments.filter((card) => card.hasTrait(Trait.Weapon)).length;
     }
 
     setupCardAbilities() {

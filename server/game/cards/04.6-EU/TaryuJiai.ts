@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { CardType, DuelType, Players } from '../../Constants.js';
+import { CardType, DuelType, Players, Trait } from '../../Constants.js';
 import { duel, resolveRingEffect, selectRing } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -13,7 +13,7 @@ export default class TaryuJiai extends DrawCard {
                 activePromptTitle: 'Choose a friendly shugenja',
                 controller: Players.Self,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('shugenja')
+                cardCondition: (card) => card.hasTrait(Trait.Shugenja)
             })
             .target({
                 name: 'oppShugenja',
@@ -21,7 +21,7 @@ export default class TaryuJiai extends DrawCard {
                 activePromptTitle: 'Choose an opposing shugenja',
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('shugenja')
+                cardCondition: (card) => card.hasTrait(Trait.Shugenja)
             }, duel((context) => ({
                 type: DuelType.Glory,
                 challenger: context.targets.myShugenja,

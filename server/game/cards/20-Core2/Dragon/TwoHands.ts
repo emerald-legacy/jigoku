@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, ConflictType, Players, TargetMode } from '../../../Constants.js';
+import { CardType, ConflictType, Players, TargetMode, Trait } from '../../../Constants.js';
 import { setMilitarySkill, setPoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect, duelAddParticipant } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -21,7 +21,7 @@ export default class TwoHands extends DrawCard {
                 !!context.game.currentConflict &&
                 context.player.cardsInPlay.some(
                     (card) =>
-                        card.isParticipating() && card.attachments.some((attachment) => attachment.hasTrait('weapon'))
+                        card.isParticipating() && card.attachments.some((attachment) => attachment.hasTrait(Trait.Weapon))
                 ) &&
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent) >
                     context.game.currentConflict.getNumberOfParticipantsFor(context.player))

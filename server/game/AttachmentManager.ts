@@ -1,5 +1,6 @@
 import { msg } from './GameChat.js';
 import { CardType, EffectName } from './Constants.js';
+import type { traitLimit } from './Interfaces.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
@@ -20,7 +21,7 @@ export class AttachmentManager {
     }
 
     allowAttachment(attachment: DrawCard): boolean {
-        if(this.host.allowedAttachmentTraits.some((trait) => attachment.hasTrait(trait))) {
+        if(this.host.allowedAttachmentTraits.some((trait) => attachment.getTraits().has(trait))) {
             return true;
         }
         return this.host.isBlank() || this.host.allowedAttachmentTraits.length === 0;
@@ -50,13 +51,16 @@ export class AttachmentManager {
             }
         }
 
-        for(const object of this.attachments.reduce<Array<Record<string, number>>>(
+        for(const object of this.attachments.reduce<Array<traitLimit>>(
             (array, card) => array.concat(card.getEffects(EffectName.AttachmentRestrictTraitAmount)),
             []
         )) {
-            for(const trait of Object.keys(object)) {
-                const matchingAttachments = this.attachments.filter((attachment) => attachment.hasTrait(trait));
-                for(const overflow of matchingAttachments.slice(0, -object[trait])) {
+            for(const [trait, limit] of Object.entries(object)) {
+                if(limit === undefined) {
+                    continue;
+                }
+                const matchingAttachments = this.attachments.filter((attachment) => attachment.getTraits().has(trait));
+                for(const overflow of matchingAttachments.slice(0, -limit)) {
                     illegalAttachments.add(overflow);
                 }
             }

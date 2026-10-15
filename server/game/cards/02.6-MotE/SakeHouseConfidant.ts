@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
@@ -10,7 +11,7 @@ class SakeHouseConfidant extends DrawCard {
             .condition((context) => context.source.isParticipating())
             .cost(costs.discardImperialFavor())
             .cardLastingEffect((context) => ({
-                target: context.player.cardsInPlay.filter((card) => card.hasTrait('shinobi')),
+                target: context.player.cardsInPlay.filter((card) => card.hasTrait(Trait.Shinobi)),
                 effect: modifyPoliticalSkill(2)
             }))
             .chatText('give their Shinobi +0/+2');

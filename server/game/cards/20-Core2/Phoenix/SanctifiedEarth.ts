@@ -1,6 +1,6 @@
 import { cardCannot, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect, onAffinity } from '../../../GameActions/GameActions.js';
-import { CardType, type EventName, Players, RestrictionType, RestrictionScope, Element } from '../../../Constants.js';
+import { CardType, type EventName, Players, RestrictionType, RestrictionScope, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -28,7 +28,7 @@ export default class SanctifiedEarth extends DrawCard {
     static id = 'sanctified-earth';
 
     public setupCardAbilities() {
-        this.attachmentConditions({ trait: 'shugenja', myControl: true });
+        this.attachmentConditions({ trait: Trait.Shugenja, myControl: true });
 
         this.reaction('Give character a skill bonus')
             .when({
@@ -43,7 +43,7 @@ export default class SanctifiedEarth extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyBothSkills(2)
             }), onAffinity({
-                trait: Element.Earth,
+                trait: Trait.Earth,
                 chatText: (context) => msg`make ${context.target} invulnerable to opponent's send home`,
                 gameAction: cardLastingEffect({
                     effect: cardCannot({

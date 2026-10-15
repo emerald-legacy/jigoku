@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardType, DuelType, Players, Location } from '../../../Constants.js';
+import { CardType, DuelType, Players, Location, Trait } from '../../../Constants.js';
 import { unlimited } from '../../../AbilityLimit.js';
 import { attach, noAction, selectCard, sequential, takeHonor } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -38,7 +38,7 @@ export default class BayushiGichin extends DrawCard {
                         cardType: CardType.Attachment,
                         controller: Players.Self,
                         location: [Location.Hand, Location.ConflictDiscardPile, Location.DynastyDiscardPile],
-                        cardCondition: (card) => card.hasTrait('poison') && !!character && attach().canAffect(character, context, { attachment: card }),
+                        cardCondition: (card) => card.hasTrait(Trait.Poison) && !!character && attach().canAffect(character, context, { attachment: card }),
                         message: (context, cards) => msg`${context.player} attaches ${cards}`,
                         subActionProperties: (card) => {
                             poison = !Array.isArray(card) && card.isDrawCard() ? card : undefined;
@@ -70,8 +70,8 @@ export default class BayushiGichin extends DrawCard {
 
     private getPoisons(context: AbilityContext) {
         const player = context.player;
-        const inDiscard = player.conflictDiscardPile.filter((card) => card.hasTrait('poison'));
-        const inHand = player.hand.filter((card) => card.hasTrait('poison'));
+        const inDiscard = player.conflictDiscardPile.filter((card) => card.hasTrait(Trait.Poison));
+        const inHand = player.hand.filter((card) => card.hasTrait(Trait.Poison));
 
         return [...inDiscard, ...inHand];
     }

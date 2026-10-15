@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
+import { Location, Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
@@ -9,7 +9,7 @@ class TatteredMissive extends DrawCard {
     setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
-            trait: 'courtier'
+            trait: Trait.Courtier
         });
 
         this.action('Search top 5 cards')

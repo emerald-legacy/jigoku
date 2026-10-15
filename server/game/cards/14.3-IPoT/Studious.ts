@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { addKeyword, gainAbility } from '../../effects.js';
 
@@ -6,7 +7,7 @@ class Studious extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'scholar'
+            trait: Trait.Scholar
         });
 
         this.whileAttached({

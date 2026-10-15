@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, ConflictType, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Players, Trait } from '../../../Constants.js';
 import { duelIgnorePrintedSkill, setMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -19,7 +19,7 @@ export default class ShosuroTechnique extends DrawCard {
                 activePromptTitle: 'Choose a Shinobi you control',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('shinobi') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait(Trait.Shinobi) && card.isParticipating()
             })
             .target({
                 name: 'enemy',

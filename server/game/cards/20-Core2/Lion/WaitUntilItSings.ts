@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { additionalActionAfterWindowCompleted } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -7,7 +8,7 @@ export default class WaitUntilItSings extends DrawCard {
 
     setupCardAbilities() {
         this.action('Take an action during conflict resolution')
-            .condition((context) => context.game.currentConflict?.getParticipants().some((p) => p.controller === context.player && p.hasTrait('commander')) ?? false)
+            .condition((context) => context.game.currentConflict?.getParticipants().some((p) => p.controller === context.player && p.hasTrait(Trait.Commander)) ?? false)
             .playerLastingEffect({
                 effect: additionalActionAfterWindowCompleted(1)
             })

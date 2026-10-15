@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { modifyProvinceStrength } from '../../effects.js';
@@ -11,7 +12,7 @@ export default class UpholdingAuthority extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => !!(context.player.role && context.player.role.hasTrait('earth')),
+            condition: (context) => !!(context.player.role && context.player.role.hasTrait(Trait.Earth)),
             effect: modifyProvinceStrength(2)
         });
 

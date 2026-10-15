@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { draw, sequential, setHonorDial } from '../../GameActions/GameActions.js';
-import { ConflictType } from '../../Constants.js';
+import { ConflictType, Trait } from '../../Constants.js';
 
 class RegalBearing extends DrawCard {
     static id = 'regal-bearing';
@@ -12,7 +12,7 @@ class RegalBearing extends DrawCard {
         this.action('Lower bid and draw bid difference as cards')
             .condition((context) => context.game.isDuringConflict(ConflictType.Political) &&
                 !!context.player.opponent &&
-                context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')))
+                context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait(Trait.Courtier)))
             .gameAction(sequential([
                 setHonorDial((context) => ({
                     target: context.player,

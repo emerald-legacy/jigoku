@@ -1,6 +1,6 @@
 import { perPhase } from '../../../AbilityLimit.js';
 import { dishonor } from '../../../GameActions/GameActions.js';
-import { CardType, Phase, Players } from '../../../Constants.js';
+import { CardType, Phase, Players, Trait } from '../../../Constants.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -27,6 +27,6 @@ export default class TrailOfBloodAndLies extends DrawCard {
                 controller: Players.Opponent
             }, dishonor())
             .max(perPhase(1))
-            .mayResolveAgain({ condition: (context) => context.player.isCharacterTraitInPlay('magistrate') });
+            .mayResolveAgain({ condition: (context) => context.player.isCharacterTraitInPlay(Trait.Magistrate) });
     }
 }

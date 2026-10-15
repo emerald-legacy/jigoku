@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { dishonor, handler, honor, loseFate, selectCard } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { FateBidPrompt, type Result } from '../../../gamesteps/FateBidPrompt.js';
 import { SimpleStep } from '../../../gamesteps/SimpleStep.js';
@@ -24,7 +24,7 @@ export default class GloryOfTheFiveRivers extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Honor a character and dishonor a character')
-            .condition((context) => context.player.isTraitInPlay('courtier'))
+            .condition((context) => context.player.isTraitInPlay(Trait.Courtier))
             .gameAction(handler({
                 handler: (context) => {
                     let bidResult: Result;

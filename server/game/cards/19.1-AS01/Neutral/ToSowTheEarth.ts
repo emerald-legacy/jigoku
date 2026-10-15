@@ -1,4 +1,4 @@
-import { CardType, Players, Location } from '../../../Constants.js';
+import { CardType, Players, Location, Trait } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
@@ -16,7 +16,7 @@ export default class ToSowTheEarth extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
-                cardCondition: (card) => card.hasTrait('peasant')
+                cardCondition: (card) => card.hasTrait(Trait.Peasant)
             }, sequential([
                 cardLastingEffect((context) => ({
                     target: context.target,
@@ -33,7 +33,7 @@ export default class ToSowTheEarth extends DrawCard {
 
         this.action('Place a province facedown')
             .cost(costs.bow({
-                cardCondition: (card) => card.hasTrait('peasant')
+                cardCondition: (card) => card.hasTrait(Trait.Peasant)
             }))
             .target({
                 cardType: CardType.Province,

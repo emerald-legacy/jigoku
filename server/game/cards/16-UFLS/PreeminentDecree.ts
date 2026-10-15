@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, Trait } from '../../Constants.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -13,7 +13,7 @@ class PreeminentDecree extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => {
-                    return card.hasTrait('courtier') && card.isParticipating() && card.glory > 0;
+                    return card.hasTrait(Trait.Courtier) && card.isParticipating() && card.glory > 0;
                 }
             }, cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants().filter((a) => a !== context.target) ?? [],

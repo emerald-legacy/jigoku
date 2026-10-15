@@ -1,6 +1,6 @@
 import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, ConflictType } from '../../Constants.js';
+import { CardType, ConflictType, Trait } from '../../Constants.js';
 
 class ShiotomeEncampment extends DrawCard {
     static id = 'shiotome-encampment';
@@ -15,7 +15,7 @@ class ShiotomeEncampment extends DrawCard {
                 ))
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('cavalry')
+                cardCondition: (card) => card.hasTrait(Trait.Cavalry)
             }, ready());
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, Trait } from '../../Constants.js';
 import { bow } from '../../GameActions/GameActions.js';
 
 class IsawaUona extends DrawCard {
@@ -8,7 +8,7 @@ class IsawaUona extends DrawCard {
     setupCardAbilities() {
         this.reaction('Bow a non-unique character in the conflict')
             .when({
-                onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait('air') && this.game.isDuringConflict()
+                onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait(Trait.Air) && this.game.isDuringConflict()
             })
             .target({
                 activePromptTitle: 'Choose a character',

@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { playerFateCostToTargetCard } from '../../../effects.js';
 import { playerLastingEffect } from '../../../GameActions/GameActions.js';
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { CardType, Duration, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ToShowThePath extends DrawCard {
@@ -11,12 +11,12 @@ export default class ToShowThePath extends DrawCard {
         this.action('Target unit costs more fate to target')
             .condition((context) =>
                 context.player.cardsInPlay.some(
-                    (card) => card.hasTrait('monk') || card.hasTrait('shugenja')
+                    (card) => card.hasTrait(Trait.Monk) || card.hasTrait(Trait.Shugenja)
                 ))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => !card.hasTrait('monk') && !card.hasTrait('shugenja')
+                cardCondition: (card) => !card.hasTrait(Trait.Monk) && !card.hasTrait(Trait.Shugenja)
             }, playerLastingEffect((context) => ({
                 target: context.player.opponent,
                 duration: Duration.UntilEndOfPhase,

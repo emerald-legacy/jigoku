@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import { addTrait } from '../../effects.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardType, Location, PlayType } from '../../Constants.js';
+import { CardType, Location, PlayType, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
@@ -13,7 +13,7 @@ export default class DragonTattoo extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({ myControl: true });
 
-        this.whileAttached({ effect: addTrait('tattooed') });
+        this.whileAttached({ effect: addTrait(Trait.Tattooed) });
 
         this.reaction('Play card again')
             .when({

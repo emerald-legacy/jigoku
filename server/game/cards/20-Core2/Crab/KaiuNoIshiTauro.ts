@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players, DeckType } from '../../../Constants.js';
+import { CardType, Players, DeckType, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { attach, deckSearch } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -19,7 +19,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                 activePromptTitle: 'Select an attachment',
                 deck: DeckType.Conflict,
                 cardCondition: (card) => card.type === CardType.Attachment &&
-                        (card.hasTrait('weapon') || card.hasTrait('armor') || card.hasTrait('item')) &&
+                        (card.hasTrait(Trait.Weapon) || card.hasTrait(Trait.Armor) || card.hasTrait(Trait.Item)) &&
                         !!context.target && attach({ attachment: card }).canAffect(context.target, context) &&
                         card.costLessThan(context.costs.returnedRings ? context.costs.returnedRings.length + 1 : 1),
                 reveal: true,

@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 class ChroniclerOfConquests extends DrawCard {
@@ -5,7 +6,7 @@ class ChroniclerOfConquests extends DrawCard {
 
     setupCardAbilities() {
         this.action('Gain 1 honor')
-            .condition((context) => context.source.isParticipating() && context.game.isTraitInPlay('battlefield'))
+            .condition((context) => context.source.isParticipating() && context.game.isTraitInPlay(Trait.Battlefield))
             .gainHonor();
     }
 }

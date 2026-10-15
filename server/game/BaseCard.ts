@@ -13,7 +13,7 @@ import type Game from './Game.js';
 import { type ActionContext, AbilityBuilder, TriggerBuilder, toActionProps, toAggregateProps, createDraft, holdsTriggerEvent, holdsAggregateEvents, toTriggerProps } from './AbilityBuilder.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
-import { AbilityType, CardType, type CharacterStatus, Duration, EffectName, type Element, EventName, Location, type Players, type PlayType, Blocker, RestrictionType, RestrictionScope } from './Constants.js';
+import { AbilityType, CardType, type CharacterStatus, Duration, EffectName, type Element, EventName, Location, type Players, type PlayType, Blocker, RestrictionType, RestrictionScope, type Trait } from './Constants.js';
 import { ElementSymbol, type ElementSymbolInfo } from './ElementSymbol.js';
 import type { ActionProps, AttachmentConditionProps, PersistentEffectProps, TargetLocation, TriggeredAbilityProps } from './Interfaces.js';
 import type { GameObject } from './GameObject.js';
@@ -440,8 +440,7 @@ export class BaseCard extends EffectSource {
         }
         if(properties.limitTrait) {
             for(const traitLimit of [properties.limitTrait].flat()) {
-                const trait = Object.keys(traitLimit)[0];
-                effects.push(Effects.attachmentRestrictTraitAmount({ [trait]: traitLimit[trait] }));
+                effects.push(Effects.attachmentRestrictTraitAmount(traitLimit));
             }
         }
         if(properties.cardCondition) {
@@ -519,22 +518,27 @@ export class BaseCard extends EffectSource {
         return this.printedKeywords.includes(keyword);
     }
 
-    hasTrait(trait: string): boolean {
+    hasTrait(trait: Trait): boolean {
         return this.hasSomeTrait(trait);
     }
 
-    hasEveryTrait(traits: Set<string>): boolean;
-    hasEveryTrait(...traits: string[]): boolean;
-    hasEveryTrait(traitSetOrFirstTrait: Set<string> | string, ...otherTraits: string[]): boolean {
+    hasEveryTrait(traits: Set<Trait>): boolean;
+    hasEveryTrait(...traits: Trait[]): boolean;
+    hasEveryTrait(traitSetOrFirstTrait: Set<Trait> | Trait, ...otherTraits: Trait[]): boolean {
         const cardTraits = this.getTraits();
         return [...traitsToCheck(traitSetOrFirstTrait, otherTraits)].every((trait) => cardTraits.has(trait.toLowerCase()));
     }
 
-    hasSomeTrait(traits: Set<string>): boolean;
-    hasSomeTrait(...traits: string[]): boolean;
-    hasSomeTrait(traitSetOrFirstTrait: Set<string> | string, ...otherTraits: string[]): boolean {
+    hasSomeTrait(traits: Set<Trait>): boolean;
+    hasSomeTrait(...traits: Trait[]): boolean;
+    hasSomeTrait(traitSetOrFirstTrait: Set<Trait> | Trait, ...otherTraits: Trait[]): boolean {
         const cardTraits = this.getTraits();
         return [...traitsToCheck(traitSetOrFirstTrait, otherTraits)].some((trait) => cardTraits.has(trait.toLowerCase()));
+    }
+
+    sharesTrait(other: BaseCard): boolean {
+        const traits = this.getTraits();
+        return [...other.getTraits()].some((trait) => traits.has(trait));
     }
 
     getTraits(): Set<string> {
@@ -924,7 +928,7 @@ export class BaseCard extends EffectSource {
      * attach the passed attachment card.
      */
     allowAttachment(attachment: BaseCard): boolean {
-        if(this.allowedAttachmentTraits.some((trait) => attachment.hasTrait(trait))) {
+        if(this.allowedAttachmentTraits.some((trait) => attachment.getTraits().has(trait))) {
             return true;
         }
 
@@ -1176,7 +1180,7 @@ export class BaseCard extends EffectSource {
     }
 }
 
-function traitsToCheck(traitSetOrFirstTrait: Set<string> | string, otherTraits: string[]): Set<string> {
+function traitsToCheck(traitSetOrFirstTrait: Set<Trait> | Trait, otherTraits: Trait[]): Set<Trait> {
     return traitSetOrFirstTrait instanceof Set ? traitSetOrFirstTrait : new Set([traitSetOrFirstTrait, ...otherTraits]);
 }
 

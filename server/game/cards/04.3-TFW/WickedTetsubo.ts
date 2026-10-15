@@ -1,7 +1,7 @@
 import { setMilitarySkill, setPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
 class WickedTetsubo extends DrawCard {
@@ -9,7 +9,7 @@ class WickedTetsubo extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'berserker'
+            trait: Trait.Berserker
         });
 
         this.action('Set Military or Political skill to 0')

@@ -1,7 +1,7 @@
 import { takeControl } from '../../effects.js';
 import { bow, cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { Cost } from '../../costs/Cost.js';
-import { CardType, Players, Duration, Location } from '../../Constants.js';
+import { CardType, Players, Duration, Location, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
@@ -55,7 +55,7 @@ class AnAgreeableArrangement extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => !card.hasTrait('champion'),
+                cardCondition: (card) => !card.hasTrait(Trait.Champion),
                 activePromptTitle: 'Bow a non-champion'
             }, bow());
     }

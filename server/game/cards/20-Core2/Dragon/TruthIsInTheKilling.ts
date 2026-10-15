@@ -1,11 +1,11 @@
 import { msg } from '../../../GameChat.js';
-import { DuelType, ConflictType } from '../../../Constants.js';
+import { DuelType, ConflictType, Trait } from '../../../Constants.js';
 import { discardFromPlay, noAction, removeFate, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ResolvedDuel } from '../../../Duel.js';
 
 function applyFullEffect(duel: ResolvedDuel) {
-    return duel.winner.some((winner) => winner.hasTrait('duelist'));
+    return duel.winner.some((winner) => winner.hasTrait(Trait.Duelist));
 }
 
 export default class TruthIsInTheKilling extends DrawCard {
@@ -15,7 +15,7 @@ export default class TruthIsInTheKilling extends DrawCard {
         this.conflictAction('Initiate a military duel, discarding the loser', { conflictType: ConflictType.Military })
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                challengerCondition: (card) => card.hasTrait('bushi') && card.isParticipating(),
+                challengerCondition: (card) => card.hasTrait(Trait.Bushi) && card.isParticipating(),
                 gameAction: (duel) =>
                     duel.loser ?
                         sequential(

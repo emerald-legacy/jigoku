@@ -1,4 +1,4 @@
-import { Location } from '../../../Constants.js';
+import { Location, Trait } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import * as costs from '../../../costs/index.js';
 import { gainFate, moveCard } from '../../../GameActions/GameActions.js';
@@ -11,7 +11,7 @@ export default class TheEastWind extends StrongholdCard {
         this.reaction('Place fate on character')
             .when({
                 onCardPlayed: (event, context) =>
-                    event.player === context.player && (event.card.hasTrait('gaijin') || this.isOutOfClan(event.card))
+                    event.player === context.player && (event.card.hasTrait(Trait.Gaijin) || this.isOutOfClan(event.card))
             })
             .cost(costs.bowSelf())
             .deckSearch((context) => {

@@ -287,14 +287,14 @@ this.conflictAction('Bow a character who lost a duel')
 // and play the top card of your conflict deck as if it were in your hand. You cannot play more than 3 cards per round this way.
 const plays = new LimitedPlaysFromOutOfPlay&lt;this&gt;(this, {
     max: 3,
-    active: (context) =&gt; context.source.isParticipating() &amp;&amp; context.game.isTraitInPlay('battlefield'),
+    active: (context) =&gt; context.source.isParticipating() &amp;&amp; context.game.isTraitInPlay(Trait.Battlefield),
     allows: (event) =&gt; event.originalLocation === Location.ConflictDeck &amp;&amp; !!event.originallyOnTopOfConflictDeck,
     description: 'plays a card from their conflict deck'
 });
 
 this.persistentEffect({
     condition: (context) =&gt;
-        context.game.isTraitInPlay('battlefield') &amp;&amp;
+        context.game.isTraitInPlay(Trait.Battlefield) &amp;&amp;
         context.source.isParticipating() &amp;&amp;
         plays.available,
     …
@@ -513,7 +513,7 @@ this.action('Reveal cards and take ones matching named type')
       <li>Spread the result to add a condition: <code>this.persistentEffect({ condition: …, ...playableFromUnderneath(this) })</code>.</li>
     </ul>
     <pre><code>// Togashi Tsurumi: … You may play Kihō cards under this character as if they were in your hand.
-this.persistentEffect(playableFromUnderneath(this, (card) =&gt; card.hasTrait('kiho')));
+this.persistentEffect(playableFromUnderneath(this, (card) =&gt; card.hasTrait(Trait.Kiho)));
 
 // Daidoji Uji: While this character is honored, you may play each card underneath it as if it were in your hand. …
 this.persistentEffect({
@@ -1162,7 +1162,7 @@ this.whileAttached({
     </ul>
     <pre><code>// Utaku Takeko: the chat line names the character found by the search with "a" or "an".
 private msgArticle(card: DrawCard): string {
-    if(card.hasTrait('army')) {
+    if(card.hasTrait(Trait.Army)) {
         return 'in the';
     }
     return article(card.name);
@@ -1300,7 +1300,7 @@ cardCondition: (card, context) =&gt; !card.anotherUniqueInPlay(context.player) &
     <h3><code>card.hasEveryTrait(...traits)</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasEveryTrait">#</a></h3>
     <p>True if the card has all of the traits ("a Fire Spell card"). Takes trait strings or one <code>Set&lt;string&gt;</code>.</p>
     <pre><code>// Kinutanuki Yoite: Reaction: After you play a Fire Spell card during a conflict in which this character is participating, …
-event.card.hasEveryTrait('fire', 'spell')</code></pre>
+event.card.hasEveryTrait(Trait.Fire, Trait.Spell)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/KinutanukiYoite.ts">Kinutanuki Yoite</a></p>
   </div>
 
@@ -1320,7 +1320,7 @@ cardCondition: (card) =&gt; !card.hasKeyword('covert')</code></pre>
     <h3><code>card.hasSomeTrait(...traits)</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasSomeTrait">#</a></h3>
     <p>True if the card has at least one of the traits ("a Scholar or Monk character"). Takes trait strings or one <code>Set&lt;string&gt;</code>.</p>
     <pre><code>// Henshin Seeker: Reaction: After the [element-fire] ring is claimed, choose a Scholar or Monk character - ready that character.
-cardCondition: (card) =&gt; card.hasSomeTrait('scholar', 'monk')</code></pre>
+cardCondition: (card) =&gt; card.hasSomeTrait(Trait.Scholar, Trait.Monk)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SpellScroll.ts">Spell Scroll</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/ToStormAFortress.ts">To Storm a Fortress</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crane/DaidojiHiroteru.ts">Daidōji Hiroteru</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Dragon/MirumotoRikitaro.ts">Mirumoto Rikitaro</a> (13 card files)</p>
   </div>
 
@@ -1334,22 +1334,25 @@ cardCondition: (card) =&gt; card.hasSomeTrait('scholar', 'monk')</code></pre>
       </tbody>
     </table>
     <ul class="edge">
-      <li>The trait you pass is lower-cased; the card's traits are compared as they are stored.</li>
       <li>"Has the trait" is not "is a character with the trait": check the type as well when the text says "a Shugenja character".</li>
     </ul>
     <pre><code>// Shosuro Botanist: Action: Choose a non-Weapon attachment you control - return it to its owner's hand.
-cardCondition: (card) =&gt; !card.hasTrait('weapon')</code></pre>
+cardCondition: (card) =&gt; !card.hasTrait(Trait.Weapon)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AgainstTheWaves.ts">Against the Waves</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/AkodoMakoto.ts">Akodo Makoto</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/ThirdTower.ts">Third Tower</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/MirumotoRei2.ts">Mirumoto Rei</a> (247 card files)</p>
   </div>
 
   <div class="ref" id="q-getTraits" data-name="getTraits">
     <h3><code>card.getTraits()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getTraits">#</a></h3>
-    <p>The card's current traits as a <code>Set&lt;string&gt;</code>: printed, plus gained, minus lost. A new set on each call.</p>
+    <p>The card's current traits as a <code>Set&lt;string&gt;</code>: printed, plus gained, minus lost. A new set on each call. They are plain strings, not <code>Trait</code> values; to compare two cards use <code>sharesTrait</code>.</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Unicorn/TheEastWind.ts">The East Wind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/AgashaJianyu.ts">Agasha Jianyu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumasEyes.ts">Hiruma's Eyes</a></p>
+  </div>
+
+  <div class="ref" id="q-sharesTrait" data-name="sharesTrait">
+    <h3><code>card.sharesTrait(other)</code> <span class="kind">Query</span> <a class="anchor" href="#q-sharesTrait">#</a></h3>
+    <p>Whether this card and <code>other</code> have at least one trait in common now (printed, gained, minus lost).</p>
     <pre><code>// Hiruma's Eyes: … each defending character that shares a trait with that character gets -2[conflict-military], …
-const traits = card.getTraits();
-…
-return defenders.filter((a) =&gt; a.hasSomeTrait(traits));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SpellScroll.ts">Spell Scroll</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Unicorn/TheEastWind.ts">The East Wind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/AgashaJianyu.ts">Agasha Jianyu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumasEyes.ts">Hiruma's Eyes</a></p>
+return defenders.filter((a) =&gt; a.sharesTrait(card));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SpellScroll.ts">Spell Scroll</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumasEyes.ts">Hiruma's Eyes</a></p>
   </div>
 
   <div class="ref" id="q-isBlank" data-name="isBlank">
@@ -1770,7 +1773,7 @@ effect: modifyBothSkills(2 * context.player.getNumberOfHoldingsInPlay())</code><
       <li>For an affinity step, prefer the builder's <code>.onAffinity(…)</code>, which also handles the prompt and chat.</li>
     </ul>
     <pre><code>// Appeasing the Restless: … Then, unless you have Void affinity, injure the bowed character.
-.if((context) =&gt; !context.player.hasAffinity(Element.Void, context))</code></pre>
+.if((context) =&gt; !context.player.hasAffinity(Trait.Void, context))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/EarthsStagnation.ts">Earth's Stagnation</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/CloudTheMind2.ts">Cloud the Mind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/HeartOfTheInferno.ts">Heart of the Inferno</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/AppeasingTheRestless.ts">Appeasing the Restless</a> (13 card files)</p>
   </div>
 
@@ -1824,7 +1827,7 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
     <h3><code>player.isCharacterTraitInPlay(trait)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isCharacterTraitInPlay">#</a></h3>
     <p>"if you control a [Trait] character": true if the player controls a face-up character with the trait in play.</p>
     <pre><code>// Retreat to Safety: … Then, if you control a Commander character, you may ready one of those characters.
-.if((context) =&gt; context.player.isCharacterTraitInPlay('commander'))</code></pre>
+.if((context) =&gt; context.player.isCharacterTraitInPlay(Trait.Commander))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/ChroniclesOfValor.ts">Chronicles of Valor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/RetreatToSafety.ts">Retreat to Safety</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/TrailOfBloodAndLies.ts">Trail of Blood and Lies</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/CampfireCounsel.ts">Campfire Counsel</a> (5 card files)</p>
   </div>
 
@@ -1832,7 +1835,7 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
     <h3><code>player.isTraitInPlay(trait)</code> <span class="kind">Query</span> <a class="anchor" href="#q-player-isTraitInPlay">#</a></h3>
     <p>True if the player controls a face-up card in play with the trait: a card in the play area (characters and attachments), an unbroken province, or a holding in a province.</p>
     <pre><code>// Glory of the Five Rivers: Action: If you control a Courtier character - …
-.condition((context) =&gt; context.player.isTraitInPlay('courtier'))</code></pre>
+.condition((context) =&gt; context.player.isTraitInPlay(Trait.Courtier))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/GloryOfTheFiveRivers.ts">Glory of the Five Rivers</a></p>
   </div>
 
@@ -1981,7 +1984,7 @@ condition: () =&gt; this.game.isDuringConflict(ConflictType.Military),</code></p
     <h3><code>game.isTraitInPlay(trait)</code> <span class="kind">Query</span> <a class="anchor" href="#q-game-isTraitInPlay">#</a></h3>
     <p>"if there is a [Trait] in play": <code>player.isTraitInPlay(trait)</code> for any player.</p>
     <pre><code>// Forward Garrison: While there is a Battlefield in play, fate cannot be removed from characters you control by opponents' card or ring effects.
-condition: (context) =&gt; context.game.isTraitInPlay('battlefield'),</code></pre>
+condition: (context) =&gt; context.game.isTraitInPlay(Trait.Battlefield),</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/AkodoReserveCompany.ts">Akodo Reserve Company</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/ChroniclerOfConquests.ts">Chronicler of Conquests</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/Logistics.ts">Logistics</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/MasterTactician.ts">Master Tactician</a> (5 card files)</p>
   </div>
 
@@ -2069,7 +2072,7 @@ return !!conflict &amp;&amp; conflict.calculateSkillFor([context.target]) === 0;
     <pre><code>// For Greater Glory: Reaction: After you break a province during a [conflict-military] conflict – place 1 fate on each Bushi character on your side. …
 target: context.event.conflict
     ?.getCharacters(context.player)
-    .filter((card) =&gt; card.hasTrait('bushi')) ?? []</code></pre>
+    .filter((card) =&gt; card.hasTrait(Trait.Bushi)) ?? []</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FearsomeMystic.ts">Fearsome Mystic</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/ShinjoShono.ts">Shinjo Shono</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/WildfireKick.ts">Wildfire Kick</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/IndomitableWill.ts">Indomitable Will</a> (18 card files)</p>
   </div>
 

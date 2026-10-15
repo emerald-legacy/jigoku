@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { ready, sendHome } from '../../../GameActions/GameActions.js';
-import { CardType, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Players, TargetMode, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class RetreatToSafety extends DrawCard {
@@ -16,7 +16,7 @@ export default class RetreatToSafety extends DrawCard {
                 cardCondition: (card) => card.isDefending()
             }, sendHome())
             .afterwards()
-            .if((context) => context.player.isCharacterTraitInPlay('commander'))
+            .if((context) => context.player.isCharacterTraitInPlay(Trait.Commander))
                 .selectCard((context) => ({
                     activePromptTitle: 'Choose a character to ready',
                     optional: true,

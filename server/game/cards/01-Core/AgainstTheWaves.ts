@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, Trait } from '../../Constants.js';
 import { bow, ready } from '../../GameActions/GameActions.js';
 
 class AgainstTheWaves extends DrawCard {
@@ -9,7 +9,7 @@ class AgainstTheWaves extends DrawCard {
         this.action('Bow or ready a shugenja')
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('shugenja'),
+                cardCondition: (card) => card.hasTrait(Trait.Shugenja),
                 controller: Players.Self
             }, bow(), ready());
     }

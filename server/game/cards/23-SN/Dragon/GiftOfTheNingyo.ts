@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import { modifyPoliticalSkill } from '../../../effects.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,8 +10,8 @@ export default class GiftOfTheNingyo extends DrawCard {
         this.whileAttached({
             condition: (context) => (
                 Boolean(context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
-                    this.getCharacters(context).some((card) => card.hasSomeTrait('creature', 'spirit') ||
-                        card.attachments.some((attachment) => attachment.hasSomeTrait('creature', 'spirit'))
+                    this.getCharacters(context).some((card) => card.hasSomeTrait(Trait.Creature, Trait.Spirit) ||
+                        card.attachments.some((attachment) => attachment.hasSomeTrait(Trait.Creature, Trait.Spirit))
                     )
                 )),
             effect: modifyPoliticalSkill(2)

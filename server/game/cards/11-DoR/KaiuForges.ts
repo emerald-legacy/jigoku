@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, DeckType, Players } from '../../Constants.js';
+import { Location, CardType, DeckType, Players, Trait } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class KaiuForges extends DrawCard {
@@ -33,7 +33,7 @@ class KaiuForges extends DrawCard {
         }
         const provinceLocation = context.target.location;
         const cards = context.player.getDynastyCardsInProvince(provinceLocation);
-        if(!cards.some((card) => card.type === CardType.Holding && card.hasTrait('kaiu-wall'))) {
+        if(!cards.some((card) => card.type === CardType.Holding && card.hasTrait(Trait.KaiuWall))) {
             this.game.addMessage(msg`${context.player} cannot put a holding into play because there is no Kaiu Wall in the selected province`);
             return;
         }
@@ -44,7 +44,7 @@ class KaiuForges extends DrawCard {
             controller: Players.Self,
             context: context,
             targets: false,
-            cardCondition: (card) => cards.includes(card) && card.hasTrait('kaiu-wall'),
+            cardCondition: (card) => cards.includes(card) && card.hasTrait(Trait.KaiuWall),
             onSelect: (player, card) => {
                 this.game.addMessage(msg`${player} chooses to replace ${card} with ${cardFromDeck}`);
                 context.player.moveCard(cardFromDeck, provinceLocation);

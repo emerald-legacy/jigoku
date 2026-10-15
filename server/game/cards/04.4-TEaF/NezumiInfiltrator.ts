@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { immunity, modifyProvinceStrength } from '../../effects.js';
@@ -11,10 +12,10 @@ export default class NezumiInfiltrator extends DrawCard {
         this.persistentEffect({
             effect: [
                 immunity({
-                    appliesTo: { trait: 'maho' }
+                    appliesTo: { trait: Trait.Maho }
                 }),
                 immunity({
-                    appliesTo: { trait: 'shadowlands' }
+                    appliesTo: { trait: Trait.Shadowlands }
                 })
             ]
         });

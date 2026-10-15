@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { bow, discardFromPlay, selectCard } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const CHARACTER = 'CHARACTER';
@@ -12,7 +12,7 @@ export default class AkodoCho extends DrawCard {
     setupCardAbilities() {
         this.conflictAction('Bow a character')
             .condition((context) =>
-                context.source.attachments.some((attachment) => attachment.hasTrait('follower')))
+                context.source.attachments.some((attachment) => attachment.hasTrait(Trait.Follower)))
             .target({
                 name: CHARACTER,
                 cardType: CardType.Character,

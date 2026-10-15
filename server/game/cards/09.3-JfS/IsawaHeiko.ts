@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Element, Duration } from '../../Constants.js';
+import { CardType, Duration, Trait } from '../../Constants.js';
 import { switchBaseSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
@@ -10,7 +10,7 @@ class IsawaHeiko extends DrawCard {
         this.reaction('Switch a character\'s base skills')
             .when({
                 onCardPlayed: (event, context) => {
-                    return event.card.hasTrait(Element.Water) &&
+                    return event.card.hasTrait(Trait.Water) &&
                         event.player === context.player;
                 }
             })

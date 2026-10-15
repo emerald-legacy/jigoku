@@ -1,5 +1,5 @@
 import { GameObject } from './GameObject.js';
-import { Location, Duration } from './Constants.js';
+import { Location, Duration, type Trait } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type { ActiveEffect } from './Effects/ActiveEffect.js';
@@ -30,7 +30,7 @@ export class EffectSource extends GameObject {
         return false;
     }
 
-    public hasTrait(_trait: string) {
+    public hasTrait(_trait: Trait) {
         return false;
     }
 

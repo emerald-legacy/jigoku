@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, Location, RemainingCards } from '../../../Constants.js';
+import { CardType, Location, RemainingCards, Trait } from '../../../Constants.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
 
 class AshigaruCompany extends DrawCard {
@@ -12,7 +12,7 @@ class AshigaruCompany extends DrawCard {
             })
             .deckSearch({
                 cardsToLookAt: 5,
-                cardCondition: (card) => card.hasTrait('follower') && card.type === CardType.Attachment,
+                cardCondition: (card) => card.hasTrait(Trait.Follower) && card.type === CardType.Attachment,
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),

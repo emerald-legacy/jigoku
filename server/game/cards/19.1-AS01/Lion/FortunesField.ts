@@ -1,4 +1,4 @@
-import { CardType, Duration } from '../../../Constants.js';
+import { CardType, Duration, Trait } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
 
@@ -15,7 +15,7 @@ export default class FortunesField extends ProvinceCard {
                 duration: Duration.UntilEndOfRound,
                 effect: reduceNextPlayedCardCost(
                     1,
-                    (card) => card.type === CardType.Character || card.hasTrait('follower')
+                    (card) => card.type === CardType.Character || card.hasTrait(Trait.Follower)
                 )
             })
             .chatText('reduce the cost of their next character or follower this round by 1');

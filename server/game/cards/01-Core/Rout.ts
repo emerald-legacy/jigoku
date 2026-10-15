@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, Trait } from '../../Constants.js';
 import { sendHome } from '../../GameActions/GameActions.js';
 
 class Rout extends DrawCard {
@@ -11,7 +11,7 @@ class Rout extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => context.player.cardsInPlay.some((myCard) => (
-                    myCard.hasTrait('bushi') && myCard.isParticipating() &&
+                    myCard.hasTrait(Trait.Bushi) && myCard.isParticipating() &&
                     myCard.militarySkill > card.militarySkill
                 ))
             }, sendHome());

@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { bow, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, ConflictType } from '../../../Constants.js';
+import { CardType, ConflictType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -42,9 +42,9 @@ export default class ToGovernTheLand extends DrawCard {
 
         switch(conflictType) {
             case ConflictType.Political:
-                return card.hasTrait('bushi');
+                return card.hasTrait(Trait.Bushi);
             case ConflictType.Military:
-                return card.hasTrait('courtier');
+                return card.hasTrait(Trait.Courtier);
             default:
                 return false;
         }

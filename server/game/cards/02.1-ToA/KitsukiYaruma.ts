@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { turnFacedown } from '../../GameActions/GameActions.js';
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Location, Trait } from '../../Constants.js';
 
 class KitsukiYaruma extends DrawCard {
     static id = 'kitsuki-yaruma';
@@ -19,7 +19,7 @@ class KitsukiYaruma extends DrawCard {
     }
 
     allowAttachment(attachment: BaseCard): boolean {
-        if(attachment.hasTrait('poison') && !this.isBlank()) {
+        if(attachment.hasTrait(Trait.Poison) && !this.isBlank()) {
             return false;
         }
 

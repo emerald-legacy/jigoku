@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { perRound } from '../../AbilityLimit.js';
 
@@ -9,7 +10,7 @@ class NitenMaster extends DrawCard {
             .when({
                 onCardAttached: (event, context) => (
                     event.parent === context.source &&
-                    event.card.hasTrait('weapon') &&
+                    event.card.hasTrait(Trait.Weapon) &&
                     event.card.controller === context.player
                 )
             })

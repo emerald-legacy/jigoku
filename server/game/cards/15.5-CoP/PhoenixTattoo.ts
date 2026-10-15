@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
+import { Players, Trait } from '../../Constants.js';
 import { addKeyword, addTrait } from '../../effects.js';
 
 class PhoenixTattoo extends DrawCard {
@@ -11,7 +11,7 @@ class PhoenixTattoo extends DrawCard {
         });
 
         this.whileAttached({
-            effect: addTrait('tattooed')
+            effect: addTrait(Trait.Tattooed)
         });
 
         this.persistentEffect({

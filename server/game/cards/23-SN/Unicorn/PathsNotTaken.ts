@@ -1,7 +1,7 @@
 import { perConflict } from '../../../AbilityLimit.js';
 import { sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType } from '../../../Constants.js';
+import { Players, CardType, Trait } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class PathsNotTaken extends DrawCard {
@@ -28,7 +28,7 @@ export default class PathsNotTaken extends DrawCard {
         }
 
         const attackedProvinces = context.game.currentConflict.getConflictProvinces();
-        const hasScout = context.game.currentConflict.getDefenders((card) => card.hasTrait('scout')).length > 0;
+        const hasScout = context.game.currentConflict.getDefenders((card) => card.hasTrait(Trait.Scout)).length > 0;
 
         if(hasScout) {
             const strengths = attackedProvinces.map((a) => a.getStrength());

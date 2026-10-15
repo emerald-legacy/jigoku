@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { placeFateOnRing } from '../../GameActions/GameActions.js';
 
 class TogashiDreamer extends DrawCard {
@@ -8,7 +8,7 @@ class TogashiDreamer extends DrawCard {
     setupCardAbilities() {
         this.reaction('Move a fate from a character to a ring')
             .when({
-                onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait('kiho') && context.source.isParticipating()
+                onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait(Trait.Kiho) && context.source.isParticipating()
             })
             .target({
                 name: 'character',

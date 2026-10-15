@@ -1,6 +1,6 @@
 import { additionalAction } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
+import { Duration, Trait } from '../../Constants.js';
 
 class CurrentOfTheBeryt extends DrawCard {
     static id = 'current-of-the-beryt';
@@ -8,7 +8,7 @@ class CurrentOfTheBeryt extends DrawCard {
     setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
-            trait: 'shugenja'
+            trait: Trait.Shugenja
         });
 
         this.action('Take two actions')

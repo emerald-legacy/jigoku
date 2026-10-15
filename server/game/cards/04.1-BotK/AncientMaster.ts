@@ -1,4 +1,4 @@
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Location, Trait } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -17,7 +17,7 @@ export default class AncientMaster extends DrawCard {
             })
             .deckSearch({
                 cardsToLookAt: 5,
-                cardCondition: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo'),
+                cardCondition: (card) => card.hasTrait(Trait.Kiho) || card.hasTrait(Trait.Tattoo),
                 gameAction: moveCard({
                     destination: Location.Hand
                 })

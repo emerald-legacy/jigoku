@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { doesNotBow } from '../../effects.js';
 import { cardLastingEffect, honor, multiple } from '../../GameActions/GameActions.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, Trait } from '../../Constants.js';
 
 class SwellOfSeafoam extends DrawCard {
     static id = 'swell-of-seafoam';
@@ -12,7 +12,7 @@ class SwellOfSeafoam extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
             }, multiple([
                 cardLastingEffect({
                     effect: doesNotBow()

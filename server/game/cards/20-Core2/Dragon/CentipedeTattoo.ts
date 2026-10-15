@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import { addTrait, doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -5,9 +6,9 @@ export default class CentipedeTattoo extends DrawCard {
     static id = 'centipede-tattoo';
 
     setupCardAbilities() {
-        this.attachmentConditions({ trait: 'monk' });
+        this.attachmentConditions({ trait: Trait.Monk });
 
-        this.whileAttached({ effect: addTrait('tattooed') });
+        this.whileAttached({ effect: addTrait(Trait.Tattooed) });
 
         this.whileAttached({
             condition: () =>

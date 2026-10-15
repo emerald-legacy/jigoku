@@ -1,4 +1,4 @@
-import { CardType, DeckType, Players } from '../../../Constants.js';
+import { CardType, DeckType, Players, Trait } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import * as costs from '../../../costs/index.js';
 import { attach } from '../../../GameActions/GameActions.js';
@@ -18,7 +18,7 @@ export default class Pride extends StrongholdCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    card.attachments.filter((a) => a.hasTrait('follower')).length === 0 &&
+                    card.attachments.filter((a) => a.hasTrait(Trait.Follower)).length === 0 &&
                     canAttachSoldier(card, context)
             })
             .tokenFromTopCard((context) => ({

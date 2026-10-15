@@ -440,7 +440,7 @@ this.interrupt('Injure everyone poisoned')
         onPhaseEnded: (event) =&gt; event.phase === Phase.Conflict
     })
     .injure((context) =&gt; ({
-        target: context.game.findAnyCardsInPlay((card) =&gt; card.attachments.some((attachment) =&gt; attachment.hasTrait('poison')))
+        target: context.game.findAnyCardsInPlay((card) =&gt; card.attachments.some((attachment) =&gt; attachment.hasTrait(Trait.Poison)))
     }))
     .max(perRound(1));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Scorpion/APoisonedBanquet.ts">A Poisoned Banquet</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DaidojiAmbusher.ts">Daidōji Ambusher</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crane/TwilightAmbush.ts">Twilight Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Unicorn/MotoZealot.ts">Moto Zealot</a></p>
@@ -546,7 +546,7 @@ this.reaction('Draw 2 cards and return 1')
 this.action('Search top 8 card for a spell')
     .deckSearch({
         cardsToLookAt: 8,
-        cardCondition: (card) =&gt; card.hasTrait('spell'),
+        cardCondition: (card) =&gt; card.hasTrait(Trait.Spell),
         gameAction: moveCard({
             destination: Location.Hand
         })
@@ -1784,14 +1784,14 @@ this.action('Remove a ring from the unclaimed ring pool')
     </ul>
     <pre><code>// Earth's Examination: [conflict-political] Conflict Action: If you control a Shugenja character, choose a participating character - taint it, if able. With Earth affinity, you may bow that character. …
 .target({ … }, taint(), onAffinity({
-    trait: Element.Earth,
+    trait: Trait.Earth,
     activePromptTitle: 'Bow that character?',
     gameAction: bow(),
     chatText: (context) =&gt; msg`bow ${context.target}`
 }))
 
 // Wings of the Phoenix: … With Fire affinity, each character on the enemy side gets -1[conflict-military] and -1[conflict-political] for this conflict.
-.onAffinity(Element.Fire, {
+.onAffinity(Trait.Fire, {
     chatText: () =&gt; msg`give all participating enemies -1${'military'}/-1${'political'} until the end of the conflict`
 })
 .cardLastingEffect((context) =&gt; ({ … }));</code></pre>
@@ -2315,7 +2315,7 @@ this.action('Move an honor token')
     <pre><code>// Forward Patrol: Conflict Action: Choose a participating Bushi character - ready that character.
 this.conflictAction('Ready a character')
     .target({
-        cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; card.hasTrait('bushi'),
+        cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; card.hasTrait(Trait.Bushi),
         cardType: CardType.Character
     }, ready());</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Lion/ForwardPatrol.ts">Forward Patrol</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/WaterfallTattoo.ts">Waterfall Tattoo</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Lion/SupplyOfficer.ts">Supply Officer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AgainstTheWaves.ts">Against the Waves</a></p>
@@ -2914,7 +2914,7 @@ this.action('Return a character to a province')
     .target({
         cardType: CardType.Character,
         location: Location.PlayArea,
-        cardCondition: (card, context) =&gt; !card.hasTrait('mythic') &amp;&amp; card.owner === context.player
+        cardCondition: (card, context) =&gt; !card.hasTrait(Trait.Mythic) &amp;&amp; card.owner === context.player
     }, selectCard((context) =&gt; ({
         targets: false,
         cardType: CardType.Province,
@@ -2971,7 +2971,7 @@ this.reaction('Refill province faceup')
 this.action('Remove a character from the game and put it into play')
     .target({
         cardType: CardType.Character,
-        cardCondition: (card) =&gt; !card.hasTrait('mythic'),
+        cardCondition: (card) =&gt; !card.hasTrait(Trait.Mythic),
         controller: Players.Self
     }, removeFromGame((context) =&gt; ({ target: context.target })))
     .chatText('remove {0} from the game, then put it back into play')

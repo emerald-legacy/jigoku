@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { attachmentMilitarySkillModifier } from '../../effects.js';
 
@@ -6,7 +7,7 @@ class BornInWar extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'cavalry'
+            trait: Trait.Cavalry
         });
 
         this.whileAttached({

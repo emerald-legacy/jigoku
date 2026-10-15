@@ -1,4 +1,4 @@
-import { Duration } from '../../../Constants.js';
+import { Duration, Trait, elementTrait } from '../../../Constants.js';
 import { addTrait, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class BenevolentLesserKami extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating() &&
                 (context.game.currentConflict?.getConflictProvinces() ?? []).some(
-                    (province) => province.element.some((element) => context.source.hasTrait(element))
+                    (province) => province.element.some((element) => context.source.hasTrait(elementTrait(element)))
                 ),
             effect: modifyBothSkills(1)
         });
@@ -20,23 +20,23 @@ export default class BenevolentLesserKami extends DrawCard {
             .select({ name: 'select' }, {
                 'Air': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: addTrait('air')
+                    effect: addTrait(Trait.Air)
                 }),
                 'Earth': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: addTrait('earth')
+                    effect: addTrait(Trait.Earth)
                 }),
                 'Fire': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: addTrait('fire')
+                    effect: addTrait(Trait.Fire)
                 }),
                 'Water': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: addTrait('water')
+                    effect: addTrait(Trait.Water)
                 }),
                 'Void': cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
-                    effect: addTrait('void')
+                    effect: addTrait(Trait.Void)
                 })
             })
             .chatText((context) => msg`gain the ${context.selects.select.choice} trait`);

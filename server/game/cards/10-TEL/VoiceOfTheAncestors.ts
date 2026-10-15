@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { AbilityType, CardType, Location, Players, Duration } from '../../Constants.js';
+import { AbilityType, CardType, Location, Players, Duration, Trait } from '../../Constants.js';
 import {
     addTrait,
     attachmentRestrictTraitAmount,
@@ -50,7 +50,7 @@ class VoiceOfTheAncestors extends DrawCard {
                         effect: [
                             blank(true),
                             changeType(CardType.Attachment),
-                            addTrait('spirit'),
+                            addTrait(Trait.Spirit),
                             attachmentRestrictTraitAmount({ spirit: 1 }),
                             gainAbility(AbilityType.Persistent, {
                                 match: (card, context) => card === context?.source.parentCharacter,

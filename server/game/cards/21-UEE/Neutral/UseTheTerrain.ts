@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyMilitarySkill } from '../../../effects.js';
-import { ConflictType } from '../../../Constants.js';
+import { ConflictType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -17,6 +17,6 @@ export default class UseTheTerrain extends DrawCard {
     }
 
     private hasKicker(context: AbilityContext<this>) {
-        return context.player.cardsInPlay.some((card) => card.hasTrait('scout') && card.isParticipating());
+        return context.player.cardsInPlay.some((card) => card.hasTrait(Trait.Scout) && card.isParticipating());
     }
 }

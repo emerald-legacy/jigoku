@@ -1,4 +1,4 @@
-import { Location, CardType } from '../../Constants.js';
+import { Location, CardType, Trait } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { modifyProvinceStrength } from '../../effects.js';
 import { sendHome } from '../../GameActions/GameActions.js';
@@ -9,7 +9,7 @@ export default class SeekingtheTruth extends ProvinceCard {
     public setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
-            condition: (context) => !!context.player.role && context.player.role.hasTrait('water'),
+            condition: (context) => !!context.player.role && context.player.role.hasTrait(Trait.Water),
             effect: modifyProvinceStrength(2)
         });
 

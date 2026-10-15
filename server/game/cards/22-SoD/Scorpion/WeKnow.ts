@@ -1,4 +1,4 @@
-import { CardType, Players, CharacterStatus } from '../../../Constants.js';
+import { CardType, Players, CharacterStatus, Trait } from '../../../Constants.js';
 
 import * as costs from '../../../costs/index.js';
 import { discardStatusToken, draw, gainStatusToken, joint, loseHonor } from '../../../GameActions/GameActions.js';
@@ -13,7 +13,7 @@ export default class WeKnow extends DrawCard {
         this.action('Choose an honored status token')
             .cost(costs.bow({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('courtier')
+                cardCondition: (card) => card.hasTrait(Trait.Courtier)
             }))
             .tokenTarget({
                 name: 'token',

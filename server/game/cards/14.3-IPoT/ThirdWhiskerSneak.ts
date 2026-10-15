@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
+import { Location, Trait } from '../../Constants.js';
 import { immunity } from '../../effects.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
@@ -11,10 +11,10 @@ class ThirdWhiskerSneak extends DrawCard {
         this.persistentEffect({
             effect: [
                 immunity({
-                    appliesTo: { trait: 'maho' }
+                    appliesTo: { trait: Trait.Maho }
                 }),
                 immunity({
-                    appliesTo: { trait: 'shadowlands' }
+                    appliesTo: { trait: Trait.Shadowlands }
                 })]
         });
 

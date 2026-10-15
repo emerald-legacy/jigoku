@@ -1,14 +1,14 @@
 import { addTrait, cardCannot } from '../../../effects.js';
-import { Phase, RestrictionType, RestrictionScope } from '../../../Constants.js';
+import { Phase, RestrictionType, RestrictionScope, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MountainTattoo extends DrawCard {
     static id = 'mountain-tattoo';
 
     setupCardAbilities() {
-        this.attachmentConditions({ myControl: true, trait: 'monk' });
+        this.attachmentConditions({ myControl: true, trait: Trait.Monk });
 
-        this.whileAttached({ effect: addTrait('tattooed') });
+        this.whileAttached({ effect: addTrait(Trait.Tattooed) });
 
         this.whileAttached({
             effect: cardCannot({

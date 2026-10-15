@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { addTrait } from '../../effects.js';
@@ -11,7 +12,7 @@ class FavoredMount extends DrawCard {
         });
 
         this.whileAttached({
-            effect: addTrait('cavalry')
+            effect: addTrait(Trait.Cavalry)
         });
 
         this.action('Move this character into the conflict')

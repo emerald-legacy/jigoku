@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { CardType, Location, PlayType, Players } from '../../Constants.js';
+import { CardType, Location, PlayType, Players, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { playCard } from '../../GameActions/GameActions.js';
@@ -12,14 +12,14 @@ export default class KyudenIsawa extends StrongholdCard {
             .condition(() => this.game.isDuringConflict())
             .cost(costs.bowSelf())
             .cost(costs.discardCard({
-                cardCondition: (card) => card.hasTrait('spell') && card.type === CardType.Event
+                cardCondition: (card) => card.hasTrait(Trait.Spell) && card.type === CardType.Event
             }))
             .selectCard((context) => ({
                 activePromptTitle: 'Choose a spell event',
                 cardType: CardType.Event,
                 controller: Players.Self,
                 location: Location.ConflictDiscardPile,
-                cardCondition: (card) => card.hasTrait('spell'),
+                cardCondition: (card) => card.hasTrait(Trait.Spell),
                 gameAction: playCard({
                     resetOnCancel: true,
                     source: this,

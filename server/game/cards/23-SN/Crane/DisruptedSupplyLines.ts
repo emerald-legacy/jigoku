@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { cancel, dishonor, loseFate, removeFromGame, takeFate } from '../../../GameActions/GameActions.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 
@@ -13,7 +13,7 @@ const resourcesAvailable = (context: AbilityContext) => {
         (card) => card.type === CardType.Character &&
             dishonor().canAffect(card, context)
     );
-    const freeCharacters = eligibleCharacters.filter((card) => card.hasSomeTrait('scout', 'shinobi'));
+    const freeCharacters = eligibleCharacters.filter((card) => card.hasSomeTrait(Trait.Scout, Trait.Shinobi));
 
     return { fateAvailable, eligibleCharacters, freeCharacters };
 };

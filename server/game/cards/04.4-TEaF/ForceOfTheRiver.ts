@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { CardType, ConflictType } from '../../Constants.js';
+import { CardType, ConflictType, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { createToken } from '../../GameActions/GameActions.js';
 import SpiritOfTheRiver from '../SpiritOfTheRiver.js';
@@ -17,7 +17,7 @@ export default class ForceOfTheRiver extends DrawCard {
     static id = 'force-of-the-river';
 
     setupCardAbilities() {
-        this.attachmentConditions({ myControl: true, trait: 'shugenja' });
+        this.attachmentConditions({ myControl: true, trait: Trait.Shugenja });
 
         this.action('Create spirits from facedown dynasty cards')
             .condition(() => this.game.isDuringConflict())

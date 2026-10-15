@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { modifyProvinceStrengthBonus } from '../../effects.js';
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Location, Trait } from '../../Constants.js';
 
 class NorthernCurtainWall extends DrawCard {
     static id = 'northern-curtain-wall';
@@ -10,7 +10,7 @@ class NorthernCurtainWall extends DrawCard {
             targetLocation: Location.Provinces,
             match: (card, context) => {
                 if(card.type === CardType.Holding) {
-                    const isWall = card.hasTrait('kaiu-wall') && card.isFaceup();
+                    const isWall = card.hasTrait(Trait.KaiuWall) && card.isFaceup();
                     return isWall && context !== undefined && context.player.areLocationsAdjacent(context.source.location, card.location);
                 }
                 return false;

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, CharacterStatus, Location, Players } from '../../../Constants.js';
+import { CardType, CharacterStatus, Location, Players, Trait } from '../../../Constants.js';
 import { putIntoConflict, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -28,7 +28,7 @@ export default class ForeignCustoms extends DrawCard {
                 ))
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin'))
+                cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait(Trait.Gaijin))
             }, ready());
     }
 }

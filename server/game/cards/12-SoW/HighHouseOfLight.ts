@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { CardType, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { cardCannot } from '../../effects.js';
@@ -18,7 +18,7 @@ export default class HighHouseOfLight extends StrongholdCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
             }, cardLastingEffect((context) => ({
                 effect: cardCannot({
                     cannot: RestrictionType.Target,

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Phase, Players } from '../../../Constants.js';
+import { CardType, Phase, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OutmaneuveredByForce extends DrawCard {
@@ -16,7 +16,7 @@ export default class OutmaneuveredByForce extends DrawCard {
     private controlsBerserkerOrBigCharacter(context: AbilityContext): boolean {
         return context.player.cardsInPlay.some(
             (card) =>
-                card.type === CardType.Character && (card.hasTrait('berserker') || (card.printedMilitarySkill ?? 0) >= 5)
+                card.type === CardType.Character && (card.hasTrait(Trait.Berserker) || (card.printedMilitarySkill ?? 0) >= 5)
         );
     }
 }

@@ -1,4 +1,4 @@
-import { DuelType } from '../../Constants.js';
+import { DuelType, Trait } from '../../Constants.js';
 
 import type { GameAction } from '../../GameActions/GameAction.js';
 import { gainAbility } from '../../effects.js';
@@ -9,7 +9,7 @@ export default class JusticarsApproach extends DrawCard {
     static id = 'justicar-s-approach';
 
     setupCardAbilities() {
-        this.attachmentConditions({ trait: 'courtier' });
+        this.attachmentConditions({ trait: Trait.Courtier });
 
         this.whileAttached({
             effect: gainAbility.action('Initiate a duel to dishonor/bow/discard', (ability) => ability

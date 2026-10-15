@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { Direction } from '../../GameActions/ModifyBidAction.js';
 
@@ -6,7 +7,7 @@ class IaijutsuMaster extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'duelist'
+            trait: Trait.Duelist
         });
 
         this.reaction('Change your bid by 1 during a duel')

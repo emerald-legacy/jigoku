@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
+import { Location, elementTrait } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
 class ShibaSophist extends DrawCard {
@@ -10,7 +10,7 @@ class ShibaSophist extends DrawCard {
             .condition((context) => context.source.isParticipating())
             .deckSearch({
                 cardsToLookAt: 5,
-                cardCondition: (card) => this.game.currentConflict?.elements.some((element) => card.hasTrait(element)) ?? false,
+                cardCondition: (card) => this.game.currentConflict?.elements.some((element) => card.hasTrait(elementTrait(element))) ?? false,
                 gameAction: moveCard({
                     destination: Location.Hand
                 })

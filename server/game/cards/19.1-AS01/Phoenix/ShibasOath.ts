@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { gainAbility } from '../../../effects.js';
-import { CardType, Location } from '../../../Constants.js';
+import { CardType, Location, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibasOath extends DrawCard {
@@ -10,7 +10,7 @@ export default class ShibasOath extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { title: 1 },
-            cardCondition: (card) => card.hasTrait('bushi')
+            cardCondition: (card) => card.hasTrait(Trait.Bushi)
         });
 
         this.reaction('Honor attached character')
@@ -37,7 +37,7 @@ export default class ShibasOath extends DrawCard {
                                 // Friendly
                                 card.controller === context.player &&
                                 // Not a Bushi
-                                !card.hasTrait('bushi')
+                                !card.hasTrait(Trait.Bushi)
                         )
                 })
                 .cost(costs.sacrificeSelf())

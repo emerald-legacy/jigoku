@@ -1,5 +1,5 @@
 import { addTrait, reduceCost } from '../../../effects.js';
-import { Location, Players } from '../../../Constants.js';
+import { Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -9,9 +9,9 @@ export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';
 
     public setupCardAbilities() {
-        this.attachmentConditions({ myControl: true, trait: 'monk' });
+        this.attachmentConditions({ myControl: true, trait: Trait.Monk });
 
-        this.whileAttached({ effect: addTrait('tattooed') });
+        this.whileAttached({ effect: addTrait(Trait.Tattooed) });
 
         this.persistentEffect({
             location: Location.Any,

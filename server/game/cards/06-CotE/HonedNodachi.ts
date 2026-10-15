@@ -1,14 +1,14 @@
 import * as costs from '../../costs/index.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players, ConflictType } from '../../Constants.js';
+import { CardType, Players, ConflictType, Trait } from '../../Constants.js';
 
 class HonedNodachi extends DrawCard {
     static id = 'honed-nodachi';
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'bushi'
+            trait: Trait.Bushi
         });
 
         this.reaction('Remove a fate from attached character and force opponent to discard a participating character')

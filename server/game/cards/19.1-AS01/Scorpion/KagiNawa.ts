@@ -1,6 +1,6 @@
 import { gainAbility } from '../../../effects.js';
 import { moveToConflict } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KagiNawa extends DrawCard {
@@ -8,7 +8,7 @@ export default class KagiNawa extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            match: (card) => card.hasTrait('shinobi'),
+            match: (card) => card.hasTrait(Trait.Shinobi),
             effect: gainAbility.conflictAction('Move a character to the conflict', (ability) => ability
                 .target({
                     cardType: CardType.Character,

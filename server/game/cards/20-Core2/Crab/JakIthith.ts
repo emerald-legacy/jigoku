@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import { cannotReceiveTaintedToken, immunity } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { attach } from '../../../GameActions/GameActions.js';
@@ -12,8 +12,8 @@ export default class JakIthith extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                immunity({ appliesTo: { trait: 'maho' } }),
-                immunity({ appliesTo: { trait: 'shadowlands' } }),
+                immunity({ appliesTo: { trait: Trait.Maho } }),
+                immunity({ appliesTo: { trait: Trait.Shadowlands } }),
                 cannotReceiveTaintedToken()
             ]
         });

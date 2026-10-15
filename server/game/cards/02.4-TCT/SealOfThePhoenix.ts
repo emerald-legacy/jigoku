@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { addFaction, addTrait } from '../../effects.js';
 
@@ -8,7 +9,7 @@ class SealOfThePhoenix extends DrawCard {
         this.whileAttached({
             effect: [
                 addFaction('phoenix'),
-                addTrait('scholar')
+                addTrait(Trait.Scholar)
             ]
         });
     }

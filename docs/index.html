@@ -255,7 +255,7 @@ this.action('Take control of an attachment')
 <pre><code>// If attached character has the Shinobi trait, it gains: "Conflict Action: Choose a character with printed
 // cost 2 or lower - move that character to this conflict."
 this.whileAttached({
-    match: (card) =&gt; card.hasTrait('shinobi'),
+    match: (card) =&gt; card.hasTrait(Trait.Shinobi),
     effect: gainAbility.conflictAction('Move a character to the conflict', (ability) =&gt; ability
         .target({
             cardType: CardType.Character,

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players, Element } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { moveToConflict, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -17,7 +17,7 @@ export default class WingsOfThePhoenix extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, sendHome(), moveToConflict())
-            .onAffinity(Element.Fire, {
+            .onAffinity(Trait.Fire, {
                 chatText: () => msg`give all participating enemies -1${'military'}/-1${'political'} until the end of the conflict`
             })
             .cardLastingEffect((context) => ({

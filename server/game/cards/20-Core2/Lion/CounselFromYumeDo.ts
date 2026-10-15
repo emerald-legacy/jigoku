@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { returnToDeck } from '../../../GameActions/GameActions.js';
-import { CardType, Location, Players, TargetMode, Element } from '../../../Constants.js';
+import { CardType, Location, Players, TargetMode, Trait } from '../../../Constants.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -19,7 +19,7 @@ export default class CounselFromYumeDo extends DrawCard {
                 controller: Players.Self
             }, returnToDeck({ location: Location.ConflictDiscardPile, shuffle: true }))
             .afterwards()
-            .onAffinity(Element.Water, { chatText: () => msg`draw a card` })
+            .onAffinity(Trait.Water, { chatText: () => msg`draw a card` })
             .draw();
     }
 }

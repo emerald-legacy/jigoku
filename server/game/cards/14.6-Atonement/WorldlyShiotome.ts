@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 class WorldlyShiotome extends DrawCard {
@@ -6,7 +7,7 @@ class WorldlyShiotome extends DrawCard {
     setupCardAbilities() {
         this.reaction('Honor this character')
             .when({
-                onCardPlayed: (event, context) => event.card.hasTrait('gaijin') && event.player === context.player
+                onCardPlayed: (event, context) => event.card.hasTrait(Trait.Gaijin) && event.player === context.player
             })
             .honor();
     }

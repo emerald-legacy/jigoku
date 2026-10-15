@@ -1,11 +1,11 @@
 import { msg } from '../../../GameChat.js';
-import { ConflictType, Location } from '../../../Constants.js';
+import { ConflictType, Location, Trait } from '../../../Constants.js';
 import { breakProvince } from '../../../GameActions/GameActions.js';
 import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
 function areAllAttackersBerserker(conflict: Conflict) {
-    return conflict.attackers.every((c) => c.hasTrait('berserker'));
+    return conflict.attackers.every((c) => c.hasTrait(Trait.Berserker));
 }
 
 export default class WarCry extends DrawCard {

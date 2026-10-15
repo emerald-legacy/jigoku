@@ -1,5 +1,5 @@
 import { moveCard } from '../../../GameActions/GameActions.js';
-import { Location, Players } from '../../../Constants.js';
+import { Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MasterAtArms extends DrawCard {
@@ -12,7 +12,7 @@ export default class MasterAtArms extends DrawCard {
             })
             .target({
                 activePromptTitle: 'Choose a weapon attachment from your conflict discard pile',
-                cardCondition: (card) => card.hasTrait('weapon'),
+                cardCondition: (card) => card.hasTrait(Trait.Weapon),
                 location: [Location.ConflictDiscardPile],
                 controller: Players.Self
             }, moveCard({ destination: Location.Hand }));

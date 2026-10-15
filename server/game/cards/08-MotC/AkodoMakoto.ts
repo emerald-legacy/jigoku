@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, Trait } from '../../Constants.js';
 import { injure } from '../../GameActions/GameActions.js';
 
 class AkodoMakoto extends DrawCard {
@@ -16,7 +16,7 @@ class AkodoMakoto extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => {
-                    return card.hasTrait('courtier') && card.isParticipating();
+                    return card.hasTrait(Trait.Courtier) && card.isParticipating();
                 }
             }, injure());
     }

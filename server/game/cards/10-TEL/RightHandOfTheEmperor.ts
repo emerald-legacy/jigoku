@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { canPlayFromOwn } from '../../effects.js';
 import { ready } from '../../GameActions/GameActions.js';
-import { Location, PlayType, TargetMode, CardType, Players } from '../../Constants.js';
+import { Location, PlayType, TargetMode, CardType, Players, Trait } from '../../Constants.js';
 
 class RightHandOfTheEmperor extends DrawCard {
     static id = 'right-hand-of-the-emperor';
@@ -23,7 +23,7 @@ class RightHandOfTheEmperor extends DrawCard {
                 optional: true,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('bushi')
+                cardCondition: (card) => card.hasTrait(Trait.Bushi)
             }, ready())
             .moveCard((context) => ({
                 target: context.source,

@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { injure } from '../../GameActions/GameActions.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, Trait } from '../../Constants.js';
 
 class EmbraceDeath extends DrawCard {
     static id = 'embrace-death';
@@ -12,11 +12,11 @@ class EmbraceDeath extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.loser === context.player &&
                     context.player.isAttackingPlayer() &&
-                    event.conflict.getAttackers().some((card) => card.hasTrait('bushi'))
+                    event.conflict.getAttackers().some((card) => card.hasTrait(Trait.Bushi))
             })
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('bushi') && card.isAttacking()
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && card.isAttacking()
             }))
             .target({
                 cardType: CardType.Character,

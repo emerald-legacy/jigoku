@@ -1,6 +1,6 @@
 import { moveToConflict, ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, ConflictType } from '../../Constants.js';
+import { Players, CardType, ConflictType, Trait } from '../../Constants.js';
 
 class CrisisBreaker extends DrawCard {
     static id = 'crisis-breaker';
@@ -17,7 +17,7 @@ class CrisisBreaker extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('berserker')
+                cardCondition: (card) => card.hasTrait(Trait.Berserker)
             }, ready(), moveToConflict())
             .chatText('ready {0} and move it into the conflict');
     }

@@ -820,7 +820,7 @@ export class DrawCard extends BaseCard {
 
     canDisguise(card: DrawCard, context: AbilityContext, intoConflictOnly: boolean): boolean {
         return (
-            this.disguisedKeywordTraits.some((trait: string) => card.hasTrait(trait)) &&
+            this.disguisedKeywordTraits.some((trait: string) => card.getTraits().has(trait)) &&
             card.allowGameAction('discardFromPlay', context) &&
             !card.isUnique() &&
             (!intoConflictOnly || card.isParticipating())

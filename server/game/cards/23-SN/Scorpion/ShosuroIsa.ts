@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { Players, Duration, Location } from '../../../Constants.js';
+import { Players, Duration, Location, Trait } from '../../../Constants.js';
 import { addTrait, removeFromGameInsteadOfLeavingPlay, setBaseMilitarySkill, setBasePoliticalSkill } from '../../../effects.js';
 import { putIntoPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -26,7 +26,7 @@ export default class ShosuroIsa extends DrawCard {
                 effect: [
                     setBaseMilitarySkill(0),
                     setBasePoliticalSkill(0),
-                    addTrait('shadow'),
+                    addTrait(Trait.Shadow),
                     removeFromGameInsteadOfLeavingPlay({
                         message: (card) => msg`${card} fades into nothingness and is removed from the game due to leaving play`
                     })

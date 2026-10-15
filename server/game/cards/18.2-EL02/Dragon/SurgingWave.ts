@@ -10,7 +10,7 @@ import {
     optional,
     sequential
 } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 
 class SurgingWave extends DrawCard {
     static id = 'surging-wave';
@@ -20,7 +20,7 @@ class SurgingWave extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
             }, sequential((context) => {
                 const kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
                 const gameActions = [];

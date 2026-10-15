@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Phase } from '../../../Constants.js';
+import { Phase, Trait } from '../../../Constants.js';
 import { perRound } from '../../../AbilityLimit.js';
 
 export default class APoisonedBanquet extends DrawCard {
@@ -11,7 +11,7 @@ export default class APoisonedBanquet extends DrawCard {
                 onPhaseEnded: (event) => event.phase === Phase.Conflict
             })
             .injure((context) => ({
-                target: context.game.findAnyCardsInPlay((card) => card.attachments.some((attachment) => attachment.hasTrait('poison')))
+                target: context.game.findAnyCardsInPlay((card) => card.attachments.some((attachment) => attachment.hasTrait(Trait.Poison)))
             }))
             .max(perRound(1));
     }

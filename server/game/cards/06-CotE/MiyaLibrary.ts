@@ -1,5 +1,5 @@
 
-import { CardType, DeckType, Location, RemainingCards } from '../../Constants.js';
+import { CardType, DeckType, Location, RemainingCards, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { rearrangeDeck } from '../../GameActions/GameActions.js';
 
@@ -13,7 +13,7 @@ class MiyaLibrary extends DrawCard {
                 activePromptTitle: 'select an imperial character to replace miya library',
                 cardsToLookAt: 4,
                 deck: DeckType.Dynasty,
-                cardCondition: (card) => card.hasTrait('imperial') && card.type === CardType.Character,
+                cardCondition: (card) => card.hasTrait(Trait.Imperial) && card.type === CardType.Character,
                 doneButtonText: 'Do not replace Miya Library',
                 remainingCards: RemainingCards.TopAnyOrder,
                 selectedCardsHandler: (context, _event, [card]) => {

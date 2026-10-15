@@ -1,7 +1,7 @@
 import { cardCannot } from '../../../effects.js';
 import { bow } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, Players, RestrictionType } from '../../../Constants.js';
+import { CardType, Players, RestrictionType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -20,7 +20,7 @@ export default class PalmStrike extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (monkCharacter) =>
                     monkCharacter.isParticipating() &&
-                        monkCharacter.hasTrait('monk') &&
+                        monkCharacter.hasTrait(Trait.Monk) &&
                         this.cardHasNoWeapons(monkCharacter)
             })
             .target({
@@ -34,13 +34,13 @@ export default class PalmStrike extends DrawCard {
             }, bow())
             .if((context) => {
                 const monk = context.targets[TARGET_MONK];
-                return !Array.isArray(monk) && !!monk?.hasTrait('tattooed');
+                return !Array.isArray(monk) && !!monk?.hasTrait(Trait.Tattooed);
             })
             .cardLastingEffect({
                 effect: cardCannot({ cannot: RestrictionType.Ready })
             })
             .onResolve((context) => {
-                if(context.targets[TARGET_MONK].hasTrait('tattooed')) {
+                if(context.targets[TARGET_MONK].hasTrait(Trait.Tattooed)) {
                     context.game.addMessage(msg`${context.targets[TARGET_TO_BOW]} cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of ${context.targets[TARGET_MONK].isUnique() ? '' : 'the '}${context.targets[TARGET_MONK]}`);
                 }
             })
@@ -48,6 +48,6 @@ export default class PalmStrike extends DrawCard {
     }
 
     private cardHasNoWeapons(card: BaseCard) {
-        return !card.attachments.some((attachment) => attachment.hasTrait('weapon'));
+        return !card.attachments.some((attachment) => attachment.hasTrait(Trait.Weapon));
     }
 }

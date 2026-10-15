@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { additionalConflict, gainAbility } from '../../effects.js';
-import { AbilityType, Players, ConflictType } from '../../Constants.js';
+import { AbilityType, Players, ConflictType, Trait } from '../../Constants.js';
 
 class Shori extends DrawCard {
     static id = 'shori';
@@ -12,7 +12,7 @@ class Shori extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card) => card.hasTrait('champion'),
+            match: (card) => card.hasTrait(Trait.Champion),
             effect: gainAbility(AbilityType.Persistent, {
                 targetController: Players.Self,
                 effect: additionalConflict(ConflictType.Military)

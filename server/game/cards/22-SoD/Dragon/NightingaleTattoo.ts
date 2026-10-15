@@ -1,4 +1,4 @@
-import { Players, TargetMode, Location, CardType } from '../../../Constants.js';
+import { Players, TargetMode, Location, CardType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { addTrait } from '../../../effects.js';
 import { assignRoles, removeFromGame, returnToDeck } from '../../../GameActions/GameActions.js';
@@ -10,11 +10,11 @@ export default class NightingaleTattoo extends DrawCard {
     setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
-            trait: 'monk'
+            trait: Trait.Monk
         });
 
         this.whileAttached({
-            effect: addTrait('tattooed')
+            effect: addTrait(Trait.Tattooed)
         });
 
         this.action('Pick two cards in your discard pile')
@@ -24,7 +24,7 @@ export default class NightingaleTattoo extends DrawCard {
                 numCards: 2,
                 location: Location.ConflictDiscardPile,
                 cardType: [CardType.Character, CardType.Attachment, CardType.Event],
-                cardCondition: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo'),
+                cardCondition: (card) => card.hasTrait(Trait.Kiho) || card.hasTrait(Trait.Tattoo),
                 controller: Players.Self
             }, assignRoles({
                 player: Players.Opponent,

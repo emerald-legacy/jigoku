@@ -1,10 +1,10 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
+import { Location, Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
-const isSpellOrKiho = (card: DrawCard) => card.hasTrait('kiho') || card.hasTrait('spell');
+const isSpellOrKiho = (card: DrawCard) => card.hasTrait(Trait.Kiho) || card.hasTrait(Trait.Spell);
 
 class ShrineMaiden extends DrawCard {
     static id = 'shrine-maiden';

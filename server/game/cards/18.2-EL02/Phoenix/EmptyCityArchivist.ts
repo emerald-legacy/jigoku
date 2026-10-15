@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
-import { Location, RemainingCards } from '../../../Constants.js';
+import { Location, RemainingCards, Trait } from '../../../Constants.js';
 
 class EmptyCityArchivist extends DrawCard {
     static id = 'empty-city-archivist';
@@ -14,7 +14,7 @@ class EmptyCityArchivist extends DrawCard {
                 cardsToLookAt: 4,
                 cardCondition: (card, context) => {
                     const parent = context.source.parentCharacter;
-                    return card.hasTrait('spell') || card.hasTrait('kiho') || (!!parent && parent.hasTrait('scholar'));
+                    return card.hasTrait(Trait.Spell) || card.hasTrait(Trait.Kiho) || (!!parent && parent.hasTrait(Trait.Scholar));
                 },
                 remainingCards: RemainingCards.BottomRandom,
                 gameAction: moveCard({

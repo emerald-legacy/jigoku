@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, SkillType } from '../../Constants.js';
+import { Players, CardType, SkillType, Trait } from '../../Constants.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 
@@ -15,7 +15,7 @@ class ByAnyMeans extends DrawCard {
                 activePromptTitle: 'Choose a bushi character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Bushi)
             })
             .target({
                 name: 'oppCharacter',

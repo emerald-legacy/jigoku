@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
 import { removeFate, sacrifice, sequential } from '../../GameActions/GameActions.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class Chikara extends DrawCard {
     static id = 'chikara';
@@ -14,7 +14,7 @@ class Chikara extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card) => card.hasTrait('champion'),
+            match: (card) => card.hasTrait(Trait.Champion),
             effect: gainAbility.reaction('Return all fate from, then sacrifice a character', (ability) => ability
                 .when({
                     afterConflict: (event, context) => {

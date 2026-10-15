@@ -1,4 +1,4 @@
-import { CardType, Element, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import { blank, gainAllAbilities, switchBaseSkills } from '../../../effects.js';
 import { cardLastingEffect, joint, loseFate, noAction } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -13,7 +13,7 @@ export default class EbbAndFlow extends DrawCard {
                 name: 'mine',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('shugenja')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Shugenja)
             }, noAction())
             .target({
                 name: 'opponents',
@@ -25,7 +25,7 @@ export default class EbbAndFlow extends DrawCard {
             }))
             .chatText((context) => msg`switch ${context.targets.opponents}'s military and political skill`)
             .afterwardsIf((context) => context.player.fate > 0 && loseFate().canAffect(context.player, context))
-            .onAffinity(Element.Water, {
+            .onAffinity(Trait.Water, {
                 activePromptTitle: 'Pay 1 fate to swap abilities?',
                 chatText: (context) => msg`swap the abilities of ${context.targets.mine} and ${context.targets.opponents}`
             })

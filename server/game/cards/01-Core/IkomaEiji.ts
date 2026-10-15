@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { putIntoPlay } from '../../GameActions/GameActions.js';
-import { Location, Players, CardType, ConflictType } from '../../Constants.js';
+import { Location, Players, CardType, ConflictType, Trait } from '../../Constants.js';
 
 class IkomaEiji extends DrawCard {
     static id = 'ikoma-eiji';
@@ -15,7 +15,7 @@ class IkomaEiji extends DrawCard {
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.DynastyDiscardPile],
                 controller: Players.Self,
-                cardCondition: (card) => card.isCharacter() && card.hasTrait('bushi') && card.costLessThan(4),
+                cardCondition: (card) => card.isCharacter() && card.hasTrait(Trait.Bushi) && card.costLessThan(4),
                 message: (context, card) => msg`${context.player} puts ${card} into play with ${context.source}'s ability`,
                 gameAction: putIntoPlay()
             })

@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType } from '../../../Constants.js';
+import { Players, CardType, Trait } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { cardLastingEffect, honor, multiple } from '../../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../../copyBaseSkills.js';
@@ -15,7 +15,7 @@ export default class CloudHands extends DrawCard {
                 activePromptTitle: 'Choose a monk character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
             })
             .target({
                 name: 'oppCharacter',

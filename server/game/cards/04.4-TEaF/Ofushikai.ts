@@ -1,7 +1,7 @@
 import { cannotParticipateAsAttacker, gainAbility } from '../../effects.js';
 import { cardLastingEffect, sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, CardType } from '../../Constants.js';
+import { Duration, CardType, Trait } from '../../Constants.js';
 
 class Ofushikai extends DrawCard {
     static id = 'ofushikai';
@@ -14,7 +14,7 @@ class Ofushikai extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card) => card.hasTrait('champion'),
+            match: (card) => card.hasTrait(Trait.Champion),
             effect: gainAbility.action('Send a character home', (ability) => ability
                 .condition((context) => context.source.isParticipating())
                 .target({

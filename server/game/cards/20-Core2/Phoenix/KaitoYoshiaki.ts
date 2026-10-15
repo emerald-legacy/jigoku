@@ -1,12 +1,12 @@
 import { msg } from '../../../GameChat.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import { setBaseMilitarySkill, setBasePoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 
 function isEvil(character: BaseCard): boolean {
-    return character.isTainted || character.hasTrait('shadowlands');
+    return character.isTainted || character.hasTrait(Trait.Shadowlands);
 }
 
 export default class KaitoYoshiaki extends DrawCard {

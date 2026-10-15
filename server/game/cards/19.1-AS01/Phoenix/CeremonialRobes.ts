@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { modifyGlory } from '../../../effects.js';
 import { assignRoles, chatMessage, conditional, discardCard, loseHonor, moveCard, placeInProvince, sequential } from '../../../GameActions/GameActions.js';
 import { targetList } from '../../../GameActions/GameAction.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 
@@ -13,7 +13,7 @@ export default class CeremonialRobes extends DrawCard {
         this.persistentEffect({
             effect: modifyGlory((_character, context) =>
                 context.player.cardsInPlay.reduce(
-                    (sum, card) => (card.type === CardType.Character && card.hasTrait('spirit') ? sum + 1 : sum),
+                    (sum, card) => (card.type === CardType.Character && card.hasTrait(Trait.Spirit) ? sum + 1 : sum),
                     0
                 )
             )
@@ -35,7 +35,7 @@ export default class CeremonialRobes extends DrawCard {
                     'discard': sequential([
                         discardCard(),
                         conditional({
-                            condition: (_context, properties) => targetList(properties.target).some((card) => card.isCard() && card.hasTrait('spirit')),
+                            condition: (_context, properties) => targetList(properties.target).some((card) => card.isCard() && card.hasTrait(Trait.Spirit)),
                             trueGameAction: sequential([
                                 chatMessage((context, [card]) => msg`${card} was a Spirit! ${context.player} and ${context.player.opponent} lose 1 honor`),
                                 loseHonor((context) => ({ target: context.game.getPlayers() }))

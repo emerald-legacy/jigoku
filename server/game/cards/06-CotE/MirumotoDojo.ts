@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { DuelType } from '../../Constants.js';
+import { DuelType, Trait } from '../../Constants.js';
 import type { ResolvedDuel } from '../../Duel.js';
 import { joint, removeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -30,7 +30,7 @@ export default class MirumotoDojo extends DrawCard {
     }
 
     private wonByDuelist(duel: ResolvedDuel): boolean {
-        return duel.winner.some((char) => char.hasTrait('duelist'));
+        return duel.winner.some((char) => char.hasTrait(Trait.Duelist));
     }
 
     private loserOwner(duel: ResolvedDuel): undefined | Player {

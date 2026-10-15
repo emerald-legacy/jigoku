@@ -1,6 +1,6 @@
 import { addTrait } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { ConflictType } from '../../Constants.js';
+import { ConflictType, Trait } from '../../Constants.js';
 
 class UtakuBattleSteed extends DrawCard {
     static id = 'utaku-battle-steed';
@@ -11,7 +11,7 @@ class UtakuBattleSteed extends DrawCard {
         });
 
         this.whileAttached({
-            effect: addTrait('cavalry')
+            effect: addTrait(Trait.Cavalry)
         });
 
         this.reaction('Honor attached character')

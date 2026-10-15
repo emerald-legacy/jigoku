@@ -1,4 +1,4 @@
-import { CardType } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -11,7 +11,7 @@ function participatingCavGlory(conflict: Conflict, player: Player): number {
     return Math.max(
         -1,
         ...conflict
-            .getParticipants((card) => card.controller === player && card.hasTrait('cavalry'))
+            .getParticipants((card) => card.controller === player && card.hasTrait(Trait.Cavalry))
             .map((x) => x.glory)
     );
 }

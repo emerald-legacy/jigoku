@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, ConflictType, Players } from '../../Constants.js';
+import { CardType, ConflictType, Players, Trait } from '../../Constants.js';
 import { delayedEffect, modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect, honor } from '../../GameActions/GameActions.js';
 
@@ -12,7 +12,7 @@ class APerfectCut extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Bushi)
             }, cardLastingEffect((context) => ({
                 effect: [
                     modifyMilitarySkill(2),

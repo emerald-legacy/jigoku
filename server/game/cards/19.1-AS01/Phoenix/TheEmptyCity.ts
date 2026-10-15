@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, ConflictType, Duration, Location, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Duration, Location, Players, Trait } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
@@ -16,7 +16,7 @@ export default class TheEmptyCity extends ProvinceCard {
             .canTriggerOutsideConflict()
             .cost(costs.bow({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('spirit')
+                cardCondition: (card) => card.hasTrait(Trait.Spirit)
             }))
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',
@@ -34,7 +34,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
-                cardCondition: (card) => card.hasTrait('spirit') && (card.getCost() ?? 0) <= 3
+                cardCondition: (card) => card.hasTrait(Trait.Spirit) && (card.getCost() ?? 0) <= 3
             }, joint([
                 putIntoPlay(),
                 cardLastingEffect((context) => ({

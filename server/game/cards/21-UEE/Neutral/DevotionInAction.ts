@@ -1,4 +1,4 @@
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import { putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,9 +13,9 @@ export default class DevotionInAction extends DrawCard {
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('bushi') && (card.printedCost ?? 0) <= 3
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && (card.printedCost ?? 0) <= 3
             }, putIntoConflict((context) => ({
-                status: context.target.hasTrait('yojimbo') ? 'honored' : 'ordinary'
+                status: context.target.hasTrait(Trait.Yojimbo) ? 'honored' : 'ordinary'
             })));
     }
 }

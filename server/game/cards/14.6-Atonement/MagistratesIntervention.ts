@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 
 class MagistratesIntervention extends DrawCard {
@@ -8,7 +8,7 @@ class MagistratesIntervention extends DrawCard {
 
     setupCardAbilities() {
         this.action('Dishonor a character')
-            .playOnlyIf((context) => context.player.cardsInPlay.some((card) => card.type === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate'))))
+            .playOnlyIf((context) => context.player.cardsInPlay.some((card) => card.type === CardType.Character && (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()

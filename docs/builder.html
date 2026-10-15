@@ -282,7 +282,7 @@ this.duelStrike('Place a fate on a character', (duel, context) =&gt; duel.winner
     </ul>
     <pre><code>// Born in War: Cavalry character only.
 this.attachmentConditions({
-    trait: 'cavalry'
+    trait: Trait.Cavalry
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BornInWar.ts">Born in War</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CourtMask.ts">Court Mask</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DaimyosFavor.ts">Daimyō's Favor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FavoredMount.ts">Favored Mount</a></p>
   </div>
@@ -714,7 +714,7 @@ this.action('Sacrifice to discard an attachment')
     </ul>
     <pre><code>// Magistrate's Intervention: Play only if you control a Courtier or Magistrate character. …
 this.action('Dishonor a character')
-    .playOnlyIf((context) =&gt; context.player.cardsInPlay.some((card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait('courtier') || card.hasTrait('magistrate'))))
+    .playOnlyIf((context) =&gt; context.player.cardsInPlay.some((card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))
     .target({ … }, dishonor())</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Blackmail.ts">Blackmail</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/GoodOmen.ts">Good Omen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/Censure.ts">Censure</a></p>
   </div>
@@ -975,7 +975,7 @@ this.action('Bow a character')
         cardType: CardType.Character,
         controller: Players.Self,
         cardCondition: (monkCharacter) =&gt;
-            monkCharacter.isParticipating() &amp;&amp; monkCharacter.hasTrait('monk') &amp;&amp; this.cardHasNoWeapons(monkCharacter)
+            monkCharacter.isParticipating() &amp;&amp; monkCharacter.hasTrait(Trait.Monk) &amp;&amp; this.cardHasNoWeapons(monkCharacter)
     })
     .target({
         name: TARGET_TO_BOW,
@@ -1159,7 +1159,7 @@ this.action('Initiate a Military duel')
     </ul>
     <pre><code>// Counsel from Yume-do: … Then, with Water affinity, draw a card.
     .afterwards()
-    .onAffinity(Element.Water, { chatText: () =&gt; msg`draw a card` })
+    .onAffinity(Trait.Water, { chatText: () =&gt; msg`draw a card` })
     .draw();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/CounselFromYumeDo.ts">Counsel from Yume-do</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/AllDistancesAreOne.ts">All Distances Are One</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/WingsOfThePhoenix.ts">Wings of the Phoenix</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Unicorn/TheRushingWave.ts">The Rushing Wave</a></p>
   </div>
@@ -1178,7 +1178,7 @@ this.action('Initiate a Military duel')
     </ul>
     <pre><code>// Palm Strike: … If your Monk is Tattooed, that character cannot be readied until the end of the conflict.
     .onResolve((context) =&gt; {
-        if(context.targets[TARGET_MONK].hasTrait('tattooed')) {
+        if(context.targets[TARGET_MONK].hasTrait(Trait.Tattooed)) {
             context.game.addMessage(msg`${context.targets[TARGET_TO_BOW]} cannot ready until the end of the conflict - …`);
         }
     })</code></pre>
@@ -2427,7 +2427,7 @@ this.action('Steal a fate')
     cardType: CardType.Character,
     location: [Location.Provinces, Location.DynastyDiscardPile],
     controller: Players.Self,
-    cardCondition: (card) =&gt; card.isCharacter() &amp;&amp; card.hasTrait('bushi') &amp;&amp; card.costLessThan(4),
+    cardCondition: (card) =&gt; card.isCharacter() &amp;&amp; card.hasTrait(Trait.Bushi) &amp;&amp; card.costLessThan(4),
     message: (context, card) =&gt; msg`${context.player} puts ${card} into play with ${context.source}'s ability`,
     gameAction: putIntoPlay()
 })</code></pre>
@@ -2619,14 +2619,14 @@ this.action('Wield the power of the void')
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>trait</code></td><td><code>string</code></td><td>required</td><td>The trait; case doesn't matter (<code>'bushi'</code>).</td></tr>
+        <tr><td><code>trait</code></td><td><code>Trait</code></td><td>required</td><td>The trait (<code>Trait.Bushi</code>).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>A blank effect that also blanks traits removes the printed ones. For several traits use <code>hasSomeTrait(…)</code> or <code>hasEveryTrait(…)</code>.</li>
     </ul>
     <pre><code>// Magistrate's Intervention: Play only if you control a Courtier or Magistrate character.
-    .playOnlyIf((context) =&gt; context.player.cardsInPlay.some((card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait('courtier') || card.hasTrait('magistrate'))))</code></pre>
+    .playOnlyIf((context) =&gt; context.player.cardsInPlay.some((card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AgainstTheWaves.ts">Against the Waves</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsceticVisionary.ts">Ascetic Visionary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForShame.ts">For Shame!</a></p>
   </div>
 

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players, ConflictType } from '../../../Constants.js';
+import { CardType, Players, ConflictType, Trait } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, discardCard, optional, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -12,7 +12,7 @@ export default class ToStormAFortress extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasSomeTrait('bushi', 'monk')
+                cardCondition: (card) => card.isParticipating() && card.hasSomeTrait(Trait.Bushi, Trait.Monk)
             }, sequential([
                 cardLastingEffect({
                     effect: modifyMilitarySkill(2)

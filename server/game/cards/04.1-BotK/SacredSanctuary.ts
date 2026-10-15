@@ -1,4 +1,4 @@
-import { CardType, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { cardCannot, doesNotBow } from '../../effects.js';
 import { cardLastingEffect, ready } from '../../GameActions/GameActions.js';
@@ -14,7 +14,7 @@ export default class SacredSanctuary extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('monk')
+                cardCondition: (card) => card.hasTrait(Trait.Monk)
             }, ready(), cardLastingEffect({
                 condition: () => this.game.isDuringConflict(),
                 effect: doesNotBow()

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Element } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import { modifyGlory } from '../../../effects.js';
 import {
     cardLastingEffect,
@@ -35,7 +35,7 @@ export default class WisdomOfTheWind extends DrawCard {
                     }
                 }),
                 onAffinity((context) => ({
-                    trait: Element.Air,
+                    trait: Trait.Air,
                     gameAction: cardLastingEffect({
                         target: context.target,
                         effect: modifyGlory(2)

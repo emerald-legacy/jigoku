@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
 
@@ -12,7 +13,7 @@ class Shukujo extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card) => card.hasTrait('champion'),
+            match: (card) => card.hasTrait(Trait.Champion),
             effect: gainAbility.action('Switch the conflict type', (ability) => ability
                 .condition((context) => context.source.isParticipating())
                 .switchConflictType()

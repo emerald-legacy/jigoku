@@ -1,4 +1,4 @@
-import { CardType, Players, ConflictType } from '../../Constants.js';
+import { CardType, Players, ConflictType, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { moveToConflict } from '../../GameActions/GameActions.js';
@@ -13,7 +13,7 @@ export default class GoldenPlainsOutpost extends StrongholdCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('cavalry')
+                cardCondition: (card) => card.hasTrait(Trait.Cavalry)
             }, moveToConflict());
     }
 }

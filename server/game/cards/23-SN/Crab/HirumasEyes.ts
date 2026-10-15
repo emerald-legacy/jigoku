@@ -37,9 +37,7 @@ export default class HirumasEyes extends DrawCard {
     getTargets(card: BaseCard, context: AbilityContext) {
         if(context.game.currentConflict) {
             const defenders = context.game.currentConflict.getDefenders();
-            const traits = card.getTraits();
-
-            return defenders.filter((a) => a.hasSomeTrait(traits));
+            return defenders.filter((a) => a.sharesTrait(card));
         }
 
         return [];

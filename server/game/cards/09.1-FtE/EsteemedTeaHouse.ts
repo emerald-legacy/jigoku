@@ -2,14 +2,14 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { playerCannot } from '../../effects.js';
 import { returnToHand } from '../../GameActions/GameActions.js';
-import { CardType, Duration, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { CardType, Duration, RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
 
 class EsteemedTeaHouse extends DrawCard {
     static id = 'esteemed-tea-house';
 
     setupCardAbilities() {
         this.action('Return attachment to owners hand')
-            .condition((context) => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')))
+            .condition((context) => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait(Trait.Courtier)))
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())

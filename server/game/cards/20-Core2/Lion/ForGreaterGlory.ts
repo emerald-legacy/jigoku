@@ -1,6 +1,6 @@
 import { perConflict } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
-import { ConflictType } from '../../../Constants.js';
+import { ConflictType, Trait } from '../../../Constants.js';
 
 export default class ForGreaterGlory extends DrawCard {
     static id = 'for-greater-glory';
@@ -14,7 +14,7 @@ export default class ForGreaterGlory extends DrawCard {
             .placeFate((context) => ({
                 target: context.event.conflict
                     ?.getCharacters(context.player)
-                    .filter((card) => card.hasTrait('bushi')) ?? []
+                    .filter((card) => card.hasTrait(Trait.Bushi)) ?? []
             }))
             .max(perConflict(1));
     }

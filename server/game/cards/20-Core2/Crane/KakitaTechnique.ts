@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { CardType, Duration, Players, Trait } from '../../../Constants.js';
 import { Direction } from '../../../GameActions/ModifyBidAction.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { additionalAction, delayedEffect, modifyBothSkills } from '../../../effects.js';
@@ -24,7 +24,7 @@ export default class KakitaTechnique extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('duelist'))
+                cardCondition: (card) => card.isParticipating() && (card.hasTrait(Trait.Bushi) || card.hasTrait(Trait.Duelist))
             }, sequential([
                 cardLastingEffect((context) => ({
                     effect: delayedEffect({

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DeckType, PlayType, Blocker } from '../../../Constants.js';
+import { CardType, DeckType, PlayType, Blocker, Trait } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import { playCard } from '../../../GameActions/GameActions.js';
@@ -41,11 +41,11 @@ export default class UtakuTakeko extends DrawCard {
     }
 
     private msgDistance(card: DrawCard): string {
-        return card.hasTrait('gaijin') ? 'very distant' : 'distant';
+        return card.hasTrait(Trait.Gaijin) ? 'very distant' : 'distant';
     }
 
     private msgArticle(card: DrawCard): string {
-        if(card.hasTrait('army')) {
+        if(card.hasTrait(Trait.Army)) {
             return 'in the';
         }
         return article(card.name);

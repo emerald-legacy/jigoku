@@ -1,4 +1,4 @@
-import { CardType, Duration, RestrictionType } from '../../../Constants.js';
+import { CardType, Duration, RestrictionType, Trait } from '../../../Constants.js';
 import { loseFaction, playerCannot } from '../../../effects.js';
 import { cardLastingEffect, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,7 +9,7 @@ export default class DisputedLineage extends DrawCard {
 
     setupCardAbilities() {
         this.action('Choose a character')
-            .playOnlyIf((context) => context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait('courtier')))
+            .playOnlyIf((context) => context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait(Trait.Courtier)))
             .target({
                 cardType: CardType.Character
             }, multiple([

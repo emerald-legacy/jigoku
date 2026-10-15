@@ -1,12 +1,12 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class Kamayari extends DrawCard {
     static id = 'kamayari';
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'bushi'
+            trait: Trait.Bushi
         });
 
         this.reaction('Bow character who triggered ability')

@@ -1,5 +1,5 @@
 import { canPlayFromOutOfPlay, showTopConflictCard } from '../../effects.js';
-import { Location, Players, PlayType } from '../../Constants.js';
+import { Location, Players, PlayType, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { LimitedPlaysFromOutOfPlay } from '../LimitedPlaysFromOutOfPlay.js';
 
@@ -9,14 +9,14 @@ export default class MasterTactician extends DrawCard {
     public setupCardAbilities() {
         const plays = new LimitedPlaysFromOutOfPlay<this>(this, {
             max: 3,
-            active: (context) => context.source.isParticipating() && context.game.isTraitInPlay('battlefield'),
+            active: (context) => context.source.isParticipating() && context.game.isTraitInPlay(Trait.Battlefield),
             allows: (event) => event.originalLocation === Location.ConflictDeck && !!event.originallyOnTopOfConflictDeck,
             description: 'plays a card from their conflict deck'
         });
 
         this.persistentEffect({
             condition: (context) =>
-                context.game.isTraitInPlay('battlefield') &&
+                context.game.isTraitInPlay(Trait.Battlefield) &&
                 context.source.isParticipating() &&
                 plays.available,
             targetLocation: Location.ConflictDeck,
@@ -33,7 +33,7 @@ export default class MasterTactician extends DrawCard {
             condition: (context) => {
                 const defending = context.game.currentConflict && context.player.isDefendingPlayer();
                 const preventShowing = defending && !context.game.currentConflict?.defendersChosen;
-                return context.game.isTraitInPlay('battlefield') && context.source.isParticipating() && !preventShowing;
+                return context.game.isTraitInPlay(Trait.Battlefield) && context.source.isParticipating() && !preventShowing;
             },
             targetController: Players.Self,
             effect: showTopConflictCard(Players.Self)

@@ -1,4 +1,4 @@
-import { Element, Players } from '../../../Constants.js';
+import { Element, Players, Trait } from '../../../Constants.js';
 import { immunity } from '../../../effects.js';
 import { draw, gainFate, gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class OtterFisherman extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: [immunity({ appliesTo: { trait: 'creature' } })]
+            effect: [immunity({ appliesTo: { trait: Trait.Creature } })]
         });
 
         this.reaction('Gain resource after claiming water')

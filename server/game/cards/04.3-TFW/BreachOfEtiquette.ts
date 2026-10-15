@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { playerDelayedEffect } from '../../effects.js';
 import { loseHonor } from '../../GameActions/GameActions.js';
-import { CardType, ConflictType, Players } from '../../Constants.js';
+import { CardType, ConflictType, Players, Trait } from '../../Constants.js';
 
 class BreachOfEtiquette extends DrawCard {
     static id = 'breach-of-etiquette';
@@ -15,7 +15,7 @@ class BreachOfEtiquette extends DrawCard {
                 effect: playerDelayedEffect({
                     when: {
                         onCardAbilityTriggered: (event) =>
-                            event.player === context.player && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
+                            event.player === context.player && event.card.type === CardType.Character && !event.card.hasTrait(Trait.Courtier)
                     },
                     message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player}`,
                     multipleTrigger: true,
@@ -27,7 +27,7 @@ class BreachOfEtiquette extends DrawCard {
                 effect: playerDelayedEffect({
                     when: {
                         onCardAbilityTriggered: (event) =>
-                            event.player === context.player.opponent && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
+                            event.player === context.player.opponent && event.card.type === CardType.Character && !event.card.hasTrait(Trait.Courtier)
                     },
                     message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player.opponent}`,
                     multipleTrigger: true,

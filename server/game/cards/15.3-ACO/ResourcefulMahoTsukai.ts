@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { reduceCost } from '../../effects.js';
 
@@ -8,7 +9,7 @@ class ResourcefulMahoTsukai extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isDishonored,
             effect: reduceCost({
-                match: (card) => card.hasTrait('maho')
+                match: (card) => card.hasTrait(Trait.Maho)
             })
         });
     }

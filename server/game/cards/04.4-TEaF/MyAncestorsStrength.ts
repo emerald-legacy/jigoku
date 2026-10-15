@@ -1,6 +1,6 @@
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, CardType } from '../../Constants.js';
+import { Location, Players, CardType, Trait } from '../../Constants.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 import { msg } from '../../GameChat.js';
 
@@ -14,7 +14,7 @@ class MyAncestorsStrength extends DrawCard {
                 activePromptTitle: 'Choose a shugenja character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('shugenja') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait(Trait.Shugenja) && card.isParticipating()
             })
             .target({
                 name: 'ancestor',

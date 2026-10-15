@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class ForgedEdict extends DrawCard {
     static id = 'forged-edict';
@@ -10,7 +10,7 @@ class ForgedEdict extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
             })
-            .cost(costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }))
+            .cost(costs.dishonor({ cardCondition: (card) => card.hasTrait(Trait.Courtier) }))
             .cancel()
             .cannotBeMirrored();
     }

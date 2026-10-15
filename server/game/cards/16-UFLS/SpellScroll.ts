@@ -1,6 +1,6 @@
 import { modifyPoliticalSkill } from '../../effects.js';
 import { moveCard, multiple, sacrifice } from '../../GameActions/GameActions.js';
-import { CardType, Location, Players } from '../../Constants.js';
+import { CardType, Location, Players, elementTrait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { msg } from '../../GameChat.js';
 
@@ -12,7 +12,7 @@ export default class SpellScroll extends DrawCard {
             condition: (context) =>
                 !!(context.source.parentCharacter?.isParticipating() &&
                 context.game.requireConflict().elements.some((element) =>
-                    context.source.parentCharacter?.hasTrait(element)
+                    context.source.parentCharacter?.hasTrait(elementTrait(element))
                 )),
             effect: modifyPoliticalSkill(3)
         });
@@ -24,7 +24,7 @@ export default class SpellScroll extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.type !== CardType.Character &&
-                    !!context.source.parentCharacter?.hasSomeTrait(card.getTraits())
+                    !!context.source.parentCharacter?.sharesTrait(card)
             }, multiple([
                 moveCard((context) => ({
                     target: context.target,

@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { addTrait } from '../../effects.js';
 
@@ -10,7 +11,7 @@ class WaterfallTattoo extends DrawCard {
         });
 
         this.whileAttached({
-            effect: addTrait('tattooed')
+            effect: addTrait(Trait.Tattooed)
         });
 
         this.reaction('Ready attached character')

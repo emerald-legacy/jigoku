@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
-import { CardType, EffectName, Players } from '../../../Constants.js';
+import { CardType, EffectName, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AttachmentMilitarySkillModifierValue } from '../../../Effects/Library/attachmentMilitarySkillModifier.js';
 import type { AttachmentPoliticalSkillModifierValue } from '../../../Effects/Library/attachmentPoliticalSkillModifier.js';
@@ -24,7 +24,7 @@ export default class MirumotoRei extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && card.hasTrait('bushi') && card !== context.source
+                    card.isParticipating() && card.hasTrait(Trait.Bushi) && card !== context.source
             }, cardLastingEffect((context) => ({
                 target: context.source,
                 effect: [

@@ -5,7 +5,7 @@ import {
     playerCannot
 } from '../../../effects.js';
 import { taint } from '../../../GameActions/GameActions.js';
-import { CardType, Phase, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
+import { CardType, Phase, Players, RestrictionType, RestrictionScope, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KuniJuurou extends DrawCard {
@@ -16,7 +16,7 @@ export default class KuniJuurou extends DrawCard {
 
         this.persistentEffect({
             targetController: Players.Any,
-            match: (card) => card.type === CardType.Character && (card.isTainted || card.hasTrait('shadowlands')),
+            match: (card) => card.type === CardType.Character && (card.isTainted || card.hasTrait(Trait.Shadowlands)),
             effect: modifyBothSkills(-2)
         });
 

@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 import type Player from '../../../Player.js';
@@ -10,7 +10,7 @@ import { perRound } from '../../../AbilityLimit.js';
 
 function getNumberOfMonks(context: AbilityContext) {
     return context.player.cardsInPlay.reduce(
-        (total, card) => total + (card.type === CardType.Character && card.hasTrait('monk') ? 1 : 0),
+        (total, card) => total + (card.type === CardType.Character && card.hasTrait(Trait.Monk) ? 1 : 0),
         0
     );
 }

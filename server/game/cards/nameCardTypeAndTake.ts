@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, Location, RemainingCards, TargetMode } from '../Constants.js';
+import { CardType, Location, RemainingCards, TargetMode, type Trait } from '../Constants.js';
 import type { Cost } from '../costs/Cost.js';
 import type { DeckSearchProperties } from '../GameActions/DeckSearchAction.js';
 import { moveCard } from '../GameActions/GameActions.js';
@@ -8,7 +8,7 @@ import { msg, type MessageArgs } from '../GameChat.js';
 const CARD_TYPES = [CardType.Attachment, CardType.Character, CardType.Event];
 
 /** Test of Skill and Work in Progress reveal 3 cards, or 4 if the player controls a character with the trait. */
-export function revealCount(context: AbilityContext, trait: string): number {
+export function revealCount(context: AbilityContext, trait: Trait): number {
     return context.player.cardsInPlay.some((card) => card.hasTrait(trait)) ? 4 : 3;
 }
 
@@ -35,7 +35,7 @@ export function nameCardType(): Cost<{ namedCardType: CardType }> {
 }
 
 /** The player adds up to 2 of the revealed cards of the named type to their hand, and the rest are discarded. */
-export function takeUpToTwoOfNamedType(context: AbilityContext & { costs: { namedCardType?: CardType } }, trait: string): DeckSearchProperties {
+export function takeUpToTwoOfNamedType(context: AbilityContext & { costs: { namedCardType?: CardType } }, trait: Trait): DeckSearchProperties {
     return {
         cardsToLookAt: revealCount(context, trait),
         mode: TargetMode.UpTo,

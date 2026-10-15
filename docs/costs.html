@@ -506,7 +506,7 @@ this.reaction('Sacrifice a character to dishonor characters')
     }))
     .targetCards({
         mode: TargetMode.UpToVariable,
-        numCardsFunc: (context) =&gt; context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait('berserker') ? 2 : 1,
+        numCardsFunc: (context) =&gt; context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait(Trait.Berserker) ? 2 : 1,
         …
     }, dishonor())
     .cannotTargetFirst()
@@ -532,7 +532,7 @@ this.action('Move character to conflict and gain skill bonus')
     .condition((context) =&gt; context.game.isDuringConflict(ConflictType.Political))
     .cost(costs.moveToConflict({
         cardType: CardType.Character,
-        cardCondition: (card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait('spirit') || card.hasTrait('creature'))
+        cardCondition: (card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Spirit) || card.hasTrait(Trait.Creature))
     }))
     .playerLastingEffect((context) =&gt; ({ target: Players.Self, effect: changePlayerSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict)) }))
     .max(perConflict(1));</code></pre>
@@ -673,7 +673,7 @@ this.reaction('Return all fate from a character then discard them')
     .when({ afterConflict: (event, context) =&gt; … })
     .cost(costs.sacrifice({
         cardType: CardType.Character,
-        cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; card.hasTrait('berserker')
+        cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; card.hasTrait(Trait.Berserker)
     }))
     .target({ cardType: CardType.Character, controller: Players.Opponent, … }, sequential([ … ]))
     .max(perConflict(1));</code></pre>

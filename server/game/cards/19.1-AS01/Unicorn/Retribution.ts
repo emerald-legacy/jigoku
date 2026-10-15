@@ -6,7 +6,7 @@ import {
     playerLastingEffect,
     sequential
 } from '../../../GameActions/GameActions.js';
-import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Duration, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import { msg } from '../../../GameChat.js';
@@ -34,7 +34,7 @@ export default class Retribution extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     // honored or battlemaiden
-                    (card.isHonored || card.hasTrait('battle-maiden')) &&
+                    (card.isHonored || card.hasTrait(Trait.BattleMaiden)) &&
                     // can attack military
                     Object.values(this.game.rings).some(
                         (ring) =>

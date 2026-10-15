@@ -1,4 +1,4 @@
-import { CardType, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Players, TargetMode, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -18,7 +18,7 @@ export default class ABadDeath extends DrawCard {
             }))
             .targetCards({
                 mode: TargetMode.UpToVariable,
-                numCardsFunc: (context) => context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait('berserker') ? 2 : 1,
+                numCardsFunc: (context) => context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait(Trait.Berserker) ? 2 : 1,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()

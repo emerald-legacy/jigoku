@@ -3,7 +3,7 @@ import type { AbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
 import { CardAbility } from './CardAbility.js';
-import { type EventName, type Location, type Phase, Players, TargetMode } from './Constants.js';
+import { type EventName, type Location, type Phase, Players, TargetMode, type Trait } from './Constants.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
@@ -157,7 +157,7 @@ interface AbilityDraft {
     message?: (context: AbilityContext) => MessageArgs | undefined;
     isStep?: boolean;
     /** From `onAffinity()`: the game actions resolve only with this affinity. */
-    affinity?: string;
+    affinity?: Trait;
     /** From `onAffinity()`: a Yes/No question before using the affinity, and what the chat says it does. */
     affinityOptions?: AffinityOptions;
     /**
@@ -712,7 +712,7 @@ export class AbilityBuilder<
      * "With [trait] affinity" (usually an element, but any trait, e.g. Shadow): this step's game actions resolve only if the player has that affinity.
      * `activePromptTitle` asks the player first ("Pay 1 fate to swap abilities?"); `chatText` is what the chat says the affinity does.
      */
-    onAffinity(trait: string, options: AffinityOptions<BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
+    onAffinity(trait: Trait, options: AffinityOptions<BuilderContext<Base, Targets, Rings, Costs, Tokens>> = {}): this {
         this.#once('affinity', trait, 'onAffinity()');
         this.draft.affinityOptions = {
             ...(options.activePromptTitle !== undefined ? { activePromptTitle: options.activePromptTitle } : {}),

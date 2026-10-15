@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType } from '../../Constants.js';
+import { Location, CardType, Trait } from '../../Constants.js';
 import { draw } from '../../GameActions/GameActions.js';
 
 class Logistics extends DrawCard {
@@ -34,7 +34,7 @@ class Logistics extends DrawCard {
                             (moving.type !== CardType.Attachment && card.location !== moving.location)
                         );
                 }
-            }, draw((context) => ({ target: context.game.isTraitInPlay('battlefield') ? context.player : [] })))
+            }, draw((context) => ({ target: context.game.isTraitInPlay(Trait.Battlefield) ? context.player : [] })))
             .if((context) => context.targets.cardInProvince.type === CardType.Attachment)
             .attach((context) => ({
                 target: context.targets.province,
@@ -45,7 +45,7 @@ class Logistics extends DrawCard {
                 target: context.targets.cardInProvince,
                 destination: context.targets.province.location
             }))
-            .chatText((context) => msg`move ${context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince} to ${context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province}${context.game.isTraitInPlay('battlefield') ? ' and draw a card' : ''}`);
+            .chatText((context) => msg`move ${context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince} to ${context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province}${context.game.isTraitInPlay(Trait.Battlefield) ? ' and draw a card' : ''}`);
     }
 }
 

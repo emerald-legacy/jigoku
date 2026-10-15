@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import { reduceCost } from '../../../effects.js';
 import { moveToConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,7 +14,7 @@ export default class Hayate extends DrawCard {
             effect: reduceCost({
                 amount: (_, player) =>
                     player.cardsInPlay.reduce(
-                        (cavCount, card) => (card.hasTrait('cavalry') ? cavCount + 1 : cavCount),
+                        (cavCount, card) => (card.hasTrait(Trait.Cavalry) ? cavCount + 1 : cavCount),
                         0
                     ),
                 match: (card, source) => card === source

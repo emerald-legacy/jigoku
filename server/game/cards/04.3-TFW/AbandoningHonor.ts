@@ -1,4 +1,4 @@
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { modifyProvinceStrength } from '../../effects.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
@@ -8,7 +8,7 @@ export default class AbandoningHonor extends ProvinceCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => !!context.player.role && context.player.role.hasTrait('fire'),
+            condition: (context) => !!context.player.role && context.player.role.hasTrait(Trait.Fire),
             effect: modifyProvinceStrength(2)
         });
 

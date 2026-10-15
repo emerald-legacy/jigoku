@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardType, Players, Location } from '../../Constants.js';
+import { CardType, Players, Location, Trait } from '../../Constants.js';
 import { gainAbility } from '../../effects.js';
 import { placeFate, returnToDeck } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -55,7 +55,7 @@ class AncestralSight extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'shugenja'
+            trait: Trait.Shugenja
         });
 
         this.whileAttached({

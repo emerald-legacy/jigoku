@@ -1,5 +1,5 @@
 import { msg, type MsgArg } from '../../GameChat.js';
-import { CardType, DeckType, Location, Players } from '../../Constants.js';
+import { CardType, DeckType, Location, Players, Trait } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type DrawCard from '../../DrawCard.js';
@@ -28,7 +28,7 @@ export default class BreakingIn extends ProvinceCard {
             this.game.addMessage(msg`${context.player} selects nothing from their deck`);
             return;
         }
-        if(!card.hasTrait('cavalry')) {
+        if(!card.hasTrait(Trait.Cavalry)) {
             this.putInto(context, card, context.source.location, context.source);
             return;
         }

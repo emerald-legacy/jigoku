@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyBothSkills } from '../../effects.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, Trait } from '../../Constants.js';
 
 class WildfireKick extends DrawCard {
     static id = 'wildfire-kick';
@@ -14,7 +14,7 @@ class WildfireKick extends DrawCard {
             .target({
                 controller: Players.Self,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
             })
             .cardLastingEffect((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.militarySkill <= (context.target?.militarySkill ?? 0) && card !== context.source) ?? [],

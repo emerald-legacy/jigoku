@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { ready } from '../../GameActions/GameActions.js';
 
 class FanOfCommand extends DrawCard {
@@ -10,7 +10,7 @@ class FanOfCommand extends DrawCard {
             .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Bushi)
             }, ready());
     }
 }

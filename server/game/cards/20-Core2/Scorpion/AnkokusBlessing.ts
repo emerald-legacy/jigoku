@@ -1,4 +1,4 @@
-import { Location, Phase } from '../../../Constants.js';
+import { Location, Phase, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { draw, gainFate, multiple } from '../../../GameActions/GameActions.js';
@@ -12,7 +12,7 @@ export default class AnkokusBlessing extends DrawCard {
             .phase(Phase.Fate)
             .cost(costs.discardCard({
                 location: Location.Hand,
-                cardCondition: (card) => !card.hasTrait('blessing')
+                cardCondition: (card) => !card.hasTrait(Trait.Blessing)
             }))
             .gameAction(multiple((context) => [
                 draw({ target: context.player, amount: 2 }),

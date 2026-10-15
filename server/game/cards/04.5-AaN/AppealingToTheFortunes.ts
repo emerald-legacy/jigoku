@@ -1,4 +1,4 @@
-import { CardType, Location, Players } from '../../Constants.js';
+import { CardType, Location, Players, Trait } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { modifyProvinceStrength } from '../../effects.js';
 import { putIntoPlay } from '../../GameActions/GameActions.js';
@@ -8,7 +8,7 @@ export default class AppealingToTheFortunes extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => !!context.player.role && context.player.role.hasTrait('void'),
+            condition: (context) => !!context.player.role && context.player.role.hasTrait(Trait.Void),
             effect: modifyProvinceStrength(2)
         });
 

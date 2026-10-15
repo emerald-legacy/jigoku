@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { loseTrait, modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class LightningAscends extends DrawCard {
@@ -13,7 +13,7 @@ export default class LightningAscends extends DrawCard {
                 name: 'monk',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             }))

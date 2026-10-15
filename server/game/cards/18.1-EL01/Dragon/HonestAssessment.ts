@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { discardMatching, multiple, reveal } from '../../../GameActions/GameActions.js';
-import { Location } from '../../../Constants.js';
+import { Location, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/random.js';
 
@@ -10,7 +10,7 @@ export default class HonestAssessment extends DrawCard {
     static id = 'honest-assessment';
 
     setupCardAbilities() {
-        this.attachmentConditions({ trait: 'courtier' });
+        this.attachmentConditions({ trait: Trait.Courtier });
 
         this.reaction('Name a card')
             .when({

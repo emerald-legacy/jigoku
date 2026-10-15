@@ -1,4 +1,4 @@
-import { CardType } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import { applyStatusTokensToDuel } from '../../../effects.js';
 import { sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -20,7 +20,7 @@ export default class ShowMeYourStance extends DrawCard {
                     card.isAttacking() &&
                     (context.game.currentConflict
                         ?.getCharacters(context.player)
-                        .some((myCard) => myCard.hasTrait('duelist') && myCard.glory >= card.glory) ?? false)
+                        .some((myCard) => myCard.hasTrait(Trait.Duelist) && myCard.glory >= card.glory) ?? false)
             }, sendHome());
     }
 }

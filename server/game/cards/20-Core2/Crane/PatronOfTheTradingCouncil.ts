@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { Location, Players, RemainingCards, TargetMode } from '../../../Constants.js';
+import { Location, Players, RemainingCards, TargetMode, Trait } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { deckSearch, lookAt, moveCard, sequential } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -30,7 +30,7 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
         this.persistentEffect({
             condition: (context) =>
                 (context.game.currentConflict?.getNumberOfParticipants((card) =>
-                    card.hasTrait('mantis-clan')
+                    card.hasTrait(Trait.MantisClan)
                 ) ?? 0) > 0,
             effect: modifyBothSkills(1)
         });

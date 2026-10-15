@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import { increaseCost } from '../../../effects.js';
 import { bow, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,7 +16,7 @@ export default class CaptureTheFalseEye extends DrawCard {
                     (context.game.currentConflict
                         ?.getCharacters(context.player)
                         .some(
-                            (myCard) => myCard.hasTrait('bushi') && myCard.militarySkill >= card.militarySkill
+                            (myCard) => myCard.hasTrait(Trait.Bushi) && myCard.militarySkill >= card.militarySkill
                         ) ?? false)
             }, bow(), playerLastingEffect({
                 target: Players.Self,

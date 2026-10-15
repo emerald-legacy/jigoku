@@ -1,4 +1,4 @@
-import { CardType, type Element } from '../Constants.js';
+import { CardType, type Element, Trait } from '../Constants.js';
 import DrawCard from '../DrawCard.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 
@@ -16,7 +16,7 @@ export function makeMantra(id: string, element: Element, title: string, effect: 
                 .target({
                     cardType: CardType.Character,
                     cardCondition: (card) =>
-                        card.hasTrait('monk') || card.attachments.some((attachment) => attachment.hasTrait('monk'))
+                        card.hasTrait(Trait.Monk) || card.attachments.some((attachment) => attachment.hasTrait(Trait.Monk))
                 }, effect)
                 .draw()
                 .chatText(chatText);

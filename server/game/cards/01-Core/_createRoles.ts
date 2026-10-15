@@ -1,3 +1,4 @@
+import { elementTrait } from '../../Constants.js';
 import type { Element } from '../../Constants.js';
 import { RoleCard } from '../../RoleCard.js';
 
@@ -9,7 +10,7 @@ export function createKeeperRole(id: string, element: Element) {
             this.reaction('Gain 1 fate')
                 .when({
                     afterConflict: (event, context) =>
-                        event.conflict.elements.some((el) => this.hasTrait(el)) &&
+                        event.conflict.elements.some((el) => this.hasTrait(elementTrait(el))) &&
                         event.conflict.winner === context.player &&
                         event.conflict.defendingPlayer === context.player
                 })
@@ -32,7 +33,7 @@ export function createSeekerRole(id: string, element: Element) {
                     onCardRevealed: (event, context) =>
                         event.card.controller === context.player &&
                         event.card.isProvinceCard() &&
-                        event.card.getElement().some((element: string) => context.source.hasTrait(element))
+                        event.card.getElement().some((element) => context.source.hasTrait(elementTrait(element)))
                 })
                 .gainFate();
         }

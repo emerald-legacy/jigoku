@@ -2,14 +2,14 @@ import * as costs from '../../costs/index.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class DiscouragePursuit extends DrawCard {
     static id = 'discourage-pursuit';
 
     setupCardAbilities() {
         this.action('Give -4 military to a participating character')
-            .cost(costs.dishonor({ cardCondition: (card) => card.hasTrait('shinobi') }))
+            .cost(costs.dishonor({ cardCondition: (card) => card.hasTrait(Trait.Shinobi) }))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

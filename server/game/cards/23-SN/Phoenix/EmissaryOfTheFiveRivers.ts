@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import * as costs from '../../../costs/index.js';
 import { honor, ready } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 
 export default class EmissaryOfTheFiveRivers extends DrawCard {
     static id = 'emissary-of-the-five-rivers';
@@ -13,7 +13,7 @@ export default class EmissaryOfTheFiveRivers extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('spirit')
+                cardCondition: (card) => card.hasTrait(Trait.Spirit)
             }, honor());
 
         this.action('Ready a spirit')
@@ -21,7 +21,7 @@ export default class EmissaryOfTheFiveRivers extends DrawCard {
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('spirit')
+                cardCondition: (card) => card.hasTrait(Trait.Spirit)
             }, ready());
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { unlimited } from '../../AbilityLimit.js';
 
 class ThirdTower extends DrawCard {
@@ -16,7 +16,7 @@ class ThirdTower extends DrawCard {
                         return false;
                     }
                     const cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
-                    return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
+                    return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait(Trait.KaiuWall));
                 }
             })
             .takeHonor()

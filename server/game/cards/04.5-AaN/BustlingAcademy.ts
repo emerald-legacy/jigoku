@@ -1,4 +1,4 @@
-import { CardType, EventName, Location } from '../../Constants.js';
+import { CardType, EventName, Location, Trait } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -8,7 +8,7 @@ export default class BustlingAcademy extends DrawCard {
     public setupCardAbilities() {
         this.action('Discard a card in a province and refill it faceup')
             .condition((context) =>
-                context.player.cardsInPlay.some((card) => card.hasTrait('scholar')) &&
+                context.player.cardsInPlay.some((card) => card.hasTrait(Trait.Scholar)) &&
                 context.player.opponent !== undefined)
             .target({
                 location: Location.Provinces,

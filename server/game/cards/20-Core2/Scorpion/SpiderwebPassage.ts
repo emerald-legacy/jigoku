@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Players, SkillType } from '../../../Constants.js';
+import { CardType, Players, SkillType, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { chooseAction, conditional, discardAtRandom, discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 function shinobiCount(context: AbilityContext): number {
     return (
         context.game.currentConflict?.getParticipants(
-            (card) => card.controller === context.player && card.hasTrait('shinobi')
+            (card) => card.controller === context.player && card.hasTrait(Trait.Shinobi)
         ).length ?? 0
     );
 }

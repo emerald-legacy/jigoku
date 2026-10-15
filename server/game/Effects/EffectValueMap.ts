@@ -1,6 +1,7 @@
 import type { EntersPlayStatus } from '../Constants.js';
-import type { CardType, ConflictType, Element, EventName, Players, PlayType, RestrictionType, SkillType } from '../Constants.js';
+import type { CardType, ConflictType, Element, EventName, Players, PlayType, RestrictionType, SkillType, Trait } from '../Constants.js';
 import type { EffectName } from '../Constants.js';
+import type { traitLimit } from '../Interfaces.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -91,15 +92,15 @@ export interface EffectValueMap {
     [EffectName.AddFaction]: string;
     [EffectName.LoseFaction]: string;
     [EffectName.AddKeyword]: string;
-    [EffectName.AddTrait]: string;
+    [EffectName.AddTrait]: Trait;
     [EffectName.LoseTrait]: string;
     [EffectName.AttachmentCardCondition]: (card: DrawCard) => boolean;
     [EffectName.AttachmentFactionRestriction]: Faction[];
     [EffectName.AttachmentLimit]: number;
     [EffectName.AttachmentMyControlOnly]: boolean;
     [EffectName.AttachmentOpponentControlOnly]: boolean;
-    [EffectName.AttachmentRestrictTraitAmount]: Record<string, number>;
-    [EffectName.AttachmentTraitRestriction]: string[];
+    [EffectName.AttachmentRestrictTraitAmount]: traitLimit;
+    [EffectName.AttachmentTraitRestriction]: Trait[];
     [EffectName.AttachmentUniqueRestriction]: boolean;
     [EffectName.Blank]: boolean;
     [EffectName.CalculatePrintedMilitarySkill]: (card: DrawCard) => number;

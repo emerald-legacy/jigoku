@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class CampfireCounsel extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => (card.printedCost ?? 0) <= 3
             }, ready())
-            .afterwardsIf((context) => !context.player.isCharacterTraitInPlay('storyteller'))
+            .afterwardsIf((context) => !context.player.isCharacterTraitInPlay(Trait.Storyteller))
             .dishonor((context) => ({ target: context.target }))
             .message((context) => msg`${context.target} is dishonored`);
     }

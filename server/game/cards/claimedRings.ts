@@ -1,3 +1,4 @@
+import { elementTrait } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type { Conflict } from '../Conflict.js';
 import type { Element } from '../Constants.js';
@@ -30,7 +31,7 @@ export function countClaimedRings(game: Game, predicate: (ring: Ring) => boolean
 /** Whether an `onClaimRing` event claims an element that is a trait of the player's role, through the conflict's ring or the claimed ring. */
 export function claimsRoleElement(player: Player, event: { ring: Ring; conflict?: Conflict }): boolean {
     const role = player.role;
-    return !!role && (!!event.conflict?.elements.some((element) => role.hasTrait(element)) || role.hasTrait(event.ring.element));
+    return !!role && (!!event.conflict?.elements.some((element) => role.hasTrait(elementTrait(element))) || role.hasTrait(elementTrait(event.ring.element)));
 }
 
 /** Whether an `onClaimRing` event claims the element of the card's symbol `key`, through the conflict's ring or the claimed ring. */

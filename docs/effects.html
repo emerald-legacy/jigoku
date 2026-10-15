@@ -45,7 +45,7 @@
 
 <h3 id="ef-several">Several effects at once</h3>
 <ul>
-    <li>Pass a list to apply several effects with one ability: <code>effect: [modifyMilitarySkill(1), addTrait('bushi')]</code>.</li>
+    <li>Pass a list to apply several effects with one ability: <code>effect: [modifyMilitarySkill(1), addTrait(Trait.Bushi)]</code>.</li>
     <li>Modifiers add up; for effects that set a value (<code>setMilitarySkill</code>, …), the most recent one wins. The entries note the exceptions.</li>
     <li>A blanked card loses its printed abilities, and with them its persistent effects; effects other cards apply to it stay.</li>
 </ul>
@@ -73,7 +73,7 @@
 this.whileAttached({
     effect: [
         addFaction('crane'),
-        addTrait('duelist')
+        addTrait(Trait.Duelist)
     ]
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/SealOfTheCrane.ts">Seal of the Crane</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/SealOfTheScorpion.ts">Seal of the Scorpion</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/SealOfTheCrab.ts">Seal of the Crab</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/SealOfThePhoenix.ts">Seal of the Phoenix</a></p>
@@ -105,17 +105,16 @@ this.whileAttached({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>trait</code></td><td><code>string</code></td><td>required</td><td>The trait in lower case (<code>'bushi'</code>, <code>'tattooed'</code>). A fixed value.</td></tr>
+        <tr><td><code>trait</code></td><td><code>Trait</code></td><td>required</td><td>The trait (<code>Trait.Bushi</code>, <code>Trait.Tattooed</code>). A fixed value.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li><code>getTraits()</code> is the printed traits, plus every added trait, minus every trait removed by <code>loseTrait</code>. Removal is applied last, so <code>loseTrait</code> wins.</li>
-      <li><code>hasTrait</code> lower-cases the trait it is asked about, not the stored value: pass lower case.</li>
       <li><code>blank(true)</code> removes printed traits; added traits stay. On a copy the copied card's traits replace the printed ones.</li>
     </ul>
     <pre><code>// Hawk Tattoo: Attach to a character you control. Attached character gains Tattooed. …
 this.whileAttached({
-    effect: addTrait('tattooed')
+    effect: addTrait(Trait.Tattooed)
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FavoredMount.ts">Favored Mount</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/SealOfTheCrane.ts">Seal of the Crane</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/HawkTattoo.ts">Hawk Tattoo</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/VoiceOfTheAncestors.ts">Voice of the Ancestors</a></p>
   </div>
@@ -223,7 +222,7 @@ this.action('Choose a character to copy')
     </ul>
     <pre><code>// Born in War: Cavalry character only. X is equal to the number of unclaimed rings.
 this.attachmentConditions({
-    trait: 'cavalry'
+    trait: Trait.Cavalry
 });
 this.whileAttached({
     effect: attachmentMilitarySkillModifier((_card, context) =&gt;
@@ -474,8 +473,8 @@ this.persistentEffect({
       <tr><td><code>opponentControlOnly: true</code></td><td><code>attachmentOpponentControlOnly()</code></td></tr>
       <tr><td><code>unique: true</code></td><td><code>attachmentUniqueRestriction()</code></td></tr>
       <tr><td><code>faction: Faction | Faction[]</code></td><td><code>attachmentFactionRestriction([faction].flat())</code></td></tr>
-      <tr><td><code>trait: string | string[]</code></td><td><code>attachmentTraitRestriction([trait].flat())</code></td></tr>
-      <tr><td><code>limitTrait: { [trait]: number } | …[]</code></td><td>one <code>attachmentRestrictTraitAmount</code> per entry</td></tr>
+      <tr><td><code>trait: Trait | Trait[]</code></td><td><code>attachmentTraitRestriction([trait].flat())</code></td></tr>
+      <tr><td><code>limitTrait: { [Trait.X]: number } | …[]</code></td><td>one <code>attachmentRestrictTraitAmount</code> per entry</td></tr>
       <tr><td><code>cardCondition: (card) =&gt; boolean</code></td><td><code>attachmentCardCondition(cardCondition)</code></td></tr>
     </tbody>
   </table>
@@ -566,7 +565,7 @@ cardLastingEffect({
     effect: [
         blank(true),
         changeType(CardType.Attachment),
-        addTrait('spirit'),
+        addTrait(Trait.Spirit),
         attachmentRestrictTraitAmount({ spirit: 1 }),
         …
     ]
@@ -698,7 +697,7 @@ this.action('Opponent\'s characters at home can\'t use abilities')
       <tbody>
         <tr><td><code>properties</code></td><td><code>RestrictionType | PlayType | { … }</code></td><td>required</td><td>A bare type is short for <code>{ cannot: type }</code>.</td></tr>
         <tr><td><code>cannot</code></td><td><code>RestrictionType | PlayType</code></td><td>required</td><td>What is forbidden: <code>Bow</code>, <code>Target</code>, <code>SendHome</code>, <code>RemoveFate</code>, <code>DiscardFromPlay</code>, <code>MoveToConflict</code>, <code>TriggerAbilities</code>, … <code>RestrictionType.LeavePlay</code> covers discard from play, sacrifice, return to hand, return to deck and remove from game.</td></tr>
-        <tr><td><code>appliesTo</code></td><td><code>RestrictionScope | { trait } | (…)[]</code></td><td>every attempt</td><td>Which attempts are forbidden, judged by the attempt's context: <code>RestrictionScope.OpponentsEvents</code>, <code>OpponentsCardEffects</code>, <code>CardEffects</code>, <code>RingEffects</code>, … <code>{ trait: 'shugenja' }</code> matches attempts whose source has the trait. With a list, every entry must match.</td></tr>
+        <tr><td><code>appliesTo</code></td><td><code>RestrictionScope | { trait } | (…)[]</code></td><td>every attempt</td><td>Which attempts are forbidden, judged by the attempt's context: <code>RestrictionScope.OpponentsEvents</code>, <code>OpponentsCardEffects</code>, <code>CardEffects</code>, <code>RingEffects</code>, … <code>{ trait: Trait.Shugenja }</code> matches attempts whose source has the trait. With a list, every entry must match.</td></tr>
         <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the effect source's controller</td><td>"You" for the <code>Opponents…</code> and <code>Own…</code> scopes.</td></tr>
         <tr><td><code>source</code></td><td><code>BaseCard</code></td><td>—</td><td>Accepted by the type but ignored: <code>Restriction</code> does not read it.</td></tr>
       </tbody>
@@ -809,7 +808,7 @@ this.whileAttached({
     <pre><code>// Study the Natural World: Action: During a conflict in which you control an attacking Scholar character - the
 // contested ring gains each of the attacked province's elements. …
 this.action('Add elements to the conflict ring')
-    .condition((context) =&gt; context.player.anyCardsInPlay((card) =&gt; card.isAttacking() &amp;&amp; card.hasTrait('scholar')))
+    .condition((context) =&gt; context.player.anyCardsInPlay((card) =&gt; card.isAttacking() &amp;&amp; card.hasTrait(Trait.Scholar)))
     .ringLastingEffect((context) =&gt; ({
         target: context.game.currentConflict?.ring,
         effect: addElement(this.getElementsOfAttackedProvinces(context))
@@ -1264,7 +1263,7 @@ this.whileAttached({
     <pre><code>// Student of Esoterica: You may spend fate from this character to pay for Spell cards.
 this.persistentEffect({
     effect: alternateFatePool((card) =&gt; {
-        if(card.hasTrait('spell')) {
+        if(card.hasTrait(Trait.Spell)) {
             return this;
         }
         return false;
@@ -1388,7 +1387,7 @@ this.persistentEffect({
     <pre><code>// Monastery Protector: No attachments except Monk or Tattoo. As an additional cost to choose a Tattooed character
 // you control as a target of an event, the opponent playing that event must pay 1 additional fate.
 this.persistentEffect({
-    match: (card, context) =&gt; card.type === CardType.Character &amp;&amp; card.controller === context?.player &amp;&amp; card.hasTrait('tattooed'),
+    match: (card, context) =&gt; card.type === CardType.Character &amp;&amp; card.controller === context?.player &amp;&amp; card.hasTrait(Trait.Tattooed),
     effect: fateCostToTarget({
         amount: 1,
         cardType: CardType.Event,
@@ -1742,7 +1741,7 @@ this.action('Prevent your events from being cancelled')
 .moveToConflict((context) =&gt; ({ target: context.source.parentCharacter ?? [] }))
 .playerLastingEffect((context) =&gt; ({
     duration: Duration.UntilPassPriority,
-    effect: context.source.parentCharacter?.hasTrait('monk') ? additionalAction() : []
+    effect: context.source.parentCharacter?.hasTrait(Trait.Monk) ? additionalAction() : []
 }))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/HawkTattoo.ts">Hawk Tattoo</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/CurrentOfTheBeryt.ts">Current of the Beryt</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/CenteredBreath.ts">Centered Breath</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/KakitaBlade2.ts">Kakita Blade</a></p>
   </div>
@@ -1762,7 +1761,7 @@ this.action('Prevent your events from being cancelled')
     <pre><code>// Wait Until It Sings: Conflict Action: If you control a participating Commander character - before this conflict
 // resolves, take an action. (Max 1 per conflict.)
 this.action('Take an action during conflict resolution')
-    .condition((context) =&gt; context.game.currentConflict?.getParticipants().some((p) =&gt; p.controller === context.player &amp;&amp; p.hasTrait('commander')) ?? false)
+    .condition((context) =&gt; context.game.currentConflict?.getParticipants().some((p) =&gt; p.controller === context.player &amp;&amp; p.hasTrait(Trait.Commander)) ?? false)
     .playerLastingEffect({
         effect: additionalActionAfterWindowCompleted(1)
     })
@@ -1888,7 +1887,7 @@ this.duelChallenge('Apply status tokens to the duel', (duel, context) =&gt; duel
 this.duelChallenge('Add a Weapon to your duel stats', (duel, context) =&gt; …)
     .target({
         cardType: CardType.Attachment,
-        cardCondition: (card, context) =&gt; … card.hasTrait('weapon') &amp;&amp; getAttachmentSkill(card) !== 0
+        cardCondition: (card, context) =&gt; … card.hasTrait(Trait.Weapon) &amp;&amp; getAttachmentSkill(card) !== 0
     }, cardLastingEffect((context) =&gt; ({
         target: context.target?.parentCharacter ?? undefined,
         effect: modifyDuelistSkill(
@@ -1984,7 +1983,7 @@ this.duelChallenge('Add +2 to your duel total', (duel, context) =&gt;
     <pre><code>// Kagi-Nawa: If attached character has the Shinobi trait, it gains: "Conflict Action: Choose a character with printed
 // cost 2 or lower - move that character to this conflict."
 this.whileAttached({
-    match: (card) =&gt; card.hasTrait('shinobi'),
+    match: (card) =&gt; card.hasTrait(Trait.Shinobi),
     effect: gainAbility.conflictAction('Move a character to the conflict', (ability) =&gt; ability
         .target({
             cardType: CardType.Character,
@@ -2015,7 +2014,7 @@ this.whileAttached({
 // Shori: Attach to a unique [clan-lion] character. Ancestral. Restricted. If attached character has the Champion trait,
 // it gains "You may declare an additional [conflict-military] conflict each conflict phase."
 this.whileAttached({
-    match: (card) =&gt; card.hasTrait('champion'),
+    match: (card) =&gt; card.hasTrait(Trait.Champion),
     effect: gainAbility(AbilityType.Persistent, {
         targetController: Players.Self,
         effect: additionalConflict(ConflictType.Military)
@@ -2256,7 +2255,7 @@ this.conflictAction('Double the base mil of a character')
 this.persistentEffect({
     targetController: Players.Opponent,
     match: (card) =&gt; card.type === CardType.Character,
-    effect: modifyBothSkills((character) =&gt; -1 * character.attachments.filter((a) =&gt; a.hasTrait('poison')).length)
+    effect: modifyBothSkills((character) =&gt; -1 * character.attachments.filter((a) =&gt; a.hasTrait(Trait.Poison)).length)
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Scorpion/MalevolentAlchemist.ts">Malevolent Alchemist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HidaGuardian.ts">Hida Guardian</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IsawaAtsuko.ts">Isawa Atsuko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IshikenInitiate.ts">Ishiken Initiate</a></p>
   </div>
@@ -2452,7 +2451,7 @@ this.action('Switch a character\'s M and P skill')
 this.persistentEffect({
     effect: modifyGlory((_character, context) =&gt;
         context.player.cardsInPlay.reduce(
-            (sum, card) =&gt; (card.type === CardType.Character &amp;&amp; card.hasTrait('spirit') ? sum + 1 : sum),
+            (sum, card) =&gt; (card.type === CardType.Character &amp;&amp; card.hasTrait(Trait.Spirit) ? sum + 1 : sum),
             0
         )
     )
@@ -2659,9 +2658,9 @@ this.persistentEffect({
     <pre><code>// Seiji's Fate: Attached character gains Creature, loses Bushi, loses Courtier, and loses all printed abilities.
 this.whileAttached({
     effect: [
-        addTrait('creature'),
-        loseTrait('bushi'),
-        loseTrait('courtier'),
+        addTrait(Trait.Creature),
+        loseTrait(Trait.Bushi),
+        loseTrait(Trait.Courtier),
         blank()
     ]
 });</code></pre>
@@ -2818,7 +2817,7 @@ cardLastingEffect((context) =&gt; ({
 .target({
     cardType: CardType.Character,
     controller: Players.Any,
-    cardCondition: (card) =&gt; card.hasTrait('monk') &amp;&amp; card.isParticipating()
+    cardCondition: (card) =&gt; card.hasTrait(Trait.Monk) &amp;&amp; card.isParticipating()
 }, sequential([
     cardLastingEffect({
         duration: Duration.UntilEndOfRound,
@@ -2855,7 +2854,7 @@ this.whileAttached({
 });
 
 this.whileAttached({
-    condition: (context) =&gt; context.source.controller.hasAffinity(Element.Air, context),
+    condition: (context) =&gt; context.source.controller.hasAffinity(Trait.Air, context),
     effect: loseGainedAbilities()
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/CloudTheMind2.ts">Cloud the Mind</a></p>
@@ -2932,8 +2931,8 @@ this.persistentEffect({
     <pre><code>// Jak'ithith: … Immune to Corrupt and Mahō card effects. …
 this.persistentEffect({
     effect: [
-        immunity({ appliesTo: { trait: 'maho' } }),
-        immunity({ appliesTo: { trait: 'shadowlands' } }),
+        immunity({ appliesTo: { trait: Trait.Maho } }),
+        immunity({ appliesTo: { trait: Trait.Shadowlands } }),
         cannotReceiveTaintedToken()
     ]
 });</code></pre>
@@ -3059,7 +3058,7 @@ this.persistentEffect({
     </ul>
     <pre><code>this.persistentEffect({
     targetController: Players.Opponent,
-    effect: limitLegalAttackers((card) =&gt; card.hasTrait('bushi'))
+    effect: limitLegalAttackers((card) =&gt; card.hasTrait(Trait.Bushi))
 });</code></pre>
     <p class="seen">Not used by any card yet.</p>
   </div>
@@ -3303,7 +3302,7 @@ this.persistentEffect({
       <li>Read from the player who lost the conflict; the chat names the effect's source.</li>
     </ul>
     <pre><code>// Castle of Air: Conflict Action: Bow a Shugenja character - the attacked province gets +4 strength this conflict. With Air affinity, you do not lose honor from this conflict being unopposed.
-.if((context) =&gt; context.player.hasAffinity(Element.Air, context))
+.if((context) =&gt; context.player.hasAffinity(Trait.Air, context))
 .playerLastingEffect({
     target: Players.Self,
     duration: Duration.UntilEndOfConflict,
@@ -3620,7 +3619,7 @@ this.persistentEffect({
     effect: playerDelayedEffect({
         when: {
             onCardAbilityTriggered: (event) =&gt;
-                event.player === context.player &amp;&amp; event.card.type === CardType.Character &amp;&amp; !event.card.hasTrait('courtier')
+                event.player === context.player &amp;&amp; event.card.type === CardType.Character &amp;&amp; !event.card.hasTrait(Trait.Courtier)
         },
         message: (effectContext) =&gt; msg`${effectContext.source} loses 1 honor due to ${context.player}`,
         multipleTrigger: true,
@@ -3666,7 +3665,7 @@ playerLastingEffect((context) =&gt; ({
       <li>A single string is matched with <code>String.includes</code>, i.e. as a substring; pass an array to match whole traits.</li>
     </ul>
     <pre><code>this.persistentEffect({
-    effect: satisfyAffinity(['air'])
+    effect: satisfyAffinity([Trait.Air])
 });</code></pre>
     <p class="seen">Not used by any card yet.</p>
   </div>

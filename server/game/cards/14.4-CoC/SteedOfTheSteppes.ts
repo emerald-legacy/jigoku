@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { addTrait } from '../../effects.js';
@@ -8,7 +9,7 @@ class SteedOfTheSteppes extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: addTrait('cavalry')
+            effect: addTrait(Trait.Cavalry)
         });
 
         this.action('Ready attached character')

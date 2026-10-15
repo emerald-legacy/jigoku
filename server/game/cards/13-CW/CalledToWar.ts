@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { placeFate } from '../../GameActions/GameActions.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, Trait } from '../../Constants.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
 
 class CalledToWar extends DrawCard {
@@ -14,7 +14,7 @@ class CalledToWar extends DrawCard {
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('bushi')
+                cardCondition: (card) => card.hasTrait(Trait.Bushi)
             }, placeFate())
             .target({
                 name: 'oppCharacter',
@@ -22,7 +22,7 @@ class CalledToWar extends DrawCard {
                 cardType: CardType.Character,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (card, context) => Boolean(card.hasTrait('bushi') && context.costs.honorTakenFromOpponent)
+                cardCondition: (card, context) => Boolean(card.hasTrait(Trait.Bushi) && context.costs.honorTakenFromOpponent)
             }, placeFate())
             .chatText((context) => msg`place a fate on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate on ' + name)}`);
     }

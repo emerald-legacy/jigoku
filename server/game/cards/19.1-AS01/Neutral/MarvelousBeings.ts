@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { changePlayerSkillModifier } from '../../../effects.js';
-import { CardType, ConflictType, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MarvelousBeings extends DrawCard {
@@ -14,7 +14,7 @@ export default class MarvelousBeings extends DrawCard {
             .cost(costs.moveToConflict({
                 cardType: CardType.Character,
                 cardCondition: (card) =>
-                    card.type === CardType.Character && (card.hasTrait('spirit') || card.hasTrait('creature'))
+                    card.type === CardType.Character && (card.hasTrait(Trait.Spirit) || card.hasTrait(Trait.Creature))
             }))
             .playerLastingEffect((context) => ({
                 target: Players.Self,

@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { msg } from '../../GameChat.js';
@@ -8,7 +9,7 @@ class IkomaTsanuri extends DrawCard {
     setupCardAbilities() {
         this.action('Give your characters +1/+1')
             .condition((context) => context.source.isParticipating() &&
-                                  context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait('bushi')).length > 2)
+                                  context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait(Trait.Bushi)).length > 2)
             .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => card.isParticipating()),
                 effect: modifyBothSkills(1)

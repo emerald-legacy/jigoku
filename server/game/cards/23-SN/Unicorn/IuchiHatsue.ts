@@ -1,7 +1,7 @@
 import { modifyBothSkills } from '../../../effects.js';
 import { joint, moveToConflict, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType } from '../../../Constants.js';
+import { Players, CardType, Trait } from '../../../Constants.js';
 import { msg } from '../../../GameChat.js';
 
 export default class IuchiHatsue extends DrawCard {
@@ -13,7 +13,7 @@ export default class IuchiHatsue extends DrawCard {
                 if(!context.game.currentConflict) {
                     return false;
                 }
-                return context.game.currentConflict.getNumberOfParticipantsFor(context.player, (card) => card.type === CardType.Character && card.hasTrait('creature')) > 0;
+                return context.game.currentConflict.getNumberOfParticipantsFor(context.player, (card) => card.type === CardType.Character && card.hasTrait(Trait.Creature)) > 0;
             },
             effect: modifyBothSkills(2)
         });

@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { switchBaseSkills } from '../../effects.js';
@@ -8,7 +9,7 @@ class NaturalNegotiator extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'courtier',
+            trait: Trait.Courtier,
             myControl: true
         });
 

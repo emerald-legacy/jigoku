@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { doesNotBow } from '../../effects.js';
 
@@ -8,7 +9,7 @@ class MatsuGohei extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking() &&
                             context.player.cardsInPlay
-                                .filter((card) => card.hasTrait('bushi') &&
+                                .filter((card) => card.hasTrait(Trait.Bushi) &&
                                     card !== context.source &&
                                     card.isAttacking()).length >= 2,
 

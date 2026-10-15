@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, moveCard, multiple, noAction } from '../../../GameActions/GameActions.js';
-import { ConflictType, DeckType, Location, Players, RemainingCards } from '../../../Constants.js';
+import { ConflictType, DeckType, Location, Players, RemainingCards, Trait } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import { msg } from '../../../GameChat.js';
 
@@ -19,7 +19,7 @@ export default class OpportunisticRustler extends DrawCard {
                 player: Players.Self,
                 deck: DeckType.Dynasty,
                 remainingCards: RemainingCards.BottomRandom,
-                message: (context, cards) => cards[0].hasTrait('cavalry')
+                message: (context, cards) => cards[0].hasTrait(Trait.Cavalry)
                     ? msg`${context.player} removes ${cards} from the game and gives ${context.source} +${cards[0].getTraits().size}${'military'}`
                     : msg`${context.player} puts ${cards} faceup into the attacked province and gives ${context.source} +${cards[0].getTraits().size}${'military'}`,
                 gameAction: multiple((context) => {
@@ -35,7 +35,7 @@ export default class OpportunisticRustler extends DrawCard {
                         effect: modifyMilitarySkill(numberOfTraits)
                     })));
 
-                    if(selected.hasTrait('cavalry')) {
+                    if(selected.hasTrait(Trait.Cavalry)) {
                         gameActions.push(moveCard({ target: selected, destination: Location.RemovedFromGame }));
                     } else {
                         gameActions.push(moveCard({ target: selected, faceup: true, destination: context.game.currentConflict.declaredProvince?.location }));

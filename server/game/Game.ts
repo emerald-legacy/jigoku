@@ -45,7 +45,7 @@ import type { MenuArg, Step } from './gamesteps/Step.js';
 import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 
-import { type AbilityType, EventName, Location, ConflictType, Element, type Players, type Phase, RestrictionType } from './Constants.js';
+import { type AbilityType, EventName, Location, ConflictType, Element, type Players, type Phase, RestrictionType, type Trait } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import type { ChoiceWindow } from './TriggeredAbility.js';
 import { rulesFor, type GameRules } from './GameRules.js';
@@ -396,7 +396,7 @@ export class Game {
     /**
      * Returns if a card is in play (characters, attachments, provinces, holdings) that has the passed trait
      */
-    isTraitInPlay(trait: string): boolean {
+    isTraitInPlay(trait: Trait): boolean {
         return this.getPlayers().some((player) => player.isTraitInPlay(trait));
     }
 

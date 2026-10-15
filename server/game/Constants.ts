@@ -13,6 +13,7 @@ export { EventName } from './Constants/EventName.js';
 export { AbilityType } from './Constants/AbilityType.js';
 export { DuelType } from './Constants/DuelType.js';
 export { Element } from './Constants/Element.js';
+export { Trait, elementTrait } from './Constants/Trait.js';
 export { ConflictType } from './Constants/ConflictType.js';
 export { TokenType } from './Constants/TokenType.js';
 export { FavorType } from './Constants/FavorType.js';

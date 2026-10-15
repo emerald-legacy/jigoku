@@ -3,7 +3,7 @@ import DrawCard from '../../../DrawCard.js';
 import * as costs from '../../../costs/index.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { Location } from '../../../Constants.js';
+import { Location, Trait } from '../../../Constants.js';
 import type BaseCard from '../../../BaseCard.js';
 
 export default class PurveyorOfRarities extends DrawCard {
@@ -28,7 +28,7 @@ export default class PurveyorOfRarities extends DrawCard {
             return false;
         }
         const card = Array.isArray(discarded) ? discarded[0] : discarded;
-        return card.hasSomeTrait('gaijin', 'foreign') || this.isOutOfClan(card);
+        return card.hasTrait(Trait.Foreign) || this.isOutOfClan(card);
     }
 
     private isOutOfClan(card: BaseCard): boolean {

@@ -7,7 +7,7 @@ import DrawCard from '../../../server/game/DrawCard.js';
 import { StrongholdCard } from '../../../server/game/StrongholdCard.js';
 import { Event } from '../../../server/game/Events/Event.js';
 import { TriggeredAbility } from '../../../server/game/TriggeredAbility.js';
-import { AbilityType, CardType, EventName } from '../../../server/game/Constants.js';
+import { AbilityType, CardType, EventName, Trait } from '../../../server/game/Constants.js';
 import type Game from '../../../server/game/Game.js';
 import type Player from '../../../server/game/Player.js';
 import { createTestCharacter, createTestGame, testPlayer } from '../../helpers/fixtures.js';
@@ -120,7 +120,7 @@ describe('CardAbility displayMessage', function () {
             eventToCancel = new DrawCard(testPlayer(game, 'player2'), { id: 'event-to-cancel', name: 'Event To Cancel', type: CardType.Event });
             const ability = new TriggeredAbility(source, AbilityType.WouldInterrupt, {
                 when: { onCardAbilityInitiated: () => true },
-                cost: costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }),
+                cost: costs.dishonor({ cardCondition: (card) => card.hasTrait(Trait.Courtier) }),
                 chatText: 'cancel {1}',
                 chatTextArgs: (context) => context.event.card
             });

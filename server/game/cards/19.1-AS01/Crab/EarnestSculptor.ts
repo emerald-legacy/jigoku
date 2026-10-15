@@ -1,6 +1,6 @@
 import { reduceNextPlayedCardCost } from '../../../effects.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
-import { CardType, Location } from '../../../Constants.js';
+import { CardType, Location, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
 import { msg } from '../../../GameChat.js';
@@ -12,7 +12,7 @@ export default class EarnestSculptor extends DrawCard {
         this.action('Search top 8 card for a spell')
             .deckSearch({
                 cardsToLookAt: 8,
-                cardCondition: (card) => card.hasTrait('spell'),
+                cardCondition: (card) => card.hasTrait(Trait.Spell),
                 gameAction: moveCard({
                     destination: Location.Hand
                 })
@@ -24,7 +24,7 @@ export default class EarnestSculptor extends DrawCard {
                 onCardPlayed: (event, context) =>
                     event.card.type === CardType.Event &&
                     event.player === context.player &&
-                    event.card.hasTrait('jade') &&
+                    event.card.hasTrait(Trait.Jade) &&
                     event.context !== undefined &&
                     event.context.ability.getReducedCost(event.context) > 0,
                 onAbilityResolverInitiated: (event, context) =>
@@ -32,7 +32,7 @@ export default class EarnestSculptor extends DrawCard {
                     (event.context.source.type === CardType.Attachment ||
                         event.context.ability instanceof PlayAttachmentAction) &&
                     event.context.player === context.player &&
-                    event.context.source.hasTrait('jade') &&
+                    event.context.source.hasTrait(Trait.Jade) &&
                     event.context.ability.getReducedCost(event.context) > 0
             })
             .playerLastingEffect((context) => ({

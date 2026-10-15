@@ -1,6 +1,6 @@
 import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType } from '../../Constants.js';
+import { Location, CardType, Trait } from '../../Constants.js';
 
 class SeppunIshikawa extends DrawCard {
     static id = 'seppun-ishikawa';
@@ -13,7 +13,7 @@ class SeppunIshikawa extends DrawCard {
 
     getImperialCardsInPlay(source: DrawCard) {
         return this.game.allCards.reduce((sum, card) => {
-            if(card !== source && card.controller === source.controller && card.hasTrait('imperial') && card.isFaceup() &&
+            if(card !== source && card.controller === source.controller && card.hasTrait(Trait.Imperial) && card.isFaceup() &&
                 (card.location === Location.PlayArea || (card.isProvinceCard() && !card.isBroken) ||
                 (card.isInProvince() && card.type === CardType.Holding))) {
                 return sum + 1;

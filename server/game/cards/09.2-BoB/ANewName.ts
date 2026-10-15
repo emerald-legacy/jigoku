@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { addTrait } from '../../effects.js';
 
@@ -7,8 +8,8 @@ class ANewName extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: [
-                addTrait('courtier'),
-                addTrait('bushi')
+                addTrait(Trait.Courtier),
+                addTrait(Trait.Bushi)
             ]
         });
     }

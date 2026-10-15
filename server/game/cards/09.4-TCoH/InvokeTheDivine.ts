@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { playCard, selectCard } from '../../GameActions/GameActions.js';
 
-import { Location, Players } from '../../Constants.js';
+import { Location, Players, Trait } from '../../Constants.js';
 
 class InvokeTheDivine extends DrawCard {
     static id = 'invoke-the-divine';
@@ -10,7 +10,7 @@ class InvokeTheDivine extends DrawCard {
         const getSelectCardAction = (fate: number, spellsCast: number) => selectCard({
             location: Location.Hand,
             controller: Players.Self,
-            cardCondition: (card) => card.isDrawCard() && card.hasTrait('spell') && (card.getCost() ?? 0) <= fate,
+            cardCondition: (card) => card.isDrawCard() && card.hasTrait(Trait.Spell) && (card.getCost() ?? 0) <= fate,
             optional: spellsCast > 0,
             gameAction: playCard((invokeContext) => ({
                 resetOnCancel: true,

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { joint, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 
 class AkodoReserveCompany extends DrawCard {
@@ -7,7 +7,7 @@ class AkodoReserveCompany extends DrawCard {
 
     setupCardAbilities() {
         this.action('Bow an attacking character')
-            .condition((context) => context.game.isTraitInPlay('battlefield'))
+            .condition((context) => context.game.isTraitInPlay(Trait.Battlefield))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller === context.player

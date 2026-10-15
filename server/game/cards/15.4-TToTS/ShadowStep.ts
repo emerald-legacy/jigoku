@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, CharacterStatus, Players } from '../../Constants.js';
+import { CardType, CharacterStatus, Players, Trait } from '../../Constants.js';
 import { removeFromGame } from '../../GameActions/GameActions.js';
 
 class ShadowStep extends DrawCard {
@@ -9,14 +9,14 @@ class ShadowStep extends DrawCard {
         this.action('Remove a character from the game and put it into play')
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => !card.hasTrait('mythic'),
+                cardCondition: (card) => !card.hasTrait(Trait.Mythic),
                 controller: Players.Self
             }, removeFromGame((context) => ({
                 target: context.target
             })))
             .chatText('remove {0} from the game, then put it back into play')
             .afterwards()
-            .if((context) => !!context.target?.hasTrait('shadow'))
+            .if((context) => !!context.target?.hasTrait(Trait.Shadow))
             .putIntoPlay((context) => ({ target: context.target }))
             .otherwise()
             .putIntoPlay((context) => ({ target: context.target, status: CharacterStatus.Dishonored }));

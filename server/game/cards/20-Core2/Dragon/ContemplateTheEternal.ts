@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -13,7 +13,7 @@ export default class ContemplateTheEternal extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) =>
-                    !card.bowed && !card.attachments.some((attachment) => !attachment.hasTrait('tattoo'))
+                    !card.bowed && !card.attachments.some((attachment) => !attachment.hasTrait(Trait.Tattoo))
             }, placeFate((context) => ({
                 amount: context.costs.returnedRings ? context.costs.returnedRings.length : 1
             })));

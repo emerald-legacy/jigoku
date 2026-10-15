@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
 import { cardLastingEffect, ready, sequential } from '../../GameActions/GameActions.js';
 
@@ -11,7 +11,7 @@ class WayOfTheWarrior extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Bushi)
             }, sequential([
                 cardLastingEffect((context) => ({
                     effect: [

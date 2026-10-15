@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
-import { CardType, ConflictType, SkillType } from '../../Constants.js';
+import { CardType, ConflictType, SkillType, Trait } from '../../Constants.js';
 import { delayedEffect } from '../../effects.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
 
@@ -10,7 +10,7 @@ class Castigated extends DrawCard {
     static id = 'castigated';
 
     setupCardAbilities() {
-        this.playOnlyIf((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait('imperial')));
+        this.playOnlyIf((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait(Trait.Imperial)));
 
         this.whileAttached({
             effect: delayedEffect({

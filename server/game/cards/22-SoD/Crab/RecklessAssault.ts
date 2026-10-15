@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import { msg } from '../../../GameChat.js';
 import { cannotBeDeclaredAsDefender } from '../../../effects.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -10,7 +11,7 @@ export default class RecklessAssault extends DrawCard {
     setupCardAbilities() {
         this.reaction('Force defenders')
             .when({
-                onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, 'berserker')
+                onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, Trait.Berserker)
             })
             .cardLastingEffect((context) => ({
                 target: this.getCharacters(context),

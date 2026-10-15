@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, TargetMode } from '../../Constants.js';
+import { Players, CardType, TargetMode, Trait } from '../../Constants.js';
 import { sendHome } from '../../GameActions/GameActions.js';
 
 class SmokeAndMirrors extends DrawCard {
@@ -13,7 +13,7 @@ class SmokeAndMirrors extends DrawCard {
                 activePromptTitle: 'Choose characters',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('shinobi') && card.isAttacking()
+                cardCondition: (card) => card.hasTrait(Trait.Shinobi) && card.isAttacking()
             }, sendHome());
     }
 }

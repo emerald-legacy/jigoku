@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
-import { Location, CardType, TargetMode } from '../../Constants.js';
+import { Location, CardType, TargetMode, Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { bow } from '../../GameActions/GameActions.js';
 
@@ -15,7 +15,7 @@ class AkodoMastermind extends DrawCard {
                 cardType: [CardType.Event, CardType.Character, CardType.Attachment],
                 location: Location.ConflictDiscardPile,
                 mode: TargetMode.Unlimited,
-                cardCondition: (card) => card.hasTrait('tactic')
+                cardCondition: (card) => card.hasTrait(Trait.Tactic)
             }))
             .target({
                 cardType: CardType.Character,
@@ -28,7 +28,7 @@ class AkodoMastermind extends DrawCard {
         if(removed) {
             return Array.isArray(removed) ? removed.length : 1;
         }
-        return player.conflictDiscardPile.filter((card) => card.hasTrait('tactic')).length;
+        return player.conflictDiscardPile.filter((card) => card.hasTrait(Trait.Tactic)).length;
     }
 }
 

@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, CharacterStatus, Players } from '../../../Constants.js';
+import { CardType, CharacterStatus, Players, Trait } from '../../../Constants.js';
 import { conditional, draw, moveStatusToken, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,7 +15,7 @@ export default class WhiteLotusMethod extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move a status token')
-            .condition((context) => context.player.cardsInPlay.some((card) => card.hasTrait('courtier')))
+            .condition((context) => context.player.cardsInPlay.some((card) => card.hasTrait(Trait.Courtier)))
             .tokenTarget({
                 name: TOKEN,
                 activePromptTitle: 'Choose the status token to move',

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { putIntoPlay } from '../../GameActions/GameActions.js';
-import { CardType, Players, Location } from '../../Constants.js';
+import { CardType, Players, Location, Trait } from '../../Constants.js';
 
 class UnifiedCompany extends DrawCard {
     static id = 'unified-company';
@@ -20,7 +20,7 @@ class UnifiedCompany extends DrawCard {
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
                 cardCondition: (card) => {
-                    return card.hasTrait('bushi') &&
+                    return card.hasTrait(Trait.Bushi) &&
                         card.costLessThan(3) &&
                         !card.isUnique();
                 },

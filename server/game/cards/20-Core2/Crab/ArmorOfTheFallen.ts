@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, TargetMode } from '../../../Constants.js';
+import { CardType, Location, TargetMode, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { gainAbility } from '../../../effects.js';
 import { bow } from '../../../GameActions/GameActions.js';
@@ -9,7 +9,7 @@ export default class ArmorOfTheFallen extends DrawCard {
     static id = 'armor-of-the-fallen';
 
     public setupCardAbilities() {
-        this.attachmentConditions({ trait: 'bushi' });
+        this.attachmentConditions({ trait: Trait.Bushi });
 
         this.whileAttached({
             effect: gainAbility.conflictAction('Remove characters from your discard pile to bow a character', (ability) => ability

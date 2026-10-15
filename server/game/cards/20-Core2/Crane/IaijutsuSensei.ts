@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { DuelType } from '../../../Constants.js';
+import { DuelType, Trait } from '../../../Constants.js';
 import { cannotContribute, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,7 +9,7 @@ export default class IaijutsuSensei extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.source.attachments.filter((card) => card.hasTrait('weapon')).length === 1,
+            condition: (context) => context.source.attachments.filter((card) => card.hasTrait(Trait.Weapon)).length === 1,
             effect: modifyBothSkills(1)
         });
 

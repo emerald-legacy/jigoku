@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 import { gainAbility } from '../../../effects.js';
@@ -9,7 +10,7 @@ class TwinSisterBlades extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.conflictAction('Draw cards', (ability) => ability
-                .condition((context) => context.source.hasTrait('bushi'))
+                .condition((context) => context.source.hasTrait(Trait.Bushi))
                 .draw((context) => ({
                     amount: this.getNumberOfCards(context)
                 }))
@@ -18,7 +19,7 @@ class TwinSisterBlades extends DrawCard {
     }
 
     private getNumberOfCards(context: AbilityContext) {
-        if(context.source.hasTrait('duelist') && context.game.requireConflict().hasMoreParticipants(context.player.opponent)) {
+        if(context.source.hasTrait(Trait.Duelist) && context.game.requireConflict().hasMoreParticipants(context.player.opponent)) {
             return 2;
         }
         return 1;

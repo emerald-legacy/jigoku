@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { atEndOfConflict, discardStatusToken, honor, multiple } from '../../GameActions/GameActions.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class PurityOfSpirit extends DrawCard {
     static id = 'purity-of-spirit';
@@ -10,7 +10,7 @@ class PurityOfSpirit extends DrawCard {
         this.action('Choose a bushi character to honor')
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('bushi') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && card.isParticipating()
             }, multiple([
                 honor(),
                 atEndOfConflict((context) => ({

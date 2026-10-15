@@ -1,6 +1,6 @@
 import { reduceCost } from '../../../effects.js';
 import { returnToHand } from '../../../GameActions/GameActions.js';
-import { Location, Players } from '../../../Constants.js';
+import { Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class PromisingHohei extends DrawCard {
@@ -23,7 +23,7 @@ export default class PromisingHohei extends DrawCard {
             })
             .target({
                 controller: Players.Self,
-                cardCondition: (card) => card.name !== 'Promising Hohei' && card.hasTrait('follower')
+                cardCondition: (card) => card.name !== 'Promising Hohei' && card.hasTrait(Trait.Follower)
             }, returnToHand());
     }
 }

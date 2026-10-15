@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { alternateFatePool } from '../../effects.js';
 
@@ -7,7 +8,7 @@ class StudentOfEsoterica extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: alternateFatePool((card) => {
-                if(card.hasTrait('spell')) {
+                if(card.hasTrait(Trait.Spell)) {
                     return this;
                 }
                 return false;

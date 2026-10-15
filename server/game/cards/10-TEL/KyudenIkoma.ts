@@ -1,4 +1,4 @@
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { bow } from '../../GameActions/GameActions.js';
@@ -17,7 +17,7 @@ export default class KyudenIkoma extends StrongholdCard {
             .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => !card.hasTrait('champion'),
+                cardCondition: (card) => !card.hasTrait(Trait.Champion),
                 activePromptTitle: 'Bow a non-champion'
             }, bow())
             .chatText('bow {0}');

@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { multiple, sendHome, takeFate } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -25,7 +25,7 @@ export default class MangroveSafehouse extends DrawCard {
     }
 
     private targetIsMantis(context: AbilityContext): boolean {
-        return context.target?.hasTrait('mantis-clan') ?? false;
+        return context.target?.hasTrait(Trait.MantisClan) ?? false;
     }
 
     private opponentHasFateToBeStolen(context: AbilityContext): boolean {

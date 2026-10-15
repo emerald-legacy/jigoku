@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import { addTrait, additionalAction } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
+import { Duration, Trait } from '../../Constants.js';
 
 class HawkTattoo extends DrawCard {
     static id = 'hawk-tattoo';
@@ -12,7 +12,7 @@ class HawkTattoo extends DrawCard {
         });
 
         this.whileAttached({
-            effect: addTrait('tattooed')
+            effect: addTrait(Trait.Tattooed)
         });
 
         this.reaction('Move attached character to the conflict')
@@ -22,9 +22,9 @@ class HawkTattoo extends DrawCard {
             .moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] }))
             .playerLastingEffect((context) => ({
                 duration: Duration.UntilPassPriority,
-                effect: context.source.parentCharacter?.hasTrait('monk') ? additionalAction() : []
+                effect: context.source.parentCharacter?.hasTrait(Trait.Monk) ? additionalAction() : []
             }))
-            .chatText((context) => msg`move ${context.source.parentCharacter} into the conflict${context.source.parentCharacter?.hasTrait('monk') ? ' and take an additional action' : ''}`);
+            .chatText((context) => msg`move ${context.source.parentCharacter} into the conflict${context.source.parentCharacter?.hasTrait(Trait.Monk) ? ' and take an additional action' : ''}`);
     }
 }
 

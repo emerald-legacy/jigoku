@@ -1,6 +1,6 @@
 import { perConflict } from '../../../AbilityLimit.js';
 import { sendHome } from '../../../GameActions/GameActions.js';
-import { CardType, Element, TargetMode } from '../../../Constants.js';
+import { CardType, TargetMode, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
@@ -21,7 +21,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
             }, sendHome())
             .max(perConflict(1))
             .afterwards()
-            .onAffinity(Element.Fire)
+            .onAffinity(Trait.Fire)
             .gainHonor(1);
     }
 }

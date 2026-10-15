@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import { honor } from '../../GameActions/GameActions.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardType, EventName, Players } from '../../Constants.js';
+import { CardType, EventName, Players, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -26,7 +26,7 @@ export default class HonoredVeterans extends DrawCard {
                 controller: Players.Self,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && this.wasCharacterPlayedThisPhase(card)
             }, honor())
             .target({
                 name: 'oppCharacter',
@@ -35,7 +35,7 @@ export default class HonoredVeterans extends DrawCard {
                 controller: Players.Opponent,
                 optional: true,
                 hideIfNoLegalTargets: true,
-                cardCondition: (card) => card.hasTrait('bushi') && this.wasCharacterPlayedThisPhase(card)
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && this.wasCharacterPlayedThisPhase(card)
             }, honor())
             .chatText((context) => msg`honor ${this.getCharacters(context)}`);
     }
@@ -52,7 +52,7 @@ export default class HonoredVeterans extends DrawCard {
 
     private canBePlayed(): boolean {
         for(const card of this.charactersPlayedThisPhase) {
-            if(card.hasTrait('bushi')) {
+            if(card.hasTrait(Trait.Bushi)) {
                 return true;
             }
         }

@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, gainHonor, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 
 export default class TwoFoldedVirtue extends DrawCard {
     static id = 'two-folded-virtue';
@@ -12,7 +12,7 @@ export default class TwoFoldedVirtue extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('scout'))
+                cardCondition: (card) => card.isParticipating() && (card.hasTrait(Trait.Bushi) || card.hasTrait(Trait.Scout))
             }, multiple([
                 cardLastingEffect((context) => ({
                     effect: modifyMilitarySkill(2),

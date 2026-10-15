@@ -1,4 +1,4 @@
-import { AbilityType, CardType, ConflictType } from '../../../Constants.js';
+import { AbilityType, CardType, ConflictType, Trait } from '../../../Constants.js';
 import { gainAbility } from '../../../effects.js';
 import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -8,7 +8,7 @@ export default class MagariYari extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            match: (card) => card.hasTrait('bushi'),
+            match: (card) => card.hasTrait(Trait.Bushi),
             effect: gainAbility<DrawCard>(AbilityType.Reaction, {
                 title: 'Bow a character',
                 when: {

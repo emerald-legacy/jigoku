@@ -10,7 +10,7 @@ import {
     selectCards,
     sequential
 } from '../../GameActions/GameActions.js';
-import { CardType, Players, TargetMode } from '../../Constants.js';
+import { CardType, Players, TargetMode, Trait } from '../../Constants.js';
 
 class PrepareForWar extends DrawCard {
     static id = 'prepare-for-war';
@@ -38,12 +38,12 @@ class PrepareForWar extends DrawCard {
                     ];
                 }),
                 honor((context) => ({
-                    target: context.target?.hasTrait('commander') ? context.target : []
+                    target: context.target?.hasTrait(Trait.Commander) ? context.target : []
                 }))
             ]))
             .chatText((context) => {
                 const target = context.target;
-                const isCommander = target.hasTrait('commander');
+                const isCommander = target.hasTrait(Trait.Commander);
                 const hasAttachments = target.attachments.length > 0;
                 const hasToken = target.isDishonored || target.isHonored;
                 let discardMessage = '';

@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { attach, selectCard } from '../../../GameActions/GameActions.js';
 import { CardSelector } from '../../../CardSelector.js';
-import { Location, Players, CardType } from '../../../Constants.js';
+import { Location, Players, CardType, Trait } from '../../../Constants.js';
 
 export default class TimeForWar2 extends DrawCard {
     static id = 'time-for-war-evolved';
@@ -16,7 +16,7 @@ export default class TimeForWar2 extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('bushi')
+                cardCondition: (card) => card.hasTrait(Trait.Bushi)
             }, selectCard((context) => ({
                 activePromptTitle: 'Choose an attachment',
                 selector: CardSelector.for({

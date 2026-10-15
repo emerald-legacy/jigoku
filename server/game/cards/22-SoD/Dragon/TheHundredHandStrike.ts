@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -22,7 +22,7 @@ export default class TheHundredHandStrike extends DrawCard {
                 name: 'puncher',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
             })
             .target({
                 name: 'punchee',
@@ -36,7 +36,7 @@ export default class TheHundredHandStrike extends DrawCard {
             }))
             .chatText((context) => msg`give ${context.targets.punchee} ${penalty(context)}${'military'} and ${penalty(context)}${'political'}`)
             .max(perConflict(1))
-            .afterwardsIf((context) => context.targets.puncher.hasTrait('tattooed') &&
+            .afterwardsIf((context) => context.targets.puncher.hasTrait(Trait.Tattooed) &&
                 context.game.currentConflict !== null &&
                 context.game.currentConflict.calculateSkillFor([context.targets.punchee]) === 0)
             .injure((context) => ({ target: context.targets.punchee }))

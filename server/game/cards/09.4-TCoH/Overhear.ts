@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import { lookAt, moveCard, multiple, takeHonor } from '../../GameActions/GameActions.js';
-import { Location, ConflictType } from '../../Constants.js';
+import { Location, ConflictType, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/random.js';
 
@@ -27,7 +27,7 @@ export default class Overhear extends DrawCard {
             .mayResolveAgain({
                 cost: takeHonor((context) => ({ target: context.player })),
                 label: 'Give 1 honor',
-                condition: (context) => !!context.game.currentConflict?.getCharacters(context.player).some((card) => card.hasTrait('courtier'))
+                condition: (context) => !!context.game.currentConflict?.getCharacters(context.player).some((card) => card.hasTrait(Trait.Courtier))
             });
     }
 }

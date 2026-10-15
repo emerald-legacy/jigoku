@@ -19,6 +19,7 @@ import { switchAttachmentSkillModifiers } from './Effects/Library/switchAttachme
 import { takeControl } from './Effects/Library/takeControl.js';
 import { EffectName, PlayType, CardType, Players, RestrictionType, RestrictionScope } from './Constants.js';
 import type { Location } from './Constants.js';
+import type { traitLimit } from './Interfaces.js';
 import type DrawCard from './DrawCard.js';
 import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
@@ -34,7 +35,7 @@ import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { Conflict } from './Conflict.js';
 import type { Faction } from './BaseCard.js';
 import type { Duel } from './Duel.js';
-import type { CharacterStatus, ConflictType, Element, SkillType } from './Constants.js';
+import type { CharacterStatus, ConflictType, Element, SkillType, Trait } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
 import type {
     AbilityLimitIncrease,
@@ -67,7 +68,7 @@ export const Effects = {
     addFaction: (faction: Faction) => EffectBuilder.card.static(EffectName.AddFaction, faction),
     loseFaction: (faction: string) => EffectBuilder.card.static(EffectName.LoseFaction, faction),
     addKeyword: (keyword: string) => EffectBuilder.card.static(EffectName.AddKeyword, keyword),
-    addTrait: (trait: string) => EffectBuilder.card.static(EffectName.AddTrait, trait),
+    addTrait: (trait: Trait) => EffectBuilder.card.static(EffectName.AddTrait, trait),
     additionalTriggerCostForCard: (func: EffectValueMap[EffectName.AdditionalTriggerCost]) => EffectBuilder.card.static(EffectName.AdditionalTriggerCost, func),
     attachmentCardCondition: (func: (card: DrawCard) => boolean) => EffectBuilder.card.static(EffectName.AttachmentCardCondition, func),
     attachmentFactionRestriction: (factions: Faction[]) =>
@@ -75,9 +76,9 @@ export const Effects = {
     attachmentLimit: (amount: number) => EffectBuilder.card.static(EffectName.AttachmentLimit, amount),
     attachmentMyControlOnly: () => EffectBuilder.card.static(EffectName.AttachmentMyControlOnly, true),
     attachmentOpponentControlOnly: () => EffectBuilder.card.static(EffectName.AttachmentOpponentControlOnly, true),
-    attachmentRestrictTraitAmount: (object: Record<string, number>) =>
+    attachmentRestrictTraitAmount: (object: traitLimit) =>
         EffectBuilder.card.static(EffectName.AttachmentRestrictTraitAmount, object),
-    attachmentTraitRestriction: (traits: string[]) => EffectBuilder.card.static(EffectName.AttachmentTraitRestriction, traits),
+    attachmentTraitRestriction: (traits: Trait[]) => EffectBuilder.card.static(EffectName.AttachmentTraitRestriction, traits),
     attachmentUniqueRestriction: () => EffectBuilder.card.static(EffectName.AttachmentUniqueRestriction, true),
     blank: (blankTraits: boolean = false) => EffectBuilder.card.static(EffectName.Blank, blankTraits),
     calculatePrintedMilitarySkill: (func: EffectValueMap[EffectName.CalculatePrintedMilitarySkill]) => EffectBuilder.card.static(EffectName.CalculatePrintedMilitarySkill, func),
@@ -321,7 +322,7 @@ export const Effects = {
                 player.addCostReducer(context.source, { amount: amount, match: match, limit: AbilityLimit.fixed(1) }),
             unapply: (player, _context, reducer) => player.removeCostReducer(reducer)
         }),
-    satisfyAffinity: (traits: string | string[]) => EffectBuilder.player.static(EffectName.SatisfyAffinity, traits),
+    satisfyAffinity: (traits: Trait | Trait[]) => EffectBuilder.player.static(EffectName.SatisfyAffinity, traits),
     setConflictDeclarationType: (type: ConflictType) => EffectBuilder.player.static(EffectName.SetConflictDeclarationType, type),
     provideConflictDeclarationType: (type: ConflictType) =>
         EffectBuilder.player.static(EffectName.ProvideConflictDeclarationType, type),

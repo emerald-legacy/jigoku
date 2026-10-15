@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, ConflictType } from '../../../Constants.js';
+import { CardType, ConflictType, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { unlimited } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
@@ -25,7 +25,7 @@ export default class JadeInfusedArrows extends DrawCard {
             (card) =>
                 card.type === CardType.Character &&
                 card.isParticipating() &&
-                (card.isTainted || card.hasTrait('shadowlands'))
+                (card.isTainted || card.hasTrait(Trait.Shadowlands))
         ) ?? false;
     }
 

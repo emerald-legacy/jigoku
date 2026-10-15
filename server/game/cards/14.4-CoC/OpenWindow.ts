@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, Trait } from '../../Constants.js';
 import { moveToConflict } from '../../GameActions/GameActions.js';
 
 class OpenWindow extends DrawCard {
@@ -10,7 +10,7 @@ class OpenWindow extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('shinobi')
+                cardCondition: (card) => card.hasTrait(Trait.Shinobi)
             }, moveToConflict());
     }
 }

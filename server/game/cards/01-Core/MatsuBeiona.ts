@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 class MatsuBeiona extends DrawCard {
@@ -9,7 +10,7 @@ class MatsuBeiona extends DrawCard {
                 onCharacterEntersPlay: (event, context) => (
                     event.card === context.source &&
                     context.player.cardsInPlay.filter((card) => (
-                        card.hasTrait('bushi') &&
+                        card.hasTrait(Trait.Bushi) &&
                         card !== context.source
                     )).length >= 3
                 )

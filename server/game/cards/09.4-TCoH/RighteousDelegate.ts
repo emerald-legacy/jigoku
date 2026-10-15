@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyBothSkills } from '../../effects.js';
@@ -16,11 +17,11 @@ class RighteousDelegate extends DrawCard {
                 return {
                     target: conflict
                         .getCharacters(context.player)
-                        .filter((card) => !card.hasTrait('bushi'))
+                        .filter((card) => !card.hasTrait(Trait.Bushi))
                         .concat(
                             conflict
                                 .getCharacters(context.player.opponent)
-                                .filter((card) => !card.hasTrait('bushi'))
+                                .filter((card) => !card.hasTrait(Trait.Bushi))
                         ),
                     effect: modifyBothSkills(1)
                 };
@@ -33,11 +34,11 @@ class RighteousDelegate extends DrawCard {
                 return {
                     target: conflict
                         .getCharacters(context.player)
-                        .filter((card) => card.hasTrait('bushi'))
+                        .filter((card) => card.hasTrait(Trait.Bushi))
                         .concat(
                             conflict
                                 .getCharacters(context.player.opponent)
-                                .filter((card) => card.hasTrait('bushi'))
+                                .filter((card) => card.hasTrait(Trait.Bushi))
                         ),
                     effect: modifyBothSkills(-1)
                 };

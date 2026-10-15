@@ -1,5 +1,5 @@
 import { addKeyword, statusTokensDoNotDecreaseSkill } from '../../../effects.js';
-import { Phase } from '../../../Constants.js';
+import { Phase, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TheLionsShadow extends DrawCard {
@@ -8,7 +8,7 @@ export default class TheLionsShadow extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { title: 1 },
-            trait: ['courtier', 'scout']
+            trait: [Trait.Courtier, Trait.Scout]
         });
 
         this.persistentEffect({

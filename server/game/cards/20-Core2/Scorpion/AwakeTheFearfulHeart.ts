@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect, onAffinity, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardType, RestrictionType, Element } from '../../../Constants.js';
+import { CardType, RestrictionType, Trait } from '../../../Constants.js';
 
 export default class AwakeTheFearfulHeart extends DrawCard {
     static id = 'awake-the-fearful-heart';
@@ -11,7 +11,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
         this.action('Move home each character without fate')
             .condition((context) =>
                 context.player.cardsInPlay.some(
-                    (card) => card.isParticipating() && card.hasTrait('shugenja')
+                    (card) => card.isParticipating() && card.hasTrait(Trait.Shugenja)
                 ))
             .gameAction(sequential([
                 sendHome((context) => ({
@@ -21,7 +21,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
                         ) ?? []
                 })),
                 onAffinity({
-                    trait: Element.Air,
+                    trait: Trait.Air,
                     gameAction: cardLastingEffect((context) => ({
                         target: context.game.findAnyCardsInPlay(
                             (card) => card.type === CardType.Character

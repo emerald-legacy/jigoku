@@ -1,6 +1,6 @@
 import { bow, sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class VoidFist extends DrawCard {
     static id = 'void-fist';
@@ -14,7 +14,7 @@ class VoidFist extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getCharacters(context.player).some((myCard) =>
-                        myCard.hasTrait('monk') && myCard.militarySkill >= card.militarySkill
+                        myCard.hasTrait(Trait.Monk) && myCard.militarySkill >= card.militarySkill
                     )
             }, bow(), sendHome())
             .chatText('bow {0} and send them home');

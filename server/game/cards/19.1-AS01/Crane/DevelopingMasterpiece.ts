@@ -1,4 +1,4 @@
-import { Location, Phase, PlayType } from '../../../Constants.js';
+import { Location, Phase, PlayType, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { canPlayFromOwn, cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,7 +14,7 @@ export default class DevelopingMasterpiece extends DrawCard {
 
         this.attachmentConditions({
             myControl: true,
-            cardCondition: (card) => card.hasTrait('courtier') || card.hasTrait('artisan') || card.isFaction('crane')
+            cardCondition: (card) => card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Artisan) || card.isFaction('crane')
         });
 
         this.whileAttached({

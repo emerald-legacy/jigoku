@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType, Players } from '../../Constants.js';
+import { Location, CardType, Players, Trait } from '../../Constants.js';
 import { putIntoProvince, selectCard } from '../../GameActions/GameActions.js';
 
 class TheRecedingTide extends DrawCard {
@@ -10,7 +10,7 @@ class TheRecedingTide extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 location: Location.PlayArea,
-                cardCondition: (card, context) => !card.hasTrait('mythic') && card.owner === context.player
+                cardCondition: (card, context) => !card.hasTrait(Trait.Mythic) && card.owner === context.player
             }, selectCard((context) => ({
                 targets: false,
                 cardType: CardType.Province,

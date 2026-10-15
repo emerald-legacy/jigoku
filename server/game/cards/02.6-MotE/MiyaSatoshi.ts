@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { Location, Players } from '../../Constants.js';
+import { Location, Players, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { placeInProvince } from '../../GameActions/GameActions.js';
 
@@ -10,7 +10,7 @@ class MiyaSatoshi extends DrawCard {
         this.action('Discard dynasty cards until you find an Imperial')
             .condition((context) => context.player.dynastyDeck.length > 0)
             .handler((context) => {
-                const firstImperial = context.player.dynastyDeck.find((card) => card.hasTrait('imperial'));
+                const firstImperial = context.player.dynastyDeck.find((card) => card.hasTrait(Trait.Imperial));
                 if(!firstImperial) {
                     this.game.addMessage(msg`${context.player} discards their entire dynasty deck: ${context.player.dynastyDeck.slice()}`);
                     context.player.dynastyDeck.forEach((card) => context.player.moveCard(card, Location.DynastyDiscardPile));

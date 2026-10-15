@@ -1,5 +1,5 @@
 import { putIntoConflict } from '../../../GameActions/GameActions.js';
-import { CardType, Location, Players, TargetMode, ConflictType } from '../../../Constants.js';
+import { CardType, Location, Players, TargetMode, ConflictType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CavalryReserves extends DrawCard {
@@ -16,7 +16,7 @@ export default class CavalryReserves extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('cavalry')
+                cardCondition: (card) => card.hasTrait(Trait.Cavalry)
             }, putIntoConflict());
     }
 }

@@ -1,6 +1,6 @@
 import { resolveAbility } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Blocker, Stage } from '../../Constants.js';
+import { CardType, Blocker, Stage, Trait } from '../../Constants.js';
 import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 class TheMirrorsGaze extends DrawCard {
@@ -9,7 +9,7 @@ class TheMirrorsGaze extends DrawCard {
     setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
-            trait: 'shugenja'
+            trait: Trait.Shugenja
         });
 
         this.reaction('Mirror an opponent\'s event')

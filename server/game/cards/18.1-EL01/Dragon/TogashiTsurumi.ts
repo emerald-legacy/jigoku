@@ -1,6 +1,6 @@
 import { modifyBothSkills } from '../../../effects.js';
 import { draw, multiple, placeCardUnderneath } from '../../../GameActions/GameActions.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { countCardsUnderneath, playableFromUnderneath } from '../../cardsUnderneath.js';
 import { msg } from '../../../GameChat.js';
@@ -13,7 +13,7 @@ export default class TogashiTsurumi extends DrawCard {
             effect: modifyBothSkills(() => countCardsUnderneath(this))
         });
 
-        this.persistentEffect(playableFromUnderneath(this, (card) => card.hasTrait('kiho')));
+        this.persistentEffect(playableFromUnderneath(this, (card) => card.hasTrait(Trait.Kiho)));
 
         this.action('Place a card underneath self')
             .target({

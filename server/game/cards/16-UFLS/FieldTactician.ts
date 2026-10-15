@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location, Players } from '../../Constants.js';
+import { CardType, Location, Players, Trait } from '../../Constants.js';
 import { handler } from '../../GameActions/GameActions.js';
 
 class FieldTactician extends DrawCard {
@@ -9,7 +9,7 @@ class FieldTactician extends DrawCard {
     setupCardAbilities() {
         this.reaction('Return a card to a deck')
             .when({
-                onCardPlayed: (event, context) => event.card.hasTrait('tactic') && event.player === context.player
+                onCardPlayed: (event, context) => event.card.hasTrait(Trait.Tactic) && event.player === context.player
             })
             .target({
                 activePromptTitle: 'Choose a conflict card',

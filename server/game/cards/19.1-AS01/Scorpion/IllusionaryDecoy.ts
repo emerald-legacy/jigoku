@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Trait, elementTrait } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import {
     noAction,
@@ -40,9 +40,9 @@ export default class IllusionaryDecoy extends DrawCard {
                 const matchShugenjaElementWithClaimedRing = context.source.controller.cardsInPlay.some(
                     (card) =>
                         card.type === CardType.Character &&
-                        card.hasTrait('shugenja') &&
+                        card.hasTrait(Trait.Shugenja) &&
                         claimedRings.some((ring) =>
-                            ring.getElements().some((element) => card.hasTrait(element))
+                            ring.getElements().some((element) => card.hasTrait(elementTrait(element)))
                         )
                 );
                 return matchShugenjaElementWithClaimedRing;

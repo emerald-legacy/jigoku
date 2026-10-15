@@ -1,4 +1,4 @@
-import { Element, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
+import { Element, Players, RestrictionType, RestrictionScope, Trait } from '../../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 import type { EffectFactory } from '../../../Effects/EffectBuilder.js';
 import { addTrait, immunity, playerCannot } from '../../../effects.js';
@@ -13,7 +13,7 @@ export default class JealousAncestor extends DrawCard {
     public setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
 
-        this.whileAttached({ effect: addTrait('shadowlands') });
+        this.whileAttached({ effect: addTrait(Trait.Shadowlands) });
         this.persistentEffect({
             condition: (context) => !!context.source.parentCharacter,
             effect: immunity({ appliesTo: RestrictionScope.Events })

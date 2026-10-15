@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, ConflictType } from '../../Constants.js';
+import { Players, CardType, ConflictType, Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { cannotTriggerAbilities } from '../../effects.js';
 import { bow, cardLastingEffect } from '../../GameActions/GameActions.js';
@@ -12,7 +12,7 @@ class HighKick extends DrawCard {
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .cost(costs.bow({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('monk') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait(Trait.Monk) && card.isParticipating()
             }))
             .target({
                 cardType: CardType.Character,

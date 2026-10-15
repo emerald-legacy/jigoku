@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,7 +13,7 @@ export default class ShibaBodyguard extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => !card.hasTrait('bushi')
+                cardCondition: (card) => !card.hasTrait(Trait.Bushi)
             }, placeFate((context) => ({
                 origin: context.player
             })))

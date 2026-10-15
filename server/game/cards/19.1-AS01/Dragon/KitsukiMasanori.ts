@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, DeckType, Duration, RestrictionType, RestrictionScope } from '../../../Constants.js';
+import { CardType, DeckType, Duration, RestrictionType, RestrictionScope, Trait } from '../../../Constants.js';
 import { cardCannot } from '../../../effects.js';
 import {
     attach,
@@ -20,7 +20,7 @@ function isSearchableCard(card: BaseCard, context: AbilityContext) {
     return (
         card.isDrawCard() &&
         card.type === CardType.Attachment &&
-        (card.hasTrait('title') || card.hasTrait('technique')) &&
+        (card.hasTrait(Trait.Title) || card.hasTrait(Trait.Technique)) &&
         card.costLessThan(2) &&
         card.canAttach(context.source)
     );

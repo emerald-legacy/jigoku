@@ -2,13 +2,13 @@ import { msg } from '../../../GameChat.js';
 import { cardCannot, delayedEffect, modifyMilitarySkill, setGlory } from '../../../effects.js';
 import { sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { ConflictType, RestrictionType } from '../../../Constants.js';
+import { ConflictType, RestrictionType, Trait } from '../../../Constants.js';
 
 export default class DeadEyes extends DrawCard {
     static id = 'dead-eyes';
 
     public setupCardAbilities() {
-        this.attachmentConditions({ trait: 'berserker' });
+        this.attachmentConditions({ trait: Trait.Berserker });
 
         this.whileAttached({
             effect: setGlory(0)

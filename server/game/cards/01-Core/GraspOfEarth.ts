@@ -1,4 +1,4 @@
-import { PlayType, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { PlayType, RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { cardCannot, playerCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
@@ -9,7 +9,7 @@ export default class GraspOfEarth extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
-            trait: 'shugenja'
+            trait: Trait.Shugenja
         });
 
         this.action('Opponent\'s cards cannot join this conflict')

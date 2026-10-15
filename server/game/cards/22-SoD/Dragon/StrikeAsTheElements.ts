@@ -1,7 +1,7 @@
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, claimRing } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardType, ConflictType, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Players, Trait } from '../../../Constants.js';
 import { msg } from '../../../GameChat.js';
 
 export default class StrikeAsTheElements extends DrawCard {
@@ -13,7 +13,7 @@ export default class StrikeAsTheElements extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             }))

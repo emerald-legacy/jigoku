@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
+import { Location, Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 
@@ -10,7 +10,7 @@ class ShosuroHametsu extends DrawCard {
         this.action('Search conflict deck for a poison card')
             .cost(costs.payHonor(1))
             .deckSearch({
-                cardCondition: (card) => card.hasTrait('poison'),
+                cardCondition: (card) => card.hasTrait(Trait.Poison),
                 gameAction: moveCard({
                     destination: Location.Hand
                 })

@@ -1,4 +1,4 @@
-import { CardType, Duration, Phase, RestrictionType } from '../../../Constants.js';
+import { CardType, Duration, Phase, RestrictionType, Trait } from '../../../Constants.js';
 import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -15,7 +15,7 @@ export default class ObstinateWitchHunter extends DrawCard {
                             card.type === CardType.Character &&
                             card.isFaceup() &&
                             card !== context.source &&
-                            (card.isTainted || card.hasTrait('shadowlands'))
+                            (card.isTainted || card.hasTrait(Trait.Shadowlands))
                     ).length > 0
             })
             .cardLastingEffect({

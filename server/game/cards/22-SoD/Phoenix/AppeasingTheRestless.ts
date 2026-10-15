@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { Players, CardType, RestrictionType, Element } from '../../../Constants.js';
+import { Players, CardType, RestrictionType, Trait } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import * as costs from '../../../costs/index.js';
 import { handler, placeFate } from '../../../GameActions/GameActions.js';
@@ -15,15 +15,15 @@ export default class AppeasingTheRestless extends DrawCard {
             .condition((context) => this.canMoveFate(context) && context.player.cardsInPlay.some((card) => this.canReceiveFate(card, context)))
             .cost(costs.bow({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('shugenja')
+                cardCondition: (card) => card.hasTrait(Trait.Shugenja)
             }))
             .gameAction(handler({ handler: (context) => this.moveFate(context, MAX_FATE) }))
-            .chatText((context) => context.player.hasAffinity(Element.Void, context)
+            .chatText((context) => context.player.hasAffinity(Trait.Void, context)
                 ? msg`move up to 3 fate onto Spirit characters`
                 : msg`move up to 3 fate onto Spirit characters and injure ${context.costs.bow}`)
             .cannotTargetFirst()
             .afterwards()
-            .if((context) => !context.player.hasAffinity(Element.Void, context))
+            .if((context) => !context.player.hasAffinity(Trait.Void, context))
             .injure((context) => ({ target: context.costs.bow }));
     }
 
@@ -32,7 +32,7 @@ export default class AppeasingTheRestless extends DrawCard {
     }
 
     private canReceiveFate(card: DrawCard, context: AbilityContext) {
-        return card.hasTrait('spirit') && placeFate({ origin: context.player }).canAffect(card, context);
+        return card.hasTrait(Trait.Spirit) && placeFate({ origin: context.player }).canAffect(card, context);
     }
 
     // One fate per pick, so a spirit may be picked more than once

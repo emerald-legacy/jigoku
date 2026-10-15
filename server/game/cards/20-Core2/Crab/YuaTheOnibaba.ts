@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import { msg } from '../../../GameChat.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
@@ -14,14 +15,14 @@ function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict | nul
         return res;
     }
     for(const character of conflict.getAttackers()) {
-        if(!character.hasTrait('bushi')) {
+        if(!character.hasTrait(Trait.Bushi)) {
             res.toNerf.push(character);
         } else if(character.controller === yuaController) {
             res.toBuff.push(character);
         }
     }
     for(const character of conflict.getDefenders()) {
-        if(!character.hasTrait('bushi')) {
+        if(!character.hasTrait(Trait.Bushi)) {
             res.toNerf.push(character);
         } else if(character.controller === yuaController) {
             res.toBuff.push(character);

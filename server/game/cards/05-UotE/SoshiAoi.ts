@@ -3,7 +3,7 @@ import * as costs from '../../costs/index.js';
 import { addTrait, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, Players, CardType } from '../../Constants.js';
+import { Duration, Players, CardType, Trait } from '../../Constants.js';
 
 class SoshiAoi extends DrawCard {
     static id = 'soshi-aoi';
@@ -25,7 +25,7 @@ class SoshiAoi extends DrawCard {
                         target: context.targets.character,
                         duration: Duration.UntilEndOfPhase,
                         effect: [modifyMilitarySkill(1),
-                            addTrait('bushi')]
+                            addTrait(Trait.Bushi)]
                     })),
                     chatText: (context) => msg`give +1/+0 and the bushi trait to ${context.targets.character}`
                 },
@@ -34,7 +34,7 @@ class SoshiAoi extends DrawCard {
                         target: context.targets.character,
                         duration: Duration.UntilEndOfPhase,
                         effect: [modifyPoliticalSkill(1),
-                            addTrait('courtier')]
+                            addTrait(Trait.Courtier)]
                     })),
                     chatText: (context) => msg`give +0/+1 and the courtier trait to ${context.targets.character}`
                 }

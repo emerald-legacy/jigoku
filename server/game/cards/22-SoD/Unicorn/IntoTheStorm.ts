@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { increaseCost } from '../../../effects.js';
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { CardType, Duration, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class IntoTheStorm extends DrawCard {
@@ -21,8 +21,8 @@ export default class IntoTheStorm extends DrawCard {
                 },
                 endingMessage: 'The storm abates, events no longer cost 1 more'
             }))
-            .if((context) => context.player.isCharacterTraitInPlay('scout'))
+            .if((context) => context.player.isCharacterTraitInPlay(Trait.Scout))
             .gainFate((context) => ({ target: context.player }))
-            .chatText((context) => msg`increase the cost of events this conflict by 1${context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''}`);
+            .chatText((context) => msg`increase the cost of events this conflict by 1${context.player.isCharacterTraitInPlay(Trait.Scout) ? ' and gain 1 fate' : ''}`);
     }
 }

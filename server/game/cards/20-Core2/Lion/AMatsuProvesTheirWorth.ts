@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import { msg } from '../../../GameChat.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { delayedEffect } from '../../../effects.js';
@@ -11,7 +12,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
     setupCardAbilities() {
         this.reaction('Prove yourself worthy of a Matsu name')
             .when({
-                onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, 'bushi')
+                onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, Trait.Bushi)
             })
             .cardLastingEffect((context) => {
                 const target = context.game.requireConflict().getParticipants(

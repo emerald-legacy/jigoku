@@ -2,6 +2,7 @@ import { CompositeGameAction } from './CompositeGameAction.js';
 import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
+import type { Trait } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameAction, GameActionProperties } from './GameAction.js';
@@ -9,7 +10,7 @@ import type { GameAction, GameActionProperties } from './GameAction.js';
 export interface AffinityProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
     gameAction: GameAction;
     chatText?(context: C): MessageArgs;
-    trait: string;
+    trait: Trait;
     noAffinityGameAction?: GameAction;
     activePromptTitle?: string;
 }

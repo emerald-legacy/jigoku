@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Location, Players, Element } from '../../../Constants.js';
+import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import { gainAbility, reduceCost } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,14 +7,14 @@ export default class GraspOfEarth2 extends DrawCard {
     static id = 'grasp-of-earth-2';
 
     public setupCardAbilities() {
-        this.attachmentConditions({ trait: 'shugenja' });
+        this.attachmentConditions({ trait: Trait.Shugenja });
 
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
             effect: reduceCost({
                 amount: 1,
-                targetCondition: (target, _, context) => target.controller.hasAffinity(Element.Earth, context),
+                targetCondition: (target, _, context) => target.controller.hasAffinity(Trait.Earth, context),
                 match: (card, source) => card === source
             })
         });

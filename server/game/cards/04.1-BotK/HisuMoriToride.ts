@@ -1,4 +1,4 @@
-import { CardType, Duration, ConflictType } from '../../Constants.js';
+import { CardType, Duration, ConflictType, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { additionalConflict } from '../../effects.js';
@@ -18,7 +18,7 @@ export default class HisuMoriToride extends StrongholdCard {
             .cost(costs.bowSelf())
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('bushi')
+                cardCondition: (card) => card.hasTrait(Trait.Bushi)
             }))
             .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,

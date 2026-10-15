@@ -1,12 +1,12 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import { cancel, takeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
 function countReadyShugenja(player: Player): number {
     return player.cardsInPlay.reduce(
-        (sum, card) => (!card.bowed && card.hasTrait('shugenja') ? sum + 1 : sum),
+        (sum, card) => (!card.bowed && card.hasTrait(Trait.Shugenja) ? sum + 1 : sum),
         0
     );
 }

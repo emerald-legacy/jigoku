@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, Trait } from '../../Constants.js';
 import { bow, dishonor } from '../../GameActions/GameActions.js';
 
 class ForShame extends DrawCard {
@@ -7,7 +7,7 @@ class ForShame extends DrawCard {
 
     setupCardAbilities() {
         this.action('Dishonor or bow a character')
-            .condition((context) => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')))
+            .condition((context) => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait(Trait.Courtier)))
             .target({
                 name: 'character',
                 cardType: CardType.Character,

@@ -1,5 +1,5 @@
 import { EffectValueBase } from './EffectValue.js';
-import { AbilityType, CardType, Location, Phase, type PlayType, RestrictionScope, RestrictionType, Stage } from '../Constants.js';
+import { AbilityType, CardType, Location, Phase, type PlayType, RestrictionScope, RestrictionType, Stage, Trait } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -11,7 +11,7 @@ import type Player from '../Player.js';
 
 type RestrictionCheck = (context: AbilityContext, effect: Restriction, card?: BaseCard) => boolean;
 /** A scope, or a trait the attempt's source has. */
-type ScopeEntry = RestrictionScope | { trait: string };
+type ScopeEntry = RestrictionScope | { trait: Trait };
 export type RestrictionAppliesTo = ScopeEntry | ScopeEntry[];
 
 const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
@@ -60,7 +60,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.source.getPrintedFaction() !== 'neutral' &&
         !!card && card.isFaction(context.source.getPrintedFaction()),
     [RestrictionScope.NonDynastyPhase]: (context) => context.game.currentPhase !== Phase.Dynasty,
-    [RestrictionScope.NonSpellEvents]: (context) => context.source.type === CardType.Event && !context.source.hasTrait('spell'),
+    [RestrictionScope.NonSpellEvents]: (context) => context.source.type === CardType.Event && !context.source.hasTrait(Trait.Spell),
     [RestrictionScope.OpponentsAttachments]: (context, effect) =>
         context.player &&
         context.player === getApplyingPlayer(effect).opponent &&
@@ -136,7 +136,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     },
     [RestrictionScope.LoseHonorAsCost]: (context) => context.stage === Stage.Cost,
     [RestrictionScope.UnlessMeishodo]: (context) =>
-        !!context.source && context.source.hasTrait('spell') && !context.source.hasTrait('meishodo')
+        !!context.source && context.source.hasTrait(Trait.Spell) && !context.source.hasTrait(Trait.Meishodo)
 };
 
 const isCardEffect = (context: AbilityContext) =>

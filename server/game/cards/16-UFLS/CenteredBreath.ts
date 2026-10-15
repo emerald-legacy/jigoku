@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, Players, CardType } from '../../Constants.js';
+import { Duration, Players, CardType, Trait } from '../../Constants.js';
 import { additionalAction, increaseLimitOnPrintedAbilities } from '../../effects.js';
 import { cardLastingEffect, playerLastingEffect, sequential } from '../../GameActions/GameActions.js';
 
@@ -12,7 +12,7 @@ class CenteredBreath extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.hasTrait('monk') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait(Trait.Monk) && card.isParticipating()
             }, sequential([
                 cardLastingEffect({
                     duration: Duration.UntilEndOfRound,

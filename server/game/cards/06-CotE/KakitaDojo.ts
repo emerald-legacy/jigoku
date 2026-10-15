@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { DuelType } from '../../Constants.js';
+import { DuelType, Trait } from '../../Constants.js';
 import type { ResolvedDuel } from '../../Duel.js';
 import { cannotTriggerAbilities } from '../../effects.js';
 import { bow, cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
@@ -25,6 +25,6 @@ export default class KakitaDojo extends DrawCard {
     }
 
     private wonByDuelist(duel: ResolvedDuel): boolean {
-        return duel.winner.some((char) => char.hasTrait('duelist'));
+        return duel.winner.some((char) => char.hasTrait(Trait.Duelist));
     }
 }

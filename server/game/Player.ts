@@ -31,7 +31,8 @@ import {
     Location,
     Players,
     type PlayType,
-    RestrictionType
+    RestrictionType,
+    Trait
 } from './Constants.js';
 import type Game from './Game.js';
 import type { Socket } from '../Socket.js';
@@ -442,7 +443,7 @@ export class Player extends GameObject {
         return cardsToReturn;
     }
 
-    isTraitInPlay(trait: string): boolean {
+    isTraitInPlay(trait: Trait): boolean {
         return this.game.allCards.some((card: BaseCard) => {
             return (
                 card.controller === this &&
@@ -455,7 +456,7 @@ export class Player extends GameObject {
         });
     }
 
-    isCharacterTraitInPlay(trait: string): boolean {
+    isCharacterTraitInPlay(trait: Trait): boolean {
         return this.game.allCards.some((card: BaseCard) => {
             return (
                 card.type === CardType.Character &&
@@ -1044,7 +1045,7 @@ export class Player extends GameObject {
         return this.opponent !== undefined && this.honor < this.opponent.honor;
     }
 
-    hasAffinity(trait: string, context?: AbilityContext): boolean {
+    hasAffinity(trait: Trait, context?: AbilityContext): boolean {
         if(!this.checkRestrictions(RestrictionType.HaveAffinity, context ?? this.game.getFrameworkContext(this))) {
             return false;
         }
@@ -1334,7 +1335,7 @@ export class Player extends GameObject {
         return (
             context.game.currentConflict.getNumberOfCardsPlayed(
                 this,
-                (card) => card.hasTrait('kiho') && card.uuid !== cardBeingPlayed.uuid
+                (card) => card.hasTrait(Trait.Kiho) && card.uuid !== cardBeingPlayed.uuid
             ) > 0
         );
     }

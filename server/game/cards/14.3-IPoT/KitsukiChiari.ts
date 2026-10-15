@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
@@ -34,7 +35,7 @@ class KitsukiChiari extends DrawCard {
 
 
     allowAttachment(attachment: DrawCard) {
-        if(attachment.hasTrait('poison') && !this.isBlank()) {
+        if(attachment.hasTrait(Trait.Poison) && !this.isBlank()) {
             return false;
         }
 

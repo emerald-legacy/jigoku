@@ -1,4 +1,4 @@
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -13,7 +13,7 @@ export default class AsceticVisionary extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
+                    card.hasTrait(Trait.Monk) || card.attachments.some((card) => card.hasTrait(Trait.Monk))
             }, ready());
     }
 }

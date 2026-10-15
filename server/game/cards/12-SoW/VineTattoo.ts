@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { addTrait, cardCannot } from '../../effects.js';
-import { RestrictionType, RestrictionScope } from '../../Constants.js';
+import { RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
 
 class VineTattoo extends DrawCard {
     static id = 'vine-tattoo';
@@ -12,7 +12,7 @@ class VineTattoo extends DrawCard {
 
         this.whileAttached({
             effect: [
-                addTrait('tattooed'),
+                addTrait(Trait.Tattooed),
                 cardCannot({
                     cannot: RestrictionType.Target,
                     appliesTo: RestrictionScope.EqualOrMoreExpensiveCharacterTriggeredAbilities,

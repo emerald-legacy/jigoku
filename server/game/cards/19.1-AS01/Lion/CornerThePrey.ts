@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import * as costs from '../../../costs/index.js';
 import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, ConflictType, TargetMode } from '../../../Constants.js';
+import { CardType, ConflictType, TargetMode, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CornerThePrey extends DrawCard {
@@ -16,7 +16,7 @@ export default class CornerThePrey extends DrawCard {
                 mode: TargetMode.Unlimited,
                 // A follower can be attached to a province, which does not participate.
                 cardCondition: (card) =>
-                    card.hasTrait('follower') &&
+                    card.hasTrait(Trait.Follower) &&
                     (card.isParticipating() || !!card.parentCharacter?.isParticipating())
             }))
             .target({
@@ -32,7 +32,7 @@ export default class CornerThePrey extends DrawCard {
             return Array.isArray(sacrificed) ? sacrificed.length : 1;
         }
         const myFollowers = context.game.allCards.filter(
-            (card) => card.controller === context.player && card.hasTrait('follower')
+            (card) => card.controller === context.player && card.hasTrait(Trait.Follower)
         );
         return myFollowers.filter(
             (card) => card instanceof DrawCard &&

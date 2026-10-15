@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { unlimited } from '../../AbilityLimit.js';
 import { modifyPoliticalSkill } from '../../effects.js';
@@ -8,7 +9,7 @@ class EruditePrestige extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'courtier'
+            trait: Trait.Courtier
         });
 
         this.reaction('Give attached character +1 political')

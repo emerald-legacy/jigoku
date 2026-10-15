@@ -3,7 +3,7 @@ import { addTrait, gainAbility, modifyMilitarySkill } from '../../../effects.js'
 import {
     cardLastingEffect
 } from '../../../GameActions/GameActions.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 
@@ -12,18 +12,18 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'shugenja'
+            trait: Trait.Shugenja
         });
 
         this.whileAttached({
             effect: [
-                addTrait('water'),
+                addTrait(Trait.Water),
                 gainAbility.action('Give a character +2 and move them', (ability) => ability
                     .condition((context) => context.game.isDuringConflict())
                     .target({
                         cardType: CardType.Character,
                         controller: Players.Self,
-                        cardCondition: (card) => card.hasTrait('bushi')
+                        cardCondition: (card) => card.hasTrait(Trait.Bushi)
                     }, cardLastingEffect({
                         effect: modifyMilitarySkill(2)
                     }))

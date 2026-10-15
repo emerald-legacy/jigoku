@@ -218,6 +218,24 @@ chosenReturnToDeck((context) =&gt; ({
 </section>
 
 <section class="group">
+<div class="ref" id="en-Trait" data-name="Trait elementTrait">
+  <h3><code>Trait</code> <span class="kind">Enum</span> <a class="anchor" href="#en-Trait">#</a></h3>
+  <p>Every card trait, named after the lower-case trait the card data holds (<code>Trait.Shugenja</code> is <code>'shugenja'</code>, <code>Trait.BattleMaiden</code> is <code>'battle-maiden'</code>). Taken by <code>hasTrait</code>, <code>hasSomeTrait</code>, <code>hasEveryTrait</code>, <code>addTrait</code>, <code>loseTrait</code>, <code>satisfyAffinity</code>, <code>hasAffinity</code>, <code>onAffinity</code>, <code>isTraitInPlay</code>, <code>attachmentConditions({ trait, limitTrait })</code> and the <code>{ trait }</code> restriction scope. The full list is <code>server/game/Constants/Trait.ts</code>.</p>
+  <table>
+    <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>Air</code>, <code>Earth</code>, <code>Fire</code>, <code>Void</code>, <code>Water</code></td><td><code>'air'</code>, …</td><td>The elements, for affinity. Rings and element symbols use <code>Element</code>.</td></tr>
+      <tr><td><code>Shadowlands</code>, <code>Corrupt</code></td><td><code>'shadowlands'</code></td><td>Two names for one trait: the card data serves <code>shadowlands</code>, Emerald Legacy's name is Corrupt. Use <code>Corrupt</code> in new cards.</td></tr>
+      <tr><td><code>Gaijin</code>, <code>Foreign</code></td><td><code>'gaijin'</code></td><td>The same: Foreign is Emerald Legacy's name for Gaijin. Use <code>Foreign</code> in new cards.</td></tr>
+    </tbody>
+  </table>
+  <ul class="edge">
+    <li><code>elementTrait(element)</code> turns a ring element (<code>ring.element</code>, <code>conflict.elements</code>) into the trait of the same name: <code>card.hasTrait(elementTrait(ring.element))</code>.</li>
+    <li>Traits that come from text or data at run time (a keyword's traits, <code>getTraits()</code>) are plain strings; compare them with <code>getTraits().has(trait)</code> or <code>card.sharesTrait(other)</code>.</li>
+  </ul>
+  <pre><code>// Heart of the Inferno: … an attachment and you have Fire affinity, discard it.
+.gameAction(onAffinity({ trait: Trait.Fire, gameAction: discardFromPlay() }))</code></pre>
+</div>
   <h3 class="group-title" id="en-group-abilities">Abilities, targets and durations</h3>
 <div class="ref" id="en-AbilityType" data-name="AbilityType">
   <h3><code>AbilityType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-AbilityType">#</a></h3>
@@ -316,7 +334,7 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
     duration: Duration.UntilEndOfRound,
     effect: reduceNextPlayedCardCost(
         1,
-        (card) =&gt; card.type === CardType.Character || card.hasTrait('follower')
+        (card) =&gt; card.type === CardType.Character || card.hasTrait(Trait.Follower)
     )
 })</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/FortunesField.ts">Fortune's Field</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CityOfLies.ts">City of Lies</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DaimyosFavor.ts">Daimyō's Favor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IsawaMoriSeido.ts">Isawa Mori Seidō</a></p>
@@ -402,7 +420,7 @@ this.conflictAction('Move two monks to the conflict', { conflictType: ConflictTy
         numCards: 2,
         cardType: CardType.Character,
         controller: Players.Self,
-        cardCondition: (card) =&gt; card.hasTrait('monk')
+        cardCondition: (card) =&gt; card.hasTrait(Trait.Monk)
     }, moveToConflict());</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Dragon/TwentyFourSteps.ts">Twenty-four Steps</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShamefulDisplay.ts">Shameful Display</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShrewdYasuki.ts">Shrewd Yasuki</a></p>
 </div>
@@ -1226,7 +1244,7 @@ this.wouldInterrupt('Cancel an event')
     .when({
         onInitiateAbilityEffects: (event) =&gt; event.card.type === CardType.Event
     })
-    .cost(costs.dishonor({ cardCondition: (card) =&gt; card.hasTrait('courtier') }))
+    .cost(costs.dishonor({ cardCondition: (card) =&gt; card.hasTrait(Trait.Courtier) }))
     .cancel()</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForgedEdict.ts">Forged Edict</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShibaYojimbo.ts">Shiba Yōjimbō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/VoiceOfHonor.ts">Voice of Honor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/FingerOfJade.ts">Finger of Jade</a></p>
 </div>
@@ -1316,7 +1334,7 @@ this.reaction('Ready this character')
     .when({
         onCardAttached: (event, context) =&gt; (
             event.parent === context.source &amp;&amp;
-            event.card.hasTrait('weapon') &amp;&amp;
+            event.card.hasTrait(Trait.Weapon) &amp;&amp;
             event.card.controller === context.player
         )
     })

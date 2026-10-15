@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { discardFromPlay, removeFate, sequential } from '../../../GameActions/GameActions.js';
-import { CardType, ConflictType, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class BrokenBlades extends DrawCard {
@@ -18,7 +18,7 @@ export default class BrokenBlades extends DrawCard {
             })
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('berserker')
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Berserker)
             }))
             .target({
                 cardType: CardType.Character,

@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { cardCannot, delayedEffect } from '../../../effects.js';
 import { discardFromPlay } from '../../../GameActions/GameActions.js';
-import { CardType, RestrictionType } from '../../../Constants.js';
+import { CardType, RestrictionType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ServitorOfStone extends DrawCard {
@@ -27,7 +27,7 @@ export default class ServitorOfStone extends DrawCard {
         return context.player.anyCardsInPlay(
             (otherCard) =>
                 otherCard.type === CardType.Character &&
-                otherCard.hasTrait('shugenja') &&
+                otherCard.hasTrait(Trait.Shugenja) &&
                 context.source.isInConflict() === otherCard.isInConflict()
         );
     }

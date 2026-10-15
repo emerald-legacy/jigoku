@@ -1,4 +1,4 @@
-import { CardType, Players, Element } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import { discardFromPlay, onAffinity } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class HeartOfTheInferno extends DrawCard {
         this.conflictAction('Bow a card')
             .condition((context) =>
                 context.player.cardsInPlay.some(
-                    (card) => card.isParticipating() && card.hasTrait('shugenja')
+                    (card) => card.isParticipating() && card.hasTrait(Trait.Shugenja)
                 ))
             .target({
                 controller: Players.Opponent,
@@ -25,6 +25,6 @@ export default class HeartOfTheInferno extends DrawCard {
             .if((context) => context.target?.type === CardType.Character)
             .bow()
             .otherwise()
-            .gameAction(onAffinity({ trait: Element.Fire, gameAction: discardFromPlay() }));
+            .gameAction(onAffinity({ trait: Trait.Fire, gameAction: discardFromPlay() }));
     }
 }

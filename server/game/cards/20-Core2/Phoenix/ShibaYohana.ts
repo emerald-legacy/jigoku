@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Duration, Location } from '../../../Constants.js';
+import { CardType, Duration, Location, Trait } from '../../../Constants.js';
 import { addTrait } from '../../../effects.js';
 import { moveToConflict, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -25,7 +25,7 @@ export default class ShibaYohana extends DrawCard {
                 until: {
                     onCardLeavesPlay: (event) => event.card === context.source
                 },
-                effect: addTrait('spirit')
+                effect: addTrait(Trait.Spirit)
             }));
 
         this.conflictAction('Move a character into the conflict')

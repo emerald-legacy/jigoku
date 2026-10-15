@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,10 +10,10 @@ export default class StrikeFromTheShadows extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Give Shinobi +1/+1')
             .when({
-                afterConflict: (_event, context) => context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait('shinobi')).length > 0
+                afterConflict: (_event, context) => context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait(Trait.Shinobi)).length > 0
             })
             .cardLastingEffect((context) => ({
-                target: context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait('shinobi')),
+                target: context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait(Trait.Shinobi)),
                 effect: [
                     modifyBothSkills(1)
                 ]

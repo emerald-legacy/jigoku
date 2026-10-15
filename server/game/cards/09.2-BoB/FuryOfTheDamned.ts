@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType, TargetMode } from '../../Constants.js';
+import { Players, CardType, TargetMode, Trait } from '../../Constants.js';
 import { modifyBaseMilitarySkillMultiplier } from '../../effects.js';
 import { atEndOfConflict, cardLastingEffect, multiple, sacrifice } from '../../GameActions/GameActions.js';
 
@@ -14,7 +14,7 @@ class FuryOfTheDamned extends DrawCard {
                 mode: TargetMode.Unlimited,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('bushi') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && card.isParticipating()
             }, multiple([
                 cardLastingEffect({
                     effect: modifyBaseMilitarySkillMultiplier(2)

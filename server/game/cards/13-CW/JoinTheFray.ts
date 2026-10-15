@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, CardType, ConflictType } from '../../Constants.js';
+import { Location, Players, CardType, ConflictType, Trait } from '../../Constants.js';
 import { putIntoConflict } from '../../GameActions/GameActions.js';
 import { playerChoices } from '../playerChoices.js';
 
@@ -14,7 +14,7 @@ class JoinTheFray extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('cavalry')
+                cardCondition: (card) => card.hasTrait(Trait.Cavalry)
             })
             .selectFrom({
                 name: 'select',

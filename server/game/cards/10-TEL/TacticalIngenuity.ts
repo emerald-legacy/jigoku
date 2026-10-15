@@ -1,14 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
 import { moveCard } from '../../GameActions/GameActions.js';
-import { CardType, Location } from '../../Constants.js';
+import { CardType, Location, Trait } from '../../Constants.js';
 
 class TacticalIngenuity extends DrawCard {
     static id = 'tactical-ingenuity';
 
     setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'commander'
+            trait: Trait.Commander
         });
         this.whileAttached({
             effect: gainAbility.action('Reveal and draw an event', (ability) => ability

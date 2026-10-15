@@ -16,7 +16,7 @@ import type { EffectSource } from './EffectSource.js';
 import type { CardAbility } from './CardAbility.js';
 import type { DuelProperties } from './GameActions/DuelAction.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
-import type { Players, TargetMode, CardType, Location, EventName, Phase } from './Constants.js';
+import type { Players, TargetMode, CardType, Location, EventName, Phase, Trait } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import type Player from './Player.js';
@@ -260,7 +260,7 @@ export interface PersistentEffectProps<Source extends EffectSource = BaseCard, T
 }
 
 export type traitLimit = {
-    [trait: string]: number;
+    [trait in Trait]?: number;
 };
 
 export interface AttachmentConditionProps {
@@ -269,7 +269,7 @@ export interface AttachmentConditionProps {
     opponentControlOnly?: boolean;
     unique?: boolean;
     faction?: Faction | Faction[];
-    trait?: string | string[];
+    trait?: Trait | Trait[];
     limitTrait?: traitLimit | traitLimit[];
     cardCondition?: (card: DrawCard) => boolean;
 }

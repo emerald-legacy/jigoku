@@ -1,3 +1,4 @@
+import { Trait } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
@@ -10,7 +11,7 @@ export default class InsultToInjury extends DrawCard {
             .when({
                 afterDuel: (event, context) =>
                     event.winner?.some(
-                        (card) => card.controller === context.player && card.hasTrait('duelist')
+                        (card) => card.controller === context.player && card.hasTrait(Trait.Duelist)
                     ) ?? false
             })
             .if((context) => (context.event.loser ?? []).length > 1)

@@ -1,5 +1,5 @@
 import { addKeyword, entersPlayForOpponent } from '../../../effects.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CherishedFamilyServant extends DrawCard {
@@ -15,7 +15,7 @@ export default class CherishedFamilyServant extends DrawCard {
         this.persistentEffect({
             match: (card, context) =>
                 !!(card.type === CardType.Attachment &&
-                card.hasTrait('poison') &&
+                card.hasTrait(Trait.Poison) &&
                 card.parentCharacter &&
                 context?.source.controller === card.parentCharacter.controller),
             effect: addKeyword('ancestral'),

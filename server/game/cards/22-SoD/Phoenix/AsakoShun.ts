@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -10,7 +10,7 @@ function penalty(context: AbilityContext): number {
     if(!conflict) {
         return 0;
     }
-    const scholars = conflict.getNumberOfParticipantsFor(context.player, (card) => card.hasTrait('scholar'));
+    const scholars = conflict.getNumberOfParticipantsFor(context.player, (card) => card.hasTrait(Trait.Scholar));
     return -2 * scholars;
 }
 

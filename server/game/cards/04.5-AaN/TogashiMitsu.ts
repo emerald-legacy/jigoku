@@ -1,6 +1,6 @@
 import { playCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, PlayType } from '../../Constants.js';
+import { Location, Players, PlayType, Trait } from '../../Constants.js';
 
 class TogashiMitsu extends DrawCard {
     static id = 'togashi-mitsu';
@@ -11,7 +11,7 @@ class TogashiMitsu extends DrawCard {
             .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('monk') || card.hasTrait('kiho') || card.hasTrait('tattoo')
+                cardCondition: (card) => card.hasTrait(Trait.Monk) || card.hasTrait(Trait.Kiho) || card.hasTrait(Trait.Tattoo)
             }, playCard({
                 source: this,
                 playType: PlayType.PlayFromHand,

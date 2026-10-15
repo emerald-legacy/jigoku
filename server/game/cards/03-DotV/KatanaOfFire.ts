@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Element } from '../../Constants.js';
+import { Element, Trait } from '../../Constants.js';
 import { modifyMilitarySkill } from '../../effects.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
@@ -22,7 +22,7 @@ class KatanaOfFire extends DrawCard {
         return hasClaimedRing(this, elementSymbol.key, this.controller);
     }
     numberOfFireCards() {
-        return this.controller.getNumberOfCardsInPlay((card) => card.hasTrait('fire'));
+        return this.controller.getNumberOfCardsInPlay((card) => card.hasTrait(Trait.Fire));
     }
     totalKatanaModifier() {
         let skillModifier = this.controllerHasFireRing() ? 2 : 0;

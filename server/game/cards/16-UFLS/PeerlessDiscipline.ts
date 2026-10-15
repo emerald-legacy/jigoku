@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
+import { Duration, Trait } from '../../Constants.js';
 import { addTrait, modifyMilitarySkill } from '../../effects.js';
 import { msg } from '../../GameChat.js';
 
@@ -12,7 +12,7 @@ class PeerlessDiscipline extends DrawCard {
                 target: context.player.cardsInPlay.filter(() => true),
                 effect: [
                     modifyMilitarySkill(1),
-                    addTrait('bushi')
+                    addTrait(Trait.Bushi)
                 ],
                 duration: Duration.UntilEndOfPhase
             }))

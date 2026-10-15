@@ -1,4 +1,4 @@
-import { CardType } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
 import { reduceNextPlayedCardCost, modifyMilitarySkill } from '../../../effects.js';
@@ -39,10 +39,10 @@ export default class MirumotoRikitaro extends DrawCard {
 
         this.conflictAction('Discard an attachment')
             .target({
-                cardCondition: (card, context) => !!(card.hasSomeTrait('item', 'weapon', 'armor') && card.parentCharacter && context.player.opponent && card.parentCharacter.isParticipatingFor(context.player.opponent)),
+                cardCondition: (card, context) => !!(card.hasSomeTrait(Trait.Item, Trait.Weapon, Trait.Armor) && card.parentCharacter && context.player.opponent && card.parentCharacter.isParticipatingFor(context.player.opponent)),
                 cardType: CardType.Attachment
             }, discardFromPlay())
-            .afterwardsIf((context) => context.target.hasTrait('weapon'))
+            .afterwardsIf((context) => context.target.hasTrait(Trait.Weapon))
             .cardLastingEffect({ effect: modifyMilitarySkill(2) })
             .message((context) => msg`${context.source} gains +2${'military'} due to discarding a weapon`);
     }

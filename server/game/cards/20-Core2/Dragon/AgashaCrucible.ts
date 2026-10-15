@@ -1,19 +1,21 @@
 import { msg } from '../../../GameChat.js';
 import type { ChooseActionOption } from '../../../GameActions/ChooseGameAction.js';
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { CardType, Duration, Players, Trait } from '../../../Constants.js';
 import { addTrait, additionalAction } from '../../../effects.js';
 import { cardLastingEffect, chooseAction, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
+const elementTraits: [string, Trait][] = [['Air', Trait.Air], ['Earth', Trait.Earth], ['Fire', Trait.Fire], ['Void', Trait.Void], ['Water', Trait.Water]];
+
 const options: Record<string, ChooseActionOption> = Object.fromEntries(
-    ['Air', 'Earth', 'Fire', 'Void', 'Water'].map((option) => [
+    elementTraits.map(([option, trait]) => [
         option,
         {
             message: (_context, target) => msg`${target} gains the ${option} Trait`,
             action: sequential([
                 cardLastingEffect({
                     duration: Duration.UntilEndOfPhase,
-                    effect: addTrait(option.toLowerCase())
+                    effect: addTrait(trait)
                 }),
                 playerLastingEffect({
                     target: Players.Self,
@@ -33,7 +35,7 @@ export default class AgashaCrucible extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('shugenja')
+                cardCondition: (card) => card.hasTrait(Trait.Shugenja)
             }, chooseAction({
                 choices: options,
                 activePromptTitle: 'Choose Trait to gain'

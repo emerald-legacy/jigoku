@@ -1,4 +1,4 @@
-import { CardType } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class AsceticVisionary2 extends DrawCard {
             .cost(costs.payFateToRing(1))
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('monk')
+                cardCondition: (card) => card.hasTrait(Trait.Monk)
             }, ready());
     }
 }

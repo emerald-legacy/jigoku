@@ -1,3 +1,4 @@
+import { Trait } from '../../../Constants.js';
 import { setGlory } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -5,7 +6,7 @@ export default class AncestralKabuto extends DrawCard {
     static id = 'ancestral-kabuto';
 
     public setupCardAbilities() {
-        this.attachmentConditions({ trait: 'bushi' });
+        this.attachmentConditions({ trait: Trait.Bushi });
 
         this.whileAttached({
             match: (card) => card.isDishonored,
