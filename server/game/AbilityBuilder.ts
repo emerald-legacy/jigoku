@@ -123,9 +123,7 @@ type RingEntry = TargetRing & ActionRingTarget & SubTarget;
 type SelectEntry = TargetSelect & SubTarget;
 type TargetEntry = SingleCardEntry | MultiCardEntry | TokenEntry | AbilityEntry | ElementEntry | RingEntry | SelectEntry;
 
-/** The properties a game action factory takes, or a function of the builder's context returning them. */
 /** Properties whose callbacks see the builder's context (the factory types them with a context parameter), or a function of that context returning them. */
-
 type FactoryProperties<K extends keyof GameActions.ActionProps<AbilityContext>, Context extends AbilityContext> =
     Derivable<GameActions.ActionProps<Context>[K], Context>;
 
@@ -1530,7 +1528,9 @@ function withBranches(draft: AbilityDraft): AbilityDraft {
         throw new Error(`${draft.title}: ifAble() needs an otherwise()`);
     }
     const yes = actions.slice(branch.from, branch.otherwiseFrom);
-    const no = branch.otherwiseFrom === undefined ? [GameActions.noAction()] : actions.slice(branch.otherwiseFrom);
+    // without otherwise() the false branch does nothing and has no legal target, so an ability whose only
+    // effect is a failing if() can't be used (RRG: its effect must be able to change the game state)
+    const no = branch.otherwiseFrom === undefined ? [GameActions.multiple([])] : actions.slice(branch.otherwiseFrom);
     if(yes.length === 0 || no.length === 0) {
         throw new Error(`${draft.title}: if() and otherwise() each need a game action`);
     }

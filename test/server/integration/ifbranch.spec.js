@@ -44,11 +44,13 @@ describe('if(), ifAble() and otherwise() in the ability builder', function() {
             expect(otherwise.getProperties(this.context).gameActions.map((action) => action.name)).toEqual(['gainFate', 'draw']);
         });
 
-        it('does nothing without otherwise() when the condition fails', function() {
+        it('does nothing without otherwise() when the condition fails, and has no legal target then', function() {
             this.builder.if(() => false).gainHonor(2);
 
             const [branches] = toActionProps(this.draft).gameAction;
-            expect(branches.getGameAction(this.context).isNoAction).toBe(true);
+            const otherwise = branches.getGameAction(this.context);
+            expect(otherwise.getProperties(this.context).gameActions).toEqual([]);
+            expect(branches.hasLegalTarget(this.context)).toBe(false);
         });
 
         it('rejects otherwise() without if(), a second if() and targets after if()', function() {
