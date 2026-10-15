@@ -7,13 +7,14 @@ class DisguisedProtector extends DrawCard {
     setupCardAbilities() {
         this.action('Add each players honor bid to their skill total')
             .condition((context) => context.source.isParticipating())
-            .playerLastingEffect((context) => ({
-                effect: changePlayerSkillModifier(context.player.showBid)
-            }))
+            // read when the conflict resolves: a later bid (Regal Bearing, a duel) counts
+            .playerLastingEffect({
+                effect: changePlayerSkillModifier((player) => player.showBid)
+            })
             .playerLastingEffect((context) => ({
                 condition: (context) => !!context.player.opponent,
                 target: context.player.opponent,
-                effect: changePlayerSkillModifier(context.player.opponent ? context.player.opponent.showBid : 0)
+                effect: changePlayerSkillModifier((player) => player.showBid)
             }))
             .chatText('add the bid on each players dial to their skill total');
     }

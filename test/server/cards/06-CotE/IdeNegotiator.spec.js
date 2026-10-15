@@ -18,6 +18,16 @@ describe('Ide Negotiator', function() {
                 expect(this.player1).toBeAbleToSelect(this.ideNegotiator);
             });
 
+            it('should change the dial, not the modified bid', function() {
+                this.player1.clickPrompt('2');
+                this.player2.clickPrompt('2');
+                this.player1.player.honorBidModifier = 1;
+                this.player1.clickCard(this.ideNegotiator);
+                this.player1.clickPrompt('Increase bid by 1');
+                expect(this.player1.player.showBid).toBe(3);
+                expect(this.player1.player.honorBid).toBe(4);
+            });
+
             it('should prompt to increase or decrease the bid', function() {
                 this.player1.clickPrompt('3');
                 this.player2.clickPrompt('3');
