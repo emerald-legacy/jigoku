@@ -95,6 +95,26 @@ describe('Captivating Story', function() {
             expect(this.yoshi.politicalSkill).toBe(pol + 1);
         });
 
+        it('should let you remove a fate from an honored character', function() {
+            this.yoshi.fate = 1;
+            this.yoshi.honor();
+            this.noMoreActions();
+            this.p1.facedown = false;
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [],
+                type: 'political'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.story);
+            this.player1.clickCard(this.yoshi);
+            expect(this.player1).toHavePrompt('Remove 1 fate from Kakita Yoshi to honor them?');
+            this.player1.clickPrompt('Yes');
+            expect(this.yoshi.fate).toBe(0);
+            expect(this.yoshi.isHonored).toBe(true);
+        });
+
         it('should not give you the option to remove a fate if you cannot do it', function() {
             this.noMoreActions();
             this.p1.facedown = false;
