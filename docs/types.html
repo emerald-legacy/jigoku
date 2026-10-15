@@ -797,7 +797,6 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>Reactions</code></td><td><code>'reactions'</code></td><td>Reaction abilities.</td></tr>
           <tr><td><code>RingEffects</code></td><td><code>'ringEffects'</code></td><td>Ring effects (the source is a ring).</td></tr>
           <tr><td><code>Source</code></td><td><code>'source'</code></td><td>Attempts whose source is the effect's source.</td></tr>
-          <tr><td><code>ToHand</code></td><td><code>'toHand'</code></td><td>A "then" step that moves cards to hand.</td></tr>
           <tr><td><code>UnlessMeishodo</code></td><td><code>'unlessMeishodo'</code></td><td>Spells without the Meishodo trait.</td></tr>
         </tbody>
       </table>
@@ -844,6 +843,7 @@ cardCannot({
           <tr><td><code>LoseHonor</code></td><td><code>'loseHonor'</code></td><td><code>loseHonor</code></td></tr>
           <tr><td><code>Move</code></td><td><code>'move'</code></td><td><code>moveCard</code></td></tr>
           <tr><td><code>MoveToConflict</code></td><td><code>'moveToConflict'</code></td><td><code>moveToConflict</code></td></tr>
+          <tr><td><code>MoveToHand</code></td><td><code>'moveToHand'</code></td><td><code>moveCard</code> with <code>destination: Location.Hand</code> (besides <code>Move</code>)</td></tr>
           <tr><td><code>PlaceFate</code></td><td><code>'placeFate'</code></td><td><code>placeFate</code>, <code>placeFateOnRing</code>, extra fate when a character is played.</td></tr>
           <tr><td><code>PlaceFateWhenPlayingCharacter</code></td><td><code>'placeFateWhenPlayingCharacter'</code></td><td>Choosing extra fate when playing a character.</td></tr>
           <tr><td><code>PlaceFateWhenPlayingCharacterFromProvince</code></td><td><code>'placeFateWhenPlayingCharacterFromProvince'</code></td><td>The same, from a province.</td></tr>

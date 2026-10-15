@@ -38,6 +38,5 @@ export enum RestrictionScope {
     Reactions = 'reactions',
     RingEffects = 'ringEffects',
     Source = 'source',
-    ToHand = 'toHand',
     UnlessMeishodo = 'unlessMeishodo'
 }

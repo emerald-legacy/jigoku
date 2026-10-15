@@ -22,7 +22,7 @@ export default class JealousAncestor extends DrawCard {
         for(const targetController of [Players.Self, Players.Opponent] as const) {
             const theirCardEffects = targetController === Players.Self ? RestrictionScope.OwnCardEffects : RestrictionScope.OpponentsCardEffects;
             this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.Draw, appliesTo: theirCardEffects }));
-            this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.Move, appliesTo: RestrictionScope.ToHand }));
+            this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.MoveToHand }));
             this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.ReturnToHand }));
         }
     }

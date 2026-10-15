@@ -1,12 +1,9 @@
 import { EffectValueBase } from './EffectValue.js';
-import { AbilityType, CardType, Location, Phase, type PlayType, RestrictionScope, RestrictionType, Stage, Trait } from '../Constants.js';
+import { AbilityType, CardType, Phase, type PlayType, RestrictionScope, RestrictionType, Stage, Trait } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { BaseCardAbility } from '../BaseCardAbility.js';
-import { ThenAbility } from '../ThenAbility.js';
-import { MoveCardAction } from '../GameActions/MoveCardAction.js';
-import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
 
 type RestrictionCheck = (context: AbilityContext, effect: Restriction, card?: BaseCard) => boolean;
@@ -118,22 +115,6 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         !!card && printedCostOf(context.source) >= printedCostOf(card),
     [RestrictionScope.EventPlayedByHigherBidPlayer]: (context, _effect, card) =>
         context.source.type === CardType.Event && !!card && context.player.showBid > card.controller.showBid,
-    [RestrictionScope.ToHand]: (context) => {
-        if(!(context.ability instanceof ThenAbility)) {
-            return false;
-        }
-        const properties = context.ability.properties;
-        const targetActions: GameAction[] = properties.target?.gameAction
-            ? (Array.isArray(properties.target.gameAction) ? properties.target.gameAction : [properties.target.gameAction])
-            : [];
-        const nestedActions = context.ability.gameAction
-            ? context.ability.gameAction.map((topAction: GameAction) =>
-                topAction.properties && 'gameAction' in topAction.properties ? topAction.properties.gameAction : undefined
-            )
-            : [];
-
-        return targetActions.some(isMoveToHandAction) || nestedActions.some(isMoveToHandAction);
-    },
     [RestrictionScope.LoseHonorAsCost]: (context) => context.stage === Stage.Cost,
     [RestrictionScope.UnlessMeishodo]: (context) =>
         !!context.source && context.source.hasTrait(Trait.Spell) && !context.source.hasTrait(Trait.Meishodo)
@@ -154,10 +135,6 @@ const isCardEffect = (context: AbilityContext) =>
 const getApplyingPlayer = (effect: Restriction): Player => {
     return effect.applyingPlayer || effect.requireContext().player;
 };
-
-// a move action built from a property factory has no stored properties
-const isMoveToHandAction = (gameAction: unknown) =>
-    gameAction instanceof MoveCardAction && gameAction.properties?.destination === Location.Hand;
 
 const printedCostOf = (card: BaseCard) => (card.isDrawCard() ? card.printedCost ?? 0 : 0);
 

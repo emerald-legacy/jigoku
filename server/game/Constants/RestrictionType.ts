@@ -26,6 +26,7 @@ export enum RestrictionType {
     LoseHonor = 'loseHonor',
     Move = 'move',
     MoveToConflict = 'moveToConflict',
+    MoveToHand = 'moveToHand',
     PlaceFate = 'placeFate',
     PlaceFateWhenPlayingCharacter = 'placeFateWhenPlayingCharacter',
     PlaceFateWhenPlayingCharacterFromProvince = 'placeFateWhenPlayingCharacterFromProvince',

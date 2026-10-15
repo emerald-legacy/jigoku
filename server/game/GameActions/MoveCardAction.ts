@@ -61,6 +61,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
                 (card.checkRestrictions(RestrictionType.TakeControl, context) &&
                     !(card.isDrawCard() && card.anotherUniqueInPlay(context.player)))) &&
             (!destination || context.player.isLegalLocationForCard(card, destination)) &&
+            (destination !== Location.Hand || card.checkRestrictions(RestrictionType.MoveToHand, context)) &&
             card.location !== Location.PlayArea &&
             super.canAffect(card, context)
         );

@@ -2817,7 +2817,7 @@ this.conflictAction('Take one honor from your opponent', { conflictType: Conflic
       <li>A card in play can't be moved: use <code>returnToHand</code>, <code>returnToDeck</code>, <code>putIntoProvince</code> and the like. Only characters, attachments, events and holdings.</li>
       <li><code>destination</code> must be a legal place for the card (a dynasty card can't go to the hand, a conflict card can't go to the dynasty deck).</li>
       <li><code>changePlayer</code> needs a card that allows its control to change (<code>RestrictionType.TakeControl</code>) and, for a unique card, no other copy in play for the ability's player.</li>
-      <li>Leaving a province refills it, unless the card is switched. Checks <code>RestrictionType.Move</code>. The action has no event of its own; the move raises <code>onCardMoved</code>.</li>
+      <li>Leaving a province refills it, unless the card is switched. Checks <code>RestrictionType.Move</code>, and <code>RestrictionType.MoveToHand</code> when the destination is the hand. The action has no event of its own; the move raises <code>onCardMoved</code>.</li>
     </ul>
     <pre><code>// Blade of 10,000 Battles: Reaction: After attached character wins a conflict, if you are more honorable than your opponent, choose a card in your conflict discard pile - add that card to your hand.
 this.reaction('Add a card from the discard pile to the hand')
