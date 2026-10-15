@@ -32,7 +32,6 @@ export interface GameRules {
     dynastyPhaseCanPlayAttachments: boolean;
     dynastyPhaseCanPlayConflictEvents: (action: CardAction) => boolean;
     dynastyPhaseCanPlayConflictCharacters: boolean;
-    dynastyPhaseForcedFatePerRound?: number;
     dynastyPhasePassingFate: boolean;
     dynastyPhaseActionsFromCardsInPlay: boolean;
     fatePerRoundForced?: number;
@@ -47,7 +46,6 @@ export interface GameRules {
     ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) => boolean;
     setupFixedStartingHonor?: number;
     setupHaveProvinceCards: boolean;
-    setupHaveRoles: boolean;
     setupHaveStrongholds: boolean;
     setupNonStrongholdProvinces: Location[];
     setupStartingHandSize: number;
@@ -68,7 +66,6 @@ const Stronghold: GameRules = {
     dynastyPhaseCanPlayAttachments: false,
     dynastyPhaseCanPlayConflictCharacters: false,
     dynastyPhaseCanPlayConflictEvents: () => true,
-    dynastyPhaseForcedFatePerRound: undefined,
     dynastyPhasePassingFate: true,
     fatePerRoundForced: undefined,
     fatePhaseForceDiscardFromBrokenProvinces: true,
@@ -78,7 +75,6 @@ const Stronghold: GameRules = {
     imperialFavorSovereign: 'Emperor\'s',
     setupFixedStartingHonor: undefined,
     setupHaveProvinceCards: true,
-    setupHaveRoles: true,
     setupHaveStrongholds: true,
     setupNonStrongholdProvinces: [
         Location.ProvinceOne,
@@ -114,7 +110,6 @@ const Skirmish: GameRules = {
     deckoutHonorLoss: 3,
     duelRules: 'skirmish',
     dynastyPhaseCanPlayConflictEvents: () => false,
-    dynastyPhaseForcedFatePerRound: 6,
     dynastyPhasePassingFate: false,
     fatePerRoundForced: 6,
     fatePhaseForceDiscardFromBrokenProvinces: false,
@@ -123,7 +118,6 @@ const Skirmish: GameRules = {
     imperialFavorHasSides: false,
     setupFixedStartingHonor: 6,
     setupHaveProvinceCards: false,
-    setupHaveRoles: false,
     setupHaveStrongholds: false,
     setupNonStrongholdProvinces: [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree],
     setupStartingHandSize: 3,
