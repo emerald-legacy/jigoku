@@ -86,7 +86,7 @@ export const canPlayFromOutOfPlay = (player: (player: Player, card: BaseCard) =>
 export const registerToPlayFromOutOfPlay = () =>
     EffectBuilder.card.detached(EffectName.RegisterToPlayFromOutOfPlay, {
         apply: (card) => {
-            for(const reaction of card.reactions) {
+            for(const reaction of card.getReactions()) {
                 reaction.registerEvents();
             }
         },
@@ -250,7 +250,7 @@ export const canPlayFromOpponents = (location: Location, cards: DrawCard[], sour
             for(const card of cards.filter(
                 (card) => card.type === CardType.Event && card.location === location
             )) {
-                for(const reaction of card.reactions) {
+                for(const reaction of card.getReactions()) {
                     reaction.registerEvents();
                 }
             }

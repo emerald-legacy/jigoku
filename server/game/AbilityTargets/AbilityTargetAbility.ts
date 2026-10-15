@@ -31,7 +31,7 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
 
     getSelector(properties: AbilityTargetAbilityProperties): CardSelectorInstance {
         const cardCondition = (card: BaseCard, context: AbilityContext) => {
-            const abilities = [...card.actions, ...card.reactions].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
+            const abilities = [...card.getCardActions(), ...card.getReactions()].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
             return abilities.some((ability) => {
                 const contextCopy = context.copy({});
                 contextCopy.targetAbility = ability;
@@ -71,7 +71,7 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
                 if(Array.isArray(card)) {
                     return true;
                 }
-                const abilities = [...card.actions, ...card.reactions].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
+                const abilities = [...card.getCardActions(), ...card.getReactions()].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
                 if(abilities.length === 1) {
                     context.targetAbility = abilities[0];
                 } else if(abilities.length > 1) {

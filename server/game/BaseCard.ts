@@ -233,7 +233,7 @@ export class BaseCard extends EffectSource {
         return gained;
     }
 
-    _getActions(ignoreDynamicGains = false): CardAction[] {
+    getCardActions(ignoreDynamicGains = false): CardAction[] {
         const copied = this.copiedAbilities();
         const gainedActions = this.getEffects(EffectName.GainAbility).filter(
             (ability): ability is CardAction => ability instanceof CardAction && ability.abilityType === AbilityType.Action
@@ -245,11 +245,8 @@ export class BaseCard extends EffectSource {
         return this.anyEffect(EffectName.LoseAllNonKeywordAbilities) ? actions.filter((a) => a.isKeywordAbility()) : actions;
     }
 
-    get actions(): CardAction[] {
-        return this._getActions();
-    }
 
-    _getReactions(ignoreDynamicGains = false): TriggeredAbility[] {
+    getReactions(ignoreDynamicGains = false): TriggeredAbility[] {
         const copied = this.copiedAbilities();
         const gainedReactions = this.getEffects(EffectName.GainAbility).filter(
             (ability): ability is TriggeredAbility => ability instanceof TriggeredAbility && TRIGGERED_ABILITY_TYPES.has(ability.abilityType)
@@ -261,11 +258,8 @@ export class BaseCard extends EffectSource {
         return this.anyEffect(EffectName.LoseAllNonKeywordAbilities) ? reactions.filter((a) => a.isKeywordAbility()) : reactions;
     }
 
-    get reactions(): TriggeredAbility[] {
-        return this._getReactions();
-    }
 
-    _getPersistentEffects(ignoreDynamicGains = false): StoredPersistentEffect[] {
+    getPersistentEffects(ignoreDynamicGains = false): StoredPersistentEffect[] {
         const gainedEffects: StoredPersistentEffect[] = this.getEffects(EffectName.GainAbility).filter(isPersistentGain);
         const copied = this.copiedAbilities();
         if(copied) {
@@ -284,16 +278,13 @@ export class BaseCard extends EffectSource {
         return this.isBlank() ? gained : this.abilities.persistentEffects.concat(gained);
     }
 
-    get persistentEffects(): StoredPersistentEffect[] {
-        return this._getPersistentEffects();
-    }
 
     override getEffectController(): Player {
         return this.controller;
     }
 
     override getPersistentEffectRecords(): readonly StoredPersistentEffect[] {
-        return this.persistentEffects;
+        return this.getPersistentEffects();
     }
 
     setupCardAbilities(): void {}
@@ -639,7 +630,7 @@ export class BaseCard extends EffectSource {
     }
 
     applyAnyLocationPersistentEffects(): void {
-        for(const effect of this.persistentEffects) {
+        for(const effect of this.getPersistentEffects()) {
             if(effect.location === Location.Any) {
                 effect.ref = this.addEffectToEngine(effect);
             }
@@ -666,7 +657,7 @@ export class BaseCard extends EffectSource {
         if(reset) {
             this.resetLimits();
         }
-        for(const reaction of this.reactions) {
+        for(const reaction of this.getReactions()) {
             if(this.type === CardType.Event) {
                 if(
                     to === Location.ConflictDeck ||
@@ -696,7 +687,7 @@ export class BaseCard extends EffectSource {
             this.removeLastingEffects();
         }
         this.updateStatusTokenEffects();
-        for(const effect of this.persistentEffects) {
+        for(const effect of this.getPersistentEffects()) {
             if(effect.location === Location.Any) {
                 continue;
             }
@@ -719,7 +710,7 @@ export class BaseCard extends EffectSource {
     }
 
     updateEffectContexts() {
-        for(const effect of this.persistentEffects) {
+        for(const effect of this.getPersistentEffects()) {
             for(const engineEffect of effect.ref ?? []) {
                 engineEffect.refreshContext();
             }
@@ -869,11 +860,7 @@ export class BaseCard extends EffectSource {
     }
 
     getActions(): BaseCardAbility[] {
-        return this.actions.slice();
-    }
-
-    getReactions(): TriggeredAbility[] {
-        return this.reactions.slice();
+        return this.getCardActions();
     }
 
     getProvinceStrengthBonus(): number {

@@ -21,7 +21,7 @@ describe('a gained ability with its own limit, gained again by the same characte
                 this.game.queueSimpleStep(() => attach({ attachment: this.tetsubo }).resolve(target, context));
                 this.game.continue();
             };
-            this.gainedLimit = () => this.manipulator.reactions.find((reaction) => reaction.title === 'Make opponent discard 1 card').limit;
+            this.gainedLimit = () => this.manipulator.getReactions().find((reaction) => reaction.title === 'Make opponent discard 1 card').limit;
         });
 
         it('still resets its uses at the end of the round', function() {

@@ -20,7 +20,7 @@ interface TriggeredAbilityTestContext {
 describe('TriggeredAbility', function () {
     beforeEach(function (this: TriggeredAbilityTestContext) {
         this.gameSpy = jasmine.createSpyObj('game', ['on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow', 'registerAbility', 'getPlayers']);
-        this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities', 'anyEffect', 'isCard']);
+        this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities', 'anyEffect', 'isCard', 'getReactions']);
         this.cardSpy.isCard.and.returnValue(true);
         this.cardSpy.game = this.gameSpy;
         this.player = { name: 'player1', playableLocations: [], findPlayType: () => undefined };
@@ -38,7 +38,7 @@ describe('TriggeredAbility', function () {
         this.properties.when[EventName.OnCardPlayed].and.returnValue(true);
 
         this.reaction = new TriggeredAbility(this.cardSpy, AbilityType.Reaction, this.properties);
-        this.cardSpy.reactions = [this.reaction];
+        this.cardSpy.getReactions.and.returnValue([this.reaction]);
     });
 
     describe('eventHandler()', function() {

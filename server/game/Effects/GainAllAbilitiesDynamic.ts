@@ -40,10 +40,10 @@ export class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, BaseCard>
         this.actions = [];
         this.reactions = [];
         cardList.forEach((card: BaseCard) => {
-            card._getActions(true)
+            card.getCardActions(true)
                 .filter((a: CardAction) => a.isTriggeredAbility() && (!card.isBlank() || (!this.printedAbilitiesOnly && !a.printedAbility)))
                 .forEach((action: CardAction) => this.actions.push(this.getAbility(AbilityType.Action, action, target)));
-            card._getReactions(true)
+            card.getReactions(true)
                 .filter((a: TriggeredAbility) => a.isTriggeredAbility() && (!card.isBlank() || (!this.printedAbilitiesOnly && !a.printedAbility)))
                 .forEach((ability: TriggeredAbility) => {
                     this.reactions.push(this.getAbility(ability.abilityType, ability, target));

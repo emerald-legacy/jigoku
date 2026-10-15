@@ -13,7 +13,7 @@ export function canPlayFromOwn(
         apply(player) {
             for(const card of cards) {
                 if(card.type === CardType.Event && card.location === location) {
-                    for(const reaction of card.reactions) {
+                    for(const reaction of card.getReactions()) {
                         reaction.registerEvents();
                     }
                 }

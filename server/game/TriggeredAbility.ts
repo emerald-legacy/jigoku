@@ -79,7 +79,7 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
         for(const player of this.game.getPlayers()) {
             const context = this.createEventContext(player, event);
             if(
-                this.card.reactions.includes(this) &&
+                this.card.getReactions().includes(this) &&
                 this.isTriggeredByEvent(event, context) &&
                 this.meetsRequirements(context) === Blocker.None
             ) {
@@ -92,7 +92,7 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
         for(const player of this.game.getPlayers()) {
             const context = this.createAggregateContext(player, events);
             if(
-                this.card.reactions.includes(this) &&
+                this.card.getReactions().includes(this) &&
                 this.aggregateWhen?.(events, context) &&
                 this.meetsRequirements(context) === Blocker.None
             ) {

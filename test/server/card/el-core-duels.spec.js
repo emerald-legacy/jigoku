@@ -34,10 +34,10 @@ describe('Emerald Core Duels', function() {
                         .gameAction(gainFate(context => ({ target: context.player })));
                 });
 
-                for(const reaction of this.duelEffect.reactions) {
+                for(const reaction of this.duelEffect.getReactions()) {
                     reaction.registerEvents();
                 }
-                for(const reaction of this.duelEffect2.reactions) {
+                for(const reaction of this.duelEffect2.getReactions()) {
                     reaction.registerEvents();
                 }
 
@@ -123,10 +123,10 @@ describe('Emerald Core Duels', function() {
                         .gameAction(gainFate(context => ({ target: context.player })));
                 });
 
-                for(const reaction of this.duelEffect.reactions) {
+                for(const reaction of this.duelEffect.getReactions()) {
                     reaction.registerEvents();
                 }
-                for(const reaction of this.duelEffect2.reactions) {
+                for(const reaction of this.duelEffect2.getReactions()) {
                     reaction.registerEvents();
                 }
 
@@ -254,10 +254,10 @@ describe('Emerald Core Duels', function() {
                         .gameAction(gainFate(context => ({ target: context.player })));
                 });
 
-                for(const reaction of this.duelEffect.reactions) {
+                for(const reaction of this.duelEffect.getReactions()) {
                     reaction.registerEvents();
                 }
-                for(const reaction of this.duelEffect2.reactions) {
+                for(const reaction of this.duelEffect2.getReactions()) {
                     reaction.registerEvents();
                 }
 
@@ -359,13 +359,13 @@ describe('Emerald Core Duels', function() {
                         .gameAction(gainHonor(context => ({ target: context.player })));
                 });
 
-                for(const reaction of this.duelEffect.reactions) {
+                for(const reaction of this.duelEffect.getReactions()) {
                     reaction.registerEvents();
                 }
-                for(const reaction of this.duelEffect2.reactions) {
+                for(const reaction of this.duelEffect2.getReactions()) {
                     reaction.registerEvents();
                 }
-                for(const reaction of this.duelEffect3.reactions) {
+                for(const reaction of this.duelEffect3.getReactions()) {
                     reaction.registerEvents();
                 }
 
