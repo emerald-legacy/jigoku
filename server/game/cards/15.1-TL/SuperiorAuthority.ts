@@ -5,7 +5,8 @@ class SuperiorAuthority extends DrawCard {
     static id = 'superior-authority';
 
     override setupCardAbilities() {
-        this.conflictAction('Stop characters with 0 fate from contributing skill')
+        this.action('Stop characters with 0 fate from contributing skill')
+            .condition((context) => context.game.isDuringConflict())
             .conflictLastingEffect((context) => ({
                 effect: cannotContribute(() => {
                     return (card) => card.getFate() === 0 && card.checkRestrictions(undefined, context);

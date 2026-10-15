@@ -60,7 +60,7 @@ this.action('Sacrifice to discard an attachment')
 
   <div class="ref" id="cm-conflictAction" data-name="conflictAction">
     <h3><code>conflictAction(title, options?)</code> <span class="kind">Card method</span> <a class="anchor" href="#cm-conflictAction">#</a></h3>
-    <p>Starts a "Conflict Action:" (or "[military] Conflict Action:"): an action that can only be used during a conflict, of <code>conflictType</code> if given. A character must be participating; an attachment in play needs its character to be participating. Events and holdings only need the conflict. Defined on <code>DrawCard</code>.</p>
+    <p>Starts a "Conflict Action:" (or "[military] Conflict Action:"): an action that can only be used during a conflict, of <code>conflictType</code> if given. A character must be participating; an attachment in play needs its character to be participating. Events and holdings only need the conflict. Defined on <code>DrawCard</code>. Only for a card whose text prints "Conflict Action:" (Emerald Legacy wording); an older card that prints "Action: During a conflict, …" or "While this character is participating …" is an <code>action()</code> with that condition written out.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -86,7 +86,7 @@ this.conflictAction('Force opponent to discard card or dishonor a character', { 
         .discardAtRandom((context) =&gt; ({ target: context.target.controller }))
     .otherwise()
         .dishonor();</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/ShosuroHiroyuki.ts">Shosuro Hiroyuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/Kuro.ts">Kuro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Blackmail.ts">Blackmail</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Charge.ts">Charge!</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/ShosuroHiroyuki.ts">Shosuro Hiroyuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/Kuro.ts">Kuro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crane/KakitaMio.ts">Kakita Mio</a> (131 card files)</p>
   </div>
 </section>
 

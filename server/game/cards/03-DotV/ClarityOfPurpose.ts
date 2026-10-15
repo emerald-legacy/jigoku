@@ -7,7 +7,8 @@ class ClarityOfPurpose extends DrawCard {
     static id = 'clarity-of-purpose';
 
     override setupCardAbilities() {
-        this.conflictAction('Character cannot be bowed and doesn\'t bow during political conflicts')
+        this.action('Character cannot be bowed and doesn\'t bow during political conflicts')
+            .condition((context) => context.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

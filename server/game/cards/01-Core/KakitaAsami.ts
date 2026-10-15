@@ -5,9 +5,9 @@ class KakitaAsami extends DrawCard {
     static id = 'kakita-asami';
 
     override setupCardAbilities() {
-        this.conflictAction('Take one honor from your opponent', { conflictType: ConflictType.Political })
+        this.action('Take one honor from your opponent')
             .condition((context) => {
-                if(!context.game.currentConflict) {
+                if(!context.source.isParticipating(ConflictType.Political) || !context.game.currentConflict) {
                     return false;
                 }
                 const diff = context.game.currentConflict.attackerSkill - context.game.currentConflict.defenderSkill;

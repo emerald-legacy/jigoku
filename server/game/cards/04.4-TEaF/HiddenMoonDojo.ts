@@ -19,7 +19,8 @@ export default class HiddenMoonDojo extends DrawCard {
             effect: gainPlayAction(PlayCharacterAsIfFromHand)
         });
 
-        this.conflictAction('Turn an adjacent card face up')
+        this.action('Turn an adjacent card face up')
+            .condition((context) => context.game.isDuringConflict())
             .selectCard({
                 location: Location.Provinces,
                 controller: Players.Self,

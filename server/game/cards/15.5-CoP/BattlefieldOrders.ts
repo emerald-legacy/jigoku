@@ -15,7 +15,8 @@ class BattlefieldOrders extends DrawCard {
             effect: reduceCost({ match: (card, source) => card === source })
         });
 
-        this.conflictAction('Resolve an ability', { conflictType: ConflictType.Military })
+        this.action('Resolve an ability')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .abilityTarget({
                 activePromptTitle: 'Select an ability to resolve',
                 abilityCondition: (ability) => ability.abilityType === AbilityType.Action,

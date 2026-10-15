@@ -8,7 +8,8 @@ class CompellingTestimony extends DrawCard {
     static id = 'compelling-testimony';
 
     override setupCardAbilities() {
-        this.conflictAction('Give a character -4 political', { conflictType: ConflictType.Political })
+        this.action('Give a character -4 political')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

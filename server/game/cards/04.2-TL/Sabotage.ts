@@ -6,7 +6,8 @@ class Sabotage extends DrawCard {
     static id = 'sabotage';
 
     override setupCardAbilities() {
-        this.conflictAction('Discard a card in a province', { conflictType: ConflictType.Military })
+        this.action('Discard a card in a province')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 location: Location.Provinces,
                 controller: Players.Opponent,

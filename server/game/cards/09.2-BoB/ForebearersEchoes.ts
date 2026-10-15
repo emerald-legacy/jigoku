@@ -7,7 +7,8 @@ class ForebearersEchoes extends DrawCard {
     static id = 'forebearer-s-echoes';
 
     override setupCardAbilities() {
-        this.conflictAction('Put a character into play', { conflictType: ConflictType.Military })
+        this.action('Put a character into play')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 activePromptTitle: 'Choose a character from your dynasty discard pile',
                 location: Location.DynastyDiscardPile,

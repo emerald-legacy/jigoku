@@ -8,7 +8,8 @@ class SeizeTheMind extends DrawCard {
     static id = 'seize-the-mind';
 
     override setupCardAbilities() {
-        this.conflictAction('Take control of a character')
+        this.action('Take control of a character')
+            .condition((context) => context.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

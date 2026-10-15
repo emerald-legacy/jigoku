@@ -7,7 +7,8 @@ class ImpossibleKoan extends DrawCard {
     static id = 'impossible-koan';
 
     override setupCardAbilities() {
-        this.conflictAction('Make all participating characters have base skills of 1/1')
+        this.action('Make all participating characters have base skills of 1/1')
+            .condition((context) => context.game.isDuringConflict())
             .cardLastingEffect((context) => ({
                 target: context.game.findAnyCardsInPlay((card) => card.type === CardType.Character),
                 effect: [

@@ -9,7 +9,8 @@ export default class KakitasFinalStance extends DrawCard {
 
     public override setupCardAbilities() {
         const duelParticipants = DuelsThisConflict.participants(this.game);
-        this.conflictAction('Character cannot be bowed and doesn\'t bow during resolution', { conflictType: ConflictType.Military })
+        this.action('Character cannot be bowed and doesn\'t bow during resolution')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

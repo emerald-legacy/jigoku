@@ -8,7 +8,8 @@ class DirectingTheBattle extends DrawCard {
     static id = 'directing-the-battle';
 
     override setupCardAbilities() {
-        this.conflictAction('Direct the Battle')
+        this.action('Direct the Battle')
+            .condition((context) => context.game.isDuringConflict())
             .target({
                 name: 'character',
                 cardType: CardType.Character,

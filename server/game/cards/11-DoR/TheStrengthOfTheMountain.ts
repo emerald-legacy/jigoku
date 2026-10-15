@@ -6,7 +6,8 @@ class TheStrengthOfTheMountain extends DrawCard {
     static id = 'the-strength-of-the-mountain';
 
     override setupCardAbilities() {
-        this.conflictAction('Defending characters do not bow')
+        this.action('Defending characters do not bow')
+            .condition((context) => context.game.isDuringConflict())
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getDefenders(),
                 effect: doesNotBow()

@@ -6,7 +6,8 @@ class DarkResurrection extends DrawCard {
     static id = 'dark-resurrection';
 
     override setupCardAbilities() {
-        this.conflictAction('Put characters into play from your discard', { conflictType: ConflictType.Military })
+        this.action('Put characters into play from your discard')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .targetCards({
                 activePromptTitle: 'Choose up to three characters',
                 numCards: 3,

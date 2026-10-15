@@ -7,8 +7,8 @@ class RaiseTheAlarm extends DrawCard {
     static id = 'raise-the-alarm';
 
     override setupCardAbilities() {
-        this.conflictAction('Flip a dynasty card', { conflictType: ConflictType.Military })
-            .condition((context) => context.player.isDefendingPlayer())
+        this.action('Flip a dynasty card')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military) && context.player.isDefendingPlayer())
             .target({
                 controller: Players.Self,
                 location: Location.Provinces,

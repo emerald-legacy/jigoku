@@ -9,7 +9,8 @@ class BreachOfEtiquette extends DrawCard {
     static id = 'breach-of-etiquette';
 
     override setupCardAbilities() {
-        this.conflictAction('Force honor loss on players when their non-courtier characters use abilities', { conflictType: ConflictType.Political })
+        this.action('Force honor loss on players when their non-courtier characters use abilities')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
             .playerLastingEffect((context) => ({
                 target: Players.Self,
                 effect: playerDelayedEffect({

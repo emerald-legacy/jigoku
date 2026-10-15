@@ -9,7 +9,8 @@ export default class CourteousScheming extends DrawCard {
     static id = 'courteous-scheming';
 
     override setupCardAbilities() {
-        this.conflictAction('Initiate a political duel', { conflictType: ConflictType.Political })
+        this.action('Initiate a political duel')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,

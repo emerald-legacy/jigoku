@@ -7,7 +7,8 @@ export default class TaryuJiai extends DrawCard {
     static id = 'taryu-jiai';
 
     override setupCardAbilities() {
-        this.conflictAction('Initiate a glory duel between two shugenja')
+        this.action('Initiate a glory duel between two shugenja')
+            .condition((context) => context.game.isDuringConflict())
             .target({
                 name: 'myShugenja',
                 activePromptTitle: 'Choose a friendly shugenja',

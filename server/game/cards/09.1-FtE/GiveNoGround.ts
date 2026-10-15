@@ -8,7 +8,8 @@ class GiveNoGround extends DrawCard {
     static id = 'give-no-ground';
 
     override setupCardAbilities() {
-        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
+        this.action('Increase a character\'s military skill')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

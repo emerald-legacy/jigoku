@@ -9,7 +9,8 @@ class SpecializedDefenses extends DrawCard {
     static id = 'specialized-defenses';
 
     override setupCardAbilities() {
-        this.conflictAction('Double province strength')
+        this.action('Double province strength')
+            .condition((context) => context.game.isDuringConflict())
             .selectAttackedProvince((context) => ({
                 cardCondition: (card) => card.element.some((element: string) => {
                     if(element === 'all') {

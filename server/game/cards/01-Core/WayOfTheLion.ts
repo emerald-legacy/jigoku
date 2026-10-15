@@ -8,7 +8,8 @@ class WayOfTheLion extends DrawCard {
     static id = 'way-of-the-lion';
 
     override setupCardAbilities() {
-        this.conflictAction('Double the base mil of a character')
+        this.action('Double the base mil of a character')
+            .condition((context) => context.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isFaction('lion') && card.getBaseMilitarySkill() > 0

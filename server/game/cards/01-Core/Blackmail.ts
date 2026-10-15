@@ -7,7 +7,8 @@ class Blackmail extends DrawCard {
     static id = 'blackmail';
 
     override setupCardAbilities() {
-        this.conflictAction('Take control of a character')
+        this.action('Take control of a character')
+            .condition((context) => context.game.isDuringConflict())
             .playOnlyIf((context) => !!context.player.opponent && context.player.isLessHonorable())
             .target({
                 cardType: CardType.Character,

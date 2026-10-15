@@ -5,7 +5,8 @@ class AGameOfLetters extends DrawCard {
     static id = 'a-game-of-letters';
 
     override setupCardAbilities() {
-        this.conflictAction('Honor or dishonor a character', { conflictType: ConflictType.Political })
+        this.action('Honor or dishonor a character')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
             .tokenTarget({
                 name: 'token',
                 activePromptTitle: 'Choose a token',

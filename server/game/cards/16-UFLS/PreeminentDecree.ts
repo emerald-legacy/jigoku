@@ -8,7 +8,8 @@ class PreeminentDecree extends DrawCard {
     static id = 'preeminent-decree';
 
     override setupCardAbilities() {
-        this.conflictAction('Give all participating characters a political penalty')
+        this.action('Give all participating characters a political penalty')
+            .condition((context) => context.game.isDuringConflict())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

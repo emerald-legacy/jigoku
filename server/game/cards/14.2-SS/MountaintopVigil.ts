@@ -6,7 +6,8 @@ class MountaintopVigil extends DrawCard {
     static id = 'mountaintop-vigil';
 
     override setupCardAbilities() {
-        this.conflictAction('cancel all ring effects')
+        this.action('cancel all ring effects')
+            .condition((context) => context.game.isDuringConflict())
             .playerLastingEffect({
                 target: Players.Any,
                 effect: cannotResolveRings()

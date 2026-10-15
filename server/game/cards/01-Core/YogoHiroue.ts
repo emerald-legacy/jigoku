@@ -8,7 +8,8 @@ class YogoHiroue extends DrawCard {
     static id = 'yogo-hiroue';
 
     override setupCardAbilities() {
-        this.conflictAction('Move a character into the conflict')
+        this.action('Move a character into the conflict')
+            .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isParticipating()
