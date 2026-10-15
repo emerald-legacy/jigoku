@@ -3,7 +3,7 @@ import type { AbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
 import { CardAbility } from './CardAbility.js';
-import { type EventName, type Location, type Phase, Players, TargetMode, type Trait } from './Constants.js';
+import { type CardType, type EventName, type Location, type Phase, Players, TargetMode, type Trait } from './Constants.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
@@ -47,10 +47,10 @@ import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from '.
 import type { Derivable } from './utils/helpers.js';
 
 /** A skipped optional target holds `[]`, or nothing if its prompt was hidden (`hideIfNoLegalTargets`). */
-type ChosenCard<K, O> = true extends O ? CardOfType<K> | [] | undefined : CardOfType<K>;
+type ChosenCard<Types, Optional> = true extends Optional ? CardOfType<Types> | [] | undefined : CardOfType<Types>;
 
 /** A skipped optional token target holds nothing. */
-type ChosenTokens<O> = true extends O ? StatusToken[] | undefined : StatusToken[];
+type ChosenTokens<Optional> = true extends Optional ? StatusToken[] | undefined : StatusToken[];
 
 /** Cost results are only known once paid, so they are optional. */
 type BuilderContext<Base extends AbilityContext, Targets, Rings, Costs, Tokens = object> =
@@ -61,14 +61,14 @@ type BuilderContext<Base extends AbilityContext, Targets, Rings, Costs, Tokens =
  * for rings and tokens. A list of cards is not mirrored, so where the value may be a list (a skipped
  * optional target, or a multi-card target's own actions) `context.target` may be unset.
  */
-type NamedTarget<Targets> = Targets extends { target: infer T }
-    ? IsCardList<T> extends true ? unknown : { target: SingleCard<T> }
+type NamedTarget<Targets> = Targets extends { target: infer Chosen }
+    ? IsCardList<Chosen> extends true ? unknown : { target: SingleCard<Chosen> }
     : unknown;
 /** Brackets stop the union from being split: true only if every possible value is a list. */
-type IsCardList<T> = [T] extends [readonly unknown[]] ? true : false;
-type SingleCard<T> = Exclude<T, readonly unknown[]> | (T extends readonly unknown[] ? undefined : never);
-type NamedRing<Rings> = Rings extends { target: infer R } ? { ring: R } : unknown;
-type NamedToken<Tokens> = Tokens extends { target: infer T } ? { token: T } : unknown;
+type IsCardList<Value> = [Value] extends [readonly unknown[]] ? true : false;
+type SingleCard<Value> = Exclude<Value, readonly unknown[]> | (Value extends readonly unknown[] ? undefined : never);
+type NamedRing<Rings> = Rings extends { target: infer Chosen } ? { ring: Chosen } : unknown;
+type NamedToken<Tokens> = Tokens extends { target: infer Chosen } ? { token: Chosen } : unknown;
 
 /**
  * One method only: TypeScript infers `actions.x((context) => ...)` from it exactly, and since methods
@@ -77,7 +77,7 @@ type NamedToken<Tokens> = Tokens extends { target: infer T } ? { token: T } : un
 type BuilderAction<Base extends AbilityContext, Targets, Rings, Costs, Tokens = object> = DeclaredGameAction<BuilderContext<Base, Targets, Rings, Costs, Tokens>>;
 
 /** Copies the listed properties that are set. */
-function copyDefined<P extends object>(to: object, from: P, keys: readonly (keyof P)[]): void {
+function copyDefined<Source extends object>(to: object, from: Source, keys: readonly (keyof Source)[]): void {
     for(const key of keys) {
         if(from[key] !== undefined) {
             Object.assign(to, { [key]: from[key] });
@@ -86,26 +86,26 @@ function copyDefined<P extends object>(to: object, from: P, keys: readonly (keyo
 }
 
 /** The target it depends on is set; other earlier ones may not be, as the engine checks independent targets alone. */
-type Visible<Bag, D extends keyof Bag, Name extends string, V> = Pick<Bag, D> & Partial<Omit<Bag, D>> & { [P in Name]: V };
-type Earlier<Bag, D extends keyof Bag> = Pick<Bag, D> & Partial<Omit<Bag, D>>;
+type Visible<Bag, DependsOn extends keyof Bag, Name extends string, Value> = Pick<Bag, DependsOn> & Partial<Omit<Bag, DependsOn>> & { [Key in Name]: Value };
+type Earlier<Bag, DependsOn extends keyof Bag> = Pick<Bag, DependsOn> & Partial<Omit<Bag, DependsOn>>;
 
 type Dependency<Targets, Rings, Tokens, SelectNames> = ((keyof Targets | keyof Rings | keyof Tokens) & string) | SelectNames;
-type EarlierContext<Base extends AbilityContext, Targets, Rings, Costs, Tokens, D> =
-    BuilderContext<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>;
-type CandidateContext<Base extends AbilityContext, Targets, Rings, Costs, Tokens, D, Name extends string, V> =
-    BuilderContext<Base, Visible<Targets, D & keyof Targets, Name, V>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>;
+type EarlierContext<Base extends AbilityContext, Targets, Rings, Costs, Tokens, DependsOn> =
+    BuilderContext<Base, Earlier<Targets, DependsOn & keyof Targets>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>;
+type CandidateContext<Base extends AbilityContext, Targets, Rings, Costs, Tokens, DependsOn, Name extends string, Value> =
+    BuilderContext<Base, Visible<Targets, DependsOn & keyof Targets, Name, Value>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>;
 
-export type ActionContext<S extends BaseCard> = AbilityContext<S> & { ability: CardAction };
+export type ActionContext<Source extends BaseCard> = AbilityContext<Source> & { ability: CardAction };
 
 /** A step's context: a new one for the same card, holding the earlier steps' targets. */
-type StepContext<Base extends AbilityContext> = Base extends AbilityContext<infer S> ? AbilityContext<S> : AbilityContext;
+type StepContext<Base extends AbilityContext> = Base extends AbilityContext<infer Source> ? AbilityContext<Source> : AbilityContext;
 
-type TriggerEvent<W> = GameEvent<Extract<EventName, keyof W>>;
+type TriggerEvent<When> = GameEvent<Extract<EventName, keyof When>>;
 
-export type TriggerContext<S extends BaseCard, W> = TriggeredAbilityContext<S> & { event: TriggerEvent<W> };
+export type TriggerContext<Source extends BaseCard, When> = TriggeredAbilityContext<Source> & { event: TriggerEvent<When> };
 
 /** Countryside Trader resolves province triggers without their event. */
-type ProvinceTriggerContext<S extends BaseCard, W> = AbilityContext<S> & Pick<TriggeredAbilityContext<S>, 'cancel'> & { event?: TriggerEvent<W> };
+type ProvinceTriggerContext<Source extends BaseCard, When> = AbilityContext<Source> & Pick<TriggeredAbilityContext<Source>, 'cancel'> & { event?: TriggerEvent<When> };
 
 interface TargetSpec {
     readonly bag: 'targets' | 'rings' | 'tokens' | 'targetAbility' | 'element';
@@ -124,8 +124,8 @@ type SelectEntry = TargetSelect & SubTarget;
 type TargetEntry = SingleCardEntry | MultiCardEntry | TokenEntry | AbilityEntry | ElementEntry | RingEntry | SelectEntry;
 
 /** Properties whose callbacks see the builder's context (the factory types them with a context parameter), or a function of that context returning them. */
-type FactoryProperties<K extends keyof GameActions.ActionProps<AbilityContext>, Context extends AbilityContext> =
-    Derivable<GameActions.ActionProps<Context>[K], Context>;
+type FactoryProperties<ActionName extends keyof GameActions.ActionProps<AbilityContext>, Context extends AbilityContext> =
+    Derivable<GameActions.ActionProps<Context>[ActionName], Context>;
 
 interface AbilityDraft {
     readonly title: string;
@@ -199,78 +199,80 @@ type Named<Name extends string> = { name?: Name };
  * A select's choice: a game action, a condition for a choice without game actions, or a game action with the
  * ability's chat text when it is chosen (a format whose `{0}` is the target, or a `msg` template).
  */
-type SelectChoiceValue<Base extends AbilityContext, Targets, Rings, Costs, Tokens, D> =
-    | BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>
-    | ((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => boolean)
+type SelectChoiceValue<Base extends AbilityContext, Targets, Rings, Costs, Tokens, DependsOn> =
+    | BuilderAction<Base, Earlier<Targets, DependsOn & keyof Targets>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>
+    | ((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>) => boolean)
     | {
-        action: BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>;
-        chatText: string | ((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => MessageArgs);
+        action: BuilderAction<Base, Earlier<Targets, DependsOn & keyof Targets>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>;
+        chatText: string | ((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>) => MessageArgs);
     };
 
 /** The label chosen in a select: `context.selects[name].choice`, and `context.select` for the select named 'target'. */
 type Selected<Name extends string, Label extends string> =
-    { selects: { [P in Name]: SelectChoice<Label> } } & ('target' extends Name ? { select: Label } : unknown);
+    { selects: { [Key in Name]: SelectChoice<Label> } } & ('target' extends Name ? { select: Label } : unknown);
 
 /** A target given no name is named 'target'. */
 type TargetName<Name> = [Name] extends [never] ? 'target' : Name;
 
-interface CardChoiceProps<EarlierContext, K, D> {
-    cardType?: K;
+interface CardChoiceProps<EarlierContext, Types, DependsOn> {
+    cardType?: Types;
     location?: Location | Location[];
     controller?: Players | ((context: EarlierContext) => Players);
     player?: Players.Self | Players.Opponent | ((context: EarlierContext) => Players.Self | Players.Opponent);
     activePromptTitle?: string;
-    dependsOn?: D;
+    dependsOn?: DependsOn;
     hideIfNoLegalTargets?: boolean;
 }
 
-interface CardTargetProps<Context, EarlierContext, K, D, O> extends CardChoiceProps<EarlierContext, K, D> {
-    optional?: O;
-    cardCondition?: (card: CardOfType<K>, context: Context) => boolean;
+interface CardTargetProps<Context, EarlierContext, Types, DependsOn, Optional> extends CardChoiceProps<EarlierContext, Types, DependsOn> {
+    optional?: Optional;
+    cardCondition?: (card: CardOfType<Types>, context: Context) => boolean;
 }
 
-type CardsModeProps<EarlierContext, K> =
+type CardsModeProps<EarlierContext, Types> =
     | { mode: TargetMode.Exactly | TargetMode.UpTo; numCards: number; sameDiscardPile?: boolean }
     | { mode: TargetMode.ExactlyVariable | TargetMode.UpToVariable; numCardsFunc: (context: EarlierContext) => number }
-    | { mode: TargetMode.MaxStat; numCards: number; cardStat: (card: CardOfType<K>) => number; maxStat: () => number }
+    | { mode: TargetMode.MaxStat; numCards: number; cardStat: (card: CardOfType<Types>) => number; maxStat: () => number }
     | { mode: TargetMode.Unlimited };
 
-type CardsTargetProps<Context, EarlierContext, K, D> = CardChoiceProps<EarlierContext, K, D> & CardsModeProps<EarlierContext, K> & {
+type CardsTargetProps<Context, EarlierContext, Types, DependsOn> = CardChoiceProps<EarlierContext, Types, DependsOn> & CardsModeProps<EarlierContext, Types> & {
     optional?: boolean;
-    cardCondition?: (card: CardOfType<K>, context: Context) => boolean;
+    cardCondition?: (card: CardOfType<Types>, context: Context) => boolean;
 };
 
-interface TokenTargetProps<EarlierContext, K, D, O> extends CardChoiceProps<EarlierContext, K, D> {
-    optional?: O;
+interface TokenTargetProps<EarlierContext, Types, DependsOn, Optional> extends CardChoiceProps<EarlierContext, Types, DependsOn> {
+    optional?: Optional;
     tokenCondition?: (token: StatusToken, context: EarlierContext) => boolean;
-    cardCondition?: (card: CardOfType<K>, context: EarlierContext) => boolean;
+    cardCondition?: (card: CardOfType<Types>, context: EarlierContext) => boolean;
 }
 
-interface AbilityTargetProps<Context, EarlierContext, K, D> extends CardChoiceProps<EarlierContext, K, D> {
+interface AbilityTargetProps<Context, EarlierContext, Types extends CardType, DependsOn> extends CardChoiceProps<EarlierContext, Types, DependsOn> {
+    /** The type of the card the chosen ability is printed on: one type, which the engine compares with it. */
+    cardType: Types;
     abilityCondition?: (ability: CardAbility) => boolean;
-    cardCondition?: (card: CardOfType<K>, context: Context) => boolean;
+    cardCondition?: (card: CardOfType<Types>, context: Context) => boolean;
 }
 
-interface RingTargetProps<Context, D, O> {
+interface RingTargetProps<Context, DependsOn, Optional> {
     activePromptTitle?: string;
-    dependsOn?: D;
+    dependsOn?: DependsOn;
     player?: Players.Self | Players.Opponent;
-    optional?: O;
+    optional?: Optional;
     hideIfNoLegalTargets?: boolean;
     ringCondition: (ring: Ring, context: Context) => boolean;
 }
 
-interface SelectTargetProps<Context, D> {
+interface SelectTargetProps<Context, DependsOn> {
     activePromptTitle?: string;
-    dependsOn?: D;
+    dependsOn?: DependsOn;
     player?: Players.Self | Players.Opponent | ((context: Context) => Players.Self | Players.Opponent);
     targets?: boolean;
     condition?: (context: Context) => boolean;
 }
 
-function holdsCardOf<K extends CardTypes>(cardType: K | undefined): (value: unknown) => value is CardOfType<K> {
+function holdsCardOf<Types extends CardTypes>(cardType: Types | undefined): (value: unknown) => value is CardOfType<Types> {
     const isCard = isCardOfType(cardType);
-    return (value: unknown): value is CardOfType<K> => value instanceof BaseCard && isCard(value);
+    return (value: unknown): value is CardOfType<Types> => value instanceof BaseCard && isCard(value);
 }
 
 const holdsRing = (value: unknown): value is Ring => value instanceof Ring;
@@ -291,7 +293,7 @@ export class AbilityBuilder<
     constructor(protected readonly draft: AbilityDraft) {}
 
     /** Sets a setting of the ability or step: once, and an ability's own only before then(). */
-    #once<K extends keyof AbilityDraft>(key: K, value: AbilityDraft[K], call: string): void {
+    #once<Key extends keyof AbilityDraft>(key: Key, value: AbilityDraft[Key], call: string): void {
         if(this.draft[key] !== undefined) {
             throw new Error(`${this.draft.title}: ${call} is already set`);
         }
@@ -317,7 +319,7 @@ export class AbilityBuilder<
     }
 
     /** The runtime check behind `BuilderContext`. */
-    #isContext<V extends BuilderContext<Base, object, object, Costs>>(context: AbilityContext, required: readonly TargetSpec[], optional: readonly TargetSpec[] = []): context is V {
+    #isContext<CheckedContext extends BuilderContext<Base, object, object, Costs>>(context: AbilityContext, required: readonly TargetSpec[], optional: readonly TargetSpec[] = []): context is CheckedContext {
         const value = (spec: TargetSpec) => {
             switch(spec.bag) {
                 case 'targets':
@@ -352,9 +354,9 @@ export class AbilityBuilder<
             optional.every((spec) => value(spec) === undefined || spec.holds(value(spec)));
     }
 
-    #checked<V extends BuilderContext<Base, object, object, Costs>, R>(fn: (context: V) => R, required: readonly TargetSpec[], optional: readonly TargetSpec[] = []): (context: AbilityContext) => R {
+    #checked<CheckedContext extends BuilderContext<Base, object, object, Costs>, Result>(fn: (context: CheckedContext) => Result, required: readonly TargetSpec[], optional: readonly TargetSpec[] = []): (context: AbilityContext) => Result {
         return (context) => {
-            if(!this.#isContext<V>(context, required, optional)) {
+            if(!this.#isContext<CheckedContext>(context, required, optional)) {
                 throw this.#contextError();
             }
             return fn(context);
@@ -369,7 +371,7 @@ export class AbilityBuilder<
         ];
     }
 
-    #cardChoice<K extends CardTypes>(props: CardChoiceProps<never, K, string>): CardChoiceEntry {
+    #cardChoice<Types extends CardTypes>(props: CardChoiceProps<never, Types, string>): CardChoiceEntry {
         const [earlier, others] = this.#earlier(props.dependsOn);
         const entry: CardChoiceEntry = {};
         copyDefined(entry, props, ['location', 'activePromptTitle', 'dependsOn', 'hideIfNoLegalTargets']);
@@ -391,9 +393,9 @@ export class AbilityBuilder<
         return entry;
     }
 
-    #cardCondition<Card, C extends BuilderContext<Base, object, object, Costs>>(
+    #cardCondition<Card, TargetContext extends BuilderContext<Base, object, object, Costs>>(
         holdsCard: (value: unknown) => value is Card,
-        condition: (card: Card, context: C) => boolean,
+        condition: (card: Card, context: TargetContext) => boolean,
         required: readonly TargetSpec[],
         optional: readonly TargetSpec[]
     ): (card: DrawCard, context: AbilityContext) => boolean {
@@ -402,7 +404,7 @@ export class AbilityBuilder<
             if(!holdsCard(card)) {
                 return false;
             }
-            if(!this.#isContext<C>(context, required, optional)) {
+            if(!this.#isContext<TargetContext>(context, required, optional)) {
                 throw this.#contextError();
             }
             return condition(card, context);
@@ -411,21 +413,21 @@ export class AbilityBuilder<
 
     target<
         const Name extends string = never,
-        const K extends CardTypes = undefined,
-        D extends Dependency<Targets, Rings, Tokens, SelectNames> = never,
-        const O extends boolean = false
+        const Types extends CardTypes = undefined,
+        DependsOn extends Dependency<Targets, Rings, Tokens, SelectNames> = never,
+        const Optional extends boolean = false
     >(
         props: Named<Name> & CardTargetProps<
-            CandidateContext<Base, Targets, Rings, Costs, Tokens, D, TargetName<NoInfer<Name>>, CardOfType<K>>,
-            EarlierContext<Base, Targets, Rings, Costs, Tokens, D>,
-            K,
-            D,
-            O
+            CandidateContext<Base, Targets, Rings, Costs, Tokens, DependsOn, TargetName<NoInfer<Name>>, CardOfType<Types>>,
+            EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>,
+            Types,
+            DependsOn,
+            Optional
         >,
-        ...gameActions: NoInfer<BuilderAction<Base, Visible<Targets, D & keyof Targets, TargetName<Name>, ChosenCard<K, O>>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>>[]
-    ): AbilityBuilder<Base, Targets & { [P in TargetName<Name>]: ChosenCard<K, O> }, Rings, Costs, Tokens, SelectNames> {
+        ...gameActions: NoInfer<BuilderAction<Base, Visible<Targets, DependsOn & keyof Targets, TargetName<Name>, ChosenCard<Types, Optional>>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>>[]
+    ): AbilityBuilder<Base, Targets & { [Key in TargetName<Name>]: ChosenCard<Types, Optional> }, Rings, Costs, Tokens, SelectNames> {
         const name = props.name ?? 'target';
-        const holdsCard = holdsCardOf<K>(props.cardType);
+        const holdsCard = holdsCardOf<Types>(props.cardType);
         const skipped = (value: unknown) => props.optional === true && (value === undefined || (Array.isArray(value) && value.length === 0));
         const candidate: TargetSpec = { bag: 'targets', name, holds: holdsCard };
         const own: TargetSpec = { bag: 'targets', name, holds: (value) => holdsCard(value) || skipped(value) };
@@ -437,19 +439,19 @@ export class AbilityBuilder<
     /** Several cards at once, by `mode`. Its callbacks see one candidate at a time; later ones, every card chosen. */
     targetCards<
         const Name extends string = never,
-        const K extends CardTypes = undefined,
-        D extends Dependency<Targets, Rings, Tokens, SelectNames> = never
+        const Types extends CardTypes = undefined,
+        DependsOn extends Dependency<Targets, Rings, Tokens, SelectNames> = never
     >(
         props: Named<Name> & CardsTargetProps<
-            CandidateContext<Base, Targets, Rings, Costs, Tokens, D, TargetName<NoInfer<Name>>, CardOfType<K>>,
-            EarlierContext<Base, Targets, Rings, Costs, Tokens, D>,
-            K,
-            D
+            CandidateContext<Base, Targets, Rings, Costs, Tokens, DependsOn, TargetName<NoInfer<Name>>, CardOfType<Types>>,
+            EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>,
+            Types,
+            DependsOn
         >,
-        ...gameActions: NoInfer<BuilderAction<Base, Visible<Targets, D & keyof Targets, TargetName<Name>, CardOfType<K> | CardOfType<K>[]>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>>[]
-    ): AbilityBuilder<Base, Targets & { [P in TargetName<Name>]: CardOfType<K>[] }, Rings, Costs, Tokens, SelectNames> {
+        ...gameActions: NoInfer<BuilderAction<Base, Visible<Targets, DependsOn & keyof Targets, TargetName<Name>, CardOfType<Types> | CardOfType<Types>[]>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>>[]
+    ): AbilityBuilder<Base, Targets & { [Key in TargetName<Name>]: CardOfType<Types>[] }, Rings, Costs, Tokens, SelectNames> {
         const name = props.name ?? 'target';
-        const holdsCard = holdsCardOf<K>(props.cardType);
+        const holdsCard = holdsCardOf<Types>(props.cardType);
         const candidate: TargetSpec = { bag: 'targets', name, holds: holdsCard };
         const own: TargetSpec = { bag: 'targets', name, holds: (value) => Array.isArray(value) && value.every(holdsCard) };
         const [earlier, others] = this.#earlier(props.dependsOn);
@@ -459,10 +461,10 @@ export class AbilityBuilder<
     }
 
     /** What `target()` and `targetCards()` share: its callbacks see the candidate card, later ones what was chosen. */
-    #addCardTarget<Card, C extends BuilderContext<Base, object, object, Costs>>(
+    #addCardTarget<Card, TargetContext extends BuilderContext<Base, object, object, Costs>>(
         name: string,
         entry: SingleCardEntry | MultiCardEntry,
-        props: { dependsOn?: string; optional?: boolean; cardCondition?: (card: Card, context: C) => boolean },
+        props: { dependsOn?: string; optional?: boolean; cardCondition?: (card: Card, context: TargetContext) => boolean },
         holdsCard: (value: unknown) => value is Card,
         candidate: TargetSpec,
         own: TargetSpec,
@@ -480,10 +482,10 @@ export class AbilityBuilder<
         this.draft.cardTargets = [...(this.draft.cardTargets ?? []), name];
     }
 
-    #multiCardEntry<K extends CardTypes, EarlierContext extends BuilderContext<Base, object, object, Costs>>(
+    #multiCardEntry<Types extends CardTypes, EarlierContext extends BuilderContext<Base, object, object, Costs>>(
         choice: CardChoiceEntry,
-        props: CardsModeProps<EarlierContext, K>,
-        holdsCard: (value: unknown) => value is CardOfType<K>,
+        props: CardsModeProps<EarlierContext, Types>,
+        holdsCard: (value: unknown) => value is CardOfType<Types>,
         earlier: readonly TargetSpec[],
         others: readonly TargetSpec[]
     ): MultiCardEntry {
@@ -517,15 +519,15 @@ export class AbilityBuilder<
     /** The status tokens on a chosen card. Its own conditions run before it is set. */
     tokenTarget<
         const Name extends string = never,
-        const K extends CardTypes = undefined,
-        D extends Dependency<Targets, Rings, Tokens, SelectNames> = never,
-        const O extends boolean = false
+        const Types extends CardTypes = undefined,
+        DependsOn extends Dependency<Targets, Rings, Tokens, SelectNames> = never,
+        const Optional extends boolean = false
     >(
-        props: Named<Name> & TokenTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>, K, D, O>,
-        ...gameActions: NoInfer<BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Visible<Tokens, D & keyof Tokens, TargetName<Name>, StatusToken[]>>>[]
-    ): AbilityBuilder<Base, Targets, Rings, Costs, Tokens & { [P in TargetName<Name>]: ChosenTokens<O> }, SelectNames> {
+        props: Named<Name> & TokenTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>, Types, DependsOn, Optional>,
+        ...gameActions: NoInfer<BuilderAction<Base, Earlier<Targets, DependsOn & keyof Targets>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Visible<Tokens, DependsOn & keyof Tokens, TargetName<Name>, StatusToken[]>>>[]
+    ): AbilityBuilder<Base, Targets, Rings, Costs, Tokens & { [Key in TargetName<Name>]: ChosenTokens<Optional> }, SelectNames> {
         const name = props.name ?? 'target';
-        const holdsCard = holdsCardOf<K>(props.cardType);
+        const holdsCard = holdsCardOf<Types>(props.cardType);
         const own: TargetSpec = { bag: 'tokens', name, holds: (value) => holdsTokens(value) || (props.optional === true && value === undefined) };
         const [earlier, others] = this.#earlier(props.dependsOn);
         const entry: TokenEntry = { ...this.#cardChoice(props), mode: TargetMode.Token };
@@ -534,7 +536,7 @@ export class AbilityBuilder<
         }
         const { tokenCondition } = props;
         if(tokenCondition) {
-            const checked = this.#checked((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => context, earlier, others);
+            const checked = this.#checked((context: EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>) => context, earlier, others);
             entry.tokenCondition = (token, context) => tokenCondition(token, checked(context));
         }
         if(props.cardCondition) {
@@ -547,19 +549,19 @@ export class AbilityBuilder<
 
     /** A triggered ability printed on a chosen card; it is always `context.targetAbility`, so this target takes no name. */
     abilityTarget<
-        const K extends CardTypes = undefined,
-        D extends Dependency<Targets, Rings, Tokens, SelectNames> = never
+        const Types extends CardType,
+        DependsOn extends Dependency<Targets, Rings, Tokens, SelectNames> = never
     >(
         props: AbilityTargetProps<
-            EarlierContext<Base & { targetAbility: CardAbility }, Targets, Rings, Costs, Tokens, D>,
-            EarlierContext<Base, Targets, Rings, Costs, Tokens, D>,
-            K,
-            D
+            EarlierContext<Base & { targetAbility: CardAbility }, Targets, Rings, Costs, Tokens, DependsOn>,
+            EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>,
+            Types,
+            DependsOn
         >,
-        ...gameActions: NoInfer<BuilderAction<Base & { targetAbility: CardAbility }, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>>[]
+        ...gameActions: NoInfer<BuilderAction<Base & { targetAbility: CardAbility }, Earlier<Targets, DependsOn & keyof Targets>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>>[]
     ): AbilityBuilder<Base & { targetAbility: CardAbility }, Targets, Rings, Costs, Tokens, SelectNames> {
         const name = 'target';
-        const holdsCard = holdsCardOf<K>(props.cardType);
+        const holdsCard = holdsCardOf<Types>(props.cardType);
         const own: TargetSpec = { bag: 'targetAbility', name: 'targetAbility', holds: holdsAbility };
         const [earlier, others] = this.#earlier(props.dependsOn);
         const entry: AbilityEntry = { ...this.#cardChoice(props), mode: TargetMode.Ability };
@@ -575,8 +577,8 @@ export class AbilityBuilder<
     }
 
     /** An element symbol printed on a chosen card, in `context.element`; the card is `context.elementCard`. */
-    elementTarget<const K extends CardTypes = undefined>(
-        props: Pick<CardChoiceProps<never, K, never>, 'cardType' | 'location' | 'activePromptTitle'>,
+    elementTarget<const Types extends CardTypes = undefined>(
+        props: Pick<CardChoiceProps<never, Types, never>, 'cardType' | 'location' | 'activePromptTitle'>,
         ...gameActions: NoInfer<BuilderAction<Base & { element: ElementSymbol; elementCard: BaseCard }, Targets, Rings, Costs, Tokens>>[]
     ): AbilityBuilder<Base & { element: ElementSymbol; elementCard: BaseCard }, Targets, Rings, Costs, Tokens, SelectNames> {
         const own: TargetSpec = { bag: 'element', name: 'target', holds: holdsElement };
@@ -600,10 +602,10 @@ export class AbilityBuilder<
     }
 
     /** `ringCondition` gets the candidate as an argument: the engine's ring prompt doesn't set it on the context. */
-    ringTarget<const Name extends string = never, D extends Dependency<Targets, Rings, Tokens, SelectNames> = never, const O extends boolean = false>(
-        props: Named<Name> & RingTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>, D, O>,
-        ...gameActions: NoInfer<BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Visible<Rings, D & keyof Rings, TargetName<Name>, Ring>, Costs, Earlier<Tokens, D & keyof Tokens>>>[]
-    ): AbilityBuilder<Base, Targets, Rings & { [P in TargetName<Name>]: true extends O ? Ring | undefined : Ring }, Costs, Tokens, SelectNames> {
+    ringTarget<const Name extends string = never, DependsOn extends Dependency<Targets, Rings, Tokens, SelectNames> = never, const Optional extends boolean = false>(
+        props: Named<Name> & RingTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>, DependsOn, Optional>,
+        ...gameActions: NoInfer<BuilderAction<Base, Earlier<Targets, DependsOn & keyof Targets>, Visible<Rings, DependsOn & keyof Rings, TargetName<Name>, Ring>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>>[]
+    ): AbilityBuilder<Base, Targets, Rings & { [Key in TargetName<Name>]: true extends Optional ? Ring | undefined : Ring }, Costs, Tokens, SelectNames> {
         const name = props.name ?? 'target';
         const own: TargetSpec = { bag: 'rings', name, holds: (value) => holdsRing(value) || (props.optional === true && value === undefined) };
         const [required, others] = this.#earlier(props.dependsOn);
@@ -611,7 +613,7 @@ export class AbilityBuilder<
         const entry: RingEntry = {
             mode: TargetMode.Ring,
             ringCondition: (ring, context) => {
-                if(!this.#isContext<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>>(context, required, optional)) {
+                if(!this.#isContext<EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>>(context, required, optional)) {
                     throw this.#contextError();
                 }
                 return props.ringCondition(ring, context);
@@ -628,9 +630,9 @@ export class AbilityBuilder<
     select<const Label extends string = string>(
         choices: Record<Label, NoInfer<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, never>>>
     ): AbilityBuilder<Base & Selected<'target', Label>, Targets, Rings, Costs, Tokens, SelectNames | 'target'>;
-    select<const Name extends string = never, D extends Dependency<Targets, Rings, Tokens, SelectNames> = never, const Label extends string = string>(
-        props: Named<Name> & SelectTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>, D>,
-        choices: Record<Label, NoInfer<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, D>>>
+    select<const Name extends string = never, DependsOn extends Dependency<Targets, Rings, Tokens, SelectNames> = never, const Label extends string = string>(
+        props: Named<Name> & SelectTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>, DependsOn>,
+        choices: Record<Label, NoInfer<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, DependsOn>>>
     ): AbilityBuilder<Base & Selected<TargetName<Name>, Label>, Targets, Rings, Costs, Tokens, SelectNames | TargetName<Name>>;
     select(...args: [choices: Record<string, unknown>] | [props: Named<string> & SelectTargetProps<never, string>, choices: Record<string, unknown>]): unknown {
         const [props, choices] = args.length === 1 ? [{}, args[0]] : args;
@@ -657,9 +659,9 @@ export class AbilityBuilder<
     }
 
     /** Choices that depend on the context, such as a label naming an earlier target. */
-    selectFrom<const Name extends string = never, D extends Dependency<Targets, Rings, Tokens, SelectNames> = never>(
-        props: Named<Name> & SelectTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, D>, D>,
-        choices: (context: EarlierContext<Base, Targets, Rings, Costs, Tokens, D>) => Record<string, BuilderAction<Base, Earlier<Targets, D & keyof Targets>, Earlier<Rings, D & keyof Rings>, Costs, Earlier<Tokens, D & keyof Tokens>>>
+    selectFrom<const Name extends string = never, DependsOn extends Dependency<Targets, Rings, Tokens, SelectNames> = never>(
+        props: Named<Name> & SelectTargetProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>, DependsOn>,
+        choices: (context: EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>) => Record<string, BuilderAction<Base, Earlier<Targets, DependsOn & keyof Targets>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>>
     ): AbilityBuilder<Base & Selected<TargetName<Name>, string>, Targets, Rings, Costs, Tokens, SelectNames | TargetName<Name>> {
         const name = props.name ?? 'target';
         const [required, optional] = this.#earlier(props.dependsOn);
@@ -692,7 +694,7 @@ export class AbilityBuilder<
         this.#addTarget(name, entry);
     }
 
-    cost<R extends object>(cost: Cost<R, Base>): AbilityBuilder<Base, Targets, Rings, Costs & R, Tokens, SelectNames> {
+    cost<Results extends object>(cost: Cost<Results, Base>): AbilityBuilder<Base, Targets, Rings, Costs & Results, Tokens, SelectNames> {
         this.draft.costs.push(cost);
         return new AbilityBuilder(this.draft);
     }
@@ -919,18 +921,18 @@ export class AbilityBuilder<
     }
 
     /** The player (or `player`) chooses a card when the ability resolves, and `gameAction` resolves on it. */
-    selectCard<const K extends CardTypes = CardTypes>(
-        properties: SelectCardProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K> | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => SelectCardProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K>)
+    selectCard<const Types extends CardTypes = CardTypes>(
+        properties: SelectCardProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, Types> | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => SelectCardProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, Types>)
     ): this {
-        return this.gameAction(GameActions.selectCard<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K>(properties));
+        return this.gameAction(GameActions.selectCard<BuilderContext<Base, Targets, Rings, Costs, Tokens>, Types>(properties));
     }
 
     /** The player (or `player`) chooses several cards, by `mode`, when the ability resolves, and `gameAction` resolves on them. */
-    selectCards<const K extends CardTypes = CardTypes>(
-        properties: SelectCardsProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K> & { mode: MultiCardMode }
-            | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => SelectCardsProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K> & { mode: MultiCardMode })
+    selectCards<const Types extends CardTypes = CardTypes>(
+        properties: SelectCardsProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, Types> & { mode: MultiCardMode }
+            | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => SelectCardsProperties<BuilderContext<Base, Targets, Rings, Costs, Tokens>, Types> & { mode: MultiCardMode })
     ): this {
-        return this.gameAction(GameActions.selectCards<BuilderContext<Base, Targets, Rings, Costs, Tokens>, K>(properties));
+        return this.gameAction(GameActions.selectCards<BuilderContext<Base, Targets, Rings, Costs, Tokens>, Types>(properties));
     }
 
     selectAttackedProvince(properties: FactoryProperties<'selectAttackedProvince', BuilderContext<Base, Targets, Rings, Costs, Tokens>>): this {
@@ -1110,10 +1112,10 @@ export class AbilityBuilder<
     }
 
     /** Cancels the triggering event (interrupts only), optionally replacing it with `replacementGameAction`. */
-    cancel<B extends Base & CancellingContext>(
-        this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>,
-        properties: FactoryProperties<'cancel', BuilderContext<B, Targets, Rings, Costs, Tokens>> = {}
-    ): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
+    cancel<Narrowed extends Base & CancellingContext>(
+        this: AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames>,
+        properties: FactoryProperties<'cancel', BuilderContext<Narrowed, Targets, Rings, Costs, Tokens>> = {}
+    ): AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames> {
         return this.gameAction(GameActions.cancel(properties));
     }
 
@@ -1270,29 +1272,29 @@ export class AbilityBuilder<
     }
 
     /** Actions only: the phase the action can be used in. */
-    phase<B extends Base & ActionOnly>(this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>, phase: Phase | 'any'): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
+    phase<Narrowed extends Base & ActionOnly>(this: AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames>, phase: Phase | 'any'): AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames> {
         this.#once('phase', phase, 'phase()');
         return this;
     }
 
     /** Actions only: usable in the Dynasty phase without the per-type restrictions. */
-    evenDuringDynasty<B extends Base & ActionOnly>(this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
+    evenDuringDynasty<Narrowed extends Base & ActionOnly>(this: AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames>): AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames> {
         this.#once('evenDuringDynasty', true, 'evenDuringDynasty()');
         return this;
     }
 
     /** Province actions only: usable when no conflict is at a province. */
-    canTriggerOutsideConflict<B extends Base & ActionOnly & { source: ProvinceCard }>(this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
+    canTriggerOutsideConflict<Narrowed extends Base & ActionOnly & { source: ProvinceCard }>(this: AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames>): AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames> {
         this.#once('canTriggerOutsideConflict', true, 'canTriggerOutsideConflict()');
         return this;
     }
 
     /** Province actions only: which conflict provinces allow the action (by default this one). */
-    conflictProvinceCondition<B extends Base & ActionOnly & { source: ProvinceCard }>(
-        this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>,
-        condition: (province: ProvinceCard, context: B) => boolean
-    ): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
-        const checked = this.#checked((context: B) => context, []);
+    conflictProvinceCondition<Narrowed extends Base & ActionOnly & { source: ProvinceCard }>(
+        this: AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames>,
+        condition: (province: ProvinceCard, context: Narrowed) => boolean
+    ): AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames> {
+        const checked = this.#checked((context: Narrowed) => context, []);
         this.#once('conflictProvinceCondition', (province, context) => condition(province, checked(context)), 'conflictProvinceCondition()');
         return this;
     }
@@ -1335,36 +1337,36 @@ export class AbilityBuilder<
     }
 
     /** Triggers only: triggers once for events that happen together. */
-    collectiveTrigger<B extends Base & TriggerOnly>(this: AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames>): AbilityBuilder<B, Targets, Rings, Costs, Tokens, SelectNames> {
+    collectiveTrigger<Narrowed extends Base & TriggerOnly>(this: AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames>): AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames> {
         this.#once('collectiveTrigger', true, 'collectiveTrigger()');
         return this;
     }
 }
 
-export type TriggerBase<S extends BaseCard, W, EventOptional extends boolean> =
-    EventOptional extends true ? ProvinceTriggerContext<S, W> : TriggerContext<S, W>;
+export type TriggerBase<Source extends BaseCard, When, EventOptional extends boolean> =
+    EventOptional extends true ? ProvinceTriggerContext<Source, When> : TriggerContext<Source, When>;
 
-type AggregateBase<S extends BaseCard, EventOptional extends boolean> = EventOptional extends true
-    ? AbilityContext<S> & Pick<TriggeredAbilityContext<S>, 'cancel'> & { event?: Event[] }
-    : TriggeredAbilityContext<S> & { event: Event[] };
+type AggregateBase<Source extends BaseCard, EventOptional extends boolean> = EventOptional extends true
+    ? AbilityContext<Source> & Pick<TriggeredAbilityContext<Source>, 'cancel'> & { event?: Event[] }
+    : TriggeredAbilityContext<Source> & { event: Event[] };
 
-type AggregateWhen<S extends BaseCard> = (events: Event[], context: TriggeredAbilityContext<S, BaseCard, Event[]>) => boolean;
+type AggregateWhen<Source extends BaseCard> = (events: Event[], context: TriggeredAbilityContext<Source, BaseCard, Event[]>) => boolean;
 
-interface TriggerStarts<S extends BaseCard> {
-    when<W extends WhenType<S>>(when: W): AbilityDraft;
-    aggregateWhen(aggregateWhen: AggregateWhen<S>): AbilityDraft;
+interface TriggerStarts<Source extends BaseCard> {
+    when<When extends WhenType<Source>>(when: When): AbilityDraft;
+    aggregateWhen(aggregateWhen: AggregateWhen<Source>): AbilityDraft;
 }
 
-export class TriggerBuilder<S extends BaseCard, EventOptional extends boolean = false> {
-    constructor(private readonly starts: TriggerStarts<S>) {}
+export class TriggerBuilder<Source extends BaseCard, EventOptional extends boolean = false> {
+    constructor(private readonly starts: TriggerStarts<Source>) {}
 
-    when<W extends WhenType<S>>(when: W): AbilityBuilder<TriggerBase<S, W, EventOptional>> {
-        return new AbilityBuilder<TriggerBase<S, W, EventOptional>>(this.starts.when(when));
+    when<When extends WhenType<Source>>(when: When): AbilityBuilder<TriggerBase<Source, When, EventOptional>> {
+        return new AbilityBuilder<TriggerBase<Source, When, EventOptional>>(this.starts.when(when));
     }
 
     /** Triggers on a window's events together, e.g. on the total fate they moved. */
-    aggregateWhen(aggregateWhen: AggregateWhen<S>): AbilityBuilder<AggregateBase<S, EventOptional>> {
-        return new AbilityBuilder<AggregateBase<S, EventOptional>>(this.starts.aggregateWhen(aggregateWhen));
+    aggregateWhen(aggregateWhen: AggregateWhen<Source>): AbilityBuilder<AggregateBase<Source, EventOptional>> {
+        return new AbilityBuilder<AggregateBase<Source, EventOptional>>(this.starts.aggregateWhen(aggregateWhen));
     }
 }
 
@@ -1512,7 +1514,7 @@ function resolveAgainPrompt(context: AbilityContext, activePromptTitle: string, 
 }
 
 /** A number is the action's `amount`. */
-const amountProperties = <P>(properties: number | P): P | { amount: number } => typeof properties === 'number' ? { amount: properties } : properties;
+const amountProperties = <Properties>(properties: number | Properties): Properties | { amount: number } => typeof properties === 'number' ? { amount: properties } : properties;
 
 const oneAction = (actions: GameAction[]) => actions.length === 1 ? actions[0] : GameActions.multiple(actions);
 
@@ -1628,7 +1630,7 @@ function stepCondition(step: AbilityDraft): Pick<ThenAbilityProperties, 'thenCon
         contextOrEvent instanceof Event && contextOrEvent.isFullyResolved() && !!contextOrEvent.context && condition(contextOrEvent.context) };
 }
 
-export function toActionProps<S extends BaseCard>(draft: AbilityDraft): ActionProps<S> {
+export function toActionProps<Source extends BaseCard>(draft: AbilityDraft): ActionProps<Source> {
     return {
         title: draft.title,
         ...commonProperties(draft),
@@ -1641,7 +1643,7 @@ export function toActionProps<S extends BaseCard>(draft: AbilityDraft): ActionPr
     };
 }
 
-export function toTriggerProps<S extends BaseCard>(draft: AbilityDraft, when: WhenType<S>): TriggeredAbilityWhenProps<S> {
+export function toTriggerProps<Source extends BaseCard>(draft: AbilityDraft, when: WhenType<Source>): TriggeredAbilityWhenProps<Source> {
     return {
         title: draft.title,
         when,
@@ -1652,7 +1654,7 @@ export function toTriggerProps<S extends BaseCard>(draft: AbilityDraft, when: Wh
     };
 }
 
-export function toAggregateProps<S extends BaseCard>(draft: AbilityDraft, aggregateWhen: AggregateWhen<S>): TriggeredAbilityAggregateWhenProps<S> {
+export function toAggregateProps<Source extends BaseCard>(draft: AbilityDraft, aggregateWhen: AggregateWhen<Source>): TriggeredAbilityAggregateWhenProps<Source> {
     if(draft.anyPlayer) {
         throw new Error(`${draft.title}: anyPlayer() doesn't work with aggregateWhen`);
     }

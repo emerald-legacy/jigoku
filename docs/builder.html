@@ -767,7 +767,7 @@ this.action('Ready a character')
       <tbody>
         <tr><td><code>abilityCondition</code></td><td><code>(ability: CardAbility) =&gt; boolean</code></td><td>any</td><td>Which abilities can be chosen (<code>ability.printedAbility</code> for "printed").</td></tr>
         <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>any</td><td>Which cards; <code>context.targetAbility</code> is set to the ability being checked.</td></tr>
-        <tr><td><code>cardType</code></td><td><code>CardType | CardType[]</code></td><td>every type</td><td>Also types the card.</td></tr>
+        <tr><td><code>cardType</code></td><td><code>CardType</code></td><td>required</td><td>The type of the card the ability is printed on. One type, not a list.</td></tr>
         <tr><td><code>location</code></td><td><code>Location | Location[]</code></td><td><code>Location.PlayArea</code></td><td>Where the card is.</td></tr>
         <tr><td><code>controller</code></td><td><code>Players | (context) =&gt; Players</code></td><td><code>Players.Any</code></td><td>Whose card.</td></tr>
         <tr><td><code>player</code></td><td><code>Players.Self | Players.Opponent | (context) =&gt; …</code></td><td><code>Players.Self</code></td><td>Who chooses.</td></tr>
