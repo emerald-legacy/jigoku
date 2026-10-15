@@ -81,10 +81,10 @@ export class DuelFlow extends BaseStepWithPipeline {
         if(this.duel.challenger.mostRecentEffect(EffectName.WinDuel) === this.duel) {
             this.game.addMessage(msg`${this.duel.challenger} wins the duel vs ${this.duel.targets}`);
         } else {
-            this.game.addMessage(this.duel.getTotalsForDisplay());
+            this.game.addMessage([this.duel.getTotalsForDisplay(), []]);
         }
         if(!this.duel.winner) {
-            this.game.addMessage('The duel ends in a draw');
+            this.game.addMessage(msg`The duel ends in a draw`);
         }
         this.game.raiseEvent(EventName.AfterDuel, {
             duel: this.duel,

@@ -19,7 +19,7 @@ describe('game action effect messages', function () {
             this.context = this.game.getFrameworkContext(this.player1.player);
             this.chatEffect = (action) => {
                 const [format, args] = action.getEffectMessage(this.context);
-                this.game.addMessage(format, ...args);
+                this.game.addMessage([format, args]);
                 return this.getChatLog();
             };
         });

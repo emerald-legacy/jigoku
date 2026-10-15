@@ -105,7 +105,7 @@ describe('conflict phase', function() {
             it('should pass the conflict when the player has no legal attackers', function() {
                 this.chat = spyOn(this.game, 'addMessage');
                 this.noMoreActions();
-                expect(this.chat).toHaveBeenCalledWith('{0} passes their conflict opportunity as none of their characters can be declared as an attacker', this.player1.player);
+                expect(this.chat).toHaveBeenCalledWith(['{0} passes their conflict opportunity as none of their characters can be declared as an attacker', [this.player1.player]]);
                 expect(this.player1).toHavePrompt('Action Window');
             });
 
@@ -127,7 +127,7 @@ describe('conflict phase', function() {
                 this.politicalRival = this.player1.playCharacterFromHand('political-rival');
                 this.noMoreActions();
                 expect(this.player1).toHavePrompt('Action Window');
-                expect(this.chat).toHaveBeenCalledWith('{0} passes their conflict opportunity as none of their characters can be declared as an attacker', this.player1.player);
+                expect(this.chat).toHaveBeenCalledWith(['{0} passes their conflict opportunity as none of their characters can be declared as an attacker', [this.player1.player]]);
             });
         });
 
@@ -153,7 +153,7 @@ describe('conflict phase', function() {
                 this.spy = spyOn(this.game, 'addMessage');
                 this.noMoreActions();
 
-                expect(this.spy).toHaveBeenCalledWith('{0} passes their conflict opportunity as none of their characters can be declared as an attacker', this.player1.player);
+                expect(this.spy).toHaveBeenCalledWith(['{0} passes their conflict opportunity as none of their characters can be declared as an attacker', [this.player1.player]]);
                 expect(this.player1).toHavePrompt('Initiate an action');
             });
 
@@ -162,7 +162,7 @@ describe('conflict phase', function() {
                 this.player1.putIntoPlay(this.sinisterSoshi);
                 this.noMoreActions();
 
-                expect(this.spy).toHaveBeenCalledWith('{0} passes their conflict opportunity as none of their characters can be declared as an attacker', this.player1.player);
+                expect(this.spy).toHaveBeenCalledWith(['{0} passes their conflict opportunity as none of their characters can be declared as an attacker', [this.player1.player]]);
                 expect(this.player1).toHavePrompt('Initiate an action');
             });
 
@@ -174,7 +174,7 @@ describe('conflict phase', function() {
                 tattooedWanderer.bowed = true;
                 this.noMoreActions();
 
-                expect(this.spy).toHaveBeenCalledWith('{0} passes their conflict opportunity as none of their characters can be declared as an attacker', this.player1.player);
+                expect(this.spy).toHaveBeenCalledWith(['{0} passes their conflict opportunity as none of their characters can be declared as an attacker', [this.player1.player]]);
                 expect(this.player1).toHavePrompt('Initiate an action');
             });
 

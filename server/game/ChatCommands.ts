@@ -163,7 +163,7 @@ export class ChatCommands {
                 }
             });
         } else {
-            this.game.addMessage('/move-to-conflict can only be used during a conflict');
+            this.game.addMessage(msg`/move-to-conflict can only be used during a conflict`);
         }
     }
 
@@ -188,7 +188,7 @@ export class ChatCommands {
                 }
             });
         } else {
-            this.game.addMessage('/move-to-conflict can only be used during a conflict');
+            this.game.addMessage(msg`/move-to-conflict can only be used during a conflict`);
         }
     }
 

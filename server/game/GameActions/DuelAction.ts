@@ -90,10 +90,10 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
             const [message, messageArgs]: MessageArgs = chatText && duel.hasWinner()
                 ? chatText(context, duel)
                 : gameAction.getEffectMessage(context);
-            context.game.addMessage('Duel Effect: ' + message, ...messageArgs);
+            context.game.addMessage(['Duel Effect: ' + message, messageArgs]);
             gameAction.resolve(undefined, context);
         } else {
-            context.game.addMessage('The duel has no effect');
+            context.game.addMessage(msg`The duel has no effect`);
         }
     }
 
@@ -174,7 +174,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
             cards.every((card) => card.location !== Location.PlayArea)
         ) {
             context.game.addMessage(
-                'The duel cannot proceed as at least one participant for each side has to be in play'
+                msg`The duel cannot proceed as at least one participant for each side has to be in play`
             );
             return;
         }

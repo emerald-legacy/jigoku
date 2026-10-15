@@ -302,7 +302,7 @@ export class CardAbility extends ThenAbility {
             // discard Stoic Gunso
             messageArgs.push({ message: this.game.gameChat.formatMessage(effectMessage, effectArgs) });
         }
-        this.game.addMessage('{0}{1}{2}{3}{4}{5}{6}{7}{8}', ...messageArgs);
+        this.game.addMessage(['{0}{1}{2}{3}{4}{5}{6}{7}{8}', messageArgs]);
     }
 
     override isCardPlayed(): boolean {

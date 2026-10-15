@@ -1,4 +1,4 @@
-import { msg } from './GameChat.js';
+import { msg, type MessageArgs } from './GameChat.js';
 import BaseCard, { type CardSummary } from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
@@ -658,12 +658,12 @@ export class DrawCard extends BaseCard {
             if(this.isDishonored) {
                 this.applyPersonalHonor(
                     loseHonor({ amount: 1, dueToStatusToken: true }),
-                    '{0} loses 1 honor due to {1}\'s personal honor'
+                    msg`${this.controller} loses 1 honor due to ${this}'s personal honor`
                 );
             } else if(this.isHonored) {
                 this.applyPersonalHonor(
                     gainHonor({ amount: 1, dueToStatusToken: true }),
-                    '{0} gains 1 honor due to {1}\'s personal honor'
+                    msg`${this.controller} gains 1 honor due to ${this}'s personal honor`
                 );
             }
         }
@@ -677,10 +677,10 @@ export class DrawCard extends BaseCard {
         super.leavesPlay();
     }
 
-    private applyPersonalHonor(action: GameAction, message: string): void {
+    private applyPersonalHonor(action: GameAction, message: MessageArgs): void {
         const frameworkContext = this.game.getFrameworkContext(this.controller);
         if(action.canAffect(this.controller, frameworkContext)) {
-            this.game.addMessage(message, this.controller, this);
+            this.game.addMessage(message);
         }
         this.game.openThenEventWindow(action.getEvent(this.controller, frameworkContext));
     }

@@ -2,7 +2,7 @@ import type { DeckDTO, UserIdentity, ShortCardData } from '../gamenode/LobbyProt
 import type { CardLibrary } from './types/CardClass.js';
 import { ChatCommands } from './ChatCommands.js';
 import { msg, GameChat } from './GameChat.js';
-import type { MessageArgs, MsgArg } from './GameChat.js';
+import type { MessageArgs } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
 import type { ClockConfig } from './Clocks/ClockSelector.js';
@@ -247,26 +247,14 @@ export class Game {
         this.pendingAnimations = [];
     }
 
-    /** Adds a message to the in-game chat, e.g. `msg\`${player} draws 1 card\``, or a format with its arguments. */
-    addMessage(message: MessageArgs): void;
-    addMessage(format: string, ...args: MsgArg[]): void;
-    addMessage(message: string | MessageArgs, ...args: MsgArg[]): void {
-        if(typeof message === 'string') {
-            this.gameChat.addMessage(message, ...args);
-        } else {
-            this.gameChat.addMessage(message);
-        }
+    /** Adds a message to the in-game chat, e.g. `msg\`${player} draws 1 card\``. */
+    addMessage(message: MessageArgs): void {
+        this.gameChat.addMessage(message);
     }
 
     /** Adds a message to the in-game chat with a graphical icon. */
-    addAlert(type: string, message: MessageArgs): void;
-    addAlert(type: string, format: string, ...args: MsgArg[]): void;
-    addAlert(type: string, message: string | MessageArgs, ...args: MsgArg[]): void {
-        if(typeof message === 'string') {
-            this.gameChat.addAlert(type, message, ...args);
-        } else {
-            this.gameChat.addAlert(type, message);
-        }
+    addAlert(type: string, message: MessageArgs): void {
+        this.gameChat.addAlert(type, message);
     }
 
     get messages(): GameChat['messages'] {

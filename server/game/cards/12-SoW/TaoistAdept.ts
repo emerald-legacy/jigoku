@@ -22,7 +22,7 @@ export default class TaoistAdept extends DrawCard {
                         optional: true,
                         onMenuCommand: (player: Player, arg: string) => {
                             if(arg === 'done') {
-                                this.game.addMessage(player.name + ' chooses not to place a fate on a ring');
+                                this.game.addMessage(msg`${player} chooses not to place a fate on a ring`);
                             }
                             return true;
                         }

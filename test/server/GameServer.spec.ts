@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { callMethod } from '../helpers/methodaccess.js';
 
 type GameMethods = {
-    addAlert: (kind: string, msg: string) => void;
+    addAlert: (kind: string, msg: [string, unknown[]]) => void;
     isEmpty: () => boolean;
     isSpectator: (p: unknown) => boolean;
     leave: (name: string) => void;
@@ -181,7 +181,7 @@ describe('GameServer.startAbandonTimer / cancelAbandonTimer', () => {
         });
 
         call('startAbandonTimer', ctx, game);
-        expect(game.addAlert).toHaveBeenCalledWith('info', jasmine.stringContaining('60 seconds'));
+        expect(game.addAlert).toHaveBeenCalledWith('info', [jasmine.stringContaining('60 seconds'), []]);
         expect(sendStateSpy).toHaveBeenCalledWith(game);
         expect(ctx.abandonTimers.has('g1')).toBe(true);
 

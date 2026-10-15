@@ -1,4 +1,4 @@
-import { msg } from './GameChat.js';
+import { msg, type MessageArgs } from './GameChat.js';
 import * as Settings from '../settings.js';
 import { CardType, type ConflictType, EffectName, type Element, EventName, favorAppliesTo, Location, RestrictionType } from './Constants.js';
 import { GameObject } from './GameObject.js';
@@ -514,8 +514,8 @@ export class Conflict extends GameObject {
         return this.attackingPlayer === player ? this.getAttackers() : this.getDefenders();
     }
 
-    passConflict(message = '{0} has chosen to pass their conflict opportunity') {
-        this.game.addMessage(message, this.attackingPlayer);
+    passConflict(message: MessageArgs = msg`${this.attackingPlayer} has chosen to pass their conflict opportunity`) {
+        this.game.addMessage(message);
         this.conflictPassed = true;
         if(this.ring) {
             this.ring.resetRing();

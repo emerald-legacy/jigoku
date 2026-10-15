@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import { Phase, EffectName } from '../Constants.js';
 import { claimImperialFavor, initiateConflict, performGloryCount } from '../GameActions/GameActions.js';
 import { Conflict } from '../Conflict.js';
@@ -60,7 +61,7 @@ export class ConflictPhase extends PhaseStep {
             } else {
                 const conflict = new Conflict(this.game, this.currentPlayer, this.currentPlayer.opponent);
                 conflict.passConflict(
-                    '{0} passes their conflict opportunity as none of their characters can be declared as an attacker'
+                    msg`${this.currentPlayer} passes their conflict opportunity as none of their characters can be declared as an attacker`
                 );
             }
             if(this.currentPlayer.opponent) {

@@ -65,7 +65,8 @@ describe('CardAbility displayMessage', function () {
             });
             context.target = target;
             ability.displayMessage(context);
-            args = addMessage.calls.allArgs()[0];
+            const [[format, messageArgs]] = addMessage.calls.allArgs()[0];
+            args = [format, ...messageArgs];
         });
 
         it('should send an 8 part message', function () {
@@ -133,7 +134,8 @@ describe('CardAbility displayMessage', function () {
                 event: new Event(EventName.OnCardAbilityInitiated, { card: eventToCancel })
             });
             ability.displayMessage(context);
-            args = addMessage.calls.allArgs()[0];
+            const [[format, messageArgs]] = addMessage.calls.allArgs()[0];
+            args = [format, ...messageArgs];
         });
 
         it('should send an 8 part message', function () {
@@ -197,7 +199,8 @@ describe('CardAbility displayMessage', function () {
                 costs: { bow: source }
             });
             ability.displayMessage(context);
-            args = addMessage.calls.allArgs()[0];
+            const [[format, messageArgs]] = addMessage.calls.allArgs()[0];
+            args = [format, ...messageArgs];
         });
 
         it('should send an 8 part message', function () {

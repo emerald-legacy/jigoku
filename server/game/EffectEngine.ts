@@ -215,7 +215,7 @@ export class EffectEngine {
                 this.unregisterCustomDurationEvents(customDurationEffect);
                 this.effects = this.effects.filter((effect) => effect !== customDurationEffect);
                 if(customDurationEffect.endingMessage) {
-                    this.game.addMessage(customDurationEffect.endingMessage);
+                    this.game.addMessage([customDurationEffect.endingMessage, []]);
                 }
             }
         };

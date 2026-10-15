@@ -45,7 +45,7 @@ export class ConflictActionWindow extends ActionWindow {
                     winnerText = winnerText + ' - {0} are breaking!';
                 }
             }
-            this.game.addMessage(winnerText, breakingProvinces);
+            this.game.addMessage([winnerText, [breakingProvinces]]);
             this.displayTotals = false;
         }
         return completed;

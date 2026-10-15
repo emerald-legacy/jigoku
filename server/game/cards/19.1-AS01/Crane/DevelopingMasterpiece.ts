@@ -36,8 +36,8 @@ export default class DevelopingMasterpiece extends DrawCard {
             }))
             .moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame }))
             .onResolve((context) => {
-                randomHaiku().forEach((line) => context.game.addMessage(`>> ${line}`));
-                context.game.addMessage('>>>> Matsuo Bashō <<<<');
+                randomHaiku().forEach((line) => context.game.addMessage(msg`>> ${line}`));
+                context.game.addMessage(msg`>>>> Matsuo Bashō <<<<`);
             })
             .chatText((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`);
     }

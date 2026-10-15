@@ -677,7 +677,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             this.conflict.loser = player;
         }
         if(!this.conflict.winner && !this.conflict.loser) {
-            this.game.addMessage('There is no winner or loser for this conflict because both sides have 0 skill');
+            this.game.addMessage(msg`There is no winner or loser for this conflict because both sides have 0 skill`);
         } else {
             this.game.addMessage(msg`${this.conflict.winner} won a ${this.conflict.conflictType} conflict`);
         }
@@ -686,7 +686,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
     showConflictResult(): void {
         if(!this.conflict.winner && !this.conflict.loser) {
-            this.game.addMessage('There is no winner or loser for this conflict because both sides have 0 skill');
+            this.game.addMessage(msg`There is no winner or loser for this conflict because both sides have 0 skill`);
         } else {
             this.game.addMessage(msg`${this.conflict.winner} won a ${this.conflict.conflictType} conflict ${this.conflict.winnerSkill} vs ${this.conflict.loserSkill}`);
         }

@@ -47,19 +47,12 @@ export class GameChat {
         this.addMessage(msg`${playerArg} ${message}`);
     }
 
-    /** A `msg` template, or a format with its arguments. */
-    addMessage(message: MessageArgs): void;
-    addMessage(format: string, ...args: Array<MsgArg>): void;
-    addMessage(message: string | MessageArgs, ...args: Array<MsgArg>): void {
-        const [format, formatArgs] = typeof message === 'string' ? [message, args] : message;
-        this.messages.push({ date: new Date(), message: this.formatMessage(format, formatArgs) });
+    addMessage([format, args]: MessageArgs): void {
+        this.messages.push({ date: new Date(), message: this.formatMessage(format, args) });
     }
 
-    addAlert(type: string, message: MessageArgs): void;
-    addAlert(type: string, format: string, ...args: Array<MsgArg>): void;
-    addAlert(type: string, message: string | MessageArgs, ...args: Array<MsgArg>): void {
-        const [format, formatArgs] = typeof message === 'string' ? [message, args] : message;
-        this.messages.push({ date: new Date(), message: { alert: { type: type, message: this.formatMessage(format, formatArgs) } } });
+    addAlert(type: string, [format, args]: MessageArgs): void {
+        this.messages.push({ date: new Date(), message: { alert: { type: type, message: this.formatMessage(format, args) } } });
     }
 
     formatMessage(format: string, args: Array<MsgArg>): MessageText {
@@ -76,9 +69,6 @@ export class GameChat {
                     if(typeof arg === 'object' && 'message' in arg) {
                         return output.concat(arg.message);
                     } else if(Array.isArray(arg)) {
-                        if(typeof arg[0] === 'string' && arg[0].includes('{')) {
-                            return output.concat(this.formatMessage(arg[0], arg.slice(1)));
-                        }
                         return output.concat(this.formatArray(arg));
                     } else if(typeof arg === 'object' && 'getShortSummary' in arg) {
                         return output.concat(arg.getShortSummary());

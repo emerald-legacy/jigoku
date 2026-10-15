@@ -154,7 +154,7 @@ export class GameServer implements GameRouter, LobbyHandlers {
 
         if(game) {
             game.addMessage(
-                'A Server error has occured processing your game state, apologies.  Your game may now be in an inconsistent state, or you may be able to continue.  The error has been logged.'
+                msg`A Server error has occured processing your game state, apologies.  Your game may now be in an inconsistent state, or you may be able to continue.  The error has been logged.`
             );
         }
     }
@@ -277,7 +277,7 @@ export class GameServer implements GameRouter, LobbyHandlers {
             return;
         }
 
-        game.addAlert('info', 'Both players have left. This match will close in 60 seconds.');
+        game.addAlert('info', msg`Both players have left. This match will close in 60 seconds.`);
         this.sendGameState(game);
 
         const timer = setTimeout(() => {
@@ -473,7 +473,7 @@ export class GameServer implements GameRouter, LobbyHandlers {
 
             if(!game.isSpectator(player) && this.abandonTimers.has(game.id)) {
                 this.cancelAbandonTimer(game.id);
-                game.addAlert('info', 'A player has reconnected. Auto-close cancelled.');
+                game.addAlert('info', msg`A player has reconnected. Auto-close cancelled.`);
             }
         }
 
