@@ -57,6 +57,13 @@ export class PutIntoProvinceAction<C extends AbilityContext = AbilityContext> ex
         return canMove;
     }
 
+    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
+        super.updateEvent(event, card, context, additionalProperties);
+        event.preResolutionEffect = () => {
+            event.cardStateWhenLeftPlay = event.card.createSnapshot();
+        };
+    }
+
     override eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
