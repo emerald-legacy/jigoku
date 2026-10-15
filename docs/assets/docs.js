@@ -20,7 +20,7 @@ function shorten(text, length) {
 }
 
 function escapeHtml(text) {
-    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // a tiny TypeScript highlighter: keywords, strings, numbers, comments, calls
@@ -29,27 +29,41 @@ function highlight(root) {
     const token = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|('(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`)|\b(\d+)\b|\b([A-Za-z_]\w*)(?=\()|\b([A-Za-z_]\w*)\b/g;
     for(const block of root.querySelectorAll('pre > code')) {
         const text = block.textContent;
-        let html = '';
+        const fragment = document.createDocumentFragment();
+        const add = (content, className) => {
+            if(!content) {
+                return;
+            }
+            if(!className) {
+                fragment.appendChild(document.createTextNode(content));
+                return;
+            }
+            const span = document.createElement('span');
+            span.className = className;
+            span.textContent = content;
+            fragment.appendChild(span);
+        };
         let last = 0;
         for(const match of text.matchAll(token)) {
             const [all, comment, string, number, call, word] = match;
-            html += escapeHtml(text.slice(last, match.index));
+            add(text.slice(last, match.index));
             if(comment) {
-                html += `<span class="com">${escapeHtml(comment)}</span>`;
+                add(comment, 'com');
             } else if(string) {
-                html += `<span class="str">${escapeHtml(string)}</span>`;
+                add(string, 'str');
             } else if(number) {
-                html += `<span class="num">${number}</span>`;
+                add(number, 'num');
             } else if(keywords.test(call || word)) {
-                html += `<span class="kw">${escapeHtml(all)}</span>`;
+                add(all, 'kw');
             } else if(call) {
-                html += `<span class="fn">${escapeHtml(call)}</span>`;
+                add(call, 'fn');
             } else {
-                html += escapeHtml(all);
+                add(all);
             }
             last = match.index + all.length;
         }
-        block.innerHTML = html + escapeHtml(text.slice(last));
+        add(text.slice(last));
+        block.replaceChildren(fragment);
     }
 }
 
