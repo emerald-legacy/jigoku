@@ -68,6 +68,10 @@ export class ConflictFlow extends BaseStepWithPipeline {
         ]);
     }
 
+    private get conflictCancelled(): boolean {
+        return this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate;
+    }
+
     resetCards(): void {
         this.conflict.resetCards();
     }
@@ -76,7 +80,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         this.game.raiseEvent(EventName.OnConflictDeclared, { conflict: this.conflict }, (event) => {
             this.game.queueSimpleStep(() => this.promptForNewConflict());
             this.game.queueSimpleStep(() => {
-                if(!this.conflict.conflictPassed && !this.conflict.conflictFailedToInitiate) {
+                if(!this.conflictCancelled) {
                     event.type = this.conflict.conflictType;
                     event.ring = this.conflict.ring;
                     event.attackers = this.conflict.attackers.slice();
@@ -87,7 +91,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             this.game.queueSimpleStep(() => this.payProvinceCosts());
             this.game.queueSimpleStep(() => this.initiateConflict());
             this.game.queueSimpleStep(() => {
-                if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+                if(this.conflictCancelled) {
                     event.cancel();
                 }
             });
@@ -562,7 +566,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     announceAttackerSkill(): void {
-        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflictCancelled) {
             return;
         }
 
@@ -652,7 +656,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     openConflictActionWindow(): void {
-        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflictCancelled) {
             return;
         }
         this.game.raiseEvent(EventName.OnConflictStarted, { conflict: this.conflict });
@@ -660,7 +664,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     determineWinner(): void {
-        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflictCancelled) {
             return;
         }
 
@@ -710,7 +714,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     afterConflict(): void {
-        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflictCancelled) {
             return;
         }
 
@@ -803,7 +807,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     resolveRingEffects(): void {
-        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflictCancelled) {
             return;
         }
 
@@ -816,7 +820,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     claimRing(): void {
-        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflictCancelled) {
             return;
         }
 
@@ -847,7 +851,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     returnHome(): void {
-        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflictCancelled) {
             return;
         }
 
