@@ -1,16 +1,14 @@
 import { CardType, Players, Trait } from '../../../Constants.js';
 import { discardFromPlay, onAffinity } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { controlsParticipating } from '../../controlsParticipating.js';
 
 export default class HeartOfTheInferno extends DrawCard {
     static id = 'heart-of-the-inferno';
 
     setupCardAbilities() {
         this.conflictAction('Bow a card')
-            .condition((context) =>
-                context.player.cardsInPlay.some(
-                    (card) => card.isParticipating() && card.hasTrait(Trait.Shugenja)
-                ))
+            .condition((context) => controlsParticipating(context.player, Trait.Shugenja))
             .target({
                 controller: Players.Opponent,
                 cardType: [CardType.Character, CardType.Attachment],

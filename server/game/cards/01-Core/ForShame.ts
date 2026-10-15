@@ -1,13 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Trait } from '../../Constants.js';
 import { bow, dishonor } from '../../GameActions/GameActions.js';
+import { controlsParticipating } from '../controlsParticipating.js';
 
 class ForShame extends DrawCard {
     static id = 'for-shame';
 
     setupCardAbilities() {
         this.action('Dishonor or bow a character')
-            .condition((context) => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait(Trait.Courtier)))
+            .condition((context) => controlsParticipating(context.player, Trait.Courtier))
             .target({
                 name: 'character',
                 cardType: CardType.Character,

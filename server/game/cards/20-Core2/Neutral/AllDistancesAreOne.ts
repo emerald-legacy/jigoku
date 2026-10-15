@@ -3,6 +3,7 @@ import { CardType, Location, Trait } from '../../../Constants.js';
 import { moveConflict, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureCost } from '../../captureCost.js';
+import { controlsParticipating } from '../../controlsParticipating.js';
 
 export default class AllDistancesAreOne extends DrawCard {
     static id = 'all-distances-are-one';
@@ -13,9 +14,7 @@ export default class AllDistancesAreOne extends DrawCard {
                 !!(context.game.currentConflict
                     ?.getConflictProvinces()
                     .every((province) => province.location !== Location.StrongholdProvince && !province.isBroken) &&
-                context.player.cardsInPlay.some(
-                    (card) => card.isParticipating() && card.hasTrait(Trait.Shugenja)
-                )))
+                controlsParticipating(context.player, Trait.Shugenja)))
             .cost(captureCost('originalProvince', (context) => context.game.requireConflict().conflictProvince ?? undefined))
             .selectCard({
                 cardType: CardType.Province,

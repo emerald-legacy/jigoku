@@ -4,6 +4,7 @@ import { perConflict } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { ConflictType, Trait } from '../../../Constants.js';
+import { controlsParticipating } from '../../controlsParticipating.js';
 
 export default class ArrowsFromTheWoods extends DrawCard {
     static id = 'arrows-from-the-woods';
@@ -12,7 +13,7 @@ export default class ArrowsFromTheWoods extends DrawCard {
         this.action('Reduce opponent\'s characters mil')
             .condition((context) =>
                 context.game.isDuringConflict(ConflictType.Military) &&
-                context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait(Trait.Bushi)))
+                controlsParticipating(context.player, Trait.Bushi))
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyMilitarySkill(this.penaltyValue(context))
@@ -22,9 +23,6 @@ export default class ArrowsFromTheWoods extends DrawCard {
     }
 
     private penaltyValue(context: AbilityContext): number {
-        const hasScoutOrShinobiParticipating = context.player.anyCardsInPlay(
-            (card) => card.isParticipating() && card.hasSomeTrait(Trait.Scout, Trait.Shinobi)
-        );
-        return hasScoutOrShinobiParticipating ? -2 : -1;
+        return controlsParticipating(context.player, Trait.Scout, Trait.Shinobi) ? -2 : -1;
     }
 }

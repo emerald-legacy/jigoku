@@ -3,6 +3,7 @@ import { modifyMilitarySkill } from '../../../effects.js';
 import { ConflictType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
+import { controlsParticipating } from '../../controlsParticipating.js';
 
 export default class UseTheTerrain extends DrawCard {
     static id = 'use-the-terrain';
@@ -17,6 +18,6 @@ export default class UseTheTerrain extends DrawCard {
     }
 
     private hasKicker(context: AbilityContext<this>) {
-        return context.player.cardsInPlay.some((card) => card.hasTrait(Trait.Scout) && card.isParticipating());
+        return controlsParticipating(context.player, Trait.Scout);
     }
 }

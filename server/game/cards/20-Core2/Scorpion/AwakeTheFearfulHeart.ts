@@ -3,16 +3,14 @@ import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect, onAffinity, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType, RestrictionType, Trait } from '../../../Constants.js';
+import { controlsParticipating } from '../../controlsParticipating.js';
 
 export default class AwakeTheFearfulHeart extends DrawCard {
     static id = 'awake-the-fearful-heart';
 
     setupCardAbilities() {
         this.action('Move home each character without fate')
-            .condition((context) =>
-                context.player.cardsInPlay.some(
-                    (card) => card.isParticipating() && card.hasTrait(Trait.Shugenja)
-                ))
+            .condition((context) => controlsParticipating(context.player, Trait.Shugenja))
             .gameAction(sequential([
                 sendHome((context) => ({
                     target:

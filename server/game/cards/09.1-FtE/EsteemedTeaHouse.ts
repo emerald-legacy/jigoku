@@ -3,13 +3,14 @@ import DrawCard from '../../DrawCard.js';
 import { playerCannot } from '../../effects.js';
 import { returnToHand } from '../../GameActions/GameActions.js';
 import { CardType, Duration, RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
+import { controlsParticipating } from '../controlsParticipating.js';
 
 class EsteemedTeaHouse extends DrawCard {
     static id = 'esteemed-tea-house';
 
     setupCardAbilities() {
         this.action('Return attachment to owners hand')
-            .condition((context) => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait(Trait.Courtier)))
+            .condition((context) => controlsParticipating(context.player, Trait.Courtier))
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())

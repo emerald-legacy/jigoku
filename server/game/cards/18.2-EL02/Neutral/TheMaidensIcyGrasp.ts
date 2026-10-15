@@ -3,6 +3,7 @@ import { cardLastingEffect, onAffinity, removeFate } from '../../../GameActions/
 import { CardType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { CharactersEnteredThisConflict } from '../../CharactersEnteredThisConflict.js';
+import { controlsParticipating } from '../../controlsParticipating.js';
 
 export default class TheMaidensIcyGrasp extends DrawCard {
     static id = 'the-maiden-s-icy-grasp';
@@ -10,10 +11,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
     public setupCardAbilities() {
         const charactersEntered = new CharactersEnteredThisConflict(this.game);
         this.action('Remove a character from play')
-            .condition((context) =>
-                context.player.cardsInPlay.some(
-                    (card) => card.isParticipating() && card.hasTrait(Trait.Shugenja)
-                ))
+            .condition((context) => controlsParticipating(context.player, Trait.Shugenja))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => charactersEntered.has(card)
