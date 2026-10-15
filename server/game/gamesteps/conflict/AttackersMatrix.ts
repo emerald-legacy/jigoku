@@ -60,11 +60,11 @@ export class AttackersMatrix {
     }
 
     isCombinationValid(ring: Ring, conflictType: ConflictType, province?: ProvinceCard | null): boolean {
-        if(province && !Object.prototype.hasOwnProperty.call(this.attackers[ring.name][conflictType], String(province))) {
+        if(province && !Object.prototype.hasOwnProperty.call(this.attackers[ring.name][conflictType], province.uuid)) {
             return false;
         }
 
-        const max = province ? this.attackers[ring.name][conflictType][String(province)].getMaximumAvailableAttackers() : Math.max(...Object.values(this.attackers[ring.name][conflictType]).map((a) => a.getMaximumAvailableAttackers()));
+        const max = province ? this.attackers[ring.name][conflictType][province.uuid].getMaximumAvailableAttackers() : Math.max(...Object.values(this.attackers[ring.name][conflictType]).map((a) => a.getMaximumAvailableAttackers()));
         const enoughAttackers = this.requiredNumberOfAttackers <= max;
         if(this.requiredNumberOfAttackers > 0) {
             return enoughAttackers;
@@ -72,7 +72,7 @@ export class AttackersMatrix {
             return true;
         }
         if(province) {
-            return this.attackers[ring.name][conflictType][String(province)].getNumberOfForcedAttackers() === this.forcedNumberOfAttackers && enoughAttackers;
+            return this.attackers[ring.name][conflictType][province.uuid].getNumberOfForcedAttackers() === this.forcedNumberOfAttackers && enoughAttackers;
         }
         return Object.values(this.attackers[ring.name][conflictType]).some((a) => a.getNumberOfForcedAttackers() === this.forcedNumberOfAttackers && enoughAttackers);
     }
@@ -95,7 +95,7 @@ export class AttackersMatrix {
                         const forcedAttackersDueToDeclarationRequirement = this.getForcedAttackersByDeclarationRequirement(ring, type, province);
                         const availableAttackers = this.getAvailableAttackers(ring, type, province);
                         const matrix = new AttackerInfo(ring, type, province, availableAttackers, forcedAttackersDueToDeclarationAmountRequirement, forcedAttackersDueToDeclarationRequirement);
-                        this.attackers[ring.name][type][String(province)] = matrix;
+                        this.attackers[ring.name][type][province.uuid] = matrix;
                         if(matrix.getMaximumAvailableAttackers() > this.maximumNumberOfAttackers) {
                             this.maximumNumberOfAttackers = matrix.getMaximumAvailableAttackers();
                         }

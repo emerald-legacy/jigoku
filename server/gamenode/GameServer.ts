@@ -504,7 +504,13 @@ export class GameServer implements GameRouter, LobbyHandlers {
 
         this.lastSentMessageCount.delete(socket.id);
 
-        const isSpectator = game.isSpectator(game.playersAndSpectators[socket.user.username]);
+        const player = game.playersAndSpectators[socket.user.username];
+        if(player?.socket && player.socket !== socket) {
+            // the player has reconnected with another socket: this one only timed out late
+            return;
+        }
+
+        const isSpectator = game.isSpectator(player);
 
         game.disconnect(socket.user.username);
 

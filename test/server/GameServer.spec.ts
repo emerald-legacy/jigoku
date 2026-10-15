@@ -7,6 +7,7 @@ type GameMethods = {
     isEmpty: () => boolean;
     isSpectator: (p: unknown) => boolean;
     leave: (name: string) => void;
+    disconnect: (name: string) => void;
     watch: (id: string, user: unknown) => void;
     getSummary: () => unknown;
     getSaveState: () => unknown;
@@ -54,7 +55,7 @@ function call(method: string, ctx: ServerCtx, ...args: unknown[]): unknown {
 
 function makeGame(overrides: Partial<{ id: string; name: string; players: Record<string, unknown> }> = {}): GameSpy {
     const methods = jasmine.createSpyObj<GameMethods>('game', [
-        'addAlert', 'isEmpty', 'isSpectator', 'leave', 'watch', 'getSummary', 'getSaveState',
+        'addAlert', 'isEmpty', 'isSpectator', 'leave', 'disconnect', 'watch', 'getSummary', 'getSaveState',
         'getState', 'getSharedState', 'getPlayers', 'getPlayersAndSpectators', 'addMessage',
         'clearAnimations', 'allPlayersGone', 'recordHiddenInfoIfChanged'
     ]);
@@ -518,6 +519,40 @@ describe('GameServer.onLeaveGame', () => {
         call('onLeaveGame', ctx, socket);
         expect(ctx.wsSocket.send).toHaveBeenCalledWith('PLAYERLEFT', jasmine.objectContaining({ spectator: true }));
         expect(startAbandonSpy).not.toHaveBeenCalled();
+    });
+});
+
+describe('GameServer.onSocketDisconnected', () => {
+    function makeCase() {
+        const oldSocket = { user: { username: 'alice' }, id: 'old' };
+        const newSocket = { user: { username: 'alice' }, id: 'new' };
+        const game = makeGame({ id: 'g1', players: { alice: { socket: oldSocket } } });
+        const ctx = makeCtx({
+            games: new Map([['g1', game]]),
+            userGameMap: new Map([['alice', game]]),
+            lastSentMessageCount: new Map([['old', 3]]),
+            sendGameState: jasmine.createSpy('sendGameState')
+        });
+        return { oldSocket, newSocket, game, ctx };
+    }
+
+    it('disconnects the player when the socket it is using disconnects', () => {
+        const { oldSocket, game, ctx } = makeCase();
+
+        call('onSocketDisconnected', ctx, oldSocket, 'transport close');
+
+        expect(game.disconnect).toHaveBeenCalledWith('alice');
+        expect(ctx.sendGameState).toHaveBeenCalledWith(game);
+    });
+
+    it('keeps the player connected when an old socket disconnects after a reconnect', () => {
+        const { oldSocket, newSocket, game, ctx } = makeCase();
+        game.playersAndSpectators.alice = { socket: newSocket };
+
+        call('onSocketDisconnected', ctx, oldSocket, 'ping timeout');
+
+        expect(game.disconnect).not.toHaveBeenCalled();
+        expect(ctx.lastSentMessageCount.has('old')).toBe(false);
     });
 });
 
