@@ -12,7 +12,7 @@ import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
-import { abilityContext, canResolveAbility } from './TriggerAbilityAction.js';
+import { abilityContext, canResolveAbility, getResolutionContext } from './TriggerAbilityAction.js';
 
 class ResolveAbilityActionResolver extends AbilityResolver {
     ignoreCosts: boolean;
@@ -125,11 +125,7 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
         const properties = this.getProperties(event.context, additionalProperties);
-        const newContext = abilityContext(properties, event.context);
-        newContext.subResolution = properties.subResolution;
-        if(properties.subResolution) {
-            newContext.originatingContext = event.context.triggeringContext;
-        }
+        const newContext = getResolutionContext(properties, event.context);
         if(properties.choosingPlayerOverride) {
             newContext.choosingPlayerOverride = properties.choosingPlayerOverride;
         }

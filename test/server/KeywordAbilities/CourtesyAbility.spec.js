@@ -37,7 +37,7 @@ describe('CourtesyAbility', function() {
     describe('the handler', function() {
         it('grants the controlling player a fate', function() {
             const player = { name: 'self' };
-            const context = { player: player };
+            const context = { game: game, player: player };
             ability.handler(context);
             const [actions, resolvedContext] = game.resolveActions.calls.mostRecent().args;
             expect(resolvedContext).toBe(context);

@@ -1,10 +1,8 @@
-import type { PromptButton } from './PlayerPromptState.js';
+import { SpectatorBase } from './SpectatorBase.js';
 import type { Socket } from '../Socket.js';
 import type { UserIdentity } from '../gamenode/LobbyProtocol.js';
 
-export class Spectator {
-    buttons: PromptButton[] = [];
-    menuTitle = 'Spectator mode';
+export class Spectator extends SpectatorBase {
     name: string;
     emailHash: string;
     lobbyId?: string;
@@ -16,16 +14,9 @@ export class Spectator {
         public id: string,
         public user: UserIdentity
     ) {
+        super();
         this.name = this.user.username;
         this.emailHash = this.user.emailHash ?? '';
-    }
-
-    getCardSelectionState() {
-        return {};
-    }
-
-    getRingSelectionState() {
-        return {};
     }
 
     getShortSummary() {

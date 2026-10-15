@@ -32,6 +32,16 @@ export function abilityContext(properties: AbilityToResolve, context: AbilityCon
     return ability.isTriggeredAbilityInstance() ? ability.createContext(player, properties.event) : ability.createContext(player);
 }
 
+/** The context to resolve the ability in: a sub-resolution continues the triggering context. */
+export function getResolutionContext(properties: AbilityToResolve, context: AbilityContext) {
+    const newContext = abilityContext(properties, context);
+    newContext.subResolution = !!properties.subResolution;
+    if(properties.subResolution) {
+        newContext.originatingContext = context.triggeringContext;
+    }
+    return newContext;
+}
+
 export function canResolveAbility(properties: AbilityToResolve, context: AbilityContext, ignoredBlockers: Blocker[]): boolean {
     const ability = properties.ability;
     const player = properties.player || context.player;
@@ -64,11 +74,7 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
-        const newContext = abilityContext(properties, event.context);
-        newContext.subResolution = properties.subResolution;
-        if(properties.subResolution) {
-            newContext.originatingContext = event.context.triggeringContext;
-        }
+        const newContext = getResolutionContext(properties, event.context);
         event.context.game.queueStep(new AbilityResolver(event.context.game, newContext));
     }
 
