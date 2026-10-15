@@ -91,7 +91,7 @@ describe('Subterfuge', function() {
             expect(this.honoredBlade.location).toBe('conflict discard pile');
             expect(this.ornateFan.location).toBe('conflict discard pile');
             expect(this.sharpenTheMind.location).toBe('conflict discard pile');
-            expect(this.getChatLogs(10)).toContain('player2 uses Master Whisperer to make player1 discard 1 cards and draw 3 cards');
+            expect(this.getChatLogs(10)).toContain('player2 uses Master Whisperer to make player1 discard 1 card and draw 3 cards');
             expect(this.getChatLogs(10)).toContain('player2 plays Subterfuge to prevent up to 3 cards from being drawn, discarding them instead');
             expect(this.getChatLogs(10)).toContain('player1 discards Honored Blade, Sharpen the Mind and Ornate Fan');
             expect(this.getChatLogs(10).filter((log) => log === 'player1 discards Honored Blade, Sharpen the Mind and Ornate Fan').length).toBe(1);

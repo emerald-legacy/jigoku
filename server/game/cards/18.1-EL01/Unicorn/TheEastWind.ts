@@ -8,7 +8,7 @@ export default class TheEastWind extends StrongholdCard {
     static id = 'the-east-wind';
 
     override setupCardAbilities() {
-        this.reaction('Place fate on character')
+        this.reaction('Search for a card that shares a trait')
             .when({
                 onCardPlayed: (event, context) =>
                     event.player === context.player && (event.card.hasTrait(Trait.Gaijin) || this.isOutOfClan(event.card))

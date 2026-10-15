@@ -122,7 +122,7 @@ describe('Countryside Trader', function() {
 
             expect(this.player1.fate).toBe(playerFatePreTrader - 1);
             expect(this.getChatLogs(5)).toContain('player1 uses Countryside Trader, spending 1 fate to resolve Restoration of Balance\'s Force opponent to discard to 4 cards ability');
-            expect(this.getChatLogs(5)).toContain('player1 resolves Restoration of Balance to make player2 discard 1 cards');
+            expect(this.getChatLogs(5)).toContain('player1 resolves Restoration of Balance to make player2 discard 1 card');
             expect(this.getChatLogs(5)).toContain('player2 discards Fine Katana');
         });
 

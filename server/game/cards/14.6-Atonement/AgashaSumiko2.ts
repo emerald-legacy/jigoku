@@ -6,7 +6,7 @@ export default class AgashaSumiko2 extends DrawCard {
     static id = 'agasha-sumiko-2';
 
     public override setupCardAbilities() {
-        this.interrupt('Honor a character')
+        this.interrupt('Make an opponent lose honor, fate or cards')
             .when({
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined

@@ -7,7 +7,7 @@ export default class LayOfTheLand extends DrawCard {
     static id = 'lay-of-the-land';
 
     override setupCardAbilities() {
-        this.action('Reveal a province and discard status tokens')
+        this.action('Reveal a province or turn it facedown')
             .target({
                 activePromptTitle: 'Choose an unbroken province',
                 cardType: CardType.Province,

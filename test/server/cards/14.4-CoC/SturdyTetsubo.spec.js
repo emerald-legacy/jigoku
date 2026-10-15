@@ -47,7 +47,7 @@ describe('Sturdy Tetsubo', function () {
             this.player2.clickCard(this.assassination);
             expect(this.assassination.location).toBe('conflict discard pile');
             expect(this.player2.hand.length).toBe(hand - 1);
-            expect(this.getChatLogs(10)).toContain('player1 uses Bayushi Manipulator\'s gained ability from Sturdy Tetsubō to make player2 discard 1 cards');
+            expect(this.getChatLogs(10)).toContain('player1 uses Bayushi Manipulator\'s gained ability from Sturdy Tetsubō to make player2 discard 1 card');
             expect(this.getChatLogs(10)).toContain('player2 discards Assassination');
         });
 
@@ -97,7 +97,7 @@ describe('Sturdy Tetsubo', function () {
             this.player1.clickCard(this.fan);
             expect(this.fan.location).toBe('conflict discard pile');
             expect(this.player1.hand.length).toBe(hand - 1);
-            expect(this.getChatLogs(10)).toContain('player2 uses Yogo Hiroue\'s gained ability from Sturdy Tetsubō to make player1 discard 1 cards');
+            expect(this.getChatLogs(10)).toContain('player2 uses Yogo Hiroue\'s gained ability from Sturdy Tetsubō to make player1 discard 1 card');
             expect(this.getChatLogs(10)).toContain('player1 discards Ornate Fan');
         });
     });

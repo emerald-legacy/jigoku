@@ -190,7 +190,7 @@ export class ChatCommands {
                 }
             });
         } else {
-            this.game.addMessage(msg`/move-to-conflict can only be used during a conflict`);
+            this.game.addMessage(msg`/send-home can only be used during a conflict`);
         }
     }
 
@@ -240,7 +240,7 @@ export class ChatCommands {
                 const numTokens = card.tokens[token] || 0;
 
                 card.addToken(token, num - numTokens);
-                this.game.addMessage(msg`${p} uses the /token command to set the ${token} token count of ${card} to ${num - numTokens}`);
+                this.game.addMessage(msg`${p} uses the /token command to set the ${token} token count of ${card} to ${num}`);
 
                 return true;
             }

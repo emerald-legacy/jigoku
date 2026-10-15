@@ -32,7 +32,8 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     }
 
     protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        return ['make {0} return {1} cards to their deck', [this.getProperties(context, additionalProperties).amount]];
+        const { amount } = this.getProperties(context, additionalProperties);
+        return [amount === 1 ? 'make {0} return {1} card to their deck' : 'make {0} return {1} cards to their deck', [amount]];
     }
 
     override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {

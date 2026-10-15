@@ -10,7 +10,7 @@ class MiyaLibrary extends DrawCard {
         this.action('Replace Miya Library for a faceup imperial character')
             .condition((context) => context.player.dynastyDeck.length > 0)
             .deckSearch({
-                activePromptTitle: 'select an imperial character to replace miya library',
+                activePromptTitle: 'Select an Imperial character to replace Miya Library',
                 cardsToLookAt: 4,
                 deck: DeckType.Dynasty,
                 cardCondition: (card) => card.hasTrait(Trait.Imperial) && card.type === CardType.Character,

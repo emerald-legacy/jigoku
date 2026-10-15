@@ -98,7 +98,7 @@ describe('Crafty Tsukumogami', function() {
             expect(this.player1).toBeAbleToSelect(this.scorpion);
 
             this.player1.clickCard(this.swim);
-            expect(this.getChatLogs(5)).toContain('player1 uses Crafty Tsukumogami to make player1 discard 1 cards');
+            expect(this.getChatLogs(5)).toContain('player1 uses Crafty Tsukumogami to make player1 discard 1 card');
             expect(this.getChatLogs(5)).toContain('player1 discards I Can Swim');
         });
 
@@ -128,7 +128,7 @@ describe('Crafty Tsukumogami', function() {
             expect(this.player2).toBeAbleToSelect(this.crane);
 
             this.player2.clickCard(this.crane);
-            expect(this.getChatLogs(5)).toContain('player1 uses Crafty Tsukumogami to make player2 discard 1 cards');
+            expect(this.getChatLogs(5)).toContain('player1 uses Crafty Tsukumogami to make player2 discard 1 card');
             expect(this.getChatLogs(5)).toContain('player2 discards Way of the Crane');
         });
 

@@ -10,7 +10,7 @@ export class UpToXCardSelector extends BaseCardSelector {
     }
 
     override defaultActivePromptTitle(): string {
-        return this.numCards === 1 ? 'Select a character' : `Select ${this.numCards} characters`;
+        return this.numCards === 1 ? 'Select a character' : `Select up to ${this.numCards} characters`;
     }
 
     override hasReachedLimit(selectedCards: BaseCard[]): boolean {

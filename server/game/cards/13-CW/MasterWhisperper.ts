@@ -18,7 +18,7 @@ class MasterWhisperer extends DrawCard {
                 const player = context.select === context.player.name ? context.player : context.player.opponent;
                 const amountDiscarded = player ? Math.min(3, player.hand.length) : 0;
                 return amountDiscarded > 0
-                    ? msg`make ${player}${' discard ' + amountDiscarded + ' cards and'} draw 3 cards`
+                    ? msg`make ${player}${' discard ' + amountDiscarded + (amountDiscarded === 1 ? ' card and' : ' cards and')} draw 3 cards`
                     : msg`make ${player ?? context.player} draw 3 cards`;
             });
     }

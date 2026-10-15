@@ -13,7 +13,7 @@ export class ExactlyXCardSelector extends BaseCardSelector {
 
     override defaultActivePromptTitle(): string {
         if(this.cardType.length === 1) {
-            return this.numCards === 1 ? 'Choose a ' + this.cardType[0] : `Choose ${this.numCards} ${this.cardType[0]}`;
+            return this.numCards === 1 ? 'Choose a ' + this.cardType[0] : `Choose ${this.numCards} ${this.cardType[0]}s`;
         }
         return this.numCards === 1 ? 'Select a card' : `Select ${this.numCards} cards`;
     }

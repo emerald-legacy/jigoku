@@ -29,7 +29,8 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
     }
 
     protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        return ['make {0} discard {1} cards', [this.getProperties(context, additionalProperties).amount]];
+        const { amount } = this.getProperties(context, additionalProperties);
+        return [amount === 1 ? 'make {0} discard {1} card' : 'make {0} discard {1} cards', [amount]];
     }
 
     override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {

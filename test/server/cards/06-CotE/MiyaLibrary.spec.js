@@ -30,7 +30,7 @@ describe('Miya Library', function () {
             it('should allow you to replace the library for satoshi', function () {
                 this.player1.clickCard(this.miyaLibrary);
                 expect(this.getChatLogs(1)).toContain('player1 uses Miya Library to search the top four cards of their dynasty deck for an Imperial character');
-                expect(this.player1).toHavePrompt('select an imperial character to replace miya library');
+                expect(this.player1).toHavePrompt('Select an Imperial character to replace Miya Library');
                 expect(this.player1).not.toHavePromptButton('Seppun Guardsman');
                 this.player1.clickPrompt('Miya Satoshi');
                 expect(this.player1).toHavePrompt('Select the card you would like to place on top of your dynasty deck');
@@ -59,7 +59,7 @@ describe('Miya Library', function () {
                 this.player1.moveCard(this.naiveStudent, 'dynasty deck');
                 this.player1.clickCard(this.miyaLibrary);
                 expect(this.player1).not.toBeAbleToSelect(this.miyaSatoshi);
-                expect(this.player1).toHavePrompt('select an imperial character to replace miya library');
+                expect(this.player1).toHavePrompt('Select an Imperial character to replace Miya Library');
                 this.player1.clickPrompt('Do not replace Miya Library');
                 this.player1.clickPrompt('Kudaka');
                 this.player1.clickPrompt('Naive Student');
@@ -68,7 +68,7 @@ describe('Miya Library', function () {
 
             it('should put the card back in the right order', function () {
                 this.player1.clickCard(this.miyaLibrary);
-                expect(this.player1).toHavePrompt('select an imperial character to replace miya library');
+                expect(this.player1).toHavePrompt('Select an Imperial character to replace Miya Library');
                 this.player1.clickPrompt('Miya Satoshi');
                 expect(this.player1).toHavePrompt('Select the card you would like to place on top of your dynasty deck');
                 this.player1.clickPrompt('Kanjo District');
