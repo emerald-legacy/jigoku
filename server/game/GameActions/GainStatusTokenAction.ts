@@ -21,7 +21,8 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
         const { token } = this.getProperties(context, additionalProperties);
         if(
             (token === CharacterStatus.Honored && card.isHonored) ||
-            (token === CharacterStatus.Dishonored && card.isDishonored)
+            (token === CharacterStatus.Dishonored && card.isDishonored) ||
+            (token === CharacterStatus.Tainted && card.isTainted)
         ) {
             return false;
         }
@@ -29,6 +30,9 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
             return false;
         }
         if(token === CharacterStatus.Honored && !card.checkRestrictions(RestrictionType.ReceiveHonorToken, context)) {
+            return false;
+        }
+        if(token === CharacterStatus.Tainted && !card.checkRestrictions(RestrictionType.ReceiveTaintedToken, context)) {
             return false;
         }
 

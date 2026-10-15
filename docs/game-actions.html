@@ -203,8 +203,8 @@ this.interrupt('Blank and reveal a province')
       </tbody>
     </table>
     <ul class="edge">
-      <li>An honored card can't get an honored token, a dishonored card can't get a dishonored token.</li>
-      <li>An honored token needs <code>ReceiveHonorToken</code>, a dishonored one <code>ReceiveDishonorToken</code>, checked even when the card holds the opposite token.</li>
+      <li>An honored card can't get an honored token, a dishonored card can't get a dishonored token, a tainted card can't get a tainted one.</li>
+      <li>An honored token needs <code>ReceiveHonorToken</code>, a dishonored one <code>ReceiveDishonorToken</code>, a tainted one <code>ReceiveTaintedToken</code>; the first two are checked even when the card holds the opposite token.</li>
       <li>The opposite token cancels out: an honored token on a dishonored character removes its dishonored token and leaves it ordinary (and the other way round).</li>
       <li>Neither the location nor a restriction type is checked.</li>
       <li>Raises <code>onStatusTokenGained</code> (<code>event.token</code> is the <code>CharacterStatus</code>). Chat: "give <em>card</em> a <em>honored</em> status token".</li>
