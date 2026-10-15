@@ -56,6 +56,15 @@ export class RingAbilities {
         return Object.assign(context, { ability: ring(optional, context.game.rules, onResolution) });
     }
 
+    /** The items in the order their ring effects resolve: ascending priority for the first player, descending for the other. */
+    static sortedForResolution<Item>(player: Player, items: readonly Item[], priorityOf: (item: Item) => number): Item[] {
+        const direction = player.firstPlayer ? 1 : -1;
+        return items
+            .map((item) => ({ item, priority: direction * priorityOf(item) }))
+            .sort((a, b) => a.priority - b.priority)
+            .map(({ item }) => item);
+    }
+
     static getRingName(element: string) {
         switch(element) {
             case 'air':

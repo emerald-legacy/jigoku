@@ -71,11 +71,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         super.eventHandler(event, additionalProperties);
         const card = event.card;
         if(event.shuffle) {
-            if(event.destination === Location.DynastyDeck) {
-                card.owner.shuffleDynastyDeck();
-            } else if(event.destination === Location.ConflictDeck) {
-                card.owner.shuffleConflictDeck();
-            }
+            card.owner.shuffleDeck(event.destination);
         }
     }
 }

@@ -738,6 +738,15 @@ export class Player extends GameObject {
         this.dynastyDeck = shuffle(this.dynastyDeck);
     }
 
+    /** Shuffles the deck at `location`; any other location does nothing. */
+    shuffleDeck(location: Location): void {
+        if(location === Location.ConflictDeck) {
+            this.shuffleConflictDeck();
+        } else if(location === Location.DynastyDeck) {
+            this.shuffleDynastyDeck();
+        }
+    }
+
     prepareDecks(): void {
         const deck = new Deck(this.deck);
         const preparedDeck = deck.prepare(this);
@@ -1314,12 +1323,11 @@ export class Player extends GameObject {
             elements = [elements];
         }
         optional = optional && elements.length === 1;
-        let effects = elements.map((element) => RingAbilities.contextFor(this, element, optional));
-        effects = [...effects].sort((a, b) => {
-            const aVal = this.firstPlayer ? a.ability.defaultPriority : -a.ability.defaultPriority;
-            const bVal = this.firstPlayer ? b.ability.defaultPriority : -b.ability.defaultPriority;
-            return aVal - bVal;
-        });
+        const effects = RingAbilities.sortedForResolution(
+            this,
+            elements.map((element) => RingAbilities.contextFor(this, element, optional)),
+            (context) => context.ability.defaultPriority
+        );
         this.game.openSimultaneousEffectWindow(
             effects.map((context) => ({
                 title: context.ability.title,

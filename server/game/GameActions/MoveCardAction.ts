@@ -95,10 +95,8 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         }
         const targetArr = targetList(properties.target);
         if(properties.shuffle && (targetArr.length === 0 || card === targetArr[targetArr.length - 1])) {
-            if(properties.destination === Location.ConflictDeck) {
-                card.owner.shuffleConflictDeck();
-            } else if(properties.destination === Location.DynastyDeck) {
-                card.owner.shuffleDynastyDeck();
+            if(properties.destination) {
+                card.owner.shuffleDeck(properties.destination);
             }
         } else if(properties.faceup) {
             card.facedown = false;

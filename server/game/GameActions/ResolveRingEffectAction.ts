@@ -41,11 +41,10 @@ export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> 
         if(rings.length > 1) {
             const sortedRings = properties.enforceOrderedResolution
                 ? rings
-                : rings.sort(
-                    (a, b) =>
-                        (context.player.firstPlayer ? 1 : -1) *
-                          (RingAbilities.contextFor(context.player, a.element).ability.defaultPriority -
-                              RingAbilities.contextFor(context.player, b.element).ability.defaultPriority)
+                : RingAbilities.sortedForResolution(
+                    context.player,
+                    rings,
+                    (ring) => RingAbilities.contextFor(context.player, ring.element).ability.defaultPriority
                 );
             const ringProperties = { ...additionalProperties, optional: false };
             const effectObjects = sortedRings.map((ring) => ({

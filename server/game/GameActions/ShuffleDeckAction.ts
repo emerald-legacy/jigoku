@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { Location } from '../Constants.js';
+import { type Location } from '../Constants.js';
 import type { EventName } from '../Constants.js';
 import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 
@@ -20,10 +20,6 @@ export class ShuffleDeckAction<C extends AbilityContext = AbilityContext> extend
     eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
         const { deck } = this.getProperties(event.context, additionalProperties);
         const player = event.player;
-        if(deck === Location.ConflictDeck) {
-            player.shuffleConflictDeck();
-        } else if(deck === Location.DynastyDeck) {
-            player.shuffleDynastyDeck();
-        }
+        player.shuffleDeck(deck);
     }
 }
