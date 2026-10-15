@@ -1,9 +1,9 @@
 import { AbilityContext } from '../AbilityContext.js';
-import { Event } from '../Events/Event.js';
 import { CardSelector, type CardSelectorProperties, defaultMode, isMultiCardMode, type MultiCardMode, type SingleCardMode } from '../CardSelector.js';
 import type { EffectSource } from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import { resolvePromptSource } from './PromptSource.js';
+import { targetingControl, targetsOrEventCard } from './targetingControl.js';
 import type { PromptButton, PromptControl } from '../PlayerPromptState.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
@@ -234,16 +234,8 @@ export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt 
 
     getDefaultControls(): PromptControl[] {
         const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
-        let targets = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), []);
-        const eventCard = Event.promptCardOf('event' in this.context ? this.context.event : undefined);
-        if(targets.length === 0 && eventCard) {
-            targets = [eventCard];
-        }
-        return [{
-            type: 'targeting',
-            source: this.context.source.getShortSummary(),
-            targets: targets.map((target: BaseCard) => target.getShortSummaryForControls(this.choosingPlayer))
-        }];
+        const targets = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), []);
+        return [targetingControl(this.context.source, targetsOrEventCard(this.context, targets), this.choosingPlayer)];
     }
 
     continue(): boolean {

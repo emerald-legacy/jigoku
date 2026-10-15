@@ -11,6 +11,7 @@ import type { TriggeredAbility } from '../TriggeredAbility.js';
 import type Ring from '../Ring.js';
 import type { HandlerMenuOption } from './HandlerMenuPrompt.js';
 import type { EffectSource } from '../EffectSource.js';
+import { targetingControl } from './targetingControl.js';
 
 function promptCardFor(context: TriggerChoice): BaseCard | undefined {
     return Event.promptCardOf(context.event);
@@ -141,11 +142,7 @@ export class TriggerWindow extends BaseStep {
                 map.set(event.context.source, [...new Set(targets)]);
             }
         }
-        return [...map.entries()].map(([source, targets]) => ({
-            type: 'targeting',
-            source: source.getShortSummary(),
-            targets: targets.map((target: BaseCard) => target.getShortSummaryForControls(this.requireCurrentPlayer()))
-        }));
+        return [...map.entries()].map(([source, targets]) => targetingControl(source, targets, this.requireCurrentPlayer()));
     }
 
     promptBetweenAbilities(choices: TriggerChoice[], addBackButton = true) {

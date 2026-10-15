@@ -1,8 +1,8 @@
 import { AbilityContext } from '../AbilityContext.js';
-import { Event } from '../Events/Event.js';
 import type { EffectSource } from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import { resolvePromptSource } from './PromptSource.js';
+import { targetingControl, targetsOrEventCard } from './targetingControl.js';
 import type { PromptButton, PromptControl } from '../PlayerPromptState.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
@@ -127,15 +127,7 @@ export class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice =
         if(this.properties.target) {
             targets = Array.isArray(this.properties.target) ? this.properties.target : [this.properties.target];
         }
-        const eventCard = Event.promptCardOf('event' in this.context ? this.context.event : undefined);
-        if(targets.length === 0 && eventCard) {
-            targets = [eventCard];
-        }
-        return [{
-            type: 'targeting',
-            source: this.context.source.getShortSummary(),
-            targets: targets.map((target: GameObject) => target.getShortSummaryForControls(this.player))
-        }];
+        return [targetingControl(this.context.source, targetsOrEventCard(this.context, targets), this.player)];
     }
 
     waitingPrompt() {

@@ -6,11 +6,10 @@ import { PlayerZones, type AdditionalPile, type DrawCardPile } from './PlayerZon
 
 import { GameObject } from './GameObject.js';
 import { Deck } from './Deck.js';
-import { AttachmentPrompt } from './gamesteps/AttachmentPrompt.js';
 import { clockFor, type ClockConfig } from './Clocks/ClockSelector.js';
 import type { CostReducer, CostReducerProps } from './CostReducer.js';
 import type { AbilityLimit } from './AbilityLimit.js';
-import { loseHonor } from './GameActions/GameActions.js';
+import { attach, loseHonor } from './GameActions/GameActions.js';
 import { RingAbilities } from './RingAbilities.js';
 import type { PlayableLocation } from './PlayableLocation.js';
 import { PlayerCostManager } from './PlayerCostManager.js';
@@ -42,7 +41,7 @@ import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
 import type { ClockInterface } from './Clocks/types.js';
-import type { AbilityContext } from './AbilityContext.js';
+import { AbilityContext } from './AbilityContext.js';
 import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
 import type { FatePool } from './Effects/EffectValueMap.js';
 import type { StateViewer } from './types/StateViewer.js';
@@ -983,8 +982,19 @@ export class Player extends GameObject {
         return !!legalLocations[category]?.some((legal) => legal === location);
     }
 
-    promptForAttachment(card: DrawCard, playingType?: string): void {
-        this.game.queueStep(new AttachmentPrompt(this.game, this, card, playingType ?? ''));
+    promptForAttachment(card: DrawCard): void {
+        this.game.queueSimpleStep(() =>
+            this.game.promptForSelect(this, {
+                source: 'Play Attachment',
+                activePromptTitle: 'Select target for attachment',
+                controller: Players.Self,
+                gameAction: attach({ attachment: card }),
+                onSelect: (_player: Player, target) => {
+                    attach({ attachment: card }).resolve(target, new AbilityContext({ game: this.game, player: this, source: target }));
+                    return true;
+                }
+            })
+        );
     }
 
     isAttackingPlayer(): boolean {
