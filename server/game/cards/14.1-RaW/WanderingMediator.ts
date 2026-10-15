@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Element } from '../../Constants.js';
 
-const elementKey = 'seeker-of-knowledge-air';
+const elementKey = 'wandering-mediator-air';
 
 class WanderingMediator extends DrawCard {
     static id = 'wandering-mediator';

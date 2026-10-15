@@ -4,7 +4,7 @@ import { modifyPoliticalSkill, modifyProvinceStrength } from '../../effects.js';
 import { cardLastingEffect, chooseAction } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
-const ELEMENT = 'courteous-greeting-earth';
+const ELEMENT = 'steward-of-cryptic-lore-earth';
 
 export default class StewardOfCrypticLore extends DrawCard {
     static id = 'steward-of-cryptic-lore';
