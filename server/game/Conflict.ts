@@ -396,14 +396,7 @@ export class Conflict extends GameObject {
             return stateChanged;
         }
 
-        const contributingLocations = [
-            Location.PlayArea,
-            Location.ProvinceOne,
-            Location.ProvinceTwo,
-            Location.ProvinceThree,
-            Location.ProvinceFour,
-            Location.StrongholdProvince
-        ];
+        const contributingLocations = [Location.PlayArea, ...this.game.getProvinceArray()];
 
         const additionalContributingCards = this.game.findAnyCardsInAnyList(
             (card): card is DrawCard =>

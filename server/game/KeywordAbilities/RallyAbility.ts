@@ -17,13 +17,7 @@ export class RallyAbility extends TriggeredAbility<DrawCard> {
                         context.source.hasRally();
                 }
             },
-            location: [
-                Location.StrongholdProvince,
-                Location.ProvinceOne,
-                Location.ProvinceTwo,
-                Location.ProvinceThree,
-                Location.ProvinceFour
-            ],
+            location: Location.Provinces,
             title: `${card.name}'s Rally`,
             printedAbility: false,
             limit: AbilityLimit.unlimited(),

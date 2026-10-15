@@ -11,8 +11,10 @@ describe('Conflict', function () {
             'on',
             'raiseEvent',
             'reapplyStateDependentEffects',
-            'getFrameworkContext'
+            'getFrameworkContext',
+            'getProvinceArray'
         ]);
+        this.gameSpy.getProvinceArray.and.returnValue(['province 1', 'province 2', 'province 3', 'province 4', 'stronghold province']);
         this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.findAnyCardsInAnyList.and.returnValue([]);
         this.effectEngineSpy = jasmine.createSpyObj('effectEngine', ['checkEffects']);

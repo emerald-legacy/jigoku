@@ -9,8 +9,10 @@ function makeGame() {
         'getCurrentAbilityContext',
         'getFrameworkContext',
         'on',
-        'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow'
+        'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow',
+        'getProvinceArray'
     ]);
+    game.getProvinceArray.and.returnValue(['province 1', 'province 2', 'province 3', 'province 4', 'stronghold province']);
     game.getFrameworkContext.and.returnValue(null);
     return game;
 }

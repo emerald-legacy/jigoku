@@ -5,7 +5,8 @@ describe('ThrivingAbility', function() {
     let card, ability;
 
     beforeEach(function() {
-        const game = jasmine.createSpyObj('game', ['on']);
+        const game = jasmine.createSpyObj('game', ['on', 'getProvinceArray']);
+        game.getProvinceArray.and.returnValue(['province 1', 'province 2', 'province 3', 'province 4', 'stronghold province']);
         card = jasmine.createSpyObj('card', ['getType'], { name: 'Test Holding', game: game });
         card.getType.and.returnValue('holding');
         ability = new ThrivingAbility(card);

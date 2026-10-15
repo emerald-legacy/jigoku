@@ -14,13 +14,7 @@ export class ThrivingAbility extends TriggeredAbility<DrawCard> {
                     context.source.hasThriving() &&
                     context.player.getDynastyCardsInProvince(context.source.location).length === 1
             },
-            location: [
-                Location.StrongholdProvince,
-                Location.ProvinceOne,
-                Location.ProvinceTwo,
-                Location.ProvinceThree,
-                Location.ProvinceFour
-            ],
+            location: Location.Provinces,
             title: `${card.name}'s Thriving`,
             printedAbility: false,
             message: (context: TriggeredAbilityContext<DrawCard>) => {
