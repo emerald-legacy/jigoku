@@ -7,6 +7,7 @@ import { attachToRing } from './GameActions/GameActions.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
 import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
+import { getPlayBlocker } from './playActionHelpers.js';
 
 export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     title = 'Play this attachment';
@@ -27,23 +28,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
         ) {
             return Blocker.WrongPhase;
         }
-        if(
-            !ignoredBlockers.includes(Blocker.WrongLocation) &&
-            !context.player.isCardInPlayableLocation(context.source, PlayType.PlayFromHand)
-        ) {
-            return Blocker.WrongLocation;
-        }
-        if(
-            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
-            !context.source.canPlay(context, PlayType.PlayFromHand)
-        ) {
-            return Blocker.CannotTrigger;
-        }
-
-        if(context.source.anotherUniqueInPlay(context.player)) {
-            return Blocker.DuplicateUnique;
-        }
-        return super.meetsRequirements(context, ignoredBlockers);
+        return getPlayBlocker(context.source, context, ignoredBlockers, PlayType.PlayFromHand) ?? super.meetsRequirements(context, ignoredBlockers);
     }
 
     canResolveTargets() {

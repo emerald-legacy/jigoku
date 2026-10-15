@@ -7,6 +7,7 @@ import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 import type DrawCard from './DrawCard.js';
 import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
+import { getExtraFateWhenPlayed, getPlayBlocker } from './playActionHelpers.js';
 
 /** Where a played character enters play: the player chooses (Any), or only one of them. */
 export enum PlayIntoLocation {
@@ -30,20 +31,9 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         ) {
             return Blocker.WrongPhase;
         }
-        if(
-            !ignoredBlockers.includes(Blocker.WrongLocation) &&
-            !context.player.isCardInPlayableLocation(context.source, PlayType.PlayFromHand)
-        ) {
-            return Blocker.WrongLocation;
-        }
-        if(
-            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
-            !context.source.canPlay(context, PlayType.PlayFromHand)
-        ) {
-            return Blocker.CannotTrigger;
-        }
-        if(context.source.anotherUniqueInPlay(context.player)) {
-            return Blocker.DuplicateUnique;
+        const blocker = getPlayBlocker(context.source, context, ignoredBlockers, PlayType.PlayFromHand);
+        if(blocker) {
+            return blocker;
         }
         if(
             !context.player.checkRestrictions(RestrictionType.PlayCharacter, context) ||
@@ -55,12 +45,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
     }
 
     public executeHandler(context: AbilityContext<DrawCard>): void {
-        const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
-        let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
-        if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
-            extraFate = 0;
-        }
-        extraFate = extraFate + legendaryFate;
+        const extraFate = getExtraFateWhenPlayed(context.source, context);
         const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         const atHomeHandler = () => {
             context.game.addMessage(msg`${context.player} plays ${context.source} at home with ${context.chooseFate} additional fate`);

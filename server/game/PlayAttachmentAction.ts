@@ -7,6 +7,7 @@ import { attach } from './GameActions/GameActions.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
+import { getPlayBlocker } from './playActionHelpers.js';
 
 export class PlayAttachmentAction extends PlayCardSourceAction {
     title = 'Play this attachment';
@@ -33,20 +34,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
         ) {
             return Blocker.WrongPhase;
         }
-        if(
-            !ignoredBlockers.includes(Blocker.WrongLocation) &&
-            !context.player.isCardInPlayableLocation(context.source, context.playType)
-        ) {
-            return Blocker.WrongLocation;
-        }
-        if(!ignoredBlockers.includes(Blocker.CannotTrigger) && !context.source.canPlay(context, context.playType)) {
-            return Blocker.CannotTrigger;
-        }
-
-        if(context.source.anotherUniqueInPlay(context.player)) {
-            return Blocker.DuplicateUnique;
-        }
-        return super.meetsRequirements(context, ignoredBlockers);
+        return getPlayBlocker(context.source, context, ignoredBlockers, context.playType) ?? super.meetsRequirements(context, ignoredBlockers);
     }
 
     displayMessage(context: AbilityContext) {

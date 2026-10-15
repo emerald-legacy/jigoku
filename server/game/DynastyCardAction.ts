@@ -9,6 +9,7 @@ import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf } from './Effects/types.js';
 import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
+import { getExtraFateWhenPlayed, getPlayBlocker } from './playActionHelpers.js';
 
 export class DynastyCardAction extends BaseAction {
     title = 'Play this character';
@@ -25,20 +26,8 @@ export class DynastyCardAction extends BaseAction {
             return Blocker.WrongPlayer;
         } else if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Dynasty) {
             return Blocker.WrongPhase;
-        } else if(
-            !ignoredBlockers.includes(Blocker.WrongLocation) &&
-            !context.player.isCardInPlayableLocation(this.card, PlayType.PlayFromProvince)
-        ) {
-            return Blocker.WrongLocation;
-        } else if(
-            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
-            !this.card.canPlay(context, PlayType.PlayFromProvince)
-        ) {
-            return Blocker.CannotTrigger;
-        } else if(this.card.anotherUniqueInPlay(context.player)) {
-            return Blocker.DuplicateUnique;
         }
-        return super.meetsRequirements(context, ignoredBlockers);
+        return getPlayBlocker(this.card, context, ignoredBlockers, PlayType.PlayFromProvince) ?? super.meetsRequirements(context, ignoredBlockers);
     }
 
     displayMessage(context: AbilityContext): void {
@@ -53,12 +42,7 @@ export class DynastyCardAction extends BaseAction {
     }
 
     executeHandler(context: AbilityContext<DrawCard>): void {
-        let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
-        const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
-        if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
-            extraFate = 0;
-        }
-        extraFate = extraFate + legendaryFate;
+        const extraFate = getExtraFateWhenPlayed(context.source, context);
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
         const enterPlayEvent = putIntoPlay({ fate: context.chooseFate + extraFate, status }).getEvent(
             context.source,

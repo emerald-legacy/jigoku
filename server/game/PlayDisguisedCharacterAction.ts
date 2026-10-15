@@ -7,6 +7,7 @@ import { GameObject } from './GameObject.js';
 import type DrawCard from './DrawCard.js';
 import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
 import { PlayIntoLocation } from './PlayCharacterAction.js';
+import { getExtraFateWhenPlayed, getPlayBlocker } from './playActionHelpers.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type Player from './Player.js';
 import type { Cost, Result } from './costs/Cost.js';
@@ -84,31 +85,19 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
     public meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
         if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Conflict) {
             return Blocker.WrongPhase;
-        } else if(
-            !ignoredBlockers.includes(Blocker.WrongLocation) &&
-            !context.player.isCardInPlayableLocation(context.source, context.playType)
-        ) {
-            return Blocker.WrongLocation;
-        } else if(
-            !ignoredBlockers.includes(Blocker.CannotTrigger) &&
-            !context.source.canPlay(context, context.playType)
-        ) {
-            return Blocker.CannotTrigger;
-        } else if(context.source.anotherUniqueInPlay(context.player)) {
-            return Blocker.DuplicateUnique;
-        } else if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
+        }
+        const blocker = getPlayBlocker(context.source, context, ignoredBlockers, context.playType);
+        if(blocker) {
+            return blocker;
+        }
+        if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
             return Blocker.CannotPlaceFate;
         }
         return super.meetsRequirements(context, ignoredBlockers);
     }
 
     public executeHandler(context: AbilityContext<DrawCard>) {
-        const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
-        let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
-        if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
-            extraFate = 0;
-        }
-        extraFate = extraFate + legendaryFate;
+        const extraFate = getExtraFateWhenPlayed(context.source, context);
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
         const events: Event[] = [createCardPlayedEvent(context, context.source, context.playType)];
         const replacedCharacter = chosenCharacter(context);
