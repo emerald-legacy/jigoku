@@ -112,6 +112,13 @@ describe('A Season of War', function() {
                 expect(this.acolyte.facedown).toBe(false);
             });
 
+            it('should forget the honor gained earlier in the dynasty phase', function() {
+                this.player1.player.modifyHonor(2);
+                expect(this.player1.player.honorGained(this.game.roundNumber, 'dynasty')).toBe(2);
+                this.player1.clickCard(this.season);
+                expect(this.player1.player.honorGained(this.game.roundNumber, 'dynasty')).toBe(0);
+            });
+
             it('should start a new dynasty phase - testing with on phase started reactions', function() {
                 this.player1.player.imperialFavor = 'military';
                 this.player1.clickCard(this.season);

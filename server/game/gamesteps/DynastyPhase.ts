@@ -86,7 +86,7 @@ export class DynastyPhase extends PhaseStep {
         for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             if(!restarted && player.anyEffect(EffectName.RestartDynastyPhase)) {
                 restarted = true;
-                player.resetHonorEvents(this.game.roundNumber, this.game.currentPhase);
+                player.resetHonorEvents(this.game.roundNumber, Phase.Dynasty);
                 const effectSource = player.mostRecentEffect(EffectName.RestartDynastyPhase);
                 this.game.addMessage(msg`${effectSource} has started a new dynasty phase!`);
                 const dynastyPhase = new DynastyPhase(this.game, false);
