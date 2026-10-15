@@ -1,3 +1,5 @@
+import { discardFromPlay, putIntoPlay } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Honored Veterans', function () {
     integration(function () {
         beforeEach(function () {
@@ -32,6 +34,21 @@ describe('Honored Veterans', function () {
         });
 
         it('should not work if no characters have been bought', function () {
+            this.player1.clickCard(this.veterans);
+            expect(this.player1).toHavePrompt('Play cards from provinces');
+        });
+
+        it('should forget a bushi that left play and was put into play again', function () {
+            this.player1.clickCard(this.toshimoko);
+            this.player1.clickPrompt('0');
+            this.player2.pass();
+
+            const context = this.game.getFrameworkContext(this.player1.player);
+            this.game.queueSimpleStep(() => discardFromPlay().resolve(this.toshimoko, context));
+            this.game.queueSimpleStep(() => putIntoPlay().resolve(this.toshimoko, context));
+            this.game.continue();
+            expect(this.toshimoko.location).toBe('play area');
+
             this.player1.clickCard(this.veterans);
             expect(this.player1).toHavePrompt('Play cards from provinces');
         });

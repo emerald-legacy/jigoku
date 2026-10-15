@@ -15,7 +15,8 @@ export default class HonoredVeterans extends DrawCard {
     public override setupCardAbilities() {
         new EventRegistrar(this.game).register({
             [EventName.OnPhaseStarted]: () => this.onPhaseStarted(),
-            [EventName.OnCardPlayed]: (event) => this.onCardPlayed(event)
+            [EventName.OnCardPlayed]: (event) => this.onCardPlayed(event),
+            [EventName.OnCardLeavesPlay]: (event) => this.charactersPlayedThisPhase.delete(event.card)
         });
 
         this.action('Honor characters')
