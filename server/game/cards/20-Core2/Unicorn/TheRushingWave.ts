@@ -1,19 +1,19 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { setProvinceStrength } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
+import { msg } from '../../../GameChat.js';
 
 function provinceLog(province: ProvinceCard) {
     return province.facedown ? province.location : province;
 }
 
-function adjacentProvinces(centralProvince: ProvinceCard): Array<string | ProvinceCard> {
-    return centralProvince.controller
-        .getProvinces((province) =>
-            centralProvince.controller.areLocationsAdjacent(centralProvince.location, province.location)
-        )
-        .map(provinceLog);
+function adjacentProvinces(centralProvince: ProvinceCard): ProvinceCard[] {
+    return centralProvince.controller.getProvinces((province) =>
+        centralProvince.controller.areLocationsAdjacent(centralProvince.location, province.location)
+    );
 }
 
 export default class TheRushingWave extends DrawCard {
@@ -25,28 +25,20 @@ export default class TheRushingWave extends DrawCard {
             .target({
                 location: Location.Provinces,
                 cardType: CardType.Province
-            }, AbilityDsl.actions.onAffinity({
-                trait: 'water',
-                gameAction: AbilityDsl.actions.cardLastingEffect(({ target }) => ({
-                    target: target?.isProvinceCard()
-                        ? target.controller.getProvinces(
-                            (province) =>
-                                target.location === province.location ||
-                                    target.controller.areLocationsAdjacent(target.location, province.location)
-                        )
-                        : [],
-                    targetLocation: Location.Provinces,
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.setProvinceStrength(0)
-                })),
-                noAffinityGameAction: AbilityDsl.actions.cardLastingEffect({
-                    targetLocation: Location.Provinces,
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.setProvinceStrength(0)
-                }),
-                effect: 'also set the strength of {0} to 0',
-                effectArgs: (context) => [context.target?.isProvinceCard() ? adjacentProvinces(context.target) : []]
+            }, cardLastingEffect({
+                targetLocation: Location.Provinces,
+                duration: Duration.UntilEndOfPhase,
+                effect: setProvinceStrength(0)
             }))
-            .effect('set {1}\'s strength to 0 until the end of the phase', (context) => [provinceLog(context.target)]);
+            .onAffinity('water', {
+                chatText: (context) => msg`also set the strength of ${adjacentProvinces(context.target).map(provinceLog)} to 0`
+            })
+            .cardLastingEffect((context) => ({
+                target: adjacentProvinces(context.target),
+                targetLocation: Location.Provinces,
+                duration: Duration.UntilEndOfPhase,
+                effect: setProvinceStrength(0)
+            }))
+            .chatText((context) => msg`set ${provinceLog(context.target)}'s strength to 0 until the end of the phase`);
     }
 }

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TheStranger extends DrawCard {
@@ -9,7 +9,7 @@ export default class TheStranger extends DrawCard {
             .when({
                 onClaimFavor: (event, context) => event.player === context.player
             })
-            .gameAction(AbilityDsl.actions.gainHonor())
-            .limit(AbilityDsl.limit.perRound(2));
+            .gainHonor()
+            .limit(perRound(2));
     }
 }

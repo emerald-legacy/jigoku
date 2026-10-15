@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import * as costs from '../../costs/index.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class PerceptiveKitsuki extends DrawCard {
@@ -6,12 +7,11 @@ export default class PerceptiveKitsuki extends DrawCard {
 
     public setupCardAbilities() {
         this.action('Look at your opponent\'s hand')
-            .cost(AbilityDsl.costs.returnRings(1))
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.lookAt((context) => ({
-                target: (context.player.opponent?.hand ?? []).slice().sort((a, b) => a.name.localeCompare(b.name)),
-                chatMessage: true
-            })))
-            .effect('look at {1}\'s hand', (context) => context.player.opponent ?? '');
+            .cost(costs.returnRings(1))
+            .lookAt((context) => ({
+                target: (context.player.opponent?.hand ?? []).slice().sort((a, b) => a.name.localeCompare(b.name))
+            }))
+            .chatText((context) => msg`look at ${context.player.opponent ?? ''}'s hand`);
     }
 }

@@ -1,22 +1,23 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectName, EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
-import { ResolveElementAction } from './ResolveElementAction.js';
+import { ResolveRingEffectAction } from './ResolveRingEffectAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 
 export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName.OnResolveConflictRing, C> {
-    name = 'resolveRing';
+    name = 'resolveConflictRing';
     eventName = EventName.OnResolveConflictRing;
 
     protected effectMessage(): MessageArgs {
         return ['resolve {0}', []];
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnResolveConflictRing, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnResolveConflictRing, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         const conflict = context.game.currentConflict;
 
@@ -33,7 +34,7 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
         const cannotResolveRingEffects = eventContext.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
-            eventContext.game.addMessage('{0}\'s ring effect is cancelled.', eventContext.player);
+            eventContext.game.addMessage(msg`${eventContext.player}'s ring effect is cancelled.`);
             event.cancel();
             return;
         }
@@ -96,7 +97,7 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
                 );
                 return true;
             },
-            onCancel: (cancelPlayer: Player) => cancelPlayer.game.addMessage('{0} chooses not to resolve the conflict ring', cancelPlayer),
+            onCancel: (cancelPlayer: Player) => cancelPlayer.game.addMessage(msg`${cancelPlayer} chooses not to resolve the conflict ring`),
             onMenuCommand: (menuPlayer: Player, arg: string) => {
                 if(arg === 'all') {
                     this.resolveRingEffects(menuPlayer, elements.concat(chosenElements));
@@ -118,8 +119,8 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
     }
 
     resolveRingEffects(player: Player, elements: string[], optional: boolean = true): void {
-        const rings = elements.map((element) => player.game.rings[element]);
-        const action = new ResolveElementAction({
+        const rings = elements.flatMap((element) => player.game.ringFor(element) ?? []);
+        const action = new ResolveRingEffectAction({
             target: rings,
             optional: optional,
             physicalRing: player.game.currentConflict?.ring

@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import { cardCannot } from '../../effects.js';
+import { CardType, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class NeverYield extends DrawCard {
     static id = 'never-yield';
@@ -10,22 +11,22 @@ class NeverYield extends DrawCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+            .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => card.type === CardType.Character),
                 effect: [
-                    AbilityDsl.effects.cardCannot({
-                        cannot: 'sendHome',
-                        restricts: 'opponentsCardEffects',
+                    cardCannot({
+                        cannot: RestrictionType.SendHome,
+                        appliesTo: RestrictionScope.OpponentsCardEffects,
                         applyingPlayer: context.player
                     }),
-                    AbilityDsl.effects.cardCannot({
-                        cannot: 'bow',
-                        restricts: 'opponentsCardEffects',
+                    cardCannot({
+                        cannot: RestrictionType.Bow,
+                        appliesTo: RestrictionScope.OpponentsCardEffects,
                         applyingPlayer: context.player
                     })
                 ]
-            })))
-            .effect('make it so {1}\'s card effects can\'t bow or send home {2}\'s characters currently in play until the end of the conflict', context => [context.player.opponent, context.player]);
+            }))
+            .chatText((context) => msg`make it so ${context.player.opponent}'s card effects can't bow or send home ${context.player}'s characters currently in play until the end of the conflict`);
     }
 }
 

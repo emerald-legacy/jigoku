@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { perPhase } from '../../AbilityLimit.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class TacticiansApprentice extends DrawCard {
@@ -7,13 +7,12 @@ export default class TacticiansApprentice extends DrawCard {
     public setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
-                onHonorDialsRevealed: (event, context) =>
-                    event.isHonorBid &&
+                onHonorDialsRevealed: (_event, context) =>
                     !!context.player.opponent &&
                     context.player.showBid < context.player.opponent.showBid
             })
-            .gameAction(AbilityDsl.actions.draw())
-            .effect('draw a card')
-            .limit(AbilityDsl.limit.perPhase(1));
+            .draw()
+            .chatText('draw a card')
+            .limit(perPhase(1));
     }
 }

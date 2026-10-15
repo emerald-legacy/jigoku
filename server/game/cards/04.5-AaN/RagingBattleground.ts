@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 export default class RagingBattleground extends ProvinceCard {
     static id = 'raging-battleground';
@@ -13,6 +13,6 @@ export default class RagingBattleground extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isUnique() && card.getFate() < 1
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }

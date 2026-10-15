@@ -1,5 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
-import type EffectSource from '../EffectSource.js';
+import type { EffectSource } from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import { resolvePromptSource } from './PromptSource.js';
 import type { PromptButton } from '../PlayerPromptState.js';
@@ -47,7 +47,7 @@ type ResolvedSelectRingPromptProperties = SelectRingPromptProperties & Required<
  * source             - what is at the origin of the user prompt, usually a card;
  *                      used to provide a default waitingPromptTitle, if missing
  */
-class SelectRingPrompt extends UiPrompt {
+export class SelectRingPrompt extends UiPrompt {
     choosingPlayer: Player;
     properties: ResolvedSelectRingPromptProperties;
     context: AbilityContext;
@@ -163,4 +163,3 @@ class SelectRingPrompt extends UiPrompt {
     }
 }
 
-export default SelectRingPrompt;

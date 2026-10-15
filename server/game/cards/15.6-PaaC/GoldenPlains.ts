@@ -1,6 +1,7 @@
 import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addTrait } from '../../effects.js';
+import { moveConflict } from '../../GameActions/GameActions.js';
 
 export default class GoldenPlains extends ProvinceCard {
     static id = 'golden-plains';
@@ -9,7 +10,7 @@ export default class GoldenPlains extends ProvinceCard {
         this.persistentEffect({
             match: (card, context) => card.controller === context?.player && card.location === Location.PlayArea,
             targetController: Players.Self,
-            effect: AbilityDsl.effects.addTrait('cavalry'),
+            effect: addTrait('cavalry'),
             condition: (context) => context.player.stronghold?.name === 'Golden Plains Outpost'
         });
 
@@ -20,6 +21,6 @@ export default class GoldenPlains extends ProvinceCard {
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces
-            }, AbilityDsl.actions.moveConflict());
+            }, moveConflict());
     }
 }

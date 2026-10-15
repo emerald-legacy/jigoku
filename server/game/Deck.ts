@@ -1,12 +1,11 @@
-import { GameModes } from '../GameModes.js';
 import { CardType, Location } from './Constants.js';
 import { resolvePackId } from './CardPackUtil.js';
 import { ProvinceCard } from './ProvinceCard.js';
 import { RoleCard } from './RoleCard.js';
 import { StrongholdCard } from './StrongholdCard.js';
-import BaseCard from './BaseCard.js';
+import type BaseCard from './BaseCard.js';
 import DrawCard from './DrawCard.js';
-import Player from './Player.js';
+import type Player from './Player.js';
 import type { CardData } from './types/CardData.js';
 import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
 import type { CardClass } from './types/CardClass.js';
@@ -72,7 +71,7 @@ export class Deck {
         }
 
         //provinces
-        if(player.game.gameMode !== GameModes.Skirmish) {
+        if(player.game.rules.setupHaveProvinceCards) {
             for(const { count, card, pack_id: packId } of this.data.provinceCards ?? []) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardType.Province) {
@@ -92,7 +91,7 @@ export class Deck {
         }
 
         //stronghold & role
-        if(player.game.gameMode !== GameModes.Skirmish) {
+        if(player.game.rules.setupHaveStrongholds) {
             for(const { count, card, pack_id: packId } of this.data.stronghold ?? []) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardType.Stronghold) {

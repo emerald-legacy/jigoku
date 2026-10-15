@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { ready } from '../../GameActions/GameActions.js';
 
 class TwilightRider extends DrawCard {
     static id = 'twilight-rider';
@@ -12,7 +12,7 @@ class TwilightRider extends DrawCard {
             })
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }
 

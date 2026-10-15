@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { returnToDeck } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,15 +17,9 @@ export default class CounselFromYumeDo extends DrawCard {
                 location: Location.ConflictDiscardPile,
                 cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Self
-            }, AbilityDsl.actions.returnToDeck({ location: Location.ConflictDiscardPile, shuffle: true }))
-            .then((context) => ({
-                gameAction: AbilityDsl.actions.onAffinity({
-                    trait: 'water',
-                    effect: 'draw a card',
-                    gameAction: AbilityDsl.actions.draw({
-                        target: context.player
-                    })
-                })
-            }));
+            }, returnToDeck({ location: Location.ConflictDiscardPile, shuffle: true }))
+            .afterwards()
+            .onAffinity('water', { chatText: () => msg`draw a card` })
+            .draw();
     }
 }

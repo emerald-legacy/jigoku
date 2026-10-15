@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
 
 class MatsuKoso extends DrawCard {
     static id = 'matsu-koso';
@@ -8,11 +9,11 @@ class MatsuKoso extends DrawCard {
     setupCardAbilities() {
         this.action('Lower military skill')
             .condition((context) => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cardLastingEffect((context) => ({
                 target: this.getTargets(context),
-                effect: AbilityDsl.effects.modifyMilitarySkill((card) => -card.printedPoliticalSkill)
-            })))
-            .effect('lower the military skill of {1} by their respective printed political skill', (context) => [this.getTargets(context)]);
+                effect: modifyMilitarySkill((card) => -card.printedPoliticalSkill)
+            }))
+            .chatText((context) => msg`lower the military skill of ${this.getTargets(context)} by their respective printed political skill`);
     }
 
     // A dash or 0 printed political skill would change nothing, and applying the effect

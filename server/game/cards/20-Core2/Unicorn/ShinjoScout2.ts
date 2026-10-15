@@ -1,5 +1,6 @@
-import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { cannotTriggerAbilities } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShinjoScout2 extends DrawCard {
@@ -9,21 +10,15 @@ export default class ShinjoScout2 extends DrawCard {
         this.interrupt('Cancel the province effect')
             .when({
                 onCardRevealed: (event, context) =>
-                    event.card.type === CardType.Province && context.source.isAttacking()
+                    event.card.isProvinceCard() && event.card.isConflictProvince() && context.source.isAttacking()
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince(),
-                message: '{0} prevents {1} from triggering its abilities during this conflict',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.cannotTriggerAbilities()
+            .selectAttackedProvince({
+                cardCondition: (card, context) => card === context.event.card,
+                message: (context, province) => msg`${context.player} prevents ${province} from triggering its abilities during this conflict`,
+                gameAction: cardLastingEffect({
+                    effect: cannotTriggerAbilities()
                 })
-            })))
-            .effect('avoid the dangers of their exploration');
+            })
+            .chatText('avoid the dangers of their exploration');
     }
 }

@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class WayOfTheUnicorn extends DrawCard {
     static id = 'way-of-the-unicorn';
@@ -9,8 +8,8 @@ class WayOfTheUnicorn extends DrawCard {
             .when({
                 onPassFirstPlayer: (event, context) => event.player === context.player.opponent
             })
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('keep the first player token')
+            .cancel()
+            .chatText('keep the first player token')
             .cannotBeMirrored();
     }
 }

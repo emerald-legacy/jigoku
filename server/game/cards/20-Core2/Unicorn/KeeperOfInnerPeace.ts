@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
 import { CardType } from '../../../Constants.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
+import Ring from '../../../Ring.js';
 
 export default class KeeperOfInnerPeace extends DrawCard {
     static id = 'keeper-of-inner-peace';
@@ -16,8 +16,8 @@ export default class KeeperOfInnerPeace extends DrawCard {
                     event.origin?.type === CardType.Character &&
                     'controller' in event.origin &&
                     event.origin.controller === context.player &&
-                    event.context?.player === context.player.opponent
+                    (event.context?.source instanceof Ring || event.context?.player === context.player.opponent)
             })
-            .gameAction(AbilityDsl.actions.placeFate((context) => ({ target: context.event.origin instanceof BaseCard ? context.event.origin : [] })));
+            .placeFate((context) => ({ target: context.event.origin instanceof BaseCard ? context.event.origin : [] }));
     }
 }

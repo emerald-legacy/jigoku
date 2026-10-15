@@ -1,9 +1,19 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type DrawCard from '../../DrawCard.js';
 import { Location, CardType, EventName } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import {
+    chatMessage,
+    discardFromPlay,
+    lookAt,
+    multiple,
+    opponentPutIntoPlay,
+    putIntoPlay,
+    sequential,
+    shuffleDeck
+} from '../../GameActions/GameActions.js';
 
 export default class RetireToTheBrotherhood extends ProvinceCard {
     static id = 'retire-to-the-brotherhood';
@@ -13,8 +23,8 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.discardFromPlay((context) => ({
+            .gameAction(sequential([
+                discardFromPlay((context) => ({
                     target: context.player.cardsInPlay
                         .filter((a) => a.getFate() === 0)
                         .concat(
@@ -23,50 +33,32 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                                 : []
                         )
                 })),
-                AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.lookAt((context) => ({
+                multiple([
+                    lookAt((context) => ({
                         target: this.getBrotherhoodCards(context, context.player).revealed,
-                        message: '{0} reveals {1}',
-                        messageArgs: (cards) => [context.player, cards]
+                        message: (context, cards) => msg`${context.player} reveals ${cards}`
                     })),
-                    AbilityDsl.actions.lookAt((context) => ({
+                    lookAt((context) => ({
                         target: this.getBrotherhoodCards(context, context.player.opponent).revealed,
-                        message: '{0} reveals {1}',
-                        messageArgs: (cards) => [context.player.opponent, cards]
+                        message: (context, cards) => msg`${context.player.opponent} reveals ${cards}`
                     }))
                 ]),
-                AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.putIntoPlay((context) => ({
+                multiple([
+                    putIntoPlay((context) => ({
                         target: this.getBrotherhoodCards(context, context.player).characters
                     })),
-                    AbilityDsl.actions.opponentPutIntoPlay((context) => ({
+                    opponentPutIntoPlay((context) => ({
                         target: this.getBrotherhoodCards(context, context.player.opponent).characters
                     }))
                 ]),
-                AbilityDsl.actions.handler({
-                    //just for the display message
-                    handler: (context) => {
-                        //Identify who actually entered play
-                        const enteredPlay = context.events
-                            .filter((a) => a.is(EventName.OnCharacterEntersPlay) && !a.cancelled)
-                            .map((a) => a.card)
-                            .filter((a) => !!a);
-                        const myEnter = enteredPlay.filter((a) => a.controller === context.player);
-                        const oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);
-                        if(myEnter.length > 0) {
-                            this.game.addMessage('{0} puts {1} into play', context.player, myEnter);
-                        }
-                        if(oppEnter.length > 0) {
-                            this.game.addMessage('{0} puts {1} into play', context.player.opponent, oppEnter);
-                        }
-                    }
-                }),
-                AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.shuffleDeck((context) => ({
+                chatMessage((context) => this.enteredPlayMessage(context, context.player)),
+                chatMessage((context) => this.enteredPlayMessage(context, context.player.opponent)),
+                multiple([
+                    shuffleDeck((context) => ({
                         deck: Location.DynastyDeck,
                         target: context.player
                     })),
-                    AbilityDsl.actions.shuffleDeck((context) => ({
+                    shuffleDeck((context) => ({
                         deck: Location.DynastyDeck,
                         target: context.player.opponent ? context.player.opponent : []
                     }))
@@ -94,5 +86,13 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
             }
         }
         return { revealed, characters };
+    }
+
+    private enteredPlayMessage(context: AbilityContext, player: Player | undefined) {
+        const entered = context.events
+            .filter((event) => event.is(EventName.OnCharacterEntersPlay) && !event.cancelled)
+            .map((event) => event.card)
+            .filter((card) => !!card && card.controller === player);
+        return player && entered.length > 0 ? msg`${player} puts ${entered} into play` : undefined;
     }
 }

@@ -1,4 +1,5 @@
 import { Deck } from '../../server/game/Deck.js';
+import { rulesFor } from '../../server/game/GameRules.js';
 import DrawCard from '../../server/game/DrawCard.js';
 import { ProvinceCard } from '../../server/game/ProvinceCard.js';
 import { CardType, Location } from '../../server/game/Constants.js';
@@ -6,10 +7,11 @@ import type Player from '../../server/game/Player.js';
 import type { CardClass } from '../../server/game/types/CardClass.js';
 
 function makePlayer(cardLibrary: Map<string, CardClass>): Player {
-    const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext', 'on', 'removeListener']);
+    const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext', 'on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow']);
     game.getFrameworkContext.and.returnValue(null);
     game.cardLibrary = cardLibrary;
     game.gameMode = 'stronghold';
+    game.rules = rulesFor('stronghold');
     const player = jasmine.createSpyObj('player', ['getCardSelectionState', 'allowGameAction', 'getShortSummary', 'checkRestrictions']);
     player.game = game;
     return player;

@@ -6,7 +6,7 @@ import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type DrawCard from '../DrawCard.js';
 
-class AttachmentPrompt extends UiPrompt {
+export class AttachmentPrompt extends UiPrompt {
     player: Player;
     attachmentCard: DrawCard;
     playingType: string;
@@ -33,4 +33,3 @@ class AttachmentPrompt extends UiPrompt {
     }
 }
 
-export default AttachmentPrompt;

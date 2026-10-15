@@ -1,8 +1,8 @@
 import type BaseCard from '../BaseCard.js';
 import { CardType } from '../Constants.js';
-import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
+import { BaseCardSelector, type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
-class SingleCardSelector extends BaseCardSelector {
+export class SingleCardSelector extends BaseCardSelector {
     numCards: number;
 
     constructor(properties: BaseCardSelectorProperties) {
@@ -37,4 +37,3 @@ class SingleCardSelector extends BaseCardSelector {
     }
 }
 
-export default SingleCardSelector;

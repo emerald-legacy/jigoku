@@ -1,4 +1,6 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { setMilitarySkill, setPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect, discardStatusToken, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -12,17 +14,17 @@ class Unmask extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.discardStatusToken((context) => ({ target: context.target?.statusTokens })),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, multiple([
+                discardStatusToken((context) => ({ target: context.target?.statusTokens })),
+                cardLastingEffect((context) => ({
                     effect: [
-                        AbilityDsl.effects.setMilitarySkill(context.target?.printedMilitarySkill ?? 0),
-                        AbilityDsl.effects.setPoliticalSkill(context.target?.printedPoliticalSkill ?? 0)
+                        setMilitarySkill(context.target?.printedMilitarySkill ?? 0),
+                        setPoliticalSkill(context.target?.printedPoliticalSkill ?? 0)
                     ]
                 }))
             ]))
-            .gameAction(AbilityDsl.actions.gainHonor((context) => ({ amount: 2, target: context.target?.controller })))
-            .effect('discard all status tokens on {0} and set its skill to its printed value until the end of the conflict. {1} gains 2 honor', (context) => context.target.controller);
+            .gainHonor((context) => ({ amount: 2, target: context.target?.controller }))
+            .chatText((context) => msg`discard all status tokens on ${context.chatTarget()} and set its skill to its printed value until the end of the conflict. ${context.target.controller} gains 2 honor`);
     }
 }
 

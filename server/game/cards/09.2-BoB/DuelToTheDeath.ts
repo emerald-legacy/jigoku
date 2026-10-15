@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { DuelType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay, dishonor } from '../../GameActions/GameActions.js';
 
 class DuelToTheDeath extends DrawCard {
     static id = 'duel-to-the-death';
@@ -9,8 +9,8 @@ class DuelToTheDeath extends DrawCard {
         this.action('Initiate a military duel, discarding the loser')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                refuseGameAction: AbilityDsl.actions.dishonor(context => ({ target: context.targets.duelTarget })),
-                gameAction: duel => AbilityDsl.actions.discardFromPlay({ target: duel.loser })
+                refuseGameAction: dishonor((context) => ({ target: context.targets.duelTarget })),
+                gameAction: (duel) => discardFromPlay({ target: duel.loser })
             }));
     }
 }

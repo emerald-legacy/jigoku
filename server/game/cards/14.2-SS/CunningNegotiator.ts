@@ -1,9 +1,7 @@
-import { CardType, DuelType, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../BaseCard.js';
+import { msg } from '../../GameChat.js';
+import { DuelType, Blocker } from '../../Constants.js';
+import { optional, selectAttackedProvince, triggerAbility } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class CunningNegotiator extends DrawCard {
     static id = 'cunning-negotiator';
@@ -14,47 +12,21 @@ export default class CunningNegotiator extends DrawCard {
             .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                message: 'resolve the action ability of an attacked province',
+                chatText: () => msg`resolve the action ability of an attacked province`,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.menuPrompt((context) => ({
+                    optional({
                         activePromptTitle: 'Do you want to trigger a province ability?',
-                        choices: duel.winner ? ['Yes', 'No'] : [],
-                        player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
-                        choiceHandler: (choice, displayMessage) => {
-                            if(displayMessage) {
-                                if(choice === 'Yes') {
-                                    context.game.addMessage(
-                                        '{0} chooses to trigger a province ability',
-                                        context.player
-                                    );
-                                } else {
-                                    context.game.addMessage(
-                                        '{0} chooses not to trigger a province ability',
-                                        context.player
-                                    );
-                                }
-                            }
-                            return {
-                                cardCondition: (card: BaseCard) =>
-                                    choice === 'Yes' ? card.isConflictProvince() : false
-                            };
-                        },
-                        gameAction: AbilityDsl.actions.selectCard((context) => ({
-                            activePromptTitle: 'Choose an attacked province',
-                            hidePromptIfSingleCard: true,
-                            cardType: CardType.Province,
-                            location: Location.Provinces,
-                            subActionProperties: (card) => {
-                                context.target = card;
-                                return { target: card };
-                            },
-                            gameAction: AbilityDsl.actions.triggerAbility((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
-                                player: duel.winnerController ?? context.source.controller,
-                                ability: context.target.abilities.actions[0],
-                                ignoredRequirements: ['limit']
-                            }))
-                        }))
-                    }))
+                        player: duel.winnerController,
+                        acceptMessage: (_context, chooser) => msg`${chooser} chooses to trigger a province ability`,
+                        declineMessage: (_context, chooser) => msg`${chooser} chooses not to trigger a province ability`,
+                        gameAction: selectAttackedProvince({
+                            gameAction: (province) => triggerAbility({
+                                player: duel.winnerController,
+                                ability: province.abilities.actions[0],
+                                ignoredBlockers: [Blocker.LimitReached]
+                            })
+                        })
+                    })
             }));
     }
 }

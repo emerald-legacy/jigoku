@@ -1,4 +1,4 @@
-import type CardSelector from '../CardSelector.js';
+import type { CardSelector } from '../CardSelector.js';
 import { AbilityType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 

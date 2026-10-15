@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { lookAt } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType, Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
@@ -10,18 +11,17 @@ class SereneSeer extends DrawCard {
 
     setupCardAbilities() {
         this.action('Look at a province')
-            .condition(context => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
-            .gameAction(AbilityDsl.actions.selectCard({
+            .condition((context) => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
+            .selectCard({
                 activePromptTitle: 'Choose a province to look at',
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.lookAt(context => ({
-                    message: '{0} sees {1} in {2}',
-                    messageArgs: (cards) => [context.source, cards[0], cards[0].location]
-                }))
-            }))
-            .effect('look at a province');
+                gameAction: lookAt({
+                    message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+                })
+            })
+            .chatText('look at a province');
     }
 
     getPrintedElementSymbols() {

@@ -1,5 +1,4 @@
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { BaseOni } from './_BaseOni.js';
 
 export default class OnikageRider extends BaseOni {
@@ -14,8 +13,8 @@ export default class OnikageRider extends BaseOni {
                     context.source.isParticipating() &&
                     context.player.opponent !== undefined
             })
-            .gameAction(AbilityDsl.actions.discardCard((context) => ({
+            .discardCard((context) => ({
                 target: context.player.opponent?.getDynastyCardsInProvince(Location.Provinces)
-            })));
+            }));
     }
 }

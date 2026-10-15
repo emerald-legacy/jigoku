@@ -1,5 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Location } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { cardCannot, mustBeDeclaredAsAttacker } from '../../../effects.js';
+import { cardLastingEffect, initiateConflict, ready, sequential } from '../../../GameActions/GameActions.js';
+import { CardType, Location, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ScoutsSteed extends DrawCard {
@@ -17,33 +19,27 @@ export default class ScoutsSteed extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card, context) => card.isFacedown() && card.canBeAttacked() && card.controller !== context.player
             })
-            .gameAction(AbilityDsl.actions.sequentialContext(
-                ({ player, target: province, source: { parentCharacter: character } }) => ({
-                    gameActions: [
-                        AbilityDsl.actions.ready({ target: character ?? [] }),
-                        AbilityDsl.actions.cardLastingEffect({
-                            target: character ?? [],
-                            effect: AbilityDsl.effects.mustBeDeclaredAsAttacker()
-                        }),
-                        AbilityDsl.actions.cardLastingEffect({
-                            target: province,
-                            targetLocation: Location.Provinces,
-                            effect: AbilityDsl.effects.cardCannot('break')
-                        }),
-                        AbilityDsl.actions.initiateConflict({
-                            target: player,
-                            forceProvinceTarget: province,
-                            canPass: false
-                        })
-                    ]
-                })
-            ))
-            .effect('ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now', (context) => {
+            .gameAction(sequential(
+                ({ player, target: province, source: { parentCharacter: character } }) => [
+                    ready({ target: character ?? [] }),
+                    cardLastingEffect({
+                        target: character ?? [],
+                        effect: mustBeDeclaredAsAttacker()
+                    }),
+                    cardLastingEffect({
+                        target: province,
+                        targetLocation: Location.Provinces,
+                        effect: cardCannot(RestrictionType.Break)
+                    }),
+                    initiateConflict({
+                        target: player,
+                        forceProvinceTarget: province,
+                        canPass: false
+                    })
+                ]))
+            .chatText((context) => {
                 const target = context.target;
-                return [
-                    context.source.parentCharacter,
-                    target.isFacedown() ? target.location : target
-                ];
+                return msg`ready ${context.source.parentCharacter} and send them on a journey! ${target.isFacedown() ? target.location : target} cannot be broken during this conflict - it's just exploration for now`;
             });
     }
 }

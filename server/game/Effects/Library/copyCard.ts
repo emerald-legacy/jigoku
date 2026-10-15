@@ -3,10 +3,10 @@ import type DrawCard from '../../DrawCard.js';
 import type { StoredPersistentEffect } from '../../BaseCard.js';
 import { AbilityType, Location, CardType, EffectName } from '../../Constants.js';
 import type { CardAction } from '../../CardAction.js';
-import type TriggeredAbility from '../../TriggeredAbility.js';
+import type { TriggeredAbility } from '../../TriggeredAbility.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
-import GainAbility from '../GainAbility.js';
+import { GainAbility } from '../GainAbility.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
 export class CopyCard<C extends BaseCard> extends EffectValue<C, BaseCard> {

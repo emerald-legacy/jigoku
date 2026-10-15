@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Implementing cards in Jigoku — Jigoku card builder</title>
+<meta name="description" content="How a card file is built, how card text becomes builder calls, and the rules the code follows: timing, chat text, testing and common mistakes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@500;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+    <p class="brand">Jigoku <small>Card builder reference</small></p>
+    <div class="search">
+        <input type="search" id="search" placeholder="Jump to… (press /)" aria-label="Jump to an entry" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="jump" aria-autocomplete="list">
+    </div>
+    <nav class="pages" id="pages" aria-label="Pages"></nav>
+    <nav class="toc" id="toc" aria-label="On this page"></nav>
+</aside>
+<main id="content">
+<header class="hero">
+    <h1>Implementing cards in Jigoku</h1>
+    <p>How a card file is built, how card text becomes builder calls, and the rules the code follows: timing, chat text, testing and common mistakes.</p>
+</header>
+<h2 id="start-order">From card text to code</h2>
+<p>A card's abilities are written with a builder: a method that names the ability, followed by one call for each part of the card text. Read the card from left to right and write the calls in the same order. Hover a line to see which part of the text it implements.</p>
+
+<div class="card-to-code" aria-label="Assassination: each part of the card text next to the call that implements it">
+    <figure class="card-image">
+        <img src="https://emerald-legacy.github.io/emeralddb-images/emerald-core-set/ecs242.webp" width="440" height="616" alt="Assassination, an event from the Emerald Core Set: Conflict Action: Lose 3 honor. Choose a character with printed cost 2 or lower – discard that character. (Max 1 per round.)">
+    </figure>
+    <div class="part" data-line="1">Conflict Action:</div>
+    <div class="call" data-line="1">this.conflictAction('Discard a character')</div>
+    <div class="part" data-line="2">Lose 3 honor.</div>
+    <div class="call" data-line="2">    .cost(costs.payHonor(3))</div>
+    <div class="part" data-line="3">Choose a character with printed cost 2 or lower –</div>
+    <div class="call" data-line="3">    .target({
+        cardType: CardType.Character,
+        cardCondition: (card) =&gt; card.costLessThan(3)
+    },</div>
+    <div class="part" data-line="4">discard that character.</div>
+    <div class="call" data-line="4">    discardFromPlay())</div>
+    <div class="part" data-line="5">(Max 1 per round.)</div>
+    <div class="call" data-line="5">    .max(perRound(1));</div>
+</div>
+
+<p>The full order, as the builder expects it:</p>
+<ol>
+    <li>The trigger: <code>when()</code> or <code>aggregateWhen()</code>, for reactions and interrupts.</li>
+    <li>When and where the ability can be used: <code>phase()</code>, <code>location()</code>, <code>condition()</code>, <code>playOnlyIf()</code>, <code>anyPlayer()</code>, <code>collectiveTrigger()</code>, <code>evenDuringDynasty()</code>, <code>canTriggerOutsideConflict()</code>, <code>conflictProvinceCondition()</code>.</li>
+    <li>Costs: <code>cost()</code>, once per cost.</li>
+    <li>Targets: <code>target()</code>, <code>targetCards()</code>, <code>ringTarget()</code>, <code>select()</code>, …</li>
+    <li>Effects: game actions, <code>if()</code>/<code>ifAble()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>.</li>
+    <li><code>chatText()</code>.</li>
+    <li>Limits and flags: <code>limit()</code>, <code>max()</code>, <code>cannotTargetFirst()</code>, <code>cannotBeMirrored()</code>, <code>notPrinted()</code>.</li>
+    <li>The next step: <code>then()</code>, <code>afterwards()</code>, <code>thenIf()</code>, <code>afterwardsIf()</code>. A step is written in the same order, without the ability's own settings.</li>
+</ol>
+<p>The order is more than style: the builder fixes its types from left to right, so each call sees what the calls before it declared. A <code>chatText()</code> after a <code>target()</code> knows the target's card type; one before it doesn't. The <a href="builder.html">ability builder</a> page documents every call.</p>
+
+<h2 id="start-anatomy">Anatomy of a card file</h2>
+<p>Every card is a class in its own file under <code>server/game/cards/</code>, in the folder of its pack (and clan, for newer packs). The file is named after the card in PascalCase: <code>server/game/cards/01-Core/Assassination.ts</code>. The card loader picks up every file in these folders; there is nothing to register.</p>
+<pre><code>import DrawCard from '../../DrawCard.js';
+import { CardType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { perRound } from '../../AbilityLimit.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
+
+export default class Assassination extends DrawCard {
+    static id = 'assassination';
+
+    setupCardAbilities() {
+        this.conflictAction('Discard a character')
+            .cost(costs.payHonor(3))
+            .target({
+                cardType: CardType.Character,
+                cardCondition: (card) =&gt; card.costLessThan(3)
+            }, discardFromPlay())
+            .max(perRound(1));
+    }
+}</code></pre>
+<ul>
+    <li><strong>The base class</strong> follows the card type: <code>DrawCard</code> for characters, attachments, events and holdings; <code>ProvinceCard</code>, <code>StrongholdCard</code> and <code>RoleCard</code> for those. Some families have their own base, such as <code>TokenCard</code> or <code>ProvinceAttachment</code> (see <a href="helpers.html">card helpers</a>).</li>
+    <li><strong><code>static id</code></strong> is the card's id in the card data (<code>test/json/Card/&lt;id&gt;.json</code>), which also holds the card's text. A card without a class still works with its printed stats and keywords, but has no abilities.</li>
+    <li><strong><code>setupCardAbilities()</code></strong> declares every ability once, when the card is created. Don't keep game state in it; everything that changes during a game goes through the context and the game actions.</li>
+    <li><strong>Imports:</strong> game actions from <code>GameActions/GameActions.js</code>, effects from <code>effects.js</code>, costs as <code>import * as costs from '…/costs/index.js'</code>, limits from <code>AbilityLimit.js</code>, enums from <code>Constants.js</code>, chat templates (<code>msg</code>) from <code>GameChat.js</code>. Import types with <code>import type</code>; the linter enforces it.</li>
+    <li><strong>Keywords</strong> (Covert, Sincerity, Pride, Restricted, …) come from the card data; you don't declare them.</li>
+</ul>
+
+<h2 id="start-map">Which method for which card text</h2>
+<p>Each kind of ability starts with its own method on the card. They are documented on the <a href="builder.html#cm-declaring-abilities">ability builder</a> page.</p>
+<table>
+    <thead><tr><th>The card says</th><th>Write</th></tr></thead>
+    <tbody>
+        <tr><td>Action:</td><td><code>this.action(title)</code></td></tr>
+        <tr><td>Conflict Action:</td><td><code>this.conflictAction(title, options?)</code>: only during a conflict, and a character (or an attachment's character) must be participating unless <code>evenFromHome</code>. Provinces and strongholds write <code>this.action(title)</code>: a province's action already requires a conflict at the province, a stronghold adds <code>.condition((context) =&gt; context.game.isDuringConflict())</code>.</td></tr>
+        <tr><td>Reaction: After …</td><td><code>this.reaction(title).when({ … })</code></td></tr>
+        <tr><td>Interrupt: When …</td><td><code>this.interrupt(title).when({ … })</code></td></tr>
+        <tr><td>Interrupt: When … would …</td><td><code>this.wouldInterrupt(title).when({ … })</code>, usually with <code>.cancel()</code></td></tr>
+        <tr><td>Forced Reaction / Forced Interrupt:</td><td><code>this.forcedReaction(title)</code> / <code>this.forcedInterrupt(title)</code></td></tr>
+        <tr><td>Duel Challenge / Focus / Strike:</td><td><code>this.duelChallenge(title)</code> / <code>this.duelFocus(title)</code> / <code>this.duelStrike(title)</code></td></tr>
+        <tr><td>A constant ability (no bold label): "Each … gets +1"</td><td><code>this.persistentEffect({ … })</code></td></tr>
+        <tr><td>Attached character gets / gains …</td><td><code>this.whileAttached({ effect: … })</code></td></tr>
+        <tr><td>Attach to a … character only. / Restricted rules</td><td><code>this.attachmentConditions({ … })</code></td></tr>
+        <tr><td>Composure – …</td><td><code>this.composure({ … })</code></td></tr>
+        <tr><td>Dire – …</td><td><code>this.dire({ … })</code></td></tr>
+        <tr><td>Legendary X</td><td><code>this.legendary(x)</code></td></tr>
+        <tr><td>Tutored — X</td><td><code>this.tutored('X')</code></td></tr>
+        <tr><td>Play only if …</td><td><code>this.playOnlyIf((context) =&gt; …)</code></td></tr>
+        <tr><td>Attached character gains "Action: …"</td><td><code>this.whileAttached({ effect: gainAbility.action(title, (ability) =&gt; ability…) })</code>; also <code>gainAbility.conflictAction</code> and <code>gainAbility.reaction(title, (ability) =&gt; ability.when({ … })…)</code></td></tr>
+    </tbody>
+</table>
+
+<h2 id="start-context">The context</h2>
+<p>Every callback gets <code>context</code>: the ability being resolved. The fields you will use most:</p>
+<table>
+    <thead><tr><th>Field</th><th>What it holds</th></tr></thead>
+    <tbody>
+        <tr><td><code>context.source</code></td><td>The card the ability is on, typed as the card's own class.</td></tr>
+        <tr><td><code>context.player</code></td><td>The player using the ability.</td></tr>
+        <tr><td><code>context.target</code></td><td>The card chosen by the target named <code>target</code> (a target without a name).</td></tr>
+        <tr><td><code>context.targets.name</code></td><td>The card(s) chosen by the target with that <code>name</code>.</td></tr>
+        <tr><td><code>context.ring</code> / <code>context.rings.name</code></td><td>Chosen rings.</td></tr>
+        <tr><td><code>context.select</code> / <code>context.selects.name.choice</code></td><td>The label chosen in a <code>select</code>.</td></tr>
+        <tr><td><code>context.costs.key</code></td><td>What a cost recorded once it was paid (see <a href="costs.html">costs</a>).</td></tr>
+        <tr><td><code>context.event</code></td><td>For reactions and interrupts: the event that triggered the ability, typed by the <code>when()</code> keys.</td></tr>
+        <tr><td><code>context.game</code></td><td>The game, for queries such as <code>isDuringConflict()</code>.</td></tr>
+    </tbody>
+</table>
+<div class="warn"><p>Conditions and target conditions are also checked before anything is chosen or paid, to decide whether the ability can be used at all. At that time <code>context.costs</code> is empty and later targets aren't chosen yet: handle <code>undefined</code>. The <a href="types.html#ctx-section-context">context reference</a> lists every field and when it is set.</p></div>
+
+<h2 id="start-timing">Timing: costs, targets, effects</h2>
+<p>An ability resolves in a fixed order: the player pays its costs, then chooses its targets, then the effects resolve. The builder follows the Rules Reference Guide here, and so should a card's code.</p>
+<div class="rule"><blockquote>If the additional cost cannot be paid, the game action cannot be initiated. All costs are paid simultaneously, including additional ones.</blockquote><cite>Costs</cite></div>
+<div class="rule"><blockquote>The word "choose" indicates that one or more targets must be chosen in order to resolve an ability.</blockquote><cite>Choose</cite></div>
+<p>So "choose a character" is a <code>target()</code>, chosen when the ability initiates, and the ability can't be used without a legal one. A choice made while the effect resolves ("…, then choose") is a game action such as <code>selectCard</code> or <code>chooseAction</code>.</p>
+<div class="rule"><blockquote>If a selection is required before the effect of the ability resolves (i.e., before the dash), the selection is made during the same timing step in which targets are chosen. If a selection is indicated after the dash of an ability's text, that selection is made during the resolution of the effect.</blockquote><cite>Select</cite></div>
+<p>Before the dash: <code>select()</code> on the builder. After the dash: the <code>chooseAction</code> game action.</p>
+
+<h3 id="start-then">Then, if you do, afterwards</h3>
+<ul>
+    <li><strong>"If you do, …"</strong> is <code>then()</code>: the next step runs only if the step before it resolved in full.</li>
+    <li><strong>A plain "Then, …"</strong> only sets the order: <code>afterwards()</code>, which runs either way. (The Emerald Legacy rules have a success rule only for "to"; their errata turn conditional "Then"s into "If you do".)</li>
+    <li><strong>"Then, if …"</strong> is <code>thenIf((context) =&gt; …)</code>; an "If …" read after the step without "then" is <code>afterwardsIf((context) =&gt; …)</code>.</li>
+    <li>A step's context holds the targets chosen so far, so <code>context.target</code> still names the card chosen in the first step.</li>
+</ul>
+
+<h3 id="start-if">If, if able, otherwise</h3>
+<ul>
+    <li><strong>"If X, do A. Otherwise, do B."</strong> is <code>.if((context) =&gt; X).a().otherwise().b()</code>. Without <code>otherwise()</code>, nothing happens when the condition fails, and an ability whose only effect is that <code>if()</code> can't be used then. Right after a card target without game actions of its own, the branches belong to that target: they resolve on the chosen card, and only cards a branch can affect are selectable.</li>
+    <li><strong>"Do A, if able. Otherwise, do B."</strong> is <code>.ifAble().a().otherwise().b()</code>: no condition, A resolves when it can. <code>otherwise()</code> is required, and the branches always stay on the ability, so their actions name their targets.</li>
+</ul>
+
+<h3 id="start-cancel">Cancelling and limits</h3>
+<div class="rule"><blockquote>If the effects of an ability are canceled, the ability is still considered to have been used, and any costs have still been paid.</blockquote><cite>Cancel</cite></div>
+<p>Costs are therefore paid before the effects can be cancelled, and they stay paid. Limits count a use even when the effects are cancelled. <code>limit()</code> is the card's "Limit X per …"; <code>max()</code> is "Max X per …", which counts across all copies of the card.</p>
+
+<h2 id="start-chat">Chat text</h2>
+<p>When an ability resolves, the chat says what happened: <em>player1 plays Assassination, losing 3 honor to discard Doji Whisperer</em>. The part after "to" comes from the ability (a card ability reads "uses", an event "plays"; the costs come before "to"):</p>
+<ul>
+    <li><strong>By default</strong> it is built from the game actions' own texts, joined ("bow Doji Whisperer and draw 1 card"). Often that is all you need.</li>
+    <li><strong><code>chatText('format', args?)</code></strong> replaces it: <code>{0}</code> is the target (or the source), <code>{1}</code> onwards are the entries <code>args(context)</code> returns.</li>
+    <li><strong><code>chatText((context) =&gt; msg`…`)</code></strong> is a template; cards, players and rings in it are shown as such.</li>
+    <li><strong>Per choice:</strong> a <code>select</code> choice <code>{ action, chatText }</code> gives the line for that choice; the ability then has no <code>chatText()</code> of its own.</li>
+</ul>
+<p>The chat formats game objects and some words, so they must reach it as values, not as text:</p>
+<ul>
+    <li>Cards, players and rings go in a <code>msg</code> template or into <code>{N}</code> arguments. Built into a plain string (<code>`… ${card.name}`</code>, <code>'… ' + player.name</code>), they lose their formatting.</li>
+    <li>The words military and political, element names and clan names become icons only as values on their own: <code>msg`+2${'military'}`</code>, not <code>'+2 military'</code>.</li>
+</ul>
+<pre><code>// wrong: the player's name is plain text
+.chatText((context) =&gt; `place it on top of ${context.event.card.owner.name}'s conflict deck`)
+// right: a msg template
+.chatText((context) =&gt; msg`place a fate from ${context.target.controller}'s fate pool on ${context.target}`)
+// right: game objects as arguments
+.chatText('place a fate from {1}\'s fate pool on {0}', (context) =&gt; [context.target.controller])</code></pre>
+<p>Conventions: a game message begins with the player doing the action, uses the present tense, and doesn't end in punctuation. Prompt titles say "Choose a &lt;card type&gt;" where they can. Any change to an existing chat line needs approval: chat is what players read.</p>
+
+<h2 id="start-examples">Examples of more complex cards</h2>
+
+<h3 id="start-example-then">"If you do": Ujiaki's Offer</h3>
+<pre><code>// Action: During a [political] conflict, choose a participating character with printed cost equal to or lower
+// than that of another participating character you control - place 1 fate on the chosen character.
+// If you do, bow it, move it home, and dishonor it.
+this.conflictAction('Place a fate on a participating character, bow it, move it home, and dishonor it', { conflictType: ConflictType.Political })
+    .target({
+        cardType: CardType.Character,
+        cardCondition: (card, context) =&gt; card.isParticipating() &amp;&amp; context.player.cardsInPlay.some((myCard) =&gt; (
+            myCard !== card &amp;&amp; myCard.isParticipating() &amp;&amp; (myCard.printedCost ?? 0) &gt;= (card.printedCost ?? 0)))
+    }, placeFate())
+    .chatText('place a fate on {0} then bow, dishonor, and move them home')
+    .then()
+    .bow((context) =&gt; ({ target: context.target }))
+    .dishonor((context) =&gt; ({ target: context.target }))
+    .sendHome((context) =&gt; ({ target: context.target }));</code></pre>
+<p>The fate is the target's own action; the rest is a <code>then()</code> step, so it only happens when the fate was placed. The step reads the chosen character as <code>context.target</code>.</p>
+
+<h3 id="start-example-duel">A duel: Doji Reiha</h3>
+<pre><code>// Conflict Action: Initiate a [political] duel against a character your opponent controls of their choice -
+// resolve the duel. Honor each contestant character (in this duel). Then, the controller of the winner may
+// choose to move each contestant home.
+this.conflictAction('Initiate a duel that honors participants and move loser home')
+    .initiateDuel(() =&gt; ({
+        type: DuelType.Political,
+        opponentChoosesDuelTarget: true,
+        gameAction: (duel) =&gt; sequential([
+            honor({ target: duel.participants }),
+            chooseAction({
+                player: duel.winnerController,
+                choices: {
+                    'Move all duel participants home': sendHome({ target: duel.participants }),
+                    'Do nothing': noAction()
+                }
+            })
+        ]),
+        onTie: (duel) =&gt; honor({ target: duel.participants })
+    }));</code></pre>
+<p><code>gameAction</code> resolves after a duel with a winner, <code>onTie</code> after a tie. The choice is made while the effect resolves ("Then, … may choose"), so it is a <code>chooseAction</code> for the winner's controller.</p>
+
+<h3 id="start-example-if-able">If able, otherwise: Calling in Favors</h3>
+<pre><code>// Action: Dishonor a (friendly) character. Choose an opponent's attachment – take control of that attachment
+// and attach it to that character, if able. Otherwise, discard the attachment.
+this.action('Take control of an attachment')
+    .cost(costs.dishonor())
+    .target({
+        cardType: CardType.Attachment,
+        controller: Players.Opponent
+    })
+    .ifAble()
+    .attach((context) =&gt; ({
+        target: context.costs.dishonor,
+        attachment: context.target,
+        takeControl: true
+    }))
+    .otherwise()
+    .discardFromPlay((context) =&gt; ({ target: context.target }));</code></pre>
+<p>The dishonored character is a cost, recorded in <code>context.costs.dishonor</code>. Attaching fails when the rules don't allow it (for example a second copy of the same attachment), and then the attachment is discarded.</p>
+
+<h3 id="start-example-select">A choice before the dash: Hero of Three Trees</h3>
+<pre><code>// Action: During a conflict in which this character is participating, if you have fewer cards in your hand
+// than your opponent, select one - either gain 1 honor, or the attacked province gets -1 strength until the
+// end of the conflict (to a minimum of 0).
+.select({
+    'Gain 1 honor': { action: gainHonor(), chatText: 'gain 1 honor' },
+    'Lower attacked province\'s strength by 1': {
+        action: selectAttackedProvince({ … }),
+        chatText: 'reduce the strength of an attacked province by 1'
+    }
+})</code></pre>
+<p>"Select one" before the dash is a <code>select()</code>; each choice brings the chat line for when it's chosen.</p>
+
+<h3 id="start-example-gained">A granted ability: Kagi-nawa</h3>
+<pre><code>// If attached character has the Shinobi trait, it gains: "Conflict Action: Choose a character with printed
+// cost 2 or lower - move that character to this conflict."
+this.whileAttached({
+    match: (card) =&gt; card.hasTrait('shinobi'),
+    effect: gainAbility.conflictAction('Move a character to the conflict', (ability) =&gt; ability
+        .target({
+            cardType: CardType.Character,
+            controller: Players.Any,
+            activePromptTitle: 'Choose a character with printed cost 2 or lower to move in',
+            cardCondition: (card) =&gt; (card.printedCost ?? 0) &lt;= 2
+        }, moveToConflict())
+        .chatText('hook {0} and drag them into the conflict'))
+});</code></pre>
+<p>The granted ability is written with the same builder; inside it, <code>context.source</code> is the character that gained it, not the attachment.</p>
+
+<h2 id="start-testing">Testing a card</h2>
+<p>Every card gets a spec in <code>test/server/cards/</code>, mirroring the card's folder: <code>test/server/cards/01-Core/Assassination.spec.js</code>. A spec sets up a game in the state the card needs, plays it, and checks the result.</p>
+<pre><code>describe('Assassination', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    inPlay: ['doji-challenger'],
+                    hand: ['assassination']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.noMoreActions();
+            this.initiateConflict({ attackers: ['doji-challenger'], defenders: ['doji-whisperer'] });
+            this.player2.pass();
+        });
+
+        it('discards a character with printed cost 2 or lower', function () {
+            this.player1.clickCard('assassination');
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.location).toBe('dynasty discard pile');
+            expect(this.player1.honor).toBe(7);
+            expect(this.getChatLogs(3)).toContain('player1 plays Assassination, losing 3 honor to discard Doji Whisperer');
+        });
+    });
+});</code></pre>
+<h3 id="start-setup">setupTest options</h3>
+<table>
+    <thead><tr><th>Option</th><th>Meaning</th></tr></thead>
+    <tbody>
+        <tr><td><code>phase</code></td><td>The phase the test starts in: <code>'setup'</code>, <code>'dynasty'</code>, <code>'draw'</code>, <code>'conflict'</code>, <code>'fate'</code>. For <code>draw</code> and <code>fate</code>, the action windows of that phase are turned on.</td></tr>
+        <tr><td><code>gameMode</code></td><td>A <code>GameMode</code> (Stronghold by default); Emerald turns on its rules, such as one copy of an attachment per character.</td></tr>
+        <tr><td><code>player1</code>, <code>player2</code></td><td>Each player's cards: <code>inPlay</code> (ids, or <code>{ card, fate, honor, bowed, covert, attachments }</code>), <code>hand</code>, <code>conflictDeck</code>, <code>conflictDiscard</code>, <code>dynastyDeck</code>, <code>dynastyDiscard</code>, <code>provinces</code>, <code>strongholdProvince</code>, <code>stronghold</code>, <code>role</code>, <code>faction</code>, <code>fate</code>, <code>honor</code>, and the deck sizes <code>conflictDeckSize</code>/<code>dynastyDeckSize</code>.</td></tr>
+        <tr><td><code>skipAutoSetup</code>, <code>skipAutoFirstPlayer</code></td><td>Stop before the stronghold provinces or the first player are chosen.</td></tr>
+    </tbody>
+</table>
+<h3 id="start-helpers">Driving the game</h3>
+<ul>
+    <li><code>this.player1.clickCard(card)</code>, <code>clickPrompt('Text')</code>, <code>clickRing('air')</code>, <code>clickMenu(card, 'Text')</code>, <code>pass()</code>, <code>passConflict()</code>, <code>playAttachment(attachment, target)</code>, <code>playCharacterFromHand(card, fate)</code>, <code>placeCardInProvince(card, location)</code>, <code>moveCard(card, location)</code>.</li>
+    <li><code>this.noMoreActions()</code> passes both players' action windows; <code>this.initiateConflict({ type, ring, province, attackers, defenders })</code> declares a conflict; <code>this.flow.finishConflictPhase()</code> and <code>this.advancePhases(phase)</code> move on.</li>
+    <li>Finding cards: <code>findCardByName(id, location?)</code>, <code>filterCardsByName(id)</code>.</li>
+    <li>Matchers: <code>toHavePrompt(title)</code>, <code>toHavePromptButton(text)</code>, <code>toHaveDisabledPromptButton(text)</code>, <code>toBeAbleToSelect(card)</code>, <code>toBeAbleToSelectRing(element)</code>.</li>
+    <li>Chat: <code>this.getChatLogs(n)</code> returns the last n lines.</li>
+</ul>
+<div class="note">
+    <p>Rules the specs follow:</p>
+    <ul>
+        <li>A card that searches the top X cards of a deck is tested with more than X cards in the deck, and the spec checks that the rest stays untouched.</li>
+        <li>A bug in the engine (rather than in one card) gets its regression spec in <code>test/server/integration/</code>, not in a card's spec.</li>
+        <li>An ability with a <code>select()</code> before the dash always shows its prompt when it is used, with "Pay costs first" and "Cancel", even when only one choice is legal. The spec clicks the choice (<code>clickPrompt('Move into conflict')</code>) before it checks anything.</li>
+        <li>A spec should fail without the fix it tests. Run a subset with <code>npm run jasmine -- &lt;spec paths&gt;</code>.</li>
+    </ul>
+</div>
+
+<h2 id="start-checks">Checks you don't write</h2>
+<p>Many card texts start with a condition the engine already enforces. A <code>condition()</code> or <code>cardCondition</code> that repeats it only adds noise, and on province actions it can be wrong.</p>
+<table class="prose">
+    <thead><tr><th>Already checked</th><th>So don't add</th><th>Keep a check when</th></tr></thead>
+    <tbody>
+        <tr><td><code>conflictAction()</code> requires a conflict and, on a character, its participation.</td><td><code>isDuringConflict()</code>, <code>context.source.isParticipating()</code></td><td>The text adds more, such as a ring or a player state.</td></tr>
+        <tr><td>A province's <code>action()</code> works only during a conflict at that province (<a href="builder.html#b-conflictProvinceCondition"><code>conflictProvinceCondition</code></a> changes which).</td><td><code>isConflictProvince()</code> or <code>isDuringConflict()</code> in its condition</td><td>Never for the province itself. Keeper of Secret Names resolves a province's action with the province check switched off (<code>Blocker.WrongProvince</code>); a condition repeating it would stop Keeper.</td></tr>
+        <tr><td><code>initiateDuel()</code> with <code>requiresConflict</code> (the default) needs a participating challenger and duel target.</td><td><code>isDuringConflict()</code>, the source's <code>isParticipating()</code></td><td>The duel needs a conflict of one type: <code>isDuringConflict(ConflictType.Military)</code>.</td></tr>
+        <tr><td>A target whose <code>cardCondition</code> needs <code>isParticipating()</code>, <code>isAttacking()</code> or <code>isDefending()</code>: no card passes without a conflict.</td><td><code>isDuringConflict()</code> on the ability</td><td>It checks the conflict type; or it guards an access to <code>game.currentConflict</code>; or the ability has no target to filter (its actions compute their own targets), so nothing else stops the costs being paid outside a conflict.</td></tr>
+        <tr><td><code>sendHome</code> only affects participating characters, <code>moveToConflict</code> only characters at home during a conflict.</td><td><code>isParticipating()</code> / <code>!isParticipating()</code> in that target's <code>cardCondition</code>, <code>isDuringConflict()</code> on the ability</td><td>The target has no game action of its own and a later target's action reads it (<code>context.targets.character</code>): its condition is the only filter.</td></tr>
+    </tbody>
+</table>
+<p>Two checks that look redundant are not. <code>isDuringConflict()</code> in a <code>when()</code> decides when the ability triggers, which nothing else checks. A province's <code>persistentEffect</code> has no province check, so "while this province is being attacked" needs <code>condition: (context) =&gt; context.source.isConflictProvince()</code>.</p>
+
+<h2 id="start-mistakes">Common mistakes</h2>
+<ul>
+    <li><strong>Changing the game state directly</strong> (<code>card.bowed = true</code>, <code>player.moveCard(…)</code>, <code>context.target = …</code>) instead of through game actions. Direct changes skip events, so reactions, interrupts, restrictions and chat never see them.</li>
+    <li><strong>A <code>handler()</code> where a game action exists.</strong> A handler is the last resort for one-off logic; it can't be cancelled or checked for legality.</li>
+    <li><strong><code>.gameAction(x(…))</code> where a shortcut exists:</strong> write <code>.x(…)</code>.</li>
+    <li><strong>A choice after the dash written as a target</strong> (or the other way round). See <a href="#start-timing">timing</a>.</li>
+    <li><strong>"Then" as <code>then()</code></strong> when the card has no "if you do": that's <code>afterwards()</code>.</li>
+    <li><strong>Repeating a default:</strong> <code>{ target: context.source }</code> on a card action that isn't under a target, or <code>player: Players.Self</code>.</li>
+    <li><strong>Reading <code>context.costs</code> in a condition</strong> without handling <code>undefined</code>: it is only set once the costs are paid.</li>
+    <li><strong><code>this.game</code> or <code>this.x</code> inside a callback</strong> instead of <code>context.game</code> and <code>context.source</code>: the context is the ability being resolved, which matters for copies and gained abilities. Calling a helper method of the card's own class (<code>this.countBushi(context)</code>) is fine.</li>
+    <li><strong>A <code>conditional()</code> for "Select one –":</strong> it picks a branch by itself without asking the player. A choice the player makes is a <code>select()</code> (before the dash) or <code>chooseAction</code> (after it).</li>
+    <li><strong>Checking what the engine already checks,</strong> such as <code>isDuringConflict()</code> next to a target that must be participating. See <a href="#start-checks">checks you don't write</a>.</li>
+</ul>
+
+</main>
+</div>
+<div class="jump" id="jump" role="listbox" aria-label="Matches" hidden></div>
+<script src="assets/search-index.js"></script>
+<script src="assets/docs.js"></script>
+</body>
+</html>

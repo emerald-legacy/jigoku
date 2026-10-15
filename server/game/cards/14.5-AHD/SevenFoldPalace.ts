@@ -1,5 +1,5 @@
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 export default class SevenFoldPalace extends StrongholdCard {
     static id = 'seven-fold-palace';
@@ -12,7 +12,7 @@ export default class SevenFoldPalace extends StrongholdCard {
                     context.player.isAttackingPlayer() &&
                     event.conflict.getAttackers().some((card) => card.isHonored && card.controller === context.player)
             })
-            .cost(AbilityDsl.costs.bowSelf())
-            .gameAction(AbilityDsl.actions.gainHonor({ amount: 2 }));
+            .cost(costs.bowSelf())
+            .gainHonor(2);
     }
 }

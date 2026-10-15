@@ -1,14 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlessActionCost } from '../../effects.js';
+import { discardCard } from '../../GameActions/GameActions.js';
 
 class Softskin extends DrawCard {
     static id = 'softskin';
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.unlessActionCost({
+            effect: unlessActionCost({
                 actionName: 'ready',
-                cost: (card) => AbilityDsl.actions.discardCard({ target: card.controller.conflictDeck.length > 2 ? card.controller.conflictDeck.slice(0, 3) : [] })
+                cost: (card) => discardCard({ target: card.controller.conflictDeck.length > 2 ? card.controller.conflictDeck.slice(0, 3) : [] })
             })
         });
     }

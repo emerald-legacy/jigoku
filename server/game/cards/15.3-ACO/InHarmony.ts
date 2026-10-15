@@ -1,21 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class InHarmony extends DrawCard {
     static id = 'in-harmony';
 
     setupCardAbilities() {
+        this.playOnlyIf((context) => context.player.getClaimedRings().length >= 1);
+
         this.whileAttached({
-            effect: AbilityDsl.effects.cardCannot({
-                cannot: 'removeFate',
-                restricts: 'cardAndRingEffects'
+            effect: cardCannot({
+                cannot: RestrictionType.RemoveFate,
+                appliesTo: RestrictionScope.CardAndRingEffects
             })
         });
-    }
-
-    canPlay(context: AbilityContext, playType: string) {
-        return context.player.getClaimedRings().length >= 1 && super.canPlay(context, playType);
     }
 }
 

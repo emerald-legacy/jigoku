@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { Location } from '../../Constants.js';
 
 class ShibaYojimbo extends DrawCard {
@@ -8,11 +7,11 @@ class ShibaYojimbo extends DrawCard {
     setupCardAbilities() {
         this.wouldInterrupt('Cancel ability')
             .when({
-                onInitiateAbilityEffects: (event, context) => event.context.ability.isTriggeredAbility() && event.cardTargets.some(card => (
+                onInitiateAbilityEffects: (event, context) => event.context.ability.isTriggeredAbility() && event.cardTargets.some((card) => (
                     card.hasTrait('shugenja') && card.controller === context.player && card.location === Location.PlayArea)
                 )
             })
-            .gameAction(AbilityDsl.actions.cancel());
+            .cancel();
     }
 }
 

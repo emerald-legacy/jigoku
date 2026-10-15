@@ -1,39 +1,31 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { cardLastingEffect, gainHonor, selectAttackedProvince } from '../../GameActions/GameActions.js';
 
 class HeroOfThreeTrees extends DrawCard {
     static id = 'hero-of-three-trees';
 
     setupCardAbilities() {
         this.action('Gain 1 honor or reduce the attacked province strength')
-            .condition(context => !!(context.source.isParticipating()
+            .condition((context) => !!(context.source.isParticipating()
                 && context.player.opponent
                 && context.player.hand.length < context.player.opponent.hand.length))
-            .select({}, {
-                'Gain 1 honor': AbilityDsl.actions.gainHonor(),
-                'Lower attacked province\'s strength by 1': AbilityDsl.actions.selectCard(context => ({
-                    activePromptTitle: 'Choose an attacked province',
-                    hidePromptIfSingleCard: true,
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    cardCondition: card => card.isConflictProvince(),
-                    subActionProperties: (card) => {
-                        context.target = card;
-                        return ({ target: card });
-                    },
-                    message: '{0} reduces the strength of {1} by 1',
-                    messageArgs: cards => [context.player, cards],
-                    gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                        effect: (
-                            (context.target?.isProvinceCard() ? context.target.getStrength() : 0) > 0 ?
-                                AbilityDsl.effects.modifyProvinceStrength(-1) : []
-                        )
-                    }))
-                }))
-            })
-            .effect('{1}{2}', context => [context.select === 'Gain 1 honor' ? 'gain 1 honor' : 'reduce the strength of ',
-                context.select === 'Gain 1 honor' ? '' : 'an attacked province by 1']);
+            .select({
+                'Gain 1 honor': {
+                    action: gainHonor(),
+                    chatText: 'gain 1 honor'
+                },
+                'Lower attacked province\'s strength by 1': {
+                    action: selectAttackedProvince({
+                        message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by 1`,
+                        gameAction: (province) => cardLastingEffect(() => ({
+                            effect: province.getStrength() > 0 ? modifyProvinceStrength(-1) : []
+                        }))
+                    }),
+                    chatText: 'reduce the strength of an attacked province by 1'
+                }
+            });
     }
 }
 

@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 import type { StatusToken } from '../StatusToken.js';
@@ -25,11 +26,11 @@ export class TokenAction<
         return target.type === 'token';
     }
 
-    checkEventCondition(event: TokenEvent<N, C>, additionalProperties = {}): boolean {
+    checkEventCondition(event: TokenEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.token, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: TokenEvent<N, C>, token: StatusToken, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: TokenEvent<N, C>, token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.token = token;
     }

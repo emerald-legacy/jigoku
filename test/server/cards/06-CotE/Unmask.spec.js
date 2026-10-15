@@ -71,14 +71,14 @@ describe('Unmask', function() {
                 it('should set the target\'s skill to match it\'s base skill for the duration of the conflict', function() {
                     // Honored so that defender wins and ring is not chosen.
                     this.matsuBerserker.honor();
-                    expect(this.yoritomo.getMilitarySkill()).toBe(this.yoritomo.getBaseMilitarySkill() + this.yoritomo.glory + this.player1.fate);
-                    expect(this.yoritomo.getPoliticalSkill()).toBe(this.yoritomo.getBasePoliticalSkill() + this.yoritomo.glory + this.player1.fate);
+                    expect(this.yoritomo.militarySkill).toBe(this.yoritomo.getBaseMilitarySkill() + this.yoritomo.glory + this.player1.fate);
+                    expect(this.yoritomo.politicalSkill).toBe(this.yoritomo.getBasePoliticalSkill() + this.yoritomo.glory + this.player1.fate);
                     this.player2.clickCard(this.yoritomo);
-                    expect(this.yoritomo.getMilitarySkill()).toBe(this.yoritomo.getBaseMilitarySkill());
-                    expect(this.yoritomo.getPoliticalSkill()).toBe(this.yoritomo.getBasePoliticalSkill());
+                    expect(this.yoritomo.militarySkill).toBe(this.yoritomo.getBaseMilitarySkill());
+                    expect(this.yoritomo.politicalSkill).toBe(this.yoritomo.getBasePoliticalSkill());
                     this.noMoreActions();
-                    expect(this.yoritomo.getMilitarySkill()).toBe(this.yoritomo.getBaseMilitarySkill() + this.player1.fate);
-                    expect(this.yoritomo.getPoliticalSkill()).toBe(this.yoritomo.getBasePoliticalSkill() + this.player1.fate);
+                    expect(this.yoritomo.militarySkill).toBe(this.yoritomo.getBaseMilitarySkill() + this.player1.fate);
+                    expect(this.yoritomo.politicalSkill).toBe(this.yoritomo.getBasePoliticalSkill() + this.player1.fate);
                 });
 
                 it('should give the target\'s controller 2 honor', function() {

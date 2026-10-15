@@ -1,11 +1,11 @@
-import { GameModes } from '../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../build/server/GameMode.js';
 
 describe('Kyuden Hida', function () {
     integration(function () {
         describe('Emerald Dynasty rules', function () {
             beforeEach(function () {
                 this.setupTest({
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     phase: 'dynasty',
                     player1: {
                         stronghold: 'kyuden-hida',

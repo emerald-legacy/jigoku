@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { honor, ready } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 
 export default class EmissaryOfTheFiveRivers extends DrawCard {
@@ -12,15 +13,15 @@ export default class EmissaryOfTheFiveRivers extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.hasTrait('spirit')
-            }, AbilityDsl.actions.honor());
+                cardCondition: (card) => card.hasTrait('spirit')
+            }, honor());
 
         this.action('Ready a spirit')
-            .cost(AbilityDsl.costs.discardCard())
+            .cost(costs.discardCard())
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: card => card.hasTrait('spirit')
-            }, AbilityDsl.actions.ready());
+                cardCondition: (card) => card.hasTrait('spirit')
+            }, ready());
     }
 }

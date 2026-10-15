@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { DuelType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { setConflictTotalSkill } from '../../effects.js';
+import { noAction, playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KakitaToshimoko extends DrawCard {
@@ -11,17 +13,13 @@ export default class KakitaToshimoko extends DrawCard {
                 afterConflict: (event, context) =>
                     context.source.isParticipating() && event.conflict.loser === context.player
             })
-            .initiateDuel(() => ({
+            .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                message: 'both players count 0 total skill for the conflict',
-                gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
-                    targetController: Players.Any,
-                    effect:
-                        context.game.currentDuel?.winner?.some((card) => card === context.source) ?? false
-                            ? AbilityDsl.effects.setConflictTotalSkill(0)
-                            : []
-                }))
+                chatText: () => msg`both players count 0 total skill for the conflict`,
+                gameAction: (duel) => duel.winner.includes(context.source)
+                    ? playerLastingEffect({ target: Players.Any, effect: setConflictTotalSkill(0) })
+                    : noAction()
             }));
     }
 }

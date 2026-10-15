@@ -4,7 +4,7 @@ import * as AbilityLimit from '../../build/server/game/AbilityLimit.js';
 
 describe('AbilityLimit', function () {
     beforeEach(function () {
-        this.eventEmitterSpy = jasmine.createSpyObj('event emitter', ['on', 'removeListener']);
+        this.eventEmitterSpy = jasmine.createSpyObj('event emitter', ['on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow']);
         this.player = { name: 'player1' };
 
         this.limit = AbilityLimit.repeatable(2, 'onEventForReset');
@@ -50,7 +50,7 @@ describe('AbilityLimit', function () {
     describe('unregisterEvents()', function () {
         it('should remove the event', function () {
             this.limit.unregisterEvents(this.eventEmitterSpy);
-            expect(this.eventEmitterSpy.removeListener).toHaveBeenCalledWith('onEventForReset', jasmine.any(Function));
+            expect(this.eventEmitterSpy.off).toHaveBeenCalledWith('onEventForReset', jasmine.any(Function));
         });
 
         it('should remove the listener that was registered', function () {

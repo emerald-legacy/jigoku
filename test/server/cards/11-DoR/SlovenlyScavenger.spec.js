@@ -47,10 +47,10 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                expect(this.player1).toHavePromptButton('player1\'s Dynasty');
-                expect(this.player1).toHavePromptButton('player1\'s Conflict');
-                expect(this.player1).toHavePromptButton('player2\'s Dynasty');
-                expect(this.player1).toHavePromptButton('player2\'s Conflict');
+                expect(this.player1).toHavePromptButton('player1\'s Dynasty Discard Pile');
+                expect(this.player1).toHavePromptButton('player1\'s Conflict Discard Pile');
+                expect(this.player1).toHavePromptButton('player2\'s Dynasty Discard Pile');
+                expect(this.player1).toHavePromptButton('player2\'s Conflict Discard Pile');
             });
 
             it('should shuffle my dynasty discard pile into my dynasty deck', function() {
@@ -64,7 +64,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
                 const size = this.player1.dynastyDeck.length;
-                this.player1.clickPrompt('player1\'s Dynasty');
+                this.player1.clickPrompt('player1\'s Dynasty Discard Pile');
                 expect(this.storehouseP1.location).toBe('dynasty deck');
                 expect(this.kisadaP1.location).toBe('dynasty deck');
                 expect(this.player1.player.dynastyDiscardPile.length).toBe(0);
@@ -84,7 +84,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
                 const size = this.player1.conflictDeck.length;
-                this.player1.clickPrompt('player1\'s Conflict');
+                this.player1.clickPrompt('player1\'s Conflict Discard Pile');
                 expect(this.storehouseP1.location).toBe('dynasty discard pile');
                 expect(this.letGoP1.location).toBe('conflict deck');
                 expect(this.assassinationP1.location).toBe('conflict deck');
@@ -107,7 +107,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
                 const size = this.player2.dynastyDeck.length;
-                this.player1.clickPrompt('player2\'s Dynasty');
+                this.player1.clickPrompt('player2\'s Dynasty Discard Pile');
                 expect(this.storehouseP2.location).toBe('dynasty deck');
                 expect(this.kisadaP2.location).toBe('dynasty deck');
                 expect(this.emperor.location).toBe('dynasty deck');
@@ -130,7 +130,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.clickCard(this.scavengerP1);
                 const size = this.player2.conflictDeck.length;
 
-                this.player1.clickPrompt('player2\'s Conflict');
+                this.player1.clickPrompt('player2\'s Conflict Discard Pile');
                 expect(this.storehouseP2.location).toBe('dynasty discard pile');
                 expect(this.letGoP2.location).toBe('conflict deck');
                 expect(this.assassinationP2.location).toBe('conflict deck');
@@ -154,7 +154,7 @@ describe('Slovenly Scavenger', function() {
                 this.player2.clickCard(this.scavengerP2);
                 const size = this.player2.conflictDeck.length;
 
-                this.player2.clickPrompt('player2\'s Conflict');
+                this.player2.clickPrompt('player2\'s Conflict Discard Pile');
                 expect(this.letGoP2.location).toBe('conflict deck');
                 expect(this.assassinationP2.location).toBe('conflict deck');
                 expect(this.scavengerP2.location).toBe('conflict deck');
@@ -178,10 +178,10 @@ describe('Slovenly Scavenger', function() {
                 this.player1.pass();
                 expect(this.player1).toBeAbleToSelect(this.scavengerP1);
                 this.player1.clickCard(this.scavengerP1);
-                expect(this.player1).not.toHavePromptButton('player1\'s Dynasty');
-                expect(this.player1).toHavePromptButton('player1\'s Conflict');
-                expect(this.player1).toHavePromptButton('player2\'s Dynasty');
-                expect(this.player1).not.toHavePromptButton('player2\'s Conflict');
+                expect(this.player1).not.toHavePromptButton('player1\'s Dynasty Discard Pile');
+                expect(this.player1).toHavePromptButton('player1\'s Conflict Discard Pile');
+                expect(this.player1).toHavePromptButton('player2\'s Dynasty Discard Pile');
+                expect(this.player1).not.toHavePromptButton('player2\'s Conflict Discard Pile');
             });
 
             it('testing with Emperor', function() {
@@ -198,16 +198,16 @@ describe('Slovenly Scavenger', function() {
                 this.player1.clickCard(this.scavengerP1);
                 const size = this.player2.conflictDeck.length;
 
-                this.player1.clickPrompt('player1\'s Conflict');
+                this.player1.clickPrompt('player1\'s Conflict Discard Pile');
 
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect(this.emperor);
                 this.player2.clickCard(this.emperor);
-                expect(this.player2).toHavePromptButton('player1\'s Dynasty');
-                expect(this.player2).toHavePromptButton('player1\'s Conflict');
-                expect(this.player2).toHavePromptButton('player2\'s Dynasty');
-                expect(this.player2).toHavePromptButton('player2\'s Conflict');
-                this.player2.clickPrompt('player2\'s Conflict');
+                expect(this.player2).toHavePromptButton('player1\'s Dynasty Discard Pile');
+                expect(this.player2).toHavePromptButton('player1\'s Conflict Discard Pile');
+                expect(this.player2).toHavePromptButton('player2\'s Dynasty Discard Pile');
+                expect(this.player2).toHavePromptButton('player2\'s Conflict Discard Pile');
+                this.player2.clickPrompt('player2\'s Conflict Discard Pile');
 
                 expect(this.storehouseP2.location).toBe('dynasty discard pile');
                 expect(this.letGoP2.location).toBe('conflict deck');
@@ -259,9 +259,9 @@ describe('Slovenly Scavenger', function() {
             it('should offer the piles by their owner\'s name', function() {
                 expect(this.scavenger.controller).toBe(this.player1.player);
                 this.player1.clickCard(this.scavenger);
-                expect(this.player1).toHavePromptButton('player2\'s Dynasty');
-                expect(this.player1).not.toHavePromptButton('player1\'s Dynasty');
-                this.player1.clickPrompt('player2\'s Dynasty');
+                expect(this.player1).toHavePromptButton('player2\'s Dynasty Discard Pile');
+                expect(this.player1).not.toHavePromptButton('player1\'s Dynasty Discard Pile');
+                this.player1.clickPrompt('player2\'s Dynasty Discard Pile');
                 expect(this.kisada.location).toBe('dynasty deck');
             });
         });

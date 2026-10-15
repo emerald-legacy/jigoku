@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { CardType, CharacterStatus } from '../../Constants.js';
 
 class MasterOfTheCourt extends DrawCard {
     static id = 'master-of-the-court';
@@ -10,8 +10,8 @@ class MasterOfTheCourt extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && context.source.isHonored
             })
-            .cost(AbilityDsl.costs.discardStatusTokenFromSelf())
-            .gameAction(AbilityDsl.actions.cancel());
+            .cost(costs.discardStatusTokenFromSelf(CharacterStatus.Honored))
+            .cancel();
     }
 }
 

@@ -45,26 +45,26 @@ describe('Shore of the Ashen Flames', function () {
                 type: 'military'
             });
 
-            expect(this.aggressiveMoto.getMilitarySkill()).toBe(3);
-            expect(this.aggressiveMoto.getPoliticalSkill()).toBe(0);
+            expect(this.aggressiveMoto.militarySkill).toBe(3);
+            expect(this.aggressiveMoto.politicalSkill).toBe(0);
 
             this.player2.pass();
             this.player1.clickCard(this.fineKatana);
             this.player1.clickCard(this.aggressiveMoto);
-            expect(this.aggressiveMoto.getMilitarySkill()).toBe(5);
-            expect(this.aggressiveMoto.getPoliticalSkill()).toBe(0);
+            expect(this.aggressiveMoto.militarySkill).toBe(5);
+            expect(this.aggressiveMoto.politicalSkill).toBe(0);
 
             this.player2.pass();
             this.player1.clickCard(this.invocationOfAsh);
             this.player1.clickCard(this.aggressiveMoto);
-            expect(this.aggressiveMoto.getMilitarySkill()).toBe(7);
-            expect(this.aggressiveMoto.getPoliticalSkill()).toBe(2);
+            expect(this.aggressiveMoto.militarySkill).toBe(7);
+            expect(this.aggressiveMoto.politicalSkill).toBe(2);
 
             this.player2.pass();
             this.player1.clickCard(this.curvedBlade);
             this.player1.clickCard(this.aggressiveMoto);
-            expect(this.aggressiveMoto.getMilitarySkill()).toBe(10);
-            expect(this.aggressiveMoto.getPoliticalSkill()).toBe(2);
+            expect(this.aggressiveMoto.militarySkill).toBe(10);
+            expect(this.aggressiveMoto.politicalSkill).toBe(2);
 
             this.player2.playAttachment(this.katana2, this.initiate);
 
@@ -81,14 +81,14 @@ describe('Shore of the Ashen Flames', function () {
                 type: 'military'
             });
 
-            expect(this.aggressiveMoto.getMilitarySkill()).toBe(3);
-            expect(this.aggressiveMoto.getPoliticalSkill()).toBe(0);
+            expect(this.aggressiveMoto.militarySkill).toBe(3);
+            expect(this.aggressiveMoto.politicalSkill).toBe(0);
 
             this.player2.pass();
             this.player1.clickCard(this.fieryMadness);
             this.player1.clickCard(this.aggressiveMoto);
-            expect(this.aggressiveMoto.getMilitarySkill()).toBe(1);
-            expect(this.aggressiveMoto.getPoliticalSkill()).toBe(0);
+            expect(this.aggressiveMoto.militarySkill).toBe(1);
+            expect(this.aggressiveMoto.politicalSkill).toBe(0);
 
             this.noMoreActions();
             expect(this.getChatLogs(3)).toContain('player1 won a military conflict 1 vs 0');
@@ -103,14 +103,14 @@ describe('Shore of the Ashen Flames', function () {
                 type: 'military'
             });
 
-            expect(this.aggressiveMoto.getMilitarySkill()).toBe(3);
-            expect(this.aggressiveMoto.getPoliticalSkill()).toBe(0);
+            expect(this.aggressiveMoto.militarySkill).toBe(3);
+            expect(this.aggressiveMoto.politicalSkill).toBe(0);
 
             this.player2.pass();
             this.player1.clickCard(this.perfectCut);
             this.player1.clickCard(this.aggressiveMoto);
-            expect(this.aggressiveMoto.getMilitarySkill()).toBe(5);
-            expect(this.aggressiveMoto.getPoliticalSkill()).toBe(0);
+            expect(this.aggressiveMoto.militarySkill).toBe(5);
+            expect(this.aggressiveMoto.politicalSkill).toBe(0);
 
             this.noMoreActions();
             expect(this.getChatLogs(5)).toContain('player1 won a military conflict 5 vs 0');
@@ -125,26 +125,59 @@ describe('Shore of the Ashen Flames', function () {
                 type: 'political'
             });
 
-            expect(this.yoshi.getMilitarySkill()).toBe(2);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(2);
+            expect(this.yoshi.politicalSkill).toBe(6);
 
             this.player2.pass();
             this.player1.playAttachment(this.fineKatana, this.yoshi);
-            expect(this.yoshi.getMilitarySkill()).toBe(4);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(4);
+            expect(this.yoshi.politicalSkill).toBe(6);
 
             this.player2.pass();
             this.player1.playAttachment(this.invocationOfAsh, this.yoshi);
-            expect(this.yoshi.getMilitarySkill()).toBe(6);
-            expect(this.yoshi.getPoliticalSkill()).toBe(8);
+            expect(this.yoshi.militarySkill).toBe(6);
+            expect(this.yoshi.politicalSkill).toBe(8);
 
             this.player2.pass();
             this.player1.playAttachment(this.fieryMadness, this.yoshi);
-            expect(this.yoshi.getMilitarySkill()).toBe(4);
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
+            expect(this.yoshi.militarySkill).toBe(4);
+            expect(this.yoshi.politicalSkill).toBe(6);
 
             this.noMoreActions();
             expect(this.getChatLogs(5)).toContain('player1 won a political conflict 4 vs 0');
+        });
+    });
+});
+
+describe('Shore of the Ashen Flames and skill penalties', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['brash-samurai']
+                },
+                player2: {
+                    provinces: ['shore-of-the-ashen-flames'],
+                    inPlay: [{ card: 'doji-whisperer', attachments: ['smoke'] }]
+                }
+            });
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.shore = this.player2.findCardByName('shore-of-the-ashen-flames', 'province 1');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.shore,
+                attackers: [this.brash],
+                defenders: [this.whisperer]
+            });
+        });
+
+        it('doesn\'t stop a penalty from an attachment', function () {
+            expect(this.game.currentConflict.attackerSkill).toBe(2);
+            this.player2.clickCard('smoke');
+            expect(this.game.currentConflict.attackerSkill).toBe(0);
         });
     });
 });

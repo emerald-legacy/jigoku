@@ -26,8 +26,8 @@ describe('SoD - Lion', function () {
                     defenders: []
                 });
 
-                const mil = this.ancientMaster.getMilitarySkill();
-                const pol = this.ancientMaster.getPoliticalSkill();
+                const mil = this.ancientMaster.militarySkill;
+                const pol = this.ancientMaster.politicalSkill;
 
                 this.player2.pass();
 
@@ -37,8 +37,8 @@ describe('SoD - Lion', function () {
                 expect(this.player2).toHavePromptButton('Let opponent claim favor');
 
                 this.player2.clickPrompt('Give the character +3/+3');
-                expect(this.ancientMaster.getMilitarySkill()).toBe(mil + 3);
-                expect(this.ancientMaster.getPoliticalSkill()).toBe(pol + 3);
+                expect(this.ancientMaster.militarySkill).toBe(mil + 3);
+                expect(this.ancientMaster.politicalSkill).toBe(pol + 3);
                 expect(this.getChatLogs(5)).toContain('player1 plays Ancestral Rivalry to give Ancient Master +3military/+3political');
             });
 
@@ -52,16 +52,16 @@ describe('SoD - Lion', function () {
                     defenders: []
                 });
 
-                const mil = this.ancientMaster.getMilitarySkill();
-                const pol = this.ancientMaster.getPoliticalSkill();
+                const mil = this.ancientMaster.militarySkill;
+                const pol = this.ancientMaster.politicalSkill;
 
                 this.player2.pass();
 
                 this.player1.clickCard(this.rivalry);
                 this.player1.clickCard(this.ancientMaster);
                 this.player2.clickPrompt('Let opponent claim favor');
-                expect(this.ancientMaster.getMilitarySkill()).toBe(mil);
-                expect(this.ancientMaster.getPoliticalSkill()).toBe(pol);
+                expect(this.ancientMaster.militarySkill).toBe(mil);
+                expect(this.ancientMaster.politicalSkill).toBe(pol);
                 expect(this.getChatLogs(5)).toContain('player1 plays Ancestral Rivalry to claim the Imperial Favor');
                 expect(this.player1).toHavePromptButton('Military');
                 expect(this.player1).toHavePromptButton('Political');
@@ -82,16 +82,16 @@ describe('SoD - Lion', function () {
                     defenders: []
                 });
 
-                const mil = this.ancientMaster.getMilitarySkill();
-                const pol = this.ancientMaster.getPoliticalSkill();
+                const mil = this.ancientMaster.militarySkill;
+                const pol = this.ancientMaster.politicalSkill;
 
                 this.player2.pass();
 
                 this.player1.clickCard(this.rivalry);
                 this.player1.clickCard(this.ancientMaster);
                 this.player2.clickPrompt('Let opponent claim favor');
-                expect(this.ancientMaster.getMilitarySkill()).toBe(mil);
-                expect(this.ancientMaster.getPoliticalSkill()).toBe(pol);
+                expect(this.ancientMaster.militarySkill).toBe(mil);
+                expect(this.ancientMaster.politicalSkill).toBe(pol);
                 expect(this.getChatLogs(5)).toContain('player1 plays Ancestral Rivalry to claim the Imperial Favor');
                 expect(this.player1).toHavePromptButton('Military');
                 expect(this.player1).toHavePromptButton('Political');
@@ -441,12 +441,12 @@ describe('SoD - Lion', function () {
                     defenders: [this.natsuko, this.challenger]
                 });
 
-                const mil = this.natsuko.getMilitarySkill();
+                const mil = this.natsuko.militarySkill;
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
-                expect(this.natsuko.getMilitarySkill()).toBe(mil + 2);
+                expect(this.natsuko.militarySkill).toBe(mil + 2);
             });
 
             it('discarding favor', function () {
@@ -458,11 +458,11 @@ describe('SoD - Lion', function () {
                     defenders: [this.natsuko, this.challenger]
                 });
 
-                const mil = this.natsuko.getMilitarySkill();
+                const mil = this.natsuko.militarySkill;
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
-                expect(this.natsuko.getMilitarySkill()).toBe(mil + 2);
+                expect(this.natsuko.militarySkill).toBe(mil + 2);
                 expect(this.player2).toHavePromptButton('Discard the Imperial Favor');
                 expect(this.player2).toHavePromptButton('Done');
 
@@ -481,11 +481,11 @@ describe('SoD - Lion', function () {
                     defenders: [this.natsuko, this.challenger]
                 });
 
-                const mil = this.natsuko.getMilitarySkill();
+                const mil = this.natsuko.militarySkill;
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
-                expect(this.natsuko.getMilitarySkill()).toBe(mil + 2);
+                expect(this.natsuko.militarySkill).toBe(mil + 2);
                 this.player2.clickPrompt('Done');
                 expect(this.player2.player.imperialFavor).toBe('military');
             });

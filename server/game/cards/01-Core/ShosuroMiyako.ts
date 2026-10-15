@@ -1,6 +1,7 @@
 import { CardType, PlayType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardAtRandom, dishonor, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class ShosuroMiyako extends DrawCard {
     static id = 'shosuro-miyako';
@@ -17,17 +18,16 @@ export default class ShosuroMiyako extends DrawCard {
             .select({
                 player: Players.Opponent
             }, {
-                'Discard at random': AbilityDsl.actions.discardAtRandom(),
-                'Dishonor a character': AbilityDsl.actions.selectCard((context) => ({
+                'Discard at random': discardAtRandom(),
+                'Dishonor a character': selectCard({
                     activePromptTitle: 'Choose a character to dishonor',
                     player: Players.Opponent,
                     controller: Players.Opponent,
                     targets: true,
-                    message: '{0} chooses to dishonor {1}',
-                    messageArgs: (card) => [context.player.opponent, card],
-                    gameAction: AbilityDsl.actions.dishonor()
-                }))
+                    message: (context, card) => msg`${context.player.opponent} chooses to dishonor ${card}`,
+                    gameAction: dishonor()
+                })
             })
-            .effect('force {1} to {2}', (context) => [context.player.opponent ?? '', context.select.toLowerCase()]);
+            .chatText((context) => msg`force ${context.player.opponent ?? ''} to ${context.select.toLowerCase()}`);
     }
 }

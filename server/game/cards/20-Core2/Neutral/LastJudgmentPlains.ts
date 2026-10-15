@@ -1,6 +1,7 @@
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { chooseAmount, placeFate } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 const DONOR = 'donor';
 const RECIPIENT = 'recipient';
@@ -22,24 +23,11 @@ export default class LastJudgmentPlains extends ProvinceCard {
                 activePromptTitle: 'Choose a recipient character',
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.menuPrompt(({ targets }) => ({
+            }, chooseAmount(({ targets }) => ({
                 activePromptTitle: 'How much fate do you want to move?',
-                choices: this.createChoiceArray(targets[DONOR].getFate()),
-                choiceHandler: (choice) => ({
-                    amount: parseInt(choice, 10),
-                    origin: targets[DONOR],
-                    target: targets[RECIPIENT]
-                }),
-                gameAction: AbilityDsl.actions.placeFate()
+                max: targets[DONOR].getFate(),
+                gameAction: (amount) => placeFate({ amount, origin: targets[DONOR], target: targets[RECIPIENT] })
             })))
-            .effect('move fate from {1} to {2}', ({ targets }) => [targets[DONOR], targets[RECIPIENT]]);
-    }
-
-    private createChoiceArray(fate: number): string[] {
-        const choices: string[] = [];
-        for(let i = 1; i <= fate; i++) {
-            choices.push(i.toString());
-        }
-        return choices;
+            .chatText(({ targets }) => msg`move fate from ${targets[DONOR]} to ${targets[RECIPIENT]}`);
     }
 }

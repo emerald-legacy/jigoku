@@ -1,6 +1,9 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TillTheLastOneFalls extends DrawCard {
@@ -14,11 +17,11 @@ export default class TillTheLastOneFalls extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyBothSkills(this.bonus(context))
+            }, cardLastingEffect((context) => ({
+                effect: modifyBothSkills(this.bonus(context))
             })))
-            .effect('give {0} +{1}{2}/+{1}{3}', (context) => [this.bonus(context), 'military', 'political'])
-            .max(AbilityDsl.limit.perConflict(1));
+            .chatText((context) => msg`give ${context.chatTarget()} +${this.bonus(context)}${'military'}/+${this.bonus(context)}${'political'}`)
+            .max(perConflict(1));
     }
 
     private bonus(context: AbilityContext): number {

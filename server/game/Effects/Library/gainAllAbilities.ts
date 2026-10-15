@@ -1,11 +1,11 @@
 import type BaseCard from '../../BaseCard.js';
 import type { StoredPersistentEffect } from '../../BaseCard.js';
 import type { CardAction } from '../../CardAction.js';
-import type TriggeredAbility from '../../TriggeredAbility.js';
+import type { TriggeredAbility } from '../../TriggeredAbility.js';
 import { AbilityType, EffectName, Location } from '../../Constants.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
-import GainAbility from '../GainAbility.js';
+import { GainAbility } from '../GainAbility.js';
 
 export class GainAllAbilities extends EffectValue<BaseCard, BaseCard> {
     actions: Array<GainAbility>;

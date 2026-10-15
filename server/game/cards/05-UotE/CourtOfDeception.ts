@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { discardStatusToken } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, CharacterStatus } from '../../Constants.js';
 
@@ -12,7 +12,7 @@ class CourtOfDeception extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isDishonored && !card.isParticipating()
-            }, AbilityDsl.actions.discardStatusToken((context) => ({ target: context.target.getStatusToken(CharacterStatus.Dishonored) })));
+            }, discardStatusToken((context) => ({ target: context.target.getStatusToken(CharacterStatus.Dishonored) })));
     }
 }
 

@@ -1,10 +1,10 @@
 import { EffectValue } from './EffectValue.js';
-import type { EffectBase } from './EffectBase.js';
+import type { EffectApplier } from './EffectApplier.js';
 import type { EffectName } from '../Constants.js';
 import type { EffectValueMap } from './EffectValueMap.js';
 
 export class SuppressEffect extends EffectValue<EffectValueMap[EffectName.SuppressEffects]> {
-    constructor(private predicate: (effect: EffectBase) => boolean) {
+    constructor(private predicate: (effect: EffectApplier) => boolean) {
         super([]);
     }
 

@@ -1,5 +1,6 @@
-import { AbilityType, CardType, Duration, EffectName, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { AbilityType, CardType, Duration, EffectName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
+import { addFlag, blank, cardCannot, changeType, gainAbility } from '../../../effects.js';
+import { attach, cardLastingEffect, detach, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -13,74 +14,65 @@ export default class LoyalWarhound extends DrawCard {
             side: 'dynasty',
             text: '',
             type: CardType.Attachment,
-            name: 'War Hound',
+            name: 'Loyal Warhound',
             id: 'loyal-warhound',
             traits: ['creature']
         });
 
         this.action('Attach this to a character')
-            .condition(context => context.source.type === CardType.Character)
+            .condition((context) => context.source.type === CardType.Character)
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    context.game.actions.attach({ attachment: DummyHoundAttachment }).canAffect(card, context) && card !== context.source
+                    attach({ attachment: DummyHoundAttachment }).canAffect(card, context) && card !== context.source
             })
-            .gameAction(AbilityDsl.actions.sequentialContext(context => {
+            .gameAction(sequential((context) => {
                 const gameActions: GameAction[] = [];
 
-                gameActions.push(AbilityDsl.actions.cardLastingEffect({
+                gameActions.push(cardLastingEffect({
                     target: context.source,
                     duration: Duration.Custom,
                     until: {
-                        onCardDetached: event => event.card === context.source,
-                        onCardLeavesPlay: event => event.card === context.source
+                        onCardDetached: (event) => event.card === context.source,
+                        onCardLeavesPlay: (event) => event.card === context.source
                     },
                     effect: [
-                        AbilityDsl.effects.blank(true),
-                        AbilityDsl.effects.changeType(CardType.Attachment),
-                        AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                            title: 'Detach',
-                            condition: (context) => {
+                        blank(true),
+                        changeType(CardType.Attachment),
+                        gainAbility.action('Detach', (ability) => ability
+                            .condition((context) => {
                                 const flags = context.source.getEffects(EffectName.AddFlag);
                                 return !flags.includes('wasAttachedThisRound');
-                            },
-                            printedAbility: false,
-                            effect: 'detach itself',
-                            gameAction: AbilityDsl.actions.detach()
-                        }),
+                            })
+                            .gameAction(detach())
+                            .chatText('detach itself')),
                         // Matched dynamically so the protection follows this card if it is reattached
-                        AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
+                        gainAbility(AbilityType.Persistent, {
                             targetController: Players.Any,
                             match: (card, context) =>
                                 card === context?.source.parentCharacter && card.hasTrait('scout'),
-                            effect: AbilityDsl.effects.cardCannot({
-                                cannot: 'target',
-                                restricts: 'opponentsProvinceEffects'
+                            effect: cardCannot({
+                                cannot: RestrictionType.Target,
+                                appliesTo: RestrictionScope.OpponentsProvinceEffects
                             })
                         })
                     ]
                 }));
 
-                gameActions.push(AbilityDsl.actions.cardLastingEffect({
+                gameActions.push(cardLastingEffect({
                     target: context.source,
                     duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.addFlag('wasAttachedThisRound')
+                    effect: addFlag('wasAttachedThisRound')
                 }));
 
-                gameActions.push(AbilityDsl.actions.attach({
+                gameActions.push(attach({
                     attachment: this,
-                    target: context.target,
-                    wasACharacter: true
+                    target: context.target
                 }));
 
-                // It is no longer a character, so it stops contributing to the conflict
-                gameActions.push(AbilityDsl.actions.handler({
-                    handler: () => context.game.currentConflict?.removeFromConflict(context.source)
-                }));
-
-                return { gameActions };
+                return gameActions;
             }))
-            .effect('attach itself to {0}');
+            .chatText('attach itself to {0}');
     }
 }

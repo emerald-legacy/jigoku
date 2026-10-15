@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Onibi extends DrawCard {
@@ -10,9 +10,9 @@ export default class Onibi extends DrawCard {
                 onCharacterEntersPlay: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
             })
-            .gameAction(AbilityDsl.actions.placeFate((context) => ({
+            .placeFate((context) => ({
                 origin: context.player.opponent
-            })))
-            .effect('take a fate from {1} and place it on {0}', (context) => context.player.opponent);
+            }))
+            .chatText((context) => msg`take a fate from ${context.player.opponent} and place it on ${context.chatTarget()}`);
     }
 }

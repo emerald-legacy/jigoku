@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
-import BaseCardSelector, { type BaseCardSelectorProperties, type NumCardsFunc } from './BaseCardSelector.js';
+import { BaseCardSelector, type BaseCardSelectorProperties, type NumCardsFunc } from './BaseCardSelector.js';
 
-class UpToVariableXCardSelector extends BaseCardSelector {
+export class UpToVariableXCardSelector extends BaseCardSelector {
     numCardsFunc: NumCardsFunc;
 
     constructor(numCardsFunc: NumCardsFunc, properties: BaseCardSelectorProperties) {
@@ -31,4 +31,3 @@ class UpToVariableXCardSelector extends BaseCardSelector {
     }
 }
 
-export default UpToVariableXCardSelector;

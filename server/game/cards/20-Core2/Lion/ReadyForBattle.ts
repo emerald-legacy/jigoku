@@ -1,4 +1,3 @@
-import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import Ring from '../../../Ring.js';
 
@@ -13,7 +12,7 @@ export default class ReadyForBattle extends DrawCard {
                     (event.context?.source instanceof Ring ||
                         (context.player.opponent && event.context?.player === context.player.opponent))
             })
-            .cannotBeMirrored()
-            .gameAction(AbilityDsl.actions.ready((context) => ({ target: context.event.card })));
+            .ready((context) => ({ target: context.event.card }))
+            .cannotBeMirrored();
     }
 }

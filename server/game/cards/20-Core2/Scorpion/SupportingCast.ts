@@ -1,6 +1,9 @@
-import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, ConflictType } from '../../../Constants.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { bow, cardLastingEffect, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class SupportingCast extends DrawCard {
     static id = 'supporting-cast';
@@ -18,26 +21,19 @@ export default class SupportingCast extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character to give +3 military skill',
                 cardType: CardType.Character,
-                controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
                     !context.event.cardTargets.some((eventCard) => eventCard === card)
-            }, AbilityDsl.actions.selectCard((context) => ({
+            }, selectCard((context) => ({
                 activePromptTitle: 'Choose a character to bow',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) =>
                     context.event.cardTargets.some((eventCard) => eventCard === card),
-                subActionProperties: (card) => {
-                    if(card.isDrawCard()) {
-                        context.target = card;
-                    }
-                    return { target: card };
-                },
-                gameAction: AbilityDsl.actions.bow()
-            })), AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(3)
+                gameAction: bow()
+            })), cardLastingEffect({
+                effect: modifyMilitarySkill(3)
             }))
-            .effect('give +3 military skill to {1} - {2} was just a distraction', (context) => [context.target, context.event.cardTargets])
-            .max(AbilityDsl.limit.perConflict(1));
+            .chatText((context) => msg`give +3 military skill to ${context.target} - ${context.event.cardTargets} was just a distraction`)
+            .max(perConflict(1));
     }
 }

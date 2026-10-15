@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoPlay } from '../../GameActions/GameActions.js';
 
 class Fushicho extends DrawCard {
     static id = 'fushicho';
@@ -14,8 +14,8 @@ class Fushicho extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
-                cardCondition: card => card.isFaction('phoenix')
-            }, AbilityDsl.actions.putIntoPlay({ fate: 1 }));
+                cardCondition: (card) => card.isFaction('phoenix')
+            }, putIntoPlay({ fate: 1 }));
     }
 }
 

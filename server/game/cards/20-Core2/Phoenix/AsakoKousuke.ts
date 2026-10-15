@@ -1,6 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardStatusToken, dishonor, honor, joint, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const ORIGINL_TOKEN = 'original';
@@ -10,12 +11,12 @@ export default class AsakoKousuke extends DrawCard {
     static id = 'asako-kousuke';
 
     setupCardAbilities() {
-        this.action('Treat the status token on a character as if it was another status token')
+        this.conflictAction('Treat the status token on a character as if it was another status token', { evenFromHome: true })
             .tokenTarget({
                 name: ORIGINL_TOKEN,
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && card.getGlory() <= context.source.getGlory()
+                    card.isParticipating() && card.glory <= context.source.glory
             })
             .selectFrom({
                 name: SELECTION,
@@ -31,9 +32,9 @@ export default class AsakoKousuke extends DrawCard {
                 if(!targetCard.isHonored) {
                     choices.push([
                         'Turn it into Honored',
-                        AbilityDsl.actions.joint([
-                            AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                            AbilityDsl.actions.honor({ target: targetCard })
+                        joint([
+                            discardStatusToken({ target: targetToken }),
+                            honor({ target: targetCard })
                         ])
                     ]);
                 }
@@ -41,9 +42,9 @@ export default class AsakoKousuke extends DrawCard {
                 if(!targetCard.isDishonored) {
                     choices.push([
                         'Turn it into Dishonored',
-                        AbilityDsl.actions.joint([
-                            AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                            AbilityDsl.actions.dishonor({ target: targetCard })
+                        joint([
+                            discardStatusToken({ target: targetToken }),
+                            dishonor({ target: targetCard })
                         ])
                     ]);
                 }
@@ -51,23 +52,16 @@ export default class AsakoKousuke extends DrawCard {
                 if(!targetCard.isTainted) {
                     choices.push([
                         'Turn it into Tainted',
-                        AbilityDsl.actions.joint([
-                            AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                            AbilityDsl.actions.taint({ target: targetCard })
+                        joint([
+                            discardStatusToken({ target: targetToken }),
+                            taint({ target: targetCard })
                         ])
                     ]);
                 }
 
                 return Object.fromEntries(choices);
             })
-            .effect('clarify what it means to be {2}. The exposition reveals that {1} is {2}', (context) => [
-                context.tokens[ORIGINL_TOKEN][0].card,
-                context.selects.selection.choice === 'Turn it into Honored'
-                    ? 'honored'
-                    : context.selects.selection.choice === 'Turn it into Dishonored'
-                        ? 'dishonored'
-                        : 'tainted'
-            ])
+            .chatText((context) => msg`clarify what it means to be ${context.selects.selection.choice === 'Turn it into Honored' ? 'honored' : context.selects.selection.choice === 'Turn it into Dishonored' ? 'dishonored' : 'tainted'}. The exposition reveals that ${context.tokens[ORIGINL_TOKEN][0].card} is ${context.selects.selection.choice === 'Turn it into Honored' ? 'honored' : context.selects.selection.choice === 'Turn it into Dishonored' ? 'dishonored' : 'tainted'}`)
             .cannotTargetFirst();
     }
 }

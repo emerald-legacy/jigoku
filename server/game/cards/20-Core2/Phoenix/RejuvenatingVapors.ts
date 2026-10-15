@@ -1,5 +1,5 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class RejuvenatingVapors extends DrawCard {
@@ -11,6 +11,6 @@ export default class RejuvenatingVapors extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     context.player.hasAffinity('water', context) || card.hasTrait('shugenja')
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }

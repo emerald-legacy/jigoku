@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { createToken } from '../../../GameActions/GameActions.js';
 import UnleashedHound from '../../UnleashedHound.js';
 
 export default class ShinjoSora extends DrawCard {
@@ -7,7 +7,7 @@ export default class ShinjoSora extends DrawCard {
 
     setupCardAbilities() {
         this.conflictAction('Create beasts from facedown dynasty cards')
-            .gameAction(AbilityDsl.actions.createToken((context) => ({
+            .gameAction(createToken((context) => ({
                 target: context.game
                     .getProvinceArray()
                     .flatMap((location) =>
@@ -17,6 +17,6 @@ export default class ShinjoSora extends DrawCard {
                 canEnterConflict: () => true,
                 leavingPlayMessage: '{0} grows tired and decides to have a nap'
             })))
-            .effect('release the hounds');
+            .chatText('release the hounds');
     }
 }

@@ -1,11 +1,11 @@
-import StatModifier from './StatModifier.js';
+import { StatModifier } from './StatModifier.js';
 import { EffectName } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf, isEffectOfAny } from './Effects/types.js';
-import type { EffectBase } from './Effects/EffectBase.js';
-import type { DashSkillType } from './Effects/EffectValueMap.js';
+import type { EffectApplier } from './Effects/EffectApplier.js';
+import type { SkillType } from './Constants.js';
 
-export type Exclusions = EffectName[] | ((effect: EffectBase) => boolean);
+export type Exclusions = EffectName[] | ((effect: EffectApplier) => boolean);
 
 const skillEffectNames = {
     military: {
@@ -191,7 +191,7 @@ export class SkillCalculator {
         };
     }
 
-    getSkillModifiers(type: DashSkillType, exclusions: Exclusions = []): StatModifier[] {
+    getSkillModifiers(type: SkillType, exclusions: Exclusions = []): StatModifier[] {
         const names = skillEffectNames[type];
         const baseSkillModifiers = this.getBaseSkillModifiers();
         const baseSkill = type === 'military' ? baseSkillModifiers.baseMilitarySkill : baseSkillModifiers.basePoliticalSkill;
@@ -264,6 +264,17 @@ export class SkillCalculator {
                 if(modifier.type === 'token' && modifier.amount !== 0 && modifier.name === 'Dishonored Token') {
                     modifier.amount = 0 - modifier.amount;
                     modifier.name += ` (${StatModifier.getEffectName(reverseEffects[0])})`;
+                }
+            });
+        }
+        const doesNotDecreaseEffects = this.card.getRawEffects().filter(
+            (effect) => effect.type === EffectName.StatusTokensDoNotDecreaseSkill
+        );
+        if(doesNotDecreaseEffects.length > 0) {
+            modifiers.forEach((modifier) => {
+                if(modifier.type === 'token' && modifier.amount < 0) {
+                    modifier.amount = 0;
+                    modifier.name += ` (${StatModifier.getEffectName(doesNotDecreaseEffects[0])})`;
                 }
             });
         }

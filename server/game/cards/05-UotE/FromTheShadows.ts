@@ -1,5 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { putIntoConflict } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
 
@@ -8,16 +7,13 @@ class FromTheShadows extends DrawCard {
 
     setupCardAbilities() {
         this.action('Put a shinobi character into the conflict from hand or a province, dishonored')
+            .playOnlyIf((context) => !!context.player.opponent && context.player.isLessHonorable())
             .target({
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('shinobi')
-            }, AbilityDsl.actions.putIntoConflict({ status: 'dishonored' }));
-    }
-
-    canPlay(context: AbilityContext, type: string): boolean {
-        return !!context.player.opponent && context.player.isLessHonorable() && super.canPlay(context, type);
+            }, putIntoConflict({ status: 'dishonored' }));
     }
 }
 

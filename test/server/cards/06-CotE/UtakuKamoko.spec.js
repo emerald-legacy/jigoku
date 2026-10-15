@@ -23,14 +23,14 @@ describe('Utaku Kamoko', function() {
                     attackers: [this.utakuKamoko],
                     defenders: []
                 });
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
                 expect(this.utakuKamoko.isDishonored).toBe(false);
                 this.player2.clickCard(this.wayOfTheScorpion);
                 this.player2.clickCard(this.utakuKamoko);
                 expect(this.utakuKamoko.isDishonored).toBe(true);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
             });
 
             it('should still add glory to skills if honored', function() {
@@ -40,14 +40,14 @@ describe('Utaku Kamoko', function() {
                     defenders: []
                 });
                 this.player2.pass();
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
                 expect(this.utakuKamoko.isHonored).toBe(false);
                 this.player1.clickCard(this.soulBeyondReproach);
                 this.player1.clickCard(this.utakuKamoko);
                 expect(this.utakuKamoko.isHonored).toBe(true);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(6);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(6);
+                expect(this.utakuKamoko.militarySkill).toBe(6);
+                expect(this.utakuKamoko.militarySkill).toBe(6);
             });
         });
 

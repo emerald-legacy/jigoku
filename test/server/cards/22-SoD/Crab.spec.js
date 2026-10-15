@@ -1,3 +1,6 @@
+import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { sendHome } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('SoD - Crab', function () {
     integration(function () {
         describe('A Bad Death', function () {
@@ -75,6 +78,48 @@ describe('SoD - Crab', function () {
                 expect(this.getChatLogs(5)).toContain('player1 plays A Bad Death, dishonoring and sacrificing Silent Skirmisher to dishonor Togashi Yokuni and Doji Challenger');
             });
 
+        });
+
+        describe('A Bad Death when the dishonor is replaced', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['silent-skirmisher', 'agasha-swordsmith'],
+                        hand: ['a-bad-death']
+                    },
+                    player2: {
+                        inPlay: ['togashi-yokuni', 'kitsuki-shomon']
+                    }
+                });
+
+                this.skirmisher = this.player1.findCardByName('silent-skirmisher');
+                this.swordsmith = this.player1.findCardByName('agasha-swordsmith');
+                this.badDeath = this.player1.findCardByName('a-bad-death');
+                this.yokuni = this.player2.findCardByName('togashi-yokuni');
+                this.shomon = this.player2.findCardByName('kitsuki-shomon');
+            });
+
+            it('still draws a card', function () {
+                const hand = this.player1.hand.length;
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.skirmisher, this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+                this.player1.pass();
+
+                this.player1.clickCard(this.badDeath);
+                this.player1.clickCard(this.swordsmith);
+                this.player1.clickCard(this.yokuni);
+                this.player1.clickPrompt('Done');
+
+                this.player2.clickCard(this.shomon);
+                expect(this.yokuni.isDishonored).toBe(false);
+                expect(this.shomon.isDishonored).toBe(true);
+                expect(this.player1.hand.length).toBe(hand);
+            });
         });
 
         describe('Caretaker of The Dead Eyes', function () {
@@ -200,9 +245,9 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                const mil = this.skirmisher.getMilitarySkill();
+                const mil = this.skirmisher.militarySkill;
                 this.player1.clickCard(this.deadeyes);
-                expect(this.skirmisher.getMilitarySkill()).toBe(mil + 2);
+                expect(this.skirmisher.militarySkill).toBe(mil + 2);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Dead Eyes to grant +2military to Silent Skirmisher, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill');
 
@@ -216,6 +261,42 @@ describe('SoD - Crab', function () {
 
                 expect(this.skirmisher.location).toBe('dynasty discard pile');
                 expect(this.getChatLogs(5)).toContain('Silent Skirmisher is sacrificed due to the delayed effect of Dead Eyes');
+            });
+
+            it('cannot be moved home by its controller\'s effects either', function () {
+                this.player1.clickCard(this.deadeyes);
+                this.player1.clickCard(this.skirmisher);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.skirmisher, this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.deadeyes);
+
+                const context = new ThenAbility(this.swordsmith, {}).createContext(this.player1.player);
+                this.game.queueSimpleStep(() => sendHome().resolve(this.skirmisher, context));
+                this.game.continue();
+                expect(this.skirmisher.isParticipating()).toBe(true);
+            });
+
+            it('cannot be used when the attached character is not participating', function () {
+                this.player1.clickCard(this.deadeyes);
+                this.player1.clickCard(this.skirmisher);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+
+                const mil = this.skirmisher.militarySkill;
+                this.player1.clickCard(this.deadeyes);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.skirmisher.militarySkill).toBe(mil);
             });
         });
 
@@ -287,6 +368,19 @@ describe('SoD - Crab', function () {
                 this.swordsmith = this.player1.findCardByName('agasha-swordsmith');
                 this.rage = this.player1.findCardByName('unbridled-rage');
                 this.yokuni = this.player2.findCardByName('togashi-yokuni');
+            });
+
+            it('needs a participating Berserker', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+
+                this.player1.clickCard(this.rage);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.rage.location).toBe('hand');
             });
 
             it('refuse duel', function () {

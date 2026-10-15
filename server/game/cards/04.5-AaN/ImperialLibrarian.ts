@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyGlory } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
 
@@ -9,7 +9,7 @@ class ImperialLibrarian extends DrawCard {
         this.persistentEffect({
             match: (card, context) => !!context && card !== context.source,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.modifyGlory(1)
+            effect: modifyGlory(1)
         });
     }
 }

@@ -1,9 +1,9 @@
 import { AbilityContext, type AbilityContextProperties } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
-import type EffectSource from './EffectSource.js';
+import type { EffectSource } from './EffectSource.js';
 import { Event } from './Events/Event.js';
 import type { EventUnion } from './Events/EventPayloads.js';
-import type TriggeredAbility from './TriggeredAbility.js';
+import type { TriggeredAbility } from './TriggeredAbility.js';
 
 // An event whose specific name is not statically known here: the framework Event
 // surface plus every payload field as optional. (Precise per-event typing is

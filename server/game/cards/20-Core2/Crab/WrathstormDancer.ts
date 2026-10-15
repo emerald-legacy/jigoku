@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class WrathstormDancer extends DrawCard {
@@ -11,7 +11,7 @@ export default class WrathstormDancer extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.hasTrait('berserker') && card !== context.source && card.isParticipating()
                 ),
-            effect: AbilityDsl.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 }

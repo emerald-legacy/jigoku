@@ -36,8 +36,8 @@ describe('Opportunistic Rustler', function () {
                 province: this.sd1
             });
 
-            const mil = this.rustler.getMilitarySkill();
-            const pol = this.rustler.getPoliticalSkill();
+            const mil = this.rustler.militarySkill;
+            const pol = this.rustler.politicalSkill;
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.rustler);
@@ -53,8 +53,8 @@ describe('Opportunistic Rustler', function () {
 
             this.player1.clickPrompt(this.courtly.name);
 
-            expect(this.rustler.getMilitarySkill()).toBe(mil + 2);
-            expect(this.rustler.getPoliticalSkill()).toBe(pol);
+            expect(this.rustler.militarySkill).toBe(mil + 2);
+            expect(this.rustler.politicalSkill).toBe(pol);
             expect(this.courtly.location).toBe('province 1');
             expect(this.courtly.facedown).toBe(false);
 
@@ -70,8 +70,8 @@ describe('Opportunistic Rustler', function () {
                 province: this.sd1
             });
 
-            const mil = this.rustler.getMilitarySkill();
-            const pol = this.rustler.getPoliticalSkill();
+            const mil = this.rustler.militarySkill;
+            const pol = this.rustler.politicalSkill;
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.rustler);
@@ -87,8 +87,8 @@ describe('Opportunistic Rustler', function () {
 
             this.player1.clickPrompt(this.diplomat.name);
 
-            expect(this.rustler.getMilitarySkill()).toBe(mil + 3);
-            expect(this.rustler.getPoliticalSkill()).toBe(pol);
+            expect(this.rustler.militarySkill).toBe(mil + 3);
+            expect(this.rustler.politicalSkill).toBe(pol);
             expect(this.diplomat.location).toBe('removed from game');
 
             expect(this.getChatLogs(5)).toContain('player1 removes Diplomat of the Steppes from the game and gives Opportunistic Rustler +3military');

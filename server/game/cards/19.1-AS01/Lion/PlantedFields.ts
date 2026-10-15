@@ -1,52 +1,38 @@
-import { EventName, Phases } from '../../../Constants.js';
-import { EventRegistrar } from '../../../EventRegistrar.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { Duration, EffectName, Phase, Players } from '../../../Constants.js';
+import { addPlayerFlag } from '../../../effects.js';
+import * as costs from '../../../costs/index.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
+
+const TRIGGERED = 'triggeredPlantedFields';
 
 export default class PlantedFields extends DrawCard {
     static id = 'planted-fields';
 
-    public triggeredByPlayer = new Set<string>();
-    private eventRegistrar?: EventRegistrar;
-
     public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnRoundEnded]);
-
         this.interrupt('Sacrifice Planted Fields')
             .when({
                 onPhaseEnded: (event, context) =>
-                    event.phase === Phases.Conflict &&
+                    event.phase === Phase.Conflict &&
                     !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.conditional((context) => ({
-                    target: context.player,
-                    condition: this.hasAnyCopyTriggered(context.player.name),
-                    trueGameAction: AbilityDsl.actions.gainHonor({ amount: 2 }),
-                    falseGameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.gainFate({ amount: 2 }),
-                        AbilityDsl.actions.draw({ amount: 2 })
-                    ])
-                })),
-                AbilityDsl.actions.handler({
-                    handler: (context) => this.triggeredByPlayer.add(context.player.name)
-                })
-            ]))
-            .effect('{1}', (context) =>
-                this.hasAnyCopyTriggered(context.player.name)
-                    ? 'gain 2 honor'
-                    : 'gain 2 fate and draw 2 cards');
+            .cost(costs.sacrificeSelf())
+            .if((context) => this.hasTriggered(context))
+            .gainHonor((context) => ({ target: context.player, amount: 2 }))
+            .otherwise()
+            .gainFate((context) => ({ target: context.player, amount: 2 }))
+            .draw((context) => ({ target: context.player, amount: 2 }))
+            .chatText((context) => msg`${this.hasTriggered(context) ? 'gain 2 honor' : 'gain 2 fate and draw 2 cards'}`)
+            .afterwards()
+            .playerLastingEffect({
+                target: Players.Self,
+                duration: Duration.UntilEndOfRound,
+                effect: addPlayerFlag(TRIGGERED)
+            });
     }
 
-    private hasAnyCopyTriggered(playerName: string): boolean {
-        return this.game.allCards.some(
-            (card) => card instanceof PlantedFields && card.triggeredByPlayer.has(playerName)
-        );
-    }
-
-    public onRoundEnded() {
-        this.triggeredByPlayer.clear();
+    private hasTriggered(context: AbilityContext): boolean {
+        return context.player.getEffects(EffectName.AddFlag).includes(TRIGGERED);
     }
 }

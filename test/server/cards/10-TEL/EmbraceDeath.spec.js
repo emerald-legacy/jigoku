@@ -45,7 +45,7 @@ describe('Embrace Death', function() {
                 expect(this.player1).toBeAbleToSelect(this.matsuBerserker);
                 this.player1.clickCard(this.matsuBerserker);
 
-                expect(this.getChatLogs(10)).toContain('player1 plays Embrace Death, sacrificing Matsu Berserker to discard Hida Yakamo');
+                expect(this.getChatLogs(10)).toContain('player1 plays Embrace Death, sacrificing Matsu Berserker to injure Hida Yakamo');
                 expect(this.matsuBerserker.location).toBe('dynasty discard pile');
                 expect(this.hidaYakamo.location).toBe('dynasty discard pile');
             });
@@ -70,7 +70,7 @@ describe('Embrace Death', function() {
                 expect(this.player1).toBeAbleToSelect(this.matsuBerserker);
                 this.player1.clickCard(this.matsuBerserker);
 
-                expect(this.getChatLogs(10)).toContain('player1 plays Embrace Death, sacrificing Matsu Berserker to discard Kuni Yori');
+                expect(this.getChatLogs(10)).toContain('player1 plays Embrace Death, sacrificing Matsu Berserker to injure Kuni Yori');
                 expect(this.matsuBerserker.location).toBe('dynasty discard pile');
                 expect(this.kuniYori.location).toBe('dynasty discard pile');
             });
@@ -96,7 +96,7 @@ describe('Embrace Death', function() {
                 expect(this.player1).toBeAbleToSelect(this.matsuBerserker);
                 this.player1.clickCard(this.matsuBerserker);
 
-                expect(this.getChatLogs(10)).toContain('player1 plays Embrace Death, sacrificing Matsu Berserker to remove 1 fate from Hida Yakamo');
+                expect(this.getChatLogs(10)).toContain('player1 plays Embrace Death, sacrificing Matsu Berserker to injure Hida Yakamo');
                 expect(this.matsuBerserker.location).toBe('dynasty discard pile');
                 expect(this.hidaYakamo.location).toBe('play area');
                 expect(this.hidaYakamo.fate).toBe(0);
@@ -123,7 +123,7 @@ describe('Embrace Death', function() {
                 expect(this.player1).toBeAbleToSelect(this.matsuBerserker);
                 this.player1.clickCard(this.matsuBerserker);
 
-                expect(this.getChatLogs(10)).toContain('player1 plays Embrace Death, sacrificing Matsu Berserker to remove 1 fate from Kuni Yori');
+                expect(this.getChatLogs(10)).toContain('player1 plays Embrace Death, sacrificing Matsu Berserker to injure Kuni Yori');
                 expect(this.matsuBerserker.location).toBe('dynasty discard pile');
                 expect(this.kuniYori.location).toBe('play area');
                 expect(this.kuniYori.fate).toBe(0);

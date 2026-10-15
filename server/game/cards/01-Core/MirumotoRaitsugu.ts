@@ -1,5 +1,5 @@
 import { CardType, DuelType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { conditional, discardFromPlay, duel, removeFate } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MirumotoRaitsugu extends DrawCard {
@@ -12,14 +12,14 @@ export default class MirumotoRaitsugu extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.duel({
+            }, duel({
                 type: DuelType.Military,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.conditional({
+                    conditional({
                         target: duel.loser?.[0],
                         condition: (duel.loser?.[0]?.getFate() ?? 0) > 0,
-                        trueGameAction: AbilityDsl.actions.removeFate(),
-                        falseGameAction: AbilityDsl.actions.discardFromPlay()
+                        trueGameAction: removeFate(),
+                        falseGameAction: discardFromPlay()
                     })
             }));
     }

@@ -71,7 +71,7 @@ describe('Steward of Cryptic Lore', function() {
                 attackers: [this.chronicler],
                 defenders: [this.steward]
             });
-            expect(this.steward.getPoliticalSkill()).toBe(6);
+            expect(this.steward.politicalSkill).toBe(6);
         });
 
         it('should be useable when player attacks earth', function () {

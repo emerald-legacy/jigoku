@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { EventName } from '../Constants.js';
-import type EventWindow from './EventWindow.js';
+import type { EventWindow } from './EventWindow.js';
 import type { GameEvent } from './EventPayloads.js';
 
 export class Event {
@@ -24,7 +24,7 @@ export class Event {
     private static readonly RESERVED_PARAM_KEYS = new Set(['cancelled', 'resolved', 'handler', 'window']);
 
     constructor(
-        public name: string,
+        public name: EventName,
         params: Record<string, unknown>,
         private handler?: (event: Event) => void
     ) {

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase, CardType, Location } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { draw, returnToDeck, sequential } from '../../GameActions/GameActions.js';
 
 class InspiredVisionary extends DrawCard {
     static id = 'inspired-visionary';
@@ -8,18 +9,18 @@ class InspiredVisionary extends DrawCard {
     setupCardAbilities() {
         this.reaction('Bow to discard an attachment')
             .when({
-                onPhaseStarted: event => event.phase === Phases.Fate
+                onPhaseStarted: (event) => event.phase === Phase.Fate
             })
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Attachment
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.returnToDeck((context) => ({
+            }, sequential([
+                returnToDeck((context) => ({
                     target: context.target,
                     destination: Location.ConflictDeck,
                     shuffle: true
                 })),
-                AbilityDsl.actions.draw((context) => ({
+                draw((context) => ({
                     target: context.target.owner
                 }))
             ]));

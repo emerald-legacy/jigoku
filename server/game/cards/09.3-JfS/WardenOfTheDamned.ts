@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Phases, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Phase, Players } from '../../Constants.js';
+import { sacrifice } from '../../GameActions/GameActions.js';
 
 class WardenOfTheDamned extends DrawCard {
     static id = 'warden-of-the-damned';
@@ -8,27 +8,25 @@ class WardenOfTheDamned extends DrawCard {
     setupCardAbilities() {
         this.forcedInterrupt('Each player sacrifices a dishonored character')
             .when({
-                onPhaseEnded: event => event.phase === Phases.Conflict
+                onPhaseEnded: (event) => event.phase === Phase.Conflict
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.selectCard(context => ({
-                    activePromptTitle: 'Choose a character to sacrifice',
-                    cardType: CardType.Character,
-                    controller: context.player.firstPlayer ? Players.Self : Players.Opponent,
-                    player: context.player.firstPlayer ? Players.Self : Players.Opponent,
-                    cardCondition: card => card.isDishonored,
-                    gameAction: AbilityDsl.actions.sacrifice()
-                })),
-                AbilityDsl.actions.selectCard(context => ({
-                    activePromptTitle: 'Choose a character to sacrifice',
-                    cardType: CardType.Character,
-                    controller: context.player.firstPlayer ? Players.Opponent : Players.Self,
-                    player: context.player.firstPlayer ? Players.Opponent : Players.Self,
-                    cardCondition: card => card.isDishonored,
-                    gameAction: AbilityDsl.actions.sacrifice()
-                }))
-            ]))
-            .effect('force both players to sacrifice a dishonored character');
+            .selectCard((context) => ({
+                activePromptTitle: 'Choose a character to sacrifice',
+                cardType: CardType.Character,
+                controller: context.player.firstPlayer ? Players.Self : Players.Opponent,
+                player: context.player.firstPlayer ? Players.Self : Players.Opponent,
+                cardCondition: (card) => card.isDishonored,
+                gameAction: sacrifice()
+            }))
+            .selectCard((context) => ({
+                activePromptTitle: 'Choose a character to sacrifice',
+                cardType: CardType.Character,
+                controller: context.player.firstPlayer ? Players.Opponent : Players.Self,
+                player: context.player.firstPlayer ? Players.Opponent : Players.Self,
+                cardCondition: (card) => card.isDishonored,
+                gameAction: sacrifice()
+            }))
+            .chatText('force both players to sacrifice a dishonored character');
     }
 }
 

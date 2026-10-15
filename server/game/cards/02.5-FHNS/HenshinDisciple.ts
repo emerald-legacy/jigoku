@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 import { Element } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { hasClaimedRing } from '../claimedRings.js';
@@ -16,15 +16,15 @@ class HenshinDisciple extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => this.hasClaimedOrIsContesting(elementKeys.air, context.player),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(2)
+            effect: modifyPoliticalSkill(2)
         });
         this.persistentEffect({
             condition: (context) => this.hasClaimedOrIsContesting(elementKeys.earth, context.player),
-            effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            effect: modifyMilitarySkill(2)
         });
         this.persistentEffect({
             condition: (context) => this.hasClaimedOrIsContesting(elementKeys.fire, context.player),
-            effect: AbilityDsl.effects.addKeyword('pride')
+            effect: addKeyword('pride')
         });
     }
 

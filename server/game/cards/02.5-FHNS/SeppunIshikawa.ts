@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 
@@ -7,7 +7,7 @@ class SeppunIshikawa extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills((card) => this.getImperialCardsInPlay(card))
+            effect: modifyBothSkills((card) => this.getImperialCardsInPlay(card))
         });
     }
 

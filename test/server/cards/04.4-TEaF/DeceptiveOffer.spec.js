@@ -54,8 +54,8 @@ describe('Deceptive Offer', function() {
                 this.player1.clickCard(this.bayushiManipulator);
                 this.player2.clickPrompt('Allow your opponent\'s character to gain military and political skill');
 
-                expect(this.bayushiManipulator.getMilitarySkill()).toBe(3);
-                expect(this.bayushiManipulator.getPoliticalSkill()).toBe(3);
+                expect(this.bayushiManipulator.militarySkill).toBe(3);
+                expect(this.bayushiManipulator.politicalSkill).toBe(3);
             });
 
             it('should cause the opponent to lose 1 honor and the player to gain 1 honor', function() {

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 
 class DisplayOfLoyalty extends DrawCard {
     static id = 'display-of-loyalty';
@@ -14,7 +14,7 @@ class DisplayOfLoyalty extends DrawCard {
                     const charactersInPlay = context.game.findAnyCardsInPlay((c) => c.type === CardType.Character);
                     return card.getFate() === Math.max(...charactersInPlay.map((c) => c.getFate()));
                 }
-            }, AbilityDsl.actions.dishonor());
+            }, dishonor());
     }
 }
 

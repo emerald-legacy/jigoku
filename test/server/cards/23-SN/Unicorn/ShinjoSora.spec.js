@@ -57,9 +57,9 @@ describe('Shinjo Sora', function () {
                 this.player2.clickCard(this.scorp);
                 this.player2.clickCard(hound);
 
-                expect(hound.getMilitarySkill()).toBe(1);
-                expect(hound.getPoliticalSkill()).toBe(0);
-                expect(hound.getGlory()).toBe(0);
+                expect(hound.militarySkill).toBe(1);
+                expect(hound.politicalSkill).toBe(0);
+                expect(hound.glory).toBe(0);
                 expect(hound.getCost()).toBe(null);
 
                 expect(this.kisada.location).toBe('removed from game');
@@ -150,8 +150,8 @@ describe('Shinjo Sora', function () {
                 });
 
                 // Sora and the Infantry itself.
-                expect(this.infantry.getMilitarySkill()).toBe(2);
-                expect(this.infantry.getPoliticalSkill()).toBe(2);
+                expect(this.infantry.militarySkill).toBe(2);
+                expect(this.infantry.politicalSkill).toBe(2);
 
                 this.player2.clickCard(this.sora);
                 expect(this.getChatLogs(10)).toContain('player2 uses Shinjo Sora to release the hounds');
@@ -164,8 +164,8 @@ describe('Shinjo Sora', function () {
                 });
 
                 // Sora, the Infantry, and four hounds.
-                expect(this.infantry.getMilitarySkill()).toBe(6);
-                expect(this.infantry.getPoliticalSkill()).toBe(6);
+                expect(this.infantry.militarySkill).toBe(6);
+                expect(this.infantry.politicalSkill).toBe(6);
             });
 
             it('drops back down when the hounds leave play', function () {
@@ -177,11 +177,11 @@ describe('Shinjo Sora', function () {
                     defenders: [this.sora, this.infantry]
                 });
                 this.player2.clickCard(this.sora);
-                expect(this.infantry.getMilitarySkill()).toBe(6);
+                expect(this.infantry.militarySkill).toBe(6);
 
                 this.noMoreActions();
                 expect(this.game.currentConflict).toBeFalsy();
-                expect(this.infantry.getMilitarySkill()).toBe(0);
+                expect(this.infantry.militarySkill).toBe(0);
             });
 
             it('does not count hounds that were never created', function () {
@@ -194,8 +194,8 @@ describe('Shinjo Sora', function () {
                 });
                 this.player2.clickCard(this.sora);
 
-                expect(this.infantry.getMilitarySkill()).toBe(2);
-                expect(this.infantry.getPoliticalSkill()).toBe(2);
+                expect(this.infantry.militarySkill).toBe(2);
+                expect(this.infantry.politicalSkill).toBe(2);
             });
         });
     });

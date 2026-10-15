@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceCost } from '../../../effects.js';
+import { chosenDiscard, lookAt } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DaidojiOta extends DrawCard {
@@ -10,9 +12,9 @@ export default class DaidojiOta extends DrawCard {
             targetController: Players.Opponent,
             condition: (context) =>
                 context.player.cardsInPlay.some(
-                    (card) => card.getType() === CardType.Character && card.isParticipating()
+                    (card) => card.type === CardType.Character && card.isParticipating()
                 ),
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: (card, player) => {
                     const dynastyMatchesByName = player.dynastyDiscardPile.filter((a) => a.name === card.name);
                     const conflictMatchesByName = player.conflictDiscardPile.filter((a) => a.name === card.name);
@@ -25,24 +27,24 @@ export default class DaidojiOta extends DrawCard {
             })
         });
 
-        this.action('Have opponent discard a card or show you their hand')
-            .condition((context) => context.source.isParticipating())
+        this.conflictAction('Have opponent discard a card or show you their hand')
             .select({
                 player: Players.Opponent
             }, {
-                'Discard an event': AbilityDsl.actions.chosenDiscard({
-                    cardCondition: (card) => card.type === CardType.Event
-                }),
-                'Reveal your hand': AbilityDsl.actions.lookAt((context) => ({
-                    target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
-                    chatMessage: true,
-                    message: '{0} reveals their hand: {1}',
-                    messageArgs: (cards) => [context.player.opponent, cards]
-                }))
-            })
-            .effect('make {1}{2}', (context) =>
-                context.select === 'Discard an event'
-                    ? [context.player.opponent, ' discard an event']
-                    : [context.player.opponent, ' reveal their hand']);
+                'Discard an event': {
+                    action: chosenDiscard({
+                        cardCondition: (card) => card.type === CardType.Event
+                    }),
+                    chatText: (context) => msg`make ${context.player.opponent} discard an event`
+                },
+                'Reveal your hand': {
+                    action: lookAt((context) => ({
+                        target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
+                        chatMessage: true,
+                        message: (context, cards) => msg`${context.player.opponent} reveals their hand: ${cards}`
+                    })),
+                    chatText: (context) => msg`make ${context.player.opponent} reveal their hand`
+                }
+            });
     }
 }

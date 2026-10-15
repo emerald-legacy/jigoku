@@ -1,5 +1,4 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
 
 export default class FallowLands extends ProvinceCard {
     static id = 'fallow-lands';
@@ -9,17 +8,15 @@ export default class FallowLands extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.draw(context => ({
-                    target: context.player
-                })),
-                AbilityDsl.actions.gainFate(context => ({
-                    target: context.player
-                })),
-                AbilityDsl.actions.gainHonor(context => ({
-                    target: context.player
-                }))
-            ]))
-            .effect('draw 1 card, gain 1 fate, and gain 1 honor');
+            .draw((context) => ({
+                target: context.player
+            }))
+            .gainFate((context) => ({
+                target: context.player
+            }))
+            .gainHonor((context) => ({
+                target: context.player
+            }))
+            .chatText('draw 1 card, gain 1 fate, and gain 1 honor');
     }
 }

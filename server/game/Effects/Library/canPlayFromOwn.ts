@@ -1,5 +1,5 @@
 import type BaseCard from '../../BaseCard.js';
-import { CardType, EffectName, Location, PlayType } from '../../Constants.js';
+import { CardType, EffectName, type Location, PlayType } from '../../Constants.js';
 import type DrawCard from '../../DrawCard.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 

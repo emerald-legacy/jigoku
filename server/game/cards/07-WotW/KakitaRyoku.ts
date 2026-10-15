@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Phases, Players } from '../../Constants.js';
+import { CardType, Phase, Players } from '../../Constants.js';
 
 class KakitaRyoku extends DrawCard {
     static id = 'kakita-ryoku';
@@ -8,12 +8,12 @@ class KakitaRyoku extends DrawCard {
     setupCardAbilities() {
         this.reaction('Honor a character if you have the Imperial Favor')
             .when({
-                onPhaseStarted: (event, context) => event.phase !== Phases.Setup && context.player.imperialFavor !== ''
+                onPhaseStarted: (event, context) => event.phase !== Phase.Setup && context.player.imperialFavor !== ''
             })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

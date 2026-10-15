@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrengthBonus } from '../../effects.js';
 import { CardType, Location } from '../../Constants.js';
 
 class NorthernCurtainWall extends DrawCard {
@@ -15,7 +15,7 @@ class NorthernCurtainWall extends DrawCard {
                 }
                 return false;
             },
-            effect: AbilityDsl.effects.modifyProvinceStrengthBonus(2)
+            effect: modifyProvinceStrengthBonus(2)
         });
     }
 }

@@ -1,58 +1,60 @@
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
+import type Player from '../Player.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, Duration, EventName, Location, type DuelType } from '../Constants.js';
+import { CardType, Duration, EventName, Location, type DuelType, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { Duel } from '../Duel.js';
+import { Duel, type ResolvedDuel } from '../Duel.js';
 import type { Event } from '../Events/Event.js';
 import { DuelFlow } from '../gamesteps/DuelFlow.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { targetList, type GameAction, type ActionEvent } from './GameAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
+import { CardLastingEffectAction } from './CardLastingEffectAction.js';
 
-function toArray(args: MsgArg | MsgArg[]): MsgArg[] {
-    return Array.isArray(args) ? args : [args];
-}
-
-export interface DuelProperties extends CardActionProperties {
+export interface DuelProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
     type: DuelType;
     challenger?: DrawCard;
-    challengerCondition?: (card: DrawCard, context: AbilityContext) => boolean;
+    challengerCondition?(card: DrawCard, context: C): boolean;
     requiresConflict?: boolean;
-    gameAction: GameAction | ((duel: Duel, context: AbilityContext) => GameAction);
-    message?: string;
-    messageArgs?: (duel: Duel, context: AbilityContext) => MsgArg | MsgArg[];
-    costHandler?: (context: AbilityContext, prompt: unknown) => void;
+    /** Resolved only when the duel has a winner. */
+    gameAction: GameAction | ((duel: ResolvedDuel, context: AbilityContext) => GameAction);
+    onTie?: GameAction | ((duel: Duel, context: AbilityContext) => GameAction);
+    /** What the chat says the duel does, after "Duel Effect: "; by default its game action's own text. */
+    chatText?(context: C, duel: ResolvedDuel): MessageArgs;
+    costHandler?(context: C, prompt: unknown): void;
     statistic?: (card: DrawCard, duelRules: 'currentSkill' | 'printedSkill' | 'skirmish') => number;
     challengerEffect?: EffectFactory | EffectFactory[];
     targetEffect?: EffectFactory | EffectFactory[];
     refuseGameAction?: GameAction;
-    refusalMessage?: string;
-    refusalMessageArgs?: (context: AbilityContext) => MsgArg | MsgArg[];
+    /** The chat line when the opponent refuses; by default "<refuser> chooses to refuse the duel and <refuseGameAction's text>". */
+    refusalMessage?(context: C, refuser: Player): MessageArgs;
 }
 
 export class DuelAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DuelProperties, EventName.OnDuelInitiated, C> {
     name = 'duel';
+    restriction = RestrictionType.Duel;
     eventName = EventName.OnDuelInitiated;
     targetType = [CardType.Character];
 
-    getProperties(context: C, additionalProperties = {}) {
+    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { challenger: properties.challenger ?? context.source });
     }
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         const targets = targetList(properties.target);
         const indices = targets.map((_, idx) => `{${idx + 1}}`);
         return ['initiate a ' + properties.type.toString() + ' duel : {0} vs. ' + indices.join(' and '), targets];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
-        return this.getProperties(context).challenger;
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        return this.getProperties(context, additionalProperties).challenger;
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         if(!context.player.opponent) {
             return false;
         }
@@ -67,7 +69,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         if(card === properties.challenger) {
             return false; //cannot duel yourself
         }
-        if(!card.checkRestrictions('duel', context)) {
+        if(!card.checkRestrictions(RestrictionType.Duel, context)) {
             return false;
         }
 
@@ -78,14 +80,14 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         );
     }
 
-    resolveDuel(duel: Duel, context: C, additionalProperties = {}): void {
-        const properties = this.getProperties(context, additionalProperties);
-        const gameAction =
-            typeof properties.gameAction === 'function' ? properties.gameAction(duel, context) : properties.gameAction;
-        const isNoAction = !!gameAction.isNoAction;
-        if(!isNoAction && gameAction.hasLegalTarget(context)) {
-            const [message, messageArgs]: MessageArgs = properties.message
-                ? [properties.message, properties.messageArgs ? toArray(properties.messageArgs(duel, context)) : []]
+    resolveDuel(duel: Duel, context: C, additionalProperties: ActionOverrides = {}): void {
+        const { gameAction: onWin, onTie, chatText } = this.getProperties(context, additionalProperties);
+        const gameAction = duel.hasWinner()
+            ? (typeof onWin === 'function' ? onWin(duel, context) : onWin)
+            : (typeof onTie === 'function' ? onTie(duel, context) : onTie);
+        if(gameAction && !gameAction.isNoAction && gameAction.hasLegalTarget(context)) {
+            const [message, messageArgs]: MessageArgs = chatText && duel.hasWinner()
+                ? chatText(context, duel)
                 : gameAction.getEffectMessage(context);
             context.game.addMessage('Duel Effect: ' + message, ...messageArgs);
             gameAction.resolve(undefined, context);
@@ -94,20 +96,20 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         }
     }
 
-    honorCosts(prompt: unknown, context: C, additionalProperties = {}): void {
+    honorCosts(prompt: unknown, context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.costHandler) {
             properties.costHandler(context, prompt);
         }
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
-        const { target, refuseGameAction, refusalMessage, refusalMessageArgs } = this.getProperties(
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+        const { target, refuseGameAction, refusalMessage } = this.getProperties(
             context,
             additionalProperties
         );
         const addDuelEventsHandler = () => {
-            const cards = targetList(target).filter((card) => card.isDrawCard() && this.canAffect(card, context));
+            const cards = targetList(target).filter((card) => card.isDrawCard() && this.canAffect(card, context, additionalProperties));
             if(cards.length === 0) {
                 return;
             }
@@ -125,14 +127,9 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
                         text: 'Yes',
                         handler: () => {
                             if(refusalMessage) {
-                                const refusalArgs = refusalMessageArgs ? toArray(refusalMessageArgs(context)) : [];
-                                context.game.addMessage(refusalMessage, ...refusalArgs);
+                                context.game.addMessage(refusalMessage(context, opponent));
                             } else {
-                                context.game.addMessage(
-                                    '{0} chooses to refuse the duel and {1}',
-                                    context.player.opponent,
-                                    context.game.gameChat.nested(refuseGameAction.getEffectMessage(context))
-                                );
+                                context.game.addMessage(msg`${opponent} chooses to refuse the duel and ${context.game.gameChat.nested(refuseGameAction.getEffectMessage(context))}`);
                             }
                             refuseGameAction.addEventsToArray(events, context, additionalProperties);
                         }
@@ -145,7 +142,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         }
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnDuelInitiated, C>, cards: BaseCard | BaseCard[] | null | undefined, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnDuelInitiated, C>, cards: BaseCard | BaseCard[] | null | undefined, context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const resolvedCards = targetList(cards || properties.target).filter((card) => card.isDrawCard());
 
@@ -167,7 +164,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         event.duel = duel;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const cards = event.cards;
         const properties = this.getProperties(context, additionalProperties);
@@ -182,25 +179,23 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         }
         const duel = event.duel;
         if(properties.challengerEffect) {
-            context.game.actions
-                .cardLastingEffect({
-                    effect: properties.challengerEffect,
-                    duration: Duration.Custom,
-                    until: {
-                        onDuelFinished: (event) => event.duel === duel
-                    }
-                })
+            new CardLastingEffectAction({
+                effect: properties.challengerEffect,
+                duration: Duration.Custom,
+                until: {
+                    onDuelFinished: (event) => event.duel === duel
+                }
+            })
                 .resolve(properties.challenger, context);
         }
         if(properties.targetEffect) {
-            context.game.actions
-                .cardLastingEffect({
-                    effect: properties.targetEffect,
-                    duration: Duration.Custom,
-                    until: {
-                        onDuelFinished: (event) => event.duel === duel
-                    }
-                })
+            new CardLastingEffectAction({
+                effect: properties.targetEffect,
+                duration: Duration.Custom,
+                until: {
+                    onDuelFinished: (event) => event.duel === duel
+                }
+            })
                 .resolve(properties.target, context);
         }
         context.game.queueStep(
@@ -215,12 +210,16 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
         );
     }
 
-    checkEventCondition(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: Record<string, unknown> = {}): boolean {
+    checkEventCondition(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: ActionOverrides = {}): boolean {
         return event.cards.some((card) => this.canAffect(card, event.context, additionalProperties));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
+        if(typeof properties.gameAction !== 'function') {
+            return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
+        }
+        // As if the challenger won: the result isn't known yet.
         const mockDuel = new Duel(
             context.game,
             properties.challenger,
@@ -230,10 +229,8 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
             properties.statistic,
             context.player
         );
-        const gameAction =
-            typeof properties.gameAction === 'function'
-                ? properties.gameAction(mockDuel, context)
-                : properties.gameAction;
-        return gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
+        mockDuel.winner = [properties.challenger];
+        mockDuel.winningPlayer = context.player;
+        return mockDuel.hasWinner() && properties.gameAction(mockDuel, context).hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
     }
 }

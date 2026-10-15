@@ -1,5 +1,4 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 export default class RallyToTheCause extends ProvinceCard {
     static id = 'rally-to-the-cause';
@@ -9,7 +8,7 @@ export default class RallyToTheCause extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source && this.game.isDuringConflict()
             })
-            .gameAction(AbilityDsl.actions.switchConflictType())
-            .effect('switch the conflict type');
+            .switchConflictType()
+            .chatText('switch the conflict type');
     }
 }

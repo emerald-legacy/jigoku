@@ -1,6 +1,7 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 export default class AbandoningHonor extends ProvinceCard {
     static id = 'abandoning-honor';
@@ -8,7 +9,7 @@ export default class AbandoningHonor extends ProvinceCard {
     public setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !!context.player.role && context.player.role.hasTrait('fire'),
-            effect: AbilityDsl.effects.modifyProvinceStrength(2)
+            effect: modifyProvinceStrength(2)
         });
 
         this.interrupt('Choose a dishonored character')
@@ -19,6 +20,6 @@ export default class AbandoningHonor extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDishonored
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }

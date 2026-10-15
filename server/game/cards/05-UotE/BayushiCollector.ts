@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay, discardStatusToken } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, CharacterStatus } from '../../Constants.js';
 
@@ -10,7 +10,7 @@ class BayushiCollector extends DrawCard {
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card) => Boolean(card.parentCharacter?.isDishonored)
-            }, AbilityDsl.actions.discardFromPlay(), AbilityDsl.actions.discardStatusToken((context) => ({
+            }, discardFromPlay(), discardStatusToken((context) => ({
                 target: context.target.parentCharacter?.getStatusToken(CharacterStatus.Dishonored)
             })));
     }

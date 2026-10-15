@@ -1,5 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { attach, removeFate, sequential } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class InvocationOfAsh extends DrawCard {
@@ -7,15 +9,15 @@ class InvocationOfAsh extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move to another character')
-            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(costs.payHonor(1))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.attach((context) => ({ attachment: context.source })),
-                AbilityDsl.actions.removeFate()
+            }, sequential([
+                attach((context) => ({ attachment: context.source })),
+                removeFate()
             ]))
-            .effect('move {1} to {0}, then remove a fate from {0}', context => context.source);
+            .chatText((context) => msg`move ${context.source} to ${context.chatTarget()}, then remove a fate from ${context.chatTarget()}`);
     }
 }
 

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, CardType, Location } from '../../Constants.js';
+import { gainAbility } from '../../effects.js';
+import { moveCard } from '../../GameActions/GameActions.js';
+import { CardType, Location } from '../../Constants.js';
 
 class TacticalIngenuity extends DrawCard {
     static id = 'tactical-ingenuity';
@@ -10,18 +11,16 @@ class TacticalIngenuity extends DrawCard {
             trait: 'commander'
         });
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Reveal and draw an event',
-                condition: (context) => context.source.isParticipating(),
-                effect: 'look at the top four cards of their deck',
-                gameAction: AbilityDsl.actions.deckSearch({
-                    amount: 4,
+            effect: gainAbility.action('Reveal and draw an event', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .deckSearch({
+                    cardsToLookAt: 4,
                     cardCondition: (card) => card.type === CardType.Event,
-                    gameAction: AbilityDsl.actions.moveCard({
+                    gameAction: moveCard({
                         destination: Location.Hand
                     })
                 })
-            })
+                .chatText('look at the top four cards of their deck'))
         });
     }
 }

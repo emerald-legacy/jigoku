@@ -188,3 +188,35 @@ describe('Bamboo Tattoo', function () {
         });
     });
 });
+
+describe('Bamboo Tattoo on a character that can\'t be readied', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-kuwanan']
+                },
+                player2: {
+                    inPlay: [{ card: 'impulsive-novice', attachments: ['bamboo-tattoo', 'stinger'] }]
+                }
+            });
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.novice = this.player2.findCardByName('impulsive-novice');
+            this.bamboo = this.player2.findCardByName('bamboo-tattoo');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kuwanan],
+                defenders: [this.novice]
+            });
+        });
+
+        it('should not prompt when the opponent bows it', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.kuwanan);
+            this.player1.clickCard(this.novice);
+            expect(this.novice.bowed).toBe(true);
+            expect(this.player2).not.toBeAbleToSelect(this.bamboo);
+        });
+    });
+});

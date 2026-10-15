@@ -1,5 +1,4 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import AbilityDsl from '../abilitydsl.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -14,9 +13,9 @@ export function moveHoldingAction(holding: DrawCard) {
             cardCondition: (card, context) =>
                 card.location !== context.source.location && card.location !== Location.StrongholdProvince
         })
-        .gameAction(AbilityDsl.actions.moveCard((context) => ({
+        .moveCard((context) => ({
             destination: context.target.location
-        })));
+        }));
 }
 
 export function otherHoldingsInSameProvince(context: AbilityContext): BaseCard[] {

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility, increaseLimitOnAbilities } from '../../effects.js';
 import { CardType, AbilityType } from '../../Constants.js';
 
 class TogashiKazue2 extends DrawCard {
@@ -8,10 +8,10 @@ class TogashiKazue2 extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => !!context && card.controller === context.player && card.type === CardType.Character,
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
+            effect: gainAbility(AbilityType.Persistent, {
                 createCopies: true,
                 condition: (context) => context.source.isDire(),
-                effect: AbilityDsl.effects.increaseLimitOnAbilities()
+                effect: increaseLimitOnAbilities()
             })
         });
     }

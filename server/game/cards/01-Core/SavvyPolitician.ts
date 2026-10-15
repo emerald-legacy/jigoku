@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class SavvyPolitician extends DrawCard {
     static id = 'savvy-politician';
@@ -12,7 +12,7 @@ class SavvyPolitician extends DrawCard {
             })
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

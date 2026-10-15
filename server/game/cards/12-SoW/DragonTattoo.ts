@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { addTrait } from '../../effects.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, Location, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -12,7 +13,7 @@ export default class DragonTattoo extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({ myControl: true });
 
-        this.whileAttached({ effect: AbilityDsl.effects.addTrait('tattooed') });
+        this.whileAttached({ effect: addTrait('tattooed') });
 
         this.reaction('Play card again')
             .when({
@@ -25,38 +26,30 @@ export default class DragonTattoo extends DrawCard {
                     (event.context?.triggeringContext.chosenCardTargets ?? []).some((card) =>
                         this.isValidTargetForTattoo(card, context))
             })
-            .gameAction(AbilityDsl.actions.ifAble((context) => {
-                const card = context.event.card;
+            .ifAble()
+            .playCard((context) => {
+                this.cardPlayed = true;
                 const played = context.event.context;
-                const respondingTo = played instanceof TriggeredAbilityContext ? played.event : undefined;
                 return {
-                    ifAbleAction: AbilityDsl.actions.playCard(() => {
-                        this.cardPlayed = true;
-                        return {
-                            source: this,
-                            target: card,
-                            resetOnCancel: true,
-                            playType: PlayType.Other,
-                            destination: Location.RemovedFromGame,
-                            payCosts: true,
-                            allowReactions: true,
-                            event: respondingTo
-                        };
-                    }),
-                    otherwiseAction: AbilityDsl.actions.moveCard(() => {
-                        this.cardPlayed = false;
-                        return {
-                            target: card,
-                            destination: Location.RemovedFromGame
-                        };
-                    })
+                    source: this,
+                    target: context.event.card,
+                    resetOnCancel: true,
+                    playType: PlayType.Other,
+                    destination: Location.RemovedFromGame,
+                    payCosts: true,
+                    allowReactions: true,
+                    event: played instanceof TriggeredAbilityContext ? played.event : undefined
                 };
-            }))
-            .effect('{1}{2}{3}', (context) => [
-                this.cardPlayed ? 'play ' : 'remove ',
-                context.event.card.name,
-                this.cardPlayed ? '' : ' from the game'
-            ]);
+            })
+            .otherwise()
+            .moveCard((context) => {
+                this.cardPlayed = false;
+                return {
+                    target: context.event.card,
+                    destination: Location.RemovedFromGame
+                };
+            })
+            .chatText((context) => msg`${this.cardPlayed ? 'play ' : 'remove '}${context.event.card.name}${this.cardPlayed ? '' : ' from the game'}`);
     }
 
     private isValidTargetForTattoo(card: BaseCard, context: TriggeredAbilityContext) {

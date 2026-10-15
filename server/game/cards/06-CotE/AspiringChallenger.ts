@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyGlory } from '../../effects.js';
+import { honor } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 
 class AspiringChallenger extends DrawCard {
@@ -7,12 +8,12 @@ class AspiringChallenger extends DrawCard {
 
     setupCardAbilities() {
         this.composure({
-            effect: AbilityDsl.effects.modifyGlory(2)
+            effect: modifyGlory(2)
         });
         this.action('Initiate a Military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                gameAction: duel => AbilityDsl.actions.honor({
+                gameAction: (duel) => honor({
                     target: duel.winner
                 })
             }));

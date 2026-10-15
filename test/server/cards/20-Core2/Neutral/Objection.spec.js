@@ -85,3 +85,27 @@ describe('Objection', function () {
         });
     });
 });
+
+describe('Objection own events', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['objection-', 'way-of-the-crane']
+                }
+            });
+            this.player1.player.imperialFavor = 'military';
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.player1.player.optionSettings.cancelOwnAbilities = true;
+        });
+
+        it('cannot cancel your own events', function () {
+            this.player1.clickCard('way-of-the-crane');
+            this.player1.clickCard(this.whisperer);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.whisperer.isHonored).toBe(true);
+        });
+    });
+});

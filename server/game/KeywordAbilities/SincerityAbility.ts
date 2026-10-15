@@ -1,10 +1,12 @@
-import { AbilityType, EventName } from '../Constants.js';
+import { msg } from '../GameChat.js';
+import { AbilityType, type EventName } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
-import TriggeredAbility from '../TriggeredAbility.js';
+import { TriggeredAbility } from '../TriggeredAbility.js';
 
 import type { EventPayload } from '../Events/EventPayloads.js';
-export default class SincerityAbility extends TriggeredAbility<DrawCard> {
+import { draw } from '../GameActions/GameActions.js';
+export class SincerityAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordInterrupt, {
             when: {
@@ -13,9 +15,8 @@ export default class SincerityAbility extends TriggeredAbility<DrawCard> {
             },
             title: card.name + '\'s Sincerity',
             printedAbility: false,
-            message: '{0} draws a card due to {1}\'s Sincerity',
-            messageArgs: (context: TriggeredAbilityContext) => [context.player, context.source],
-            handler: (context: TriggeredAbilityContext) => context.game.applyGameAction(context, { draw: context.player })
+            message: (context: TriggeredAbilityContext) => msg`${context.player} draws a card due to ${context.source}'s Sincerity`,
+            handler: (context: TriggeredAbilityContext) => context.game.resolveActions([draw({ target: context.player })], context)
         });
     }
 

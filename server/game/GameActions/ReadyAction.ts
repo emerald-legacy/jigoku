@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 
@@ -8,6 +8,7 @@ export type ReadyProperties = CardActionProperties;
 
 export class ReadyAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ReadyProperties, EventName.OnCardReadied, C> {
     name = 'ready';
+    restriction = RestrictionType.Ready;
     eventName = EventName.OnCardReadied;
     cost = 'readying {0}';
     effect = 'ready {0}';

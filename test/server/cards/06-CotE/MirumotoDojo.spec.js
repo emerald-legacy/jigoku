@@ -82,6 +82,7 @@ describe('Mirumoto Dojo', function() {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.brashSamurai.fate).toBe(brashSamuraiFate - 1);
                 expect(this.player1.player.fate).toBe(player1Fate + 1);
+                expect(this.getChatLogs(10)).toContain('Duel Effect: move 1 fate from Brash Samurai to player1\'s pool');
             });
 
             it('should discard 1 fate instead if the winner is a \'duelist\'', function() {
@@ -104,6 +105,7 @@ describe('Mirumoto Dojo', function() {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.dojiChallenger.fate).toBe(dojiChallengerFate - 1);
                 expect(this.player1.player.fate).toBe(player1Fate);
+                expect(this.getChatLogs(10)).toContain('Duel Effect: discard 1 fate from Doji Challenger');
             });
 
             it('tie', function() {
@@ -122,7 +124,7 @@ describe('Mirumoto Dojo', function() {
                 this.player2.clickPrompt('1');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.getChatLogs(10)).toContain('The duel ends in a draw');
-                expect(this.getChatLogs(10)).toContain('Duel Effect: no effect');
+                expect(this.getChatLogs(10)).toContain('The duel has no effect');
             });
         });
     });

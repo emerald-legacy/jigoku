@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { CharacterStatus } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardStatusToken } from '../../GameActions/GameActions.js';
 
 export default class PledgeOfLoyalty extends ProvinceCard {
     static id = 'pledge-of-loyalty';
@@ -10,11 +11,11 @@ export default class PledgeOfLoyalty extends ProvinceCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.isHonored
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
-                replacementGameAction: AbilityDsl.actions.discardStatusToken({
+            .cancel((context) => ({
+                replacementGameAction: discardStatusToken({
                     target: context.event?.card.getStatusToken(CharacterStatus.Honored)
                 })
-            })))
-            .effect('prevent {1} from leaving play', (context) => context.event?.card ?? '');
+            }))
+            .chatText((context) => msg`prevent ${context.event?.card ?? ''} from leaving play`);
     }
 }

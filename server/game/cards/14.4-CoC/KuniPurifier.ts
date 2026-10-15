@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class KuniPurifier extends DrawCard {
     static id = 'kuni-purifier';
@@ -9,7 +8,7 @@ class KuniPurifier extends DrawCard {
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player.opponent
             })
-            .gameAction(AbilityDsl.actions.discardAtRandom());
+            .discardAtRandom();
     }
 }
 

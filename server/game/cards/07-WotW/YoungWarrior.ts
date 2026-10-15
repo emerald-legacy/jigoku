@@ -1,15 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { mustBeDeclaredAsAttacker, mustBeDeclaredAsDefender } from '../../effects.js';
 
 class YoungWarrior extends DrawCard {
     static id = 'young-warrior';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.game.conflictRecord.filter(record => record.completed).length === 0,
+            condition: (context) => context.game.conflictRecord.filter((record) => record.completed).length === 0,
             effect: [
-                AbilityDsl.effects.mustBeDeclaredAsAttacker(),
-                AbilityDsl.effects.mustBeDeclaredAsDefender()
+                mustBeDeclaredAsAttacker(),
+                mustBeDeclaredAsDefender()
             ]
         });
     }

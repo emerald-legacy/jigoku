@@ -1,8 +1,10 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType, Element } from '../../Constants.js';
 import { countTargetable } from '../countTargetable.js';
+import { msg } from '../../GameChat.js';
 
 const elementKey = 'isawa-tsuke-2-fire';
 
@@ -11,30 +13,30 @@ class IsawaTsuke2 extends DrawCard {
 
     setupCardAbilities() {
         this.action('Lose honor to discard fate')
-            .cost(AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)))
             .condition((context) =>
                 context.game.isDuringConflict() &&
                 context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed())
+            .cost(costs.payVariableHonor((context) => this.getNumberOfLegalTargets(context)))
             .targetCards({
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => {
-                    if(context.costs.variableHonorCost) {
-                        return context.costs.variableHonorCost;
+                    if(context.costs.honorPaid) {
+                        return context.costs.honorPaid;
                     }
 
                     return this.getNumberOfLegalTargets(context);
                 },
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.removeFate((context) => {
+            }, removeFate((context) => {
                 return { target: Object.values(context.targets).flat() };
             }))
-            .effect('lose {1} honor to discard a fate from {2}', (context) => [context.costs.variableHonorCost, context.targets.target])
+            .chatText((context) => msg`lose ${context.costs.honorPaid} honor to discard a fate from ${context.targets.target}`)
             .cannotTargetFirst();
     }
 
     private getNumberOfLegalTargets(context: AbilityContext) {
-        return countTargetable(context.game.requireConflict().getParticipants((card) => card.allowGameAction('removeFate')), context);
+        return countTargetable(context.game.requireConflict().getParticipants((card) => removeFate().canAffect(card, context)), context);
     }
 
     getPrintedElementSymbols() {

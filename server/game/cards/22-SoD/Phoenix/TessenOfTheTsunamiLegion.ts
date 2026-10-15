@@ -1,5 +1,9 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, AbilityType, Players } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { addTrait, gainAbility, modifyMilitarySkill } from '../../../effects.js';
+import {
+    cardLastingEffect
+} from '../../../GameActions/GameActions.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 
@@ -13,31 +17,21 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
 
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.addTrait('water'),
-                AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                    title: 'Give a character +2 and move them',
-                    condition: (context) => context.game.isDuringConflict(),
-                    printedAbility: false,
-                    target: {
+                addTrait('water'),
+                gainAbility.action('Give a character +2 and move them', (ability) => ability
+                    .condition((context) => context.game.isDuringConflict())
+                    .target({
                         cardType: CardType.Character,
                         controller: Players.Self,
-                        cardCondition: (card) => card.hasTrait('bushi'),
-                        gameAction: AbilityDsl.actions.multiple([
-                            AbilityDsl.actions.cardLastingEffect({
-                                effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                            }),
-                            AbilityDsl.actions.conditional({
-                                condition: context => context.source.isDrawCard() && context.source.isParticipating(),
-                                trueGameAction: AbilityDsl.actions.moveToConflict(),
-                                falseGameAction: AbilityDsl.actions.sendHome()
-                            })
-                        ])
-                    },
-                    effect: 'give {0} +2{1}{2}',
-                    effectArgs: (context) => ['military',
-                        context.source.isParticipating() === (!!context.target?.isDrawCard() && context.target.isParticipating()) ? '' :
-                            context.source.isParticipating() ? ' and move it to the conflict' : ' and move it home']
-                })
+                        cardCondition: (card) => card.hasTrait('bushi')
+                    }, cardLastingEffect({
+                        effect: modifyMilitarySkill(2)
+                    }))
+                    .if((context) => context.source.isDrawCard() && context.source.isParticipating())
+                    .moveToConflict()
+                    .otherwise()
+                    .sendHome()
+                    .chatText((context) => msg`give ${context.chatTarget()} +2${'military'}${context.source.isParticipating() === (!!context.target?.isDrawCard() && context.target.isParticipating()) ? '' : context.source.isParticipating() ? ' and move it to the conflict' : ' and move it home'}`))
             ]
         });
     }

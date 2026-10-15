@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class StrategicWeakpoint extends DrawCard {
     static id = 'strategic-weakpoint';
@@ -15,8 +15,8 @@ class StrategicWeakpoint extends DrawCard {
                 activePromptTitle: 'Choose a character to discard',
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking()
-            }, AbilityDsl.actions.discardFromPlay());
+                cardCondition: (card) => card.isAttacking()
+            }, discardFromPlay());
     }
 }
 

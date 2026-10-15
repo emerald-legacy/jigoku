@@ -1,4 +1,8 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { cannotBeDeclaredAsAttacker, cannotBeDeclaredAsDefender } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,7 +11,7 @@ export default class InLadyDojisService extends DrawCard {
 
     setupCardAbilities() {
         this.action('Pacify a character')
-            .cost(AbilityDsl.costs.bow({ cardType: CardType.Character }))
+            .cost(costs.bow({ cardType: CardType.Character }))
             .target({
                 name: 'character',
                 cardType: CardType.Character,
@@ -17,21 +21,18 @@ export default class InLadyDojisService extends DrawCard {
                 name: 'select',
                 dependsOn: 'character'
             }, {
-                'Prevent Attacking': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Prevent Attacking': cardLastingEffect((context) => ({
                     target: context.targets.character,
                     duration: Duration.UntilEndOfPhase,
-                    effect: [AbilityDsl.effects.cannotBeDeclaredAsAttacker()]
+                    effect: [cannotBeDeclaredAsAttacker()]
                 })),
-                'Prevent Defending': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Prevent Defending': cardLastingEffect((context) => ({
                     target: context.targets.character,
                     duration: Duration.UntilEndOfPhase,
-                    effect: [AbilityDsl.effects.cannotBeDeclaredAsDefender()]
+                    effect: [cannotBeDeclaredAsDefender()]
                 }))
             })
-            .effect('prevent {1} from being declared as {2} this phase', (context) => [
-                context.targets.character,
-                context.selects.select.choice === 'Prevent Attacking' ? 'an attacker' : 'a defender'
-            ])
-            .max(AbilityDsl.limit.perRound(1));
+            .chatText((context) => msg`prevent ${context.targets.character} from being declared as ${context.selects.select.choice === 'Prevent Attacking' ? 'an attacker' : 'a defender'} this phase`)
+            .max(perRound(1));
     }
 }

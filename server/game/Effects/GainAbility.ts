@@ -1,13 +1,14 @@
 import { EffectValue } from './EffectValue.js';
-import { AbilityType, Location } from '../Constants.js';
+import { AbilityType, EffectName, Location } from '../Constants.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import type { Duration } from '../Constants.js';
 import type { AbilityLimit } from '../AbilityLimit.js';
 import type BaseCard from '../BaseCard.js';
-import type CardAbility from '../CardAbility.js';
+import type { CardAbility } from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
-import type TriggeredAbility from '../TriggeredAbility.js';
+import type { TriggeredAbility } from '../TriggeredAbility.js';
 import type { TriggeredAbilityProperties } from '../TriggeredAbility.js';
-import type Effect from './Effect.js';
+import type { ActiveEffect } from './ActiveEffect.js';
 import type {
     ActionProps,
     PersistentEffectProps,
@@ -36,7 +37,7 @@ interface CopiedProps {
 type PersistentGain = GainedPersistentProps & { printedAbility: boolean; location: Location; abilityType?: AbilityType };
 
 // read back as a stored persistent effect, which has no duration
-type PersistentGainValue = PersistentGain & { ref?: Effect[]; duration?: Duration };
+type PersistentGainValue = PersistentGain & { ref?: ActiveEffect[]; duration?: Duration };
 
 type Grant =
     | { kind: AbilityType.Action; properties: ActionProps }
@@ -95,7 +96,7 @@ function grantFor(args: GainAbilityArgs): Grant {
     return { kind: 'triggered', properties: Object.assign({ printedAbility: false }, args[1]) };
 }
 
-export default class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
+export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
     abilityType: AbilityType;
     createCopies: boolean;
     forCopying: GainAbilityArgs | undefined;
@@ -143,7 +144,10 @@ export default class GainAbility extends EffectValue<GainedAbilityValue, BaseCar
                 'play area': [Location.PlayArea],
                 province: this.requireContext().game.getProvinceArray()
             };
-            const value: PersistentGainValue = Object.assign(origin, grant.properties);
+            const condition = grant.properties.condition;
+            const value: PersistentGainValue = Object.assign(origin, grant.properties, {
+                condition: (context: AbilityContext) => !target.anyEffect(EffectName.LoseGainedAbilities) && (!condition || condition(context))
+            });
             this.value = value;
             this.grantedPersistent = value;
             if(activeLocations[value.location].includes(target.location)) {
@@ -167,6 +171,11 @@ export default class GainAbility extends EffectValue<GainedAbilityValue, BaseCar
         if(!this.grantedAbilityLimits[target.uuid]) {
             this.grantedAbilityLimits[target.uuid] = granted.limit;
         } else {
+            // the uses so far count on: the new ability's own limit is dropped, so it stops listening;
+            // an authored limit is the same object, which must keep listening
+            if(granted.limit !== this.grantedAbilityLimits[target.uuid]) {
+                granted.limit.unregisterEvents(target.game);
+            }
             granted.limit = this.grantedAbilityLimits[target.uuid];
         }
         this.grantedAbilityLimits[target.uuid].currentUser = target.uuid;

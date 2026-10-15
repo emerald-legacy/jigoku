@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import { countClaimedRings } from '../claimedRings.js';
 
 class IshikenInitiate extends DrawCard {
@@ -7,7 +7,7 @@ class IshikenInitiate extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills(() => countClaimedRings(this.game))
+            effect: modifyBothSkills(() => countClaimedRings(this.game))
         });
     }
 }

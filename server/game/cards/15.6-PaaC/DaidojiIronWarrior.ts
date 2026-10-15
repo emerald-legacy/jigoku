@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class DaidojiIronWarrior extends DrawCard {
     static id = 'daidoji-iron-warrior';
@@ -9,17 +8,15 @@ class DaidojiIronWarrior extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.chosenDiscard(context => ({
-                    target: context.player.opponent,
-                    amount: Math.max(0, (context.player.opponent?.hand.length ?? 0) - 4)
-                })),
-                AbilityDsl.actions.chosenDiscard(context => ({
-                    target: context.player,
-                    amount: Math.max(0, context.player.hand.length - 4)
-                }))
-            ]))
-            .effect('make both players discard down to 4 cards');
+            .chosenDiscard((context) => ({
+                target: context.player.opponent,
+                amount: Math.max(0, (context.player.opponent?.hand.length ?? 0) - 4)
+            }))
+            .chosenDiscard((context) => ({
+                target: context.player,
+                amount: Math.max(0, context.player.hand.length - 4)
+            }))
+            .chatText('make both players discard down to 4 cards');
     }
 }
 

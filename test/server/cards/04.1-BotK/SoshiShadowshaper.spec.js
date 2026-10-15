@@ -120,3 +120,44 @@ describe('Soshi Shadowshaper', function() {
         });
     });
 });
+
+describe('Soshi Shadowshaper and a character that came back into play', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['soshi-shadowshaper'],
+                    hand: ['assassination']
+                },
+                player2: {
+                    fate: 5,
+                    inPlay: ['kitsu-spiritcaller'],
+                    hand: ['ageless-crone']
+                }
+            });
+            this.shadowshaper = this.player1.findCardByName('soshi-shadowshaper');
+            this.spiritcaller = this.player2.findCardByName('kitsu-spiritcaller');
+        });
+
+        it('can\'t return it, as it didn\'t enter play from hand this time', function() {
+            this.player1.pass();
+            this.crone = this.player2.playCharacterFromHand('ageless-crone');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.shadowshaper],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard('assassination');
+            this.player1.clickCard(this.crone);
+            expect(this.crone.location).toBe('conflict discard pile');
+            this.player2.clickCard(this.spiritcaller);
+            this.player2.clickCard(this.crone);
+            expect(this.crone.location).toBe('play area');
+            this.player1.clickCard(this.shadowshaper);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.crone.location).toBe('play area');
+        });
+    });
+});

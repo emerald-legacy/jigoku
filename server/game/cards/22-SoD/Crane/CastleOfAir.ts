@@ -1,70 +1,34 @@
-import { AbilityType, EventName, CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { modifyProvinceStrength, noUnopposedHonorLoss } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { EventRegistrar } from '../../../EventRegistrar.js';
-import type { Event } from '../../../Events/Event.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-
 
 export default class CastleOfAir extends DrawCard {
     static id = 'castle-of-air';
-    private playersTriggered = new Set<string>();
 
     setupCardAbilities() {
-        const eventRegistrar = new EventRegistrar(this.game, this);
-        eventRegistrar.register([
-            {
-                [EventName.OnModifyHonor + ':' + AbilityType.WouldInterrupt]: 'onHonorLoss'
-            }
-        ]);
-        eventRegistrar.register([EventName.OnConflictFinished]);
-
         this.action('Add Province Strength')
-            .cost(AbilityDsl.costs.bow({
+            .condition((context) => context.game.isDuringConflict())
+            .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('shugenja')
             }))
-            .condition((context) => context.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.selectCard((context) => ({
-                    activePromptTitle: 'Choose an attacked province',
-                    hidePromptIfSingleCard: true,
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    cardCondition: (card) => card.isConflictProvince(),
-                    message: '{0} increases the strength of {1}',
-                    messageArgs: (cards) => [context.player, cards],
-                    gameAction: AbilityDsl.actions.cardLastingEffect({
-                        targetLocation: Location.Provinces,
-                        effect: AbilityDsl.effects.modifyProvinceStrength(4)
-                    })
-                })),
-                AbilityDsl.actions.conditional((context) => ({
-                    condition: context.player.hasAffinity('air', context),
-                    trueGameAction: AbilityDsl.actions.handler({
-                        handler: context => {
-                            this.playersTriggered.add(context.player.uuid);
-                        }
-                    }),
-                    falseGameAction: AbilityDsl.actions.noAction()
-                }))
-            ]))
-            .effect('increase the strength of an attacked province by 4{1}', context => context.player.hasAffinity('air', context) ? [' and prevent unopposed honor loss'] : ['']);
-    }
-
-    onHonorLoss(event: Event & EventPayload<EventName.OnModifyHonor>) {
-        if(
-            event.context.game.currentConflict &&
-            event.dueToUnopposed &&
-            this.playersTriggered.has(event.context.player.uuid) &&
-            !event.cancelled
-        ) {
-            event.cancel();
-            this.game.addMessage('{0} cancels the honor loss', this);
-        }
-    }
-
-    public onConflictFinished() {
-        this.playersTriggered.clear();
+            .selectAttackedProvince({
+                message: (context, cards) => msg`${context.player} increases the strength of ${cards}`,
+                gameAction: cardLastingEffect({
+                    effect: modifyProvinceStrength(4)
+                })
+            })
+            .if((context) => context.player.hasAffinity('air', context))
+            .playerLastingEffect({
+                target: Players.Self,
+                duration: Duration.UntilEndOfConflict,
+                effect: noUnopposedHonorLoss()
+            })
+            .chatText((context) => context.player.hasAffinity('air', context)
+                ? msg`increase the strength of an attacked province by 4${' and prevent unopposed honor loss'}`
+                : msg`increase the strength of an attacked province by 4`);
     }
 }

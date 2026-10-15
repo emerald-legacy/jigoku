@@ -1,7 +1,9 @@
-import { Duration, DuelType, ConflictType } from '../../../Constants.js';
+import { DuelType, ConflictType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyDuelTotal } from '../../../effects.js';
+import { injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
@@ -13,21 +15,18 @@ export default class MirumotoRei2 extends DrawCard {
     setupCardAbilities() {
         this.duelChallenge('Help a character with a duel', (duel, context) =>
             duel.participants.includes(context.source) && this.getWeaponCount(context) > 0)
-            .gameAction(AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: context.event.duel,
-                effect: AbilityDsl.effects.modifyDuelSkill({
+            .duelLastingEffect((context) => ({
+                effect: modifyDuelTotal({
                     amount: this.getWeaponCount(context),
                     player: context.player
-                }),
-                duration: Duration.UntilEndOfDuel
-            })))
-            .effect('add {1} to their duel total', (context) => [this.getWeaponCount(context)]);
+                })
+            }))
+            .chatText((context) => msg`add ${this.getWeaponCount(context)} to their duel total`);
 
-        this.action('Duel an opposing character')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Duel an opposing character', { conflictType: ConflictType.Military })
             .initiateDuel(() => ({
                 type: DuelType.Military,
-                gameAction: (duel) => AbilityDsl.actions.injure({ target: duel.loser ?? [] })
+                gameAction: (duel) => injure({ target: duel.loser ?? [] })
             }));
     }
 }

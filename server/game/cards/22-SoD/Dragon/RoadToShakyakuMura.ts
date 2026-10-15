@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { multiple, putIntoProvince, returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureCost } from '../../captureCost.js';
 
@@ -20,21 +22,18 @@ export default class RoadToShakyakuMura extends DrawCard {
                 }
             })
             .cost(captureCost('captureLocationCost', (context) => context.source.location))
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
-                replacementGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.returnToHand(() => ({
+            .cost(costs.sacrificeSelf())
+            .cancel((context) => ({
+                replacementGameAction: multiple([
+                    returnToHand(() => ({
                         target: context.event.card?.attachments ?? []
                     })),
-                    AbilityDsl.actions.putIntoProvince({
+                    putIntoProvince({
                         target: context.event.card,
                         destination: context.costs.captureLocationCost
                     })
                 ])
-            })))
-            .effect('prevent {1} from leaving play, putting it into {2} instead', (context) => [
-                context.event.card ?? '',
-                context.costs.captureLocationCost ?? ''
-            ]);
+            }))
+            .chatText((context) => msg`prevent ${context.event.card ?? ''} from leaving play, putting it into ${context.costs.captureLocationCost ?? ''} instead`);
     }
 }

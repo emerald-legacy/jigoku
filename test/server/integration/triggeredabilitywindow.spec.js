@@ -122,7 +122,7 @@ describe('triggered ability window', function () {
                     attackers: [this.challenger],
                     defenders: [this.ronin, this.sora]
                 });
-                const base = this.ronin.getMilitarySkill();
+                const base = this.ronin.militarySkill;
 
                 this.player2.clickCard(this.sora);
                 const hounds = this.game.currentConflict.defenders.filter(
@@ -153,12 +153,12 @@ describe('triggered ability window', function () {
                 expect(this.player2).not.toBeAbleToSelect(this.storehouse);
 
                 this.player2.clickCard(hounds[0]);
-                expect(this.ronin.getMilitarySkill()).toBe(base + 1);
+                expect(this.ronin.militarySkill).toBe(base + 1);
 
                 // The remaining event is still reachable, and resolves without another
                 // prompt because it is the only one left
                 this.player2.clickCard(this.yumi);
-                expect(this.ronin.getMilitarySkill()).toBe(base + 2);
+                expect(this.ronin.militarySkill).toBe(base + 2);
                 expect(this.player2).not.toBeAbleToSelect(this.yumi);
             });
         });

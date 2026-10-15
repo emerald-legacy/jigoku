@@ -100,7 +100,7 @@ describe('Overhear', function() {
                 this.player1.clickPrompt('Give 1 honor to resolve this ability again');
                 expect(this.player1.player.honor).toBe(honorP1 - 1);
                 expect(this.player2.player.honor).toBe(honorP2 + 1);
-                expect(this.getChatLogs(3)).toContain('player1 chooses to give an honor to player2 to resolve Overhear again');
+                expect(this.getChatLogs(3)).toContain('player1 chooses to give 1 honor to resolve Overhear again');
             });
 
             it('should end if you choose not to resolve again', function() {
@@ -117,7 +117,7 @@ describe('Overhear', function() {
                 this.player1.clickPrompt('Done');
                 expect(this.player1.player.honor).toBe(honorP1);
                 expect(this.player2.player.honor).toBe(honorP2);
-                expect(this.getChatLogs(3)).toContain('player1 chooses not to give an honor to player2 to resolve Overhear again');
+                expect(this.getChatLogs(3)).toContain('player1 chooses not to give 1 honor to resolve Overhear again');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 

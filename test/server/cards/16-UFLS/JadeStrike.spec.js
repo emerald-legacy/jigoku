@@ -52,8 +52,8 @@ describe('Jade Strike', function() {
             this.player2.pass();
             this.player1.clickCard(this.strike);
             this.player1.clickCard(this.raitsugu);
-            expect(this.raitsugu.getMilitarySkill()).toBe(this.raitsugu.glory);
-            expect(this.raitsugu.getPoliticalSkill()).toBe(this.raitsugu.glory);
+            expect(this.raitsugu.militarySkill).toBe(this.raitsugu.glory);
+            expect(this.raitsugu.politicalSkill).toBe(this.raitsugu.glory);
             expect(this.raitsugu.getBaseMilitarySkill()).toBe(0);
             expect(this.raitsugu.getBasePoliticalSkill()).toBe(0);
             expect(this.getChatLogs(5)).toContain('player1 plays Jade Strike to set the base skills of Mirumoto Raitsugu to 0military/0political');

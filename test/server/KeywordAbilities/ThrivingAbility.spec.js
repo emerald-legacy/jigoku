@@ -1,5 +1,5 @@
 import { ThrivingAbility } from '../../../build/server/game/KeywordAbilities/ThrivingAbility.js';
-import { Phases } from '../../../build/server/game/Constants.js';
+import { Phase } from '../../../build/server/game/Constants.js';
 
 describe('ThrivingAbility', function() {
     let card, ability;
@@ -21,7 +21,7 @@ describe('ThrivingAbility', function() {
             player = jasmine.createSpyObj('player', ['getDynastyCardsInProvince']);
             player.getDynastyCardsInProvince.and.returnValue([{}]);
             context = { source: source, player: player };
-            event = { phase: Phases.Fate };
+            event = { phase: Phase.Fate };
         });
 
         it('triggers in the fate phase when thriving with exactly one dynasty card', function() {
@@ -29,7 +29,7 @@ describe('ThrivingAbility', function() {
         });
 
         it('does not trigger outside the fate phase', function() {
-            event.phase = Phases.Conflict;
+            event.phase = Phase.Conflict;
             expect(ability.when.onPhaseEnded(event, context)).toBeFalsy();
         });
 

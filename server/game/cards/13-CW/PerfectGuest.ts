@@ -1,34 +1,24 @@
-import { Duration, EventName } from '../../Constants.js';
-import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Duration, RestrictionScope, RestrictionType } from '../../Constants.js';
+import { playerCannot, takeControl } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
+import { msg } from '../../GameChat.js';
 
 export default class PerfectGuest extends DrawCard {
     static id = 'perfect-guest';
 
-    private barredThisRound?: Player;
-
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnRoundEnded]);
-
         this.action('Give control of this character')
-            .condition((context) => context.player.opponent !== undefined && context.player !== this.barredThisRound)
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.takeControl(context.player.opponent),
+            .condition((context) => context.player.opponent !== undefined)
+            .cardLastingEffect((context) => ({
+                effect: takeControl(context.player.opponent),
                 duration: Duration.Custom
-            })))
-            .then((context) => ({
-                gameAction: AbilityDsl.actions.handler({
-                    handler: () => {
-                        this.barredThisRound = context.player.opponent;
-                    }
-                })
             }))
-            .effect('give control of itself to {1}', (context) => [context.player.opponent ?? context.player]);
-    }
-
-    public onRoundEnded() {
-        this.barredThisRound = undefined;
+            .chatText((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`)
+            .then()
+            .playerLastingEffect((context) => ({
+                target: context.player.opponent,
+                duration: Duration.UntilEndOfRound,
+                effect: playerCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo: RestrictionScope.Source })
+            }));
     }
 }

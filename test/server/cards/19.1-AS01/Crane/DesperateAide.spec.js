@@ -67,6 +67,24 @@ describe('Desperate Aide', function () {
             expect(this.getChatLogs(5)).toContain('player2 uses Desperate Aide to draw 1 card and gain 1 honor');
         });
 
+        it('does not count bowed characters, as the conflict does not', function () {
+            this.player2.player.showBid = 1;
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.diplomat, this.brash, this.tadaka],
+                defenders: [this.yoshi, this.aide],
+                type: 'political'
+            });
+            this.yoshi.bowed = true;
+
+            const hand = this.player2.hand.length;
+            const honor = this.player2.honor;
+            this.player2.clickCard(this.aide);
+            expect(this.player2.hand.length).toBe(hand + 1);
+            expect(this.player2.honor).toBe(honor);
+            expect(this.getChatLogs(5)).toContain('player2 uses Desperate Aide to draw 1 card');
+        });
+
         it('gains honor when counting more POL during a MIL conflict ', function () {
             this.player2.player.showBid = 1;
             this.noMoreActions();

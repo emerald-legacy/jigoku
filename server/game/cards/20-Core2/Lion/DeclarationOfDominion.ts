@@ -1,5 +1,7 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { BattlefieldAttachment } from '../../BattlefieldAttachment.js';
 
 export default class DeclarationOfDominion extends BattlefieldAttachment {
@@ -19,8 +21,8 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.addKeyword('pride')
+            }, cardLastingEffect({
+                effect: addKeyword('pride')
             }))
             .targetCards({
                 name: 'opponentsCard',
@@ -31,14 +33,10 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.addKeyword('pride')
+            }, cardLastingEffect({
+                effect: addKeyword('pride')
             }))
-            .effect('give pride to {1}', (context) => [
-                (context.targets.myCard ?? []).concat(
-                    context.targets.opponentsCard ?? []
-                )
-            ]);
+            .chatText((context) => msg`give pride to ${(context.targets.myCard ?? []).concat(context.targets.opponentsCard ?? [])}`);
     }
 
     protected unbrokenOnly() {

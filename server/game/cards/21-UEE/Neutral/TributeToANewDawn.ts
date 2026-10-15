@@ -1,5 +1,5 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,14 +11,12 @@ export default class TributeToANewDawn extends DrawCard {
 
     setupCardAbilities() {
         this.action('Remove multiple attachments from the game')
-            .condition((context) =>
-                context.player.anyCardsInPlay((card) => card.type === CardType.Attachment) &&
-                (!context.player.opponent ||
-                    context.player.opponent.anyCardsInPlay((card) => card.type === CardType.Attachment)))
+            .condition((context) => context.game.allCards.some((card) => card.type === CardType.Attachment && card.isInPlay()))
             .targetCards({
                 name: FIRST,
                 activePromptTitle: 'Choose up to 2 attachments to keep',
                 cardType: CardType.Attachment,
+                optional: true,
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
@@ -28,15 +26,16 @@ export default class TributeToANewDawn extends DrawCard {
                 name: SECOND,
                 activePromptTitle: 'Choose up to 2 attachments to keep',
                 cardType: CardType.Attachment,
+                optional: true,
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                 player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self)
             })
-            .gameAction(AbilityDsl.actions.removeFromGame((context) => ({
+            .removeFromGame((context) => ({
                 target: this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])
-            })))
-            .effect('remove {1} from the game', (context) => [this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])]);
+            }))
+            .chatText((context) => msg`remove ${this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])} from the game`);
     }
 
     private getAffectedAttachments(context: AbilityContext<DrawCard>, keptAttachments: DrawCard[]) {

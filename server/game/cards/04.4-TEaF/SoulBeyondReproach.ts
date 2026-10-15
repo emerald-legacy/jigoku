@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor, sequential } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class SoulBeyondReproach extends DrawCard {
@@ -10,11 +10,11 @@ class SoulBeyondReproach extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.honor(),
-                AbilityDsl.actions.honor()
+            }, sequential([
+                honor(),
+                honor()
             ]))
-            .effect('honor {0}, then honor it again');
+            .chatText('honor {0}, then honor it again');
     }
 }
 

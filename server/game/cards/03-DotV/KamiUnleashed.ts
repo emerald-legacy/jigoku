@@ -1,15 +1,16 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perConflict } from '../../AbilityLimit.js';
 
 class KamiUnleashed extends DrawCard {
     static id = 'kami-unleashed';
 
     setupCardAbilities() {
         this.action('Resolve ring effect')
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .condition(context => context.source.isAttacking())
-            .gameAction(AbilityDsl.actions.resolveConflictRing())
-            .max(AbilityDsl.limit.perConflict(1));
+            .condition((context) => context.source.isAttacking())
+            .cost(costs.sacrificeSelf())
+            .resolveConflictRing()
+            .max(perConflict(1));
     }
 }
 

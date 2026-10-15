@@ -1,7 +1,8 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { bow, dishonor, multiple } from '../../GameActions/GameActions.js';
 import type DrawCard from '../../DrawCard.js';
 
 const ELEMENT_KEY = 'weight-of-duty-void';
@@ -11,19 +12,19 @@ export default class WeightOfDuty extends ProvinceCard {
 
     setupCardAbilities() {
         this.action('Bow & dishonor a character')
-            .cost(AbilityDsl.costs.sacrifice({
+            .condition((context) => context.player.opponent !== undefined)
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && this.hasValidTarget(card, context)
             }))
-            .condition((context) => context.player.opponent !== undefined)
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     context.costs.sacrifice && !context.costs.sacrifice.isUnique() ? !card.isUnique() : true
-            }, AbilityDsl.actions.multiple([AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()]))
-            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
+            }, multiple([bow(), dishonor()]))
             .cannotTargetFirst();
     }
 
@@ -45,7 +46,7 @@ export default class WeightOfDuty extends ProvinceCard {
 
         return !!context.player.opponent?.cardsInPlay.some(
             (a) =>
-                !a.isUnique() && (a.allowGameAction('bow', context) || a.allowGameAction('dishonor', context))
+                !a.isUnique() && (bow().canAffect(a, context) || dishonor().canAffect(a, context))
         );
     }
 }

@@ -1,9 +1,11 @@
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import Player from '../../../build/server/game/Player.js';
 
 describe('Player - drop', () => {
     describe('drop()', function() {
         beforeEach(function() {
             this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'checkGameState', 'emitEvent', 'getOtherPlayer', 'raiseEvent', 'getProvinceArray']);
+            this.gameSpy.rules = rulesFor('stronghold');
 
             this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.gameSpy);
             spyOn(this.player, 'moveCard');

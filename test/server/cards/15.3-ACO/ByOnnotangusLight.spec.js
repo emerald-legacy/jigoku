@@ -248,7 +248,7 @@ describe('By Onnotangu\'s Light', function() {
             });
 
             it('dire should enable for everyone', function() {
-                expect(this.steward.getPoliticalSkill()).toBe(3);
+                expect(this.steward.politicalSkill).toBe(3);
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',
@@ -258,7 +258,7 @@ describe('By Onnotangu\'s Light', function() {
                     ring: 'air'
                 });
 
-                expect(this.steward.getPoliticalSkill()).toBe(6);
+                expect(this.steward.politicalSkill).toBe(6);
             });
 
             it('water ring should be able to bow anyone', function() {

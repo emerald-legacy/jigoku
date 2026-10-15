@@ -77,3 +77,39 @@ describe('Shiotome Heroine', function() {
         });
     });
 });
+
+describe('Shiotome Heroine when honor is taken', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shiotome-heroine']
+                },
+                player2: {
+                    inPlay: ['kakita-asami']
+                }
+            });
+            this.shiotomeHeroine = this.player1.findCardByName('shiotome-heroine');
+            this.asami = this.player2.findCardByName('kakita-asami');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.asami],
+                defenders: []
+            });
+            this.shiotomeHeroine.bowed = true;
+        });
+
+        it('should trigger when the opponent takes honor from you through a card effect', function() {
+            const honor = this.player2.player.honor;
+            this.player1.pass();
+            this.player2.clickCard(this.asami);
+            expect(this.player2.player.honor).toBe(honor + 1);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.shiotomeHeroine);
+        });
+    });
+});

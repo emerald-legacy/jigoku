@@ -190,3 +190,43 @@ describe('Duelist Training', function () {
         });
     });
 });
+
+describe('Duelist Training duel bid', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 11,
+                    inPlay: ['giver-of-gifts'],
+                    hand: ['duelist-training']
+                },
+                player2: {
+                    honor: 11,
+                    inPlay: ['seppun-guardsman'],
+                    hand: ['privileged-position']
+                }
+            });
+            this.giverOfGifts = this.player1.findCardByName('giver-of-gifts');
+            this.seppunGuardsman = this.player2.findCardByName('seppun-guardsman');
+            this.privilegedPosition = this.player2.findCardByName('privileged-position');
+            this.player1.playAttachment('duelist-training', this.giverOfGifts);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.giverOfGifts],
+                defenders: [this.seppunGuardsman]
+            });
+            this.player2.pass();
+        });
+
+        it('is an honor bid', function () {
+            this.player1.clickCard(this.giverOfGifts);
+            this.player1.clickCard(this.seppunGuardsman);
+            this.player1.clickPrompt('2');
+            this.player2.clickPrompt('1');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.privilegedPosition);
+        });
+    });
+});

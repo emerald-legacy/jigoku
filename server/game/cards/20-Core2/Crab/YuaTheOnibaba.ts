@@ -1,4 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
@@ -32,23 +34,20 @@ export default class YuaTheOnibaba extends DrawCard {
     static id = 'yua-the-onibaba';
 
     public setupCardAbilities() {
-        this.action('Weaken non-bushi, empower bushi')
-            .condition((context) => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+        this.conflictAction('Weaken non-bushi, empower bushi')
+            .gameAction(multiple((context) => {
                 const targets = charactersToBuffAndNerf(context.player, context.game.currentConflict);
-                return {
-                    gameActions: [
-                        AbilityDsl.actions.cardLastingEffect({
-                            target: targets.toBuff,
-                            effect: AbilityDsl.effects.modifyBothSkills(1)
-                        }),
-                        AbilityDsl.actions.cardLastingEffect({
-                            target: targets.toNerf,
-                            effect: AbilityDsl.effects.modifyBothSkills(-1)
-                        })
-                    ]
-                };
+                return [
+                    cardLastingEffect({
+                        target: targets.toBuff,
+                        effect: modifyBothSkills(1)
+                    }),
+                    cardLastingEffect({
+                        target: targets.toNerf,
+                        effect: modifyBothSkills(-1)
+                    })
+                ];
             }))
-            .effect('give all friendly participating bushi characters +1{1} / +1{2} and give all participating non-bushi characters -1{1} / -1{2}', () => ['military', 'political']);
+            .chatText(() => msg`give all friendly participating bushi characters +1${'military'} / +1${'political'} and give all participating non-bushi characters -1${'military'} / -1${'political'}`);
     }
 }

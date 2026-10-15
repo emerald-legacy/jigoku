@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class StudentOfTheMethod extends DrawCard {
@@ -7,7 +7,7 @@ export default class StudentOfTheMethod extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.player.showBid === context.player.opponent?.showBid,
-            effect: AbilityDsl.effects.modifyBothSkills(+2)
+            effect: modifyBothSkills(+2)
         });
     }
 }

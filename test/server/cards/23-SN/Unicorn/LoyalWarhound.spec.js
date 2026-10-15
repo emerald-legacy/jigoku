@@ -1,11 +1,11 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Loyal Warhound', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
                 phase: 'conflict',
-                gameMode: GameModes.Emerald,
+                gameMode: GameMode.Emerald,
 
                 player1: {
                     inPlay: ['loyal-warhound', 'loyal-warhound', 'doji-challenger', 'aranat', 'eager-scout', 'laughing-thunder'],
@@ -170,7 +170,7 @@ describe('Loyal Warhound - attaching during a conflict', function () {
         beforeEach(function () {
             this.setupTest({
                 phase: 'conflict',
-                gameMode: GameModes.Emerald,
+                gameMode: GameMode.Emerald,
 
                 player1: {
                     inPlay: ['loyal-warhound', 'doji-challenger']
@@ -214,7 +214,7 @@ describe('Loyal Warhound - host replaced by its twin', function () {
         beforeEach(function () {
             this.setupTest({
                 phase: 'conflict',
-                gameMode: GameModes.Emerald,
+                gameMode: GameMode.Emerald,
 
                 player1: {
                     inPlay: ['loyal-warhound', 'ide-nobutada'],

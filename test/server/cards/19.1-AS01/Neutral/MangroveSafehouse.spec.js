@@ -1,3 +1,5 @@
+import { addTrait, loseTrait } from '../../../../../build/server/game/effects.js';
+
 describe('Mangrove Safehouse', function () {
     integration(function () {
         describe('Mangrove Safehouse\'s ability', function () {
@@ -194,10 +196,10 @@ describe('Mangrove Safehouse', function () {
 
                     describe('if a character that gained the Mantis Clan trait is selected', function () {
                         beforeEach(function () {
-                            this.adeptOfTheWaves.untilEndOfRound((AbilityDsl) => ({
+                            this.adeptOfTheWaves.untilEndOfRound({
                                 match: this.adeptOfTheWaves,
-                                effect: AbilityDsl.effects.addTrait('mantis-clan')
-                            }));
+                                effect: addTrait('mantis-clan')
+                            });
                             this.player1.clickCard(this.adeptOfTheWaves);
                         });
 
@@ -210,10 +212,10 @@ describe('Mangrove Safehouse', function () {
 
                     describe('if a Mantis character that lost the Mantis Clan trait is selected', function () {
                         beforeEach(function () {
-                            this.kudaka.untilEndOfRound((AbilityDsl) => ({
+                            this.kudaka.untilEndOfRound({
                                 match: this.kudaka,
-                                effect: AbilityDsl.effects.loseTrait('mantis-clan')
-                            }));
+                                effect: loseTrait('mantis-clan')
+                            });
                             this.player1.clickCard(this.kudaka);
                         });
 

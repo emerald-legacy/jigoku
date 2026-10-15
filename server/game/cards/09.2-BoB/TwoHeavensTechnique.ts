@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 
 class TwoHeavensTechnique extends DrawCard {
     static id = 'two-heavens-technique';
@@ -10,8 +10,8 @@ class TwoHeavensTechnique extends DrawCard {
         });
 
         this.whileAttached({
-            condition: context => !!context.source.parentCharacter && context.source.parentCharacter.attachments.filter((card) => card.hasTrait('weapon')).length === 2,
-            effect: AbilityDsl.effects.addKeyword('covert')
+            condition: (context) => !!context.source.parentCharacter && context.source.parentCharacter.attachments.filter((card) => card.hasTrait('weapon')).length === 2,
+            effect: addKeyword('covert')
         });
     }
 }

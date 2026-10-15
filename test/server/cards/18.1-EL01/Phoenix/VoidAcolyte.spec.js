@@ -1,3 +1,5 @@
+import { addElement } from '../../../../../build/server/game/effects.js';
+
 describe('Void Acolyte', function() {
     integration(function() {
         beforeEach(function() {
@@ -80,10 +82,10 @@ describe('Void Acolyte', function() {
                 attackers: ['seeker-of-knowledge'],
                 defenders: []
             });
-            this.acolyte.untilEndOfRound((AbilityDsl) => ({
+            this.acolyte.untilEndOfRound({
                 match: this.game.rings.fire,
-                effect: AbilityDsl.effects.addElement('void')
-            }));
+                effect: addElement('void')
+            });
             this.player2.pass();
             this.player1.clickCard(this.commune);
             this.player1.clickRing('fire');

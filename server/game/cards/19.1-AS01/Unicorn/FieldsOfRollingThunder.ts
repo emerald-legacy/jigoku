@@ -1,5 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Duration } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { atEndOfConflict, dishonor, honor, multiple } from '../../../GameActions/GameActions.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class FieldsOfRollingThunder extends DrawCard {
@@ -11,29 +12,23 @@ export default class FieldsOfRollingThunder extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.loser === context.player && event.conflict.conflictUnopposed
             })
-            .gameAction(AbilityDsl.actions.discardFromPlay());
+            .discardFromPlay();
 
         this.action('Honor a character')
             .target({
                 cardType: CardType.Character,
+                controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.isFaction('unicorn')
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.honor(),
-                AbilityDsl.actions.cardLastingEffect((context) => {
-                    const conflictWhenItWasTriggered = this.game.currentConflict;
+            }, multiple([
+                honor(),
+                atEndOfConflict((context) => {
+                    const conflict = context.game.currentConflict;
                     return {
-                        duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.delayedEffect({
-                            when: {
-                                onConflictFinished: (event, context) =>
-                                    event.conflict === conflictWhenItWasTriggered &&
-                                        event.conflict.winner === context.player.opponent
-                            },
-                            gameAction: AbilityDsl.actions.dishonor({ target: context.target })
-                        })
+                        onlyIf: (context) => conflict?.winner === context.player.opponent,
+                        gameAction: dishonor({ target: context.target })
                     };
                 })
             ]))
-            .effect('honor {0}. They will be dishonored at the end of the conflict if {1} loses the conflict', (context) => [context.source.controller]);
+            .chatText((context) => msg`honor ${context.chatTarget()}. They will be dishonored at the end of the conflict if ${context.source.controller} loses the conflict`);
     }
 }

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HonoredGeneral extends DrawCard {
@@ -8,13 +8,13 @@ export default class HonoredGeneral extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             match: (card, context) => card.isParticipating() && card.isFaction('lion') && card !== context?.source,
-            effect: AbilityDsl.effects.modifyMilitarySkill(1)
+            effect: modifyMilitarySkill(1)
         });
 
         this.reaction('Honor this character')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.honor());
+            .honor();
     }
 }

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotReceiveDishonorToken } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class BlessedByFukurokujin extends DrawCard {
@@ -6,7 +6,7 @@ class BlessedByFukurokujin extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cannotReceiveDishonorToken()
+            effect: cannotReceiveDishonorToken()
         });
     }
 }

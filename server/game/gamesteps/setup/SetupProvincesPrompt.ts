@@ -1,10 +1,12 @@
+import { msg } from '../../GameChat.js';
 import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
+import { shuffle } from '../../utils/random.js';
 import { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
-class SetupProvincesPrompt extends AllPlayerPrompt {
+export class SetupProvincesPrompt extends AllPlayerPrompt {
     strongholdProvince: Record<string, ProvinceCard | null>;
     clickedDone: Record<string, boolean>;
     selectedCards: Record<string, ProvinceCard[]>;
@@ -109,14 +111,9 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
             stronghold.facedown = true;
         }
         this.clickedDone[player.uuid] = true;
-        this.game.addMessage('{0} has placed their provinces', player);
+        this.game.addMessage(msg`${player} has placed their provinces`);
         player.moveCard(stronghold, Location.StrongholdProvince);
-        // Shuffle remaining selectable cards using Fisher-Yates
-        const shuffled = [...this.selectableCards[player.uuid]];
-        for(let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
+        const shuffled = shuffle(this.selectableCards[player.uuid]);
         const provinces = [...new Set(this.selectedCards[player.uuid].concat(shuffled))];
         for(let i = 1; i < 5; i++) {
             const provinceCard = provinces[i - 1];
@@ -131,4 +128,3 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
     }
 }
 
-export default SetupProvincesPrompt;

@@ -1,4 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { loseTrait, modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,8 +14,8 @@ export default class LightningAscends extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            }, cardLastingEffect({
+                effect: modifyMilitarySkill(2)
             }))
             .target({
                 name: 'enemy',
@@ -22,9 +24,9 @@ export default class LightningAscends extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: context.targets.enemy.traits.map((t) => AbilityDsl.effects.loseTrait(t))
+            }, cardLastingEffect((context) => ({
+                effect: context.targets.enemy.traits.map((t) => loseTrait(t))
             })))
-            .effect('grant +2 {1} to {2} and remove all traits from {3}', (context) => ['military', context.targets.monk, context.targets.enemy]);
+            .chatText((context) => msg`grant +2 ${'military'} to ${context.targets.monk} and remove all traits from ${context.targets.enemy}`);
     }
 }

@@ -135,8 +135,8 @@ describe('Agasha Hiyori', function() {
             });
 
             it('should remove skill bonuses on attachments', function() {
-                expect(this.agashaHiyori.getMilitarySkill()).not.toBe(this.agashaHiyori.getBaseMilitarySkill());
-                expect(this.agashaHiyori.getPoliticalSkill()).not.toBe(this.agashaHiyori.getBasePoliticalSkill());
+                expect(this.agashaHiyori.militarySkill).not.toBe(this.agashaHiyori.getBaseMilitarySkill());
+                expect(this.agashaHiyori.politicalSkill).not.toBe(this.agashaHiyori.getBasePoliticalSkill());
 
                 expect(this.player1).toBeAbleToSelect(this.agashaHiyori);
                 this.player1.clickCard(this.agashaHiyori);
@@ -144,13 +144,13 @@ describe('Agasha Hiyori', function() {
                 this.player1.clickCard(this.courtMask);
                 this.player1.clickRing('air');
 
-                expect(this.agashaHiyori.getMilitarySkill()).toBe(this.agashaHiyori.getBaseMilitarySkill());
-                expect(this.agashaHiyori.getPoliticalSkill()).toBe(this.agashaHiyori.getBasePoliticalSkill());
+                expect(this.agashaHiyori.militarySkill).toBe(this.agashaHiyori.getBaseMilitarySkill());
+                expect(this.agashaHiyori.politicalSkill).toBe(this.agashaHiyori.getBasePoliticalSkill());
             });
 
             it('should only remove skill bonuses on targetted attachments', function() {
-                expect(this.brashSamurai.getMilitarySkill()).not.toBe(this.brashSamurai.getBaseMilitarySkill());
-                expect(this.brashSamurai.getPoliticalSkill()).not.toBe(this.brashSamurai.getBasePoliticalSkill());
+                expect(this.brashSamurai.militarySkill).not.toBe(this.brashSamurai.getBaseMilitarySkill());
+                expect(this.brashSamurai.politicalSkill).not.toBe(this.brashSamurai.getBasePoliticalSkill());
 
                 expect(this.player1).toBeAbleToSelect(this.agashaHiyori);
                 this.player1.clickCard(this.agashaHiyori);
@@ -158,8 +158,8 @@ describe('Agasha Hiyori', function() {
                 this.player1.clickCard(this.cloud);
                 this.player1.clickRing('air');
 
-                expect(this.brashSamurai.getMilitarySkill()).toBe(this.brashSamurai.getBaseMilitarySkill() + 1);
-                expect(this.brashSamurai.getPoliticalSkill()).toBe(this.brashSamurai.getBasePoliticalSkill() + 1);
+                expect(this.brashSamurai.militarySkill).toBe(this.brashSamurai.getBaseMilitarySkill() + 1);
+                expect(this.brashSamurai.politicalSkill).toBe(this.brashSamurai.getBasePoliticalSkill() + 1);
             });
 
             it('should remove action abilities', function() {

@@ -1,22 +1,5 @@
-import { CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../DrawCard.js';
+import { Element } from '../../Constants.js';
+import { honor } from '../../GameActions/GameActions.js';
+import { makeMantra } from '../makeMantra.js';
 
-export default class MantraOfAir extends DrawCard {
-    static id = 'mantra-of-air';
-
-    setupCardAbilities() {
-        this.reaction('Honor a monk and draw a card')
-            .when({
-                onConflictDeclared: (event, context) =>
-                    !!event.ring && event.ring.hasElement(Element.Air) && event.conflict.attackingPlayer === context.player.opponent
-            })
-            .target({
-                cardType: CardType.Character,
-                cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk'))
-            }, AbilityDsl.actions.honor())
-            .gameAction(AbilityDsl.actions.draw())
-            .effect('honor {0} and draw a card');
-    }
-}
+export default makeMantra('mantra-of-air', Element.Air, 'Honor a monk and draw a card', honor(), 'honor {0} and draw a card');

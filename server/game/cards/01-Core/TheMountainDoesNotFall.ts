@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
+import { doesNotBow } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class TheMountainDoesNotFall extends DrawCard {
     static id = 'the-mountain-does-not-fall';
@@ -9,13 +11,13 @@ class TheMountainDoesNotFall extends DrawCard {
         this.action('Choose a character to not bow when defending')
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+            }, cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 condition: () => context.target.isDefending(),
-                effect: AbilityDsl.effects.doesNotBow()
+                effect: doesNotBow()
             })))
-            .effect('make {0} not bow as a defender')
-            .max(AbilityDsl.limit.perRound(1));
+            .chatText('make {0} not bow as a defender')
+            .max(perRound(1));
     }
 }
 

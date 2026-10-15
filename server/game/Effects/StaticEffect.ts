@@ -1,5 +1,5 @@
 import { EffectValue, EffectValueBase } from './EffectValue.js';
-import { EffectBase } from './EffectBase.js';
+import { EffectApplier } from './EffectApplier.js';
 import type { EffectName } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
@@ -7,7 +7,7 @@ import type { EffectValueMap } from './EffectValueMap.js';
 
 export type StaticValue<N extends EffectName, T extends GameObject> = EffectValueMap[N] | EffectValueBase<EffectValueMap[N], T>;
 
-class StaticEffect<N extends EffectName = EffectName, T extends GameObject = GameObject> extends EffectBase<N, T> {
+export class StaticEffect<N extends EffectName = EffectName, T extends GameObject = GameObject> extends EffectApplier<N, T> {
     value: EffectValueBase<EffectValueMap[N], T>;
     copies = new Map<string, EffectValueBase<EffectValueMap[N], T>>();
 
@@ -59,4 +59,3 @@ class StaticEffect<N extends EffectName = EffectName, T extends GameObject = Gam
     }
 }
 
-export default StaticEffect;

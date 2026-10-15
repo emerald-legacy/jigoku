@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { draw, gainFate } from '../../GameActions/GameActions.js';
 
 class IdeTrader extends DrawCard {
     static id = 'ide-trader';
@@ -9,12 +10,12 @@ class IdeTrader extends DrawCard {
             .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()
             })
-            .select({}, {
-                'Gain 1 fate': AbilityDsl.actions.gainFate(),
-                'Draw 1 card': AbilityDsl.actions.draw()
+            .collectiveTrigger()
+            .select({
+                'Gain 1 fate': gainFate(),
+                'Draw 1 card': draw()
             })
-            .limit(AbilityDsl.limit.perConflict(1))
-            .collectiveTrigger();
+            .limit(perConflict(1));
     }
 }
 

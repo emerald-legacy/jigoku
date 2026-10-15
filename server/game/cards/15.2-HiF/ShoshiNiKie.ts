@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { ready } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -7,12 +8,12 @@ class ShoshiNiKie extends DrawCard {
 
     setupCardAbilities() {
         this.action('ready an ordinary character')
-            .cost(AbilityDsl.costs.selectedReveal({ cardCondition: card => card.isFacedown(), cardType: CardType.Province }))
+            .cost(costs.reveal({ cardCondition: (card) => card.isFacedown(), cardType: CardType.Province }))
             .target({
-                cardCondition: card => card.isOrdinary(),
+                cardCondition: (card) => card.isOrdinary(),
                 cardType: CardType.Character,
                 player: Players.Self
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 }
 

@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Socket as IOSocket } from 'socket.io';
+import type { Socket as IOSocket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { logger } from './logger.js';
@@ -21,7 +21,7 @@ export interface SocketLike extends Pick<IOSocket, 'id' | 'on' | 'join' | 'leave
     request: { user?: SocketUser | null };
 }
 
-class Socket extends EventEmitter {
+export class Socket extends EventEmitter {
     socket: SocketLike;
     user: SocketUser | null;
 
@@ -102,4 +102,3 @@ class Socket extends EventEmitter {
     }
 }
 
-export default Socket;

@@ -1,6 +1,27 @@
-import { Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { Location, Players, RemainingCards, TargetMode } from '../../../Constants.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { deckSearch, lookAt, moveCard, sequential } from '../../../GameActions/GameActions.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type Player from '../../../Player.js';
+import type { DeckSearchProperties } from '../../../GameActions/DeckSearchAction.js';
 import DrawCard from '../../../DrawCard.js';
+
+// the chooser puts 1 of the top 2 cards of that player's deck into its owner's hand, the other on the bottom
+function giveOneCard(player: Player | undefined, activePromptTitle: string): DeckSearchProperties {
+    return {
+        target: player,
+        player: Players.Self,
+        activePromptTitle,
+        cardsToLookAt: player ? 2 : 0,
+        mode: TargetMode.Exactly,
+        numCards: 1,
+        reveal: false,
+        remainingCards: RemainingCards.BottomRandom,
+        message: (_context: AbilityContext, cards: DrawCard[], chooser: Player) => msg`${chooser} chooses ${cards} to give to ${player}`,
+        gameAction: moveCard({ destination: Location.Hand })
+    };
+}
 
 export default class PatronOfTheTradingCouncil extends DrawCard {
     static id = 'patron-of-the-trading-council';
@@ -11,46 +32,22 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
                 (context.game.currentConflict?.getNumberOfParticipants((card) =>
                     card.hasTrait('mantis-clan')
                 ) ?? 0) > 0,
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
 
         this.action('Give each player a valuable good')
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.lookAt((context) => ({
+            .gameAction(sequential([
+                lookAt((context) => ({
                     target: context.player.conflictDeck.slice(0, 2),
-                    message: '{0} reveals the top {1} from their conflict deck: {2}',
-                    messageArgs: (cards) => [context.player, cards.length, cards]
+                    message: (context, cards) => msg`${context.player} reveals the top ${cards.length} from their conflict deck: ${cards}`
                 })),
-                AbilityDsl.actions.lookAt((context) => ({
+                lookAt((context) => ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 2) : [],
-                    message: '{0} reveals the top {1} from their conflict deck: {2}',
-                    messageArgs: (cards) => [context.player.opponent, cards.length, cards]
+                    message: (context, cards) => msg`${context.player.opponent} reveals the top ${cards.length} from their conflict deck: ${cards}`
                 })),
-                AbilityDsl.actions.cardMenu((context) => ({
-                    activePromptTitle: 'Choose a card to give to yourself',
-                    cards: context.player.conflictDeck.slice(0, 2),
-                    targets: true,
-                    message: '{0} chooses {1} to give to {2}',
-                    messageArgs: (card, player) => [player, card, context.player],
-                    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
-                })),
-                AbilityDsl.actions.cardMenu((context) => ({
-                    activePromptTitle: 'Choose a card to give your opponent',
-                    cards: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 2) : [],
-                    targets: true,
-                    message: '{0} chooses {1} to give to {2}',
-                    messageArgs: (card, player) => [player, card, context.player.opponent],
-                    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
-                })),
-                AbilityDsl.actions.shuffleDeck((context) => ({
-                    target: context.player,
-                    deck: Location.ConflictDeck
-                })),
-                AbilityDsl.actions.shuffleDeck((context) => ({
-                    target: context.player.opponent || [],
-                    deck: Location.ConflictDeck
-                }))
+                deckSearch((context) => giveOneCard(context.player, 'Choose a card to give to yourself')),
+                deckSearch((context) => giveOneCard(context.player.opponent, 'Choose a card to give your opponent'))
             ]))
-            .effect('give each player a valuable good');
+            .chatText('give each player a valuable good');
     }
 }

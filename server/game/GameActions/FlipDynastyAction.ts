@@ -3,12 +3,12 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import { targetList, type ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent, type ActionOverrides } from './GameAction.js';
 
 export type FlipDynastyProperties = CardActionProperties;
 
 export class FlipDynastyAction<C extends AbilityContext = AbilityContext> extends CardGameAction<FlipDynastyProperties, EventName.OnCardRevealed, C> {
-    name = 'reveal';
+    name = 'flipDynasty';
     eventName = EventName.OnCardRevealed;
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
 
@@ -16,8 +16,8 @@ export class FlipDynastyAction<C extends AbilityContext = AbilityContext> extend
         return ['reveal the facedown card in {0}', []];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
-        const [target] = targetList(this.getProperties(context).target);
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        const [target] = targetList(this.getProperties(context, additionalProperties).target);
         return target ? target.location : '';
     }
 

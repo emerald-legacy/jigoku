@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType, ConflictType } from '../../Constants.js';
 
 class KakitaYoshi2 extends DrawCard {
@@ -17,7 +17,7 @@ class KakitaYoshi2 extends DrawCard {
                 mode: TargetMode.UpToVariable,
                 numCardsFunc: (context) => context.player.getNumberOfFaceupProvinces(),
                 cardType: CardType.Character
-            }, AbilityDsl.actions.dishonor());
+            }, dishonor());
     }
 }
 

@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -17,8 +18,8 @@ export default class PathsNotTaken extends DrawCard {
                 cardCondition: (card, context) => !!context.player.opponent &&
                     card.isParticipatingFor(context.player.opponent) &&
                     card.printedCost !== null && card.printedCost < this.getSkillThreshold(context)
-            }, AbilityDsl.actions.sendHome())
-            .max(AbilityDsl.limit.perConflict(1));
+            }, sendHome())
+            .max(perConflict(1));
     }
 
     private getSkillThreshold(context: AbilityContext) {
@@ -27,14 +28,14 @@ export default class PathsNotTaken extends DrawCard {
         }
 
         const attackedProvinces = context.game.currentConflict.getConflictProvinces();
-        const hasScout = context.game.currentConflict.getDefenders(card => card.hasTrait('scout')).length > 0;
+        const hasScout = context.game.currentConflict.getDefenders((card) => card.hasTrait('scout')).length > 0;
 
         if(hasScout) {
-            const strengths = attackedProvinces.map(a => a.getStrength());
+            const strengths = attackedProvinces.map((a) => a.getStrength());
             return Math.max(...strengths);
         }
 
-        const strengths = attackedProvinces.map(a => a.getBaseStrength());
+        const strengths = attackedProvinces.map((a) => a.getBaseStrength());
         return Math.max(...strengths);
     }
 }

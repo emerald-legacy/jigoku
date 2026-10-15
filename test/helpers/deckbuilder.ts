@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { matchCardByNameAndPack } from './cardutil.js';
-import { GameModes } from '../../server/GameModes.js';
+import { GameMode } from '../../server/GameMode.js';
 import type { CardData } from '../../server/game/types/CardData.js';
 
 interface JsonCardData extends CardData {
@@ -105,7 +105,7 @@ class DeckBuilder {
         return cards;
     }
 
-    customDeck(player: PlayerDeckOptions = {}, gameMode: GameModes = GameModes.Stronghold): BuiltDeck {
+    customDeck(player: PlayerDeckOptions = {}, gameMode: GameMode = GameMode.Stronghold): BuiltDeck {
         let faction = defaultFaction;
         let role = defaultRole;
         let stronghold = defaultStronghold;
@@ -125,10 +125,10 @@ class DeckBuilder {
         if(player.stronghold) {
             stronghold = player.stronghold;
         }
-        if(player.strongholdProvince && gameMode !== GameModes.Skirmish) {
+        if(player.strongholdProvince && gameMode !== GameMode.Skirmish) {
             provinceDeck.push(player.strongholdProvince);
         }
-        if(player.provinces && gameMode !== GameModes.Skirmish) {
+        if(player.provinces && gameMode !== GameMode.Skirmish) {
             if(Array.isArray(player.provinces)) {
                 provinceDeck = provinceDeck.concat(player.provinces);
             } else {
@@ -139,7 +139,7 @@ class DeckBuilder {
                 });
             }
         }
-        if(gameMode !== GameModes.Skirmish) {
+        if(gameMode !== GameMode.Skirmish) {
             while(provinceDeck.length < minProvince) {
                 provinceDeck.push(provinceFiller);
             }
@@ -198,7 +198,7 @@ class DeckBuilder {
 
         const deck = provinceDeck.concat(conflictDeck)
             .concat(dynastyDeck).concat(inPlayCards)
-            .concat(gameMode === GameModes.Skirmish ? [] : role).concat(gameMode === GameModes.Skirmish ? [] : stronghold);
+            .concat(gameMode === GameMode.Skirmish ? [] : role).concat(gameMode === GameMode.Skirmish ? [] : stronghold);
 
         return this.buildDeck(faction, deck);
     }

@@ -56,32 +56,44 @@ describe('Illustrious Plagiarist', function() {
                     }
                 });
                 this.bayushiLiar = this.player1.findCardByName('bayushi-liar');
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
                 this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'political',
-                    attackers: [this.bayushiLiar],
-                    defenders: [this.dojiWhisperer]
-                });
-                this.assassination = this.player2.clickCard('assassination');
-                this.player2.clickCard(this.bayushiLiar);
+                this.copyAssassination = (attackers) => {
+                    this.noMoreActions();
+                    this.initiateConflict({
+                        type: 'political',
+                        attackers: attackers,
+                        defenders: [this.dojiWhisperer]
+                    });
+                    this.assassination = this.player2.clickCard('assassination');
+                    this.player2.clickCard(this.bayushiLiar);
+                    expect(this.bayushiLiar.location).toBe('dynasty discard pile');
+                    this.player1.playAttachment('cloud-the-mind', this.dojiWhisperer);
+                    this.player2.pass();
+                    this.player1.clickCard(this.illustriousPlagiarist);
+                    this.player1.clickCard(this.assassination);
+                    this.player2.clickCard('banzai');
+                    this.player2.clickCard(this.dojiWhisperer);
+                    this.player2.clickPrompt('Done');
+                };
             });
 
             it('should allow plagiarist to copy Assassinate', function() {
-                expect(this.bayushiLiar.location).toBe('dynasty discard pile');
-                this.player1.playAttachment('cloud-the-mind', this.dojiWhisperer);
-                this.player2.pass();
-                this.illustriousPlagiarist = this.player1.clickCard('illustrious-plagiarist');
-                this.player1.clickCard(this.assassination);
-                this.player2.clickCard('banzai');
-                this.player2.clickCard(this.dojiWhisperer);
-                this.player2.clickPrompt('Done');
+                this.copyAssassination([this.bayushiLiar, this.illustriousPlagiarist]);
                 this.player1.clickCard(this.illustriousPlagiarist);
                 expect(this.player1).toHavePrompt('Illustrious Plagiarist');
                 expect(this.player1).toBeAbleToSelect(this.dojiWhisperer);
                 this.player1.clickCard(this.dojiWhisperer);
                 expect(this.dojiWhisperer.location).toBe('dynasty discard pile');
                 expect(this.player1.honor).toBe(7);
+            });
+
+            it('should not let a plagiarist at home use the copied conflict action', function() {
+                this.copyAssassination([this.bayushiLiar]);
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.dojiWhisperer.location).toBe('play area');
+                expect(this.player1.honor).toBe(10);
             });
         });
 

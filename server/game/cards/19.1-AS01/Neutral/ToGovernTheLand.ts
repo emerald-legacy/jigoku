@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -27,9 +27,9 @@ export default class ToGovernTheLand extends DrawCard {
     private governSkill(conflictType: ConflictType, card: DrawCard): number {
         switch(conflictType) {
             case ConflictType.Political:
-                return card.getMilitarySkill();
+                return card.militarySkill;
             case ConflictType.Military:
-                return card.getPoliticalSkill();
+                return card.politicalSkill;
             default:
                 return NaN;
         }
@@ -79,6 +79,6 @@ export default class ToGovernTheLand extends DrawCard {
     }
 
     private gameAction(): GameAction {
-        return AbilityDsl.actions.multiple([AbilityDsl.actions.sendHome(), AbilityDsl.actions.bow()]);
+        return multiple([sendHome(), bow()]);
     }
 }

@@ -2,7 +2,7 @@ import { CostReducer } from '../../build/server/game/CostReducer.js';
 
 describe('CostReducer', function () {
     beforeEach(function () {
-        this.gameSpy = jasmine.createSpyObj('game', ['on', 'removeListener', 'getFrameworkContext']);
+        this.gameSpy = jasmine.createSpyObj('game', ['on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow', 'getFrameworkContext']);
         this.source = {};
         this.limitSpy = jasmine.createSpyObj('limit', [
             'increment',

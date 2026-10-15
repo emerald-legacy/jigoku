@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import Ring from '../../Ring.js';
+import { msg } from '../../GameChat.js';
 
 class JadeTalisman extends DrawCard {
     static id = 'jade-talisman';
@@ -18,9 +19,9 @@ class JadeTalisman extends DrawCard {
                 onCardBowed: (event, context) => event.card === context.source.parentCharacter && event.context?.source instanceof Ring,
                 onCardReadied: (event, context) => event.card === context.source.parentCharacter && event.context?.source instanceof Ring
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of the {1}', context => [context.event.context.source]);
+            .cost(costs.sacrificeSelf())
+            .cancel()
+            .chatText((context) => msg`cancel the effects of the ${context.event.context.source}`);
     }
 }
 

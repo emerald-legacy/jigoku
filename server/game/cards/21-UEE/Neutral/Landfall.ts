@@ -11,6 +11,6 @@ export default class Landfall extends ProvinceCard {
                     event.card === context.source && context.player.dynastyDeck.length > 0
             })
             .handler((context) => placeInProvinces(context, context.player.dynastyDeck.slice(0, 8)))
-            .effect('look at the top 8 cards of their dynasty deck');
+            .chatText('look at the top 8 cards of their dynasty deck');
     }
 }

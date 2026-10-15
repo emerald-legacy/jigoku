@@ -5,14 +5,14 @@ describe('Planted Fields', function() {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['vanguard-warrior'],
-                    dynastyDiscard: ['planted-fields']
+                    dynastyDiscard: ['planted-fields', 'planted-fields']
                 },
                 player2: {
                     inPlay: ['vanguard-warrior']
                 }
             });
 
-            this.plantedFields = this.player1.findCardByName('planted-fields');
+            [this.plantedFields, this.otherFields] = this.player1.filterCardsByName('planted-fields');
             this.shameful = this.player1.findCardByName('shameful-display', 'province 1');
             this.player1.placeCardInProvince(this.plantedFields, 'province 1');
 
@@ -53,12 +53,13 @@ describe('Planted Fields', function() {
         });
 
         it('should give 2 honor instead if a copy was already triggered this round', function() {
-            this.plantedFields.triggeredByPlayer.add(this.player1.player.name);
+            this.player1.placeCardInProvince(this.otherFields, 'province 2');
+            this.noMoreActions();
+            this.player1.clickCard(this.otherFields);
 
             const honor = this.player1.honor;
             const fate = this.player1.fate;
             const handSize = this.player1.hand.length;
-            this.noMoreActions();
             this.player1.clickCard(this.plantedFields);
 
             expect(this.player1.honor).toBe(honor + 2);
@@ -81,10 +82,11 @@ describe('Planted Fields', function() {
         });
 
         it('should gain honor through a game event if a copy was already triggered this round', function() {
-            this.plantedFields.triggeredByPlayer.add(this.player1.player.name);
+            this.player1.placeCardInProvince(this.otherFields, 'province 2');
+            this.noMoreActions();
+            this.player1.clickCard(this.otherFields);
             const honorGained = jasmine.createSpy('onModifyHonor');
             this.game.on('onModifyHonor', honorGained);
-            this.noMoreActions();
             this.player1.clickCard(this.plantedFields);
 
             expect(honorGained).toHaveBeenCalledWith(jasmine.objectContaining({ amount: 2 }));

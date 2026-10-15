@@ -1,5 +1,5 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { Location } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
@@ -20,18 +20,13 @@ class Untainted extends ProvinceAttachment {
                     return !!token.card && (token.card === parent || (token.card instanceof DrawCard && token.card.isParticipating()));
                 }
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.discardStatusToken((context) => ({
-                    target: context.token
-                })),
-                AbilityDsl.actions.gainHonor((context) => ({
-                    target: context.player
-                }))
-            ]))
-            .effect('gain 1 honor and discard {1} from {2}', (context) => {
-                const card = context.token[0].card;
-                return card ? [context.token, card] : [];
-            });
+            .discardStatusToken((context) => ({
+                target: context.token
+            }))
+            .gainHonor((context) => ({
+                target: context.player
+            }))
+            .chatText((context) => msg`gain 1 honor and discard ${context.token} from ${context.token[0].card}`);
     }
 }
 

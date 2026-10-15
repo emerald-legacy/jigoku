@@ -1,6 +1,6 @@
-import EventWindow from './EventWindow.js';
-import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
-import { EventName, AbilityType } from '../Constants.js';
+import { EventWindow } from './EventWindow.js';
+import { TriggeredAbilityWindow } from '../gamesteps/TriggeredAbilityWindow.js';
+import { EventName, AbilityType, RestrictionType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
 import type { GameEvent } from './EventPayloads.js';
@@ -40,7 +40,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
             const ability = context.ability;
             const alternatePools = context.player.getAlternateFatePools(this.playEvent.card, context);
             const alternatePoolTotal = alternatePools.reduce((total: number, pool: { fate: number }) => total + pool.fate, 0);
-            const maxPlayerFate = context.player.checkRestrictions('spendFate', context) ? context.player.fate : 0;
+            const maxPlayerFate = context.player.checkRestrictions(RestrictionType.SpendFate, context) ? context.player.fate : 0;
             const reducedCost = ability.getReducedCost(context);
             return Math.max(reducedCost - maxPlayerFate - alternatePoolTotal, 0);
         }
@@ -55,7 +55,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
     }
 }
 
-export default class InitiateAbilityEventWindow extends EventWindow {
+export class InitiateAbilityEventWindow extends EventWindow {
     eventsToExecute: Event[] = [];
 
     openWindow(abilityType: AbilityType) {
@@ -67,14 +67,7 @@ export default class InitiateAbilityEventWindow extends EventWindow {
     }
 
     executeHandler() {
-        this.eventsToExecute = [...this.events].sort((a, b) => a.order - b.order);
-
-        this.eventsToExecute.forEach(event => {
-            event.checkCondition();
-            if(!event.cancelled) {
-                event.executeHandler();
-            }
-        });
+        this.executeEvents();
 
         // We need to separate executing the handler and emitting events as in this window, the handler just
         // queues ability resolution steps, and we don't want the events to be emitted until step 8
@@ -82,7 +75,7 @@ export default class InitiateAbilityEventWindow extends EventWindow {
     }
 
     emitEvents() {
-        this.eventsToExecute = this.eventsToExecute.filter(event => !event.cancelled);
-        this.eventsToExecute.forEach(event => this.game.emit(event.name, event));
+        this.eventsToExecute = this.eventsToExecute.filter((event) => !event.cancelled);
+        this.eventsToExecute.forEach((event) => this.game.emit(event));
     }
 }

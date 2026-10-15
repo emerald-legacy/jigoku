@@ -1,5 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class BorderlandsDefender extends DrawCard {
     static id = 'borderlands-defender';
@@ -8,13 +9,13 @@ export default class BorderlandsDefender extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isDefending(),
             effect: [
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'sendHome',
-                    restricts: 'opponentsCardEffects'
+                cardCannot({
+                    cannot: RestrictionType.SendHome,
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'bow',
-                    restricts: 'opponentsCardEffects'
+                cardCannot({
+                    cannot: RestrictionType.Bow,
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 })
             ]
         });

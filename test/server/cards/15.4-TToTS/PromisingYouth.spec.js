@@ -30,8 +30,8 @@ describe('Promising Youth', function () {
                 this.player1.clickPrompt('Play Promising Youth as an attachment');
                 this.player1.clickCard(this.whisperer);
                 expect(this.whisperer.attachments.length).toBe(1);
-                expect(this.whisperer.getMilitarySkill()).toBe(this.whisperer.printedMilitarySkill + 2);
-                expect(this.whisperer.getPoliticalSkill()).toBe(this.whisperer.printedPoliticalSkill + 2);
+                expect(this.whisperer.militarySkill).toBe(this.whisperer.printedMilitarySkill + 2);
+                expect(this.whisperer.politicalSkill).toBe(this.whisperer.printedPoliticalSkill + 2);
             });
 
             it('should be treated as an attachment in play', function () {

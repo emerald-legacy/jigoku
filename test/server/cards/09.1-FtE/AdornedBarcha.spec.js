@@ -81,8 +81,8 @@ describe('Adorned Barcha', function() {
                 });
                 this.player2.pass();
                 this.player1.playAttachment('adorned-barcha', 'iuchi-shahai');
-                expect(this.iuchishahai.getMilitarySkill()).toBe(this.iuchishahai.getBaseMilitarySkill() + 3);
-                expect(this.iuchishahai.getPoliticalSkill()).toBe(this.iuchishahai.getBasePoliticalSkill());
+                expect(this.iuchishahai.militarySkill).toBe(this.iuchishahai.getBaseMilitarySkill() + 3);
+                expect(this.iuchishahai.politicalSkill).toBe(this.iuchishahai.getBasePoliticalSkill());
             });
         });
     });

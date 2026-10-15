@@ -1,6 +1,6 @@
 import type { Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
 import { isRingClaimed } from '../claimedRings.js';
 
 export function makeTempleOfFortuneX(id: string, element: Element) {
@@ -12,7 +12,7 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
         setupCardAbilities() {
             this.persistentEffect({
                 condition: () => isRingClaimed(this, elementKeys[0]),
-                effect: AbilityDsl.effects.modifyProvinceStrength(2)
+                effect: modifyProvinceStrength(2)
             });
 
             this.forcedReaction('Place one fate on the unclaimed ring')
@@ -21,9 +21,9 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
                         event.conflict.declaredProvince === context.source &&
                         context.game.rings[this.getCurrentElementSymbol(elementKeys[1])].isUnclaimed()
                 })
-                .gameAction(AbilityDsl.actions.placeFateOnRing((context) => ({
+                .placeFateOnRing((context) => ({
                     target: context.game.rings[this.getCurrentElementSymbol(elementKeys[1])]
-                })));
+                }));
         }
 
         getPrintedElementSymbols() {

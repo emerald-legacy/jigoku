@@ -55,7 +55,7 @@ describe('Iuchi Rimei', function () {
             expect(this.player2).not.toBeAbleToSelect(this.fan);
             expect(this.player2).toBeAbleToSelect(this.katana);
             expect(this.player2).not.toBeAbleToSelect(this.fashion);
-            expect(this.player2).toBeAbleToSelect(this.river);
+            expect(this.player2).not.toBeAbleToSelect(this.river);
         });
 
         it('should not allow targeting an attachment that has changed control', function () {
@@ -116,16 +116,10 @@ describe('Iuchi Rimei', function () {
             expect(this.doomed.attachments).not.toContain(this.katana);
         });
 
-        it('should discard newly illegal attachments', function () {
+        it('should not offer an attachment with no legal destination', function () {
             this.player2.clickCard(this.rimei);
-            this.player2.clickCard(this.river);
-            expect(this.player2).toBeAbleToSelect(this.kuwanan);
-            this.player2.clickCard(this.kuwanan);
-            expect(this.river.location).toBe('conflict discard pile');
-            expect(this.getChatLogs(3)).toContain(
-                'player2 uses Iuchi Rimei to move Force of the River to another character'
-            );
-            expect(this.getChatLogs(2)).toContain('player2 moves Force of the River to Doji Kuwanan');
+            expect(this.player2).not.toBeAbleToSelect(this.river);
+            expect(this.river.location).toBe('play area');
         });
 
         it('should not discard a unique attachment controlled by both players (moving from opponent character)', function () {
@@ -144,6 +138,38 @@ describe('Iuchi Rimei', function () {
                 'player2 uses Iuchi Rimei to move Talisman of the Sun to another character'
             );
             expect(this.getChatLogs(4)).toContain('player2 moves Talisman of the Sun to Doomed Shugenja');
+        });
+    });
+});
+
+describe('Iuchi Rimei and attachment restrictions', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['iuchi-rimei']
+                },
+                player2: {
+                    inPlay: ['disciple-of-shinsei', 'tattooed-wanderer', 'doji-whisperer'],
+                    hand: ['centipede-tattoo']
+                }
+            });
+            this.rimei = this.player1.findCardByName('iuchi-rimei');
+            this.disciple = this.player2.findCardByName('disciple-of-shinsei');
+            this.wanderer = this.player2.findCardByName('tattooed-wanderer');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.tattoo = this.player2.findCardByName('centipede-tattoo');
+
+            this.player1.pass();
+            this.player2.playAttachment(this.tattoo, this.disciple);
+        });
+
+        it('only offers characters the attachment can move to', function () {
+            this.player1.clickCard(this.rimei);
+            this.player1.clickCard(this.tattoo);
+            expect(this.player1).toBeAbleToSelect(this.wanderer);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
         });
     });
 });

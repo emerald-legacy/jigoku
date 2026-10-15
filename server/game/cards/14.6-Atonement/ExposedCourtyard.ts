@@ -1,6 +1,10 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Location, Players, Duration, ConflictType } from '../../Constants.js';
+import { canPlayFromOutOfPlay, delayedEffect, registerToPlayFromOutOfPlay } from '../../effects.js';
+import { cardLastingEffect, handler, returnToDeck, selectCard, sequential } from '../../GameActions/GameActions.js';
+import { CardType, Location, Players, ConflictType } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../BaseCard.js';
 import type { Cost } from '../../costs/Cost.js';
 
 const exposedCourtyardCost = (): Cost<{ exposedCourtyardCost: DrawCard[] }> => ({
@@ -18,7 +22,7 @@ const exposedCourtyardCost = (): Cost<{ exposedCourtyardCost: DrawCard[] }> => (
     },
     pay(context) {
         const discardedCards = context.costs.exposedCourtyardCost ?? [];
-        discardedCards.slice(0, 2).forEach(card => {
+        discardedCards.slice(0, 2).forEach((card) => {
             card.controller.moveCard(card, Location.ConflictDiscardPile);
         });
     }
@@ -29,62 +33,50 @@ class ExposedCourtyard extends DrawCard {
 
     setupCardAbilities() {
         this.action('Make an event in your conflict discard playable')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .cost(exposedCourtyardCost())
-            .condition(context => context.game.isDuringConflict(ConflictType.Military))
-            .gameAction(AbilityDsl.actions.sequential([
+            .gameAction(sequential([
                 // always legal, so this can trigger when only the cards the cost discards give it a choice
-                AbilityDsl.actions.handler({
+                handler({
                     handler: () => true
                 }),
-                AbilityDsl.actions.selectCard((context) => ({
+                selectCard((context) => ({
                     location: Location.ConflictDiscardPile,
                     cardType: CardType.Event,
                     activePromptTitle: 'Choose an event',
                     controller: Players.Self,
                     targets: true,
-                    subActionProperties: (card) => {
-                        context.target = card;
-                        return ({ target: card });
-                    },
-                    gameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.playerLastingEffect((context) => {
-                            return {
-                                targetController: context.player,
-                                duration: Duration.Custom,
-                                until: {
-                                    onCardMoved: event => {
-                                        return event.card === context.target && event.originalLocation === Location.ConflictDiscardPile;
-                                    },
-                                    onConflictFinished: () => true
-                                },
-                                effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, context.target?.isDrawCard() ? [context.target] : [], this)
-                            };
+                    subActionProperties: (card) => ({ target: card, effect: this.returnAfterPlay(context, card) }),
+                    gameAction: sequential([
+                        cardLastingEffect({
+                            targetLocation: Location.ConflictDiscardPile,
+                            effect: [canPlayFromOutOfPlay((player) => player === context.player), registerToPlayFromOutOfPlay()]
                         }),
-                        AbilityDsl.actions.cardLastingEffect((context) => ({
+                        // its effect comes from subActionProperties
+                        cardLastingEffect({
                             targetLocation: Location.Any,
-                            canChangeZoneNTimes: 2,
-                            effect: AbilityDsl.effects.delayedEffect({
-                                when: {
-                                    onCardPlayed: (event) => {
-                                        return event.card === context.target && event.player === context.target?.controller;
-                                    }
-                                },
-                                multipleTrigger: true,
-                                message: '{0} returns to the bottom of the deck due to {1}\'s effect',
-                                messageArgs: [context.target, context.source],
-                                gameAction: AbilityDsl.actions.returnToDeck({
-                                    location: Location.Any,
-                                    bottom: true
-                                })
-                            })
-                        }))
+                            canChangeZoneNTimes: 2
+                        })
                     ]),
-                    message: '{0} can play {1} this conflict. It will be put on the bottom of the deck if it\'s played this conflict',
-                    messageArgs: card => [context.player, card, context.source]
+                    message: (context, card) => msg`${context.player} can play ${card} this conflict. It will be put on the bottom of the deck if it's played this conflict`
                 }))
             ]))
-            .effect('pick an event to make playable this conflict')
+            .chatText('pick an event to make playable this conflict')
             .cannotTargetFirst();
+    }
+
+    private returnAfterPlay(context: AbilityContext, event: BaseCard) {
+        return delayedEffect({
+            when: {
+                onCardPlayed: (played) => played.card === event && played.player === context.player
+            },
+            multipleTrigger: true,
+            message: () => msg`${event} returns to the bottom of the deck due to ${context.source}'s effect`,
+            gameAction: returnToDeck({
+                location: Location.Any,
+                bottom: true
+            })
+        });
     }
 }
 

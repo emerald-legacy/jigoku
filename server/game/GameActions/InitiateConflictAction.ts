@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { ConflictType, EventName } from '../Constants.js';
+import { type ConflictType, EventName } from '../Constants.js';
 import type Player from '../Player.js';
-import { ProvinceCard } from '../ProvinceCard.js';
+import type { ProvinceCard } from '../ProvinceCard.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-import type { ActionEvent } from './GameAction.js';
+import type { ActionEvent, ActionOverrides } from './GameAction.js';
 
 export interface InitiateConflictProperties extends PlayerActionProperties {
     canPass?: boolean;
@@ -19,14 +19,11 @@ export class InitiateConflictAction<C extends AbilityContext = AbilityContext> e
         canPass: true
     };
 
-    canAffect(player: Player, context: C): boolean {
-        const { forcedDeclaredType } = this.getProperties(context);
+    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const { forcedDeclaredType } = this.getProperties(context, additionalProperties);
         return super.canAffect(player, context) && player.hasLegalConflictDeclaration({ forcedDeclaredType });
     }
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
     eventHandler(event: ActionEvent<EventName.OnConflictInitiated, C>, additionalProperties: Record<string, unknown>): void {
         const context = event.context;

@@ -1,12 +1,12 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { consideredLessHonorable } from '../../effects.js';
 
 class LoyalOathbreaker extends DrawCard {
     static id = 'loyal-oathbreaker';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.consideredLessHonorable()
+            effect: consideredLessHonorable()
         });
     }
 }

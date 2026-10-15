@@ -205,6 +205,7 @@ describe('Cunning Negotiator', function() {
             this.player1.clickPrompt('2');
             this.player2.clickPrompt('1');
             this.player1.clickPrompt('Yes');
+            expect(this.getChatLogs(10)).toContain('player1 chooses to trigger a province ability');
             this.player1.pass();
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.clickCard(this.manicuredGarden);

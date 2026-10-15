@@ -1,20 +1,22 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyGlory } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 
 class AsahinaDiviner extends DrawCard {
     static id = 'asahina-diviner';
 
     setupCardAbilities() {
-        this.action('Give a participating character +3 glory')
+        this.conflictAction('Give a participating character +3 glory', { evenFromHome: true })
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyGlory(3)
+            }, cardLastingEffect({
+                effect: modifyGlory(3)
             }))
-            .effect('give {0} +3 glory until the end of the conflict')
-            .max(AbilityDsl.limit.perConflict(1));
+            .chatText('give {0} +3 glory until the end of the conflict')
+            .max(perConflict(1));
     }
 }
 

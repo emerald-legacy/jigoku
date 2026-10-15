@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class ICanSwim extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating() && card.isDishonored
-            }, AbilityDsl.actions.discardFromPlay())
+            }, discardFromPlay())
             .cannotBeMirrored();
     }
 }

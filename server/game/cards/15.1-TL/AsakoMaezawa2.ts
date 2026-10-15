@@ -1,5 +1,5 @@
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class AsakoMaezawa2 extends DrawCard {
@@ -16,14 +16,9 @@ export default class AsakoMaezawa2 extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.getFate() === 0
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.bow(),
-                AbilityDsl.actions.conditional({
-                    condition: (context) => !!context.target?.isFaction('phoenix'),
-                    trueGameAction: AbilityDsl.actions.dishonor(),
-                    falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
-                })
-            ]))
-            .effect('bow {0}');
+            }, bow())
+            .if((context) => !!context.target?.isFaction('phoenix'))
+            .dishonor()
+            .chatText('bow {0}');
     }
 }

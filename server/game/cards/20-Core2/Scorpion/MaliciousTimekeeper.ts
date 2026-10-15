@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { forceConflictUnopposed } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MaliciousTimekeeper extends DrawCard {
@@ -7,7 +7,7 @@ export default class MaliciousTimekeeper extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking() && this.game.currentConflict?.winner === context.player,
-            effect: AbilityDsl.effects.forceConflictUnopposed()
+            effect: forceConflictUnopposed()
         });
     }
 }

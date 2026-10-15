@@ -1,15 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class BrashSamurai extends DrawCard {
     static id = 'brash-samurai';
 
     setupCardAbilities() {
         this.action('Honor this character')
-            .condition(context =>
+            .condition((context) =>
                 context.source.isParticipatingFor(context.player) &&
                 this.game.currentConflict?.getNumberOfParticipantsFor(context.player) === 1)
-            .gameAction(AbilityDsl.actions.honor());
+            .honor();
     }
 }
 

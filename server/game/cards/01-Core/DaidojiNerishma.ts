@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { flipDynasty } from '../../GameActions/GameActions.js';
 
 class DaidojiNerishma extends DrawCard {
     static id = 'daidoji-nerishma';
@@ -10,8 +10,8 @@ class DaidojiNerishma extends DrawCard {
             .target({
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: card => card.isDynasty && card.isFacedown()
-            }, AbilityDsl.actions.flipDynasty());
+                cardCondition: (card) => card.isDynasty && card.isFacedown()
+            }, flipDynasty());
     }
 }
 

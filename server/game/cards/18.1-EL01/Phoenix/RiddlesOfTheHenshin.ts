@@ -1,13 +1,16 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 import type Player from '../../../Player.js';
 import type Ring from '../../../Ring.js';
+import { resolveRingEffect } from '../../../GameActions/GameActions.js';
+import { perRound } from '../../../AbilityLimit.js';
 
 function getNumberOfMonks(context: AbilityContext) {
     return context.player.cardsInPlay.reduce(
-        (total, card) => total + (card.getType() === CardType.Character && card.hasTrait('monk') ? 1 : 0),
+        (total, card) => total + (card.type === CardType.Character && card.hasTrait('monk') ? 1 : 0),
         0
     );
 }
@@ -55,8 +58,8 @@ class Process {
     }
 
     private resolveRings(player: Player) {
-        this.context.game.addMessage('{0} resolves {1}', player, this.chosenRings);
-        const action = this.context.game.actions.resolveRingEffect({ target: this.chosenRings, enforceOrderedResolution: true });
+        this.context.game.addMessage(msg`${player} resolves ${this.chosenRings}`);
+        const action = resolveRingEffect({ target: this.chosenRings, enforceOrderedResolution: true });
         const events: Event[] = [];
         action.addEventsToArray(events, this.context.game.getFrameworkContext(player));
         this.context.game.openThenEventWindow(events);
@@ -86,6 +89,7 @@ export default class RiddlesOfTheHenshin extends DrawCard {
         this.action('Resolve ring effects')
             .condition((context) => getNumberOfMonks(context) > 0 && context.player.getClaimedRings().length > 0)
             .handler((context) => new Process(getNumberOfMonks(context), context).promptPlayer())
-            .effect('resolve ring effects');
+            .chatText('resolve ring effects')
+            .max(perRound(1));
     }
 }

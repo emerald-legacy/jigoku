@@ -1,20 +1,21 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBaseMilitarySkillMultiplier } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class WayOfTheLion extends DrawCard {
     static id = 'way-of-the-lion';
 
     setupCardAbilities() {
-        this.action('Double the base mil of a character')
-            .condition(() => this.game.isDuringConflict())
+        this.conflictAction('Double the base mil of a character')
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isFaction('lion') && card.getBaseMilitarySkill() > 0
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyBaseMilitarySkillMultiplier(2)
+                cardCondition: (card) => card.isFaction('lion') && card.getBaseMilitarySkill() > 0
+            }, cardLastingEffect({
+                effect: modifyBaseMilitarySkillMultiplier(2)
             }))
-            .effect('double the base {1} skill of {0}', () => 'military');
+            .chatText((context) => msg`double the base ${'military'} skill of ${context.chatTarget()}`);
     }
 }
 

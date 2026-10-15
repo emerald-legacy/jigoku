@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cancel, dishonor, honor } from '../../GameActions/GameActions.js';
 import { CardType, EventName } from '../../Constants.js';
 
 class YoungRumormonger extends DrawCard {
@@ -15,11 +15,11 @@ class YoungRumormonger extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card !== context.event.card && card.controller === context.event.card.controller
-            }, AbilityDsl.actions.cancel((context) => ({
+            }, cancel((context) => ({
                 replacementGameAction:
                         context.event.name === EventName.OnCardHonored
-                            ? AbilityDsl.actions.honor()
-                            : AbilityDsl.actions.dishonor()
+                            ? honor()
+                            : dishonor()
             })));
     }
 }

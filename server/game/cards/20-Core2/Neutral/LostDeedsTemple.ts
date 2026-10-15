@@ -1,6 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 
 export default class LostDeedsTemple extends ProvinceCard {
     static id = 'lost-deeds-temple';
@@ -10,6 +10,6 @@ export default class LostDeedsTemple extends ProvinceCard {
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card) => !!card.parentCharacter?.isParticipating()
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }

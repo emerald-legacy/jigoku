@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Coward extends DrawCard {
@@ -7,7 +8,7 @@ export default class Coward extends DrawCard {
 
     public setupCardAbilities() {
         this.duelChallenge('Dishonor a character')
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',
                 cardType: CardType.Character,
                 controller: Players.Any,
@@ -25,11 +26,10 @@ export default class Coward extends DrawCard {
 
                     return isInvolved && isChallenger && higherSkill;
                 },
-                message: '{0} dishonors {1}',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.dishonor()
-            })))
-            .effect('dishonor a duel challenger');
+                message: (context, cards) => msg`${context.player} dishonors ${cards}`,
+                gameAction: dishonor()
+            }))
+            .chatText('dishonor a duel challenger');
 
         this.reaction('Dishonor a character')
             .when({
@@ -38,6 +38,6 @@ export default class Coward extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any
-            }, AbilityDsl.actions.dishonor());
+            }, dishonor());
     }
 }

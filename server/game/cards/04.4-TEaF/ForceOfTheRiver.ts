@@ -1,7 +1,17 @@
-import { CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { CardType, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { createToken } from '../../GameActions/GameActions.js';
 import SpiritOfTheRiver from '../SpiritOfTheRiver.js';
+
+/** The token as the chat shows it: a card fragment, so its name can be hovered. */
+const spiritsInChat = {
+    id: 'spirit-of-the-river',
+    label: 'Spirits of the River',
+    name: 'Spirits of the River',
+    facedown: false,
+    type: CardType.Character
+};
 
 export default class ForceOfTheRiver extends DrawCard {
     static id = 'force-of-the-river';
@@ -11,21 +21,15 @@ export default class ForceOfTheRiver extends DrawCard {
 
         this.action('Create spirits from facedown dynasty cards')
             .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.createToken((context) => ({
+            .gameAction(createToken((context) => ({
                 target: context.game
                     .getProvinceArray()
                     .flatMap((location) =>
                         context.player.getDynastyCardsInProvince(location).filter((card) => card.isFacedown())
                     ),
                 token: SpiritOfTheRiver,
-                canEnterConflict: (type) => type === 'military'
+                canEnterConflict: (type) => type === ConflictType.Military
             })))
-            .effect('summon {1}!', () => ({
-                id: 'spirit-of-the-river',
-                label: 'Spirits of the River',
-                name: 'Spirits of the River',
-                facedown: false,
-                type: CardType.Character
-            }));
+            .chatText(() => msg`summon ${spiritsInChat}!`);
     }
 }

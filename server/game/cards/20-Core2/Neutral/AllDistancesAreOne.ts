@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveConflict, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { captureCost } from '../../captureCost.js';
 
@@ -8,33 +9,26 @@ export default class AllDistancesAreOne extends DrawCard {
 
     setupCardAbilities() {
         this.action('Move conflict to a different province')
-            .cost(captureCost('originalProvince', (context) => context.game.requireConflict().conflictProvince ?? undefined))
             .condition((context) =>
                 !!(context.game.currentConflict
                     ?.getConflictProvinces()
-                    .every((province) => province.location !== Location.StrongholdProvince) &&
+                    .every((province) => province.location !== Location.StrongholdProvince && !province.isBroken) &&
                 context.player.cardsInPlay.some(
                     (card) => card.isParticipating() && card.hasTrait('shugenja')
                 )))
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .cost(captureCost('originalProvince', (context) => context.game.requireConflict().conflictProvince ?? undefined))
+            .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                gameAction: AbilityDsl.actions.moveConflict(),
-                message: '{0} moves the conflict to {1}',
-                messageArgs: (card) => [context.player, card]
-            })))
-            .effect('move the conflict to another eligible province')
-            .then((context) => ({
-                thenCondition: () => !context.costs.originalProvince?.isBroken,
-                gameAction: AbilityDsl.actions.onAffinity({
-                    trait: 'water',
-                    promptTitleForConfirmingAffinity: 'Flip the original province facedown?',
-                    effect: 'flip {0} facedown',
-                    effectArgs: () => [context.costs.originalProvince],
-                    gameAction: AbilityDsl.actions.turnFacedown({
-                        target: context.costs.originalProvince
-                    })
-                })
-            }));
+                gameAction: moveConflict(),
+                message: (context, card) => msg`${context.player} moves the conflict to ${card}`
+            })
+            .chatText('move the conflict to another eligible province')
+            .afterwardsIf((context) => !context.costs.originalProvince?.isBroken)
+            .onAffinity('water', {
+                activePromptTitle: 'Flip the original province facedown?',
+                chatText: (context) => msg`flip ${context.costs.originalProvince} facedown`
+            })
+            .gameAction(turnFacedown((context) => ({ target: context.costs.originalProvince })));
     }
 }

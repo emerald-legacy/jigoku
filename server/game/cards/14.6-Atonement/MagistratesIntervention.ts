@@ -1,36 +1,23 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 
 class MagistratesIntervention extends DrawCard {
     static id = 'magistrate-s-intervention';
 
     setupCardAbilities() {
         this.action('Dishonor a character')
+            .playOnlyIf((context) => context.player.cardsInPlay.some((card) => card.type === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate'))))
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.dishonor(),
-                AbilityDsl.actions.conditional({
-                    condition: (context) => !!(
-                        context.player.opponent && context.target?.controller === context.player.opponent &&
-                            context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1),
-                    trueGameAction: AbilityDsl.actions.dishonor(),
-                    falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
-                })
-
-            ]))
-            .effect('dishonor {0}{1}', (context) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1 ? ', then dishonor it again' : '']);
-    }
-
-    canPlay(context: AbilityContext, playType: string) {
-        if(!context.player.cardsInPlay.some(card => card.getType() === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
-            return false;
-        }
-
-        return super.canPlay(context, playType);
+                cardCondition: (card) => card.isAttacking()
+            }, dishonor())
+            .chatText((context) => msg`dishonor ${context.chatTarget()}${context.player.opponent && context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1 ? ', then dishonor it again' : ''}`)
+            .afterwardsIf((context) => !!(
+                context.player.opponent && context.target?.controller === context.player.opponent &&
+                    context.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1))
+            .dishonor((context) => ({ target: context.target }));
     }
 }
 

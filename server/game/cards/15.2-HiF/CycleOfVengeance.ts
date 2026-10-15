@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor, multiple, placeFate } from '../../GameActions/GameActions.js';
 
 export default class CycleOfVengeance extends ProvinceCard {
     static id = 'cycle-of-vengeance';
@@ -12,10 +12,10 @@ export default class CycleOfVengeance extends ProvinceCard {
             })
             .target({
                 cardType: CardType.Character
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.placeFate(),
-                AbilityDsl.actions.honor()
+            }, multiple([
+                placeFate(),
+                honor()
             ]))
-            .effect('honor and place a fate on {0}');
+            .chatText('honor and place a fate on {0}');
     }
 }

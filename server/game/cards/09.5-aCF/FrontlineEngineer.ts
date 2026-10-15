@@ -1,56 +1,32 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, DeckType } from '../../Constants.js';
+import { modifyGlory } from '../../effects.js';
+import { deckSearch, placeInProvince } from '../../GameActions/GameActions.js';
 
 class FrontlineEngineer extends DrawCard {
     static id = 'frontline-engineer';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyGlory(() => this.getHoldingsInPlay())
+            effect: modifyGlory(() => this.getHoldingsInPlay())
         });
 
         this.action('Place a holding from your deck faceup in the defending province')
-            .condition(context => context.player.dynastyDeck.length > 0 && context.source.isDefending())
-            .gameAction(AbilityDsl.actions.selectCard({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: card => card.isConflictProvince(),
-                gameAction: AbilityDsl.actions.handler({
-                    handler: (context, [province]) => this.game.promptWithHandlerMenu(context.player, {
-                        activePromptTitle: 'Choose a holding',
-                        context: context,
-                        cardCondition: (card) => card.getType() === CardType.Holding,
-                        cards: context.player.dynastyDeck.slice(0, 5),
-                        options: [
-                            {
-                                text: 'Take nothing',
-                                handler: () => {
-                                    this.game.addMessage('{0} takes nothing', context.player);
-                                    context.player.shuffleDynastyDeck();
-                                    return true;
-                                }
-                            }
-                        ],
-                        cardHandler: (cardFromDeck) => {
-                            if(!province?.isCard()) {
-                                return;
-                            }
-                            const cards = context.player.getDynastyCardsInProvince(province.location);
-                            this.game.addMessage('{0} discards {1}, replacing it with {2}', context.player, cards, cardFromDeck);
-                            context.player.moveCard(cardFromDeck, province.location);
-                            cardFromDeck.facedown = false;
-                            cards.forEach(element => {
-                                context.player.moveCard(element, Location.DynastyDiscardPile);
-                            });
-                            context.player.shuffleDynastyDeck();
-                        }
-                    })
-                })
-            }))
-            .effect('look at the top five cards of their dynasty deck');
+            .condition((context) => context.player.dynastyDeck.length > 0 && context.source.isDefending())
+            .selectAttackedProvince({
+                gameAction: (province) => deckSearch((context) => ({
+                    target: context.player,
+                    activePromptTitle: 'Choose a holding',
+                    cardsToLookAt: 5,
+                    deck: DeckType.Dynasty,
+                    cardCondition: (card) => card.type === CardType.Holding,
+                    message: (context, [card]) =>
+                        msg`${context.player} discards ${context.player.getDynastyCardsInProvince(province.location)}, replacing it with ${card}`,
+                    gameAction: placeInProvince({ destination: province.location, discard: 'all' })
+                }))
+            })
+            .chatText('look at the top five cards of their dynasty deck');
     }
 
     getHoldingsInPlay() {

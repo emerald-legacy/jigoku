@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { multiple, putIntoProvince, returnToHand } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location } from '../../Constants.js';
 
 class MasterOfManyLifetimes extends DrawCard {
@@ -22,18 +23,18 @@ class MasterOfManyLifetimes extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.facedown
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
-                replacementGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.returnToHand({
+            .cancel((context) => ({
+                replacementGameAction: multiple([
+                    returnToHand({
                         target: context.event.card?.attachments ?? []
                     }),
-                    AbilityDsl.actions.putIntoProvince({
+                    putIntoProvince({
                         target: context.event.card,
                         destination: context.target?.location
                     })
                 ])
-            })))
-            .effect('prevent {1} from leaving play, putting it into {2} instead', (context) => [context.event.card ?? '', context.target?.location ?? '']);
+            }))
+            .chatText((context) => msg`prevent ${context.event.card ?? ''} from leaving play, putting it into ${context.target?.location ?? ''} instead`);
     }
 }
 

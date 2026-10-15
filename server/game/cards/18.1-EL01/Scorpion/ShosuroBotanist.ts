@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { returnToHand } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 
 class ShosuroBotanist extends DrawCard {
@@ -10,9 +11,9 @@ class ShosuroBotanist extends DrawCard {
             .target({
                 cardType: CardType.Attachment,
                 controller: Players.Self,
-                cardCondition: card => !card.hasTrait('weapon')
-            }, AbilityDsl.actions.returnToHand())
-            .effect('return {0} to {1}\'s hand', context => [context.target.owner]);
+                cardCondition: (card) => !card.hasTrait('weapon')
+            }, returnToHand())
+            .chatText((context) => msg`return ${context.chatTarget()} to ${context.target.owner}'s hand`);
     }
 }
 

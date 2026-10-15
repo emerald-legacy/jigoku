@@ -79,9 +79,10 @@ describe('Mischievous Tanuki', function () {
 
                 this.tanuki = this.player1.findCardByName('mischievous-tanuki');
                 this.ideNegotiator = this.player1.findCardByName('ide-negotiator');
+                this.manipulator = this.player1.findCardByName('bayushi-manipulator');
             });
 
-            it('should prompt each player to choose a bid and not transfer honor and should not proc dial revealed reactions', function () {
+            it('should prompt each player to choose a bid, not transfer honor and let dial revealed reactions trigger', function () {
                 const p1Honor = this.player1.honor;
                 const p2Honor = this.player2.honor;
                 this.player1.clickCard(this.tanuki);
@@ -106,6 +107,9 @@ describe('Mischievous Tanuki', function () {
                 expect(this.player1.player.showBid).toBe(5);
 
                 this.player2.clickPrompt('1');
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.manipulator);
+                this.player1.clickPrompt('Pass');
 
                 expect(this.getChatLogs(5)).toContain('player2 has chosen a bid.');
                 expect(this.getChatLogs(10)).toContain('player1 reveals a bid of 3');
@@ -124,6 +128,7 @@ describe('Mischievous Tanuki', function () {
                 this.player1.clickCard(this.tanuki);
                 this.player1.clickPrompt('3');
                 this.player2.clickPrompt('1');
+                this.player1.clickPrompt('Pass');
 
                 expect(this.player2).toHavePrompt('Action Window');
 
@@ -140,6 +145,7 @@ describe('Mischievous Tanuki', function () {
                 this.player1.clickCard(this.tanuki);
                 this.player1.clickPrompt('3');
                 this.player2.clickPrompt('1');
+                this.player1.clickPrompt('Pass');
 
                 expect(this.player2).toHavePrompt('Action Window');
 
@@ -159,6 +165,7 @@ describe('Mischievous Tanuki', function () {
                 this.player1.clickCard(this.tanuki);
                 this.player1.clickPrompt('3');
                 this.player2.clickPrompt('2');
+                this.player1.clickPrompt('Pass');
 
                 expect(this.player1.fate).toBe(p1Fate);
                 expect(this.player2.fate).toBe(p2Fate);
@@ -189,6 +196,7 @@ describe('Mischievous Tanuki', function () {
                 expect(this.player1).toHavePrompt('Ide Negotiator');
 
                 this.player1.clickPrompt('Increase bid by 1');
+                this.player1.clickPrompt('Pass');
 
                 expect(this.player1.fate).toBe(p1Fate + 2);
                 expect(this.player2.fate).toBe(p2Fate - 2);

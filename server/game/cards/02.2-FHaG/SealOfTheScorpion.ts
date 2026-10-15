@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addFaction, addTrait } from '../../effects.js';
 
 class SealOfTheScorpion extends DrawCard {
     static id = 'seal-of-the-scorpion';
@@ -7,8 +7,8 @@ class SealOfTheScorpion extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.addFaction('scorpion'),
-                AbilityDsl.effects.addTrait('shinobi')
+                addFaction('scorpion'),
+                addTrait('shinobi')
             ]
         });
     }

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, CharacterStatus, EventName, Location } from '../Constants.js';
+import { CardType, CharacterStatus, EventName, Location, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -8,6 +8,7 @@ export type DishonorProperties = CardActionProperties;
 
 export class DishonorAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProperties, EventName.OnCardDishonored, C> {
     name = 'dishonor';
+    restriction = RestrictionType.Dishonor;
     eventName = EventName.OnCardDishonored;
     targetType = [CardType.Character];
     cost = 'dishonoring {0}';
@@ -16,7 +17,7 @@ export class DishonorAction<C extends AbilityContext = AbilityContext> extends C
     canAffect(card: BaseCard, context: C): boolean {
         if(card.location !== Location.PlayArea || card.type !== CardType.Character || card.isDishonored) {
             return false;
-        } else if(!card.isHonored && !card.checkRestrictions('receiveDishonorToken', context)) {
+        } else if(!card.isHonored && !card.checkRestrictions(RestrictionType.ReceiveDishonorToken, context)) {
             return false;
         }
         return super.canAffect(card, context);

@@ -59,6 +59,15 @@ describe('Forced Retirement', function () {
             expect(this.player1.honor).toBe(p1HonorBefore + 1);
         });
 
+        it('discards the honored status token too', function () {
+            this.cautiousScout.honor();
+            const p1HonorBefore = this.player1.honor;
+            this.player1.clickCard(this.forcedRetirement);
+            this.player1.clickCard(this.cautiousScout);
+            expect(this.cautiousScout.location).toBe('dynasty discard pile');
+            expect(this.player1.honor).toBe(p1HonorBefore + 1);
+        });
+
         it('explains what happened in the chat logs', function () {
             this.player1.clickCard(this.forcedRetirement);
             this.player1.clickCard(this.hotaru);

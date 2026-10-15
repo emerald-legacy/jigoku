@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
@@ -17,16 +18,26 @@ export class PlayerAction<
 > extends GameAction<P, N, C, D> {
     targetType = ['player'];
 
+    /** The ability's player; actions aimed at the opponent return `opponentTargets(context)`. */
     defaultTargets(context: C): Player[] {
-        return context.player && context.player.opponent ? [context.player.opponent] : [];
+        return context.player ? [context.player] : [];
     }
 
-    checkEventCondition(event: PlayerEvent<N, C>, additionalProperties: Record<string, unknown> = {}): boolean {
+    protected opponentTargets(context: C): Player[] {
+        return context.player?.opponent ? [context.player.opponent] : [];
+    }
+
+    checkEventCondition(event: PlayerEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.player, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: PlayerEvent<N, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: PlayerEvent<N, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.player = player;
     }
+}
+
+/** Whether an action's players are just the ability's own player, whom its chat line doesn't name. */
+export function onlyThePlayer(players: Player[], context: AbilityContext): boolean {
+    return players.length === 0 || (players.length === 1 && players[0] === context.player);
 }

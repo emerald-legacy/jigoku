@@ -1,37 +1,33 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { delayedEffect } from '../../effects.js';
+import { cardLastingEffect, dishonor, optional, moveToConflict, sequential } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class YogoHiroue extends DrawCard {
     static id = 'yogo-hiroue';
 
     setupCardAbilities() {
-        this.action('Move a character into the conflict')
-            .condition(context => context.source.isParticipating())
+        this.conflictAction('Move a character into the conflict')
             .target({
-                cardType: CardType.Character
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.moveToConflict(),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.delayedEffect({
+                cardType: CardType.Character,
+                cardCondition: (card) => !card.isParticipating()
+            }, sequential([
+                moveToConflict(),
+                cardLastingEffect((context) => ({
+                    effect: delayedEffect({
                         when: {
                             afterConflict: (event) => event.conflict.winner === context.player
                         },
-                        gameAction: AbilityDsl.actions.menuPrompt({
+                        gameAction: optional({
                             activePromptTitle: 'Dishonor ' + context.target.name + '?',
-                            choices: ['Yes', 'No'],
-                            choiceHandler: (choice, displayMessage) => {
-                                if(displayMessage && choice === 'Yes') {
-                                    context.game.addMessage('{0} chooses to dishonor {1} due to {2}\'s delayed effect', context.player, context.target, context.source);
-                                }
-                                return { target: (choice === 'Yes' ? context.target : []) };
-                            },
-                            gameAction: AbilityDsl.actions.dishonor()
+                            gameAction: dishonor({ target: context.target }),
+                            acceptMessage: () => msg`${context.player} chooses to dishonor ${context.target} due to ${context.source}'s delayed effect`
                         })
                     })
                 }))
             ]))
-            .effect('move {0} into the conflict - they may choose to dishonor it if they win the conflict');
+            .chatText('move {0} into the conflict - they may choose to dishonor it if they win the conflict');
     }
 }
 

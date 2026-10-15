@@ -1,5 +1,6 @@
-import { Location, Players, PlayType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { PlayType, RestrictionType, RestrictionScope } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { cardCannot, playerCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class GraspOfEarth extends DrawCard {
@@ -11,26 +12,20 @@ export default class GraspOfEarth extends DrawCard {
             trait: 'shugenja'
         });
 
-        this.persistentEffect({
-            location: Location.Any,
-            targetController: Players.Any,
-            condition: (context) => context.player.hasAffinity('earth', context),
-            effect: AbilityDsl.effects.reduceCost({ amount: 1, match: (card, source) => card === source })
-        });
-
         this.action('Opponent\'s cards cannot join this conflict')
-            .cost(AbilityDsl.costs.bowSelf())
             .condition((context) => this.game.isDuringConflict() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+            .cost(costs.bowSelf())
+            .cardLastingEffect((context) => ({
                 target: context.player.opponent?.cardsInPlay.slice(),
-                effect: AbilityDsl.effects.cardCannot('moveToConflict')
-            })), AbilityDsl.actions.playerLastingEffect((context) => ({
-                targetController: context.player.opponent,
-                effect: AbilityDsl.effects.playerCannot({
+                effect: cardCannot(RestrictionType.MoveToConflict)
+            }))
+            .playerLastingEffect((context) => ({
+                target: context.player.opponent,
+                effect: playerCannot({
                     cannot: PlayType.PlayFromHand,
-                    restricts: 'characters'
+                    appliesTo: RestrictionScope.Characters
                 })
-            })))
-            .effect('prevent the opponent from bringing characters to the conflict');
+            }))
+            .chatText('prevent the opponent from bringing characters to the conflict');
     }
 }

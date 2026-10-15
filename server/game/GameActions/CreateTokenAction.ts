@@ -1,48 +1,49 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { CardType, Duration, EventName, Location } from '../Constants.js';
-import Effects from '../effects.js';
+import { CardType, Duration, EventName, Location, ConflictType } from '../Constants.js';
+import { delayedEffect } from '../Effects/Library/delayedEffect.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import SpiritOfTheRiver from '../cards/SpiritOfTheRiver.js';
 import type { ActionEvent } from './GameAction.js';
+import { CardLastingEffectAction } from './CardLastingEffectAction.js';
+import { DiscardFromPlayAction } from './LeavesPlayAction.js';
 
 export interface CreateTokenProperties extends CardActionProperties {
     token: new (card: DrawCard) => DrawCard;
     leavingPlayMessage?: string;
-    canEnterConflict: (type: 'military' | 'political') => boolean;
+    canEnterConflict: (type: ConflictType) => boolean;
 }
 
 export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
     CreateTokenProperties,
     EventName.OnCreateTokenCharacter,
     C,
-    'token' | 'leavingPlayMessage' | 'canEnterConflict'
+    'leavingPlayMessage' | 'canEnterConflict'
 > {
     name = 'createToken';
     effect = 'create a token';
     eventName = EventName.OnCreateTokenCharacter;
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
     defaultProperties = {
-        token: SpiritOfTheRiver,
         leavingPlayMessage: '{0} returns to the deep',
         canEnterConflict: () => true
     };
 
-    canAffect(card: BaseCard, context: C): boolean {
-        const { canEnterConflict } = this.getProperties(context);
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const { canEnterConflict } = this.getProperties(context, additionalProperties);
 
         if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince) {
             return false;
-        } else if(context.game.isDuringConflict('military') && !canEnterConflict('military')) {
+        } else if(context.game.isDuringConflict(ConflictType.Military) && !canEnterConflict(ConflictType.Military)) {
             return false;
-        } else if(context.game.isDuringConflict('political') && !canEnterConflict('political')) {
+        } else if(context.game.isDuringConflict(ConflictType.Political) && !canEnterConflict(ConflictType.Political)) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const { token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
         const card = event.card;
@@ -60,18 +61,16 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
             }
         }
 
-        context.game.actions
-            .cardLastingEffect({
-                duration: Duration.UntilEndOfPhase,
-                effect: Effects.delayedEffect({
-                    when: {
-                        onConflictFinished: () => true
-                    },
-                    message: leavingPlayMessage,
-                    messageArgs: [token],
-                    gameAction: context.game.actions.discardFromPlay()
-                })
+        new CardLastingEffectAction({
+            duration: Duration.UntilEndOfPhase,
+            effect: delayedEffect({
+                when: {
+                    onConflictFinished: () => true
+                },
+                message: () => [leavingPlayMessage, [token]],
+                gameAction: new DiscardFromPlayAction({})
             })
+        })
             .resolve(token, context);
 
         event.tokenCharacter = token;

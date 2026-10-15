@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class Rout extends DrawCard {
     static id = 'rout';
@@ -14,7 +14,7 @@ class Rout extends DrawCard {
                     myCard.hasTrait('bushi') && myCard.isParticipating() &&
                     myCard.militarySkill > card.militarySkill
                 ))
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }
 

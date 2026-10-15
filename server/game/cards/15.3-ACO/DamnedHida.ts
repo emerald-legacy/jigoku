@@ -1,12 +1,12 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
 
 class DamnedHida extends DrawCard {
     static id = 'damned-hida';
 
     setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.modifyMilitarySkill(3)
+            effect: modifyMilitarySkill(3)
         });
     }
 }

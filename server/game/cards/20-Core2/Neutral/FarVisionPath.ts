@@ -1,6 +1,6 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveConflict } from '../../../GameActions/GameActions.js';
 
 export default class FarVisionPath extends ProvinceCard {
     static id = 'far-vision-path';
@@ -14,7 +14,7 @@ export default class FarVisionPath extends ProvinceCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self
-            }, AbilityDsl.actions.moveConflict());
+            }, moveConflict());
     }
 
     cannotBeStrongholdProvince() {

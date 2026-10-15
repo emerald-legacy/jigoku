@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, CardType, Location, Players, PlayType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { gainAbility } from '../../effects.js';
+import { playCard } from '../../GameActions/GameActions.js';
+import { CardType, Location, Players, PlayType } from '../../Constants.js';
 
 class Kunshu extends DrawCard {
     static id = 'kunshu';
@@ -12,24 +14,20 @@ class Kunshu extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Play a card',
-                cost: AbilityDsl.costs.discardImperialFavor(),
-                condition: (context) => context.source.isParticipating(),
-                printedAbility: false,
-                target: {
+            effect: gainAbility.action('Play a card', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .cost(costs.discardImperialFavor())
+                .target({
                     cardType: [CardType.Event, CardType.Attachment],
                     location: [Location.ConflictDiscardPile],
                     player: Players.Self,
-                    controller: Players.Opponent,
-                    gameAction: AbilityDsl.actions.playCard(() => ({
-                        playType: PlayType.Other,
-                        ignoreFateCost: true,
-                        source: this
-                    }))
-                },
-                effect: 'play {0}'
-            })
+                    controller: Players.Opponent
+                }, playCard(() => ({
+                    playType: PlayType.Other,
+                    ignoreFateCost: true,
+                    source: this
+                })))
+                .chatText('play {0}'))
         });
     }
 }

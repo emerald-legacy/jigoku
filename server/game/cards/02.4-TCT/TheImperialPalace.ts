@@ -1,12 +1,12 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { changePlayerGloryModifier } from '../../effects.js';
 
 class TheImperialPalace extends DrawCard {
     static id = 'the-imperial-palace';
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.changePlayerGloryModifier(3)
+            effect: changePlayerGloryModifier(3)
         });
     }
 }

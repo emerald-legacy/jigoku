@@ -1,5 +1,5 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import type Player from '../../Player.js';
 import { ConflictType } from '../../Constants.js';
 
@@ -19,11 +19,8 @@ class DaidojiKageyu extends DrawCard {
             .condition((context) => this.game.isDuringConflict(ConflictType.Political) &&
                 context.source.isParticipating() &&
                 cardsPlayed(context.player.opponent) > 0)
-            .gameAction(AbilityDsl.actions.draw((context) => ({ amount: cardsPlayed(context.player.opponent) })))
-            .effect('draw {1} card{2}', (context) => [
-                cardsPlayed(context.player.opponent),
-                cardsPlayed(context.player.opponent) > 1 ? 's' : ''
-            ]);
+            .draw((context) => ({ amount: cardsPlayed(context.player.opponent) }))
+            .chatText((context) => msg`draw ${cardsPlayed(context.player.opponent)} card${cardsPlayed(context.player.opponent) > 1 ? 's' : ''}`);
     }
 }
 

@@ -1,6 +1,7 @@
 import { Location, CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 export default class SeekingtheTruth extends ProvinceCard {
     static id = 'seeking-the-truth';
@@ -9,7 +10,7 @@ export default class SeekingtheTruth extends ProvinceCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             condition: (context) => !!context.player.role && context.player.role.hasTrait('water'),
-            effect: AbilityDsl.effects.modifyProvinceStrength(2)
+            effect: modifyProvinceStrength(2)
         });
 
         this.interrupt('Move a character home')
@@ -20,6 +21,6 @@ export default class SeekingtheTruth extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
-            }, AbilityDsl.actions.sendHome());
+            }, sendHome());
     }
 }

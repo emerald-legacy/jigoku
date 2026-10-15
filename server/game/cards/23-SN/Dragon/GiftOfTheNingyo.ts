@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../../effects.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,11 +9,11 @@ export default class GiftOfTheNingyo extends DrawCard {
         this.whileAttached({
             condition: (context) => (
                 Boolean(context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
-                    this.getCharacters(context).some(card => card.hasSomeTrait('creature', 'spirit') ||
-                        card.attachments.some(attachment => attachment.hasSomeTrait('creature', 'spirit'))
+                    this.getCharacters(context).some((card) => card.hasSomeTrait('creature', 'spirit') ||
+                        card.attachments.some((attachment) => attachment.hasSomeTrait('creature', 'spirit'))
                     )
                 )),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(2)
+            effect: modifyPoliticalSkill(2)
         });
     }
 

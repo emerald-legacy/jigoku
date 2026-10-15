@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -17,12 +18,12 @@ export default class ChallengeOnTheFields extends DrawCard {
                 statistic: (card, duelRules) =>
                     duelRules === 'printedSkill'
                         ? card.printedMilitarySkill + participatingCharacters(card.controller) - 1
-                        : card.getMilitarySkill(),
-                challengerEffect: AbilityDsl.effects.modifyMilitarySkill(participatingCharacters(context.player) - 1),
-                targetEffect: AbilityDsl.effects.modifyMilitarySkill(
+                        : card.militarySkill,
+                challengerEffect: modifyMilitarySkill(participatingCharacters(context.player) - 1),
+                targetEffect: modifyMilitarySkill(
                     context.player.opponent ? participatingCharacters(context.player.opponent) - 1 : 0
                 ),
-                gameAction: (duel) => AbilityDsl.actions.sendHome({ target: duel.loser })
+                gameAction: (duel) => sendHome({ target: duel.loser })
             }));
     }
 }

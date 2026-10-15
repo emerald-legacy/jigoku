@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -8,23 +9,23 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
-type AttachEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardAttached, C> & { parent: BaseCard };
+// the controller after attaching is decided when the event is created, before other events of the same window change it
+type AttachEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardAttached, C> & { parent: BaseCard; newController?: Player };
 
-export interface AttachActionProperties extends CardActionProperties {
+export interface AttachProperties extends CardActionProperties {
     attachment?: DrawCard;
     ignoreType?: boolean;
     takeControl?: boolean;
     giveControl?: boolean;
     ignoreUniqueness?: boolean;
     viaDisguised?: boolean;
-    wasACharacter?: boolean;
 }
 
 export class AttachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
-    AttachActionProperties,
+    AttachProperties,
     EventName.OnCardAttached,
     C,
-    'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised' | 'wasACharacter'
+    'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised'
 > {
     name = 'attach';
     eventName = EventName.OnCardAttached;
@@ -34,12 +35,11 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         takeControl: false,
         giveControl: false,
         ignoreUniqueness: false,
-        viaDisguised: false,
-        wasACharacter: false
+        viaDisguised: false
     };
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.takeControl) {
             return ['take control of and attach {2}\'s {1} to {0}', [properties.attachment, properties.attachment?.parent]];
         } else if(properties.giveControl) {
@@ -48,34 +48,32 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         return ['attach {1} to {0}', [properties.attachment]];
     }
 
-    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.viaDisguised) {
             return true;
         }
 
-        if(!context.player || (card.location !== Location.PlayArea && card.type !== CardType.Province)) {
-            return false;
-        } else if(
-            !properties.attachment ||
-            (!properties.ignoreUniqueness && properties.attachment.anotherUniqueInPlay(context.player)) ||
-            !properties.attachment.canAttach(card, {
-                ignoreType: properties.ignoreType,
-                controller: this.getFinalController(properties, context) ?? properties.attachment.controller
-            })
-        ) {
-            return false;
-        } else if(properties.takeControl && properties.attachment.controller === context.player) {
-            return false;
-        } else if(properties.giveControl && properties.attachment.controller !== context.player) {
-            return false;
-        } else if(!card.checkRestrictions('play', context)) {
+        const attachment = properties.attachment;
+        if(!context.player || (card.location !== Location.PlayArea && card.type !== CardType.Province) || !attachment) {
             return false;
         }
-        return card.allowAttachment(properties.attachment) && super.canAffect(card, context);
+        const controller = this.getFinalController(properties, context) ?? attachment.controller;
+        if(
+            (!properties.ignoreUniqueness && attachment.anotherUniqueInPlay(context.player)) ||
+            !attachment.canAttach(card, { ignoreType: properties.ignoreType, controller }) ||
+            card.hasCopyOfAttachment(attachment, controller)
+        ) {
+            return false;
+        } else if(properties.takeControl && attachment.controller === context.player) {
+            return false;
+        } else if(properties.giveControl && attachment.controller !== context.player) {
+            return false;
+        }
+        return card.allowAttachment(attachment) && super.canAffect(card, context);
     }
 
-    getFinalController(properties: AttachActionProperties, context: C): Player | undefined {
+    getFinalController(properties: AttachProperties, context: C): Player | undefined {
         if(properties.takeControl) {
             return context.player;
         } else if(properties.giveControl) {
@@ -95,35 +93,39 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
     }
 
     addPropertiesToEvent(event: AttachEvent<C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): void {
-        const { attachment } = this.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         event.parent = card;
-        if(attachment) {
-            event.card = attachment;
+        if(properties.attachment) {
+            event.card = properties.attachment;
         }
         event.context = context;
+        if(properties.takeControl) {
+            event.newController = context.player;
+        } else if(properties.giveControl) {
+            event.newController = context.player.opponent;
+        }
     }
 
-    eventHandler(event: AttachEvent<C>, additionalProperties = {}): void {
+    eventHandler(event: AttachEvent<C>, additionalProperties: ActionOverrides = {}): void {
         const card = event.card;
         const parent = event.parent;
         const context = event.context;
-        const properties = this.getProperties(context, additionalProperties);
         event.originalLocation = card.location;
 
-        if(card.location === Location.PlayArea && !properties.wasACharacter) {
-            card.parent?.removeAttachment(card);
+        if(card.location === Location.PlayArea && card.parent) {
+            card.parent.removeAttachment(card);
         } else {
+            if(card.location === Location.PlayArea) {
+                context.game.currentConflict?.removeFromConflict(card);
+            }
             card.controller.removeCardFromPile(card);
             card.new = true;
             card.moveTo(Location.PlayArea);
         }
         parent.attachments.push(card);
         card.parent = parent;
-        if(properties.takeControl) {
-            card.controller = context.player;
-            card.updateEffectContexts();
-        } else if(properties.giveControl && context.player.opponent) {
-            card.controller = context.player.opponent;
+        if(event.newController) {
+            card.controller = event.newController;
             card.updateEffectContexts();
         }
         if(parent.getType() === CardType.Province) {

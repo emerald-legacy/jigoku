@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { restrictNumberOfDefenders } from '../../effects.js';
 
 class IssueAChallenge extends DrawCard {
     static id = 'issue-a-challenge';
@@ -19,11 +20,10 @@ class IssueAChallenge extends DrawCard {
                         context.player === conflict.attackingPlayer;
                 }
             })
-            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
-                targetController: context.player,
-                effect: AbilityDsl.effects.restrictNumberOfDefenders(1)
-            })))
-            .effect('prevent {1} from declaring more than 1 defender', (context) => context.player.opponent ? [context.player.opponent] : []);
+            .playerLastingEffect({
+                effect: restrictNumberOfDefenders(1)
+            })
+            .chatText((context) => msg`prevent ${context.player.opponent} from declaring more than 1 defender`);
     }
 }
 

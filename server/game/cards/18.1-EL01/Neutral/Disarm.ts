@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 
 class Disarm extends DrawCard {
     static id = 'disarm';
@@ -9,7 +9,7 @@ class Disarm extends DrawCard {
         this.action('Discard an attachment')
             .target({
                 cardType: CardType.Attachment
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }
 

@@ -1,9 +1,10 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotReceiveTaintedToken, immunity } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { attach } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 const ATTACHMENT = 'attachment';
-const RECEIVER = 'receiver';
 
 export default class JakIthith extends DrawCard {
     static id = 'jak-ithith';
@@ -11,9 +12,9 @@ export default class JakIthith extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.immunity({ restricts: 'maho' }),
-                AbilityDsl.effects.immunity({ restricts: 'shadowlands' }),
-                AbilityDsl.effects.cannotReceiveTaintedToken()
+                immunity({ appliesTo: { trait: 'maho' } }),
+                immunity({ appliesTo: { trait: 'shadowlands' } }),
+                cannotReceiveTaintedToken()
             ]
         });
 
@@ -25,23 +26,31 @@ export default class JakIthith extends DrawCard {
             .target({
                 name: ATTACHMENT,
                 cardType: CardType.Attachment,
-                controller: Players.Opponent,
-                cardCondition: (card) =>
-                    Boolean(card.parentCharacter?.isParticipating())
+                controller: Players.Any,
+                cardCondition: (card, context) =>
+                    !!card.parentCharacter?.isParticipating() && card.parentCharacter.controller !== context.player
             })
-            .target({
-                name: RECEIVER,
-                dependsOn: ATTACHMENT,
+            // "to an eligible character you control, if able": only eligible characters can be chosen
+            .ifAble()
+            .selectCard((context) => ({
+                activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.ifAble((context) => ({
-                ifAbleAction: AbilityDsl.actions.attach({
+                gameAction: attach({
                     attachment: context.targets[ATTACHMENT],
-                    target: context.targets[RECEIVER],
                     takeControl: true
                 }),
-                otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.targets[ATTACHMENT] })
-            })));
+                message: (context, card, player) => msg`${player} chooses to attach ${context.targets[ATTACHMENT]} to ${card}`
+            }))
+            .otherwise()
+            .discardFromPlay((context) => ({ target: context.targets[ATTACHMENT] }))
+            .chatText((context) => {
+                const attachment = context.targets[ATTACHMENT];
+                const canAttach = context.player.cardsInPlay.some((card) =>
+                    attach({ attachment, takeControl: true }).canAffect(card, context));
+                return canAttach
+                    ? msg`take control of ${attachment.parentCharacter}'s ${attachment}`
+                    : msg`discard ${attachment}`;
+            });
     }
 }

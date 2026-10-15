@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { increaseLimitOnAbilities } from '../../effects.js';
 
 class WayOfTheDragon extends DrawCard {
     static id = 'way-of-the-dragon';
@@ -11,7 +11,7 @@ class WayOfTheDragon extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.increaseLimitOnAbilities()
+            effect: increaseLimitOnAbilities()
         });
     }
 }

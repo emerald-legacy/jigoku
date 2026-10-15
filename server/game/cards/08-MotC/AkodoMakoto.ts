@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { injure } from '../../GameActions/GameActions.js';
 
 class AkodoMakoto extends DrawCard {
     static id = 'akodo-makoto';
@@ -18,11 +18,7 @@ class AkodoMakoto extends DrawCard {
                 cardCondition: (card) => {
                     return card.hasTrait('courtier') && card.isParticipating();
                 }
-            }, AbilityDsl.actions.conditional({
-                condition: context => (context.target?.getFate() ?? 0) > 0,
-                trueGameAction: AbilityDsl.actions.removeFate(),
-                falseGameAction: AbilityDsl.actions.discardFromPlay()
-            }));
+            }, injure());
     }
 }
 

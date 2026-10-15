@@ -38,14 +38,14 @@ describe('Erudite Prestige', function() {
                     defenders: []
                 });
 
-                const pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.politicalSkill;
 
                 this.player2.pass();
                 this.player1.clickCard(this.p1BHC);
                 this.player1.clickPrompt('player2');
                 expect(this.player1).toBeAbleToSelect(this.prestige);
                 this.player1.clickCard(this.prestige);
-                expect(this.whisperer.getPoliticalSkill()).toBe(pol + 1);
+                expect(this.whisperer.politicalSkill).toBe(pol + 1);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.getChatLogs(3)).toContain('player1 uses Erudite Prestige to give +1political to Doji Whisperer');
             });
@@ -60,13 +60,13 @@ describe('Erudite Prestige', function() {
                     defenders: []
                 });
 
-                const pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.politicalSkill;
 
                 this.player2.clickCard(this.p2BHC);
                 this.player2.clickPrompt('player2');
                 expect(this.player1).not.toBeAbleToSelect(this.prestige);
                 this.player1.clickCard(this.prestige);
-                expect(this.whisperer.getPoliticalSkill()).toBe(pol);
+                expect(this.whisperer.politicalSkill).toBe(pol);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
@@ -80,14 +80,14 @@ describe('Erudite Prestige', function() {
                     defenders: []
                 });
 
-                const pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.politicalSkill;
 
                 this.player2.pass();
                 this.player1.clickCard(this.p1BHC);
                 this.player1.clickPrompt('player2');
                 expect(this.player1).not.toBeAbleToSelect(this.prestige);
                 this.player1.clickCard(this.prestige);
-                expect(this.whisperer.getPoliticalSkill()).toBe(pol);
+                expect(this.whisperer.politicalSkill).toBe(pol);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 

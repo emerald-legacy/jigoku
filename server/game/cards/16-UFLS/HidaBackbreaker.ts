@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor } from '../../GameActions/GameActions.js';
 
 class HidaBackbreaker extends DrawCard {
     static id = 'hida-backbreaker';
@@ -16,7 +16,7 @@ class HidaBackbreaker extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.dishonor());
+            }, dishonor());
     }
 
     allowAttachment(attachment: DrawCard) {

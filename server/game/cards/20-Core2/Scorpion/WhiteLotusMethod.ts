@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, CharacterStatus, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { conditional, draw, moveStatusToken, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const TOKEN = 'token';
@@ -19,6 +20,7 @@ export default class WhiteLotusMethod extends DrawCard {
                 name: TOKEN,
                 activePromptTitle: 'Choose the status token to move',
                 cardType: CardType.Character,
+                controller: Players.Self,
                 tokenCondition: (token) => token.grantedStatus === CharacterStatus.Dishonored
             })
             .target({
@@ -28,24 +30,18 @@ export default class WhiteLotusMethod extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isOrdinary()
-            }, AbilityDsl.actions.sequentialContext((context) => ({
-                gameActions: [
-                    AbilityDsl.actions.moveStatusToken({
-                        target: context.tokens[TOKEN],
-                        recipient: context.targets[RECIPIENT]
-                    }),
-                    AbilityDsl.actions.conditional({
-                        condition: () => doesCardDraw(context.targets[RECIPIENT], context.source),
-                        trueGameAction: AbilityDsl.actions.draw({
-                            target: context.targets[RECIPIENT].controller
-                        }),
-                        falseGameAction: AbilityDsl.actions.noAction()
+            }, sequential((context) => [
+                moveStatusToken({
+                    target: context.tokens[TOKEN],
+                    recipient: context.targets[RECIPIENT]
+                }),
+                conditional({
+                    condition: () => doesCardDraw(context.targets[RECIPIENT], context.source),
+                    trueGameAction: draw({
+                        target: context.targets[RECIPIENT].controller
                     })
-                ]
-            })))
-            .effect('move a status token to {1}{2}', (context) => [
-                context.targets[RECIPIENT],
-                doesCardDraw(context.targets[RECIPIENT], context.source) ? ', their controller draws a card' : ''
-            ]);
+                })
+            ]))
+            .chatText((context) => msg`move a status token to ${context.targets[RECIPIENT]}${doesCardDraw(context.targets[RECIPIENT], context.source) ? ', their controller draws a card' : ''}`);
     }
 }

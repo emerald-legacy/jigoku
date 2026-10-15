@@ -1,5 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { perPhase } from '../../../AbilityLimit.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +13,7 @@ export default class TrailOfBloodAndLies extends DrawCard {
                 onMoveFate: (event, context) => {
                     const origin = event.origin;
                     return (
-                        context.game.currentPhase !== Phases.Fate &&
+                        context.game.currentPhase !== Phase.Fate &&
                         (event.fate ?? 0) > 0 &&
                         origin instanceof BaseCard &&
                         origin.type === CardType.Character &&
@@ -24,20 +25,8 @@ export default class TrailOfBloodAndLies extends DrawCard {
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.dishonor())
-            .then(() => ({
-                gameAction: AbilityDsl.actions.conditional({
-                    condition: (context) => context.player.isCharacterTraitInPlay('magistrate'),
-                    falseGameAction: AbilityDsl.actions.noAction(),
-                    trueGameAction: AbilityDsl.actions.selectCard({
-                        activePromptTitle: 'Choose a character to dishonor',
-                        cardType: CardType.Character,
-                        player: Players.Opponent,
-                        controller: Players.Opponent,
-                        gameAction: AbilityDsl.actions.dishonor()
-                    })
-                })
-            }))
-            .max(AbilityDsl.limit.perPhase(1));
+            }, dishonor())
+            .max(perPhase(1))
+            .mayResolveAgain({ condition: (context) => context.player.isCharacterTraitInPlay('magistrate') });
     }
 }

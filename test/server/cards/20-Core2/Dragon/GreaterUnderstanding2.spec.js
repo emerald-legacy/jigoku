@@ -5,7 +5,7 @@ describe('Greater Understanding 2', function () {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['togashi-yokuni'],
-                    hand: ['greater-understanding-2']
+                    hand: ['greater-understanding-2', 'let-go']
                 },
                 player2: {
                     stronghold: 'temple-of-the-fivefold-path',
@@ -48,6 +48,17 @@ describe('Greater Understanding 2', function () {
             expect(this.getChatLogs(5)).toContain(
                 'player2 moves Greater Understanding to Void Ring - enlightenment is elusive'
             );
+        });
+
+        it('cannot be targeted by its controller\'s other card abilities either', function () {
+            this.player1.clickCard(this.greaterUnderstanding);
+            this.player1.clickRing('fire');
+            this.player2.pass();
+
+            const letGo = this.player1.findCardByName('let-go');
+            this.player1.clickCard(letGo);
+            expect(this.player1).toHavePrompt('Initiate an action');
+            expect(letGo.location).toBe('hand');
         });
 
         it('cannot be targeted by opponent card abilities such as Disarm', function () {

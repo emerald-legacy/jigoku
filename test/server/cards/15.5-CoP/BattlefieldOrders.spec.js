@@ -112,7 +112,7 @@ describe('Battlefield Orders', function() {
             expect(this.player2.hand.length).toBe(hand2); //-1 from orders
 
             expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to trigger Beloved Advisor\'s \'Each player draws 1 card\' ability');
-            expect(this.getChatLogs(10)).toContain('player2 resolves Beloved Advisor to draw 1 card');
+            expect(this.getChatLogs(10)).toContain('player2 resolves Beloved Advisor to make player1 and player2 draw 1 card');
         });
 
         it('should let you choose between action if the character has multiple', function() {

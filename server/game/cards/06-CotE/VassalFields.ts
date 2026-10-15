@@ -1,11 +1,10 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 export default class VassalFields extends ProvinceCard {
     static id = 'vassal-fields';
 
     setupCardAbilities() {
         this.action('Make opponent lose 1 fate')
-            .gameAction(AbilityDsl.actions.loseFate());
+            .loseFate((context) => ({ target: context.player.opponent }));
     }
 }

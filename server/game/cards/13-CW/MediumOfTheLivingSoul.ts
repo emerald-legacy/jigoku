@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { gainAbility } from '../../effects.js';
+import { cardLastingEffect, resolveRingEffect } from '../../GameActions/GameActions.js';
 import { AbilityType, CardType, Players } from '../../Constants.js';
 
 class MediumOfTheLivingSoul extends DrawCard {
@@ -11,17 +13,17 @@ class MediumOfTheLivingSoul extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect(() => ({
-                effect: AbilityDsl.effects.gainAbility<DrawCard>(AbilityType.Reaction, {
+            }, cardLastingEffect(() => ({
+                effect: gainAbility<DrawCard>(AbilityType.Reaction, {
                     title: 'Resolve the Ring Effect',
                     when: {
                         onResolveRingElement: (event, context) => event.player === context.player && context.source.isParticipating()
                     },
-                    cost: AbilityDsl.costs.removeFateFromSelf(),
-                    gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({ target: context.event.ring }))
+                    cost: costs.removeFateFromSelf(),
+                    gameAction: resolveRingEffect((context) => ({ target: context.event.ring }))
                 })
             })))
-            .effect('give {0} the ability to resolve a ring effect');
+            .chatText('give {0} the ability to resolve a ring effect');
     }
 }
 

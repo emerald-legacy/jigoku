@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 
 class WholenessOfTheWorld extends DrawCard {
     static id = 'wholeness-of-the-world';
@@ -9,9 +10,9 @@ class WholenessOfTheWorld extends DrawCard {
             .when({
                 onReturnRing: (event, context) => event.ring.claimedBy === context.player.name
             })
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('prevent {1} from returning to the unclaimed pool', context => context.event.ring)
-            .max(AbilityDsl.limit.perRound(1))
+            .cancel()
+            .chatText((context) => msg`prevent ${context.event.ring} from returning to the unclaimed pool`)
+            .max(perRound(1))
             .cannotBeMirrored();
     }
 }

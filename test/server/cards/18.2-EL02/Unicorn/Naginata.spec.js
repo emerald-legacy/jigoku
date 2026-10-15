@@ -30,8 +30,8 @@ describe('Daikyu Reprint', function () {
         });
 
         it('should give +2 mil when first player and +1 when 2nd', function () {
-            expect(this.hotaru.getMilitarySkill()).toBe(3 + 2);
-            expect(this.toturi.getMilitarySkill()).toBe(6 + 1);
+            expect(this.hotaru.militarySkill).toBe(3 + 2);
+            expect(this.toturi.militarySkill).toBe(6 + 1);
         });
 
         it('should react when a character moves in', function () {
@@ -99,6 +99,28 @@ describe('Daikyu Reprint', function () {
 
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});
+
+describe('Naginata attach restriction', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['naginata']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+        });
+
+        it('can attach to an opponent\'s character', function () {
+            this.player1.clickCard('naginata');
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
         });
     });
 });

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard, sequential } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class RepentantLegion extends DrawCard {
@@ -8,27 +8,28 @@ class RepentantLegion extends DrawCard {
     setupCardAbilities() {
         this.reaction('fill provinces with a card')
             .when({
-                onBreakProvince: (event, context) => context.source.isParticipating() && (event.conflict?.getConflictProvinces().some(a => a.owner !== context.player) ?? false)
+                // RRG: a province broken outside conflict resolution is broken by its controller's opponent
+                onBreakProvince: (event, context) => context.source.isParticipating() && event.card.controller !== context.player
             })
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.moveCard(context => ({
+            .gameAction(sequential([
+                moveCard((context) => ({
                     target: context.player.dynastyDeck[0],
                     destination: Location.ProvinceOne
                 })),
-                AbilityDsl.actions.moveCard(context => ({
+                moveCard((context) => ({
                     target: context.player.dynastyDeck[0],
                     destination: Location.ProvinceTwo
                 })),
-                AbilityDsl.actions.moveCard(context => ({
+                moveCard((context) => ({
                     target: context.player.dynastyDeck[0],
                     destination: Location.ProvinceThree
                 })),
-                AbilityDsl.actions.moveCard(context => ({
+                moveCard((context) => ({
                     target: context.player.dynastyDeck[0],
                     destination: Location.ProvinceFour
                 }))
             ]))
-            .effect('put 1 card into each of their non-stronghold provinces');
+            .chatText('put 1 card into each of their non-stronghold provinces');
     }
 }
 

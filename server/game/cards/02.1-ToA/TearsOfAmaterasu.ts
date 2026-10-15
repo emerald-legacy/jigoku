@@ -1,5 +1,4 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 export default class TearsOfAmaterasu extends ProvinceCard {
     static id = 'tears-of-amaterasu';
@@ -9,8 +8,8 @@ export default class TearsOfAmaterasu extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.gainFate((context) => ({
+            .gainFate((context) => ({
                 amount: context.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0
-            })));
+            }));
     }
 }

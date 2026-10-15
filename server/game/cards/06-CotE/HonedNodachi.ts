@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
 
@@ -16,14 +17,14 @@ class HonedNodachi extends DrawCard {
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
                                                    event.conflict.conflictType === ConflictType.Military
             })
-            .cost(AbilityDsl.costs.removeFateFromParent())
+            .cost(costs.removeFateFromParent())
             .target({
                 activePromptTitle: 'Choose a character to discard',
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }
 

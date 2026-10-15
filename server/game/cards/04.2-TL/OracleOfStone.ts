@@ -1,22 +1,22 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { chosenDiscard, draw, sequential } from '../../GameActions/GameActions.js';
 
 class OracleOfStone extends DrawCard {
     static id = 'oracle-of-stone';
 
     setupCardAbilities() {
         this.action('Draw 2 cards, then discard 2 cards')
-            .gameAction(AbilityDsl.actions.sequential([
-                AbilityDsl.actions.draw(context => ({
+            .gameAction(sequential([
+                draw((context) => ({
                     target: context.game.getPlayers(),
                     amount: 2
                 })),
-                AbilityDsl.actions.chosenDiscard(context => ({
+                chosenDiscard((context) => ({
                     target: context.game.getPlayers(),
                     amount: 2
                 }))
             ]))
-            .effect('make both players draw 2 cards, then discard 2 cards');
+            .chatText('make both players draw 2 cards, then discard 2 cards');
     }
 }
 

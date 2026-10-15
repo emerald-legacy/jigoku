@@ -1,5 +1,6 @@
 import { Players, Duration, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { increaseLimitOnAbilities } from '../../../effects.js';
+import { cardLastingEffect, multiple, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KayoTheShrinetender extends DrawCard {
@@ -8,17 +9,17 @@ export default class KayoTheShrinetender extends DrawCard {
     setupCardAbilities() {
         this.action('Ready a Temple')
             .target({
-                cardCondition: card => card.hasTrait('temple') && !card.facedown,
+                cardCondition: (card) => card.hasTrait('temple') && !card.facedown,
                 controller: Players.Self,
                 location: [Location.Provinces, Location.PlayArea]
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready(),
-                AbilityDsl.actions.cardLastingEffect({
+            }, multiple([
+                ready(),
+                cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.increaseLimitOnAbilities()
+                    effect: increaseLimitOnAbilities()
                 })
             ]))
-            .effect('ready {0} and add an additional use to each of its abilities');
+            .chatText('ready {0} and add an additional use to each of its abilities');
     }
 }

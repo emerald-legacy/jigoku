@@ -1,6 +1,6 @@
 import { Location, Players, CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
 
 export default class Ninkatoshi extends ProvinceCard {
     static id = 'ninkatoshi';
@@ -12,14 +12,14 @@ export default class Ninkatoshi extends ProvinceCard {
 
             match: (card, context) =>
                 !!context && card.type === CardType.Province && card !== context.source && card.controller === context.player,
-            effect: AbilityDsl.effects.modifyProvinceStrength(1)
+            effect: modifyProvinceStrength(1)
         });
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Opponent,
 
             match: (card, context) => !!context && card.type === CardType.Province && card.controller === context.player.opponent,
-            effect: AbilityDsl.effects.modifyProvinceStrength(-1)
+            effect: modifyProvinceStrength(-1)
         });
     }
 }

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration, Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { increaseLimitOnAbilities } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class KaiuInventor extends DrawCard {
     static id = 'kaiu-inventor';
@@ -11,13 +12,13 @@ class KaiuInventor extends DrawCard {
                 cardType: CardType.Holding,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: card => card.isFaceup()
-            }, AbilityDsl.actions.cardLastingEffect({
+                cardCondition: (card) => card.isFaceup()
+            }, cardLastingEffect({
                 duration: Duration.UntilEndOfRound,
                 targetLocation: Location.Provinces,
-                effect: AbilityDsl.effects.increaseLimitOnAbilities()
+                effect: increaseLimitOnAbilities()
             }))
-            .effect('add an additional use to each of {0}\'s abilities');
+            .chatText('add an additional use to each of {0}\'s abilities');
     }
 }
 

@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { PlayCharacterIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
-import { Element, Location, PlayType } from '../../Constants.js';
+import { gainPlayAction } from '../../effects.js';
+import { PlayIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
+import { Element, Location, PlayType, Blocker } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
@@ -11,7 +11,7 @@ class IsawaSkycallerPlayAction extends PlayCharacterAction {
     static id = 'isawa-skycaller';
 
     constructor(card: DrawCard) {
-        super(card, PlayCharacterIntoLocation.Conflict);
+        super(card, PlayIntoLocation.Conflict);
     }
 
     createContext(player: Player = this.card.controller) {
@@ -20,9 +20,9 @@ class IsawaSkycallerPlayAction extends PlayCharacterAction {
         return context;
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
-        const newIgnoredRequirements = ignoredRequirements.includes('location') ? ignoredRequirements : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
+        const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation) ? ignoredBlockers : ignoredBlockers.concat(Blocker.WrongLocation);
+        return super.meetsRequirements(context, newIgnoredBlockers);
     }
 }
 
@@ -31,10 +31,10 @@ class IsawaSkycaller extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
+            condition: (context) => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFaceup(),
-            effect: AbilityDsl.effects.gainPlayAction(IsawaSkycallerPlayAction)
+            effect: gainPlayAction(IsawaSkycallerPlayAction)
         });
     }
 

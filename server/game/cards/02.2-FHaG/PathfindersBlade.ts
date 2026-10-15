@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class PathfindersBlade extends DrawCard {
     static id = 'pathfinder-s-blade';
@@ -9,9 +10,9 @@ class PathfindersBlade extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isAttacking() && event.card.isConflictProvince()
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of {1}\'s ability', context => context.event.card);
+            .cost(costs.sacrificeSelf())
+            .cancel()
+            .chatText((context) => msg`cancel the effects of ${context.event.card}'s ability`);
     }
 }
 

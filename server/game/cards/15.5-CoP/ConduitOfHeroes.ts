@@ -1,63 +1,29 @@
-import type BaseCard from '../../BaseCard.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type { Cost } from '../../costs/Cost.js';
-
-function conduitOfHeroesCost(): Cost<{ conduitOfHeroesCost: BaseCard; skipConduitCost: boolean | undefined }> {
-    return {
-        getActionName(_context) {
-            return 'conduitOfHeroesCost';
-        },
-        getCostMessage(context) {
-            if(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5) {
-                return [];
-            }
-            return ['bowing {0}'];
-        },
-        canPay(context) {
-            return context.player.opponent && context.player.honor >= context.player.opponent.honor + 5 ||
-                context.game.actions.bow().canAffect(context.source, context);
-        },
-        resolve(context) {
-            context.costs.conduitOfHeroesCost = context.source;
-            context.costs.skipConduitCost = context.player.opponent && context.player.honor >= context.player.opponent.honor + 5;
-        },
-        payEvent(context) {
-            if(!context.costs.skipConduitCost) {
-                const events = [];
-
-                const bowAction = context.game.actions.bow({ target: context.source });
-                events.push(bowAction.getEvent(context.source, context));
-                return events;
-            }
-
-            const action = context.game.actions.handler({ handler: () => true }); //this is a do-nothing event to allow you to "pay" a non-payment cost
-            return action.getEvent(context.player, context);
-
-        }
-    };
-}
+import { modifyGlory, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import * as costs from '../../costs/index.js';
 
 class ConduitOfHeroes extends DrawCard {
     static id = 'conduit-of-heroes';
 
     setupCardAbilities() {
         this.action('Give a character +3/+1/+1')
-            .cost(conduitOfHeroesCost())
             .condition(() => this.game.isDuringConflict())
+            .cost(costs.unless((context) => !!context.player.opponent && context.player.honor >= context.player.opponent.honor + 5, costs.bowSelf()))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card !== context.source
-            }, AbilityDsl.actions.cardLastingEffect(() => ({
+            }, cardLastingEffect(() => ({
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(3),
-                    AbilityDsl.effects.modifyPoliticalSkill(1),
-                    AbilityDsl.effects.modifyGlory(1)
+                    modifyMilitarySkill(3),
+                    modifyPoliticalSkill(1),
+                    modifyGlory(1)
                 ]
             })))
-            .effect('grant {0} +3{1}/+1{2}/+1{3} until the end of the conflict', () => (['military', 'political', 'glory']));
+            .chatText((context) => msg`grant ${context.chatTarget()} +3${'military'}/+1${'political'}/+1glory until the end of the conflict`);
     }
 }
 

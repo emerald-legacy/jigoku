@@ -1,3 +1,4 @@
+import { msg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
@@ -56,7 +57,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
             }
         }
 
-        const context = this.game.getFrameworkContext();
+        const context = this.game.getGameContext();
 
         this.game.queueSimpleStep(() => this.bidHandler(result, context));
 
@@ -88,7 +89,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
         const parsed = parseInt(bid, 10);
         const amount = isNaN(parsed) ? 0 : parsed;
 
-        this.game.addMessage('{0} has decided how much fate to spend.', player);
+        this.game.addMessage(msg`${player} has decided how much fate to spend.`);
         this.bids.set(player, amount);
         return true;
     }

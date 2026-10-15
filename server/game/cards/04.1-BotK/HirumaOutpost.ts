@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import { AbilityType, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType } from '../../Constants.js';
+import { gainAbility } from '../../effects.js';
 
 class HirumaOutpost extends DrawCard {
     static id = 'hiruma-outpost';
@@ -11,9 +11,8 @@ class HirumaOutpost extends DrawCard {
                 const province = context.player.getProvinceCardInProvince(context.source.location);
                 return !!province && !province.isBroken;
             },
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
-                title: 'Make opponent lose an honor',
-                when: {
+            effect: gainAbility.reaction('Make opponent lose an honor', (ability) => ability
+                .when({
                     onConflictDeclared: (event, context) => {
                         if(event.conflict.attackingPlayer === context.player) {
                             return false;
@@ -22,11 +21,10 @@ class HirumaOutpost extends DrawCard {
                             return false;
                         }
                         const cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
-                        return !cards.some(card => card.isFaceup() && card.type === CardType.Holding);
+                        return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding);
                     }
-                },
-                gameAction: AbilityDsl.actions.loseHonor()
-            })
+                })
+                .loseHonor((context) => ({ target: context.player.opponent })))
         });
     }
 }

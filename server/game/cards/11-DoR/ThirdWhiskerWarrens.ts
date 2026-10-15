@@ -1,7 +1,7 @@
 import { Location, Players } from '../../Constants.js';
 import { PlayFacedownCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
 import { PlayFacedownDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainPlayAction, hideWhenFaceUp, showTopDynastyCard } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { defendingAtKaiuWall } from '../kaiuWall.js';
 
@@ -14,16 +14,16 @@ export default class ThirdWhiskerWarrens extends DrawCard {
             targetLocation: Location.DynastyDeck,
             match: (card, context) => context !== undefined && card === context.player.dynastyDeck[0],
             effect: [
-                AbilityDsl.effects.hideWhenFaceUp(),
-                AbilityDsl.effects.gainPlayAction(PlayFacedownCharacterAsIfFromHand),
-                AbilityDsl.effects.gainPlayAction(PlayFacedownDisguisedCharacterAsIfFromHand)
+                hideWhenFaceUp(),
+                gainPlayAction(PlayFacedownCharacterAsIfFromHand),
+                gainPlayAction(PlayFacedownDisguisedCharacterAsIfFromHand)
             ]
         });
 
         this.persistentEffect({
             condition: (context) => defendingAtKaiuWall(context.player, context.game.currentConflict),
             targetController: Players.Self,
-            effect: AbilityDsl.effects.showTopDynastyCard()
+            effect: showTopDynastyCard()
         });
     }
 }

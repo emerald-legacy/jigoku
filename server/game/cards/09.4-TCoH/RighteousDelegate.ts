@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 
 class RighteousDelegate extends DrawCard {
     static id = 'righteous-delegate';
@@ -7,43 +8,41 @@ class RighteousDelegate extends DrawCard {
     setupCardAbilities() {
         this.action('Weaken bushi, empower non-bushi')
             .condition((context) => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect((context) => {
-                    const conflict = this.game.currentConflict;
-                    if(!conflict) {
-                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(1) };
-                    }
-                    return {
-                        target: conflict
-                            .getCharacters(context.player)
-                            .filter((card) => !card.hasTrait('bushi'))
-                            .concat(
-                                conflict
-                                    .getCharacters(context.player.opponent)
-                                    .filter((card) => !card.hasTrait('bushi'))
-                            ),
-                        effect: AbilityDsl.effects.modifyBothSkills(1)
-                    };
-                }),
-                AbilityDsl.actions.cardLastingEffect((context) => {
-                    const conflict = this.game.currentConflict;
-                    if(!conflict) {
-                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(-1) };
-                    }
-                    return {
-                        target: conflict
-                            .getCharacters(context.player)
-                            .filter((card) => card.hasTrait('bushi'))
-                            .concat(
-                                conflict
-                                    .getCharacters(context.player.opponent)
-                                    .filter((card) => card.hasTrait('bushi'))
-                            ),
-                        effect: AbilityDsl.effects.modifyBothSkills(-1)
-                    };
-                })
-            ]))
-            .effect('give all participating bushi characters -1{1} / -1{2} and give all participating non-bushi characters +1{1} / +1{2}', () => ['military', 'political']);
+            .cardLastingEffect((context) => {
+                const conflict = this.game.currentConflict;
+                if(!conflict) {
+                    return { target: [], effect: modifyBothSkills(1) };
+                }
+                return {
+                    target: conflict
+                        .getCharacters(context.player)
+                        .filter((card) => !card.hasTrait('bushi'))
+                        .concat(
+                            conflict
+                                .getCharacters(context.player.opponent)
+                                .filter((card) => !card.hasTrait('bushi'))
+                        ),
+                    effect: modifyBothSkills(1)
+                };
+            })
+            .cardLastingEffect((context) => {
+                const conflict = this.game.currentConflict;
+                if(!conflict) {
+                    return { target: [], effect: modifyBothSkills(-1) };
+                }
+                return {
+                    target: conflict
+                        .getCharacters(context.player)
+                        .filter((card) => card.hasTrait('bushi'))
+                        .concat(
+                            conflict
+                                .getCharacters(context.player.opponent)
+                                .filter((card) => card.hasTrait('bushi'))
+                        ),
+                    effect: modifyBothSkills(-1)
+                };
+            })
+            .chatText(() => msg`give all participating bushi characters -1${'military'} / -1${'political'} and give all participating non-bushi characters +1${'military'} / +1${'political'}`);
     }
 }
 

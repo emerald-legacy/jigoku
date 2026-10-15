@@ -1,6 +1,10 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+
+const isSpellOrKiho = (card: DrawCard) => card.hasTrait('kiho') || card.hasTrait('spell');
 
 class ShrineMaiden extends DrawCard {
     static id = 'shrine-maiden';
@@ -10,29 +14,21 @@ class ShrineMaiden extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
-            .cost(AbilityDsl.costs.reveal((context) => context.player.conflictDeck.slice(0, 3)))
-            .handler((context) => {
-                const cards = context.player.conflictDeck.slice(0, 3);
-                const toHand = cards.filter((card) => card.hasTrait('kiho') || card.hasTrait('spell'));
-                const toDiscard = cards.filter((card) => !card.hasTrait('kiho') && !card.hasTrait('spell'));
-
-                toHand.forEach((card) => {
-                    context.player.moveCard(card, Location.Hand);
-                });
-
-                toDiscard.forEach((card) => {
-                    context.player.moveCard(card, Location.ConflictDiscardPile);
-                });
-
+            .cost(costs.revealCardsOf((context) => this.revealed(context)))
+            .moveCard((context) => ({ target: this.revealed(context).filter(isSpellOrKiho), destination: Location.Hand }))
+            .discardCard((context) => ({ target: this.revealed(context).filter((card) => !isSpellOrKiho(card)) }))
+            .chatText((context) => {
+                const toHand = this.revealed(context).filter(isSpellOrKiho);
+                const toDiscard = this.revealed(context).filter((card) => !isSpellOrKiho(card));
                 if(toHand.length && toDiscard.length) {
-                    this.game.addMessage('{0} adds {1} to their hand and discards {2}', context.player, toHand, toDiscard);
-                } else if(toHand.length) {
-                    this.game.addMessage('{0} adds {1} to their hand', context.player, toHand);
-                } else {
-                    this.game.addMessage('{0} discards {1}', context.player, toDiscard);
+                    return msg`add ${toHand} to their hand and discard ${toDiscard}`;
                 }
-            })
-            .effect('take any revealed spells into their hand');
+                return toHand.length ? msg`add ${toHand} to their hand` : msg`discard ${toDiscard}`;
+            });
+    }
+
+    private revealed(context: AbilityContext): DrawCard[] {
+        return context.player.conflictDeck.slice(0, 3);
     }
 }
 

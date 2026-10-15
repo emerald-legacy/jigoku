@@ -61,7 +61,8 @@ describe('Emperor\'s Summons', function() {
                 this.player2.clickCard(this.emperorsSummons);
                 this.player2.clickPrompt('Select nothing');
                 expect(this.player2.dynastyDeck.length).toBe(dynastyDeckSize);
-                expect(this.getChatLogs(2)).toContain('player2 selects nothing from their deck');
+                expect(this.getChatLogs(3)).toContain('player2 selects nothing from their deck');
+                expect(this.getChatLogs(3)).toContain('player2 is shuffling their dynasty deck');
             });
 
             it('should place the selected charater in the chosen province, discarding each other card in that province, face up', function() {
@@ -77,7 +78,8 @@ describe('Emperor\'s Summons', function() {
                 expect(this.mirumotoRaitsugu.location).toBe('province 2');
                 expect(this.mirumotoRaitsugu.facedown).toBe(false);
                 expect(this.player2.player.dynastyDiscardPile.length).toBe(cardsInDiscard + 1);
-                expect(this.getChatLogs(2)).toContain('player2 chooses to place Mirumoto Raitsugu in province 2 discarding Adept of the Waves');
+                expect(this.getChatLogs(3)).toContain('player2 chooses to place Mirumoto Raitsugu in province 2 discarding Adept of the Waves');
+                expect(this.getChatLogs(3)).toContain('player2 is shuffling their dynasty deck');
             });
         });
     });

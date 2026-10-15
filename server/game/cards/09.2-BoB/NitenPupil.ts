@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBaseMilitarySkillMultiplier, modifyBasePoliticalSkillMultiplier } from '../../effects.js';
 import { Duration } from '../../Constants.js';
 
 class NitenPupil extends DrawCard {
@@ -10,14 +11,14 @@ class NitenPupil extends DrawCard {
             .when({
                 onHonorDialsRevealed: (event, context) => event.duel && event.duel.isInvolved(context.source)
             })
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
+            .cardLastingEffect({
                 effect: [
-                    AbilityDsl.effects.modifyBaseMilitarySkillMultiplier(2),
-                    AbilityDsl.effects.modifyBasePoliticalSkillMultiplier(2)
+                    modifyBaseMilitarySkillMultiplier(2),
+                    modifyBasePoliticalSkillMultiplier(2)
                 ],
                 duration: Duration.UntilEndOfPhase
-            }))
-            .effect('double {0}\'s base {1} and {2} skills', () => (['military', 'political']));
+            })
+            .chatText((context) => msg`double ${context.chatTarget()}'s base ${'military'} and ${'political'} skills`);
     }
 }
 

@@ -3,7 +3,7 @@ import type BaseCard from '../BaseCard.js';
 import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 
-class InitiateCardAbilityEvent extends Event {
+export class InitiateCardAbilityEvent extends Event {
     cardTargets: BaseCard[];
     ringTargets: Ring[];
 
@@ -25,4 +25,3 @@ class InitiateCardAbilityEvent extends Event {
     }
 }
 
-export default InitiateCardAbilityEvent;

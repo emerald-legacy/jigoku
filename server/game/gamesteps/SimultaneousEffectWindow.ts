@@ -6,15 +6,18 @@ export interface SimultaneousEffectChoiceInput {
     condition?: () => boolean;
     title: string;
     handler: () => void;
+    // whose effect it is
+    player?: Player;
 }
 
 interface SimultaneousEffectChoice {
     condition: () => boolean;
     title: string;
     handler: () => void;
+    player?: Player;
 }
 
-class SimultaneousEffectWindow extends BaseStep {
+export class SimultaneousEffectWindow extends BaseStep {
     choices: SimultaneousEffectChoice[] = [];
     // unset while the first player is not chosen yet (during setup)
     currentPlayer: Player | undefined;
@@ -22,6 +25,12 @@ class SimultaneousEffectWindow extends BaseStep {
     constructor(game: Game) {
         super(game);
         this.currentPlayer = this.game.getFirstPlayer();
+    }
+
+    abort(): void {
+        if(this.game.currentAbilityWindow === this) {
+            this.game.currentAbilityWindow = null;
+        }
     }
 
     continue(): boolean {
@@ -37,7 +46,8 @@ class SimultaneousEffectWindow extends BaseStep {
         this.choices.push({
             condition: choice.condition ?? (() => true),
             title: choice.title,
-            handler: choice.handler
+            handler: choice.handler,
+            player: choice.player
         });
     }
 
@@ -47,7 +57,9 @@ class SimultaneousEffectWindow extends BaseStep {
             return true;
         }
         const player = this.currentPlayer;
-        if(choices.length === 1 || !player || !player.optionSettings.orderForcedAbilities) {
+        // RRG: the first player orders delayed effects, regardless of who controls them
+        const severalPlayers = new Set(choices.map((choice) => choice.player)).size > 1;
+        if(choices.length === 1 || !player || (!severalPlayers && !player.optionSettings.orderForcedAbilities)) {
             this.resolveEffect(choices[0]);
         } else {
             this.promptBetweenChoices(player, choices);
@@ -60,14 +72,13 @@ class SimultaneousEffectWindow extends BaseStep {
             source: 'Order Simultaneous effects',
             activePromptTitle: 'Choose an effect to be resolved',
             waitingPromptTitle: 'Waiting for opponent',
-            options: choices.map(choice => ({ text: choice.title, handler: () => this.resolveEffect(choice) }))
+            options: choices.map((choice) => ({ text: choice.title, handler: () => this.resolveEffect(choice) }))
         });
     }
 
     resolveEffect(choice: SimultaneousEffectChoice): void {
-        this.choices = this.choices.filter(c => c !== choice);
+        this.choices = this.choices.filter((c) => c !== choice);
         choice.handler();
     }
 }
 
-export default SimultaneousEffectWindow;

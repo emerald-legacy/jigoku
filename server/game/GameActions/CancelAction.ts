@@ -1,51 +1,46 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
-import { CardType, EventName } from '../Constants.js';
+import { CardType, EventName, RestrictionType } from '../Constants.js';
 import type { GameObject } from '../GameObject.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { AnyEvent, TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
+import { ThenAbility } from '../ThenAbility.js';
 
-export interface CancelActionProperties extends GameActionProperties {
+export interface CancelProperties extends GameActionProperties {
     replacementGameAction?: GameAction;
-    effect?: string;
+    /** "Instead, X. Then, Y": resolves once the replacement has fully resolved. */
+    thenGameAction?: GameAction;
 }
 
 export type CancellingContext = AbilityContext & { event?: AnyEvent; cancel(): void };
 
-export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelActionProperties, EventName.Unnamed, C> {
-    protected effectMessage(context: C): MessageArgs {
-        const { replacementGameAction, effect } = this.getProperties(context);
-        if(effect) {
-            return [effect, []];
-        }
+export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelProperties, EventName.Unnamed, C> {
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { replacementGameAction } = this.getProperties(context, additionalProperties);
         if(replacementGameAction) {
-            return ['{1} {0} instead of {2}', [replacementGameAction.name, context.event?.card]];
+            // the replacement's target is this action's, so its `{0}` stays ours
+            const [format, [, ...args]] = replacementGameAction.getEffectMessage(context, this.#replacementOverrides(context));
+            return [`${format} instead of {${args.length + 1}}`, [...args, context.event?.card]];
         }
         return ['cancel the effects of {0}', []];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
-        const { replacementGameAction, effect } = this.getProperties(context);
-        if(effect) {
-            return undefined;
-        }
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        const { replacementGameAction } = this.getProperties(context, additionalProperties);
         return replacementGameAction ? context.target : context.event?.card;
     }
 
-    getProperties(context: C, additionalProperties = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        if(properties.replacementGameAction) {
-            properties.replacementGameAction.setDefaultTarget(() => properties.target);
-        }
-        return properties;
+    #replacementOverrides(context: C, additionalProperties: ActionOverrides = {}): ActionOverrides {
+        return { ...additionalProperties, target: this.getProperties(context, additionalProperties).target };
     }
 
-    hasLegalTarget(context: C, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         if(!context.event || context.event.cancelled) {
             return false;
         }
-        const { replacementGameAction } = this.getProperties(context);
+        const { replacementGameAction } = this.getProperties(context, additionalProperties);
         let cannotBeCancelled = context.event.cannotBeCancelled;
         if(
             context.event.card &&
@@ -57,38 +52,38 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         if(
             context.event.name === EventName.OnCardLeavesPlay &&
             context.event.card &&
-            !context.event.card.checkRestrictions('preventedFromLeavingPlay', context)
+            !context.event.card.checkRestrictions(RestrictionType.PreventedFromLeavingPlay, context)
         ) {
             cannotBeCancelled = true;
         }
 
         return (
             !cannotBeCancelled &&
-            (!replacementGameAction || replacementGameAction.hasLegalTarget(context, additionalProperties))
+            (!replacementGameAction || replacementGameAction.hasLegalTarget(context, this.#replacementOverrides(context, additionalProperties)))
         );
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const event = this.createEvent(null, context, additionalProperties);
         super.addPropertiesToEvent(event, null, context, additionalProperties);
         event.replaceHandler(() => this.eventHandler(event, additionalProperties));
         events.push(event);
     }
 
-    eventHandler(event: ActionEvent<EventName, C>, additionalProperties = {}): void {
+    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const cancelled = context.event;
         if(!cancelled) {
             return;
         }
-        const { replacementGameAction } = this.getProperties(context, additionalProperties);
+        const { replacementGameAction, thenGameAction } = this.getProperties(context, additionalProperties);
         if(replacementGameAction) {
             const events: Event[] = [];
             const eventWindow = cancelled.window;
             replacementGameAction.addEventsToArray(
                 events,
                 context,
-                Object.assign({ replacementEffect: true }, additionalProperties)
+                Object.assign({ replacementEffect: true }, this.#replacementOverrides(context, additionalProperties))
             );
             context.game.queueSimpleStep(() => {
                 if(!cancelled.isSacrifice && events.length === 1) {
@@ -97,28 +92,33 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
                 for(const newEvent of events) {
                     eventWindow?.addEvent(newEvent);
                 }
+                if(thenGameAction && eventWindow && events.length > 0) {
+                    const thenContext = context.copy({});
+                    thenContext.events = events;
+                    eventWindow.addThenAbility(new ThenAbility(context.source, { gameAction: thenGameAction }), thenContext);
+                }
             });
         }
         context.cancel();
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { replacementGameAction } = this.getProperties(context, additionalProperties);
         if(!replacementGameAction) {
             return !!context.event && !context.event.cannotBeCancelled;
         }
-        return replacementGameAction.canAffect(target, context, additionalProperties);
+        return replacementGameAction.canAffect(target, context, this.#replacementOverrides(context, additionalProperties));
     }
 
     defaultTargets(context: C): GameObject[] {
         return context.event?.card ? [context.event.card] : [];
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
-        const { replacementGameAction } = this.getProperties(context);
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+        const { replacementGameAction } = this.getProperties(context, additionalProperties);
         return (
             replacementGameAction !== undefined &&
-            replacementGameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)
+            replacementGameAction.hasTargetsChosenByInitiatingPlayer(context, this.#replacementOverrides(context, additionalProperties))
         );
     }
 }

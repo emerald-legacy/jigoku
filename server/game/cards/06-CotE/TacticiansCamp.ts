@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -7,8 +7,8 @@ class TacticiansCamp extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card) => card.getType() === CardType.Character && card.isHonored,
-            effect: AbilityDsl.effects.modifyMilitarySkill(1)
+            match: (card) => card.type === CardType.Character && card.isHonored,
+            effect: modifyMilitarySkill(1)
         });
     }
 }

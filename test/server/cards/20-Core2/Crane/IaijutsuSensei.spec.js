@@ -21,26 +21,26 @@ describe('Iaijutsu Sensei', function () {
         });
 
         it('should get +1/+1 if it has a single weapon', function () {
-            const baseMil = this.sensei.getMilitarySkill();
-            const basePol = this.sensei.getPoliticalSkill();
+            const baseMil = this.sensei.militarySkill;
+            const basePol = this.sensei.politicalSkill;
 
             this.player1.playAttachment(this.katana, this.sensei);
-            expect(this.sensei.getMilitarySkill()).toBe(baseMil + 3);
-            expect(this.sensei.getPoliticalSkill()).toBe(basePol + 1);
+            expect(this.sensei.militarySkill).toBe(baseMil + 3);
+            expect(this.sensei.politicalSkill).toBe(basePol + 1);
 
             this.player2.pass();
             this.player1.playAttachment(this.blade, this.sensei);
-            expect(this.sensei.getMilitarySkill()).toBe(baseMil + 4);
-            expect(this.sensei.getPoliticalSkill()).toBe(basePol + 0);
+            expect(this.sensei.militarySkill).toBe(baseMil + 4);
+            expect(this.sensei.politicalSkill).toBe(basePol + 0);
         });
 
         it('should not give +1/+1 to other characters', function () {
-            const baseMil = this.toshimoko.getMilitarySkill();
-            const basePol = this.toshimoko.getPoliticalSkill();
+            const baseMil = this.toshimoko.militarySkill;
+            const basePol = this.toshimoko.politicalSkill;
 
             this.player1.playAttachment(this.katana, this.toshimoko);
-            expect(this.toshimoko.getMilitarySkill()).toBe(baseMil + 2);
-            expect(this.toshimoko.getPoliticalSkill()).toBe(basePol + 0);
+            expect(this.toshimoko.militarySkill).toBe(baseMil + 2);
+            expect(this.toshimoko.politicalSkill).toBe(basePol + 0);
         });
 
         it('duel should prevent contribution from loser', function () {

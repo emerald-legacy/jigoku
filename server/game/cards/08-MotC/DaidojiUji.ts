@@ -1,6 +1,6 @@
 import { Location } from '../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainPlayAction } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class DaidojiUji extends DrawCard {
@@ -11,7 +11,7 @@ export default class DaidojiUji extends DrawCard {
             condition: (context) => context.source.isHonored,
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFaceup(),
-            effect: AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand)
+            effect: gainPlayAction(PlayCharacterAsIfFromHand)
         });
     }
 }

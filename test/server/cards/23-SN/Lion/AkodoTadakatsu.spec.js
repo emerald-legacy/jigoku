@@ -24,10 +24,10 @@ describe('Akodo Tadakatsu', function () {
             this.mitsu.fate = 1;
         });
 
-        it('reaction to an opponent removing fate', function () {
+        it('interrupt to an opponent removing fate', function () {
             this.player1.pass();
             this.player2.clickCard(this.monoNoAware);
-            expect(this.tadakatsu.fate).toBe(1);
+            expect(this.tadakatsu.fate).toBe(2);
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.tadakatsu);
 
@@ -39,10 +39,11 @@ describe('Akodo Tadakatsu', function () {
 
             this.player1.clickCard(this.whisperer);
             expect(this.whisperer.location).toBe('dynasty discard pile');
+            expect(this.tadakatsu.fate).toBe(1);
             expect(this.getChatLogs(5)).toContain('player1 uses Akodo Tadakatsu to injure Doji Whisperer');
         });
 
-        it('reaction to an opponent resolving a ring effect', function () {
+        it('interrupt to an opponent resolving a ring effect', function () {
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();
@@ -56,12 +57,13 @@ describe('Akodo Tadakatsu', function () {
 
             this.player2.clickPrompt('No');
             this.player2.clickCard(this.tadakatsu);
-            expect(this.tadakatsu.fate).toBe(1);
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.tadakatsu.fate).toBe(2);
             this.player1.clickCard(this.tadakatsu);
             this.player1.clickCard(this.mitsu);
             expect(this.mitsu.fate).toBe(0);
+            expect(this.tadakatsu.fate).toBe(1);
         });
 
         it('no reaction when your own card removes the fate', function () {

@@ -130,7 +130,7 @@ describe('setup phase', function() {
 
             it('should present both players with a dynasty mulligan prompt', function() {
                 expect(this.player1).toHavePrompt('Select dynasty cards to mulligan');
-                expect(this.player1).toHavePrompt('Select dynasty cards to mulligan');
+                expect(this.player2).toHavePrompt('Select dynasty cards to mulligan');
             });
 
             describe('if a player clicks Done', function() {
@@ -146,6 +146,14 @@ describe('setup phase', function() {
                 it('should not shuffle the dynasty deck', function() {
                     expect(this.spy).not.toHaveBeenCalled();
                 });
+            });
+
+            it('should not let a player mulligan the opponent\'s cards', function() {
+                const opponentCard = this.player2.findCardByName('Otomo Courtier', 'province 1');
+                this.player1.clickCard(opponentCard);
+                expect(this.player1.player.selectedCards).not.toContain(opponentCard);
+                this.player1.clickPrompt('Done');
+                expect(opponentCard.location).toBe('province 1');
             });
 
             describe('if the player chooses to mulligan a card', function() {

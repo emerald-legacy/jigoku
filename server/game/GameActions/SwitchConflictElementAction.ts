@@ -1,3 +1,4 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
@@ -12,7 +13,7 @@ export class SwitchConflictElementAction<C extends AbilityContext = AbilityConte
     effect = 'switch the contested ring to {0}';
     eventName = EventName.OnSwitchConflictElement;
 
-    canAffect(ring: Ring, context: C, additionalProperties = {}): boolean {
+    canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return (
             !ring.isRemovedFromGame() &&
             context.game.isDuringConflict() &&

@@ -1,6 +1,7 @@
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
+import { cardLastingEffect, ready } from '../../GameActions/GameActions.js';
 
 export default class SacredSanctuary extends ProvinceCard {
     static id = 'sacred-sanctuary';
@@ -14,16 +15,16 @@ export default class SacredSanctuary extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('monk')
-            }, AbilityDsl.actions.ready(), AbilityDsl.actions.cardLastingEffect({
+            }, ready(), cardLastingEffect({
                 condition: () => this.game.isDuringConflict(),
-                effect: AbilityDsl.effects.doesNotBow()
-            }), AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.cardCannot({
-                    cannot: 'bow',
-                    restricts: 'opponentsCardEffects',
+                effect: doesNotBow()
+            }), cardLastingEffect((context) => ({
+                effect: cardCannot({
+                    cannot: RestrictionType.Bow,
+                    appliesTo: RestrictionScope.OpponentsCardEffects,
                     applyingPlayer: context.player
                 })
             })))
-            .effect('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict');
+            .chatText('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict');
     }
 }

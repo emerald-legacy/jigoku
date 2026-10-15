@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import { CardType, Location } from '../../Constants.js';
 
 class DiscerningYoriki extends DrawCard {
@@ -13,11 +13,11 @@ class DiscerningYoriki extends DrawCard {
                 onLookAtCards: (event, context) =>
                     event.stateBeforeResolution.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent)
             })
+            .collectiveTrigger()
             .target({
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.honor())
-            .collectiveTrigger();
+            }, honor());
     }
 }
 

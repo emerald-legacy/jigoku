@@ -26,35 +26,35 @@ describe('Tainted Tokens', function() {
         });
 
         it('should give tainted characters +2/+2', function() {
-            const mil = this.brash.getMilitarySkill();
-            const pol = this.brash.getPoliticalSkill();
+            const mil = this.brash.militarySkill;
+            const pol = this.brash.politicalSkill;
             this.brash.taint();
             this.game.checkGameState(true);
 
-            expect(this.brash.getMilitarySkill()).toBe(mil + 2);
-            expect(this.brash.getPoliticalSkill()).toBe(pol + 2);
+            expect(this.brash.militarySkill).toBe(mil + 2);
+            expect(this.brash.politicalSkill).toBe(pol + 2);
         });
 
         it('should stack with honored status tokens', function() {
-            const mil = this.brash.getMilitarySkill();
-            const pol = this.brash.getPoliticalSkill();
+            const mil = this.brash.militarySkill;
+            const pol = this.brash.politicalSkill;
             this.brash.taint();
             this.brash.honor();
             this.game.checkGameState(true);
 
-            expect(this.brash.getMilitarySkill()).toBe(mil + 4);
-            expect(this.brash.getPoliticalSkill()).toBe(pol + 4);
+            expect(this.brash.militarySkill).toBe(mil + 4);
+            expect(this.brash.politicalSkill).toBe(pol + 4);
         });
 
         it('should stack with dishonored status tokens', function() {
-            const mil = this.whisperer.getMilitarySkill();
-            const pol = this.whisperer.getPoliticalSkill();
+            const mil = this.whisperer.militarySkill;
+            const pol = this.whisperer.politicalSkill;
             this.whisperer.taint();
             this.whisperer.dishonor();
             this.game.checkGameState(true);
 
-            expect(this.whisperer.getMilitarySkill()).toBe(mil + 1);
-            expect(this.whisperer.getPoliticalSkill()).toBe(pol + 1);
+            expect(this.whisperer.militarySkill).toBe(mil + 1);
+            expect(this.whisperer.politicalSkill).toBe(pol + 1);
         });
 
         it('should give tainted provinces +2 strength', function() {

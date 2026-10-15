@@ -27,11 +27,11 @@ describe('Advance Fortification', function () {
                 defenders: [this.borderlandsDefender],
                 province: this.sd1
             });
-            const mil = this.borderlandsDefender.getMilitarySkill();
-            const pol = this.borderlandsDefender.getPoliticalSkill();
+            const mil = this.borderlandsDefender.militarySkill;
+            const pol = this.borderlandsDefender.politicalSkill;
             this.player2.clickCard(this.fort);
-            expect(this.borderlandsDefender.getMilitarySkill()).toBe(mil + 1);
-            expect(this.borderlandsDefender.getPoliticalSkill()).toBe(pol + 1);
+            expect(this.borderlandsDefender.militarySkill).toBe(mil + 1);
+            expect(this.borderlandsDefender.politicalSkill).toBe(pol + 1);
             expect(this.getChatLogs(5)).toContain('player2 uses Advance Fortification to give defending characters +1/+1');
         });
 

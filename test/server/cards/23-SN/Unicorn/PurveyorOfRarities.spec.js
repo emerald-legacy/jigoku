@@ -32,14 +32,14 @@ describe('Purveyor Of Rarities', function () {
             this.player2.pass();
 
             const fate = this.player1.fate;
-            const mil = this.rarities.getMilitarySkill();
-            const pol = this.rarities.getPoliticalSkill();
+            const mil = this.rarities.militarySkill;
+            const pol = this.rarities.politicalSkill;
 
             this.player1.clickCard(this.rarities);
             this.player1.clickCard(this.unicorn);
 
-            expect(this.rarities.getMilitarySkill()).toBe(mil + 3);
-            expect(this.rarities.getPoliticalSkill()).toBe(pol + 3);
+            expect(this.rarities.militarySkill).toBe(mil + 3);
+            expect(this.rarities.politicalSkill).toBe(pol + 3);
             expect(this.player1.fate).toBe(fate);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Purveyor of Rarities, discarding Way of the Unicorn to give +3military/+3political to Purveyor of Rarities');
@@ -54,14 +54,14 @@ describe('Purveyor Of Rarities', function () {
             this.player2.pass();
 
             const fate = this.player1.fate;
-            const mil = this.rarities.getMilitarySkill();
-            const pol = this.rarities.getPoliticalSkill();
+            const mil = this.rarities.militarySkill;
+            const pol = this.rarities.politicalSkill;
 
             this.player1.clickCard(this.rarities);
             this.player1.clickCard(this.voice);
 
-            expect(this.rarities.getMilitarySkill()).toBe(mil + 1);
-            expect(this.rarities.getPoliticalSkill()).toBe(pol + 1);
+            expect(this.rarities.militarySkill).toBe(mil + 1);
+            expect(this.rarities.politicalSkill).toBe(pol + 1);
             expect(this.player1.fate).toBe(fate + 1);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Purveyor of Rarities, discarding Voice of Honor to give +1military/+1political to Purveyor of Rarities and gain 1 fate');
@@ -76,14 +76,14 @@ describe('Purveyor Of Rarities', function () {
             this.player2.pass();
 
             const fate = this.player1.fate;
-            const mil = this.rarities.getMilitarySkill();
-            const pol = this.rarities.getPoliticalSkill();
+            const mil = this.rarities.militarySkill;
+            const pol = this.rarities.politicalSkill;
 
             this.player1.clickCard(this.rarities);
             this.player1.clickCard(this.customs);
 
-            expect(this.rarities.getMilitarySkill()).toBe(mil + 1);
-            expect(this.rarities.getPoliticalSkill()).toBe(pol + 1);
+            expect(this.rarities.militarySkill).toBe(mil + 1);
+            expect(this.rarities.politicalSkill).toBe(pol + 1);
             expect(this.player1.fate).toBe(fate + 1);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Purveyor of Rarities, discarding Foreign Customs to give +1military/+1political to Purveyor of Rarities and gain 1 fate');

@@ -1,16 +1,17 @@
-import { GameModes } from '../GameModes.js';
-import { CardType, EffectName, Element, Location } from './Constants.js';
+import { msg } from './GameChat.js';
+import { CardType, EffectName, Element, Location, RestrictionType } from './Constants.js';
 import type { ElementSymbolInfo } from './ElementSymbol.js';
-import AbilityDsl from './abilitydsl.js';
+import { cardCannot } from './effects.js';
 import BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
-import StatModifier, { type StatModifierSummary } from './StatModifier.js';
+import { StatModifier, type StatModifierSummary } from './StatModifier.js';
 import type { CardData } from './types/CardData.js';
 import { isEffectOf } from './Effects/types.js';
-import type { EffectBase } from './Effects/EffectBase.js';
+import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { NumericEffectName } from './Effects/EffectValueMap.js';
 import type { StateViewer } from './types/StateViewer.js';
+import { discardCard } from './GameActions/GameActions.js';
 
 export class ProvinceCard extends BaseCard {
     isProvince = true;
@@ -38,7 +39,7 @@ export class ProvinceCard extends BaseCard {
         this.persistentEffect({
             condition: (context) => context.source.hasEminent(),
             location: Location.Any,
-            effect: AbilityDsl.effects.cardCannot('turnFacedown')
+            effect: cardCannot(RestrictionType.TurnFacedown)
         });
     }
 
@@ -98,7 +99,7 @@ export class ProvinceCard extends BaseCard {
 
     getStrengthModifiers(): StatModifier[] {
         const effectsOf = <N extends NumericEffectName>(type: N) => this.getRawEffects().filter((effect) => isEffectOf(effect, type));
-        const setModifier = (effect: EffectBase<NumericEffectName>) =>
+        const setModifier = (effect: EffectApplier<NumericEffectName>) =>
             StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect));
 
         // Set effects override everything
@@ -182,6 +183,13 @@ export class ProvinceCard extends BaseCard {
         return !!this.game.currentConflict?.getConflictProvinces().includes(this);
     }
 
+    /** The conflict province with this province's text: this one, or a copy of it. */
+    conflictProvinceWithText(): ProvinceCard | undefined {
+        return this.game.currentConflict?.getConflictProvinces().find((province) =>
+            !province.hasBlankText() && (province.copiedCard ?? province) === this
+        );
+    }
+
     canBeAttacked() {
         const fateCostToAttack = this.getFateCostToAttack();
         const attackers = this.game.isDuringConflict() && this.game.currentConflict ? this.game.currentConflict.attackers : [];
@@ -207,10 +215,15 @@ export class ProvinceCard extends BaseCard {
     }
 
     isBlank(): boolean {
+        return this.hasBlankText() || super.isBlank();
+    }
+
+    // blank apart from copying another province
+    private hasBlankText(): boolean {
         const ignoreTokens =
             !!this.game.currentConflict?.anyEffect(EffectName.ConflictIgnoreStatusTokens) && this.isConflictProvince();
         const dishonored = this.isDishonored && !ignoreTokens;
-        return this.isBroken || dishonored || super.isBlank();
+        return this.isBroken || dishonored || this.anyEffect(EffectName.Blank);
     }
 
     breakProvince(): void {
@@ -220,13 +233,9 @@ export class ProvinceCard extends BaseCard {
             return;
         }
 
-        this.game.addMessage('{0} has broken {1}!', this.controller.opponent, this);
+        this.game.addMessage(msg`${this.controller.opponent} has broken ${this}!`);
 
-        if(
-            this.location === Location.StrongholdProvince ||
-            (this.game.gameMode === GameModes.Skirmish &&
-                this.controller.getProvinces((card) => card.isBroken).length > 2)
-        ) {
+        if(this.game.rules.winConReachedConquestVictory(this)) {
             this.game.recordWinner(this.controller.opponent, 'conquest');
             return;
         }
@@ -245,11 +254,11 @@ export class ProvinceCard extends BaseCard {
                     {
                         text: 'Yes',
                         handler: () => {
-                            this.game.addMessage('{0} chooses to discard {1}', choosingPlayer, cardLabel());
-                            this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: dynastyCard });
+                            this.game.addMessage(msg`${choosingPlayer} chooses to discard ${cardLabel()}`);
+                            this.game.resolveActions([discardCard({ target: dynastyCard })]);
                         }
                     },
-                    { text: 'No', handler: () => this.game.addMessage('{0} chooses not to discard {1}', choosingPlayer, cardLabel()) }
+                    { text: 'No', handler: () => this.game.addMessage(msg`${choosingPlayer} chooses not to discard ${cardLabel()}`) }
                 ]
             });
         }
@@ -313,11 +322,11 @@ export class ProvinceCard extends BaseCard {
     }
 
     isFaceup(): boolean {
-        return this.game.gameMode !== GameModes.Skirmish && super.isFaceup();
+        return this.game.rules.setupHaveProvinceCards && super.isFaceup();
     }
 
     isFacedown(): boolean {
-        return this.game.gameMode !== GameModes.Skirmish && super.isFacedown();
+        return this.game.rules.setupHaveProvinceCards && super.isFacedown();
     }
 
     cardsInSelf(): DrawCard[] {

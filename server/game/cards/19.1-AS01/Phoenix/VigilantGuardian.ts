@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class VigilantGuardian extends DrawCard {
@@ -7,7 +7,7 @@ export default class VigilantGuardian extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDefending() && (context.game.currentConflict?.attackerSkill ?? -1) === 0,
-            effect: AbilityDsl.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 }

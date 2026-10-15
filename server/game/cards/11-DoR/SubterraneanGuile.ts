@@ -1,15 +1,15 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 
 class SubterraneanGuile extends DrawCard {
     static id = 'subterranean-guile';
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: context => this.game.isDuringConflict(ConflictType.Military) && this.isHoldingOnUnbrokenProvince(context),
-            effect: AbilityDsl.effects.addKeyword('covert')
+            condition: (context) => this.game.isDuringConflict(ConflictType.Military) && this.isHoldingOnUnbrokenProvince(context),
+            effect: addKeyword('covert')
         });
     }
 
@@ -18,7 +18,7 @@ class SubterraneanGuile extends DrawCard {
             const province = context.player.getProvinceCardInProvince(location);
             if(province && !province.isBroken) {
                 const cards = context.player.getDynastyCardsInProvince(location);
-                if(cards.some(card => card.isFaceup() && card.type === CardType.Holding)) {
+                if(cards.some((card) => card.isFaceup() && card.type === CardType.Holding)) {
                     return true;
                 }
             }

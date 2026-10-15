@@ -1,3 +1,6 @@
+import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Repentant Legion', function() {
     integration(function() {
         beforeEach(function() {
@@ -71,6 +74,25 @@ describe('Repentant Legion', function() {
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player1).not.toBeAbleToSelect(this.repentantLegion);
             expect(this.player2).toHavePrompt('air ring');
+        });
+
+        it('should trigger when the attacker\'s own province breaks while it defends, as its player broke it', function() {
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.dojiChallenger],
+                defenders: [this.repentantLegion],
+                type: 'military'
+            });
+
+            const attackersProvince = this.player2.findCardByName('shameful-display', 'province 1');
+            const context = new ThenAbility(this.dojiChallenger, {}).createContext(this.player2.player);
+            this.game.queueSimpleStep(() => breakProvince().resolve(attackersProvince, context));
+            this.game.continue();
+            this.player2.clickPrompt('No');
+            expect(attackersProvince.isBroken).toBe(true);
+            expect(this.player1).toBeAbleToSelect(this.repentantLegion);
         });
 
         it('should put a card in each non-stronghold rovince facedown', function() {

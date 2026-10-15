@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Crafty Tsukumogami', function() {
     integration(function() {
@@ -13,7 +13,7 @@ describe('Crafty Tsukumogami', function() {
                     inPlay: ['doji-whisperer', 'crafty-tsukumogami'],
                     hand: ['a-fate-worse-than-death', 'way-of-the-crane']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.crafty = this.player1.filterCardsByName('crafty-tsukumogami')[0];
@@ -44,6 +44,14 @@ describe('Crafty Tsukumogami', function() {
             this.player1.clickRing('fire');
             expect(this.game.rings['fire'].attachments).toContain(this.crafty);
             expect(this.crafty.getType()).toBe('attachment');
+        });
+
+        it('should leave the other characters in play', function() {
+            this.player1.clickCard(this.crafty);
+            this.player1.clickRing('fire');
+            expect(this.player1.player.cardsInPlay).not.toContain(this.crafty);
+            expect(this.player1.player.cardsInPlay).toContain(this.crafty2);
+            expect(this.player1.player.cardsInPlay).toContain(this.challenger);
         });
 
         it('should remove attachments, status tokens, fate, and no longer count skill in a conflict', function() {

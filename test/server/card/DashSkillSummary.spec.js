@@ -1,4 +1,5 @@
 import { Duration } from '../../../build/server/game/Constants.js';
+import { setBaseDash, setDash } from '../../../build/server/game/effects.js';
 
 describe('Dash skill summary', function() {
     integration(function() {
@@ -11,7 +12,7 @@ describe('Dash skill summary', function() {
             });
             this.brash = this.player1.findCardByName('brash-samurai');
             this.applyDash = (effect) => {
-                this.brash.applyDurationEffect(Duration.UntilEndOfPhase, (dsl) => ({ match: this.brash, effect: effect(dsl) }));
+                this.brash.applyDurationEffect(Duration.UntilEndOfPhase, { match: this.brash, effect });
                 this.game.checkGameState(true);
             };
             // what the client receives
@@ -19,8 +20,8 @@ describe('Dash skill summary', function() {
         });
 
         it('sends a base dash without an amount, so the client does not count it as 0', function() {
-            this.applyDash((dsl) => dsl.effects.setBaseDash('military'));
-            expect(this.brash.getMilitarySkill()).toBe(0);
+            this.applyDash(setBaseDash('military'));
+            expect(this.brash.militarySkill).toBe(0);
 
             const summary = this.sentSummary();
             expect(summary.stat).toBe('-');
@@ -31,8 +32,8 @@ describe('Dash skill summary', function() {
         });
 
         it('sends a set dash without an amount', function() {
-            this.applyDash((dsl) => dsl.effects.setDash('military'));
-            expect(this.brash.getMilitarySkill()).toBe(0);
+            this.applyDash(setDash('military'));
+            expect(this.brash.militarySkill).toBe(0);
 
             const summary = this.sentSummary();
             expect(summary.stat).toBe('-');
@@ -41,16 +42,16 @@ describe('Dash skill summary', function() {
         });
 
         it('dashes only the skill a set dash names', function() {
-            const military = this.brash.getMilitarySkill();
-            this.applyDash((dsl) => dsl.effects.setDash('political'));
-            expect(this.brash.getMilitarySkill()).toBe(military);
+            const military = this.brash.militarySkill;
+            this.applyDash(setDash('political'));
+            expect(this.brash.militarySkill).toBe(military);
             expect(this.sentSummary().stat).toBe(military.toString());
             expect(this.brash.getSummary(this.player1.player).politicalSkillSummary.stat).toBe('-');
         });
 
         it('keeps the amounts of ordinary modifiers', function() {
             const summary = this.sentSummary();
-            expect(summary.stat).toBe(this.brash.getMilitarySkill().toString());
+            expect(summary.stat).toBe(this.brash.militarySkill.toString());
             expect(summary.modifiers.every((modifier) => typeof modifier.amount === 'number')).toBe(true);
         });
     });

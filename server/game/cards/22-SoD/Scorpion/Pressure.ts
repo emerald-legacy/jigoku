@@ -1,5 +1,8 @@
-import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Players } from '../../../Constants.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
+import { cardLastingEffect, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Pressure extends DrawCard {
@@ -12,10 +15,10 @@ export default class Pressure extends DrawCard {
                 onDefendersDeclared: (_event, _context) => true,
                 onMoveToConflict: (_event, _context) => true
             })
-            .gameAction(AbilityDsl.actions.selectCard(context => ({
+            .selectCard({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
-                controller: Players.Opponent,
+                controller: Players.Any,
                 targets: false,
                 hidePromptIfSingleCard: true,
                 cardCondition: (card, context) => card.isCharacter() && card.isDishonored && card.isParticipating() && (
@@ -23,19 +26,18 @@ export default class Pressure extends DrawCard {
                     context.event.defenders?.includes(card) ||
                     context.event.card === card
                 ),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.sendHome(),
-                    AbilityDsl.actions.cardLastingEffect({
+                gameAction: multiple([
+                    sendHome(),
+                    cardLastingEffect({
                         effect: [
-                            AbilityDsl.effects.cannotParticipateAsAttacker(ConflictType.Military),
-                            AbilityDsl.effects.cannotParticipateAsDefender(ConflictType.Military)
+                            cannotParticipateAsAttacker(),
+                            cannotParticipateAsDefender()
                         ]
                     })
                 ]),
-                message: '{0} chooses {1}',
-                messageArgs: (cards) => [context.player, cards]
-            })))
-            .effect('move a character home and prevent it from participating in the conflict')
-            .max(AbilityDsl.limit.perConflict(1));
+                message: (context, cards) => msg`${context.player} chooses ${cards}`
+            })
+            .chatText('move a character home and prevent it from participating in the conflict')
+            .max(perConflict(1));
     }
 }

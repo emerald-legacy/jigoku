@@ -1,12 +1,12 @@
 import { EffectValue } from './EffectValue.js';
-import GainAbility from './GainAbility.js';
+import { GainAbility } from './GainAbility.js';
 import { AbilityType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type { StoredPersistentEffect } from '../BaseCard.js';
-import type CardAbility from '../CardAbility.js';
+import type { CardAbility } from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
-import type TriggeredAbility from '../TriggeredAbility.js';
+import type { TriggeredAbility } from '../TriggeredAbility.js';
 
 export type DynamicMatch = ((target: BaseCard, context: AbilityContext) => BaseCard | BaseCard[]) | BaseCard | BaseCard[];
 
@@ -16,7 +16,7 @@ interface GainedAbilities {
 }
 
 // This ignores persistent effects since it's used by Shosuro Deceiver who only takes triggered abilities
-export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, BaseCard> {
+export class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, BaseCard> {
     match: DynamicMatch;
     createdAbilities: Record<string, GainAbility>;
     abilitiesForTargets: Record<string, GainedAbilities>;

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class BladeOf10000Battles extends DrawCard {
     static id = 'blade-of-10-000-battles';
@@ -21,7 +21,7 @@ class BladeOf10000Battles extends DrawCard {
                 activePromptTitle: 'Choose a card from your conflict discard pile to add to your hand',
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self
-            }, AbilityDsl.actions.moveCard({ destination: Location.Hand }));
+            }, moveCard({ destination: Location.Hand }));
     }
 }
 

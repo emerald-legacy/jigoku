@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
 
 class IkomaOrator extends DrawCard {
     static id = 'ikoma-orator';
@@ -7,7 +7,7 @@ class IkomaOrator extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.player.isMoreHonorable(),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(2)
+            effect: modifyPoliticalSkill(2)
         });
     }
 }

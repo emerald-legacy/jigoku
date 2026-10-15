@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 
 class CurseOfMisfortune extends DrawCard {
     static id = 'curse-of-misfortune';
@@ -9,7 +9,7 @@ class CurseOfMisfortune extends DrawCard {
         this.persistentEffect({
             match: (card, context) => !!card.parentCharacter && card.parentCharacter === context?.source.parentCharacter && card !== context?.source,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.addKeyword('restricted')
+            effect: addKeyword('restricted')
         });
     }
 }

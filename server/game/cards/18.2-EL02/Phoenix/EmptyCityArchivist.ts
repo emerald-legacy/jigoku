@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { Location } from '../../../Constants.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
+import { Location, RemainingCards } from '../../../Constants.js';
 
 class EmptyCityArchivist extends DrawCard {
     static id = 'empty-city-archivist';
@@ -10,18 +10,17 @@ class EmptyCityArchivist extends DrawCard {
             .when({
                 onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
-                amount: 4,
+            .deckSearch({
+                cardsToLookAt: 4,
                 cardCondition: (card, context) => {
                     const parent = context.source.parentCharacter;
                     return card.hasTrait('spell') || card.hasTrait('kiho') || (!!parent && parent.hasTrait('scholar'));
                 },
-                placeOnBottomInRandomOrder: true,
-                shuffle: false,
-                gameAction: AbilityDsl.actions.moveCard({
+                remainingCards: RemainingCards.BottomRandom,
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
-            }));
+            });
     }
 }
 

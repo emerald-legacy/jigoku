@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import { Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedAnyRing } from '../claimedRings.js';
 
@@ -14,7 +14,7 @@ class ImpulsiveNovice extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
     }
 

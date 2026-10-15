@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class HidaKotoe extends DrawCard {
     static id = 'hida-kotoe';
@@ -12,7 +12,7 @@ class HidaKotoe extends DrawCard {
             })
             .target({
                 cardType: CardType.Attachment
-            }, AbilityDsl.actions.discardFromPlay());
+            }, discardFromPlay());
     }
 }
 

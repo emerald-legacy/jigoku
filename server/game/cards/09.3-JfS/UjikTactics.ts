@@ -1,17 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class UjikTactics extends DrawCard {
     static id = 'ujik-tactics';
 
     setupCardAbilities() {
-        this.action('Give each non-unique character +1 military during this conflict')
-            .condition(() => this.game.isDuringConflict())
-            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
+        this.conflictAction('Give each non-unique character +1 military during this conflict')
+            .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => !card.isUnique()),
-                effect: AbilityDsl.effects.modifyMilitarySkill(1)
-            })))
-            .effect('give all non-unique character they control +1{1}', () => (['military']));
+                effect: modifyMilitarySkill(1)
+            }))
+            .chatText(() => msg`give all non-unique character they control +1${'military'}`);
     }
 }
 

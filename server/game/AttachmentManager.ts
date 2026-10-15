@@ -1,8 +1,9 @@
+import { msg } from './GameChat.js';
 import { CardType, EffectName } from './Constants.js';
-import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
+import { discardFromPlay } from './GameActions/GameActions.js';
 
 export class AttachmentManager {
     attachments: DrawCard[] = [];
@@ -11,6 +12,11 @@ export class AttachmentManager {
 
     remove(attachment: DrawCard): void {
         this.attachments = this.attachments.filter((card) => card.uuid !== attachment.uuid);
+    }
+
+    hasCopyOf(attachment: DrawCard, controller: Player): boolean {
+        return this.host.game.rules.attachmentsMaxOneCopyPerName && !attachment.allowDuplicatesOfAttachment &&
+            this.attachments.some((other) => other !== attachment && isCopy(other, attachment) && other.controller === controller);
     }
 
     allowAttachment(attachment: DrawCard): boolean {
@@ -44,22 +50,6 @@ export class AttachmentManager {
             }
         }
 
-        const frameworkLimitsAttachmentsWithRepeatedNames =
-            game.gameMode === GameModes.Emerald || game.gameMode === GameModes.Obsidian || game.gameMode === GameModes.Sanctuary;
-        if(frameworkLimitsAttachmentsWithRepeatedNames) {
-            for(const card of this.attachments) {
-                const matchingAttachments = this.attachments.filter(
-                    (attachment) =>
-                        !attachment.allowDuplicatesOfAttachment &&
-                        attachment.id === card.id &&
-                        attachment.controller === card.controller
-                );
-                for(const overflow of matchingAttachments.slice(0, -1)) {
-                    illegalAttachments.add(overflow);
-                }
-            }
-        }
-
         for(const object of this.attachments.reduce<Array<Record<string, number>>>(
             (array, card) => array.concat(card.getEffects(EffectName.AttachmentRestrictTraitAmount)),
             []
@@ -79,41 +69,68 @@ export class AttachmentManager {
                 cardType: CardType.Attachment,
                 cardCondition: (card) => card.parent?.uuid === host.uuid && card.isRestricted(),
                 onSelect: (player: Player, card) => {
-                    game.addMessage(
-                        '{0} discards {1} from {2} due to too many Restricted attachments',
-                        player,
-                        card,
-                        card.parent
-                    );
+                    game.addMessage(msg`${player} discards ${card} from ${card.parent} due to too many Restricted attachments`);
 
                     if(illegalAttachments.size > 0) {
-                        game.addMessage(
-                            '{0} {1} discarded from {3} as {2} {1} no longer legally attached',
-                            Array.from(illegalAttachments),
-                            illegalAttachments.size > 1 ? 'are' : 'is',
-                            illegalAttachments.size > 1 ? 'they' : 'it',
-                            host
-                        );
+                        const plural = illegalAttachments.size > 1;
+                        game.addMessage(msg`${Array.from(illegalAttachments)} ${plural ? 'are' : 'is'} discarded from ${host} as ${plural ? 'they' : 'it'} ${plural ? 'are' : 'is'} no longer legally attached`);
                     }
 
                     illegalAttachments.add(card);
-                    game.applyGameAction(context, { discardFromPlay: Array.from(illegalAttachments) });
+                    game.resolveActions([discardFromPlay({ target: Array.from(illegalAttachments) })], context);
                     return true;
                 },
                 source: 'Too many Restricted attachments'
             });
             return true;
+        }
+        const copies = this.copiesOverTheLimit(illegalAttachments);
+        if(copies.length > 0) {
+            // RRG: the card's controller discards copies until only one is attached
+            game.promptForSelect(host.controller, {
+                activePromptTitle: `Choose which ${copies[0].name} to keep`,
+                waitingPromptTitle: 'Waiting for opponent to choose an attachment to keep',
+                cardType: CardType.Attachment,
+                cardCondition: (card) => copies.includes(card),
+                onSelect: (player: Player, kept) => {
+                    const discarded = copies.filter((card) => card !== kept);
+                    game.addMessage(msg`${player} discards ${discarded} from ${host}, as only one copy can be attached`);
+                    if(illegalAttachments.size > 0) {
+                        const plural = illegalAttachments.size > 1;
+                        game.addMessage(msg`${Array.from(illegalAttachments)} ${plural ? 'are' : 'is'} discarded from ${host} as ${plural ? 'they' : 'it'} ${plural ? 'are' : 'is'} no longer legally attached`);
+                    }
+                    discarded.forEach((card) => illegalAttachments.add(card));
+                    game.resolveActions([discardFromPlay({ target: Array.from(illegalAttachments) })], context);
+                    return true;
+                },
+                source: 'Copies of an attachment'
+            });
+            return true;
         } else if(illegalAttachments.size > 0) {
-            game.addMessage(
-                '{0} {1} discarded from {3} as {2} {1} no longer legally attached',
-                Array.from(illegalAttachments),
-                illegalAttachments.size > 1 ? 'are' : 'is',
-                illegalAttachments.size > 1 ? 'they' : 'it',
-                host
-            );
-            game.applyGameAction(context, { discardFromPlay: Array.from(illegalAttachments) });
+            const plural = illegalAttachments.size > 1;
+            game.addMessage(msg`${Array.from(illegalAttachments)} ${plural ? 'are' : 'is'} discarded from ${host} as ${plural ? 'they' : 'it'} ${plural ? 'are' : 'is'} no longer legally attached`);
+            game.resolveActions([discardFromPlay({ target: Array.from(illegalAttachments) })], context);
             return true;
         }
         return false;
     }
+
+    /** The first set of copies controlled by one player that are attached together, except ones discarded anyway. */
+    private copiesOverTheLimit(illegalAttachments: Set<DrawCard>): DrawCard[] {
+        if(!this.host.game.rules.attachmentsMaxOneCopyPerName) {
+            return [];
+        }
+        const candidates = this.attachments.filter((card) => !card.allowDuplicatesOfAttachment && !illegalAttachments.has(card));
+        for(const card of candidates) {
+            const copies = candidates.filter((other) => isCopy(other, card) && other.controller === card.controller);
+            if(copies.length > 1) {
+                return copies;
+            }
+        }
+        return [];
+    }
+}
+
+function isCopy(card: DrawCard, other: DrawCard): boolean {
+    return card.name === other.name;
 }

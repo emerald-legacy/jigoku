@@ -215,7 +215,7 @@ describe('Trading on the Sand Road', function () {
                 this.player1.clickPrompt('Lose 1 honor to resolve this ability again');
                 this.player1.clickCard(this.wanderingRonin);
                 this.player1.clickPrompt('Done');
-                expect(this.wanderingRonin.getMilitarySkill()).toBe(6);
+                expect(this.wanderingRonin.militarySkill).toBe(6);
                 expect(this.banzai.location).toBe('conflict discard pile');
             });
         });

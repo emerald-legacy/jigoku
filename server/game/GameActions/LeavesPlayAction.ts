@@ -1,10 +1,14 @@
+import { msg, type MessageArgs } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { EventName, Location } from '../Constants.js';
+import { CardType, EffectName, EventName, Location, RestrictionType } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import { isEnumValue } from '../utils/helpers.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
+import { RemoveFateAction } from './RemoveFateAction.js';
 
 /** A leaves-play event this action created: `updateEvent` always sets its destination. */
 export type LeavesPlayEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardLeavesPlay, C> & { destination: Location };
@@ -15,11 +19,12 @@ export class LeavesPlayAction<
     D extends keyof P = never
 > extends CardGameAction<P, EventName.OnCardLeavesPlay, C, D> {
     eventName = EventName.OnCardLeavesPlay;
+    isSacrifice = false;
 
     updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
         super.updateEvent(event, card, context, additionalProperties);
         const destination = additionalProperties.destination;
-        event.isSacrifice = this.name === 'sacrifice';
+        event.isSacrifice = this.isSacrifice;
         event.destination = typeof destination === 'string' && isEnumValue(Location, destination)
             ? destination
             : card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
@@ -28,11 +33,14 @@ export class LeavesPlayAction<
             event.cardStateWhenLeftPlay = evCard.createSnapshot();
             if(evCard.isAncestral() && event.isContingent) {
                 event.destination = Location.Hand;
-                context.game.addMessage(
-                    '{0} returns to {1}\'s hand due to its Ancestral keyword',
-                    evCard,
-                    evCard.owner
-                );
+                context.game.addMessage(msg`${evCard} returns to ${evCard.owner}'s hand due to its Ancestral keyword`);
+            }
+            const removal = evCard.mostRecentEffect(EffectName.RemoveFromGameInsteadOfLeavingPlay);
+            if(removal) {
+                event.destination = Location.RemovedFromGame;
+                if(removal.message) {
+                    context.game.addMessage(removal.message(evCard));
+                }
             }
         };
         event.createContingentEvents = () => {
@@ -43,9 +51,8 @@ export class LeavesPlayAction<
             for(const attachment of evCard.attachments) {
                 // we only need to add events for attachments that are in play.
                 if(attachment.location === Location.PlayArea) {
-                    const attachmentEvent = context.game.actions
-                        .discardFromPlay()
-                        .getEvent(attachment, context.game.getFrameworkContext());
+                    const attachmentEvent = new DiscardFromPlayAction({})
+                        .getEvent(attachment, context.game.getGameContext());
                     attachmentEvent.order = event.order - 1;
                     const previousCondition = attachmentEvent.condition;
                     attachmentEvent.condition = (attachmentEvent) =>
@@ -56,10 +63,9 @@ export class LeavesPlayAction<
             }
 
             // Add an imminent triggering condition for removing fate
-            if(evCard.allowGameAction('removeFate', context.game.getFrameworkContext())) {
-                const fateEvent = context.game.actions
-                    .removeFate({ amount: evCard.getFate() })
-                    .getEvent(evCard, context.game.getFrameworkContext());
+            if(evCard.allowGameAction('removeFate', context.game.getGameContext())) {
+                const fateEvent = new RemoveFateAction({ amount: evCard.getFate() })
+                    .getEvent(evCard, context.game.getGameContext());
                 fateEvent.order = event.order - 1;
                 fateEvent.isContingent = true;
                 contingentEvents.push(fateEvent);
@@ -68,17 +74,50 @@ export class LeavesPlayAction<
         };
     }
 
-    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: ActionOverrides = {}): void {
         const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination)) {
-            card.game.addMessage(
-                '{0} is not a legal location for {1} and it is discarded',
-                event.destination,
-                card
-            );
+            card.game.addMessage(msg`${event.destination} is not a legal location for ${card} and it is discarded`);
             event.destination = card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
         }
         card.owner.moveCard(card, event.destination, event.options || {});
+    }
+}
+
+// next to LeavesPlayAction, which discards attachments with it: in a module of its own, each would import the other
+export type DiscardFromPlayProperties = CardActionProperties;
+
+export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<DiscardFromPlayProperties, C> {
+    name = 'discardFromPlay';
+    restriction = RestrictionType.DiscardFromPlay;
+    cost = 'sacrificing {0}';
+    targetType = [CardType.Character, CardType.Attachment, CardType.Holding];
+
+    constructor(propertyFactory: DiscardFromPlayProperties | ((context: C) => DiscardFromPlayProperties), isSacrifice = false) {
+        super(propertyFactory);
+        if(isSacrifice) {
+            this.name = 'sacrifice';
+            this.restriction = RestrictionType.Sacrifice;
+            this.isSacrifice = true;
+        }
+    }
+
+    protected effectMessage(): MessageArgs {
+        return [this.isSacrifice ? 'sacrifice {0}' : 'discard {0}', []];
+    }
+
+    canAffect(card: BaseCard, context: C): boolean {
+        if(card.type === CardType.Holding) {
+            if(this.isSacrifice && card.facedown) {
+                return false;
+            }
+            if(!card.isInProvince()) {
+                return false;
+            }
+        } else if(card.location !== Location.PlayArea) {
+            return false;
+        }
+        return super.canAffect(card, context);
     }
 }

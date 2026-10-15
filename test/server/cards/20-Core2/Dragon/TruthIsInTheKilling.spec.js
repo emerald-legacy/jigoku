@@ -1,3 +1,6 @@
+import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { takeControl } from '../../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Truth is in the Killing', function () {
     integration(function () {
         beforeEach(function () {
@@ -179,6 +182,58 @@ describe('Truth is in the Killing', function () {
                     'Duel Effect: return all fate on Kakita Toshimoko and Doji Diplomat to player2\'s fate pool and discard them'
                 );
             });
+        });
+    });
+});
+
+describe('Truth is in the Killing against a character its owner does not control', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 20,
+                    inPlay: ['borderlands-defender', 'cunning-negotiator', 'doji-challenger'],
+                    hand: ['truth-is-in-the-killing']
+                },
+                player2: {
+                    inPlay: ['shiba-tsukune']
+                }
+            });
+
+            this.borderlandsDefender = this.player1.findCardByName('borderlands-defender');
+            this.cunningNegotiator = this.player1.findCardByName('cunning-negotiator');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.truth = this.player1.findCardByName('truth-is-in-the-killing');
+            this.tsukune = this.player2.findCardByName('shiba-tsukune');
+
+            const context = new ThenAbility(this.tsukune, {}).createContext(this.player2.player);
+            this.game.queueSimpleStep(() => takeControl().resolve(this.challenger, context));
+            this.game.continue();
+        });
+
+        it('returns the loser\'s fate to its owner', function () {
+            expect(this.challenger.controller).toBe(this.player2.player);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderlandsDefender, this.cunningNegotiator],
+                defenders: [this.tsukune, this.challenger]
+            });
+
+            this.challenger.fate = 3;
+            const fate1 = this.player1.fate;
+            const fate2 = this.player2.fate;
+            this.player2.pass();
+
+            this.player1.clickCard(this.truth);
+            this.player1.clickCard(this.borderlandsDefender);
+            this.player1.clickCard(this.challenger);
+            this.player1.clickPrompt('5');
+            this.player2.clickPrompt('1');
+
+            expect(this.player1.fate).toBe(fate1 - 1 + 3);
+            expect(this.player2.fate).toBe(fate2);
+            expect(this.getChatLogs(10)).toContain('Duel Effect: return all fate on Doji Challenger to player1\'s fate pool');
         });
     });
 });

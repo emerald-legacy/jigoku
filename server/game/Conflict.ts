@@ -1,12 +1,14 @@
+import { msg } from './GameChat.js';
 import * as Settings from '../settings.js';
-import { CardType, ConflictType, EffectName, Element, EventName, Location } from './Constants.js';
+import { CardType, type ConflictType, EffectName, type Element, EventName, Location, RestrictionType } from './Constants.js';
 import { GameObject } from './GameObject.js';
-import { ProvinceCard } from './ProvinceCard.js';
-import BaseCard from './BaseCard.js';
-import Game from './Game.js';
+import type { ProvinceCard } from './ProvinceCard.js';
+import type BaseCard from './BaseCard.js';
+import type Game from './Game.js';
 import Player from './Player.js';
 import type Ring from './Ring.js';
-import DrawCard from './DrawCard.js';
+import type DrawCard from './DrawCard.js';
+import { bow, sendHome } from './GameActions/GameActions.js';
 
 type Predicate = (card: DrawCard) => boolean;
 
@@ -206,8 +208,8 @@ export class Conflict extends GameObject {
         if(!newRing) {
             throw new Error('switchElement called for non-existant element');
         }
-        if(this.attackingPlayer.checkRestrictions('takeFateFromRings', this.game.getFrameworkContext()) && newRing.fate > 0) {
-            this.game.addMessage('{0} takes {1} fate from {2}', this.attackingPlayer, newRing.fate, newRing);
+        if(this.attackingPlayer.checkRestrictions(RestrictionType.TakeFateFromRings, this.game.getFrameworkContext(this.attackingPlayer)) && newRing.fate > 0) {
+            this.game.addMessage(msg`${this.attackingPlayer} takes ${newRing.fate} fate from ${newRing}`);
             const fate = newRing.fate;
             this.attackingPlayer.modifyFate(newRing.fate);
             newRing.fate = 0;
@@ -245,12 +247,8 @@ export class Conflict extends GameObject {
             this.getDefenders().filter((card) => !card.canParticipateAsDefender(this.conflictType))
         );
         if(illegal.length > 0) {
-            this.game.addMessage(
-                '{0} cannot participate in the conflict any more and {1} sent home bowed',
-                illegal,
-                illegal.length > 1 ? 'are' : 'is'
-            );
-            this.game.applyGameAction(null, { sendHome: illegal, bow: illegal });
+            this.game.addMessage(msg`${illegal} cannot participate in the conflict any more and ${illegal.length > 1 ? 'are' : 'is'} sent home bowed`);
+            this.game.resolveActions([sendHome({ target: illegal }), bow({ target: illegal })]);
         }
     }
 
@@ -472,8 +470,8 @@ export class Conflict extends GameObject {
             }
             if(!cannotContribute) {
                 cannotContribute = !card.checkRestrictions(
-                    'contributeSkillToConflictResolution',
-                    this.game.getFrameworkContext()
+                    RestrictionType.ContributeSkillToConflictResolution,
+                    this.game.getFrameworkContext(card.controller)
                 );
             }
             if(cannotContribute) {

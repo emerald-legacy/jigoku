@@ -23,9 +23,11 @@ export class DuelsThisConflict {
     }
 
     constructor(game: Game, private select: (duel: Duel) => DrawCard[], { forgetOnEnterPlay = false } = {}) {
-        new EventRegistrar(game, this).register(forgetOnEnterPlay
-            ? [EventName.OnConflictFinished, EventName.AfterDuel, EventName.OnCharacterEntersPlay]
-            : [EventName.OnConflictFinished, EventName.AfterDuel]);
+        new EventRegistrar(game).register({
+            [EventName.OnConflictFinished]: () => this.onConflictFinished(),
+            [EventName.AfterDuel]: (event) => this.afterDuel(event),
+            ...(forgetOnEnterPlay ? { [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event) } : {})
+        });
     }
 
     public has(card: BaseCard): boolean {

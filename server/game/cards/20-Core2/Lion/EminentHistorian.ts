@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotReceiveDishonorToken } from '../../../effects.js';
+import { honor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class EminentHistorian extends DrawCard {
@@ -7,15 +8,15 @@ export default class EminentHistorian extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cannotReceiveDishonorToken()
+            effect: cannotReceiveDishonorToken()
         });
 
-        this.action('Honor a character')
+        this.conflictAction('Honor a character', { evenFromHome: true })
             .condition((context) => !context.player.opponent?.isMoreHonorable())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }

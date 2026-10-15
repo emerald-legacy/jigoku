@@ -1,5 +1,4 @@
 import { Direction } from '../../GameActions/ModifyBidAction.js';
-import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class ContingencyPlan extends DrawCard {
@@ -7,7 +6,7 @@ export default class ContingencyPlan extends DrawCard {
 
     public setupCardAbilities() {
         this.reaction('Change your bid by 1')
-            .when({ onHonorDialsRevealed: (event) => event.isHonorBid })
-            .gameAction(AbilityDsl.actions.modifyBid({ direction: Direction.Prompt }));
+            .when({ onHonorDialsRevealed: () => true })
+            .modifyBid({ direction: Direction.Prompt });
     }
 }

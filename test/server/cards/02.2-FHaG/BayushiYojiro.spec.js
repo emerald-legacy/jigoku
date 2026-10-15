@@ -24,13 +24,13 @@ describe('Bayushi Yojiro', function() {
                     attackers: [this.bayushiAramoro],
                     defenders: [this.youngHarrier]
                 });
-                expect(this.youngHarrier.getMilitarySkill()).toBe(1);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
+                expect(this.youngHarrier.militarySkill).toBe(1);
+                expect(this.youngHarrier.politicalSkill).toBe(1);
                 expect(this.youngHarrier.isDishonored).toBe(false);
                 this.player2.clickCard(this.youngHarrier);
                 expect(this.youngHarrier.isDishonored).toBe(true);
-                expect(this.youngHarrier.getMilitarySkill()).toBe(0);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(0);
+                expect(this.youngHarrier.militarySkill).toBe(0);
+                expect(this.youngHarrier.politicalSkill).toBe(0);
             });
 
             it('should stop dishonor status modifying both skills', function() {
@@ -38,13 +38,13 @@ describe('Bayushi Yojiro', function() {
                     attackers: [this.bayushiYojiro, this.bayushiAramoro],
                     defenders: [this.youngHarrier]
                 });
-                expect(this.youngHarrier.getMilitarySkill()).toBe(1);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
+                expect(this.youngHarrier.militarySkill).toBe(1);
+                expect(this.youngHarrier.politicalSkill).toBe(1);
                 expect(this.youngHarrier.isDishonored).toBe(false);
                 this.player2.clickCard(this.youngHarrier);
                 expect(this.youngHarrier.isDishonored).toBe(true);
-                expect(this.youngHarrier.getMilitarySkill()).toBe(1);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
+                expect(this.youngHarrier.militarySkill).toBe(1);
+                expect(this.youngHarrier.politicalSkill).toBe(1);
             });
 
             it('should stop honor status modifying both skills', function() {
@@ -52,14 +52,14 @@ describe('Bayushi Yojiro', function() {
                     attackers: [this.bayushiYojiro, this.bayushiAramoro],
                     defenders: [this.youngHarrier]
                 });
-                expect(this.youngHarrier.getMilitarySkill()).toBe(1);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
+                expect(this.youngHarrier.militarySkill).toBe(1);
+                expect(this.youngHarrier.politicalSkill).toBe(1);
                 expect(this.youngHarrier.isHonored).toBe(false);
                 this.player2.clickCard(this.wayOfTheCrane);
                 this.player2.clickCard(this.youngHarrier);
                 expect(this.youngHarrier.isHonored).toBe(true);
-                expect(this.youngHarrier.getMilitarySkill()).toBe(1);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
+                expect(this.youngHarrier.militarySkill).toBe(1);
+                expect(this.youngHarrier.politicalSkill).toBe(1);
             });
 
             it('should stop honor status modifying both skills and show modifier name', function() {
@@ -67,14 +67,14 @@ describe('Bayushi Yojiro', function() {
                     attackers: [this.bayushiYojiro, this.bayushiAramoro],
                     defenders: [this.youngHarrier]
                 });
-                expect(this.youngHarrier.getMilitarySkill()).toBe(1);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
+                expect(this.youngHarrier.militarySkill).toBe(1);
+                expect(this.youngHarrier.politicalSkill).toBe(1);
                 expect(this.youngHarrier.isHonored).toBe(false);
                 this.player2.clickCard(this.wayOfTheCrane);
                 this.player2.clickCard(this.youngHarrier);
                 expect(this.youngHarrier.isHonored).toBe(true);
-                expect(this.youngHarrier.getMilitarySkill()).toBe(1);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
+                expect(this.youngHarrier.militarySkill).toBe(1);
+                expect(this.youngHarrier.politicalSkill).toBe(1);
                 expect(this.youngHarrier.getMilitaryModifiers().some(modifier =>
                     modifier.name === 'Honored Token (Bayushi Yojiro)' &&
                     modifier.amount === 0
@@ -90,14 +90,14 @@ describe('Bayushi Yojiro', function() {
                     attackers: [this.bayushiYojiro, this.bayushiAramoro],
                     defenders: [this.youngHarrier]
                 });
-                expect(this.youngHarrier.getMilitarySkill()).toBe(1);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
+                expect(this.youngHarrier.militarySkill).toBe(1);
+                expect(this.youngHarrier.politicalSkill).toBe(1);
                 expect(this.youngHarrier.isTainted).toBe(false);
                 this.youngHarrier.taint();
                 this.game.checkGameState(true);
                 expect(this.youngHarrier.isTainted).toBe(true);
-                expect(this.youngHarrier.getMilitarySkill()).toBe(1);
-                expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
+                expect(this.youngHarrier.militarySkill).toBe(1);
+                expect(this.youngHarrier.politicalSkill).toBe(1);
                 expect(this.youngHarrier.getMilitaryModifiers().some(modifier =>
                     modifier.name === 'Tainted Token (Bayushi Yojiro)' &&
                     modifier.amount === 0

@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { TargetMode, Decks } from '../../Constants.js';
+import { hideWhenFaceUp } from '../../effects.js';
+import { TargetMode, DeckType } from '../../Constants.js';
 import { playableFromUnderneath } from '../cardsUnderneath.js';
 
 class DaidojiUji2 extends DrawCard {
@@ -9,36 +10,36 @@ class DaidojiUji2 extends DrawCard {
     setupCardAbilities() {
         this.reaction('Search your conflict deck')
             .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
-            .gameAction(AbilityDsl.actions.deckSearch({
-                targetMode: TargetMode.UpTo,
+            .deckSearch({
+                mode: TargetMode.UpTo,
                 numCards: 4,
-                deck: Decks.ConflictDeck,
+                deck: DeckType.Conflict,
                 reveal: false,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1} cards', event.player, cards.length);
-                        cards.forEach(card => {
+                        this.game.addMessage(msg`${event.player} selects ${cards.length} cards`);
+                        cards.forEach((card) => {
                             context.player.moveCard(card, this.uuid);
                             card.controller = context.source.controller;
                             card.facedown = false;
-                            card.lastingEffect(() => ({
+                            card.lastingEffect({
                                 until: {
-                                    onCardMoved: event => event.card === card && event.originalLocation === this.uuid
+                                    onCardMoved: (event) => event.card === card && event.originalLocation === this.uuid
                                 },
                                 match: card,
                                 effect: [
-                                    AbilityDsl.effects.hideWhenFaceUp()
+                                    hideWhenFaceUp()
                                 ]
-                            }));
+                            });
                         });
                     } else {
-                        this.game.addMessage('{0} selects no cards', event.player);
+                        this.game.addMessage(msg`${event.player} selects no cards`);
                     }
                 }
-            }));
+            });
 
         this.persistentEffect({
-            condition: context => context.source.isHonored,
+            condition: (context) => context.source.isHonored,
             ...playableFromUnderneath(this)
         });
     }

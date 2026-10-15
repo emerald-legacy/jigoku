@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Attachments - Obsidian', function () {
     integration(function () {
@@ -13,7 +13,7 @@ describe('Attachments - Obsidian', function () {
                     inPlay: ['hantei-sotorii'],
                     hand: ['fine-katana']
                 },
-                gameMode: GameModes.Obsidian
+                gameMode: GameMode.Obsidian
             });
 
             this.mitsu = this.player1.findCardByName('togashi-mitsu');

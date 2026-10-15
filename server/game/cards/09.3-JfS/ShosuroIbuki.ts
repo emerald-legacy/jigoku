@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class ShosuroIbuki extends DrawCard {
     static id = 'shosuro-ibuki';
@@ -11,10 +10,10 @@ class ShosuroIbuki extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.removeFate(context => ({
+            .removeFate((context) => ({
                 target: context.game.currentConflict?.getParticipants((participant) => participant !== context.source) ?? []
-            })))
-            .effect('remove one fate from each other participating character');
+            }))
+            .chatText('remove one fate from each other participating character');
     }
 }
 

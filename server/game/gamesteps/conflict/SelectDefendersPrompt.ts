@@ -15,7 +15,7 @@ const capitalize: Record<string, string> = {
     void: 'Void'
 };
 
-class SelectDefendersPrompt extends UiPrompt {
+export class SelectDefendersPrompt extends UiPrompt {
     player: Player;
     conflict: Conflict;
 
@@ -103,4 +103,3 @@ class SelectDefendersPrompt extends UiPrompt {
     }
 }
 
-export default SelectDefendersPrompt;

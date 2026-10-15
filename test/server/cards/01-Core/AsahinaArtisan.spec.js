@@ -40,8 +40,8 @@ describe('Asahina Artisan', function () {
 
             it('should bow Asahina Artisan and give +3 Pol to the target until the end of the conflict', function () {
                 this.noMoreActions();
-                const politicalSkill = this.brashSamurai.getPoliticalSkill();
-                const militarySkill = this.brashSamurai.getMilitarySkill();
+                const politicalSkill = this.brashSamurai.politicalSkill;
+                const militarySkill = this.brashSamurai.militarySkill;
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.brashSamurai],
@@ -51,14 +51,14 @@ describe('Asahina Artisan', function () {
                 this.player1.clickCard(this.asahinaArtisan);
                 this.player1.clickCard(this.brashSamurai);
                 expect(this.asahinaArtisan.bowed).toBe(true);
-                expect(this.brashSamurai.getMilitarySkill()).toBe(militarySkill);
-                expect(this.brashSamurai.getPoliticalSkill()).toBe(politicalSkill + 3);
+                expect(this.brashSamurai.militarySkill).toBe(militarySkill);
+                expect(this.brashSamurai.politicalSkill).toBe(politicalSkill + 3);
                 this.player2.pass();
                 this.player1.pass();
                 this.player1.clickPrompt('Yes');
                 this.player1.clickPrompt('Gain 2 Honor');
-                expect(this.brashSamurai.getMilitarySkill()).toBe(militarySkill);
-                expect(this.brashSamurai.getPoliticalSkill()).toBe(politicalSkill);
+                expect(this.brashSamurai.militarySkill).toBe(militarySkill);
+                expect(this.brashSamurai.politicalSkill).toBe(politicalSkill);
             });
 
             it('should not be able to trigger if Asahina Artisan is bowed', function () {

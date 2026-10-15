@@ -1,5 +1,4 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 export default class SeekingEnlightenment extends ProvinceCard {
     static id = 'seeking-enlightenment';
@@ -9,8 +8,9 @@ export default class SeekingEnlightenment extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.loseFate((context) => ({
+            .loseFate((context) => ({
+                target: context.player.opponent,
                 amount: context.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0
-            })));
+            }));
     }
 }

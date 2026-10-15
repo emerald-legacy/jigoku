@@ -1,5 +1,8 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class MantisRaider extends DrawCard {
     static id = 'mantis-raider';
@@ -10,18 +13,17 @@ export default class MantisRaider extends DrawCard {
                 onConflictStarted: (event, context) =>
                     context.source.isAttacking() && event.conflict.defenders.length === 0
             })
-            .gameAction(AbilityDsl.actions.placeFate((context) => ({
+            .placeFate((context) => ({
                 origin: context.player.opponent
-            })))
-            .effect('take a fate from {1} and place it on {0}', (context) => context.player.opponent);
-
-        this.action('Give this character +1 military')
-            .cost(AbilityDsl.costs.removeFateFromSelf())
-            .condition((context) => context.source.isParticipating())
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(1)
             }))
-            .effect('give himself +1{1}', () => ['military'])
-            .limit(AbilityDsl.limit.perConflict(2));
+            .chatText((context) => msg`take a fate from ${context.player.opponent} and place it on ${context.chatTarget()}`);
+
+        this.conflictAction('Give this character +1 military')
+            .cost(costs.removeFateFromSelf())
+            .cardLastingEffect({
+                effect: modifyMilitarySkill(1)
+            })
+            .chatText(() => msg`give himself +1${'military'}`)
+            .limit(perConflict(2));
     }
 }

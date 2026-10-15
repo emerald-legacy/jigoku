@@ -1,5 +1,7 @@
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { removeFate, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Kinki extends DrawCard {
@@ -10,12 +12,8 @@ export default class Kinki extends DrawCard {
             myControl: true
         });
 
-        this.action('Remove a fate from or move home a character')
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .condition((context) =>
-                !!(context.game.isDuringConflict(ConflictType.Military) &&
-                context.source.parentCharacter &&
-                context.source.parentCharacter.isParticipating()))
+        this.conflictAction('Remove a fate from or move home a character', { conflictType: ConflictType.Military })
+            .cost(costs.sacrificeSelf())
             .target({
                 name: 'character',
                 cardType: CardType.Character,
@@ -27,13 +25,13 @@ export default class Kinki extends DrawCard {
                 dependsOn: 'character',
                 player: Players.Opponent
             }, {
-                'Remove a fate from this character': AbilityDsl.actions.removeFate((context) => ({
+                'Remove a fate from this character': removeFate((context) => ({
                     target: context.targets.character
                 })),
-                'Move this character home': AbilityDsl.actions.sendHome((context) => ({
+                'Move this character home': sendHome((context) => ({
                     target: context.targets.character
                 }))
             })
-            .max(AbilityDsl.limit.perRound(1));
+            .max(perRound(1));
     }
 }

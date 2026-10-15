@@ -1,5 +1,7 @@
-import { CardType, DuelType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { CardType, DuelType } from '../../Constants.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { moveToConflict, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class HonestChallenger extends DrawCard {
@@ -7,26 +9,22 @@ export default class HonestChallenger extends DrawCard {
 
     setupCardAbilities() {
         this.composure({
-            effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            effect: modifyMilitarySkill(2)
         });
 
         this.action('Initiate a military duel')
-            .initiateDuel((context) => ({
+            .initiateDuel(() => ({
                 type: DuelType.Military,
-                message: '{0} chooses a character to move to the conflict',
-                messageArgs: (duel) => duel.winnerController,
+                chatText: (_context, duel) => msg`${duel.winnerController} chooses a character to move to the conflict`,
                 gameAction: (duel) =>
-                    duel.winner
-                        ? AbilityDsl.actions.selectCard({
-                            activePromptTitle: 'Choose a character to move to the conflict',
-                            cardType: CardType.Character,
-                            player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
-                            controller: duel.winnerController === context.player ? Players.Self : Players.Opponent,
-                            message: '{0} moves {1} to the conflict',
-                            messageArgs: (card, player) => [player, card],
-                            gameAction: AbilityDsl.actions.moveToConflict()
-                        })
-                        : AbilityDsl.actions.noAction()
+                    selectCard({
+                        activePromptTitle: 'Choose a character to move to the conflict',
+                        cardType: CardType.Character,
+                        player: duel.winnerController,
+                        cardCondition: (card) => card.controller === duel.winnerController,
+                        message: (_context, card, player) => msg`${player} moves ${card} to the conflict`,
+                        gameAction: moveToConflict()
+                    })
             }));
     }
 }

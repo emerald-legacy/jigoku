@@ -239,10 +239,10 @@ describe('Togashi Hoshi', function () {
             this.player1.clickCard(this.jadeTetsubo);
             this.player2.pass();
             this.player1.clickCard(this.jadeTetsubo);
-            const mil = this.mirumotoRaitsugu.getMilitarySkill();
+            const mil = this.mirumotoRaitsugu.militarySkill;
             this.player1.clickCard(this.mirumotoRaitsugu);
             expect(this.mirumotoRaitsugu.attachments).toContain(this.jadeTetsubo);
-            expect(this.mirumotoRaitsugu.getMilitarySkill()).toBe(mil + 3);
+            expect(this.mirumotoRaitsugu.militarySkill).toBe(mil + 3);
         });
 
         it('ancestral attachments should not return to hand if detatched', function () {
@@ -268,8 +268,8 @@ describe('Togashi Hoshi', function () {
             this.player1.clickCard(this.kazue);
             expect(this.player2).toHavePrompt('Action Window');
 
-            expect(this.kazue.getMilitarySkill()).toBe(this.kazue.printedMilitarySkill);
-            expect(this.kazue.getPoliticalSkill()).toBe(this.kazue.printedPoliticalSkill);
+            expect(this.kazue.militarySkill).toBe(this.kazue.printedMilitarySkill);
+            expect(this.kazue.politicalSkill).toBe(this.kazue.printedPoliticalSkill);
         });
     });
 });

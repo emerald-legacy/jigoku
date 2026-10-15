@@ -315,3 +315,83 @@ describe('Illusionary Terrain', function () {
         });
     });
 });
+
+describe('Illusionary Terrain copying a province that cancels ring effects', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-toshimoko', 'matsu-berserker']
+                },
+                player2: {
+                    provinces: ['rift-to-toshigoku', 'pilgrimage', 'henshin-mysteries', 'fertile-fields'],
+                    hand: ['illusionary-terrain']
+                }
+            });
+
+            this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+
+            this.rift = this.player2.findCardByName('rift-to-toshigoku');
+            this.pilgrimage = this.player2.findCardByName('pilgrimage');
+            this.henshin = this.player2.findCardByName('henshin-mysteries');
+            this.fields = this.player2.findCardByName('fertile-fields');
+            this.terrain = this.player2.findCardByName('illusionary-terrain');
+
+            this.rift.facedown = false;
+            this.pilgrimage.facedown = false;
+            this.henshin.facedown = false;
+            this.fields.facedown = false;
+            this.game.checkGameState(true);
+
+            this.noMoreActions();
+        });
+
+        const attackAndCopy = function (spec, attackers, province) {
+            spec.initiateConflict({
+                type: 'military',
+                attackers: attackers,
+                province: spec.fields,
+                ring: 'air'
+            });
+            spec.player2.clickCard(spec.terrain);
+            spec.player2.clickCard(province);
+        };
+
+        it('a copy of Rift to Toshigoku cancels the ring effects after it broke', function () {
+            attackAndCopy(this, [this.toshimoko, this.berserker], this.rift);
+            this.player2.clickCard(this.fields);
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.toshimoko);
+            expect(this.fields.isBroken).toBe(true);
+            this.player2.clickPrompt('Done');
+
+            this.noMoreActions();
+            expect(this.player1).not.toHavePrompt('Choose an effect to resolve');
+            expect(this.getChatLogs(5)).toContain('Rift to Toshigoku cancels the ring effect');
+        });
+
+        it('a copy of Pilgrimage cancels the ring effects', function () {
+            attackAndCopy(this, [this.berserker], this.pilgrimage);
+            this.player2.clickPrompt('Done');
+
+            this.noMoreActions();
+            expect(this.fields.isBroken).toBe(false);
+            expect(this.player1).not.toHavePrompt('Choose an effect to resolve');
+            expect(this.getChatLogs(5)).toContain('Pilgrimage cancels the ring effect');
+        });
+
+        it('a copy of Henshin Mysteries returns the ring to the unclaimed pool', function () {
+            attackAndCopy(this, [this.berserker], this.henshin);
+            this.player2.clickPrompt('Done');
+
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.fields.isBroken).toBe(false);
+            expect(this.game.rings.air.isUnclaimed()).toBe(true);
+            expect(this.getChatLogs(5)).toContain('Henshin Mysteries cancels the ring being claimed');
+        });
+    });
+});
+

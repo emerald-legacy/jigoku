@@ -1,4 +1,5 @@
-import AbilityDsl from '../abilitydsl.js';
+import { msg } from '../GameChat.js';
+import { attach, conditional, moveCard } from '../GameActions/GameActions.js';
 import { CardType, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 
@@ -9,7 +10,7 @@ export function moveCardInProvinceAction(source: DrawCard) {
             name: 'cardInProvince',
             location: [Location.Provinces, Location.PlayArea],
             cardType: [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding],
-            cardCondition: card =>
+            cardCondition: (card) =>
                 Boolean((card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold) ||
                     (card.type === CardType.Attachment && card.parent && card.parent.type === CardType.Province))
         })
@@ -29,19 +30,16 @@ export function moveCardInProvinceAction(source: DrawCard) {
                         (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parentProvince?.location) ||
                         (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
                     )
-        }, AbilityDsl.actions.conditional(context => ({
+        }, conditional((context) => ({
             condition: context.targets.cardInProvince.type === CardType.Attachment,
-            trueGameAction: AbilityDsl.actions.attach({
+            trueGameAction: attach({
                 target: context.targets.province,
                 attachment: context.targets.cardInProvince
             }),
-            falseGameAction: AbilityDsl.actions.moveCard({
+            falseGameAction: moveCard({
                 target: context.targets.cardInProvince,
                 destination: context.targets.province.location
             })
         })))
-        .effect('move {1} to {2}', context => [
-            context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
-            context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
-        ]);
+        .chatText((context) => msg`move ${context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince} to ${context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province}`);
 }

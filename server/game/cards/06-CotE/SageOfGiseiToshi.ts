@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -11,12 +11,11 @@ class SageOfGiseiToshi extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.isParticipating() && card.allowGameAction('sendHome', context)
+                cardCondition: (card, context) => card.isParticipating() && sendHome().canAffect(card, context)
             })
-            .gameAction(AbilityDsl.actions.sendHome())
-            .then((context) => ({
-                gameAction: AbilityDsl.actions.sendHome({ target: context.target })
-            }));
+            .sendHome()
+            .afterwards()
+            .sendHome((context) => ({ target: context.target }));
     }
 }
 

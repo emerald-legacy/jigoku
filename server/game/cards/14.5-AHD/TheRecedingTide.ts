@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoProvince, selectCard } from '../../GameActions/GameActions.js';
 
 class TheRecedingTide extends DrawCard {
     static id = 'the-receding-tide';
@@ -11,14 +11,14 @@ class TheRecedingTide extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.PlayArea,
                 cardCondition: (card, context) => !card.hasTrait('mythic') && card.owner === context.player
-            }, AbilityDsl.actions.selectCard(context => ({
+            }, selectCard((context) => ({
                 targets: false,
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: card => card.location !== Location.StrongholdProvince,
+                cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 subActionProperties: (card) => ({ destination: card.location }),
-                gameAction: AbilityDsl.actions.putIntoProvince({
+                gameAction: putIntoProvince({
                     target: context.target
                 })
             })));

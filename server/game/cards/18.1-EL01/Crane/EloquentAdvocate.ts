@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { ConflictType, Location } from '../../../Constants.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
+import { ConflictType, Location, RemainingCards } from '../../../Constants.js';
 
 class EloquentAdvocate extends DrawCard {
     static id = 'eloquent-advocate';
@@ -11,16 +11,15 @@ class EloquentAdvocate extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() &&
                                                    event.conflict.conflictType === ConflictType.Political
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
-                amount: 2,
-                gameAction: AbilityDsl.actions.moveCard({
+            .deckSearch({
+                cardsToLookAt: 2,
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                reveal: false,
-                placeOnBottomInRandomOrder: true
-            }))
-            .effect('look at the top two cards of their conflict deck');
+                remainingCards: RemainingCards.BottomRandom,
+                reveal: false
+            })
+            .chatText('look at the top two cards of their conflict deck');
     }
 }
 

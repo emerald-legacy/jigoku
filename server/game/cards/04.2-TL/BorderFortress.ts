@@ -1,6 +1,7 @@
 import { CardType, Location } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { reveal } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class BorderFortress extends ProvinceCard {
     static id = 'border-fortress';
@@ -11,7 +12,7 @@ export default class BorderFortress extends ProvinceCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => card.isFacedown()
-            }, AbilityDsl.actions.reveal({ chatMessage: true }))
-            .effect('reveal {1}\'s facedown province in their {2}', (context) => [context.target.controller, context.target.location]);
+            }, reveal({ chatMessage: true }))
+            .chatText((context) => msg`reveal ${context.target.controller}'s facedown province in their ${context.target.location}`);
     }
 }

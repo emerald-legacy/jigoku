@@ -1,6 +1,5 @@
-import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
+import { msg } from '../../../GameChat.js';
+import { lookAt, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
 
@@ -10,31 +9,18 @@ export default class IsawaHaruyo extends DrawCard {
     public setupCardAbilities() {
         this.conflictAction('Discard a card')
             .condition((context) => context.source.isDefending() && context.player.opponent !== undefined)
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
-                subActionProperties: (card) => {
-                    context.target = card;
-                    return { target: card };
-                },
-                gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<this>) => {
-                    const cardNumber = context.target?.isProvinceCard() ? context.target.getStrength() : 0;
-                    const cards = randomHandCards(context.player.opponent, cardNumber);
-                    return {
-                        gameActions: [
-                            AbilityDsl.actions.lookAt(() => ({
-                                target: cards
-                            })),
-                            chooseCardToDiscard(cards)
-                        ]
-                    };
+            .selectAttackedProvince((context) => ({
+                cardCondition: (card) => card.getStrength() > 0,
+                gameAction: (province) => multiple(() => {
+                    const cards = randomHandCards(context.player.opponent, province.getStrength());
+                    return [
+                        lookAt(() => ({
+                            target: cards
+                        })),
+                        chooseCardToDiscard(cards)
+                    ];
                 })
-            })))
-            .effect('look at an amount of random cards in {1}\'s hand equal to the strength of an attacked province and discard one of them', (context) => [
-                context.player.opponent
-            ]);
+            }))
+            .chatText((context) => msg`look at an amount of random cards in ${context.player.opponent}'s hand equal to the strength of an attacked province and discard one of them`);
     }
 }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotParticipateAsAttacker } from '../../effects.js';
 
 class OtomoCourtier extends DrawCard {
     static id = 'otomo-courtier';
@@ -8,8 +8,8 @@ class OtomoCourtier extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            condition: context => !!context.player.opponent && context.player.opponent.imperialFavor !== '',
-            effect: AbilityDsl.effects.cannotParticipateAsAttacker()
+            condition: (context) => !!context.player.opponent && context.player.opponent.imperialFavor !== '',
+            effect: cannotParticipateAsAttacker()
         });
     }
 }

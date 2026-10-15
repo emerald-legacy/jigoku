@@ -1,8 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, Location } from '../Constants.js';
+import { CardType, Location, RemainingCards, TargetMode } from '../Constants.js';
 import type { Cost } from '../costs/Cost.js';
-import type DrawCard from '../DrawCard.js';
-import type { MessageArgs } from '../GameChat.js';
+import type { DeckSearchProperties } from '../GameActions/DeckSearchAction.js';
+import { moveCard } from '../GameActions/GameActions.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 
 const CARD_TYPES = [CardType.Attachment, CardType.Character, CardType.Event];
 
@@ -34,36 +35,18 @@ export function nameCardType(): Cost<{ namedCardType: CardType }> {
 }
 
 /** The player adds up to 2 of the revealed cards of the named type to their hand, and the rest are discarded. */
-export function takeUpToTwoOfNamedType(context: AbilityContext, revealed: readonly DrawCard[], namedType: CardType | undefined): void {
-    const isMatching = (card: DrawCard) => card.type === namedType && card.location === Location.ConflictDeck;
-    const others = revealed.filter((card) => !isMatching(card));
-    let matching = revealed.filter((card) => isMatching(card) && card.uuid !== context.source.uuid);
-
-    const discardRest = () => {
-        const cards = others.concat(matching);
-        context.game.addMessage('{0} discards {1}', context.player, cards);
-        for(const card of cards) {
-            context.player.moveCard(card, Location.ConflictDiscardPile);
-        }
+export function takeUpToTwoOfNamedType(context: AbilityContext & { costs: { namedCardType?: CardType } }, trait: string): DeckSearchProperties {
+    return {
+        cardsToLookAt: revealCount(context, trait),
+        mode: TargetMode.UpTo,
+        numCards: 2,
+        activePromptTitle: 'Select a card',
+        doneButtonText: 'Done',
+        hideIfNoLegalTargets: true,
+        cardCondition: (card) => card.type === context.costs.namedCardType,
+        gameAction: moveCard({ destination: Location.Hand }),
+        remainingCards: RemainingCards.Discard,
+        message: (context, cards) => msg`${context.player} adds ${cards} to their hand`,
+        takesNothingMessage: () => undefined
     };
-    const chooseCard = (picksLeft: number) => {
-        if(picksLeft === 0 || matching.length === 0) {
-            discardRest();
-            return;
-        }
-        context.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: 'Select a card',
-            context: context,
-            cards: matching,
-            cardHandler: (card) => {
-                context.game.addMessage('{0} adds {1} to their hand', context.player, card);
-                context.player.moveCard(card, Location.Hand);
-                matching = matching.filter((c) => c !== card);
-                chooseCard(picksLeft - 1);
-            },
-            options: [{ text: 'Done', handler: discardRest }]
-        });
-    };
-
-    chooseCard(2);
 }

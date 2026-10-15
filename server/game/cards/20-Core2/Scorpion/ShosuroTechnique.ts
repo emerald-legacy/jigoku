@@ -1,5 +1,6 @@
-import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, ConflictType, Players } from '../../../Constants.js';
+import { duelIgnorePrintedSkill, setMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShosuroTechnique extends DrawCard {
@@ -7,15 +8,12 @@ export default class ShosuroTechnique extends DrawCard {
 
     setupCardAbilities() {
         this.duelChallenge('Apply status tokens to the duel', (duel, context) => duel.challengingPlayer && duel.challengingPlayer.opponent === context.player)
-            .gameAction(AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: context.event.duel,
-                effect: AbilityDsl.effects.duelIgnorePrintedSkill(),
-                duration: Duration.UntilEndOfDuel
-            })))
-            .effect('ignore printed skill when resolving this duel');
+            .duelLastingEffect({
+                effect: duelIgnorePrintedSkill()
+            })
+            .chatText('ignore printed skill when resolving this duel');
 
-        this.action('Set shinobi\'s skills to that of an enemy')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Set shinobi\'s skills to that of an enemy', { conflictType: ConflictType.Military })
             .target({
                 name: 'shinobi',
                 activePromptTitle: 'Choose a Shinobi you control',
@@ -30,16 +28,14 @@ export default class ShosuroTechnique extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    target: context.targets.shinobi,
-                    effect: AbilityDsl.effects.setMilitarySkill(context.targets.enemy.militarySkill)
-                }))
-            ]))
-            .effect('set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise', (context) => {
+            .cardLastingEffect((context) => ({
+                target: context.targets.shinobi,
+                effect: setMilitarySkill(context.targets.enemy.militarySkill)
+            }))
+            .chatText((context) => {
                 const shinobi = context.targets.shinobi;
                 const enemy = context.targets.enemy;
-                return [shinobi.name, enemy.name, 'military', enemy.militarySkill];
+                return msg`set the ${'military'} of ${shinobi.name} to ${enemy.militarySkill}${'military'} (equal to ${enemy.name}). There's no blade as keen as surprise`;
             });
     }
 }

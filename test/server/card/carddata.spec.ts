@@ -9,7 +9,7 @@ function makeGame() {
         'getCurrentAbilityContext',
         'getFrameworkContext',
         'on',
-        'removeListener'
+        'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow'
     ]);
     game.getFrameworkContext.and.returnValue(null);
     return game;

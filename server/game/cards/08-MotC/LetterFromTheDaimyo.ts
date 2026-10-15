@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 import { ConflictType } from '../../Constants.js';
 
 class LetterFromTheDaimyo extends DrawCard {
@@ -16,8 +16,8 @@ class LetterFromTheDaimyo extends DrawCard {
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
                                                    event.conflict.conflictType === ConflictType.Political
             })
-            .cost(AbilityDsl.costs.sacrificeSelf())
-            .gameAction(AbilityDsl.actions.chosenDiscard({ amount: 2 }));
+            .cost(costs.sacrificeSelf())
+            .chosenDiscard({ amount: 2 });
     }
 }
 

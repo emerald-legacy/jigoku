@@ -148,6 +148,19 @@ describe('SoD - Scorpion', function () {
                 this.player2.player.moveCard(this.training, 'conflict deck');
             });
 
+            it('should work on your own dishonored character', function () {
+                this.rumormonger.dishonor();
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rumormonger]
+                });
+
+                expect(this.player1).toBeAbleToSelect(this.pressure);
+                this.player1.clickCard(this.pressure);
+                expect(this.rumormonger.isParticipating()).toBe(false);
+            });
+
             it('should work on defenders', function () {
                 this.keeper.dishonor();
 
@@ -172,6 +185,27 @@ describe('SoD - Scorpion', function () {
                 this.player2.clickCard(this.mount);
                 expect(this.keeper.isParticipating()).toBe(false);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+
+            it('keeps the character out of a political conflict', function () {
+                this.keeper.dishonor();
+
+                this.player1.pass();
+                this.player2.clickCard(this.mount);
+                this.player2.clickCard(this.keeper);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.rumormonger],
+                    defenders: [this.keeper, this.diplomat]
+                });
+
+                this.player1.clickCard(this.pressure);
+                expect(this.keeper.isParticipating()).toBe(false);
+
+                this.player2.clickCard(this.mount);
+                expect(this.keeper.isParticipating()).toBe(false);
             });
 
             it('should work on movement', function () {

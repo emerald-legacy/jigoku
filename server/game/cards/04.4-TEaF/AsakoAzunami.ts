@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, multiple, ready, selectCard } from '../../GameActions/GameActions.js';
 import { CardType, Element } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 const elementKey = 'asako-azunami-water';
 
@@ -12,29 +13,27 @@ class AsakoAzunami extends DrawCard {
             .when({
                 onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             })
-            .gameAction(AbilityDsl.actions.cancel(context => ({
-                replacementGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.selectCard({
+            .cancel({
+                replacementGameAction: multiple([
+                    selectCard({
                         activePromptTitle: 'Choose a character to bow',
                         cardType: CardType.Character,
                         optional: true,
-                        gameAction: AbilityDsl.actions.bow(),
+                        gameAction: bow(),
                         targets: true,
-                        message: '{0} chooses to bow {1} with {2}\'s effect',
-                        messageArgs: (card, player) => [player, card, context.source]
+                        message: (context, card, player) => msg`${player} chooses to bow ${card} with ${context.source}'s effect`
                     }),
-                    AbilityDsl.actions.selectCard({
+                    selectCard({
                         activePromptTitle: 'Choose a character to ready',
                         cardType: CardType.Character,
                         optional: true,
-                        gameAction: AbilityDsl.actions.ready(),
+                        gameAction: ready(),
                         targets: true,
-                        message: '{0} chooses to ready {1} with {2}\'s effect',
-                        messageArgs: (card, player) => [player, card, context.source]
+                        message: (context, card, player) => msg`${player} chooses to ready ${card} with ${context.source}'s effect`
                     })
                 ])
-            })))
-            .effect('replace the {1} ring effect with bowing and readying two characters', () => [this.getCurrentElementSymbol(elementKey)]);
+            })
+            .chatText(() => msg`replace the ${this.getCurrentElementSymbol(elementKey)} ring effect with bowing and readying two characters`);
     }
 
     getPrintedElementSymbols() {

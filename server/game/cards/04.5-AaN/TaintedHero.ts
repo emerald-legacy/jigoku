@@ -1,4 +1,5 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { blank, cannotBeDeclaredAsAttacker, cannotBeDeclaredAsDefender } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
 
@@ -8,19 +9,19 @@ class TaintedHero extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.cannotBeDeclaredAsAttacker(),
-                AbilityDsl.effects.cannotBeDeclaredAsDefender()
+                cannotBeDeclaredAsAttacker(),
+                cannotBeDeclaredAsDefender()
             ]
         });
 
         this.action('Make text box blank')
-            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
-            .gameAction(AbilityDsl.actions.cardLastingEffect({
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
+            .cardLastingEffect({
                 target: this,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.blank()
-            }))
-            .effect('blank himself');
+                effect: blank()
+            })
+            .chatText('blank himself');
     }
 }
 

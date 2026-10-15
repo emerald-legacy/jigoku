@@ -1,6 +1,8 @@
-import { CardType, Location, Phases, Players } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Location, Phase, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { breakProvince, reveal } from '../../../GameActions/GameActions.js';
 
 const MY_PROVINCE = 'myProvince';
 const OPP_PROVINCE = 'oppProvince';
@@ -11,9 +13,9 @@ export default class EbonyBloodGarrison extends StrongholdCard {
     setupCardAbilities() {
         this.reaction('Break a province from each player')
             .when({
-                onPhaseEnded: (event, context) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
+                onPhaseEnded: (event, context) => event.phase === Phase.Dynasty && context.game.roundNumber === 1
             })
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .target({
                 name: MY_PROVINCE,
                 controller: Players.Self,
@@ -33,13 +35,9 @@ export default class EbonyBloodGarrison extends StrongholdCard {
             })
             .handler((context) => {
                 const provinces = [context.targets[MY_PROVINCE], context.targets[OPP_PROVINCE]];
-                context.game.queueSimpleStep(() => AbilityDsl.actions.reveal({ target: provinces }).resolve(provinces, context));
-                context.game.queueSimpleStep(() => AbilityDsl.actions.breakProvince({ target: provinces }).resolve(provinces, context));
+                context.game.queueSimpleStep(() => reveal({ target: provinces }).resolve(provinces, context));
+                context.game.queueSimpleStep(() => breakProvince({ target: provinces }).resolve(provinces, context));
             })
-            .effect('drag {1} into chaos, as a crisis strikes {2} and {3}', (context) => [
-                context.player.opponent,
-                context.targets[MY_PROVINCE],
-                context.targets[OPP_PROVINCE]
-            ]);
+            .chatText((context) => msg`drag ${context.player.opponent} into chaos, as a crisis strikes ${context.targets[MY_PROVINCE]} and ${context.targets[OPP_PROVINCE]}`);
     }
 }

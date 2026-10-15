@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class GuardianOfVirtue extends DrawCard {
@@ -7,7 +7,7 @@ class GuardianOfVirtue extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDefending() && context.player.hasComposure(),
-            effect: AbilityDsl.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 }

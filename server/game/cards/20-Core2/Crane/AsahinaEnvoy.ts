@@ -1,5 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Decks, Location, Players } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, DeckType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AsahinaEnvoy extends DrawCard {
@@ -10,38 +10,31 @@ export default class AsahinaEnvoy extends DrawCard {
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
-            .target({
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                controller: Players.Self,
-                cardCondition: (card) => card.location !== Location.StrongholdProvince
-            }, AbilityDsl.actions.deckSearch({
+            .deckSearch({
                 cardCondition: (card) =>
                     card.type === CardType.Character && (card.printedCost ?? 0) >= 4 && card.isFaction('crane'),
-                amount: 6,
-                deck: Decks.DynastyDeck,
-                shuffle: true,
-                selectedCardsHandler: (context, event, cards) => {
-                    if(cards.length === 0) {
-                        return this.game.addMessage('{0} selects no characters', event.player);
+                cardsToLookAt: 6,
+                deck: DeckType.Dynasty,
+                selectedCardsHandler: (context, event, [character]) => {
+                    if(!character) {
+                        return this.game.addMessage(msg`${event.player} selects no characters`);
                     }
-
-                    const target = context.target;
-                    this.game.addMessage(
-                        '{0} selects {1} and puts it into {2}',
-                        event.player,
-                        cards,
-                        target?.facedown ? target.location : (target ?? '')
-                    );
-
-                    for(const card of cards) {
-                        if(target) {
-                            event.player.moveCard(card, target.location);
+                    this.game.promptForSelect(event.player, {
+                        activePromptTitle: 'Choose a province for ' + character.name,
+                        context: context,
+                        cardType: CardType.Province,
+                        location: Location.Provinces,
+                        controller: Players.Self,
+                        cardCondition: (card) => card.location !== Location.StrongholdProvince,
+                        onSelect: (player, province) => {
+                            this.game.addMessage(msg`${player} selects ${character} and puts it into ${province.facedown ? province.location : province}`);
+                            player.moveCard(character, province.location);
+                            character.facedown = false;
+                            return true;
                         }
-                        card.facedown = false;
-                    }
+                    });
                 }
-            }))
-            .effect('put a character from their deck into a province');
+            })
+            .chatText('put a character from their deck into a province');
     }
 }

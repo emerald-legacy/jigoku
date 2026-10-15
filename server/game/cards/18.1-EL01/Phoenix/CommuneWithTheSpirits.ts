@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { claimRing, sequential, takeFateFromRing } from '../../../GameActions/GameActions.js';
 import { ConflictType } from '../../../Constants.js';
 
 class CommuneWithTheSpirits extends DrawCard {
@@ -9,17 +10,17 @@ class CommuneWithTheSpirits extends DrawCard {
         this.action('Claim a ring')
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',
-                ringCondition: ring => ring.isUnclaimed()
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.takeFateFromRing(context => ({
+                ringCondition: (ring) => ring.isUnclaimed()
+            }, sequential([
+                takeFateFromRing((context) => ({
                     target: context.ring,
                     amount: context.ring?.fate,
                     removeOnly: true
                 })),
-                AbilityDsl.actions.claimRing({ takeFate: false, type: ConflictType.Political})
+                claimRing({ takeFate: false, type: ConflictType.Political})
             ]))
-            .effect('discard all fate from the {0} and claim it as a political ring')
-            .max(AbilityDsl.limit.perRound(1));
+            .chatText('discard all fate from the {0} and claim it as a political ring')
+            .max(perRound(1));
     }
 }
 

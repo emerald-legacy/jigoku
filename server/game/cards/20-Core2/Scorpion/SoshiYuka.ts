@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiYuka extends DrawCard {
@@ -15,13 +16,12 @@ export default class SoshiYuka extends DrawCard {
                 player: Players.Opponent,
                 cardCondition: (card) => !card.bowed
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
+            .selectCard((context) => ({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isCharacter() && context.targets.target.includes(card),
-                gameAction: AbilityDsl.actions.bow(),
-                message: '{0} is bowed, as they are dragged into a web of intrigue',
-                messageArgs: (card, _player) => [card]
-            })))
-            .effect('sow discord between {0}');
+                gameAction: bow(),
+                message: (_context, card, _player) => msg`${card} is bowed, as they are dragged into a web of intrigue`
+            }))
+            .chatText('sow discord between {0}');
     }
 }

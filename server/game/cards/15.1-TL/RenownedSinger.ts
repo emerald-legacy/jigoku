@@ -1,6 +1,7 @@
 import { CardType, Location, Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import { assignRoles, moveCard, returnToDeck } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 export default class RenownedSinger extends DrawCard {
     static id = 'renowned-singer';
@@ -17,45 +18,17 @@ export default class RenownedSinger extends DrawCard {
                 location: Location.ConflictDiscardPile,
                 cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Self
-            }, AbilityDsl.actions.handler({
-                handler: (context) => {
-                    const targets = context.targets.target;
-                    const opponent = context.player.opponent;
-                    if(!opponent || !Array.isArray(targets)) {
-                        return;
-                    }
-                    return this.game.promptWithHandlerMenu(opponent, {
-                        activePromptTitle: 'Choose a card to add to your opponent\'s hand',
-                        context: context,
-                        cards: targets,
-                        cardHandler: (handCard) => {
-                            const bottomCard = targets.filter((a) => a !== handCard);
-                            context.game.addMessage(
-                                '{0} chooses {1} to be put into {2}\'s hand. {3} is put on the bottom of {2}\'s conflict deck',
-                                context.player.opponent,
-                                handCard,
-                                context.player,
-                                bottomCard
-                            );
-
-                            const gameAction = AbilityDsl.actions.multiple([
-                                AbilityDsl.actions.moveCard({
-                                    target: handCard,
-                                    destination: Location.Hand
-                                }),
-                                AbilityDsl.actions.returnToDeck({
-                                    target: bottomCard,
-                                    location: Location.ConflictDiscardPile,
-                                    bottom: true,
-                                    shuffle: false
-                                })
-                            ]);
-
-                            gameAction.resolve(undefined, context);
-                        }
-                    });
-                }
+            }, assignRoles({
+                player: Players.Opponent,
+                pick: 'hand',
+                activePromptTitle: 'Choose a card to add to your opponent\'s hand',
+                roles: {
+                    hand: moveCard({ destination: Location.Hand }),
+                    bottom: returnToDeck({ location: Location.ConflictDiscardPile, bottom: true, shuffle: false })
+                },
+                message: (context, assigned, chooser) =>
+                    msg`${chooser} chooses ${assigned.hand} to be put into ${context.player}'s hand. ${assigned.bottom} is put on the bottom of ${context.player}'s conflict deck`
             }))
-            .effect('have {1} return one of {2} to {3}\'s hand', (context) => [context.player.opponent, context.targets.target, context.player]);
+            .chatText((context) => msg`have ${context.player.opponent} return one of ${context.targets.target} to ${context.player}'s hand`);
     }
 }

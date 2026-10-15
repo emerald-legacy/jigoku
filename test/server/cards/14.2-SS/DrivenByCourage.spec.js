@@ -63,12 +63,12 @@ describe('Driven by Courage', function() {
                     attackers: [this.wanderer],
                     defenders: [this.maiden]
                 });
-                const maidenMiltarySkill = this.maiden.getMilitarySkill();
-                const maidenPoliticalSkill = this.maiden.getPoliticalSkill();
+                const maidenMiltarySkill = this.maiden.militarySkill;
+                const maidenPoliticalSkill = this.maiden.politicalSkill;
                 this.player2.clickCard(this.courage);
                 this.player2.clickCard(this.maiden);
-                expect(this.maiden.getMilitarySkill()).toBe(maidenMiltarySkill + 2);
-                expect(this.maiden.getPoliticalSkill()).toBe(maidenPoliticalSkill + 2);
+                expect(this.maiden.militarySkill).toBe(maidenMiltarySkill + 2);
+                expect(this.maiden.politicalSkill).toBe(maidenPoliticalSkill + 2);
                 expect(this.getChatLogs(3)).toContain('player2 uses Driven By Courage to give Shrine Maiden +2political and +2military');
             });
 

@@ -1,15 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class AncestralShrine extends DrawCard {
     static id = 'ancestral-shrine';
 
     setupCardAbilities() {
         this.action('Return rings to gain honor')
-            .cost(AbilityDsl.costs.returnRings())
-            .gameAction(AbilityDsl.actions.gainHonor(context => ({
-                amount: context.costs.returnRing ? context.costs.returnRing.length : 1
-            })));
+            .cost(costs.returnRings())
+            .gainHonor((context) => ({
+                amount: context.costs.returnedRings ? context.costs.returnedRings.length : 1
+            }));
     }
 }
 

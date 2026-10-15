@@ -1,5 +1,5 @@
 import type BaseCard from './BaseCard.js';
-import { CardType } from './Constants.js';
+import type { CardType } from './Constants.js';
 
 interface EffectLike {
     context?: { source?: { name?: string; type?: string } };
@@ -14,7 +14,7 @@ export interface StatModifierSummary {
     overrides: boolean;
 }
 
-class StatModifier {
+export class StatModifier {
     amount: number;
     name: string;
     countsAsBase: boolean = false;
@@ -74,4 +74,3 @@ class StatModifier {
 
 }
 
-export default StatModifier;

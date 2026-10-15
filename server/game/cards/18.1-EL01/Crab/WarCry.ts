@@ -1,5 +1,6 @@
-import { ConflictType, CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { ConflictType, Location } from '../../../Constants.js';
+import { breakProvince } from '../../../GameActions/GameActions.js';
 import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,16 +21,11 @@ export default class WarCry extends DrawCard {
                     !event.conflict.isAtStrongholdProvince() &&
                     areAllAttackersBerserker(event.conflict)
             })
-            .gameAction(AbilityDsl.actions.selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
-                message: '{0} breaks {1}',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.breakProvince()
-            })))
-            .effect('break an attacked province');
+            .selectAttackedProvince({
+                cardCondition: (card) => card.location !== Location.StrongholdProvince,
+                message: (context, cards) => msg`${context.player} breaks ${cards}`,
+                gameAction: breakProvince()
+            })
+            .chatText('break an attacked province');
     }
 }

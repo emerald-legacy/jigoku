@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, CharacterStatus, EventName, Location } from '../Constants.js';
+import { CardType, CharacterStatus, EventName, Location, RestrictionType } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 
@@ -20,7 +20,7 @@ export class TaintAction<C extends AbilityContext = AbilityContext> extends Card
         if(card.type === CardType.Character && card.location !== Location.PlayArea) {
             return false;
         }
-        if(!card.checkRestrictions('receiveTaintedToken', context)) {
+        if(!card.checkRestrictions(RestrictionType.ReceiveTaintedToken, context)) {
             return false;
         }
         return super.canAffect(card, context);

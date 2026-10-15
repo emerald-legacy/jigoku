@@ -34,13 +34,13 @@ describe('Earth\'s Stagnation', function () {
         });
 
         it('give skill penalties', function () {
-            const tacticianInitialMil = this.tactician.getMilitarySkill();
+            const tacticianInitialMil = this.tactician.militarySkill;
 
             this.player2.clickCard(this.echoes);
             this.player2.clickCard(this.envoy);
 
             this.player2.clickCard(this.stagnation);
-            expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil - 1);
+            expect(this.tactician.militarySkill).toBe(tacticianInitialMil - 1);
             expect(this.getChatLogs(3)).toContain(
                 'player2 uses Earth\'s Stagnation to give -1military and -1political to Master Tactician'
             );
@@ -48,7 +48,7 @@ describe('Earth\'s Stagnation', function () {
             this.player1.clickCard(this.iconOfFavor);
             this.player1.clickCard(this.tactician);
             this.player2.clickCard(this.stagnation);
-            expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil - 1);
+            expect(this.tactician.militarySkill).toBe(tacticianInitialMil - 1);
             expect(this.getChatLogs(3)).not.toContain(
                 'player2 uses Earth\'s Stagnation to give -1military and -1political to Master Tactician'
             );
@@ -57,20 +57,20 @@ describe('Earth\'s Stagnation', function () {
             this.player1.clickCard(this.perfectCut);
             this.player1.clickCard(this.tactician);
             this.player2.clickCard(this.stagnation);
-            expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil + 2 - 2);
+            expect(this.tactician.militarySkill).toBe(tacticianInitialMil + 2 - 2);
             expect(this.getChatLogs(3)).toContain(
                 'player2 uses Earth\'s Stagnation to give -1military and -1political to Master Tactician'
             );
         });
 
         it('give double skill penalties on Earth Affinity', function () {
-            const tacticianInitialMil = this.tactician.getMilitarySkill();
+            const tacticianInitialMil = this.tactician.militarySkill;
 
             this.player2.clickCard(this.echoes);
             this.player2.clickCard(this.earthcaller);
 
             this.player2.clickCard(this.stagnation);
-            expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil - 2);
+            expect(this.tactician.militarySkill).toBe(tacticianInitialMil - 2);
             expect(this.getChatLogs(3)).toContain(
                 'player2 uses Earth\'s Stagnation to give -2military and -2political to Master Tactician'
             );
@@ -78,7 +78,7 @@ describe('Earth\'s Stagnation', function () {
             this.player1.clickCard(this.iconOfFavor);
             this.player1.clickCard(this.tactician);
             this.player2.clickCard(this.stagnation);
-            expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil - 2);
+            expect(this.tactician.militarySkill).toBe(tacticianInitialMil - 2);
             expect(this.getChatLogs(3)).not.toContain(
                 'player2 uses Earth\'s Stagnation to give -2military and -2political to Master Tactician'
             );
@@ -87,7 +87,7 @@ describe('Earth\'s Stagnation', function () {
             this.player1.clickCard(this.perfectCut);
             this.player1.clickCard(this.tactician);
             this.player2.clickCard(this.stagnation);
-            expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil + 2 - 4);
+            expect(this.tactician.militarySkill).toBe(tacticianInitialMil + 2 - 4);
             expect(this.getChatLogs(3)).toContain(
                 'player2 uses Earth\'s Stagnation to give -2military and -2political to Master Tactician'
             );

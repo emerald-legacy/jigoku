@@ -1,3 +1,5 @@
+import * as GameActions from '../../../build/server/game/GameActions/GameActions.js';
+
 describe('game action effect messages', function () {
     integration(function () {
         beforeEach(function () {
@@ -23,41 +25,41 @@ describe('game action effect messages', function () {
         });
 
         it('names both bidders of a fate bid', function () {
-            expect(this.chatEffect(this.game.actions.fateBid())).toBe(
+            expect(this.chatEffect(GameActions.fateBid())).toBe(
                 'have player1 and player2 select an amount of fate from their pool'
             );
         });
 
         it('names the honor bidders', function () {
-            expect(this.chatEffect(this.game.actions.honorBid())).toBe(
+            expect(this.chatEffect(GameActions.honorBid())).toBe(
                 'have player1 and player2 select a value on their honor dial'
             );
-            expect(this.chatEffect(this.game.actions.honorBid({ players: 'self' }))).toBe(
+            expect(this.chatEffect(GameActions.honorBid({ players: 'self' }))).toBe(
                 'have player1 select a value on their honor dial'
             );
         });
 
         it('formats each part of a multiple action with its own arguments', function () {
             const player = this.player1.player;
-            const action = this.game.actions.multiple([this.game.actions.draw({ target: player }), this.game.actions.gainFate({ target: player, amount: 2 })]);
+            const action = GameActions.multiple([GameActions.draw({ target: player }), GameActions.gainFate({ target: player, amount: 2 })]);
             expect(this.chatEffect(action)).toBe('draw 1 card and gain 2 fate');
         });
 
         it('names nobody when giving honor in a bid', function () {
-            expect(this.chatEffect(this.game.actions.honorBid({ giveHonor: true }))).toBe('bid honor');
+            expect(this.chatEffect(GameActions.honorBid({ giveHonor: true }))).toBe('bid honor');
         });
 
         it('names the new parent, the attachment and its old parent when giving control', function () {
-            const action = this.game.actions.attach({ target: this.yoshi, attachment: this.katana, giveControl: true });
+            const action = GameActions.attach({ target: this.yoshi, attachment: this.katana, giveControl: true });
             expect(this.chatEffect(action)).toBe('give control of and attach Doji Whisperer\'s Fine Katana to Kakita Yoshi');
         });
 
         it('names the challenger first in a duel', function () {
-            const action = this.game.actions.duel({
+            const action = GameActions.duel({
                 type: 'military',
                 challenger: this.whisperer,
                 target: this.yoshi,
-                gameAction: this.game.actions.bow()
+                gameAction: GameActions.bow()
             });
             expect(this.chatEffect(action)).toBe('initiate a military duel : Doji Whisperer vs. Kakita Yoshi');
         });

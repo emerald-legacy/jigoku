@@ -45,16 +45,16 @@ describe('Karmic Balance', function() {
                     expect(this.player1.player.conflictDiscardPile.length).toBe(0);
                     expect(this.player2.player.hand.length).toBe(4);
                     expect(this.player2.player.conflictDiscardPile.length).toBe(0);
-                    expect(this.chat).toHaveBeenCalledWith('{0} is shuffling their conflict deck', this.player1.player);
-                    expect(this.chat).toHaveBeenCalledWith('{0} is shuffling their conflict deck', this.player2.player);
+                    expect(this.chat).toHaveBeenCalledWith(['{0} is shuffling their conflict deck', [this.player1.player]]);
+                    expect(this.chat).toHaveBeenCalledWith(['{0} is shuffling their conflict deck', [this.player2.player]]);
                 });
 
                 it('should only log 1 shuffling chat message per player', function() {
-                    const player1Count = this.chat.calls.allArgs().filter(c => {
-                        return c[0] === '{0} is shuffling their conflict deck' && c[1] === this.player1.player;
+                    const player1Count = this.chat.calls.allArgs().filter(([message]) => {
+                        return message[0] === '{0} is shuffling their conflict deck' && message[1][0] === this.player1.player;
                     }).length;
-                    const player2Count = this.chat.calls.allArgs().filter(c => {
-                        return c[0] === '{0} is shuffling their conflict deck' && c[1] === this.player2.player;
+                    const player2Count = this.chat.calls.allArgs().filter(([message]) => {
+                        return message[0] === '{0} is shuffling their conflict deck' && message[1][0] === this.player2.player;
                     }).length;
                     expect(player1Count).toBe(1);
                     expect(player2Count).toBe(1);

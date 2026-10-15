@@ -64,12 +64,12 @@ describe('A Perfect Cut', function() {
                     attackers: [this.kitsukiShomon],
                     defenders: []
                 });
-                const militarySkill = this.kitsukiShomon.getMilitarySkill();
+                const militarySkill = this.kitsukiShomon.militarySkill;
                 this.player2.pass();
                 this.player1.clickCard(this.aPerfectCut);
                 expect(this.player1).toHavePrompt('A Perfect Cut');
                 this.player1.clickCard(this.kitsukiShomon);
-                expect(this.kitsukiShomon.getMilitarySkill()).toBe(militarySkill + 2);
+                expect(this.kitsukiShomon.militarySkill).toBe(militarySkill + 2);
             });
 
             it('should honor the chosen character if they win the conflict', function() {

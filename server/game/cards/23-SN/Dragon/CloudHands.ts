@@ -1,14 +1,15 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { cardLastingEffect, honor, multiple } from '../../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../../copyBaseSkills.js';
 
 export default class CloudHands extends DrawCard {
     static id = 'cloud-hands';
 
     setupCardAbilities() {
-        this.action('Change base skill to match another character\'s')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Change base skill to match another character\'s')
             .target({
                 name: 'myCharacter',
                 activePromptTitle: 'Choose a monk character',
@@ -23,16 +24,16 @@ export default class CloudHands extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect(context => ({
+            }, multiple([
+                cardLastingEffect((context) => ({
                     target: context.targets.myCharacter,
                     effect: copyBaseSkillEffects(context.targets.oppCharacter, { base: true })
                 })),
-                AbilityDsl.actions.honor(context => ({
+                honor((context) => ({
                     target: context.targets.myCharacter
                 }))
             ]))
-            .effect('honor {1} and set their base skills to equal {2}\'s base skills', context => [context.targets.myCharacter, context.targets.oppCharacter])
-            .max(AbilityDsl.limit.perConflict(1));
+            .chatText((context) => msg`honor ${context.targets.myCharacter} and set their base skills to equal ${context.targets.oppCharacter}'s base skills`)
+            .max(perConflict(1));
     }
 }

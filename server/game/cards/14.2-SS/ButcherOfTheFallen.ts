@@ -1,16 +1,16 @@
 import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotBeDeclaredAsDefender } from '../../effects.js';
 
 class ButcherOfTheFallen extends DrawCard {
     static id = 'butcher-of-the-fallen';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isAttacking(),
-            match: (card, context) => card.getMilitarySkill() < (context?.player.getProvinces((a) => !a.isBroken).length ?? 0),
+            condition: (context) => context.source.isAttacking(),
+            match: (card, context) => card.militarySkill < (context?.player.getProvinces((a) => !a.isBroken).length ?? 0),
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()});
+            effect: cannotBeDeclaredAsDefender()});
     }
 }
 

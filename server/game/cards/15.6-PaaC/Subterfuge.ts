@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Phases } from '../../Constants.js';
+import { chatMessage, chooseAmount, discardCard, draw, sequential } from '../../GameActions/GameActions.js';
+import { Phase } from '../../Constants.js';
 
 class Subterfuge extends DrawCard {
     static id = 'subterfuge';
@@ -12,54 +13,39 @@ class Subterfuge extends DrawCard {
                     return (
                         context.player.opponent &&
                         context.player.isLessHonorable() &&
-                        context.game.currentPhase !== Phases.Draw &&
+                        context.game.currentPhase !== Phase.Draw &&
                         event.player === context.player.opponent
                     );
                 }
             })
-            .gameAction(AbilityDsl.actions.cancel((context) => ({
-                replacementGameAction: AbilityDsl.actions.sequentialContext(() => {
-                    const eventAmount = context.event.amount ?? 0;
-                    const discardAmount = Math.min(eventAmount, 3);
-                    const cardsToDiscard = context.player.opponent?.conflictDeck.slice(0, discardAmount);
-                    const drawAmount = eventAmount - discardAmount;
-                    return {
-                        gameActions: [
-                            AbilityDsl.actions.discardCard({
+            // "up to 3": the player picks how many of the drawn cards are discarded
+            .cancel((context) => ({
+                replacementGameAction: chooseAmount({
+                    activePromptTitle: 'Choose how many cards to discard',
+                    max: Math.min(context.event.amount ?? 0, 3),
+                    gameAction: (discardAmount) => sequential(() => {
+                        const eventAmount = context.event.amount ?? 0;
+                        const cardsToDiscard = context.player.opponent?.conflictDeck.slice(0, discardAmount);
+                        const drawAmount = eventAmount - discardAmount;
+                        return [
+                            discardCard({
                                 target: cardsToDiscard
                             }),
-                            AbilityDsl.actions.handler({
-                                handler: (context) => {
-                                    context.game.addMessage(
-                                        '{0} discards {1}',
-                                        context.player.opponent,
-                                        cardsToDiscard
-                                    );
-                                    if(drawAmount > 0) {
-                                        context.game.addMessage(
-                                            '{0} draws {1} card{2}',
-                                            context.player.opponent,
-                                            drawAmount,
-                                            drawAmount > 1 ? 's' : ''
-                                        );
-                                    }
-                                }
-                            }),
-                            AbilityDsl.actions.draw({
+                            chatMessage((context) => msg`${context.player.opponent} discards ${cardsToDiscard}`),
+                            chatMessage((context) => drawAmount > 0 ? msg`${context.player.opponent} draws ${drawAmount} card${drawAmount > 1 ? 's' : ''}` : undefined),
+                            draw({
                                 target: context.player.opponent,
                                 amount: drawAmount
                             })
-                        ]
-                    };
+                        ];
+                    })
                 })
-            })))
-            .effect('prevent {1} card{2} from being drawn, discarding {3} instead', (context) => {
+            }))
+            .chatText((context) => {
                 const amount = context.event.amount ?? 0;
-                return [
-                    Math.min(amount, 3),
-                    amount > 1 ? 's' : '',
-                    amount > 1 ? 'them' : 'it'
-                ];
+                return amount > 1
+                    ? msg`prevent up to ${Math.min(amount, 3)} cards from being drawn, discarding them instead`
+                    : msg`prevent 1 card from being drawn, discarding it instead`;
             });
     }
 }

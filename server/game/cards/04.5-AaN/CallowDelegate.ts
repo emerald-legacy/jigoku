@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -13,7 +13,7 @@ class CallowDelegate extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

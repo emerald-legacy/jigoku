@@ -1,13 +1,14 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players } from '../../Constants.js';
+import { cardCannot, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect, sendHome } from '../../GameActions/GameActions.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class DirectingTheBattle extends DrawCard {
     static id = 'directing-the-battle';
 
     setupCardAbilities() {
-        this.action('Direct the Battle')
-            .condition(context => context.game.isDuringConflict())
+        this.conflictAction('Direct the Battle')
             .target({
                 name: 'character',
                 cardType: CardType.Character,
@@ -16,32 +17,32 @@ class DirectingTheBattle extends DrawCard {
             .select({
                 name: 'select',
                 dependsOn: 'character',
-                player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
+                player: (context) => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
-                'Move this character home': AbilityDsl.actions.sendHome(context => ({
-                    target: context.targets.character
-                })),
-                'Give +3 Military': AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(3),
-                    target: context.targets.character
-                })),
-                'Prevent bowing during conflict': AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.cardCannot({
-                        cannot: 'bow',
-                        restricts: 'opponentsCardEffects',
-                        applyingPlayer: context.player
-                    }),
-                    target: context.targets.character
-                }))
-            })
-            .effect('{1}{2}{3}{4}', context => {
-                if(context.selects.select.choice === 'Move this character home') {
-                    return ['send ', context.targets.character, ' home', ''];
+                'Move this character home': {
+                    action: sendHome((context) => ({
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`send ${context.targets.character} home`
+                },
+                'Give +3 Military': {
+                    action: cardLastingEffect((context) => ({
+                        effect: modifyMilitarySkill(3),
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`give ${context.targets.character} +3${'military'}`
+                },
+                'Prevent bowing during conflict': {
+                    action: cardLastingEffect((context) => ({
+                        effect: cardCannot({
+                            cannot: RestrictionType.Bow,
+                            appliesTo: RestrictionScope.OpponentsCardEffects,
+                            applyingPlayer: context.player
+                        }),
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`prevent ${context.targets.character}${' from being bowed by opponent\'s card effects'}`
                 }
-                if(context.selects.select.choice === 'Give +3 Military') {
-                    return ['give ', context.targets.character, ' +3', 'military'];
-                }
-                return ['prevent ', context.targets.character, ' from being bowed by opponent\'s card effects', ''];
             });
     }
 }

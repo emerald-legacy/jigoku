@@ -63,10 +63,10 @@ describe('Compelling Testimony', function() {
                     type: 'political'
                 });
 
-                const politicalSkill = this.yoshi.getPoliticalSkill();
+                const politicalSkill = this.yoshi.politicalSkill;
                 this.player2.clickCard(this.testimony);
                 this.player2.clickCard(this.yoshi);
-                expect(this.yoshi.getPoliticalSkill()).toBe(politicalSkill - 4);
+                expect(this.yoshi.politicalSkill).toBe(politicalSkill - 4);
             });
 
             it('should last until the end of the conflict', function() {
@@ -77,12 +77,12 @@ describe('Compelling Testimony', function() {
                     type: 'political'
                 });
 
-                const politicalSkill = this.yoshi.getPoliticalSkill();
+                const politicalSkill = this.yoshi.politicalSkill;
                 this.player2.clickCard(this.testimony);
                 this.player2.clickCard(this.yoshi);
-                expect(this.yoshi.getPoliticalSkill()).toBe(politicalSkill - 4);
+                expect(this.yoshi.politicalSkill).toBe(politicalSkill - 4);
                 this.noMoreActions();
-                expect(this.yoshi.getPoliticalSkill()).toBe(politicalSkill);
+                expect(this.yoshi.politicalSkill).toBe(politicalSkill);
             });
         });
     });

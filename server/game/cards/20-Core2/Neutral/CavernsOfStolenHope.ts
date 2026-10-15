@@ -1,5 +1,4 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
 
 export default class CavernsOfStolenHope extends ProvinceCard {
     static id = 'caverns-of-stolen-hope';
@@ -9,8 +8,8 @@ export default class CavernsOfStolenHope extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
-            .gameAction(AbilityDsl.actions.discardAtRandom((context) => ({
+            .discardAtRandom((context) => ({
                 amount: context.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0
-            })));
+            }));
     }
 }

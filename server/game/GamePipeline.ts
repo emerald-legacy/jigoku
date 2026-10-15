@@ -18,6 +18,15 @@ export class GamePipeline {
         this.cursor = 0;
     }
 
+    /** Lets every step still in the pipeline clean up after an error abandoned it. */
+    abort(): void {
+        for(const step of [...this.pipeline.slice(this.cursor), ...this.queue]) {
+            if(typeof step !== 'function') {
+                step.abort?.();
+            }
+        }
+    }
+
     get length(): number {
         return this.pipeline.length - this.cursor;
     }

@@ -10,7 +10,7 @@ class GameFlowWrapper {
     player2: PlayerInteractionWrapper;
     allPlayers: PlayerInteractionWrapper[];
 
-    constructor() {
+    constructor(gameMode = 'stronghold') {
         const gameRouter = jasmine.createSpyObj<GameRouter & { playerLeft: () => void }>('gameRouter', ['gameWon', 'playerLeft', 'handleError']);
         gameRouter.handleError.and.callFake((_game: Game, error: Error) => {
             throw error;
@@ -22,7 +22,7 @@ class GameFlowWrapper {
             allowSpectators: false,
             spectatorSquelch: false,
             gameType: 'casual',
-            gameMode: 'stronghold',
+            gameMode,
             clocks: null,
             players: {
                 '111': { id: '111', user: Settings.getUserWithDefaultsSet({ username: 'player1' }) },

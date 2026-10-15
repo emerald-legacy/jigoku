@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
 import { Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedAnyRing } from '../claimedRings.js';
 
@@ -14,7 +14,7 @@ class ReaderOfOmens extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(3)
+            effect: modifyPoliticalSkill(3)
         });
     }
 

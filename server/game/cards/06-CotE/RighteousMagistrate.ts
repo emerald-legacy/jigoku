@@ -1,23 +1,23 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players, RestrictionType } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
 
 class RighteousMagistrate extends DrawCard {
     static id = 'righteous-magistrate';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isDefending(),
+            condition: (context) => context.source.isDefending(),
             targetController: Players.Any,
             effect: [
-                AbilityDsl.effects.playerCannot({
-                    cannot: 'loseHonor'
+                playerCannot({
+                    cannot: RestrictionType.LoseHonor
                 }),
-                AbilityDsl.effects.playerCannot({
-                    cannot: 'gainHonor'
+                playerCannot({
+                    cannot: RestrictionType.GainHonor
                 }),
-                AbilityDsl.effects.playerCannot({
-                    cannot: 'takeHonor'
+                playerCannot({
+                    cannot: RestrictionType.TakeHonor
                 })
             ]
         });

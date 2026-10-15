@@ -25,8 +25,8 @@ describe('Iuchi Hatsue', function () {
                 attackers: [this.challenger],
                 defenders: [this.mitsu]
             });
-            const mil = this.hatsue.getMilitarySkill();
-            const pol = this.hatsue.getPoliticalSkill();
+            const mil = this.hatsue.militarySkill;
+            const pol = this.hatsue.politicalSkill;
 
             this.player2.pass();
 
@@ -55,8 +55,8 @@ describe('Iuchi Hatsue', function () {
 
             expect(this.getChatLogs(5)).toContain('player1 uses Iuchi Hatsue to switch Doji Challenger and Aranat');
 
-            expect(this.hatsue.getMilitarySkill()).toBe(mil + 2);
-            expect(this.hatsue.getPoliticalSkill()).toBe(pol + 2);
+            expect(this.hatsue.militarySkill).toBe(mil + 2);
+            expect(this.hatsue.politicalSkill).toBe(pol + 2);
         });
 
         it('opponent swap locations', function () {

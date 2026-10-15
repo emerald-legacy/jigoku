@@ -16,4 +16,6 @@ export interface Step {
     queueStep?(step: Step): void;
     cancelStep?(): void;
     isComplete?(): boolean;
+    /** Cleans up after an error abandoned the step: game state it set no longer points at it. */
+    abort?(): void;
 }

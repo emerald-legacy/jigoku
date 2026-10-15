@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { turnFacedown } from '../../GameActions/GameActions.js';
 
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
@@ -16,7 +16,7 @@ class TravelingPhilosopher extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) => !card.isBroken
-            }, AbilityDsl.actions.turnFacedown());
+            }, turnFacedown());
     }
 }
 

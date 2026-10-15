@@ -51,14 +51,14 @@ describe('Conduit of Heroes', function() {
             });
 
             this.player2.pass();
-            const mil = this.sadako.getMilitarySkill();
-            const pol = this.sadako.getPoliticalSkill();
-            const glory = this.sadako.getGlory();
+            const mil = this.sadako.militarySkill;
+            const pol = this.sadako.politicalSkill;
+            const glory = this.sadako.glory;
             this.player1.clickCard(this.conduit);
             this.player1.clickCard(this.sadako);
-            expect(this.sadako.getMilitarySkill()).toBe(mil + 3);
-            expect(this.sadako.getPoliticalSkill()).toBe(pol + 1);
-            expect(this.sadako.getGlory()).toBe(glory + 1);
+            expect(this.sadako.militarySkill).toBe(mil + 3);
+            expect(this.sadako.politicalSkill).toBe(pol + 1);
+            expect(this.sadako.glory).toBe(glory + 1);
 
             expect(this.conduit.bowed).toBe(true);
             expect(this.getChatLogs(5)).toContain('player1 uses Conduit of Heroes, bowing Conduit of Heroes to grant Shosuro Sadako +3military/+1political/+1glory until the end of the conflict');
@@ -75,14 +75,14 @@ describe('Conduit of Heroes', function() {
             });
 
             this.player2.pass();
-            const mil = this.sadako.getMilitarySkill();
-            const pol = this.sadako.getPoliticalSkill();
-            const glory = this.sadako.getGlory();
+            const mil = this.sadako.militarySkill;
+            const pol = this.sadako.politicalSkill;
+            const glory = this.sadako.glory;
             this.player1.clickCard(this.conduit);
             this.player1.clickCard(this.sadako);
-            expect(this.sadako.getMilitarySkill()).toBe(mil + 3);
-            expect(this.sadako.getPoliticalSkill()).toBe(pol + 1);
-            expect(this.sadako.getGlory()).toBe(glory + 1);
+            expect(this.sadako.militarySkill).toBe(mil + 3);
+            expect(this.sadako.politicalSkill).toBe(pol + 1);
+            expect(this.sadako.glory).toBe(glory + 1);
 
             expect(this.conduit.bowed).toBe(false);
             expect(this.getChatLogs(5)).toContain('player1 uses Conduit of Heroes to grant Shosuro Sadako +3military/+1political/+1glory until the end of the conflict');

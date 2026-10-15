@@ -75,7 +75,7 @@ describe('Whispers Of Power', function() {
             });
 
             this.togashiYokuni.fate = 1;
-            const initialPoliticalPower = this.kudaka.getPoliticalSkill();
+            const initialPoliticalPower = this.kudaka.politicalSkill;
 
             this.player2.pass();
             this.player1.clickCard(this.whispersOfPower);
@@ -83,7 +83,7 @@ describe('Whispers Of Power', function() {
             this.player1.clickCard(this.kudaka);
             this.player1.clickPrompt(1);
 
-            expect(this.kudaka.getPoliticalSkill()).toBe(initialPoliticalPower + 3);
+            expect(this.kudaka.politicalSkill).toBe(initialPoliticalPower + 3);
             expect(this.getChatLogs(5)).toContain('player1 plays Whispers of Power, losing 1 honor to grant Kudaka +3 political until the end of the conflict');
         });
 
@@ -95,7 +95,7 @@ describe('Whispers Of Power', function() {
                 defenders: [this.togashiYokuni]
             });
 
-            const initialPoliticalPower = this.kudaka.getPoliticalSkill();
+            const initialPoliticalPower = this.kudaka.politicalSkill;
 
             this.player2.pass();
             this.player1.clickCard(this.whispersOfPower);
@@ -103,7 +103,7 @@ describe('Whispers Of Power', function() {
             this.player1.clickCard(this.kudaka);
             this.player1.clickPrompt(1);
 
-            expect(this.kudaka.getPoliticalSkill()).toBe(initialPoliticalPower + 6);
+            expect(this.kudaka.politicalSkill).toBe(initialPoliticalPower + 6);
             expect(this.getChatLogs(5)).toContain('player1 plays Whispers of Power, losing 1 honor to grant Kudaka +6 political until the end of the conflict');
         });
     });

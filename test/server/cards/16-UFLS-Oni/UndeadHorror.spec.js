@@ -33,8 +33,8 @@ describe('Undead Horror', function () {
             expect(this.toshimoko.location).toBe('play area');
             expect(this.toshimoko.type).toBe('attachment');
             expect(this.horror.attachments).toContain(this.toshimoko);
-            expect(this.horror.getMilitarySkill()).toBe(6);
-            expect(this.horror.getPoliticalSkill()).toBe(5);
+            expect(this.horror.militarySkill).toBe(6);
+            expect(this.horror.politicalSkill).toBe(5);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Undead Horror to attach a random character from player2\'s dynasty discard pile to Undead Horror'
             );

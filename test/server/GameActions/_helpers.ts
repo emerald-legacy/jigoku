@@ -23,7 +23,6 @@ export function buildGameSpy<K extends string>(
 }
 
 const baseGameActionMethods = [
-    "setDefaultTarget",
     "canAffect",
     "hasLegalTarget",
     "addEventsToArray",

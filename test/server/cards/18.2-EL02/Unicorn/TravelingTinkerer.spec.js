@@ -38,8 +38,8 @@ describe('Traveling Tinker', function () {
                 defenders: [this.vice, this.tinkerer]
             });
             this.player2.pass();
-            expect(this.tinkerer.getMilitarySkill()).toBe(3);
-            expect(this.tinkerer.getPoliticalSkill()).toBe(5);
+            expect(this.tinkerer.militarySkill).toBe(3);
+            expect(this.tinkerer.politicalSkill).toBe(5);
 
             this.player1.clickCard(this.tinkerer);
             expect(this.player1).toHavePrompt('Choose an attachment');
@@ -50,8 +50,8 @@ describe('Traveling Tinker', function () {
             expect(this.player1).toBeAbleToSelect(this.talisman);
 
             this.player1.clickCard(this.katana);
-            expect(this.tinkerer.getMilitarySkill()).toBe(1);
-            expect(this.tinkerer.getPoliticalSkill()).toBe(7);
+            expect(this.tinkerer.militarySkill).toBe(1);
+            expect(this.tinkerer.politicalSkill).toBe(7);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Traveling Tinkerer to switch the skill modifiers of Fine Katana'
             );

@@ -56,10 +56,10 @@ describe('Kuni Laboratory', function() {
                 });
 
                 // test card abilities have taken effect
-                expect(this.borderlandsDefender.getMilitarySkill()).toBe(this.borderlandsDefender.getBaseMilitarySkill() + 1);
-                expect(this.borderlandsDefender.getPoliticalSkill()).toBe(this.borderlandsDefender.getBasePoliticalSkill() + 1);
-                expect(this.thirdTowerGuard.getMilitarySkill()).toBe(this.thirdTowerGuard.getBaseMilitarySkill() + 1);
-                expect(this.thirdTowerGuard.getPoliticalSkill()).toBe(this.thirdTowerGuard.getBasePoliticalSkill() + 1);
+                expect(this.borderlandsDefender.militarySkill).toBe(this.borderlandsDefender.getBaseMilitarySkill() + 1);
+                expect(this.borderlandsDefender.politicalSkill).toBe(this.borderlandsDefender.getBasePoliticalSkill() + 1);
+                expect(this.thirdTowerGuard.militarySkill).toBe(this.thirdTowerGuard.getBaseMilitarySkill() + 1);
+                expect(this.thirdTowerGuard.politicalSkill).toBe(this.thirdTowerGuard.getBasePoliticalSkill() + 1);
             });
 
             it('should give +1/+1 to the controllers character when it is played from hand', function() {
@@ -84,8 +84,8 @@ describe('Kuni Laboratory', function() {
                 this.player2.clickPrompt('Conflict');
 
                 // test card abilities have taken effect
-                expect(this.hirumaAmbusher.getMilitarySkill()).toBe(this.hirumaAmbusher.getBaseMilitarySkill() + 1);
-                expect(this.hirumaAmbusher.getPoliticalSkill()).toBe(this.hirumaAmbusher.getBasePoliticalSkill() + 1);
+                expect(this.hirumaAmbusher.militarySkill).toBe(this.hirumaAmbusher.getBaseMilitarySkill() + 1);
+                expect(this.hirumaAmbusher.politicalSkill).toBe(this.hirumaAmbusher.getBasePoliticalSkill() + 1);
             });
 
             it('should not give +1/+1 to the opponents characters in play', function() {
@@ -105,10 +105,10 @@ describe('Kuni Laboratory', function() {
                 });
 
                 // test card abilities have not taken effect
-                expect(this.bayushiShoju.getMilitarySkill()).not.toBe(this.bayushiShoju.getBaseMilitarySkill() + 1);
-                expect(this.bayushiShoju.getPoliticalSkill()).not.toBe(this.bayushiShoju.getBasePoliticalSkill() + 1);
-                expect(this.bayushiShoju.getMilitarySkill()).toBe(this.bayushiShoju.getBaseMilitarySkill());
-                expect(this.bayushiShoju.getPoliticalSkill()).toBe(this.bayushiShoju.getBasePoliticalSkill());
+                expect(this.bayushiShoju.militarySkill).not.toBe(this.bayushiShoju.getBaseMilitarySkill() + 1);
+                expect(this.bayushiShoju.politicalSkill).not.toBe(this.bayushiShoju.getBasePoliticalSkill() + 1);
+                expect(this.bayushiShoju.militarySkill).toBe(this.bayushiShoju.getBaseMilitarySkill());
+                expect(this.bayushiShoju.politicalSkill).toBe(this.bayushiShoju.getBasePoliticalSkill());
             });
         });
     });

@@ -1,10 +1,10 @@
-import { CardType, Location } from '../Constants.js';
-import DrawCard from '../DrawCard.js';
-import type Player from '../Player.js';
+import { CardType } from '../Constants.js';
+import type DrawCard from '../DrawCard.js';
+import { TokenCard } from './TokenCard.js';
 
-export class AshigaruRecruit extends DrawCard {
-    constructor(public facedownCard: DrawCard) {
-        super(facedownCard.owner, {
+export class AshigaruRecruit extends TokenCard {
+    constructor(facedownCard: DrawCard) {
+        super(facedownCard, {
             clan: 'lion',
             cost: null,
             glory: '1',
@@ -18,24 +18,5 @@ export class AshigaruRecruit extends DrawCard {
             traits: ['peasant'],
             is_unique: false
         });
-    }
-
-    leavesPlay() {
-        this.owner.moveCard(this.facedownCard, Location.DynastyDiscardPile);
-        this.game.queueSimpleStep(() => {
-            this.owner.removeCardFromPile(this);
-            this.game.allCards = this.game.allCards.filter((card) => card.uuid !== this.uuid);
-        });
-        super.leavesPlay();
-    }
-
-    getSummary(activePlayer: Player, hideWhenFaceup: boolean) {
-        const summary = super.getSummary(activePlayer, hideWhenFaceup);
-        const tokenProps: Record<string, unknown> = { isToken: true };
-        if(activePlayer === this.controller) {
-            tokenProps.facedownId = this.facedownCard.cardData.id;
-            tokenProps.facedownPackId = this.facedownCard.packId;
-        }
-        return Object.assign(summary, tokenProps);
     }
 }

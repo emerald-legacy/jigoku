@@ -109,5 +109,25 @@ describe('Isawa Tsuke', function() {
             expect(this.togashiInitiate.isDishonored).toBe(true);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
         });
+
+        it('does not affect the chosen character again', function() {
+            this.mirumotoRaitsugu.dishonor();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.isawaTsuke],
+                defenders: [this.togashiInitiate],
+                ring: 'fire'
+            });
+
+            this.player2.pass();
+            this.player1.pass();
+
+            this.player1.clickCard(this.mirumotoRaitsugu);
+            this.player1.clickPrompt('honor Mirumoto Raitsugu');
+            expect(this.mirumotoRaitsugu.isDishonored).toBe(false);
+            this.player1.clickCard(this.isawaTsuke);
+            expect(this.kitsukiInvestigator.isHonored).toBe(true);
+            expect(this.mirumotoRaitsugu.isHonored).toBe(false);
+        });
     });
 });

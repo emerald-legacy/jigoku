@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyGlory } from '../../effects.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'icon-of-favor-fire';
@@ -10,7 +10,7 @@ class IconOfFavor extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: (context) => context.player.imperialFavor !== '',
-            effect: AbilityDsl.effects.modifyGlory(1)
+            effect: modifyGlory(1)
         });
         this.reaction('Honor attached character')
             .when({
@@ -18,9 +18,9 @@ class IconOfFavor extends DrawCard {
                     event.conflict.hasElement(this.getCurrentElementSymbol(elementKey)) &&
                     event.conflict.winner === context.player
             })
-            .gameAction(AbilityDsl.actions.honor(context => ({
+            .honor((context) => ({
                 target: context.source.parentCharacter ?? []
-            })));
+            }));
     }
 
     getPrintedElementSymbols() {

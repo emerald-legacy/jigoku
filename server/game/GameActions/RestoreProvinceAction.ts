@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName } from '../Constants.js';
+import { CardType, EventName, RestrictionType } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -8,6 +8,7 @@ export type RestoreProvinceProperties = CardActionProperties;
 
 export class RestoreProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<CardActionProperties, EventName.OnRestoreProvince, C> {
     name = 'restoreProvince';
+    restriction = RestrictionType.RestoreProvince;
     eventName = EventName.OnRestoreProvince;
     targetType = [CardType.Province];
     cost = 'restoring {0}';

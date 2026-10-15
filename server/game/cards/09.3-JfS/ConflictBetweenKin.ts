@@ -1,6 +1,6 @@
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
 
 export default class ConflictBetweenKin extends ProvinceCard {
     static id = 'conflict-between-kin';
@@ -11,13 +11,13 @@ export default class ConflictBetweenKin extends ProvinceCard {
             targetController: Players.Opponent,
             match: (card) => card.isParticipating(),
             effect: [
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'target',
-                    restricts: 'eventsWithSameClan'
+                cardCannot({
+                    cannot: RestrictionType.Target,
+                    appliesTo: RestrictionScope.EventsWithSameClan
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'target',
-                    restricts: 'attachmentsWithSameClan'
+                cardCannot({
+                    cannot: RestrictionType.Target,
+                    appliesTo: RestrictionScope.AttachmentsWithSameClan
                 })
             ]
         });

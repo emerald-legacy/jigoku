@@ -1,6 +1,6 @@
 import { EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 
@@ -10,14 +10,17 @@ export default class IkomaAnakazu extends DrawCard {
     private brokenProvincesThisPhase = new Map<string, number>();
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnBreakProvince, EventName.OnPhaseEnded]);
+        new EventRegistrar(this.game).register({
+            [EventName.OnBreakProvince]: (event) => this.onBreakProvince(event),
+            [EventName.OnPhaseEnded]: () => this.onPhaseEnded()
+        });
 
         this.persistentEffect({
             condition: (context) =>
                 !!(context.source.isParticipating() &&
                 context.player.opponent &&
                 (this.brokenProvincesThisPhase.get(context.player.opponent.name) ?? 0) > 0),
-            effect: AbilityDsl.effects.modifyBothSkills(3)
+            effect: modifyBothSkills(3)
         });
     }
 

@@ -1,6 +1,6 @@
 import { Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardAtRandom, loseFate, loseHonor } from '../../../GameActions/GameActions.js';
 
 export default class JadeColoredRocks extends ProvinceCard {
     static id = 'jade-colored-rocks';
@@ -11,11 +11,11 @@ export default class JadeColoredRocks extends ProvinceCard {
                 player: Players.Self,
                 activePromptTitle: 'Choose an option'
             }, {
-                'Opponent loses 1 fate': AbilityDsl.actions.loseFate(),
-                'Opponent loses 1 honor': AbilityDsl.actions.loseHonor((context) => ({
+                'Opponent loses 1 fate': loseFate((context) => ({ target: context.player.opponent })),
+                'Opponent loses 1 honor': loseHonor((context) => ({
                     target: (context.player.opponent?.honor ?? 0) > 6 ? context.player.opponent : []
                 })),
-                'Opponent discards 1 card at random': AbilityDsl.actions.discardAtRandom()
+                'Opponent discards 1 card at random': discardAtRandom()
             });
     }
 }

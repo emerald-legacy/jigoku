@@ -125,3 +125,54 @@ describe('Hallowed Ground', function() {
         });
     });
 });
+
+describe('Hallowed Ground\'s earth ring ability', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shrine-maiden'],
+                    dynastyDiscard: ['hallowed-ground']
+                },
+                player2: {
+                    inPlay: ['kakita-toshimoko', 'doji-challenger']
+                }
+            });
+            this.player1.placeCardInProvince('hallowed-ground', 'province 1');
+            this.province2 = this.player1.findCardByName('shameful-display', 'province 2');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+        });
+
+        const breakProvince = function(spec) {
+            spec.initiateConflict({
+                ring: 'void',
+                type: 'military',
+                province: spec.province2,
+                attackers: [spec.toshimoko, spec.challenger],
+                defenders: []
+            });
+            spec.noMoreActions();
+            spec.player2.clickPrompt('No');
+        };
+
+        it('lets the opponent claim the ring without the earth ring', function() {
+            breakProvince(this);
+            expect(this.province2.isBroken).toBe(true);
+            expect(this.game.rings.void.claimedBy).toBe('player2');
+        });
+
+        it('stops the opponent from claiming the ring of a conflict in which they broke a province', function() {
+            this.player2.claimRing('earth');
+            breakProvince(this);
+            expect(this.province2.isBroken).toBe(true);
+            expect(this.game.rings.void.claimedBy).not.toBe('player2');
+        });
+    });
+});
+

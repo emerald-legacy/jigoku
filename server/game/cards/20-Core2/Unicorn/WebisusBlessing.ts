@@ -1,5 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { discardStatusToken } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { perRound } from '../../../AbilityLimit.js';
 
 export default class WebisusBlessing extends DrawCard {
     static id = 'webisu-s-blessing';
@@ -9,24 +11,17 @@ export default class WebisusBlessing extends DrawCard {
             .tokenTarget({
                 name: 'first',
                 activePromptTitle: 'Choose a status token'
-            }, AbilityDsl.actions.discardStatusToken())
+            }, discardStatusToken())
             .tokenTarget({
                 name: 'second',
                 activePromptTitle: 'Choose a status token',
                 dependsOn: 'first',
                 optional: true,
                 tokenCondition: (token, context) => token !== context.tokens.first[0]
-            }, AbilityDsl.actions.discardStatusToken())
-            .effect('discard {1}\'s {2}{3}{4}{5}{6}', (context) =>
-                context.tokens.second
-                    ? [
-                        context.tokens.first[0].card,
-                        context.tokens.first,
-                        ' and ',
-                        context.tokens.second[0].card,
-                        '\'s ',
-                        context.tokens.second
-                    ]
-                    : [context.tokens.first[0].card, context.tokens.first, '', '', '', '']);
+            }, discardStatusToken())
+            .chatText((context) => context.tokens.second
+                ? msg`discard ${context.tokens.first[0].card}'s ${context.tokens.first} and ${context.tokens.second[0].card}${'\'s '}${context.tokens.second}`
+                : msg`discard ${context.tokens.first[0].card}'s ${context.tokens.first}`)
+            .max(perRound(1));
     }
 }

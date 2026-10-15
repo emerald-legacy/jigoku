@@ -1,6 +1,8 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, claimRing } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
 
 export default class StrikeAsTheElements extends DrawCard {
     static id = 'strike-as-the-elements';
@@ -11,15 +13,15 @@ export default class StrikeAsTheElements extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating() && card.hasTrait('monk')
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+            }, cardLastingEffect({
+                effect: modifyMilitarySkill(2)
             }))
             .ringTarget({
                 name: 'ring',
                 activePromptTitle: 'Choose an unclaimed ring',
-                ringCondition: ring => ring.isUnclaimed()
-            }, AbilityDsl.actions.claimRing({ takeFate: true, type: ConflictType.Military }))
-            .effect('grant +2{1} to {2} and claim the {3}', context => ['military', context.targets.character, context.rings.ring]);
+                ringCondition: (ring) => ring.isUnclaimed()
+            }, claimRing({ takeFate: true, type: ConflictType.Military }))
+            .chatText((context) => msg`grant +2${'military'} to ${context.targets.character} and claim the ${context.rings.ring}`);
     }
 }

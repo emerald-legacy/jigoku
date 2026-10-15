@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoConflict } from '../../GameActions/GameActions.js';
 
 class MotoBeastmaster extends DrawCard {
     static id = 'moto-beastmaster';
@@ -15,7 +15,7 @@ class MotoBeastmaster extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card, context) => context.player.firstPlayer ? card.costLessThan(5) : card.costLessThan(3)
-            }, AbilityDsl.actions.putIntoConflict());
+            }, putIntoConflict());
     }
 }
 

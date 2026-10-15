@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class InfiltratorsTools extends DrawCard {
@@ -10,7 +10,7 @@ class InfiltratorsTools extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.addKeyword('covert')
+            effect: addKeyword('covert')
         });
     }
 }

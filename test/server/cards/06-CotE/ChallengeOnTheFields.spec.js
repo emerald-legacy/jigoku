@@ -86,9 +86,9 @@ describe('Challenge on the Fields', function () {
                 this.player1.clickCard(this.defendYourHonor);
                 this.player1.clickCard(this.borderRider);
                 this.player2.clickCard(this.agashaSwordsmith);
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.battleMaidenRecruit.getMilitarySkill()).toBe(0 + 2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1 + 1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.battleMaidenRecruit.militarySkill).toBe(0 + 2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1 + 1);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
                 expect(this.getChatLogs(2)).toContain('Border Rider: 3 vs 4: Agasha Swordsmith'); // 2 (skill) + 1 (honor bid) vs. 1 (skill) + 1 (CotF) + 2 (honor bid)
@@ -96,8 +96,8 @@ describe('Challenge on the Fields', function () {
                 this.player2.clickPrompt('Increase honor bid');
                 expect(this.getChatLogs(4)).toContain('Battle Maiden Recruit: 3 vs 5: Agasha Swordsmith'); // 0 (skill) + 2 (CotF) + 1 (honor bid) vs. 1 (skill) + 1 (CotF) + 3 (honor bid)
                 expect(this.battleMaidenRecruit.isParticipating()).toBe(false);
-                expect(this.battleMaidenRecruit.getMilitarySkill()).toBe(0);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.battleMaidenRecruit.militarySkill).toBe(0);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
             });
         });
 
@@ -180,18 +180,18 @@ describe('Challenge on the Fields', function () {
                     type: 'political'
                 });
                 this.player2.pass();
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
                 this.player1.clickCard(this.challengeOnTheFields);
                 this.player1.clickCard(this.borderRider);
                 this.player1.clickCard(this.agashaSwordsmith);
                 this.player2.clickPrompt('Pass');
-                expect(this.borderRider.getMilitarySkill()).toBe(2 + 2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1 + 1);
+                expect(this.borderRider.militarySkill).toBe(2 + 2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1 + 1);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
             });
 
             it('should send the loser home', function () {
@@ -220,15 +220,15 @@ describe('Challenge on the Fields', function () {
                     type: 'political'
                 });
                 this.player2.pass();
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
                 this.player1.clickCard(this.challengeOnTheFields);
                 this.player1.clickCard(this.borderRider);
                 this.player1.clickCard(this.agashaSwordsmith);
                 this.player2.clickCard('stay-your-hand');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
             });
         });
 

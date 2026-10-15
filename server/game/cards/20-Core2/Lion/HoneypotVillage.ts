@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
 
 export default class HoneypotVillage extends ProvinceCard {
     static id = 'honeypot-village';
@@ -11,6 +11,6 @@ export default class HoneypotVillage extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => !card.bowed
-            }, AbilityDsl.actions.moveToConflict());
+            }, moveToConflict());
     }
 }

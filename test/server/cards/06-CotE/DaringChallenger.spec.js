@@ -21,7 +21,7 @@ describe('Daring Challenger', function() {
                 expect(this.player1.player.honor).toBeLessThan(this.player2.player.honor);
                 const baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
                 expect(baseMilitarySkill).toBe(2);
-                expect(this.daringChallenger.getMilitarySkill()).toBe(baseMilitarySkill + 1);
+                expect(this.daringChallenger.militarySkill).toBe(baseMilitarySkill + 1);
             });
 
             it('should not have +1 military skill if controller is equally honorable', function() {
@@ -30,7 +30,7 @@ describe('Daring Challenger', function() {
                 expect(this.player1.player.honor).toBe(this.player2.player.honor);
                 const baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
                 expect(baseMilitarySkill).toBe(2);
-                expect(this.daringChallenger.getMilitarySkill()).toBe(baseMilitarySkill);
+                expect(this.daringChallenger.militarySkill).toBe(baseMilitarySkill);
             });
 
             it('should not have +1 military skill if controller is more honorable', function() {
@@ -39,7 +39,7 @@ describe('Daring Challenger', function() {
                 expect(this.player1.player.honor).toBeGreaterThan(this.player2.player.honor);
                 const baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
                 expect(baseMilitarySkill).toBe(2);
-                expect(this.daringChallenger.getMilitarySkill()).toBe(baseMilitarySkill);
+                expect(this.daringChallenger.militarySkill).toBe(baseMilitarySkill);
             });
         });
 

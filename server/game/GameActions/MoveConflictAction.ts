@@ -3,6 +3,7 @@ import type { ProvinceCard } from '../ProvinceCard.js';
 import { CardType, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
+import { RevealAction } from './RevealAction.js';
 
 export type MoveConflictProperties = CardActionProperties;
 
@@ -38,9 +39,8 @@ export class MoveConflictAction<C extends AbilityContext = AbilityContext> exten
         conflict.conflictProvince.inConflict = false;
         conflict.conflictProvince = newProvince;
         if(newProvince.isFacedown()) {
-            const revealEvent = context.game.actions
-                .reveal()
-                .getEvent(newProvince, context.game.getFrameworkContext());
+            const revealEvent = new RevealAction({})
+                .getEvent(newProvince, context.game.getGameContext());
             context.game.openThenEventWindow(revealEvent);
         }
     }

@@ -1,55 +1,36 @@
+import { msg } from '../../GameChat.js';
 import { Location, Duration, Element } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { replacePrintedElement } from '../../effects.js';
+import { cardLastingEffect, chooseAction } from '../../GameActions/GameActions.js';
 import type { ElementSymbol } from '../../ElementSymbol.js';
-import { isEnumValue } from '../../utils/helpers.js';
 
 export default class TwinSoulTemple extends StrongholdCard {
     static id = 'twin-soul-temple';
 
     setupCardAbilities() {
         this.action('Bow this stronghold')
-            .cost(AbilityDsl.costs.bowSelf())
+            .cost(costs.bowSelf())
             .elementTarget({
                 activePromptTitle: 'Choose an element to replace',
                 location: [Location.PlayArea, Location.Provinces]
-            }, AbilityDsl.actions.menuPrompt((context) => ({
+            }, chooseAction((context) => ({
                 activePromptTitle: 'Choose the new element',
-                choices: this.getChoices(context.element),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    target: context.elementCard,
-                    duration: Duration.UntilEndOfPhase
-                }),
-                choiceHandler: (choice, displayMessage) => {
-                    const newElement = choice.toLowerCase();
-                    if(!isEnumValue(Element, newElement)) {
-                        return {};
-                    }
-                    if(displayMessage) {
-                        this.game.addMessage(
-                            '{0} replaces {1}\'s {2} ({3}) symbol with {4}',
-                            context.player,
-                            context.elementCard,
-                            context.element.prettyName,
-                            this.capitalize(context.element.element),
-                            this.capitalize(newElement)
-                        );
-                    }
-                    return {
-                        effect: AbilityDsl.effects.replacePrintedElement({
-                            key: context.element.key,
-                            element: newElement
-                        })
-                    };
-                }
+                choices: Object.fromEntries(this.otherElements(context.element).map((element) => [this.capitalize(element), {
+                    action: cardLastingEffect({
+                        target: context.elementCard,
+                        duration: Duration.UntilEndOfPhase,
+                        effect: replacePrintedElement({ key: context.element.key, element })
+                    }),
+                    message: () => msg`${context.player} replaces ${context.elementCard}'s ${context.element.prettyName} (${this.capitalize(context.element.element)}) symbol with ${this.capitalize(element)}`
+                }]))
             })))
-            .effect('replace a printed element symbol with a different one');
+            .chatText('replace a printed element symbol with a different one');
     }
 
-    getChoices(element: ElementSymbol): string[] {
-        return [Element.Air, Element.Earth, Element.Fire, Element.Void, Element.Water]
-            .filter((e) => e !== element.element)
-            .map((e) => this.capitalize(e));
+    otherElements(element: ElementSymbol): Element[] {
+        return [Element.Air, Element.Earth, Element.Fire, Element.Void, Element.Water].filter((e) => e !== element.element);
     }
 
     capitalize(string: string) {

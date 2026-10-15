@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Skirmish Mode - Dynasty Phase', function() {
     integration(function() {
@@ -12,7 +12,7 @@ describe('Skirmish Mode - Dynasty Phase', function() {
                 player2: {
                     inPlay: ['beloved-advisor']
                 },
-                gameMode: GameModes.Skirmish
+                gameMode: GameMode.Skirmish
             });
 
             this.challenger = this.player1.findCardByName('doji-challenger');

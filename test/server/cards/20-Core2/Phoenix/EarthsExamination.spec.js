@@ -98,12 +98,13 @@ describe('Earth\'s Examination', function () {
                 );
             });
 
-            it('bows a target that is already tainted', function () {
+            it('may bow a target that is already tainted', function () {
                 this.prodigy.taint();
 
                 this.player2.clickCard(this.examination);
                 this.player2.clickCard(this.prodigy);
-                expect(this.player2).not.toHavePrompt('Bow that character?');
+                expect(this.player2).toHavePrompt('Bow that character?');
+                this.player2.clickPrompt('Yes');
                 expect(this.prodigy.isTainted).toBe(true);
                 expect(this.prodigy.bowed).toBe(true);
                 expect(this.getChatLogs(5)).toContain(

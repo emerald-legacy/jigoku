@@ -1,16 +1,16 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honorCostToDeclare, loseAllNonKeywordAbilities } from '../../effects.js';
 
 class UnleashedExperiment extends DrawCard {
     static id = 'unleashed-experiment';
 
     setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.loseAllNonKeywordAbilities()
+            effect: loseAllNonKeywordAbilities()
         });
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.honorCostToDeclare({
+            effect: honorCostToDeclare({
                 amount: 2
             })
         });

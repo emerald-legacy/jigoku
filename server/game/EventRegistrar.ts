@@ -1,75 +1,41 @@
 import type Game from './Game.js';
+import type { AbilityType, EventName } from './Constants.js';
+import type { GameEvent } from './Events/EventPayloads.js';
+import type { OwnContextCallback } from './Interfaces.js';
+import { eventNamesIn } from './utils/helpers.js';
 
-interface EventHandler {
-    name: string;
-    handler: (event: unknown) => void;
-}
+/** Handlers by game event, each getting its event typed; method syntax, so a narrower parameter fits. */
+export type EventHandlers = { [N in EventName]?: OwnContextCallback<[event: GameEvent<N>], void> };
 
-/**
- * Simplifies event registration given an event emitter to listen to events and
- * a context object to bind handlers on.
- */
+/** A card's listeners to game events and trigger windows, until `unregisterAll`. */
 export class EventRegistrar {
-    private events: EventHandler[];
+    #unsubscribers: (() => void)[] = [];
 
-    constructor(
-        private game: Game,
-        private context: object
-    ) {
-        this.events = [];
-    }
+    constructor(private readonly game: Game) {}
 
-    /**
-     * Registers a series of event handlers by name on the context object. Takes
-     * an array representing the events to be registered. If an array element is
-     * a string, then it will listen to that event using a handler method of the
-     * same name on the context object. If the array element is an object, the
-     * keys of the object will be used as the events to listen on and the string
-     * values will be used as the method names on the context object.
-     *
-     * @example
-     * // Listen to event 'eventName' and bind context.eventName as the handler.
-     * this.register(['eventName']);
-     * // Listen to event 'eventName' and bind context.methodName as the handler.
-     * this.register([{ eventName: 'methodName' }]);
-     *
-     * @param {Array} events - A list containing a mix of event names and
-     * event-to-method mappings.
-     */
-    public register(events: Array<string | Record<string, string>>) {
-        for(const event of events) {
-            if(typeof event === 'string') {
-                this.registerEvent(event);
-            } else {
-                for(const eventName in event) {
-                    const methodName = event[eventName];
-                    this.registerEvent(eventName, methodName);
-                }
-            }
+    /** Listens to each game event in `handlers`, once it happened. */
+    register(handlers: EventHandlers): void {
+        for(const eventName of eventNamesIn(handlers)) {
+            this.#on(eventName, handlers[eventName]);
         }
     }
 
-    /**
-     * Registers a single event handler.
-     */
-    public registerEvent(eventName: string, methodName = '') {
-        const method: unknown = Reflect.get(this.context, methodName || eventName);
-        if(typeof method !== 'function') {
-            throw new Error(`Cannot bind event handler for ${eventName}`);
-        }
-
-        const boundHandler = method.bind(this.context);
-        this.game.on(eventName, boundHandler);
-        this.events.push({ name: eventName, handler: boundHandler });
+    /** Listens to an event in each `abilityType` trigger window, before its abilities are offered. */
+    registerTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>) => void): void {
+        this.game.onTriggerWindow(eventName, abilityType, handler);
+        this.#unsubscribers.push(() => this.game.offTriggerWindow(eventName, abilityType, handler));
     }
 
-    /**
-     * Unbinds all registered handlers from the event emitter.
-     */
-    public unregisterAll() {
-        for(const event of this.events) {
-            this.game.removeListener(event.name, event.handler);
+    unregisterAll(): void {
+        this.#unsubscribers.forEach((unsubscribe) => unsubscribe());
+        this.#unsubscribers = [];
+    }
+
+    #on<N extends EventName>(eventName: N, handler: EventHandlers[N]): void {
+        if(!handler) {
+            return;
         }
-        this.events = [];
+        this.game.on(eventName, handler);
+        this.#unsubscribers.push(() => this.game.off(eventName, handler));
     }
 }

@@ -1,8 +1,9 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, duel } from '../../GameActions/GameActions.js';
+import { gainAbility } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { AbilityType, CardType, DuelType, Players } from '../../Constants.js';
+import { CardType, DuelType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import HonorBidPrompt from '../../gamesteps/HonorBidPrompt.js';
+import { HonorBidPrompt } from '../../gamesteps/HonorBidPrompt.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 
 class DuelistTraining extends DrawCard {
@@ -10,25 +11,21 @@ class DuelistTraining extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Initiate a duel to bow',
-                condition: (context) => context.source.isParticipating(),
-                printedAbility: false,
-                target: {
+            effect: gainAbility.action('Initiate a duel to bow', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .target({
                     cardType: CardType.Character,
                     controller: Players.Opponent,
-                    cardCondition: (card) => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.duel({
-                        type: DuelType.Military,
-                        gameAction: (duel) => AbilityDsl.actions.bow({ target: duel.loser }),
-                        costHandler: (context, prompt) => {
-                            if(prompt instanceof HonorBidPrompt) {
-                                this.costHandler(context, prompt);
-                            }
+                    cardCondition: (card) => card.isParticipating()
+                }, duel({
+                    type: DuelType.Military,
+                    gameAction: (duel) => bow({ target: duel.loser }),
+                    costHandler: (context, prompt) => {
+                        if(prompt instanceof HonorBidPrompt) {
+                            this.costHandler(context, prompt);
                         }
-                    })
-                }
-            })
+                    }
+                })))
         });
     }
 

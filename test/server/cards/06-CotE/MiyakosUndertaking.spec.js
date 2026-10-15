@@ -71,7 +71,7 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.bayushiKachiko.name).toBe(this.kitsuSpiritcaller.name);
                 expect(this.bayushiKachiko.getCost()).toBe(this.kitsuSpiritcaller.getCost());
                 expect(this.bayushiKachiko.getBaseMilitarySkill()).toBe(this.kitsuSpiritcaller.printedMilitarySkill);
-                expect(this.bayushiKachiko.getPoliticalSkill()).toBe(this.kitsuSpiritcaller.printedPoliticalSkill);
+                expect(this.bayushiKachiko.politicalSkill).toBe(this.kitsuSpiritcaller.printedPoliticalSkill);
                 expect(this.bayushiKachiko.getTraits()).toContain('shugenja');
                 expect(this.bayushiKachiko.getTraits()).toContain('water');
                 expect(this.bayushiKachiko.isUnique()).toBe(true);
@@ -97,7 +97,7 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.bayushiKachiko.name).toBe(this.bayushiKachiko.printedName);
                 expect(this.bayushiKachiko.getCost()).toBe(this.bayushiKachiko.printedCost);
                 expect(this.bayushiKachiko.getBaseMilitarySkill()).toBe(this.bayushiKachiko.printedMilitarySkill);
-                expect(this.bayushiKachiko.getPoliticalSkill()).toBe(this.bayushiKachiko.printedPoliticalSkill);
+                expect(this.bayushiKachiko.politicalSkill).toBe(this.bayushiKachiko.printedPoliticalSkill);
                 expect(this.bayushiKachiko.getTraits()).toContain('courtier');
                 expect(this.bayushiKachiko.getTraits()).toContain('imperial');
                 expect(this.bayushiKachiko.isUnique()).toBe(true);
@@ -197,7 +197,7 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.bayushiKachiko.name).toBe(this.implacableMagistrate.name);
                 expect(this.bayushiKachiko.getCost()).toBe(this.implacableMagistrate.getCost());
                 expect(this.bayushiKachiko.getBaseMilitarySkill()).toBe(this.implacableMagistrate.printedMilitarySkill);
-                expect(this.bayushiKachiko.getPoliticalSkill()).toBe(this.implacableMagistrate.printedPoliticalSkill);
+                expect(this.bayushiKachiko.politicalSkill).toBe(this.implacableMagistrate.printedPoliticalSkill);
                 expect(this.bayushiKachiko.getTraits()).not.toContain('courtier');
                 expect(this.bayushiKachiko.getTraits()).not.toContain('shugenja');
                 expect(this.bayushiKachiko.getTraits()).not.toContain('water');

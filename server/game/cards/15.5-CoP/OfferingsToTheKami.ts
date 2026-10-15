@@ -1,6 +1,6 @@
 import { ConflictType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { claimRing, multiple, resolveRingEffect } from '../../GameActions/GameActions.js';
 
 export default class OfferingsToTheKami extends ProvinceCard {
     static id = 'offerings-to-the-kami';
@@ -14,9 +14,9 @@ export default class OfferingsToTheKami extends ProvinceCard {
                 activePromptTitle: 'Choose a ring to claim and resolve',
                 player: Players.Self,
                 ringCondition: (ring) => ring.isUnclaimed()
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.resolveRingEffect((context) => ({ player: context.player })),
-                AbilityDsl.actions.claimRing({ takeFate: true, type: ConflictType.Political })
+            }, multiple([
+                resolveRingEffect((context) => ({ player: context.player })),
+                claimRing({ takeFate: true, type: ConflictType.Political })
             ]));
     }
 }

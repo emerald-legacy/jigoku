@@ -1,6 +1,6 @@
 import { CostReducer, type CostReducerProps } from './CostReducer.js';
 import { PlayableLocation } from './PlayableLocation.js';
-import EffectSource from './EffectSource.js';
+import { EffectSource } from './EffectSource.js';
 import {
     AbilityType,
     CardType,
@@ -8,9 +8,9 @@ import {
     EventName,
     Location,
     Players,
-    PlayType
+    PlayType,
+    RestrictionType
 } from './Constants.js';
-import { GameModes } from '../GameModes.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
@@ -30,7 +30,7 @@ export class PlayerCostManager {
             new PlayableLocation(PlayType.PlayFromProvince, player, Location.ProvinceTwo),
             new PlayableLocation(PlayType.PlayFromProvince, player, Location.ProvinceThree)
         ];
-        if(game.gameMode !== GameModes.Skirmish) {
+        if(game.rules.setupNonStrongholdProvinces.includes(Location.ProvinceFour)) {
             this.playableLocations.push(
                 new PlayableLocation(PlayType.PlayFromProvince, player, Location.ProvinceFour)
             );
@@ -105,7 +105,7 @@ export class PlayerCostManager {
         const rings = alternateFatePools.filter((a) => a.printedType === 'ring');
         const cards = alternateFatePools.filter((a) => a.printedType !== 'ring');
         if(
-            !this.player.checkRestrictions('takeFateFromRings', context) ||
+            !this.player.checkRestrictions(RestrictionType.TakeFateFromRings, context ?? this.player.game.getFrameworkContext(this.player)) ||
             maho
         ) {
             rings.forEach((ring) => {
@@ -131,18 +131,14 @@ export class PlayerCostManager {
         const fakeWindow = { addChoice: () => triggeredCostReducers++ };
         if(card.isDrawCard()) {
             const fakeEvent = this.game.getEvent(EventName.OnCardPlayed, { card: card, player: this.player, context: context });
-            this.game.emit(EventName.OnCardPlayed + ':' + AbilityType.Interrupt, fakeEvent, fakeWindow);
+            this.game.emitTriggerWindow(fakeEvent, AbilityType.Interrupt, fakeWindow);
         }
         const fakeResolverEvent = this.game.getEvent(EventName.OnAbilityResolverInitiated, {
             card: card,
             player: this.player,
             context: context
         });
-        this.game.emit(
-            EventName.OnAbilityResolverInitiated + ':' + AbilityType.Interrupt,
-            fakeResolverEvent,
-            fakeWindow
-        );
+        this.game.emitTriggerWindow(fakeResolverEvent, AbilityType.Interrupt, fakeWindow);
         return Math.max(reducedCost - triggeredCostReducers - alternateFate, 0);
     }
 

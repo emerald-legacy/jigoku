@@ -18,9 +18,9 @@ describe('Sadane Student', function() {
             function worksWithRing(ringType) {
                 it('should give +2 to political skill if the ' + ringType + ' ring is claimed',
                     function() {
-                        const political = this.student.getPoliticalSkill();
+                        const political = this.student.politicalSkill;
                         this.player1.claimRing(ringType);
-                        expect(this.student.getPoliticalSkill()).toBe(political + 2);
+                        expect(this.student.politicalSkill).toBe(political + 2);
                     }
                 );
             }
@@ -32,9 +32,9 @@ describe('Sadane Student', function() {
             function doesntWorkWithRing(ringType) {
                 it('should not give +2 to political skill if the ' + ringType + ' ring is claimed',
                     function() {
-                        const political = this.student.getPoliticalSkill();
+                        const political = this.student.politicalSkill;
                         this.player1.claimRing(ringType);
-                        expect(this.student.getPoliticalSkill()).toBe(political);
+                        expect(this.student.politicalSkill).toBe(political);
                     }
                 );
             }
@@ -45,10 +45,10 @@ describe('Sadane Student', function() {
 
             it('should not give +2 to political skill if the opponent claimed the air or fire ring',
                 function() {
-                    const political = this.student.getPoliticalSkill();
+                    const political = this.student.politicalSkill;
                     this.player2.claimRing('air');
                     this.player2.claimRing('fire');
-                    expect(this.student.getPoliticalSkill()).toBe(political);
+                    expect(this.student.politicalSkill).toBe(political);
                 }
             );
         });

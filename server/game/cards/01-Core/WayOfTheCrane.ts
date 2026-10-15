@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class WayOfTheCrane extends DrawCard {
     static id = 'way-of-the-crane';
@@ -10,8 +10,8 @@ class WayOfTheCrane extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isFaction('crane')
-            }, AbilityDsl.actions.honor());
+                cardCondition: (card) => card.isFaction('crane')
+            }, honor());
     }
 }
 

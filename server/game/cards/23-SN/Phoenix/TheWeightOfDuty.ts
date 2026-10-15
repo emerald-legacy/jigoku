@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword } from '../../../effects.js';
+import { cardLastingEffect, honor, multiple } from '../../../GameActions/GameActions.js';
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -22,10 +23,10 @@ export default class TheWeightOfDuty extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('bushi')
-            }, AbilityDsl.actions.multiple([
-                AbilityDsl.actions.honor(),
-                AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.addKeyword('pride'),
+            }, multiple([
+                honor(),
+                cardLastingEffect({
+                    effect: addKeyword('pride'),
                     duration: Duration.UntilEndOfPhase
                 })
             ]));

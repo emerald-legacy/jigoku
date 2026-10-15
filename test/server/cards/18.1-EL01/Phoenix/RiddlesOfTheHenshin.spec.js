@@ -144,5 +144,29 @@ describe('Riddles of the Henshin', function () {
                 expect(this.player1).toHavePrompt('Fire Ring');
             });
         });
+
+        describe('Max 1 per round', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['togashi-initiate'],
+                        hand: ['riddles-of-the-henshin', 'riddles-of-the-henshin']
+                    }
+                });
+                [this.riddles, this.riddles2] = this.player1.filterCardsByName('riddles-of-the-henshin');
+                this.player1.claimRing('earth');
+            });
+
+            it('cannot play a second copy in the same round', function () {
+                this.player1.clickCard(this.riddles);
+                this.player1.clickRing('earth');
+                expect(this.riddles.location).toBe('conflict discard pile');
+                this.player2.pass();
+
+                this.player1.clickCard(this.riddles2);
+                expect(this.riddles2.location).toBe('hand');
+            });
+        });
     });
 });

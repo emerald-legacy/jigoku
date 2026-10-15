@@ -1,5 +1,4 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 export default class TheArtOfPeace extends ProvinceCard {
     static id = 'the-art-of-peace';
@@ -9,10 +8,8 @@ export default class TheArtOfPeace extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
             })
-            .gameAction(
-                AbilityDsl.actions.dishonor((context) => ({ target: context.game.currentConflict?.getAttackers() ?? [] })),
-                AbilityDsl.actions.honor((context) => ({ target: context.game.currentConflict?.getDefenders() ?? [] }))
-            )
-            .effect('dishonor all attackers and honor all defenders in this conflict');
+            .dishonor((context) => ({ target: context.game.currentConflict?.getAttackers() ?? [] }))
+            .honor((context) => ({ target: context.game.currentConflict?.getDefenders() ?? [] }))
+            .chatText('dishonor all attackers and honor all defenders in this conflict');
     }
 }

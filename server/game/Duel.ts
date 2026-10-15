@@ -1,11 +1,10 @@
 import { GameObject } from './GameObject.js';
-import { DuelType, EffectName, EventName, Location } from './Constants.js';
-import { GameMode, parseGameMode } from './GameMode.js';
+import { DuelType, EffectName, EventName, Location, RestrictionType } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type DrawCard from './DrawCard.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
-import { AbilityContext } from './AbilityContext.js';
+import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import { isEffectOf } from './Effects/types.js';
 
@@ -29,6 +28,9 @@ type StatisticTotal = typeof InvalidStats | number;
 
 const listFormatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
+/** A duel with a winner; its loser can still be missing. */
+export type ResolvedDuel = Duel & { winner: DrawCard[]; winningPlayer: Player; readonly winnerController: Player };
+
 export class Duel extends GameObject {
     #bidFinished = false;
     #modifiers = new WeakMap<Player, DuelAbilities>();
@@ -37,7 +39,6 @@ export class Duel extends GameObject {
     previousDuel?: Duel;
     winner?: DrawCard[];
     winningPlayer?: Player;
-    gameModeOpts: GameMode;
     finalDifference?: number;
     private eventRegistrar?: EventRegistrar;
 
@@ -54,11 +55,7 @@ export class Duel extends GameObject {
         public challengingPlayer = challenger.controller
     ) {
         super(game, 'Duel');
-        this.gameModeOpts = parseGameMode(this.game.gameMode);
         this.#initializeDuelModifiers(challenger.controller);
-
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnCardAbilityTriggered]);
     }
 
     get winnerController(): undefined | Player {
@@ -67,6 +64,10 @@ export class Duel extends GameObject {
 
     get loserController(): undefined | Player {
         return this.loser?.[0].controller;
+    }
+
+    hasWinner(): this is ResolvedDuel {
+        return !!this.winner && !!this.winningPlayer;
     }
 
     get participants(): DrawCard[] {
@@ -87,6 +88,24 @@ export class Duel extends GameObject {
 
     addTargetToDuel(card: DrawCard) {
         this.targets.push(card);
+    }
+
+    /** A character of `target`'s controller at the same location, not in the duel, that could be dueled. */
+    canReplaceTarget(target: DrawCard, card: DrawCard, context: AbilityContext): boolean {
+        return (
+            this.targets.includes(target) &&
+            !this.participants.includes(card) &&
+            card.controller === target.controller &&
+            card.location === Location.PlayArea &&
+            card.isParticipating() === target.isParticipating() &&
+            !card.hasNoDuels() &&
+            !card.hasDash(this.duelType) &&
+            card.checkRestrictions(RestrictionType.Duel, context)
+        );
+    }
+
+    replaceTarget(target: DrawCard, replacement: DrawCard) {
+        this.targets = this.targets.map((card) => (card === target ? replacement : card));
     }
 
     canAddToDuel(card: DrawCard, context: AbilityContext) {
@@ -182,7 +201,7 @@ export class Duel extends GameObject {
         }
 
         const losers =
-            this.loser?.filter((card) => card.checkRestrictions('loseDuels', card.game.getFrameworkContext())) ?? [];
+            this.loser?.filter((card) => card.checkRestrictions(RestrictionType.LoseDuels, card.game.getFrameworkContext(card.controller))) ?? [];
         if(losers.length > 0) {
             this.loser = losers;
         } else {
@@ -201,7 +220,7 @@ export class Duel extends GameObject {
     #getStatsTotal(charactersOnSameSide: DrawCard[], player?: Player): StatisticTotal {
         let result = 0;
         const ignoreSkill = this.participants.filter((card) => card.anyEffect(EffectName.IgnoreDuelSkill)).length > 0;
-        const duelLevelModifier = this.getRawEffects().filter((effect) => isEffectOf(effect, EffectName.ModifyDuelSkill));
+        const duelLevelModifier = this.getRawEffects().filter((effect) => isEffectOf(effect, EffectName.ModifyDuelTotal));
 
         for(const effect of duelLevelModifier) {
             const effectProps = effect.getValue(this);
@@ -241,27 +260,27 @@ export class Duel extends GameObject {
     #deriveBaseStatistic(card: DrawCard): number {
         switch(this.duelType) {
             case DuelType.Military:
-                return this.gameModeOpts.duelRules === 'printedSkill'
+                return this.game.rules.duelRules === 'printedSkill'
                     ? card.printedMilitarySkill
-                    : card.getMilitarySkill();
+                    : card.militarySkill;
             case DuelType.Political:
-                return this.gameModeOpts.duelRules === 'printedSkill'
+                return this.game.rules.duelRules === 'printedSkill'
                     ? card.printedPoliticalSkill
-                    : card.getPoliticalSkill();
+                    : card.politicalSkill;
             case DuelType.Glory:
-                return this.gameModeOpts.duelRules === 'printedSkill' ? card.printedGlory : card.glory;
+                return this.game.rules.duelRules === 'printedSkill' ? card.printedGlory : card.glory;
         }
     }
 
     getSkillStatistic(card: DrawCard): number {
         if(typeof this.statistic === 'function') {
-            return this.statistic(card, this.gameModeOpts.duelRules);
+            return this.statistic(card, this.game.rules.duelRules);
         }
 
         let baseStatistic = this.#deriveBaseStatistic(card);
 
         // Some effects for the new duel framework
-        if(this.gameModeOpts.duelRules === 'printedSkill') {
+        if(this.game.rules.duelRules === 'printedSkill') {
             let statusTokenBonus = 0;
             const useStatusTokens = this.getEffects(EffectName.ApplyStatusTokensToDuel).length > 0;
             const ignorePrintedSkill = this.getEffects(EffectName.DuelIgnorePrintedSkill).length > 0;
@@ -279,7 +298,7 @@ export class Duel extends GameObject {
     }
 
     #getTotals(challengerStats: number, targetStats: number): [number, number] {
-        if(this.gameModeOpts.duelRules === 'skirmish') {
+        if(this.game.rules.duelRules === 'skirmish') {
             if(challengerStats > targetStats) {
                 challengerStats = 1;
                 targetStats = 0;
@@ -368,8 +387,20 @@ export class Duel extends GameObject {
         }
     }
 
+    /** Starts tracking the duel abilities each player triggers; ended by `cleanup()`. */
+    start() {
+        if(this.eventRegistrar) {
+            return;
+        }
+        this.eventRegistrar = new EventRegistrar(this.game);
+        this.eventRegistrar.register({
+            [EventName.OnCardAbilityTriggered]: (event) => this.onCardAbilityTriggered(event)
+        });
+    }
+
     cleanup() {
         this.eventRegistrar?.unregisterAll();
+        this.eventRegistrar = undefined;
     }
 
     onCardAbilityTriggered({

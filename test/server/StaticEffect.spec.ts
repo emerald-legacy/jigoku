@@ -1,5 +1,5 @@
-import StaticEffect from '../../server/game/Effects/StaticEffect.js';
-import GainAbility from '../../server/game/Effects/GainAbility.js';
+import { StaticEffect } from '../../server/game/Effects/StaticEffect.js';
+import { GainAbility } from '../../server/game/Effects/GainAbility.js';
 import { EffectName, AbilityType } from '../../server/game/Constants.js';
 import { GameObject } from '../../server/game/GameObject.js';
 import { AbilityContext } from '../../server/game/AbilityContext.js';

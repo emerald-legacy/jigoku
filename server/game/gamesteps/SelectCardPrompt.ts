@@ -1,7 +1,7 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { Event } from '../Events/Event.js';
-import CardSelector, { type CardSelectorProperties, defaultMode, isMultiCardMode, type MultiCardMode, type SingleCardMode } from '../CardSelector.js';
-import type EffectSource from '../EffectSource.js';
+import { CardSelector, type CardSelectorProperties, defaultMode, isMultiCardMode, type MultiCardMode, type SingleCardMode } from '../CardSelector.js';
+import type { EffectSource } from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import { resolvePromptSource } from './PromptSource.js';
 import type { PromptButton, PromptControl } from '../PlayerPromptState.js';
@@ -9,7 +9,7 @@ import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type BaseCard from '../BaseCard.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
+import type { BaseCardSelector } from '../CardSelectors/BaseCardSelector.js';
 import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 
 interface PromptOptions {
@@ -177,7 +177,7 @@ function single(selected: BaseCard | BaseCard[]): BaseCard {
  *                      the order of the selection during the prompt.
  * mustSelect         - an array of cards which must be selected
  */
-class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
+export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
     choosingPlayer: Player;
     properties: ResolvedProperties;
     context: AbilityContext;
@@ -186,7 +186,6 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
     selectedCards: BaseCard[];
     onlyMustSelectMayBeChosen: boolean;
     cannotUnselectMustSelect: boolean;
-    targets: BaseCard[];
 
     constructor(game: Game, choosingPlayer: Player, typedProperties: SelectCardPromptProperties<K>) {
         super(game);
@@ -220,7 +219,6 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
         this.selectedCards = [];
         this.onlyMustSelectMayBeChosen = false;
         this.cannotUnselectMustSelect = false;
-        this.targets = [];
         if(properties.mustSelect) {
             const numCards = this.selector.numCards ?? 0;
             if(this.selector.hasEnoughSelected(properties.mustSelect, properties.context) && numCards > 0 && properties.mustSelect.length >= numCards) {
@@ -236,10 +234,10 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
 
     getDefaultControls(): PromptControl[] {
         const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
-        const targets = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), []);
+        let targets = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), []);
         const eventCard = Event.promptCardOf('event' in this.context ? this.context.event : undefined);
         if(targets.length === 0 && eventCard) {
-            this.targets = [eventCard];
+            targets = [eventCard];
         }
         return [{
             type: 'targeting',
@@ -337,7 +335,7 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
         if(!this.selectedCards.includes(card)) {
             this.selectedCards.push(card);
         } else {
-            this.selectedCards = this.selectedCards.filter(c => c !== card);
+            this.selectedCards = this.selectedCards.filter((c) => c !== card);
         }
         this.choosingPlayer.setSelectedCards(this.selectedCards);
 
@@ -385,4 +383,3 @@ class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
     }
 }
 
-export default SelectCardPrompt;

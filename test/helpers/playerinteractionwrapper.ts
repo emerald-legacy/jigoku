@@ -1,6 +1,6 @@
 import { matchCardByNameAndPack } from './cardutil.js';
 import { detectBinary } from '../../server/util.js';
-import { GameModes } from '../../server/GameModes.js';
+import { GameMode } from '../../server/GameMode.js';
 import { Location } from '../../server/game/Constants.js';
 import type Game from '../../server/game/Game.js';
 import type Player from '../../server/game/Player.js';
@@ -33,6 +33,23 @@ function promptUuid(item: Record<string, unknown>): string {
         throw new Error('Prompt button or control has no uuid');
     }
     return item.uuid;
+}
+
+const SERIALIZABLE_TYPES = new Set(['Array', 'Boolean', 'Date', 'Number', 'Object', 'String']);
+
+/** detectBinary's rule without building a path for every value: it runs after every click. */
+function isPlainData(value: unknown): boolean {
+    if(!value) {
+        return true;
+    }
+    const type = Object.getPrototypeOf(value)?.constructor?.name;
+    if(!SERIALIZABLE_TYPES.has(type)) {
+        return false;
+    }
+    if(Array.isArray(value)) {
+        return value.every(isPlainData);
+    }
+    return type !== 'Object' || typeof value !== 'object' || Object.values(value).every(isPlainData);
 }
 
 class PlayerInteractionWrapper {
@@ -519,10 +536,11 @@ class PlayerInteractionWrapper {
         if(!element) {
             return;
         }
-        if(!['fire', 'earth', 'water', 'air', 'void'].includes(element)) {
+        const ring = this.game.ringFor(element);
+        if(!ring) {
             throw new Error(`${element} is not a valid ring selection`);
         }
-        this.game.rings[element].claimRing(this.player);
+        ring.claimRing(this.player);
         this.game.checkGameState(true);
         this.game.continue();
     }
@@ -553,7 +571,7 @@ class PlayerInteractionWrapper {
     }
 
     selectStrongholdProvince(card: string): void {
-        if(this.game.gameMode === GameModes.Skirmish) {
+        if(this.game.gameMode === GameMode.Skirmish) {
             return;
         }
         if(!this.hasPrompt('Select stronghold province')) {
@@ -699,9 +717,8 @@ class PlayerInteractionWrapper {
 
     checkUnserializableGameState(): void {
         const state = this.game.getState(this.player.name);
-        const results = detectBinary(state);
-        if(results.length !== 0) {
-            throw new Error('Unable to serialize game state back to client:\n' + JSON.stringify(results));
+        if(!isPlainData(state)) {
+            throw new Error('Unable to serialize game state back to client:\n' + JSON.stringify(detectBinary(state)));
         }
     }
 

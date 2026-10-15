@@ -1,6 +1,8 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { setMilitarySkill, setPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class WickedTetsubo extends DrawCard {
     static id = 'wicked-tetsubo';
@@ -11,28 +13,28 @@ class WickedTetsubo extends DrawCard {
         });
 
         this.action('Set Military or Political skill to 0')
-            .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
+            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
             .target({
                 name: 'character',
                 activePromptTitle: 'Choose a defending character',
                 cardType: CardType.Character,
-                cardCondition: card => card.isDefending()
+                cardCondition: (card) => card.isDefending()
             })
             .select({
                 name: 'effect',
                 dependsOn: 'character',
                 activePromptTitle: 'Choose a skill to set to 0'
             }, {
-                'Military': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Military': cardLastingEffect((context) => ({
                     target: context.targets.character,
-                    effect: AbilityDsl.effects.setMilitarySkill(0)
+                    effect: setMilitarySkill(0)
                 })),
-                'Political': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Political': cardLastingEffect((context) => ({
                     target: context.targets.character,
-                    effect: AbilityDsl.effects.setPoliticalSkill(0)
+                    effect: setPoliticalSkill(0)
                 }))
             })
-            .effect('set {1}\'s {2} skill to 0', context => [context.targets.character, context.selects.effect.choice.toLowerCase()]);
+            .chatText((context) => msg`set ${context.targets.character}'s ${context.selects.effect.choice.toLowerCase()} skill to 0`);
     }
 }
 

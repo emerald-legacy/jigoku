@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import { msg } from '../../GameChat.js';
 
 export default class AgashaSumiko2 extends DrawCard {
     static id = 'agasha-sumiko-2';
@@ -11,21 +11,19 @@ export default class AgashaSumiko2 extends DrawCard {
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.loseHonor((context) => ({
-                    target: context.player.opponent,
-                    amount: context.player.opponent?.isMoreHonorable() ? 2 : 0
-                })),
-                AbilityDsl.actions.loseFate((context) => ({
-                    target: context.player.opponent,
-                    amount: (context.player.opponent?.fate ?? 0) > context.player.fate ? 2 : 0
-                })),
-                AbilityDsl.actions.chosenDiscard((context) => ({
-                    target: context.player.opponent,
-                    amount: (context.player.opponent?.hand.length ?? 0) > context.player.hand.length ? 2 : 0
-                }))
-            ]))
-            .effect('make {1} {2}', (context) => [context.player.opponent, this.getChatMessage(context)]);
+            .loseHonor((context) => ({
+                target: context.player.opponent,
+                amount: context.player.opponent?.isMoreHonorable() ? 2 : 0
+            }))
+            .loseFate((context) => ({
+                target: context.player.opponent,
+                amount: (context.player.opponent?.fate ?? 0) > context.player.fate ? 2 : 0
+            }))
+            .chosenDiscard((context) => ({
+                target: context.player.opponent,
+                amount: (context.player.opponent?.hand.length ?? 0) > context.player.hand.length ? 2 : 0
+            }))
+            .chatText((context) => msg`make ${context.player.opponent} ${this.getChatMessage(context)}`);
     }
 
     private getChatMessage(context: TriggeredAbilityContext) {

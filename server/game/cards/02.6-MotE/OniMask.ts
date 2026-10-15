@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { blank } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class OniMask extends DrawCard {
     static id = 'oni-mask';
@@ -11,12 +13,12 @@ class OniMask extends DrawCard {
         });
 
         this.action('Blank participating character')
-            .cost(AbilityDsl.costs.removeFateFromParent())
+            .cost(costs.removeFateFromParent())
             .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating()
-            }, AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.blank() }))
-            .effect('blank {0} until the end of the conflict');
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect({ effect: blank() }))
+            .chatText('blank {0} until the end of the conflict');
     }
 }
 

@@ -1,5 +1,6 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class HidaSugi extends DrawCard {
@@ -12,8 +13,8 @@ class HidaSugi extends DrawCard {
             })
             .target({
                 location: Location.DynastyDiscardPile
-            }, AbilityDsl.actions.moveCard({ destination: Location.DynastyDeck, bottom: true}))
-            .effect('move {0} to bottom of {1}\'s dynasty deck', context => [context.target.controller]);
+            }, moveCard({ destination: Location.DynastyDeck, bottom: true}))
+            .chatText((context) => msg`move ${context.chatTarget()} to bottom of ${context.target.controller}'s dynasty deck`);
     }
 }
 

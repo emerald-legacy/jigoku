@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class CelebratedRenown extends DrawCard {
     static id = 'celebrated-renown';
@@ -14,7 +14,7 @@ class CelebratedRenown extends DrawCard {
                     const charactersInPlay = context.game.findAnyCardsInPlay((c) => c.type === CardType.Character);
                     return card.getFate() === Math.max(...charactersInPlay.map((c) => c.getFate()));
                 }
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Laughing Thunder', function () {
     integration(function () {
@@ -14,7 +14,7 @@ describe('Laughing Thunder', function () {
                     inPlay: ['akodo-toturi', 'political-rival', 'tattooed-wanderer'],
                     hand: ['way-of-the-lion', 'fine-katana', 'voice-of-honor']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.thunder = this.player1.findCardByName('laughing-thunder');

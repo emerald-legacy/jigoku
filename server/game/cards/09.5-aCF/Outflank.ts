@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { cannotBeDeclaredAsDefender } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class Outflank extends DrawCard {
     static id = 'outflank';
@@ -13,12 +15,12 @@ class Outflank extends DrawCard {
             .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: card => !card.isUnique()
-            }, AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
+                cardCondition: (card) => !card.isUnique()
+            }, cardLastingEffect({
+                effect: cannotBeDeclaredAsDefender()
             }))
-            .effect('prevent {0} from declaring as a defender this conflict')
-            .max(AbilityDsl.limit.perConflict(1));
+            .chatText('prevent {0} from declaring as a defender this conflict')
+            .max(perConflict(1));
     }
 }
 

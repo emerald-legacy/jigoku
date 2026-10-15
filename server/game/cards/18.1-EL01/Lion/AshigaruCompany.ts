@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Location, RemainingCards } from '../../../Constants.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 
 class AshigaruCompany extends DrawCard {
     static id = 'ashigaru-company';
@@ -10,16 +10,15 @@ class AshigaruCompany extends DrawCard {
             .when({
                 onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
             })
-            .gameAction(AbilityDsl.actions.deckSearch({
-                amount: 5,
+            .deckSearch({
+                cardsToLookAt: 5,
                 cardCondition: (card) => card.hasTrait('follower') && card.type === CardType.Attachment,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                placeOnBottomInRandomOrder: true
-            }))
-            .effect('look at the top five cards of their deck');
+                remainingCards: RemainingCards.BottomRandom
+            })
+            .chatText('look at the top five cards of their deck');
     }
 }
 

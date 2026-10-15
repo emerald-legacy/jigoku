@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addElementAsAttacker } from '../../effects.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'seeker-of-knowledge-air';
@@ -9,7 +9,7 @@ class SeekerOfKnowledge extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
+            effect: addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
         });
     }
 

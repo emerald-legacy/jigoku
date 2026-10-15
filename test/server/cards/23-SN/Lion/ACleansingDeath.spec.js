@@ -78,5 +78,35 @@ describe('A Cleansing Death', function () {
             expect(this.mitsu.location).toBe('play area');
             expect(this.mitsu.isParticipating()).toBe(false);
         });
+
+    });
+});
+
+describe('A Cleansing Death sacrifice cost', function () {
+    integration(function () {
+        describe('sacrificing a 0-cost character', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['ashigaru-levy'],
+                        dynastyDeck: ['eager-scout', 'doji-whisperer'],
+                        hand: ['a-cleansing-death']
+                    }
+                });
+                this.levy = this.player1.findCardByName('ashigaru-levy');
+                this.scout = this.player1.placeCardInProvince('eager-scout', 'province 1');
+                this.whisperer = this.player1.placeCardInProvince('doji-whisperer', 'province 2');
+                this.scout.facedown = false;
+                this.whisperer.facedown = false;
+            });
+
+            it('allows only characters with printed cost 0', function () {
+                this.player1.clickCard('a-cleansing-death');
+                this.player1.clickCard(this.levy);
+                expect(this.player1).toBeAbleToSelect(this.scout);
+                expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            });
+        });
     });
 });

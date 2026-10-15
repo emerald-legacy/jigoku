@@ -1,4 +1,6 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
+import { cancel, discardAtRandom } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -19,36 +21,31 @@ export default class VillageDoshin extends DrawCard {
                         return attachment && onCharacterYouControl && inPlay;
                     })
             })
-            .cost(AbilityDsl.costs.discardSelf())
-            .gameAction(AbilityDsl.actions.conditional((context) => ({
-                condition: () => {
-                    const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
-                    const opponentIsAllowedToDiscardCards = !!context.player.opponent && AbilityDsl.actions
-                        .discardAtRandom({ amount: 2 })
-                        .canAffect(context.player.opponent, context);
-                    return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
-                },
-                falseGameAction: AbilityDsl.actions.cancel(),
-                trueGameAction: AbilityDsl.actions.chooseAction({
-                    player: Players.Opponent,
+            .location(Location.Hand)
+            .cost(costs.discardSelf())
+            .if((context) => {
+                const initiator = context.event.context.player;
+                return initiator.hand.length >= DOSHIN_TAX && discardAtRandom({ amount: DOSHIN_TAX }).canAffect(initiator, context);
+            })
+                .chooseAction((context) => ({
+                    player: context.event.context.player === context.player ? Players.Self : Players.Opponent,
                     activePromptTitle: 'Select one',
-                    options: {
+                    choices: {
                         [`Discard ${DOSHIN_TAX} random cards from hand`]: {
-                            action: AbilityDsl.actions.discardAtRandom({
+                            action: discardAtRandom({
                                 amount: DOSHIN_TAX,
-                                target: context.player.opponent
+                                target: context.event.context.player
                             }),
-                            message: '{0} distracts the Dōshin'
+                            message: (_context, _target, player) => msg`${player} distracts the Dōshin`
                         },
                         'Let the effect be canceled': {
-                            action: AbilityDsl.actions.cancel(),
-                            message: `{0} refuses to discard ${DOSHIN_TAX} cards. The effects of {2} are canceled`
+                            action: cancel(),
+                            message: (context, _target, player) => msg`${player} refuses to discard ${DOSHIN_TAX} cards. The effects of ${context.event.card} are canceled`
                         }
-                    },
-                    messageArgs: [context.event.card]
-                })
-            })))
-            .effect('protect {1}', (context) => context.event.cardTargets)
-            .location(Location.Hand);
+                    }
+                }))
+            .otherwise()
+                .cancel()
+            .chatText((context) => msg`protect ${context.event.cardTargets[0]}`);
     }
 }

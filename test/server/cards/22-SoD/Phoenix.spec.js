@@ -228,7 +228,7 @@ describe('SoD - Phoenix', function () {
                 expect(this.player1).not.toBeAbleToSelect(this.challenger);
                 this.player1.clickCard(this.brash);
 
-                expect(this.brash.getMilitarySkill()).toBe(4);
+                expect(this.brash.militarySkill).toBe(4);
                 expect(this.brash.isParticipating()).toBe(true);
                 expect(this.getChatLogs(5)).toContain('player1 uses Solemn Scholar\'s gained ability from Tessen of the Tsunami Legion to give Brash Samurai +2military and move it to the conflict');
             });
@@ -248,7 +248,7 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickCard(this.scholar);
                 this.player1.clickCard(this.brash);
 
-                expect(this.brash.getMilitarySkill()).toBe(4);
+                expect(this.brash.militarySkill).toBe(4);
                 expect(this.brash.isParticipating()).toBe(false);
                 expect(this.getChatLogs(5)).toContain('player1 uses Solemn Scholar\'s gained ability from Tessen of the Tsunami Legion to give Brash Samurai +2military and move it home');
             });
@@ -268,7 +268,7 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickCard(this.scholar);
                 this.player1.clickCard(this.brash);
 
-                expect(this.brash.getMilitarySkill()).toBe(4);
+                expect(this.brash.militarySkill).toBe(4);
                 expect(this.brash.isParticipating()).toBe(true);
                 expect(this.getChatLogs(5)).toContain('player1 uses Solemn Scholar\'s gained ability from Tessen of the Tsunami Legion to give Brash Samurai +2military');
             });
@@ -305,8 +305,8 @@ describe('SoD - Phoenix', function () {
                     defenders: [this.diplomat]
                 });
 
-                expect(this.kami.getMilitarySkill()).toBe(1);
-                expect(this.kami.getPoliticalSkill()).toBe(1);
+                expect(this.kami.militarySkill).toBe(1);
+                expect(this.kami.politicalSkill).toBe(1);
 
                 this.player2.pass();
                 this.player1.clickCard(this.kami);
@@ -324,8 +324,8 @@ describe('SoD - Phoenix', function () {
                 // is not what the card looks at.
                 this.player1.clickPrompt('Air');
 
-                expect(this.kami.getMilitarySkill()).toBe(1);
-                expect(this.kami.getPoliticalSkill()).toBe(1);
+                expect(this.kami.militarySkill).toBe(1);
+                expect(this.kami.politicalSkill).toBe(1);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Benevolent Lesser Kami to gain the Air trait');
             });
@@ -339,15 +339,15 @@ describe('SoD - Phoenix', function () {
                     defenders: [this.diplomat]
                 });
 
-                expect(this.kami.getMilitarySkill()).toBe(1);
+                expect(this.kami.militarySkill).toBe(1);
 
                 this.player2.pass();
                 this.player1.clickCard(this.kami);
                 this.player1.clickPrompt('Gain an elemental trait');
                 this.player1.clickPrompt('Void');
 
-                expect(this.kami.getMilitarySkill()).toBe(2);
-                expect(this.kami.getPoliticalSkill()).toBe(2);
+                expect(this.kami.militarySkill).toBe(2);
+                expect(this.kami.politicalSkill).toBe(2);
             });
 
             it('shuffle', function () {
@@ -393,8 +393,8 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickCard(this.shun);
                 this.player1.clickCard(this.challenger);
 
-                expect(this.challenger.getMilitarySkill()).toBe(1);
-                expect(this.challenger.getPoliticalSkill()).toBe(1);
+                expect(this.challenger.militarySkill).toBe(1);
+                expect(this.challenger.politicalSkill).toBe(1);
                 expect(this.player1.honor).toBe(honor);
                 expect(this.getChatLogs(5)).toContain('player1 uses Asako Shun to give Doji Challenger -2military and -2political');
             });
@@ -413,8 +413,8 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickCard(this.shun);
                 this.player1.clickCard(this.challenger);
 
-                expect(this.challenger.getMilitarySkill()).toBe(0);
-                expect(this.challenger.getPoliticalSkill()).toBe(0);
+                expect(this.challenger.militarySkill).toBe(0);
+                expect(this.challenger.politicalSkill).toBe(0);
                 expect(this.player1.honor).toBe(honor + 1);
                 expect(this.getChatLogs(5)).toContain('player1 uses Asako Shun to give Doji Challenger -4military and -4political');
                 expect(this.getChatLogs(5)).toContain('player1 gains 1 honor because Doji Challenger is not contributing skill to the current conflict');
@@ -684,8 +684,8 @@ describe('SoD - Phoenix', function () {
 
                 expect(this.getChatLogs(5)).toContain('player1 plays Ebb and Flow to switch Bayushi Aramoro\'s military and political skill');
 
-                expect(this.aramoro.getMilitarySkill()).toBe(2);
-                expect(this.aramoro.getPoliticalSkill()).toBe(5);
+                expect(this.aramoro.militarySkill).toBe(2);
+                expect(this.aramoro.politicalSkill).toBe(5);
                 expect(this.player1).toHavePrompt('Pay 1 fate to swap abilities?');
                 expect(this.player1).toHavePromptButton('Yes');
                 expect(this.player1).toHavePromptButton('No');
@@ -726,8 +726,8 @@ describe('SoD - Phoenix', function () {
 
                 expect(this.getChatLogs(5)).toContain('player1 plays Ebb and Flow to switch Bayushi Aramoro\'s military and political skill');
 
-                expect(this.aramoro.getMilitarySkill()).toBe(2);
-                expect(this.aramoro.getPoliticalSkill()).toBe(5);
+                expect(this.aramoro.militarySkill).toBe(2);
+                expect(this.aramoro.politicalSkill).toBe(5);
                 expect(this.player1).not.toHavePrompt('Pay 1 fate to swap abilities?');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
@@ -740,8 +740,8 @@ describe('SoD - Phoenix', function () {
                     defenders: [this.student, this.aramoro]
                 });
 
-                expect(this.student.getMilitarySkill()).toBe(3);
-                expect(this.student.getPoliticalSkill()).toBe(3);
+                expect(this.student.militarySkill).toBe(3);
+                expect(this.student.politicalSkill).toBe(3);
 
                 this.player2.pass();
                 this.player1.clickCard(this.ebb);
@@ -749,11 +749,11 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickCard(this.student);
                 this.player1.clickPrompt('Yes');
 
-                expect(this.student.getMilitarySkill()).toBe(1);
-                expect(this.student.getPoliticalSkill()).toBe(1);
+                expect(this.student.militarySkill).toBe(1);
+                expect(this.student.politicalSkill).toBe(1);
 
-                expect(this.adept.getMilitarySkill()).toBe(4);
-                expect(this.adept.getPoliticalSkill()).toBe(4);
+                expect(this.adept.militarySkill).toBe(4);
+                expect(this.adept.politicalSkill).toBe(4);
 
                 expect(this.getChatLogs(5)).toContain('player1 channels their water affinity to swap the abilities of Adept of the Waves and Student of the Method');
                 expect(this.adept.hasKeyword('sincerity')).toBe(true);

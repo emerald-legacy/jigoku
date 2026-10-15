@@ -119,6 +119,23 @@ describe('Exposed Courtyard', function() {
             expect(this.soul.location).toBe('conflict deck');
         });
 
+        it('should end once the picked event leaves the discard pile', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.warrior],
+                defenders: [this.tsuko]
+            });
+            this.player2.clickCard(this.courtyard);
+            this.player2.clickCard(this.soul);
+            this.player2.moveCard(this.soul, 'hand');
+            this.player2.moveCard(this.soul, 'conflict discard pile');
+            this.player1.pass();
+            this.player2.clickCard(this.soul);
+            expect(this.soul.location).toBe('conflict discard pile');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+
         it('should let you play interrupts', function () {
             this.player2.moveCard(this.soul, 'hand');
             this.noMoreActions();

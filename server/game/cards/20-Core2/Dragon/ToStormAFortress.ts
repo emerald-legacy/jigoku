@@ -1,44 +1,33 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, discardCard, optional, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ToStormAFortress extends DrawCard {
     static id = 'to-storm-a-fortress';
 
     public setupCardAbilities() {
-        this.action('Increase a character\'s military skill')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasSomeTrait('bushi', 'monk')
-            }, AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            }, sequential([
+                cardLastingEffect({
+                    effect: modifyMilitarySkill(2)
                 }),
-                AbilityDsl.actions.menuPrompt((context) => ({
-                    activePromptTitle: 'Discard each card in the attacked province?',
-                    choices: ['Yes', 'No'],
-                    choiceHandler: (choice, displayMessage) => {
-                        const cardsToDiscard = context.game.requireConflict()
-                            .getConflictProvinces()
-                            .flatMap((province) =>
-                                province.controller.getDynastyCardsInProvince(province.location)
-                            );
-
-                        if(displayMessage && choice === 'Yes') {
-                            context.game.addMessage(
-                                '{0}\'s {1} discards {2}',
-                                context.player,
-                                context.source,
-                                cardsToDiscard
-                            );
-                        }
-                        return { target: choice === 'Yes' ? cardsToDiscard : [] };
-                    },
-                    gameAction: AbilityDsl.actions.discardCard()
-                }))
+                optional((context) => {
+                    const cardsToDiscard = context.game.requireConflict()
+                        .getConflictProvinces()
+                        .flatMap((province) => province.controller.getDynastyCardsInProvince(province.location));
+                    return {
+                        activePromptTitle: 'Discard each card in the attacked province?',
+                        gameAction: discardCard({ target: cardsToDiscard }),
+                        acceptMessage: () => msg`${context.player}'s ${context.source} discards ${cardsToDiscard}`
+                    };
+                })
             ]))
-            .effect('grant +2{1} to {0}', () => ['military']);
+            .chatText((context) => msg`grant +2${'military'} to ${context.chatTarget()}`);
     }
 }

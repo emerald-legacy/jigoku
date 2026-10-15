@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class IronWarriorVanguard extends DrawCard {
     static id = 'iron-warrior-vanguard';
@@ -14,7 +14,7 @@ class IronWarriorVanguard extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character to honor',
                 cardType: CardType.Character
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

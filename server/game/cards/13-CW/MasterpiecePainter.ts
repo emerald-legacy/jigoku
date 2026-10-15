@@ -1,8 +1,9 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Duration, Location, Decks } from '../../Constants.js';
+import { multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
 import { playerChoices } from '../playerChoices.js';
+import { revealedTopCardPlayable } from '../revealedTopCardPlayable.js';
 
 class MasterpiecePainter extends DrawCard {
     static id = 'masterpiece-painter';
@@ -15,32 +16,16 @@ class MasterpiecePainter extends DrawCard {
             }, (context) => playerChoices(
                 context.player,
                 (player) => this.revealAndMayPlayAbility(player),
-                (player, opponent) => AbilityDsl.actions.multiple([
+                (player, opponent) => multiple([
                     this.revealAndMayPlayAbility(player),
                     this.revealAndMayPlayAbility(opponent)
                 ])
             ))
-            .effect('make {1} reveal the top card of their deck. They may play their card until the end of the phase', context => context.select);
+            .chatText((context) => msg`make ${context.select} reveal the top card of their deck. They may play their card until the end of the phase`);
     }
 
     revealAndMayPlayAbility(player: Player) {
-        return AbilityDsl.actions.playerLastingEffect(() => {
-            const topCard = player.conflictDeck[0];
-
-            return {
-                targetController: player,
-                duration: Duration.Custom,
-                until: {
-                    onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
-                    onPhaseEnded: () => true,
-                    onDeckShuffled: event => event.player === player && event.deck === Decks.ConflictDeck
-                },
-                effect: [
-                    AbilityDsl.effects.showTopConflictCard(),
-                    AbilityDsl.effects.canPlayFromOwn(Location.ConflictDeck, [topCard], this)
-                ]
-            };
-        });
+        return playerLastingEffect(() => revealedTopCardPlayable(player, this, 'phase'));
     }
 }
 

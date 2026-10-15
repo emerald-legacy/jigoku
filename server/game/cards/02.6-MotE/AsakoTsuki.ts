@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import { CardType, Element } from '../../Constants.js';
 import { claimedRingSymbols, claimsRingOf } from '../claimedRings.js';
 
@@ -16,7 +16,7 @@ class AsakoTsuki extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('scholar')
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 
     getPrintedElementSymbols() {

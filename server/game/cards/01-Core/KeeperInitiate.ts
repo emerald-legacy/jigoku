@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { claimsRoleElement } from '../claimedRings.js';
 
 class KeeperInitiate extends DrawCard {
@@ -11,11 +10,10 @@ class KeeperInitiate extends DrawCard {
             .when({
                 onClaimRing: (event, context) => event.player === context.player && claimsRoleElement(context.player, event)
             })
-            .gameAction(AbilityDsl.actions.putIntoPlay())
-            .then(() => ({
-                gameAction: AbilityDsl.actions.placeFate()
-            }))
-            .location([Location.Provinces, Location.DynastyDiscardPile]);
+            .location([Location.Provinces, Location.DynastyDiscardPile])
+            .putIntoPlay()
+            .afterwards()
+            .placeFate();
     }
 }
 

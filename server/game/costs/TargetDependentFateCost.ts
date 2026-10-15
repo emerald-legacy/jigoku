@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type { Cost } from './Cost.js';
-import { Event } from '../Events/Event.js';
+import type { Event } from '../Events/Event.js';
 import { ReduceableFateCost } from './ReduceableFateCost.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -26,30 +26,30 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             this.ignoreType
         );
 
-        if(reducedCost !== 0 && this.payFateCostToOpponent && (!context.player.opponent || !context.player.opponent.checkRestrictions('gainFate', context))) {
+        if(reducedCost !== 0 && context.payFateCostToOpponent && (!context.player.opponent || !context.player.opponent.checkRestrictions(RestrictionType.GainFate, context))) {
             return false;
         }
 
         return (
             context.player.fate >= reducedCost &&
-            (reducedCost === 0 || context.player.checkRestrictions('spendFate', context))
+            (reducedCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
         );
     }
 
     public payEvent(context: AbilityContext<DrawCard>): Event {
         const amount = (context.costs.targetDependentFate = this.getReducedCost(context));
 
-        if(this.payFateCostToOpponent) {
+        if(context.payFateCostToOpponent) {
             return context.game.getEvent(EventName.OnMoveFate, { amount, context }, () => {
                 context.player.markUsedReducers(
                     context.playType,
                     context.source,
                     this.#target(context)
                 );
-                context.player.fate -= this.getFinalFatecost(context, amount);
-                if(context.player.opponent) {
-                    context.player.opponent.fate += this.getFinalFatecost(context, amount);
-                }
+                // once: it takes the fate from any alternate pools
+                const cost = this.getFinalFatecost(context, amount);
+                context.player.modifyFate(-cost);
+                context.player.opponent?.modifyFate(cost);
             });
         }
 
@@ -59,7 +59,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
                 context.source,
                 this.#target(context)
             );
-            context.player.fate -= this.getFinalFatecost(context, amount);
+            context.player.modifyFate(-this.getFinalFatecost(context, amount));
         });
     }
 

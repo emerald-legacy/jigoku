@@ -103,6 +103,25 @@ describe('Akodo Motivator', function() {
             expect(this.player2.hand.length).toBe(this.player2StartingHandSize - 2);
         });
 
+        it('should make the opponent discard as many cards as were actually discarded', function() {
+            this.player2.moveCard(this.policyDebate, 'conflict deck');
+            this.player2.moveCard('assassination', 'conflict deck');
+            this.player1.clickCard(this.letterFromTheDaimyo);
+            this.player1.clickCard(this.paragon);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                ring: 'air',
+                attackers: [this.paragon],
+                defenders: [],
+                jumpTo: 'afterConflict'
+            });
+            this.player1.clickCard(this.letterFromTheDaimyo);
+            expect(this.sharpenTheMind.location).toBe('conflict discard pile');
+            this.player2.clickCard(this.motivator);
+            expect(this.player1.hand.length).toBe(this.player1StartingHandSize - 2);
+        });
+
         it('should be able to trigger outside of a conflict', function() {
             this.player1.clickCard(this.oracleOfStone);
             this.player1.clickCard(this.spiesAtCourt);

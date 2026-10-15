@@ -5,11 +5,11 @@ describe('Jak\'Ithith', function() {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['togashi-initiate'],
-                    hand: ['centipede-tattoo', 'fine-katana']
+                    hand: ['centipede-tattoo', 'fine-katana', 'ornate-fan']
                 },
                 player2: {
                     inPlay: ['jak-ithith', 'borderlands-defender'],
-                    hand: ['lurking-affliction']
+                    hand: ['lurking-affliction', 'ornate-fan']
                 }
             });
 
@@ -82,9 +82,8 @@ describe('Jak\'Ithith', function() {
 
                 this.player2.clickCard(this.borderlands);
                 expect(this.borderlands.attachments).toContain(this.katana);
-                expect(this.getChatLogs(5)).toContain(
-                    'player2 uses Jak\'ithith to take control of and attach Togashi Initiate\'s Fine Katana to Borderlands Defender'
-                );
+                expect(this.getChatLogs(5)).toContain('player2 uses Jak\'ithith to take control of Togashi Initiate\'s Fine Katana');
+                expect(this.getChatLogs(5)).toContain('player2 chooses to attach Fine Katana to Borderlands Defender');
             });
 
             it('discards attachments when it can not attach them', function() {
@@ -96,13 +95,40 @@ describe('Jak\'Ithith', function() {
                 expect(this.player2).toBeAbleToSelect(this.katana);
 
                 this.player2.clickCard(this.tattoo);
-                expect(this.player2).toHavePrompt('Choose a character');
-                expect(this.player2).toBeAbleToSelect(this.jakithit);
-                expect(this.player2).toBeAbleToSelect(this.borderlands);
-
-                this.player2.clickCard(this.borderlands);
+                expect(this.player2).not.toHavePrompt('Choose a character');
                 expect(this.tattoo.location).toBe('conflict discard pile');
                 expect(this.getChatLogs(5)).toContain('player2 uses Jak\'ithith to discard Centipede Tattoo');
+            });
+        });
+
+        describe('attachments on the enemy side', function() {
+            beforeEach(function() {
+                this.ownFanOnEnemyCharacter = this.player2.playAttachment(
+                    this.player2.findCardByName('ornate-fan', 'hand'),
+                    this.initiate
+                );
+                this.enemyFanOnOwnCharacter = this.player1.playAttachment(
+                    this.player1.findCardByName('ornate-fan', 'hand'),
+                    this.borderlands
+                );
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.initiate],
+                    defenders: [this.borderlands, this.jakithit],
+                    type: 'military'
+                });
+                this.noMoreActions();
+                this.player2.clickCard(this.jakithit);
+            });
+
+            it('can choose its own attachment on a participating enemy character', function() {
+                expect(this.player2).toHavePrompt('Choose an attachment');
+                expect(this.player2).toBeAbleToSelect(this.ownFanOnEnemyCharacter);
+            });
+
+            it('cannot choose an opponent\'s attachment on a character on its own side', function() {
+                expect(this.player2).toHavePrompt('Choose an attachment');
+                expect(this.player2).not.toBeAbleToSelect(this.enemyFanOnOwnCharacter);
             });
         });
 
@@ -140,9 +166,8 @@ describe('Jak\'Ithith', function() {
 
                 this.player2.clickCard(this.borderlands);
                 expect(this.borderlands.attachments).toContain(this.katana);
-                expect(this.getChatLogs(5)).toContain(
-                    'player2 uses Jak\'ithith to take control of and attach Togashi Initiate\'s Fine Katana to Borderlands Defender'
-                );
+                expect(this.getChatLogs(5)).toContain('player2 uses Jak\'ithith to take control of Togashi Initiate\'s Fine Katana');
+                expect(this.getChatLogs(5)).toContain('player2 chooses to attach Fine Katana to Borderlands Defender');
             });
 
             it('discards attachments when it can not attach them', function() {
@@ -154,14 +179,85 @@ describe('Jak\'Ithith', function() {
                 expect(this.player2).toBeAbleToSelect(this.katana);
 
                 this.player2.clickCard(this.tattoo);
-                expect(this.player2).toHavePrompt('Choose a character');
-                expect(this.player2).toBeAbleToSelect(this.jakithit);
-                expect(this.player2).toBeAbleToSelect(this.borderlands);
-
-                this.player2.clickCard(this.borderlands);
+                expect(this.player2).not.toHavePrompt('Choose a character');
                 expect(this.tattoo.location).toBe('conflict discard pile');
                 expect(this.getChatLogs(5)).toContain('player2 uses Jak\'ithith to discard Centipede Tattoo');
             });
+        });
+    });
+});
+
+describe('Jak\'ithith receiver', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-initiate'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['jak-ithith', 'borderlands-defender', 'doji-whisperer']
+                }
+            });
+            this.borderlands = this.player2.findCardByName('borderlands-defender');
+            this.jakithit = this.player2.findCardByName('jak-ithith');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.initiate = this.player1.findCardByName('togashi-initiate');
+            this.katana = this.player1.playAttachment('fine-katana', this.initiate);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.initiate],
+                defenders: [this.borderlands, this.jakithit],
+                type: 'military'
+            });
+            this.noMoreActions();
+        });
+
+        it('can attach the attachment to a character at home', function() {
+            this.player2.clickCard(this.jakithit);
+            this.player2.clickCard(this.katana);
+            expect(this.player2).toBeAbleToSelect(this.borderlands);
+            expect(this.player2).toBeAbleToSelect(this.whisperer);
+        });
+    });
+});
+
+describe('Jak\'ithith with an eligible and an ineligible character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-initiate'],
+                    hand: ['centipede-tattoo']
+                },
+                player2: {
+                    inPlay: ['jak-ithith', 'borderlands-defender', 'togashi-initiate']
+                }
+            });
+            this.jakithit = this.player2.findCardByName('jak-ithith');
+            this.borderlands = this.player2.findCardByName('borderlands-defender');
+            this.monk = this.player2.findCardByName('togashi-initiate');
+            this.initiate = this.player1.findCardByName('togashi-initiate');
+            this.tattoo = this.player1.playAttachment('centipede-tattoo', this.initiate);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.initiate],
+                defenders: [this.borderlands, this.jakithit],
+                type: 'military'
+            });
+            this.noMoreActions();
+        });
+
+        it('only lets the player choose an eligible character', function() {
+            this.player2.clickCard(this.jakithit);
+            this.player2.clickCard(this.tattoo);
+            expect(this.player2).toBeAbleToSelect(this.monk);
+            expect(this.player2).not.toBeAbleToSelect(this.borderlands);
+            expect(this.player2).not.toBeAbleToSelect(this.jakithit);
+            this.player2.clickCard(this.monk);
+            expect(this.monk.attachments).toContain(this.tattoo);
         });
     });
 });

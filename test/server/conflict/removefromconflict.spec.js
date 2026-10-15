@@ -1,3 +1,4 @@
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import { Conflict } from '../../../build/server/game/Conflict.js';
 import Player from '../../../build/server/game/Player.js';
 import DrawCard from '../../../build/server/game/DrawCard.js';
@@ -5,16 +6,14 @@ import DrawCard from '../../../build/server/game/DrawCard.js';
 describe('Conflict', function () {
     beforeEach(function () {
         this.gameSpy = jasmine.createSpyObj('game', [
-            'applyGameAction',
+            'resolveActions',
             'findAnyCardsInAnyList',
             'on',
             'raiseEvent',
             'reapplyStateDependentEffects',
             'getFrameworkContext'
         ]);
-        this.gameSpy.applyGameAction.and.callFake((type, card, handler) => {
-            handler(card);
-        });
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.findAnyCardsInAnyList.and.returnValue([]);
         this.effectEngineSpy = jasmine.createSpyObj('effectEngine', ['checkEffects']);
         this.gameSpy.effectEngine = this.effectEngineSpy;

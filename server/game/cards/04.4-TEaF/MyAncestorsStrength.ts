@@ -1,7 +1,8 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
+import { msg } from '../../GameChat.js';
 
 class MyAncestorsStrength extends DrawCard {
     static id = 'my-ancestor-s-strength';
@@ -13,7 +14,7 @@ class MyAncestorsStrength extends DrawCard {
                 activePromptTitle: 'Choose a shugenja character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('shugenja') && card.isParticipating()
+                cardCondition: (card) => card.hasTrait('shugenja') && card.isParticipating()
             })
             .target({
                 name: 'ancestor',
@@ -22,11 +23,11 @@ class MyAncestorsStrength extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self
-            }, AbilityDsl.actions.cardLastingEffect(context => ({
+            }, cardLastingEffect((context) => ({
                 target: context.targets.shugenja,
                 effect: copyBaseSkillEffects(context.targets.ancestor)
             })))
-            .effect('set {1}\'s base skills to those of {2}', context => [context.targets.shugenja, context.targets.ancestor]);
+            .chatText((context) => msg`set ${context.targets.shugenja}'s base skills to those of ${context.targets.ancestor}`);
     }
 }
 

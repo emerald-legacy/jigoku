@@ -1,6 +1,6 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 
 export default class MeditationsOnTheTao extends ProvinceCard {
     static id = 'meditations-on-the-tao';
@@ -9,6 +9,6 @@ export default class MeditationsOnTheTao extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, AbilityDsl.actions.removeFate());
+            }, removeFate());
     }
 }

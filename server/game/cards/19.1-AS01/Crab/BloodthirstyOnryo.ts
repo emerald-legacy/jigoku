@@ -1,25 +1,22 @@
-import { CardType, EventName, Location } from '../../../Constants.js';
-import { EventRegistrar } from '../../../EventRegistrar.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Location } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { removeFromGameInsteadOfLeavingPlay } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class BloodthirstyOnryo extends DrawCard {
     static id = 'bloodthirsty-onryo';
 
     public setupCardAbilities() {
-        new EventRegistrar(this.game, this).register([EventName.OnCardLeavesPlay]);
+        this.persistentEffect({
+            effect: removeFromGameInsteadOfLeavingPlay({
+                message: (card) => msg`${card} is removed from the game due to leaving play`
+            })
+        });
 
         this.action('Put this into play')
-            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
-            .gameAction(AbilityDsl.actions.putIntoPlay())
-            .location([Location.Provinces, Location.DynastyDiscardPile]);
-    }
-
-    public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
-        if(event.card === this && this.location !== Location.RemovedFromGame) {
-            this.game.addMessage('{0} is removed from the game due to leaving play', this);
-            this.owner.moveCard(this, Location.RemovedFromGame);
-        }
+            .location([Location.Provinces, Location.DynastyDiscardPile])
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
+            .putIntoPlay();
     }
 }

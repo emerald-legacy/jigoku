@@ -1,10 +1,11 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { onlyThePlayer, PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { CalculateHonorLimit } from './Shared/HonorLogic.js';
-import type { ActionEvent } from './GameAction.js';
+import { type ActionEvent, targetList } from './GameAction.js';
 
 export interface GainHonorProperties extends PlayerActionProperties {
     amount?: number;
@@ -15,24 +16,29 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     defaultProperties = { amount: 1, dueToStatusToken: false };
 
     name = 'gainHonor';
+
+    restriction = RestrictionType.GainHonor;
     eventName = EventName.OnModifyHonor;
 
-    protected effectMessage(context: C): MessageArgs {
-        const properties = this.getProperties(context);
+    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
+        const players = targetList(properties.target);
+        // capped by the honor limit of the player who gains it
         const [, amountToTransfer] = CalculateHonorLimit(
-            context.player,
+            players[0] ?? context.player,
             context.game.roundNumber,
             context.game.currentPhase,
             properties.amount
         );
-        return ['gain ' + amountToTransfer + ' honor', []];
+        return [onlyThePlayer(players, context) ? `gain ${amountToTransfer} honor` : `make {0} gain ${amountToTransfer} honor`, []];
     }
 
-    protected effectMessageTarget(): MsgArg {
-        return undefined;
+    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+        const players = targetList(this.getProperties(context, additionalProperties).target);
+        return onlyThePlayer(players, context) ? undefined : players;
     }
 
-    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const wouldGainAnyHonor = properties.amount !== 0;
 
@@ -54,11 +60,8 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
         return super.canAffect(player, context);
     }
 
-    defaultTargets(context: C): Player[] {
-        return [context.player];
-    }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount, dueToStatusToken } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;

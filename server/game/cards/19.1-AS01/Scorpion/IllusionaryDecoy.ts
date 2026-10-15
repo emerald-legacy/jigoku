@@ -1,5 +1,11 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import {
+    noAction,
+    selectCard,
+    sendHome
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
@@ -11,34 +17,29 @@ export default class IllusionaryDecoy extends DrawCard {
             .when({
                 onConflictStarted: (_event, context) => controlsShugenja(context.player)
             })
-            .gameAction(AbilityDsl.actions.multiple([
-                AbilityDsl.actions.putIntoConflict((context) => ({ target: context.source })),
-                AbilityDsl.actions.chooseAction({
-                    options: {
-                        'Move another of your characters home': {
-                            action: AbilityDsl.actions.selectCard((context) => ({
-                                controller: Players.Self,
-                                cardType: CardType.Character,
-                                cardCondition: (card) => card.isCharacter() && card.isParticipating(),
-                                message: '{0} moves home {1} - they were an {2}',
-                                messageArgs: (card, player) => [player, card, context.source],
-                                gameAction: AbilityDsl.actions.sendHome()
-                            }))
-                        },
-                        Done: { action: AbilityDsl.actions.noAction() }
-                    }
-                })
-            ]))
-            .effect('put {0} into play in the conflict')
-            .max(AbilityDsl.limit.perConflict(1))
-            .location(Location.Hand);
+            .location(Location.Hand)
+            .putIntoConflict()
+            .chooseAction({
+                choices: {
+                    'Move another of your characters home': selectCard({
+                        controller: Players.Self,
+                        cardType: CardType.Character,
+                        cardCondition: (card) => card.isCharacter() && card.isParticipating(),
+                        message: (context, card, player) => msg`${player} moves home ${card} - they were an ${context.source}`,
+                        gameAction: sendHome()
+                    }),
+                    Done: noAction()
+                }
+            })
+            .chatText('put {0} into play in the conflict')
+            .max(perConflict(1));
 
         this.action('Return to hand')
             .condition((context) => {
                 const claimedRings = context.source.controller.getClaimedRings();
                 const matchShugenjaElementWithClaimedRing = context.source.controller.cardsInPlay.some(
                     (card) =>
-                        card.getType() === CardType.Character &&
+                        card.type === CardType.Character &&
                         card.hasTrait('shugenja') &&
                         claimedRings.some((ring) =>
                             ring.getElements().some((element) => card.hasTrait(element))
@@ -46,6 +47,6 @@ export default class IllusionaryDecoy extends DrawCard {
                 );
                 return matchShugenjaElementWithClaimedRing;
             })
-            .gameAction(AbilityDsl.actions.returnToHand());
+            .returnToHand();
     }
 }

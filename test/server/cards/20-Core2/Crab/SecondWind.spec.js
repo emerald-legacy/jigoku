@@ -76,5 +76,29 @@ describe('Second Wind', function () {
             this.noMoreActions();
             expect(this.masterTactician.location).toBe('dynasty deck');
         });
+
+    });
+});
+
+describe('Second Wind timing', function () {
+    integration(function () {
+        describe('outside a conflict', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player2: {
+                        hand: ['second-wind'],
+                        dynastyDiscard: ['master-tactician']
+                    }
+                });
+                this.secondWind = this.player2.findCardByName('second-wind');
+            });
+
+            it('cannot be played', function () {
+                this.player1.pass();
+                this.player2.clickCard(this.secondWind);
+                expect(this.secondWind.location).toBe('hand');
+            });
+        });
     });
 });

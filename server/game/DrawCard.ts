@@ -1,25 +1,26 @@
+import { msg } from './GameChat.js';
 import BaseCard, { type CardSummary } from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
-import AbilityDsl from './abilitydsl.js';
+import { attachmentMilitarySkillModifier, attachmentPoliticalSkillModifier } from './effects.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
-import type StatModifier from './StatModifier.js';
+import type { StatModifier } from './StatModifier.js';
 import type { StatModifierSummary } from './StatModifier.js';
-import DuplicateUniqueAction from './DuplicateUniqueAction.js';
-import DynastyCardAction from './DynastyCardAction.js';
+import { DuplicateUniqueAction } from './DuplicateUniqueAction.js';
+import { DynastyCardAction } from './DynastyCardAction.js';
 import { PlayAttachmentAction } from './PlayAttachmentAction.js';
 import { PlayAttachmentToRingAction } from './PlayAttachmentToRingAction.js';
 import { PlayCharacterAction } from './PlayCharacterAction.js';
 import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
-import type BaseCardAbility from './BaseCardAbility.js';
-import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
-import PrideAbility from './KeywordAbilities/PrideAbility.js';
-import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
+import type { BaseCardAbility } from './BaseCardAbility.js';
+import { CourtesyAbility } from './KeywordAbilities/CourtesyAbility.js';
+import { PrideAbility } from './KeywordAbilities/PrideAbility.js';
+import { SincerityAbility } from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType } from './Constants.js';
-import { GameModes } from '../GameModes.js';
+import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType, RestrictionType } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
+import { TutoredAbility } from './KeywordAbilities/TutoredAbility.js';
 import type Player from './Player.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
@@ -34,6 +35,7 @@ import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { StateViewer } from './types/StateViewer.js';
+import { discardStatusToken, gainHonor, loseHonor, removeFate } from './GameActions/GameActions.js';
 
 interface MenuItem {
     command: string;
@@ -42,9 +44,9 @@ interface MenuItem {
 
 type StatSummary = { stat?: string; modifiers?: StatModifierSummary[] };
 type DuelCondition = (duel: Duel, context: AbilityContext<DrawCard>) => boolean;
-type ConflictActionOptions = Pick<ConflictActionProps, 'conflictType' | 'evenFromHome'>;
+export type ConflictActionOptions = Pick<ConflictActionProps, 'conflictType' | 'evenFromHome'>;
 
-const EPHEMERAL_TRIGGER: Partial<Record<string, EventName>> = {
+const EPHEMERAL_TRIGGER: Partial<Record<string, EventName.OnCardPlayed | EventName.OnCardLeavesPlay>> = {
     [CardType.Event]: EventName.OnCardPlayed,
     [CardType.Attachment]: EventName.OnCardLeavesPlay,
     [CardType.Character]: EventName.OnCardLeavesPlay
@@ -66,7 +68,6 @@ const SKILL_EFFECTS: Set<string> = new Set([
     EffectName.SetGlory
 ]);
 
-const MODES_LIMITING_REPEATED_ATTACHMENTS = new Set<string | undefined>([GameModes.Emerald, GameModes.Obsidian, GameModes.Sanctuary]);
 
 function sumModifiers(modifiers: StatModifier[]): number {
     return modifiers.reduce((total, modifier) => total + modifier.amount, 0);
@@ -92,7 +93,7 @@ function formatSkill(skill: number): string {
     return isNaN(skill) ? '-' : Math.max(skill, 0).toString();
 }
 
-class DrawCard extends BaseCard {
+export class DrawCard extends BaseCard {
     fromOutOfPlaySource?: BaseCard[];
     eventRegistrarForEphemeral?: EventRegistrar;
 
@@ -117,6 +118,8 @@ class DrawCard extends BaseCard {
     covert = false;
     allowDuplicatesOfAttachment: boolean;
     new: boolean = false;
+    /** No initializer: BaseCard's constructor runs setupCardAbilities() before DrawCard's fields would be set. */
+    playConditions?: ((context: AbilityContext) => boolean)[];
     private skillCalculator: SkillCalculator;
     private childCardHost = new ChildCardManager(this);
 
@@ -132,14 +135,14 @@ class DrawCard extends BaseCard {
             // cannot have fate or status tokens
             const events: Event[] = [];
             if(this.fate > 0) {
-                this.game.addMessage('{0} fate is removed from {1} as it can no longer legally have fate', this.fate, this);
-                this.game.actions.removeFate({ target: this, amount: this.fate }).addEventsToArray(events, context);
+                this.game.addMessage(msg`${this.fate} fate is removed from ${this} as it can no longer legally have fate`);
+                removeFate({ target: this, amount: this.fate }).addEventsToArray(events, context);
                 result = true;
             }
             if(this.statusTokens.length > 0) {
-                this.game.addMessage('Status tokens are removed from {0} as it can no longer legally have status tokens', this);
+                this.game.addMessage(msg`Status tokens are removed from ${this} as it can no longer legally have status tokens`);
                 for(const token of this.statusTokens) {
-                    this.game.actions.discardStatusToken({ target: token }).addEventsToArray(events, context);
+                    discardStatusToken({ target: token }).addEventsToArray(events, context);
                 }
                 result = true;
             }
@@ -191,14 +194,18 @@ class DrawCard extends BaseCard {
         }
         const ephemeralTrigger = EPHEMERAL_TRIGGER[cardData.type];
         if(ephemeralTrigger && this.hasEphemeral()) {
-            this.eventRegistrarForEphemeral = new EventRegistrar(this.game, this);
-            this.eventRegistrarForEphemeral.register([{ [ephemeralTrigger]: 'handleEphemeral' }]);
+            this.eventRegistrarForEphemeral = new EventRegistrar(this.game);
+            this.eventRegistrarForEphemeral.register({ [ephemeralTrigger]: (event: GameEvent<typeof ephemeralTrigger>) => this.handleEphemeral(event) });
         }
         if(this.isDynasty) {
             this.abilities.reactions.push(new RallyAbility(this), new ThrivingAbility(this));
         }
 
         this.applyAttachmentBonus();
+    }
+
+    tutored(attachmentName: string): void {
+        this.abilities.reactions.push(new TutoredAbility(this, attachmentName));
     }
 
     isDrawCard(): this is DrawCard {
@@ -234,7 +241,7 @@ class DrawCard extends BaseCard {
             this.persistentEffect({
                 match: (card) => card === this.parent,
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.attachmentMilitarySkillModifier(() =>
+                effect: attachmentMilitarySkillModifier(() =>
                     this.isAttachmentBonusModifierSwitchActive() ? politicalBonus : militaryBonus
                 )
             });
@@ -243,11 +250,16 @@ class DrawCard extends BaseCard {
             this.persistentEffect({
                 match: (card) => card === this.parent,
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.attachmentPoliticalSkillModifier(() =>
+                effect: attachmentPoliticalSkillModifier(() =>
                     this.isAttachmentBonusModifierSwitchActive() ? militaryBonus : politicalBonus
                 )
             });
         }
+    }
+
+    /** "Play only if …": the card can only be played while `condition` holds. */
+    playOnlyIf(condition: (context: AbilityContext) => boolean): void {
+        (this.playConditions ??= []).push(condition);
     }
 
     /**
@@ -347,19 +359,19 @@ class DrawCard extends BaseCard {
         return !!this.game.currentConflict?.isCardInConflictProvince(this);
     }
 
-    isAttacking(conflictType?: 'military' | 'political'): boolean {
+    isAttacking(conflictType?: ConflictType): boolean {
         return !!this.game.currentConflict?.isAttacking(this) && this.isConflictOfType(conflictType);
     }
 
-    isDefending(conflictType?: 'military' | 'political'): boolean {
+    isDefending(conflictType?: ConflictType): boolean {
         return !!this.game.currentConflict?.isDefending(this) && this.isConflictOfType(conflictType);
     }
 
-    isParticipating(conflictType?: 'military' | 'political'): boolean {
+    isParticipating(conflictType?: ConflictType): boolean {
         return !!this.game.currentConflict?.isParticipating(this) && this.isConflictOfType(conflictType);
     }
 
-    private isConflictOfType(conflictType?: 'military' | 'political'): boolean {
+    private isConflictOfType(conflictType?: ConflictType): boolean {
         return !conflictType || this.game.isDuringConflict(conflictType);
     }
 
@@ -405,6 +417,15 @@ class DrawCard extends BaseCard {
         clone.printedType = this.printedType;
         clone.printedFaction = this.printedFaction;
         clone.uuid = this.uuid;
+        clone.isProvince = this.isProvince;
+        clone.isConflict = this.isConflict;
+        clone.isDynasty = this.isDynasty;
+        clone.isStronghold = this.isStronghold;
+        clone.defaultController = this.defaultController;
+        clone.allowedAttachmentTraits = this.allowedAttachmentTraits;
+        clone.disguisedKeywordTraits = this.disguisedKeywordTraits;
+        clone.allowDuplicatesOfAttachment = this.allowDuplicatesOfAttachment;
+        clone.playConditions = this.playConditions;
 
         // Copy game state
         clone.controller = this.controller;
@@ -470,9 +491,9 @@ class DrawCard extends BaseCard {
      */
     getSkill(type: string | undefined): number {
         if(type === 'military') {
-            return this.getMilitarySkill();
+            return this.militarySkill;
         } else if(type === 'political') {
-            return this.getPoliticalSkill();
+            return this.politicalSkill;
         }
         return 0;
     }
@@ -482,11 +503,11 @@ class DrawCard extends BaseCard {
     }
 
     get militarySkillSummary(): StatSummary {
-        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers('military'), formatSkill) : {};
+        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers(SkillType.Military), formatSkill) : {};
     }
 
     get politicalSkillSummary(): StatSummary {
-        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers('political'), formatSkill) : {};
+        return this.showStats ? statSummary(this.skillCalculator.getSkillModifiers(SkillType.Political), formatSkill) : {};
     }
 
     get glorySummary(): StatSummary {
@@ -494,10 +515,6 @@ class DrawCard extends BaseCard {
     }
 
     get glory(): number {
-        return this.getGlory();
-    }
-
-    getGlory(): number {
         return effectiveSkill(sumModifiers(this.skillCalculator.getGloryModifiers()));
     }
 
@@ -511,11 +528,11 @@ class DrawCard extends BaseCard {
     }
 
     getMilitaryModifiers(exclusions?: Exclusions): StatModifier[] {
-        return this.skillCalculator.getSkillModifiers('military', exclusions);
+        return this.skillCalculator.getSkillModifiers(SkillType.Military, exclusions);
     }
 
     getPoliticalModifiers(exclusions?: Exclusions): StatModifier[] {
-        return this.skillCalculator.getSkillModifiers('political', exclusions);
+        return this.skillCalculator.getSkillModifiers(SkillType.Political, exclusions);
     }
 
     get militarySkill(): number {
@@ -523,11 +540,11 @@ class DrawCard extends BaseCard {
     }
 
     getMilitarySkill(floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('military')), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers(SkillType.Military)), floor);
     }
 
     getMilitarySkillExcludingModifiers(exclusions: Exclusions | EffectName, floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('military', toExclusions(exclusions))), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers(SkillType.Military, toExclusions(exclusions))), floor);
     }
 
     get politicalSkill(): number {
@@ -535,11 +552,11 @@ class DrawCard extends BaseCard {
     }
 
     getPoliticalSkill(floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('political')), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers(SkillType.Political)), floor);
     }
 
     getPoliticalSkillExcludingModifiers(exclusions: Exclusions | EffectName, floor: boolean = true): number {
-        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers('political', toExclusions(exclusions))), floor);
+        return effectiveSkill(sumModifiers(this.skillCalculator.getSkillModifiers(SkillType.Political, toExclusions(exclusions))), floor);
     }
 
     get baseMilitarySkill(): number {
@@ -567,13 +584,14 @@ class DrawCard extends BaseCard {
         this.fate = Math.max(0, this.fate + amount);
     }
 
-    canPlay(context: AbilityContext, type: string = 'play'): boolean {
+    canPlay(context: AbilityContext, playType?: PlayType): boolean {
         return (
-            this.checkRestrictions(type, context) &&
-            context.player.checkRestrictions(type, context) &&
-            this.checkRestrictions('play', context) &&
-            context.player.checkRestrictions('play', context) &&
-            (!this.hasPrintedKeyword('peaceful') || !this.game.currentConflict)
+            this.checkRestrictions(playType, context) &&
+            context.player.checkRestrictions(playType, context) &&
+            this.checkRestrictions(RestrictionType.Play, context) &&
+            context.player.checkRestrictions(RestrictionType.Play, context) &&
+            (!this.hasPrintedKeyword('peaceful') || !this.game.currentConflict) &&
+            (this.playConditions ?? []).every((condition) => condition(context))
         );
     }
 
@@ -625,12 +643,7 @@ class DrawCard extends BaseCard {
             for(const card of cardsUnderneath) {
                 this.controller.moveCard(card, Location.RemovedFromGame);
             }
-            this.game.addMessage(
-                '{0} {1} removed from the game due to {2} leaving play',
-                cardsUnderneath,
-                cardsUnderneath.length === 1 ? 'is' : 'are',
-                this
-            );
+            this.game.addMessage(msg`${cardsUnderneath} ${cardsUnderneath.length === 1 ? 'is' : 'are'} removed from the game due to ${this} leaving play`);
         }
 
         const wasParticipating = this.isParticipating();
@@ -644,12 +657,12 @@ class DrawCard extends BaseCard {
         if(!ignoreHonorStatus) {
             if(this.isDishonored) {
                 this.applyPersonalHonor(
-                    this.game.actions.loseHonor({ amount: 1, dueToStatusToken: true }),
+                    loseHonor({ amount: 1, dueToStatusToken: true }),
                     '{0} loses 1 honor due to {1}\'s personal honor'
                 );
             } else if(this.isHonored) {
                 this.applyPersonalHonor(
-                    this.game.actions.gainHonor({ amount: 1, dueToStatusToken: true }),
+                    gainHonor({ amount: 1, dueToStatusToken: true }),
                     '{0} gains 1 honor due to {1}\'s personal honor'
                 );
             }
@@ -665,7 +678,7 @@ class DrawCard extends BaseCard {
     }
 
     private applyPersonalHonor(action: GameAction, message: string): void {
-        const frameworkContext = this.game.getFrameworkContext();
+        const frameworkContext = this.game.getFrameworkContext(this.controller);
         if(action.canAffect(this.controller, frameworkContext)) {
             this.game.addMessage(message, this.controller, this);
         }
@@ -678,7 +691,7 @@ class DrawCard extends BaseCard {
     }
 
     canBeBypassedByCovert(context: AbilityContext): boolean {
-        return !this.isCovert() && this.checkRestrictions('applyCovert', context);
+        return !this.isCovert() && this.checkRestrictions(RestrictionType.ApplyCovert, context);
     }
 
     /** The ring and type are undefined while attackers are picked before the ring. */
@@ -711,8 +724,8 @@ class DrawCard extends BaseCard {
 
         if(
             elementsAdded.some((element: string) =>
-                this.game.rings[element]
-                    .getEffects(EffectName.CannotDeclareRing)
+                this.game.ringFor(element)
+                    ?.getEffects(EffectName.CannotDeclareRing)
                     .some((match) => match(this.controller))
             )
         ) {
@@ -736,7 +749,7 @@ class DrawCard extends BaseCard {
             }
         }
 
-        const frameworkContext = this.game.getFrameworkContext();
+        const frameworkContext = this.game.getGameContext();
 
         if(this.anyEffect(EffectName.CanOnlyBeDeclaredAsAttackerWithCondition)) {
             for(const condition of this.getEffects(EffectName.CanOnlyBeDeclaredAsAttackerWithCondition)) {
@@ -758,7 +771,7 @@ class DrawCard extends BaseCard {
             ? [ConflictType.Military, ConflictType.Political].some((type) => this.canParticipateAsAttacker(type))
             : this.canParticipateAsAttacker(conflictType);
         return (
-            this.checkRestrictions('declareAsAttacker', frameworkContext) &&
+            this.checkRestrictions(RestrictionType.DeclareAsAttacker, frameworkContext) &&
             canParticipate &&
             this.location === Location.PlayArea &&
             !this.bowed
@@ -767,7 +780,7 @@ class DrawCard extends BaseCard {
 
     canDeclareAsDefender(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
         return (
-            this.checkRestrictions('declareAsDefender', this.game.getFrameworkContext()) &&
+            this.checkRestrictions(RestrictionType.DeclareAsDefender, this.game.getFrameworkContext(this.controller)) &&
             this.canParticipateAsDefender(conflictType) &&
             this.location === Location.PlayArea &&
             !this.bowed &&
@@ -798,7 +811,7 @@ class DrawCard extends BaseCard {
     getModifiedController(): Player {
         if(
             this.location === Location.PlayArea ||
-            (this.type === CardType.Holding && this.location.includes('province'))
+            (this.type === CardType.Holding && this.isInProvince())
         ) {
             return this.mostRecentEffect(EffectName.TakeControl) || this.defaultController;
         }
@@ -816,23 +829,6 @@ class DrawCard extends BaseCard {
 
     play(): void {
         //empty function so playcardaction doesn't crash the game
-    }
-
-    allowAttachment(attachment: BaseCard): boolean {
-        if(
-            MODES_LIMITING_REPEATED_ATTACHMENTS.has(this.game.gameMode) &&
-            this.type === CardType.Character &&
-            this.attachments.some(
-                (a) =>
-                    !a.allowDuplicatesOfAttachment &&
-                    a.id === attachment.id &&
-                    a.controller === attachment.controller &&
-                    a !== attachment
-            )
-        ) {
-            return false;
-        }
-        return super.allowAttachment(attachment);
     }
 
     getEffectMarkers(): Array<{ source: string; kind: 'delayed' | 'modifier' }> {
@@ -921,19 +917,29 @@ class DrawCard extends BaseCard {
         });
     }
 
+    /**
+     * "Conflict Action": only during a conflict, of `conflictType` if given. A character must be participating,
+     * as must the character an attachment in play is attached to, unless `evenFromHome`.
+     */
     conflictAction(title: string, options: ConflictActionOptions = {}): AbilityBuilder<ActionContext<this>> {
         return this.actionBuilder(title, {
             register: (properties) => {
                 const condition = properties.condition;
                 this.abilities.actions.push(this.createAction({
                     ...properties,
-                    condition: (context: AbilityContext<this>) =>
-                        context.source.game.isDuringConflict() &&
-                        (options.evenFromHome || context.source.isParticipating(options.conflictType)) &&
-                        (condition?.(context) ?? true)
+                    condition: (context: AbilityContext<this>) => context.source.allowsConflictAction(options) && (condition?.(context) ?? true)
                 }));
             }
         });
+    }
+
+    /** Whether a "Conflict Action" of this card (its own or gained) can be used now; see `conflictAction()`. */
+    allowsConflictAction(options: ConflictActionOptions = {}): boolean {
+        const participant = this.type === CardType.Character
+            ? this
+            : this.type === CardType.Attachment && this.location === Location.PlayArea ? this.parentCharacter : null;
+        return this.game.isDuringConflict(options.conflictType ?? null) &&
+            (!!options.evenFromHome || !participant || participant.isParticipating(options.conflictType));
     }
 }
 

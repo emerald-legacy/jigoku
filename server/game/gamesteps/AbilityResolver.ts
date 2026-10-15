@@ -1,12 +1,16 @@
+import { msg } from '../GameChat.js';
+import { createCardPlayedEvent } from '../Events/cardPlayedEvent.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
-import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
-import InitiateAbilityEventWindow from '../Events/InitiateAbilityEventWindow.js';
+import { InitiateCardAbilityEvent } from '../Events/InitiateCardAbilityEvent.js';
+import { InitiateAbilityEventWindow } from '../Events/InitiateAbilityEventWindow.js';
 import { Location, Stage, CardType, EventName } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
-import type BaseAbility from '../BaseAbility.js';
+import type { BaseAbility } from '../BaseAbility.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import { MoveCardAction } from '../GameActions/MoveCardAction.js';
+import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from '../GameActions/targetingCosts.js';
 
 type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
 
@@ -31,7 +35,7 @@ interface AbilityResolverCostResults {
 
 const snapshotTypes: readonly string[] = [CardType.Character, CardType.Holding, CardType.Attachment];
 
-class AbilityResolver extends BaseStepWithPipeline {
+export class AbilityResolver extends BaseStepWithPipeline {
     context: AbilityContext;
     canCancel: boolean;
     initiateAbility: boolean;
@@ -86,17 +90,7 @@ class AbilityResolver extends BaseStepWithPipeline {
         if(this.context.ability.isCardAbility()) {
             const source = this.context.source;
             if(this.context.ability.isCardPlayed() && source.isDrawCard()) {
-                this.events.push(this.game.getEvent(EventName.OnCardPlayed, {
-                    player: this.context.player,
-                    card: source,
-                    context: this.context,
-                    originalLocation: source.location,
-                    originallyOnTopOfConflictDeck: this.context.player && this.context.player.conflictDeck && this.context.player.conflictDeck[0] === source,
-                    onPlayCardSource: this.context.onPlayCardSource,
-                    playedFromOutOfPlaySource: source.fromOutOfPlaySource?.slice(),
-                    playType: this.context.playType,
-                    resolver: this
-                }));
+                this.events.push(createCardPlayedEvent(this.context, source, this.context.playType, this));
             }
             const ability = this.context.ability;
             if(ability.isTriggeredAbility() && ability.isCardAbilityInstance()) {
@@ -176,7 +170,7 @@ class AbilityResolver extends BaseStepWithPipeline {
         }
         this.cancelled = this.costResults.events.some((event: Event) => event.getResolutionEvent().cancelled);
         if(this.cancelled) {
-            this.game.addMessage('{0} attempted to use {1}, but did not successfully pay the required costs', this.context.player, this.context.source);
+            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
         }
     }
 
@@ -188,7 +182,7 @@ class AbilityResolver extends BaseStepWithPipeline {
 
         if(!this.context.ability.hasLegalTargets(this.context)) {
             // Ability cannot resolve, so display a message and cancel it
-            this.game.addMessage('{0} attempted to use {1}, but there are insufficient legal targets', this.context.player, this.context.source);
+            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but there are insufficient legal targets`);
             this.cancelled = true;
         } else if(this.targetResults.delayTargeting) {
             // Targeting was delayed due to an opponent needing to choose targets (which shouldn't happen until costs have been paid), so continue
@@ -201,6 +195,17 @@ class AbilityResolver extends BaseStepWithPipeline {
 
     initiateAbilityEffects() {
         if(this.cancelled) {
+            for(const event of this.events) {
+                event.cancel();
+            }
+            return;
+        }
+
+        // paid with the costs, so cancelling the effects doesn't undo it
+        const costsToTarget = targetingCosts(this.context, Object.values(this.context.targets).flat());
+        if(!canPayTargetingCosts(this.context, costsToTarget)) {
+            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
+            this.cancelled = true;
             for(const event of this.events) {
                 event.cancel();
             }
@@ -228,11 +233,12 @@ class AbilityResolver extends BaseStepWithPipeline {
             this.context.player.incrementAbilityMax(maxIdentifier);
         }
         this.context.ability.displayMessage(this.context);
+        payTargetingCosts(this.context, costsToTarget);
 
         if(this.context.ability.isTriggeredAbility()) {
             // If this is an event, move it to 'being played', and queue a step to send it to the discard pile after it resolves
             if(this.context.ability.isCardPlayed()) {
-                this.game.actions.moveCard({ destination: Location.BeingPlayed }).resolve(this.context.source, this.context);
+                new MoveCardAction({ destination: Location.BeingPlayed }).resolve(this.context.source, this.context);
             }
             this.game.openThenEventWindow(new InitiateCardAbilityEvent({ card: this.context.source, context: this.context }, () => this.initiateAbility = true));
         } else {
@@ -263,4 +269,3 @@ class AbilityResolver extends BaseStepWithPipeline {
     }
 }
 
-export default AbilityResolver;

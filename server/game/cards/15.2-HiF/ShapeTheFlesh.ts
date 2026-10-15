@@ -1,5 +1,6 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword, cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { RestrictionType } from '../../Constants.js';
 
 class ShapeTheFlesh extends DrawCard {
     static id = 'shape-the-flesh';
@@ -7,8 +8,8 @@ class ShapeTheFlesh extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.cardCannot('honor'),
-                AbilityDsl.effects.addKeyword('covert')
+                cardCannot(RestrictionType.Honor),
+                addKeyword('covert')
             ]
         });
     }

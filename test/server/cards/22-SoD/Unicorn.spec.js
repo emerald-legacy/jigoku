@@ -98,12 +98,12 @@ describe('SoD - Unicorn', function () {
                 expect(this.player1).not.toBeAbleToSelect(this.liar);
                 expect(this.player1).not.toBeAbleToSelect(this.brash);
 
-                const mil = this.toshimoko.getMilitarySkill();
+                const mil = this.toshimoko.militarySkill;
 
                 this.player1.clickCard(this.toshimoko);
                 expect(this.getChatLogs(5)).toContain('player1 plays Cornering Maneuver to give Kakita Toshimoko +2military');
 
-                expect(this.toshimoko.getMilitarySkill()).toBe(mil + 2);
+                expect(this.toshimoko.militarySkill).toBe(mil + 2);
                 expect(this.player1).toHavePrompt('Choose a character to move');
                 expect(this.player1).toBeAbleToSelect(this.toshimoko);
                 expect(this.player1).toBeAbleToSelect(this.keeper);

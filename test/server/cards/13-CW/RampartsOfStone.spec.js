@@ -81,6 +81,24 @@ describe('Ramparts of Stone', function() {
                 expect(this.player2.currentButtons).toContain('Bow all participating characters');
                 expect(this.player2.currentButtons).toContain('Discard three cards from hand');
             });
+
+            it('makes the attacking player discard when they play it', function() {
+                this.noMoreActions();
+                this.player1.clickPrompt('Yes');
+                this.player1.clickPrompt('Gain 2 honor');
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.challenger],
+                    defenders: [this.wayfinder],
+                    ring: 'fire'
+                });
+                const player1Hand = this.player1.hand.length;
+                this.player1.pass();
+                this.player2.clickCard(this.ramparts);
+                this.player2.clickPrompt('Discard three cards from hand');
+                expect(this.player2.hand.length).toBe(0);
+                expect(this.player1.hand.length).toBe(player1Hand);
+            });
         });
     });
 });

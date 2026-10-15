@@ -37,7 +37,7 @@ class KnowTheTerrain extends DrawCard {
                     }
                 });
             })
-            .effect('switch the attacked province card');
+            .chatText('switch the attacked province card');
     }
 }
 

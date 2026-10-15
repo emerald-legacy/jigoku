@@ -1,6 +1,7 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate, selectCard } from '../../GameActions/GameActions.js';
 
 export default class FeastOrFamine extends ProvinceCard {
     static id = 'feast-or-famine';
@@ -13,15 +14,14 @@ export default class FeastOrFamine extends ProvinceCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            }, AbilityDsl.actions.selectCard((context) => ({
+            }, selectCard((context) => ({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                message: '{0} moves 1 fate from {1} to {2}',
-                messageArgs: (card) => [context.player, context.target, card],
-                gameAction: AbilityDsl.actions.placeFate({
+                message: (context, card) => msg`${context.player} moves 1 fate from ${context.target} to ${card}`,
+                gameAction: placeFate({
                     origin: context.target
                 })
             })))
-            .effect('move 1 fate from {0} to a character they control');
+            .chatText('move 1 fate from {0} to a character they control');
     }
 }

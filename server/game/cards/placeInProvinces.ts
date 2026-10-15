@@ -1,7 +1,9 @@
+import { msg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
+import { placeInProvince } from '../GameActions/GameActions.js';
 
 /** Puts the chosen cards faceup into the player's non-stronghold provinces, one per province, then shuffles their dynasty deck. */
 export function placeInProvinces(context: AbilityContext, cards: DrawCard[]): void {
@@ -26,15 +28,9 @@ export function placeInProvinces(context: AbilityContext, cards: DrawCard[]): vo
                 cardCondition: (card) =>
                     card.type === CardType.Province && card.location !== Location.StrongholdProvince && !chosenProvinces.includes(card),
                 onSelect: (_player, card) => {
-                    context.game.addMessage(
-                        '{0} puts {1} into {2}',
-                        context.player,
-                        currentCard,
-                        card.isFacedown() ? 'a facedown province' : card.name
-                    );
+                    context.game.addMessage(msg`${context.player} puts ${currentCard} into ${card.isFacedown() ? 'a facedown province' : card.name}`);
                     chosenProvinces.push(card);
-                    context.player.moveCard(currentCard, card.location);
-                    currentCard.facedown = false;
+                    placeInProvince({ destination: card.location }).resolve(currentCard, context);
                     remaining = remaining.filter((a) => a !== currentCard);
                     chooseCard();
                     return true;

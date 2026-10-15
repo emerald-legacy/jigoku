@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { ready } from '../../../GameActions/GameActions.js';
 import { CardType, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { claimsRingOf } from '../../claimedRings.js';
@@ -16,7 +16,7 @@ export default class HenshinSeeker extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasSomeTrait('scholar', 'monk')
-            }, AbilityDsl.actions.ready());
+            }, ready());
     }
 
     getPrintedElementSymbols() {

@@ -1,6 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { taint } from '../../GameActions/GameActions.js';
 
 export default class ShamblingServant extends BaseOni {
     static id = 'shambling-servant';
@@ -16,6 +16,6 @@ export default class ShamblingServant extends BaseOni {
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.taint());
+            }, taint());
     }
 }

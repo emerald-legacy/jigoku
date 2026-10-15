@@ -42,13 +42,13 @@ describe('Magnificent Triumph', function() {
             });
 
             it('should give the target +2/+2', function() {
-                const militarySkill = this.mirumotoRaitsugu.getMilitarySkill();
-                const politicalSkill = this.mirumotoRaitsugu.getPoliticalSkill();
+                const militarySkill = this.mirumotoRaitsugu.militarySkill;
+                const politicalSkill = this.mirumotoRaitsugu.politicalSkill;
                 this.player2.pass();
                 this.player1.clickCard(this.magnificentTriumph);
                 this.player1.clickCard(this.mirumotoRaitsugu);
-                expect(this.mirumotoRaitsugu.getMilitarySkill()).toBe(militarySkill + 2);
-                expect(this.mirumotoRaitsugu.getPoliticalSkill()).toBe(politicalSkill + 2);
+                expect(this.mirumotoRaitsugu.militarySkill).toBe(militarySkill + 2);
+                expect(this.mirumotoRaitsugu.politicalSkill).toBe(politicalSkill + 2);
             });
 
             it('should make the target immune to opponent\'s events', function() {
@@ -62,8 +62,8 @@ describe('Magnificent Triumph', function() {
             });
 
             it('should only last to the end of the conflict', function() {
-                const militarySkill = this.mirumotoRaitsugu.getMilitarySkill();
-                const politicalSkill = this.mirumotoRaitsugu.getPoliticalSkill();
+                const militarySkill = this.mirumotoRaitsugu.militarySkill;
+                const politicalSkill = this.mirumotoRaitsugu.politicalSkill;
                 this.player2.pass();
                 this.player1.clickCard(this.magnificentTriumph);
                 this.player1.clickCard(this.mirumotoRaitsugu);
@@ -71,8 +71,8 @@ describe('Magnificent Triumph', function() {
                 this.player1.pass();
                 this.player1.clickPrompt('Yes');
                 this.player1.clickPrompt('Don\'t Resolve');
-                expect(this.mirumotoRaitsugu.getMilitarySkill()).toBe(militarySkill);
-                expect(this.mirumotoRaitsugu.getPoliticalSkill()).toBe(politicalSkill);
+                expect(this.mirumotoRaitsugu.militarySkill).toBe(militarySkill);
+                expect(this.mirumotoRaitsugu.politicalSkill).toBe(politicalSkill);
             });
 
         });

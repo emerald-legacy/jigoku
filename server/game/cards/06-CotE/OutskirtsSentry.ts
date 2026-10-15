@@ -1,4 +1,4 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
@@ -13,7 +13,7 @@ class OutskirtsSentry extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }, AbilityDsl.actions.honor());
+            }, honor());
     }
 }
 

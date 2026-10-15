@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
-import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
+import { BaseCardSelector, type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
 interface MaxStatCardSelectorProperties extends BaseCardSelectorProperties {
     cardStat: (card: BaseCard) => number;
@@ -9,7 +9,7 @@ interface MaxStatCardSelectorProperties extends BaseCardSelectorProperties {
     numCards: number;
 }
 
-class MaxStatCardSelector extends BaseCardSelector {
+export class MaxStatCardSelector extends BaseCardSelector {
     cardStat: (card: BaseCard) => number;
     maxStat: () => number;
     numCards: number;
@@ -40,4 +40,3 @@ class MaxStatCardSelector extends BaseCardSelector {
     }
 }
 
-export default MaxStatCardSelector;

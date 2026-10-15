@@ -1,5 +1,5 @@
-import { DuelType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { DuelType, Location } from '../../../Constants.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HojatsuDevotee extends DrawCard {
@@ -9,12 +9,13 @@ export default class HojatsuDevotee extends DrawCard {
         this.interrupt('Initiate a military duel, discarding the loser')
             .when({
                 onCardLeavesPlay: (event, context) =>
-                    event.card === context.source && event.context?.player === context.player.opponent
+                    event.card === context.source && event.context?.player === context.player.opponent && !event.isSacrifice &&
+                    (event.destination === Location.DynastyDiscardPile || event.destination === Location.ConflictDiscardPile)
             })
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 requiresConflict: false,
-                gameAction: (duel) => AbilityDsl.actions.discardFromPlay({ target: duel.loser })
+                gameAction: (duel) => discardFromPlay({ target: duel.loser })
             }));
     }
 }

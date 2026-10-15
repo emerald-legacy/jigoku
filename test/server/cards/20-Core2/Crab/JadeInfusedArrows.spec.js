@@ -27,7 +27,7 @@ describe('Jade Infused Arrows', function () {
         });
 
         it('against normal characters', function () {
-            const borderlandsMilInit = this.borderlands.getMilitarySkill();
+            const borderlandsMilInit = this.borderlands.militarySkill;
             this.initiateConflict({
                 attackers: [this.brash],
                 defenders: [this.borderlands],
@@ -35,14 +35,14 @@ describe('Jade Infused Arrows', function () {
             });
 
             this.player2.clickCard(this.arrows);
-            expect(this.borderlands.getMilitarySkill()).toBe(borderlandsMilInit + 2);
+            expect(this.borderlands.militarySkill).toBe(borderlandsMilInit + 2);
             expect(this.getChatLogs(5)).toContain(
                 'player2 uses Jade-Infused Arrows, spending 1 fate to give +2military to Borderlands Defender'
             );
         });
 
         it('against corrupt characters', function () {
-            const borderlandsMilInit = this.borderlands.getMilitarySkill();
+            const borderlandsMilInit = this.borderlands.militarySkill;
             this.initiateConflict({
                 attackers: [this.goblin],
                 defenders: [this.borderlands],
@@ -50,14 +50,14 @@ describe('Jade Infused Arrows', function () {
             });
 
             this.player2.clickCard(this.arrows);
-            expect(this.borderlands.getMilitarySkill()).toBe(borderlandsMilInit + 4);
+            expect(this.borderlands.militarySkill).toBe(borderlandsMilInit + 4);
             expect(this.getChatLogs(5)).toContain(
                 'player2 uses Jade-Infused Arrows, spending 1 fate to give +4military to Borderlands Defender - the jade is potent against the spawns of jigoku'
             );
         });
 
         it('against tainted characters', function () {
-            const borderlandsMilInit = this.borderlands.getMilitarySkill();
+            const borderlandsMilInit = this.borderlands.militarySkill;
             this.initiateConflict({
                 attackers: [this.taintedEnvoy],
                 defenders: [this.borderlands],
@@ -65,7 +65,7 @@ describe('Jade Infused Arrows', function () {
             });
 
             this.player2.clickCard(this.arrows);
-            expect(this.borderlands.getMilitarySkill()).toBe(borderlandsMilInit + 4);
+            expect(this.borderlands.militarySkill).toBe(borderlandsMilInit + 4);
             expect(this.getChatLogs(5)).toContain(
                 'player2 uses Jade-Infused Arrows, spending 1 fate to give +4military to Borderlands Defender - the jade is potent against the spawns of jigoku'
             );

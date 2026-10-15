@@ -1,5 +1,7 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { GameAction } from '../../../GameActions/GameAction.js';
+import { msg } from '../../../GameChat.js';
+import { unlimited } from '../../../AbilityLimit.js';
+import { chatMessage, chosenDiscard, draw, multiple } from '../../../GameActions/GameActions.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
 
 export default class LessonsFromEarth extends ProvinceAttachment {
@@ -12,34 +14,30 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                     return event.conflict.winner && event.conflict.loser && context.source.parentProvince?.isConflictProvince();
                 }
             })
-            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+            .gameAction(multiple((context) => {
                 const gameActions: GameAction[] = [];
 
                 const winner = context.event.conflict?.winner;
                 const loser = context.event.conflict?.loser;
                 if(!winner || !loser) {
-                    return { gameActions };
+                    return gameActions;
                 }
 
-                gameActions.push(AbilityDsl.actions.draw({
+                gameActions.push(draw({
                     target: winner
                 }));
 
                 const hasAffinity = loser.hasAffinity('earth', context);
                 if(!hasAffinity) {
-                    gameActions.push(AbilityDsl.actions.chosenDiscard({
+                    gameActions.push(chosenDiscard({
                         target: loser
                     }));
                 } else {
-                    gameActions.push(AbilityDsl.actions.handler({
-                        handler: () => {
-                            context.game.addMessage('{0}\'s affinity to Earth prevents them from discarding a card', loser);
-                        }
-                    }));
+                    gameActions.push(chatMessage(() => msg`${loser}'s affinity to Earth prevents them from discarding a card`));
                 }
-                return { gameActions };
+                return gameActions;
             }))
-            .effect('cause {1} to draw a card and {2} to discard a card', context => [context.event.conflict?.winner, context.event.conflict?.loser])
-            .limit(AbilityDsl.limit.unlimitedPerConflict());
+            .chatText((context) => msg`cause ${context.event.conflict?.winner} to draw a card and ${context.event.conflict?.loser} to discard a card`)
+            .limit(unlimited());
     }
 }

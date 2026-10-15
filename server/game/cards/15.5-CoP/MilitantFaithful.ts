@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 
 
 class MilitantFaithful extends DrawCard {
@@ -7,8 +7,8 @@ class MilitantFaithful extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => !!(context.player.opponent && context.player.opponent.anyCardsInPlay(card => card.isParticipating() && !card.isOrdinary())),
-            effect: AbilityDsl.effects.doesNotBow()
+            condition: (context) => !!(context.player.opponent && context.player.opponent.anyCardsInPlay((card) => card.isParticipating() && !card.isOrdinary())),
+            effect: doesNotBow()
         });
     }
 }
