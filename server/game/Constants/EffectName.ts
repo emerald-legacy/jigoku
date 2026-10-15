@@ -158,8 +158,6 @@ export enum EffectName {
     IgnoreDuelSkill = 'ignoreDuelSkill',
     ConflictIgnoreStatusTokens = 'conflictIgnoreStatusTokens',
     LimitLegalAttackers = 'limitLegalAttackers',
-    ModifyHonorTransferGiven = 'modifyHonorTransferGiven',
-    ModifyHonorTransferReceived = 'modifyHonorTransferReceived',
     ModifyUnopposedHonorLoss = 'modifyUnopposedHonorLoss',
     NoUnopposedHonorLoss = 'noUnopposedHonorLoss',
     TreatStatusTokenAs = 'treatStatusTokenAs',

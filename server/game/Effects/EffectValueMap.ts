@@ -244,8 +244,6 @@ export interface EffectValueMap {
     [EffectName.IgnoreDuelSkill]: boolean;
     [EffectName.ConflictIgnoreStatusTokens]: boolean;
     [EffectName.LimitLegalAttackers]: (card: DrawCard) => boolean;
-    [EffectName.ModifyHonorTransferGiven]: number;
-    [EffectName.ModifyHonorTransferReceived]: number;
     [EffectName.ModifyUnopposedHonorLoss]: number;
     [EffectName.NoUnopposedHonorLoss]: boolean;
     [EffectName.TreatStatusTokenAs]: boolean;

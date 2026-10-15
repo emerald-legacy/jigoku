@@ -287,9 +287,6 @@ export const Effects = {
             }
         }),
     limitHonorGainPerPhase: (amount: number) => EffectBuilder.player.static(EffectName.LimitHonorGainPerPhase, amount),
-    modifyHonorTransferGiven: (amount: number) => EffectBuilder.player.static(EffectName.ModifyHonorTransferGiven, amount),
-    modifyHonorTransferReceived: (amount: number) =>
-        EffectBuilder.player.static(EffectName.ModifyHonorTransferReceived, amount),
     cannotResolveRings: () => EffectBuilder.player.static(EffectName.CannotResolveRings, true),
     changePlayerGloryModifier,
     changePlayerSkillModifier: (value: FlexibleValue<number, Player>) => EffectBuilder.player.flexible(EffectName.ChangePlayerSkillModifier, value),
@@ -409,7 +406,7 @@ export const {
     winDuel, winDuelTies, ignoreDuelSkill, addElement, cannotBidInDuels, cannotDeclareRing, considerRingAsClaimed,
     additionalAction, addPlayerFlag, additionalCardPlayed, additionalCharactersInConflict, additionalConflict,
     additionalTriggerCost, additionalPlayCost, alternateFatePool, cannotDeclareConflictsOfType,
-    canPlayFromOpponents, limitHonorGainPerPhase, modifyHonorTransferGiven, modifyHonorTransferReceived,
+    canPlayFromOpponents, limitHonorGainPerPhase,
     cannotResolveRings, changePlayerSkillModifier, customDetachedPlayer, gainActionPhasePriority, increaseCost,
     modifyCardsDrawnInDrawPhase, noUnopposedHonorLoss, playerCannot, playerFateCostToTargetCard,
     reduceNextPlayedCardCost, satisfyAffinity, setConflictDeclarationType, provideConflictDeclarationType,

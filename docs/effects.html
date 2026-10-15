@@ -3595,24 +3595,6 @@ this.persistentEffect({
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/IwasakiPupil.ts">Iwasaki Pupil</a></p>
   </div>
-<div class="ref" id="ef-modifyHonorTransferGiven" data-name="modifyHonorTransferGiven modifyHonorTransferReceived">
-    <h3><code>modifyHonorTransferGiven(amount)</code> <code>modifyHonorTransferReceived(amount)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-modifyHonorTransferGiven">#</a></h3>
-    <p>Changes how much honor moves when this player gives (or receives) honor.</p>
-    <table>
-      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>amount</code></td><td><code>number</code></td><td>required</td><td>Added to the amount transferred.</td></tr>
-      </tbody>
-    </table>
-    <ul class="edge">
-      <li>Read on honor transfers: the duel bid transfer and <code>takeHonor</code>. The giver's "given" and the receiver's "received" effects are both added, then <code>limitHonorGainPerPhase</code> applies.</li>
-    </ul>
-    <pre><code>this.persistentEffect({
-    targetController: Players.Opponent,
-    effect: modifyHonorTransferGiven(1)
-});</code></pre>
-    <p class="seen">Not used by any card yet.</p>
-  </div>
 <div class="ref" id="ef-playerDelayedEffect" data-name="playerDelayedEffect">
     <h3><code>playerDelayedEffect(properties)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-playerDelayedEffect">#</a></h3>
     <p>Resolves a game action on the player later, when an event happens. The card version is <code>delayedEffect</code>.</p>
