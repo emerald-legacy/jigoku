@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class DaidojiIronWarrior extends DrawCard {
     static id = 'daidoji-iron-warrior';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Force each player to discard to 4 cards')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()

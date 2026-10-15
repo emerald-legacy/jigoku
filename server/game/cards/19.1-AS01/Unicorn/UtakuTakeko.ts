@@ -9,7 +9,7 @@ import { article } from '../../article.js';
 export default class UtakuTakeko extends DrawCard {
     static id = 'utaku-takeko';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Play a character from your dynasty deck')
             .deckSearch(() => ({
                 activePromptTitle: 'Select a character to play',

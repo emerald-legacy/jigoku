@@ -5,7 +5,7 @@ import { CardType, Players } from '../../Constants.js';
 class KitsuMotso extends DrawCard {
     static id = 'kitsu-motso';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character in')
             .condition((context) =>
                 !!(context.source.isParticipating() &&

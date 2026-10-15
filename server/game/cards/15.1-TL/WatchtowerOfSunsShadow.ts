@@ -6,7 +6,7 @@ import { defendingAtKaiuWall } from '../kaiuWall.js';
 class WatchtowerOfSunsShadow extends DrawCard {
     static id = 'watchtower-of-sun-s-shadow';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => defendingAtKaiuWall(context.player, context.game.currentConflict),
             targetController: Players.Opponent,

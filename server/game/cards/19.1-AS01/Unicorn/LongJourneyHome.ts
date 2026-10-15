@@ -13,7 +13,7 @@ type SendOrReturnHomeEvent =
 export default class LongJourneyHome extends DrawCard {
     static id = 'long-journey-home';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow a character for the phase')
             .when({
                 onSendHome: (event, context) => this.affectedOpponentsCharacter(event, context),

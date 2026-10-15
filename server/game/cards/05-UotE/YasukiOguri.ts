@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class YasukiOguri extends DrawCard {
     static id = 'yasuki-oguri';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain +1/+1')
             .when({
                 onCardPlayed: (event, context) => event.player === context.player.opponent && event.card.type === CardType.Event && context.source.isDefending()

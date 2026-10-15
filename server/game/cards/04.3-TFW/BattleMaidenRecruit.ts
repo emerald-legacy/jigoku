@@ -11,14 +11,14 @@ const elementSymbols = [
 class BattleMaidenRecruit extends DrawCard {
     static id = 'battle-maiden-recruit';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
             effect: modifyMilitarySkill(2)
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols(elementSymbols)];
     }
 }

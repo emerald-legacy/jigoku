@@ -5,7 +5,7 @@ import { Phase } from '../../../Constants.js';
 export default class StarlessNights extends DrawCard {
     static id = 'starless-nights';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place 1 fate on each unclaimed ring')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

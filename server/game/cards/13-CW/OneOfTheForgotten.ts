@@ -5,7 +5,7 @@ import { playerCannot } from '../../effects.js';
 class OneOfTheForgotten extends DrawCard {
     static id = 'one-of-the-forgotten';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             effect: playerCannot({

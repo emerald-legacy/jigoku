@@ -9,16 +9,16 @@ import { targetList, type ActionEvent } from './GameAction.js';
 export type DetachProperties = CardActionProperties;
 
 export class DetachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DetachProperties, EventName.OnCardDetached, C> {
-    name = 'detach';
-    eventName = EventName.OnCardDetached;
-    targetType = [CardType.Attachment];
+    override name = 'detach';
+    override eventName = EventName.OnCardDetached;
+    override targetType = [CardType.Attachment];
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const [target] = targetList(this.getProperties(context, additionalProperties).target);
         return ['detach {0} from {1}', [target.parent]];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return !!(
             card.location === Location.PlayArea &&
             card.parent &&
@@ -26,7 +26,7 @@ export class DetachAction<C extends AbilityContext = AbilityContext> extends Car
         );
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardDetached, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardDetached, C>): void {
         const card = event.card;
         card.parent?.removeAttachment(card);
         card.controller.cardsInPlay.push(card);

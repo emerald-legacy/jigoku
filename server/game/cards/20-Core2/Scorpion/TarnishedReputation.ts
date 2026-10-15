@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TarnishedReputation extends DrawCard {
     static id = 'tarnished-reputation';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Dishonor a participating character')
             .target({
                 cardType: CardType.Character,

@@ -6,7 +6,7 @@ import { Players, CardType } from '../../Constants.js';
 class GiverOfGifts extends DrawCard {
     static id = 'giver-of-gifts';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move an attachment')
             .target({
                 cardType: CardType.Attachment,

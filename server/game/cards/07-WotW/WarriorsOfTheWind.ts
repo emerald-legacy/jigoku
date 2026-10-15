@@ -6,7 +6,7 @@ import { CardType, Players, TargetMode, Trait } from '../../Constants.js';
 class WarriorsOfTheWind extends DrawCard {
     static id = 'warriors-of-the-wind';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Re-arrange participating cavalry characters')
             .gameAction(sequential([
                 sendHome((context) => ({

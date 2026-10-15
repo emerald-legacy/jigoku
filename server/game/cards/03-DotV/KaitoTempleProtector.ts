@@ -7,7 +7,7 @@ import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 class KaitoTempleProtector extends DrawCard {
     static id = 'kaito-temple-protector';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDefending(),
             effect: cardCannot({

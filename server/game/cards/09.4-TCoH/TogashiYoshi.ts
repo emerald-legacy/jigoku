@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class TogashiYoshi extends DrawCard {
     static id = 'togashi-yoshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain 1 fate from an unclaimed ring')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller &&

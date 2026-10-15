@@ -6,7 +6,7 @@ import { cannotBeDeclaredAsDefender } from '../../effects.js';
 class ShinjoYasamura extends DrawCard {
     static id = 'shinjo-yasamura';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent a character from defending this phase')
             .when({
                 onCovertResolved: (event, context) =>

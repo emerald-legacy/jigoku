@@ -5,7 +5,7 @@ import { honor } from '../../../GameActions/GameActions.js';
 export default class StarryRespite extends ProvinceCard {
     static id = 'starry-respite';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Honor a character')
             .target({
                 activePromptTitle: 'Choose a character to honor',

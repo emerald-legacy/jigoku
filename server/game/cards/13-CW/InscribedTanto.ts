@@ -8,7 +8,7 @@ const elementSymbol = { key: 'inscribed-tanto-void', element: Element.Void };
 class InscribedTanto extends DrawCard {
     static id = 'inscribed-tanto';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => hasClaimedRing(this, elementSymbol.key, context.player),
             effect: immunity({
@@ -17,7 +17,7 @@ class InscribedTanto extends DrawCard {
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

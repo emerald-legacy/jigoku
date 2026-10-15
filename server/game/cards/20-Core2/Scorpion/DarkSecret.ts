@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DarkSecret extends DrawCard {
     static id = 'dark-secret';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Make the controller of attached character lose 1 honor')
             .when({
                 onMoveFate: (event, context) =>

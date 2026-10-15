@@ -8,7 +8,7 @@ import { moveHoldingAction, otherHoldingsInSameProvince } from '../../moveHoldin
 export default class SongOfTheEmptyCity extends DrawCard {
     static id = 'song-of-the-empty-city';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
 
         moveHoldingAction(this)

@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class StoicRival extends DrawCard {
     static id = 'stoic-rival';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Dishonor a participating character with fewer attachments')
             .condition((context) => context.source.attachments.length > 0 && context.source.isParticipating())
             .target({

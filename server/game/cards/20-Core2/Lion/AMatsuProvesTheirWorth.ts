@@ -9,7 +9,7 @@ import { attacksAloneWithTrait } from '../../attacksAlone.js';
 export default class AMatsuProvesTheirWorth extends DrawCard {
     static id = 'a-matsu-proves-their-worth';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prove yourself worthy of a Matsu name')
             .when({
                 onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, Trait.Bushi)

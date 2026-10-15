@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class PrivilegedPosition extends DrawCard {
     static id = 'privileged-position';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Your opponent may only declare 1 conflict opportunity this turn')
             .when({
                 onHonorDialsRevealed: (event, context) =>

@@ -128,15 +128,15 @@ export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
         return this;
     }
 
-    reset() {
+    override reset() {
         this.grantedAbilityLimits = {};
     }
 
-    copyForTarget(): GainAbility | undefined {
+    override copyForTarget(): GainAbility | undefined {
         return this.abilityType === AbilityType.Persistent ? this.getCopy() : undefined;
     }
 
-    apply(target: BaseCard) {
+    override apply(target: BaseCard) {
         const origin = { origin: this.context?.source };
         const grant = this.grant;
         if(grant.kind === AbilityType.Persistent) {
@@ -181,7 +181,7 @@ export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
         this.grantedAbilityLimits[target.uuid].currentUser = target.uuid;
     }
 
-    unapply(target: BaseCard) {
+    override unapply(target: BaseCard) {
         if(this.grantedAbilityLimits[target.uuid]) {
             this.grantedAbilityLimits[target.uuid].currentUser = null;
         }

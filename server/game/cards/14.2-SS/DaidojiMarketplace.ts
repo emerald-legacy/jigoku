@@ -5,7 +5,7 @@ import { Phase } from '../../Constants.js';
 class DaidojiMarketplace extends DrawCard {
     static id = 'daidoji-marketplace';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Reveal this holding\'s province')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

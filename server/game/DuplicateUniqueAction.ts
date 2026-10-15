@@ -6,9 +6,9 @@ import type DrawCard from './DrawCard.js';
 import { discardCard, placeFate } from './GameActions/GameActions.js';
 
 export class DuplicateUniqueAction extends PlayCardSourceAction {
-    title = 'Add fate to a duplicate';
+    override title = 'Add fate to a duplicate';
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []): Blocker {
+    override meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []): Blocker {
         if(!ignoredBlockers.includes(Blocker.Facedown) && this.card.isFacedown()) {
             return Blocker.Facedown;
         }
@@ -31,11 +31,11 @@ export class DuplicateUniqueAction extends PlayCardSourceAction {
         return super.meetsRequirements(context, ignoredBlockers);
     }
 
-    displayMessage(context: AbilityContext): void {
+    override displayMessage(context: AbilityContext): void {
         context.game.addMessage(msg`${context.player} discards a duplicate to add 1 fate to ${context.source}`);
     }
 
-    executeHandler(context: AbilityContext<DrawCard>): void {
+    override executeHandler(context: AbilityContext<DrawCard>): void {
         const duplicate = context.player.getDuplicateInPlay(context.source);
         context.game.resolveActions([placeFate({ target: duplicate }), discardCard({ target: context.source })], context);
     }

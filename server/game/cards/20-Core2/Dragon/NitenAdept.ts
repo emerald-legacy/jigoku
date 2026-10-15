@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class NitenAdept extends DrawCard {
     static id = 'niten-adept';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow character')
             .condition((context) => context.source.attachments.some((attachment) => attachment.controller === context.player))
             .target({

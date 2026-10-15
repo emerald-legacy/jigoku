@@ -5,7 +5,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 export default class SecretCache extends ProvinceCard {
     static id = 'secret-cache';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at top 5 cards')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source

@@ -18,7 +18,7 @@ function bonusSize(cards: DrawCard[]) {
 export default class YoungBeastmaster extends DrawCard {
     static id = 'young-beastmaster';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain a +X/+0 bonus')
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false

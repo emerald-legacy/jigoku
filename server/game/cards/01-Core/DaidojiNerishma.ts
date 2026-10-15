@@ -5,7 +5,7 @@ import { flipDynasty } from '../../GameActions/GameActions.js';
 class DaidojiNerishma extends DrawCard {
     static id = 'daidoji-nerishma';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Flip a card faceup')
             .target({
                 controller: Players.Self,

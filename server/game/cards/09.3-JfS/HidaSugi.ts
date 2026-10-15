@@ -6,7 +6,7 @@ import { Location } from '../../Constants.js';
 class HidaSugi extends DrawCard {
     static id = 'hida-sugi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Move a discarded dynasty card')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()

@@ -6,7 +6,7 @@ const elementKey = 'wandering-mediator-air';
 class WanderingMediator extends DrawCard {
     static id = 'wandering-mediator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move in/out the conflict')
             .condition((context) => context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false)
             .if((context) => context.source.isDrawCard() && context.source.isParticipating())
@@ -15,7 +15,7 @@ class WanderingMediator extends DrawCard {
                 .moveToConflict();
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

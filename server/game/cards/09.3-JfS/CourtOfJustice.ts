@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class CourtOfJustice extends DrawCard {
     static id = 'court-of-justice';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Look at 3 random cards of the opponent\'s hand')
             .when({
                 afterConflict: (event, context) =>

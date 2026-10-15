@@ -5,7 +5,7 @@ import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 export default class UnderAmaterasusGaze extends BattlefieldAttachment {
     static id = 'under-amaterasu-s-gaze';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
 
         this.persistentEffect({

@@ -5,7 +5,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class StrategicWeakpoint extends DrawCard {
     static id = 'strategic-weakpoint';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Force opponent to discard a character')
             .when({
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location

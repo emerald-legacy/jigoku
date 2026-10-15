@@ -6,7 +6,7 @@ import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 export default class AshenFlamePlateau extends ProvinceCard {
     static id = 'ashen-flame-plateau';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent opponent from triggering character abilities')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source

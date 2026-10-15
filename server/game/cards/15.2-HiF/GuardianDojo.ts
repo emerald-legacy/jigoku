@@ -5,7 +5,7 @@ import { Location, CharacterStatus, CardType, RestrictionType, RestrictionScope 
 class GuardianDojo extends DrawCard {
     static id = 'guardian-dojo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Any,
             match: (card, context) => card.type === CardType.Character

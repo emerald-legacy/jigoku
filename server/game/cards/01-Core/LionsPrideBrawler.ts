@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 class LionsPrideBrawler extends DrawCard {
     static id = 'lion-s-pride-brawler';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .condition((context) => context.source.isAttacking())
             .target({

@@ -5,7 +5,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class StrengthInNumbers extends DrawCard {
     static id = 'strength-in-numbers';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send home defending character')
             .condition((context) => context.player.isAttackingPlayer())
             .target({

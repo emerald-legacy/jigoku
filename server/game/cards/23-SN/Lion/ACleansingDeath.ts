@@ -6,7 +6,7 @@ import { gainHonor, joint, putIntoPlay } from '../../../GameActions/GameActions.
 export default class ACleansingDeath extends DrawCard {
     static id = 'a-cleansing-death';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put a character into play')
             .cost(costs.sacrifice({
                 cardType: CardType.Character,

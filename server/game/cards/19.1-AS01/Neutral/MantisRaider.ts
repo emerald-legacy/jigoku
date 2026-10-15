@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class MantisRaider extends DrawCard {
     static id = 'mantis-raider';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Steal a fate')
             .when({
                 onConflictStarted: (event, context) =>

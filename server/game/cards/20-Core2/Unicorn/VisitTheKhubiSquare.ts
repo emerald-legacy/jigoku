@@ -4,7 +4,7 @@ import { cheapCharacterSearch } from '../../cheapCharacterSearch.js';
 export default class VisitTheKhubiSquare extends ProvinceCard {
     static id = 'visit-the-khubi-square';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source

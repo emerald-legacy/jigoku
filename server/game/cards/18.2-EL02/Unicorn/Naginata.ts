@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Naginata extends DrawCard {
     static id = 'naginata';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => !!context.source.parentCharacter && context.source.controller.firstPlayer,
             effect: modifyMilitarySkill(1)

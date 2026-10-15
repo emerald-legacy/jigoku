@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class GiftOfTheNingyo extends DrawCard {
     static id = 'gift-of-the-ningyo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => (
                 Boolean(context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&

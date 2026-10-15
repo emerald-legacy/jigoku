@@ -4,7 +4,7 @@ import { cannotContribute } from '../../effects.js';
 class SilverTonguedMagistrate extends DrawCard {
     static id = 'silver-tongued-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             effect: cannotContribute((_conflict, context) => {

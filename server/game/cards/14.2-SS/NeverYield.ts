@@ -6,7 +6,7 @@ import { CardType, RestrictionType, RestrictionScope } from '../../Constants.js'
 class NeverYield extends DrawCard {
     static id = 'never-yield';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('characters can\'t bow or be sent home')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player

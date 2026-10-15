@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class TheArtOfPeace extends ProvinceCard {
     static id = 'the-art-of-peace';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Honor all defenders and dishonor all attackers')
             .when({
                 onBreakProvince: (event, context) => event.card === context.source

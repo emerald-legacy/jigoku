@@ -5,7 +5,7 @@ import { reduceNextPlayedCardCost } from '../../effects.js';
 class SakeHouseSmuggler extends DrawCard {
     static id = 'sake-house-smuggler';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce cost of next non-event card by 1')
             .phase(Phase.Conflict)
             .playerLastingEffect({

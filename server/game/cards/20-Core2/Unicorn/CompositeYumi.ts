@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class CompositeYumi extends DrawCard {
     static id = 'composite-yumi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Give attached character +1/+0')
             .when({
                 onMoveToConflict: (_, context) => this.matchCondition(context),

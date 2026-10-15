@@ -5,9 +5,9 @@ import { StrongholdCard } from '../../../StrongholdCard.js';
 export default class BreezeOfDawnLodge extends StrongholdCard {
     static id = 'breeze-of-dawn-lodge';
 
-    stealFirstPlayerDuringSetupWithMsg = '{0} takes the first player token. The speed of Lady Shinjo';
+    override stealFirstPlayerDuringSetupWithMsg = '{0} takes the first player token. The speed of Lady Shinjo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character into or out of the conflict')
             .cost(costs.bowSelf())
             .target({

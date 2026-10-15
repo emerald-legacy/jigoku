@@ -9,7 +9,7 @@ const decks = new DeckChoice({ players: Players.Self, pile: 'deck' });
 export default class StarlitSkies extends DrawCard {
     static id = 'starlit-skies';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at top 3 cards')
             .evenDuringDynasty()
             .selectFrom({

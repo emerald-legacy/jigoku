@@ -6,7 +6,7 @@ import { attach, selectCard } from '../../../GameActions/GameActions.js';
 class HiddenLineage extends DrawCard {
     static id = 'hidden-lineage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move an attachment')
             .target({
                 cardType: CardType.Attachment,

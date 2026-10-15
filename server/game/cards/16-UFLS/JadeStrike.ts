@@ -8,7 +8,7 @@ import { controlsShugenja } from '../controlsShugenja.js';
 class JadeStrike extends DrawCard {
     static id = 'jade-strike';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Set a characters base skills to 0/0')
             .playOnlyIf((context) => controlsShugenja(context.player))
             .target({

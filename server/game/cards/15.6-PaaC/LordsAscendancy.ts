@@ -6,7 +6,7 @@ import { placeFate } from '../../GameActions/GameActions.js';
 export default class LordsAscendancy extends ProvinceCard {
     static id = 'lord-s-ascendancy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Place a fate on a character')
             .target({
                 cardType: CardType.Character,

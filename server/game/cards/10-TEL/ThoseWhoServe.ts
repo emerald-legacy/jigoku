@@ -5,7 +5,7 @@ import {CardType, Duration, Phase} from '../../Constants.js';
 class ThoseWhoServe extends DrawCard {
     static id = 'those-who-serve';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce the cost of your characters by 1 this phase')
             .phase(Phase.Dynasty)
             .playerLastingEffect({

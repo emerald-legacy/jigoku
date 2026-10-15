@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KakitaMio extends DrawCard {
     static id = 'kakita-mio';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.tutored('Writ of Sanctification');
 
         this.conflictAction('Give Corrupt to a character', { evenFromHome: true })

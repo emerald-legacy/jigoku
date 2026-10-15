@@ -6,8 +6,8 @@ import { BaseAbility } from '../BaseAbility.js';
 import { bow, ready } from '../GameActions/GameActions.js';
 
 export class WaterRingAbility extends BaseAbility {
-    public title = 'Water Ring Effect';
-    public cannotTargetFirst = true;
+    public override title = 'Water Ring Effect';
+    public override cannotTargetFirst = true;
     public defaultPriority = 3; // Default resolution priority when players have ordering switched off
 
     constructor(
@@ -26,7 +26,7 @@ export class WaterRingAbility extends BaseAbility {
         });
     }
 
-    public executeHandler(context: AbilityContext) {
+    public override executeHandler(context: AbilityContext) {
         if(!context.target) {
             context.game.addMessage(msg`${context.player} chooses not to resolve the ${'water'} ring`);
             this.onResolution(false);

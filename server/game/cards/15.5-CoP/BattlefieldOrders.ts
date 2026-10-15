@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class BattlefieldOrders extends DrawCard {
     static id = 'battlefield-orders';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

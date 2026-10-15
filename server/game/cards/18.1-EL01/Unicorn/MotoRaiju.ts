@@ -10,7 +10,7 @@ function bonus(context: AbilityContext): number {
 export default class MotoRaiju extends DrawCard {
     static id = 'moto-raiju';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Get a military skill bonus')
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(bonus(context))

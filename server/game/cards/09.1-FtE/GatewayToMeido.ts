@@ -7,7 +7,7 @@ import { gainPlayAction } from '../../effects.js';
 export default class GatewayToMeido extends ProvinceCard {
     static id = 'gateway-to-meido';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetLocation: Location.DynastyDiscardPile,
@@ -19,7 +19,7 @@ export default class GatewayToMeido extends ProvinceCard {
         });
     }
 
-    public cannotBeStrongholdProvince() {
+    public override cannotBeStrongholdProvince() {
         return true;
     }
 }

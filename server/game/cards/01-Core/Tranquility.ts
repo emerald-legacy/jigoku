@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class Tranquility extends DrawCard {
     static id = 'tranquility';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Opponent\'s characters at home can\'t use abilities')
             .condition((context) => this.game.isDuringConflict() && context.player.opponent !== undefined)
             .cardLastingEffect((context) => ({

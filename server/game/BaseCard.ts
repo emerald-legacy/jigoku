@@ -104,7 +104,7 @@ export class BaseCard extends EffectSource {
     printedName: string;
     declare printedType: CardType;
     inConflict = false;
-    facedown: boolean = false;
+    override facedown: boolean = false;
     bowed = false;
 
     tokens: Record<string, number> = {};
@@ -178,15 +178,15 @@ export class BaseCard extends EffectSource {
         return this.mostRecentEffect(EffectName.CopyCharacter) || this.mostRecentEffect(EffectName.CopyProvince) || undefined;
     }
 
-    get name(): string {
+    override get name(): string {
         return this.copiedCard?.printedName ?? this.printedName;
     }
 
-    set name(name: string) {
+    override set name(name: string) {
         this.printedName = name;
     }
 
-    get type(): CardType {
+    override get type(): CardType {
         return this.getType();
     }
 
@@ -279,11 +279,11 @@ export class BaseCard extends EffectSource {
         return this._getPersistentEffects();
     }
 
-    getEffectController(): Player {
+    override getEffectController(): Player {
         return this.controller;
     }
 
-    getPersistentEffectRecords(): readonly StoredPersistentEffect[] {
+    override getPersistentEffectRecords(): readonly StoredPersistentEffect[] {
         return this.persistentEffects;
     }
 
@@ -502,7 +502,7 @@ export class BaseCard extends EffectSource {
         return false;
     }
 
-    hasKeyword(keyword: string): boolean {
+    override hasKeyword(keyword: string): boolean {
         const targetKeyword = keyword.toLowerCase();
         // with lost gained abilities, only the card's own effects add keywords
         const added = this.anyEffect(EffectName.LoseGainedAbilities)
@@ -518,7 +518,7 @@ export class BaseCard extends EffectSource {
         return this.printedKeywords.includes(keyword);
     }
 
-    hasTrait(trait: Trait): boolean {
+    override hasTrait(trait: Trait): boolean {
         return this.hasSomeTrait(trait);
     }
 
@@ -541,7 +541,7 @@ export class BaseCard extends EffectSource {
         return [...other.getTraits()].some((trait) => traits.has(trait));
     }
 
-    getTraits(): Set<string> {
+    override getTraits(): Set<string> {
         const set = new Set(this.printedTraits());
 
         for(const gainedTrait of this.getEffects(EffectName.AddTrait)) {
@@ -563,7 +563,7 @@ export class BaseCard extends EffectSource {
         return traitsBlanked ? [] : this.traits;
     }
 
-    isFaction(faction: string): boolean {
+    override isFaction(faction: string): boolean {
         const cardFactions = this.getFactions();
         if(faction === 'neutral') {
             return cardFactions.has(faction) && cardFactions.size === 1;
@@ -812,7 +812,7 @@ export class BaseCard extends EffectSource {
         this.bowed = false;
     }
 
-    isUnique(): boolean {
+    override isUnique(): boolean {
         return !!this.cardData.is_unique;
     }
 
@@ -820,11 +820,11 @@ export class BaseCard extends EffectSource {
         return this.anyEffect(EffectName.Blank) || this.anyEffect(EffectName.CopyCharacter) || this.anyEffect(EffectName.CopyProvince);
     }
 
-    getPrintedFaction(): string {
+    override getPrintedFaction(): string {
         return this.printedFaction;
     }
 
-    checkRestrictions(actionType: RestrictionType | PlayType | undefined, context: AbilityContext): boolean {
+    override checkRestrictions(actionType: RestrictionType | PlayType | undefined, context: AbilityContext): boolean {
         const player = context?.player || this.controller;
         const conflict = context?.game?.currentConflict;
         return (
@@ -842,7 +842,7 @@ export class BaseCard extends EffectSource {
         this.tokens[type] = this.getTokenCount(type) + number;
     }
 
-    hasToken(type: string): boolean {
+    override hasToken(type: string): boolean {
         return this.getTokenCount(type) > 0;
     }
 
@@ -1079,14 +1079,14 @@ export class BaseCard extends EffectSource {
         return symbol.element;
     }
 
-    public getShortSummary() {
+    public override getShortSummary() {
         return {
             ...super.getShortSummary(),
             packId: this.packId
         };
     }
 
-    public getShortSummaryForControls(activePlayer: StateViewer) {
+    public override getShortSummaryForControls(activePlayer: StateViewer) {
         if(this.isFacedown() && (activePlayer !== this.controller || this.hideWhenFacedown())) {
             return { facedown: true, isDynasty: this.isDynasty, isConflict: this.isConflict };
         }

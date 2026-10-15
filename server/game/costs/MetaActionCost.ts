@@ -15,18 +15,18 @@ import { GameActionCost } from './GameActionCost.js';
  */
 export class MetaActionCost extends GameActionCost implements Cost {
     constructor(
-        public action: SelectCardAction | SelectRingAction,
+        public override action: SelectCardAction | SelectRingAction,
         public activePromptTitle: string,
         private resultKey?: string
     ) {
         super(action);
     }
 
-    getActionName(context: AbilityContext): string {
+    override getActionName(context: AbilityContext): string {
         return this.resultKey ?? this.action.getProperties(context).gameAction.name;
     }
 
-    canPay(context: AbilityContext): boolean {
+    override canPay(context: AbilityContext): boolean {
         const properties = this.action.getProperties(context);
         const additionalProps = {
             controller: Players.Self,
@@ -35,7 +35,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
         return this.action.hasLegalTarget(context, additionalProps);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, result: Result): void {
+    override addEventsToArray(events: Event[], context: AbilityContext, result: Result): void {
         const properties = this.action.getProperties(context);
         const name = this.getActionName(context);
         const chosen = properties.targets && context.choosingPlayerOverride && 'selector' in properties && properties.selector
@@ -72,7 +72,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
         return this.action.hasTargetsChosenByInitiatingPlayer(context);
     }
 
-    getCostMessage(context: AbilityContext): CostMessage {
+    override getCostMessage(context: AbilityContext): CostMessage {
         const properties = this.action.getProperties(context);
         return typeof properties.gameAction === 'function' ? [] : properties.gameAction.getCostMessage(context) ?? [];
     }

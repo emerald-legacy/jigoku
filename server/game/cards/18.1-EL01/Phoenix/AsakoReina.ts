@@ -22,7 +22,7 @@ const elementKeys = {
 class AsakoReina extends DrawCard {
     static id = 'asako-reina';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain boons based on your currently claimed rings')
             .gainHonor((context) => ({
                 target: context.player,
@@ -77,7 +77,7 @@ class AsakoReina extends DrawCard {
         return `${boons.slice(0, -1).join(', ')} and ${boons[boons.length - 1]}`;
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKeys.air,

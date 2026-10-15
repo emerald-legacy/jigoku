@@ -7,7 +7,7 @@ import { DuelType } from '../../Constants.js';
 class LoyalChallenger extends DrawCard {
     static id = 'loyal-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
                 delayedEffect({

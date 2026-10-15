@@ -5,7 +5,7 @@ import { gainExtraFateWhenPlayed } from '../../../effects.js';
 export default class TheEmeraldCourt extends ProvinceCard {
     static id = 'the-emerald-court';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,

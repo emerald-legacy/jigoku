@@ -6,7 +6,7 @@ import { CardType } from '../../Constants.js';
 class MasashigisSacrifice extends DrawCard {
     static id = 'masashigi-s-sacrifice';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Defending characters do not bow as a result of conflict resolution')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.sacrifice({

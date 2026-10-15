@@ -13,7 +13,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ForcedRetirement extends DrawCard {
     static id = 'forced-retirement';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Remove negative status tokens from a character, and discard it from play')
             .target({
                 cardType: CardType.Character,

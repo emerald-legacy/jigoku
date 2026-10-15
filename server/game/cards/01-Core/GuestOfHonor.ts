@@ -5,7 +5,7 @@ import { playerCannot } from '../../effects.js';
 class GuestOfHonor extends DrawCard {
     static id = 'guest-of-honor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Opponent,

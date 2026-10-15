@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class Breakthrough extends DrawCard {
     static id = 'breakthrough';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Declare a new conflict')
             .when({
                 onConflictFinished: (event, context) =>

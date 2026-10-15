@@ -6,7 +6,7 @@ import { Location, Players, Trait } from '../../Constants.js';
 class AncestralArmory extends DrawCard {
     static id = 'ancestral-armory';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Return a weapon attachment in your conflict discard pile to your hand')
             .cost(costs.sacrificeSelf())
             .target({

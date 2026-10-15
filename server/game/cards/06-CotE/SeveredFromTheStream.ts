@@ -4,7 +4,7 @@ import { noAction, performGloryCount, returnRing } from '../../GameActions/GameA
 class SeveredFromTheStream extends DrawCard {
     static id = 'severed-from-the-stream';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Return player\'s rings')
             .gameAction(performGloryCount({
                 gameAction: (winner) => (winner && winner.opponent)

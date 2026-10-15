@@ -6,7 +6,7 @@ import { perRound } from '../../../AbilityLimit.js';
 export default class WebisusBlessing extends DrawCard {
     static id = 'webisu-s-blessing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard status tokens')
             .tokenTarget({
                 name: 'first',

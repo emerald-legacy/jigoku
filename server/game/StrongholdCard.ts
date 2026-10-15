@@ -5,8 +5,8 @@ import type { StateViewer } from './types/StateViewer.js';
 import type { Location } from './Constants.js';
 
 export class StrongholdCard extends BaseCard {
-    menu = [{ command: 'bow', text: 'Bow/Ready' }];
-    isStronghold = true;
+    override menu = [{ command: 'bow', text: 'Bow/Ready' }];
+    override isStronghold = true;
     stealFirstPlayerDuringSetupWithMsg?: string;
     private childCardHost = new ChildCardManager(this);
 
@@ -26,7 +26,7 @@ export class StrongholdCard extends BaseCard {
         this.childCardHost.remove(card, location);
     }
 
-    getFate(): number {
+    override getFate(): number {
         return this.cardData.fate ?? 0;
     }
 
@@ -34,11 +34,11 @@ export class StrongholdCard extends BaseCard {
         return this.cardData.influence_pool ?? 0;
     }
 
-    getProvinceStrengthBonus(): number {
+    override getProvinceStrengthBonus(): number {
         return parseInt(this.cardData.strength_bonus ?? '0');
     }
 
-    getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
+    override getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,

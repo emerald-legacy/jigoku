@@ -6,7 +6,7 @@ import { discardCard, dishonor, multiple } from '../../../GameActions/GameAction
 export default class AncestorAttendant extends DrawCard {
     static id = 'ancestor-attendant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Dishonor a character')
             .target({
                 cardCondition: (card, context) => !!context.player.opponent &&

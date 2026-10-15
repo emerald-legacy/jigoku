@@ -6,7 +6,7 @@ import { ProvinceAttachment } from '../ProvinceAttachment.js';
 class EducatedHeimin extends ProvinceAttachment {
     static id = 'educated-heimin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
@@ -34,7 +34,7 @@ class EducatedHeimin extends ProvinceAttachment {
         });
     }
 
-    protected controllerProvinceOnly(): boolean {
+    protected override controllerProvinceOnly(): boolean {
         return true;
     }
 }

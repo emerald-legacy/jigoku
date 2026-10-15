@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 class InHarmony extends DrawCard {
     static id = 'in-harmony';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => context.player.getClaimedRings().length >= 1);
 
         this.whileAttached({

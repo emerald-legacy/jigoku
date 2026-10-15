@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class RenownedSinger extends DrawCard {
     static id = 'renowned-singer';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Pick two cards in your discard pile')
             .condition((context) =>
                 context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2 &&

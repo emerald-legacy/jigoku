@@ -12,7 +12,7 @@ import { controlsShugenja } from '../../controlsShugenja.js';
 export default class IllusionaryDecoy extends DrawCard {
     static id = 'illusionary-decoy';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Put into play')
             .when({
                 onConflictStarted: (_event, context) => controlsShugenja(context.player)

@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class ChildOfSaltlessWater extends DrawCard {
     static id = 'child-of-saltless-water';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: delayedEffect({
                 condition: (context) => context.source.isDrawCard() && !context.source.isParticipating(),

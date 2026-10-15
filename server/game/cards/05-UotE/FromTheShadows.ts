@@ -5,7 +5,7 @@ import { Location, Players, CardType, Trait } from '../../Constants.js';
 class FromTheShadows extends DrawCard {
     static id = 'from-the-shadows';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put a shinobi character into the conflict from hand or a province, dishonored')
             .playOnlyIf((context) => !!context.player.opponent && context.player.isLessHonorable())
             .target({

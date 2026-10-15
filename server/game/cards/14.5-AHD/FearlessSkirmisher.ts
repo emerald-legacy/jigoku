@@ -5,7 +5,7 @@ import { Location, CharacterStatus, CardType, ConflictType } from '../../Constan
 class FearlessSkirmisher extends DrawCard {
     static id = 'fearless-skirmisher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Move a dishonored status token')
             .when({
                 afterConflict: (event, context) =>

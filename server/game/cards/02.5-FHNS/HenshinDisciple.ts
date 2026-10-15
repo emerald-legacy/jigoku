@@ -13,7 +13,7 @@ const elementKeys = {
 class HenshinDisciple extends DrawCard {
     static id = 'henshin-disciple';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => this.hasClaimedOrIsContesting(elementKeys.air, context.player),
             effect: modifyPoliticalSkill(2)
@@ -34,7 +34,7 @@ class HenshinDisciple extends DrawCard {
             !!(this.game.isDuringConflict(element) && this.game.currentConflict?.ring?.isContested());
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKeys.air,

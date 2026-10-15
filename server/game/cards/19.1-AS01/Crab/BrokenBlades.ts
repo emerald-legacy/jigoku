@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class BrokenBlades extends DrawCard {
     static id = 'broken-blades';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Return all fate from a character then discard them')
             .when({
                 afterConflict: (event, context) =>

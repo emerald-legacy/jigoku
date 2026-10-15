@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class WaseitsBlessing extends DrawCard {
     static id = 'waseit-s-blessing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send a character home from each side')
             .target({
                 name: 'myCharacter',

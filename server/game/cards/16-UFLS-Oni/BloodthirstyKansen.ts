@@ -3,7 +3,7 @@ import { BaseOni } from './_BaseOni.js';
 export default class BloodthirstyKansen extends BaseOni {
     static id = 'bloodthirsty-kansen';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Resolve the contested ring')
             .when({

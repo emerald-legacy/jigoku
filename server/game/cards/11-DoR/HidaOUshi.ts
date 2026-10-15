@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class HidaOUshi extends DrawCard {
     static id = 'hida-o-ushi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain additional military conflict')
             .when({ afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player })
             .playerLastingEffect({

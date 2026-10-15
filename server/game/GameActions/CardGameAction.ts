@@ -19,7 +19,7 @@ export class CardGameAction<
     C extends AbilityContext = AbilityContext,
     D extends keyof P = never
 > extends GameAction<P, N, C, D> {
-    targetType = [
+    override targetType = [
         CardType.Character,
         CardType.Attachment,
         CardType.Holding,
@@ -30,15 +30,15 @@ export class CardGameAction<
         'ring'
     ];
 
-    defaultTargets(context: C): BaseCard[] {
+    override defaultTargets(context: C): BaseCard[] {
         return [context.source];
     }
 
-    checkEventCondition(event: ActionEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
+    override checkEventCondition(event: ActionEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return !!event.card && this.canAffect(event.card, event.context, additionalProperties);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
         for(const card of targetList(target)) {
             let allCostsPaid = true;
@@ -66,12 +66,12 @@ export class CardGameAction<
         }
     }
 
-    addPropertiesToEvent(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.card = card;
     }
 
-    isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): boolean {
+    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): boolean {
         return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 

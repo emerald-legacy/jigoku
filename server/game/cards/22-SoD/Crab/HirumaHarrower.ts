@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class HirumaHarrower extends DrawCard {
     static id = 'hiruma-harrower';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain military skill')
             .when({
                 onCardLeavesPlay: (event, context) => context.game.isDuringConflict() && event.card.type === CardType.Character

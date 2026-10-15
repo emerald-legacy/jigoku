@@ -4,7 +4,7 @@ import { gainActionPhasePriority } from '../../effects.js';
 class ChildOfThePlains extends DrawCard {
     static id = 'child-of-the-plains';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Get first action')
             .when({
                 onCardRevealed: (event, context) =>

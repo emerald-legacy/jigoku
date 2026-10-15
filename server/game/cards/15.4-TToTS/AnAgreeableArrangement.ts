@@ -49,7 +49,7 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
 class AnAgreeableArrangement extends DrawCard {
     static id = 'an-agreeable-arrangement';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a non-champion')
             .cost(agreeableCost())
             .target({

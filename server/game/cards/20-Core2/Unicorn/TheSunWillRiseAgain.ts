@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TheSunWillRiseAgain extends DrawCard {
     static id = 'the-sun-will-rise-again';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain an additional conflict')
             .when({
                 afterConflict: (event, context) =>

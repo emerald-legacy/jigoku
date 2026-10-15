@@ -5,7 +5,7 @@ import { Location } from '../../Constants.js';
 class MeishodoWielder extends DrawCard {
     static id = 'meishodo-wielder';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             condition: (context) => this.game.getFirstPlayer() === context.player,

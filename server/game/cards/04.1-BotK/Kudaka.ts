@@ -8,7 +8,7 @@ const elementSymbol = { key: 'kudaka-air', element: Element.Air };
 class Kudaka extends DrawCard {
     static id = 'kudaka';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain 1 fate and draw 1 card')
             .when({
                 onClaimRing: (event, context) => claimsRingOf(this, elementSymbol.key, event) && event.player === context.player
@@ -18,7 +18,7 @@ class Kudaka extends DrawCard {
             .limit(perRound(2));
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

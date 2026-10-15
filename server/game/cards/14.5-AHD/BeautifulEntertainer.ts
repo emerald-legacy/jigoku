@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class BeautifulEntertainer extends DrawCard {
     static id = 'beautiful-entertainer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Gain 2 Honor')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source && context.player.opponent && context.player.isLessHonorable()

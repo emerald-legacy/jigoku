@@ -7,7 +7,7 @@ import { cardLastingEffect, honor } from '../../GameActions/GameActions.js';
 class APerfectCut extends DrawCard {
     static id = 'a-perfect-cut';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

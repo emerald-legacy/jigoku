@@ -4,7 +4,7 @@ import { CardType } from '../../Constants.js';
 class AudienceChamber extends DrawCard {
     static id = 'audience-chamber';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place fate on character')
             .when({
                 onCardPlayed: (event, context) =>

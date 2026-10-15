@@ -8,7 +8,7 @@ import { attachSearchedCard } from '../../attachSearchedCard.js';
 export default class KaiuNoIshiTauro extends DrawCard {
     static id = 'kaiu-no-ishi-tauro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Return rings to fetch an attachment')
             .cost(costs.returnRings())
             .target({

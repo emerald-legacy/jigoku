@@ -7,7 +7,7 @@ import { CardType, Trait } from '../../Constants.js';
 class DiscouragePursuit extends DrawCard {
     static id = 'discourage-pursuit';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give -4 military to a participating character')
             .cost(costs.dishonor({ cardCondition: (card) => card.hasTrait(Trait.Shinobi) }))
             .target({

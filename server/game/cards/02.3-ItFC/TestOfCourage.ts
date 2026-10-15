@@ -5,7 +5,7 @@ import { Players, CardType } from '../../Constants.js';
 class TestOfCourage extends DrawCard {
     static id = 'test-of-courage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character into conflict')
             .condition((context) => context.game.isDuringConflict() && !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid))
             .target({

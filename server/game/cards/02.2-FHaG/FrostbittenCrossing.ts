@@ -4,7 +4,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class FrostbittenCrossing extends ProvinceCard {
     static id = 'frostbitten-crossing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard all attachments from a character')
             .target({
                 cardType: CardType.Character,

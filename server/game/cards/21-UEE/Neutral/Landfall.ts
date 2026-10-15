@@ -4,7 +4,7 @@ import { placeInProvinces } from '../../placeInProvinces.js';
 export default class Landfall extends ProvinceCard {
     static id = 'landfall';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at your dynasty deck')
             .when({
                 onCardRevealed: (event, context) =>

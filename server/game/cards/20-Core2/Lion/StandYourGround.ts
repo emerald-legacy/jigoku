@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class StandYourGround extends DrawCard {
     static id = 'stand-your-ground';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Prevent a character from leaving play')
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.isHonored

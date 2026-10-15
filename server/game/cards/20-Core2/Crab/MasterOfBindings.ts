@@ -3,7 +3,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MasterOfBindings extends DrawCard {
     static id = 'master-of-bindings';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Bow a character that just readied')
             .when({
                 onCardReadied: ({ card }, context) =>

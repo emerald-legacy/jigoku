@@ -5,7 +5,7 @@ import { CardType, AbilityType } from '../../Constants.js';
 class TogashiKazue2 extends DrawCard {
     static id = 'togashi-kazue-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => !!context && card.controller === context.player && card.type === CardType.Character,
             effect: gainAbility(AbilityType.Persistent, {

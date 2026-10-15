@@ -27,10 +27,10 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
     C,
     'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised'
 > {
-    name = 'attach';
-    eventName = EventName.OnCardAttached;
-    targetType = [CardType.Character, CardType.Province];
-    defaultProperties = {
+    override name = 'attach';
+    override eventName = EventName.OnCardAttached;
+    override targetType = [CardType.Character, CardType.Province];
+    override defaultProperties = {
         ignoreType: false,
         takeControl: false,
         giveControl: false,
@@ -38,7 +38,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         viaDisguised: false
     };
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.takeControl) {
             return ['take control of and attach {2}\'s {1} to {0}', [properties.attachment, properties.attachment?.parent]];
@@ -48,7 +48,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         return ['attach {1} to {0}', [properties.attachment]];
     }
 
-    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.viaDisguised) {
             return true;
@@ -83,16 +83,16 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         return properties.attachment?.controller ?? context.player;
     }
 
-    checkEventCondition(event: AttachEvent<C>, additionalProperties: Record<string, unknown>): boolean {
+    override checkEventCondition(event: AttachEvent<C>, additionalProperties: Record<string, unknown>): boolean {
         return this.canAffect(event.parent, event.context, additionalProperties);
     }
 
-    isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): boolean {
+    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): boolean {
         const { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
-    addPropertiesToEvent(event: AttachEvent<C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: AttachEvent<C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): void {
         const properties = this.getProperties(context, additionalProperties);
         event.parent = card;
         if(properties.attachment) {
@@ -106,7 +106,7 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
         }
     }
 
-    eventHandler(event: AttachEvent<C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: AttachEvent<C>, additionalProperties: ActionOverrides = {}): void {
         const card = event.card;
         const parent = event.parent;
         const context = event.context;

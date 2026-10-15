@@ -4,7 +4,7 @@ import { perConflict } from '../../AbilityLimit.js';
 class StaunchHida extends DrawCard {
     static id = 'staunch-hida';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve the ring effect')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()

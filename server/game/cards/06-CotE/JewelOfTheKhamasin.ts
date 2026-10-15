@@ -8,7 +8,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class JewelOfTheKhamasin extends DrawCard {
     static id = 'jewel-of-the-khamasin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce province strength')
             .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
             .cost(costs.payHonor(1))

@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class RediscoveredShrine extends DrawCard {
     static id = 'rediscovered-shrine';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Reduce cost of next event')
             .when({
                 onCardPlayed: (event, context) => {

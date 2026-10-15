@@ -22,23 +22,23 @@ export interface HonorBidProperties<C extends AbilityContext = AbilityContext> e
 type HonorBidEvent<C extends AbilityContext> = ActionEvent<EventName.OnHonorBid, C> & { prohibitedBids: number[] };
 
 export class HonorBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<HonorBidProperties, EventName.OnHonorBid, C, 'giveHonor' | 'prohibitedBids' | 'players'> {
-    name = 'honorBid';
-    eventName = EventName.OnHonorBid;
-    defaultProperties = {
+    override name = 'honorBid';
+    override eventName = EventName.OnHonorBid;
+    override defaultProperties = {
         giveHonor: false,
         prohibitedBids: [],
         players: Players.Any
     };
 
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return this.getProperties(context, additionalProperties).giveHonor
             ? ['bid honor', []]
             : ['have {0} select a value on their honor dial', []];
     }
 
     /** The bidding players; none when giving honor, whose message names nobody. */
-    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.giveHonor) {
             return undefined;
@@ -60,7 +60,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         return players;
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { giveHonor, prohibitedBids, players, postBidAction, message } = this.getProperties(
             context,
             additionalProperties
@@ -73,7 +73,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         event.message = message;
     }
 
-    eventHandler(event: HonorBidEvent<C>): void {
+    override eventHandler(event: HonorBidEvent<C>): void {
         const context = event.context;
 
         if(event.players === Players.Any) {

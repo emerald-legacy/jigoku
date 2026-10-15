@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IncessantMoto extends DrawCard {
     static id = 'incessant-moto';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,

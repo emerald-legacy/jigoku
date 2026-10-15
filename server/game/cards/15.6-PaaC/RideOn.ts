@@ -5,7 +5,7 @@ import { Players, CardType, Trait } from '../../Constants.js';
 class RideOn extends DrawCard {
     static id = 'ride-on';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character into or out of the conflict')
             .target({
                 name: 'character',

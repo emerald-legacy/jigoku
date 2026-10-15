@@ -46,7 +46,7 @@
 export default class TotalWarfare extends BattlefieldAttachment {
     static id = 'total-warfare';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.forcedReaction('Loser sacrifices a character')
             .when({
@@ -80,7 +80,7 @@ export default class TotalWarfare extends BattlefieldAttachment {
 class InventiveButtressing extends ProvinceAttachment {
     static id = 'inventive-buttressing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () =&gt; this.game.isDuringConflict(ConflictType.Military),
             targetLocation: Location.Provinces,
@@ -108,7 +108,7 @@ class InventiveButtressing extends ProvinceAttachment {
 class GreaterUnderstanding extends RingAttachment {
     static id = 'greater-understanding';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve the attached ring\'s effect')
             .when({
                 onMoveFate: (event) =&gt; event.recipient === this.parent,
@@ -733,11 +733,27 @@ this.action('Select a player to lose an honor and draw a card')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Counts characters at home and in the conflict. For "a participating Shugenja" check <code>card.isParticipating()</code> yourself.</li>
+      <li>Counts characters at home and in the conflict. For "a participating Shugenja" use <code>controlsParticipating(player, Trait.Shugenja)</code>.</li>
     </ul>
     <pre><code>// Cloud the Mind: Play only if you control a Shugenja character.
 this.playOnlyIf((context) =&gt; controlsShugenja(context.player));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CloudTheMind.ts">Cloud the Mind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/TsangusuriWard.ts">Tsangusuri Ward</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/EarthsStagnation.ts">Earth's Stagnation</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/WingsOfThePhoenix.ts">Wings of the Phoenix</a> (28 card files)</p>
+  </div>
+
+  <div class="ref" id="he-controlsParticipating" data-name="controlsParticipating">
+    <h3><code>controlsParticipating(player, ...traits)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-controlsParticipating">#</a></h3>
+    <p>"If you control a participating [trait] character." True if the player has a participating character with any of the traits.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>player</code></td><td><code>Player</code></td><td>required</td><td>Usually <code>context.player</code>.</td></tr>
+        <tr><td><code>...traits</code></td><td><code>Trait[]</code></td><td>required</td><td>One or more traits; a character with any of them counts.</td></tr>
+      </tbody>
+    </table>
+    <pre><code>// Arrows from the Woods: … if you control a participating Bushi character.
+.condition((context) =&gt; context.game.isDuringConflict(ConflictType.Military) &amp;&amp;
+    controlsParticipating(context.player, Trait.Bushi))</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/AllDistancesAreOne.ts">All Distances Are One</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/ArrowsFromTheWoods.ts">Arrows from the Woods</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/AwakeTheFearfulHeart.ts">Awake the Fearful Heart</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/ChikaiOrderProtector.ts">Chikai Order Protector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/DisdainfulRemark.ts">Disdainful Remark</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/EsteemedTeaHouse.ts">Esteemed Tea House</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForShame.ts">For Shame</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/HeartOfTheInferno.ts">Heart of the Inferno</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/RegalBearing.ts">Regal Bearing</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Neutral/TheMaidensIcyGrasp.ts">The Maiden's Icy Grasp</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/UseTheTerrain.ts">Use the Terrain</a></p>
   </div>
 
   <div class="ref" id="he-countCardsUnderneath" data-name="countCardsUnderneath">
@@ -937,7 +953,7 @@ const elementSymbols = [
 class ThirdTowerGuard extends DrawCard {
     static id = 'third-tower-guard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =&gt; hasClaimedAnyRing(this, elementSymbols, context.player),
             effect: modifyMilitarySkill(2)

@@ -5,7 +5,7 @@ import { cheapCharacterSearch } from '../cheapCharacterSearch.js';
 export default class ShinjoGunso extends DrawCard {
     static id = 'shinjo-gunso';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
                 onCardPlayed: (event, context) =>

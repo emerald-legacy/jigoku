@@ -7,7 +7,7 @@ import { playerChoices } from '../playerChoices.js';
 class ChancellorsAide extends DrawCard {
     static id = 'chancellor-s-aide';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Player discards a card')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

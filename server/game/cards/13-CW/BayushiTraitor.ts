@@ -10,7 +10,7 @@ import {
 class BayushiTraitor extends DrawCard {
     static id = 'bayushi-traitor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             condition: (context) => context.player.opponent !== undefined && context.source.controller !== context.source.owner,

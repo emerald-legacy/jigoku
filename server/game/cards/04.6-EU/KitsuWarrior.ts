@@ -6,7 +6,7 @@ import { countClaimedRings } from '../claimedRings.js';
 class KitsuWarrior extends DrawCard {
     static id = 'kitsu-warrior';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
                 modifyMilitarySkill(() => 2 * countClaimedRings(this.game, (ring) => ring.isConflictType(ConflictType.Military))),

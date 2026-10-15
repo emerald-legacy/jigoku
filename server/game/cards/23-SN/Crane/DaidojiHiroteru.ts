@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class DaidojiHiroteru extends DrawCard {
     static id = 'daidoji-hiroteru';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,

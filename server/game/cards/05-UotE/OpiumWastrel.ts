@@ -6,7 +6,7 @@ import { CardType } from '../../Constants.js';
 class OpiumWastrel extends DrawCard {
     static id = 'opium-wastrel';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => !!context.player.opponent && context.player.isLessHonorable());
 
         this.reaction('Set a character\'s glory to 0')

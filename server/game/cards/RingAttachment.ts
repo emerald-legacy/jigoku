@@ -4,15 +4,15 @@ import DrawCard from '../DrawCard.js';
 import type Ring from '../Ring.js';
 
 export class RingAttachment extends DrawCard {
-    public canPlayOn(source: BaseCard | Ring) {
+    public override canPlayOn(source: BaseCard | Ring) {
         return source.isRing() && this.type === CardType.Attachment;
     }
 
-    public canAttach(parent?: BaseCard | Ring) {
+    public override canAttach(parent?: BaseCard | Ring) {
         return !!parent?.isRing() && this.type === CardType.Attachment;
     }
 
-    public mustAttachToRing() {
+    public override mustAttachToRing() {
         return this.type === CardType.Attachment;
     }
 }

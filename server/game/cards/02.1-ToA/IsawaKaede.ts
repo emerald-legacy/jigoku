@@ -7,7 +7,7 @@ const elementKey = 'isawa-kaede-void';
 class IsawaKaede extends DrawCard {
     static id = 'isawa-kaede';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: immunity({
                 appliesTo: RestrictionScope.OpponentsRingEffects
@@ -22,7 +22,7 @@ class IsawaKaede extends DrawCard {
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

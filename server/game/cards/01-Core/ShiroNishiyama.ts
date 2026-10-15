@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class ShiroNishiyama extends StrongholdCard {
     static id = 'shiro-nishiyama';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give defending characters +1/+1')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.bowSelf())

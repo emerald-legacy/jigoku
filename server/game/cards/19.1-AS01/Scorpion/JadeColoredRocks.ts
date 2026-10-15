@@ -5,7 +5,7 @@ import { discardAtRandom, loseFate, loseHonor } from '../../../GameActions/GameA
 export default class JadeColoredRocks extends ProvinceCard {
     static id = 'jade-colored-rocks';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Make your opponent lose a resource')
             .select({
                 player: Players.Self,

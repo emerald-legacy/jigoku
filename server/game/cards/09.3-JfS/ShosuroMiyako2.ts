@@ -7,7 +7,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 class ShosuroMiyako2 extends DrawCard {
     static id = 'shosuro-miyako-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             effect: playerCannot({
@@ -27,7 +27,7 @@ class ShosuroMiyako2 extends DrawCard {
             }, dishonor());
     }
 
-    canDisguise(card: DrawCard, context: AbilityContext, intoConflictOnly: boolean) {
+    override canDisguise(card: DrawCard, context: AbilityContext, intoConflictOnly: boolean) {
         return !card.isFaction('scorpion') &&
             discardFromPlay().canAffect(card, context) &&
             !card.isUnique() &&

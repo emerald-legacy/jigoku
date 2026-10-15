@@ -5,7 +5,7 @@ import { entersPlayWithStatus, reduceCost } from '../../effects.js';
 export default class ShinseisLastHope extends ProvinceCard {
     static id = 'shinsei-s-last-hope';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: reduceCost({
                 amount: 2,

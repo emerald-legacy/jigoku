@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CentipedeTattoo extends DrawCard {
     static id = 'centipede-tattoo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({ trait: Trait.Monk });
 
         this.whileAttached({ effect: addTrait(Trait.Tattooed) });

@@ -15,7 +15,7 @@ import type { GameAction } from '../../../GameActions/GameAction.js';
 export default class ChroniclerOfCalamities extends DrawCard {
     static id = 'chronicler-of-calamities';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Dishonor or move home a character')
             .target({
                 cardType: CardType.Character,

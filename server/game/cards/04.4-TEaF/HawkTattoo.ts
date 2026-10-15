@@ -6,7 +6,7 @@ import { Duration, Trait } from '../../Constants.js';
 class HawkTattoo extends DrawCard {
     static id = 'hawk-tattoo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

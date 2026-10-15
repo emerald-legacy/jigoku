@@ -4,7 +4,7 @@ import { Location } from '../../Constants.js';
 class GuidanceOfTheAncestors extends DrawCard {
     static id = 'guidance-of-the-ancestors';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Play this from the discard pile')
             .location(Location.ConflictDiscardPile)
             .playCard({

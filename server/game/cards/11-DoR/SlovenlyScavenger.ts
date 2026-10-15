@@ -10,7 +10,7 @@ const discardPiles = new DeckChoice({ players: Players.Any, pile: 'discard pile'
 class SlovenlyScavenger extends DrawCard {
     static id = 'slovenly-scavenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Shuffle a discard pile into a deck')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()

@@ -5,7 +5,7 @@ import { bow, dishonor, multiple, sendHome } from '../../GameActions/GameActions
 class ArbiterOfAuthority extends DrawCard {
     static id = 'arbiter-of-authority';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,

@@ -5,7 +5,7 @@ import { moveToConflict } from '../../GameActions/GameActions.js';
 class OpenWindow extends DrawCard {
     static id = 'open-window';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a Shinobi into the conflict')
             .target({
                 cardType: CardType.Character,

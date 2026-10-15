@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class OpportunisticRustler extends DrawCard {
     static id = 'opportunistic-rustler';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at your opponent\'s dynasty deck')
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) && event.conflict.conflictType === ConflictType.Military

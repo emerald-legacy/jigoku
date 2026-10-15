@@ -6,7 +6,7 @@ import { addKeyword } from '../../effects.js';
 class IuchiShahai2 extends DrawCard {
     static id = 'iuchi-shahai-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => this.game.getFirstPlayer() === context.player,
             effect: addKeyword('covert')

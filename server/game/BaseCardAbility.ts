@@ -13,7 +13,7 @@ import type Game from './Game.js';
  */
 export abstract class BaseCardAbility extends BaseAbility {
     card: BaseCard;
-    title?: string;
+    override title?: string;
 
     constructor(card: BaseCard, properties: ConstructorParameters<typeof BaseAbility>[0]) {
         super(properties);

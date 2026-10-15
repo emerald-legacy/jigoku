@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AFateWorseThanDeath2 extends DrawCard {
     static id = 'a-fate-worse-than-death-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow, move home, dishonor, remove a fate and blank a character')
             .target({
                 cardType: CardType.Character,

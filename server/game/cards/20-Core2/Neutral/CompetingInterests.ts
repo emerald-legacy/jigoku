@@ -6,7 +6,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 export default class CompetingInterests extends DrawCard {
     static id = 'competing-interests';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .condition((context) => this.hasEnoughUniques(context))
             .target({

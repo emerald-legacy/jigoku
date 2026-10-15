@@ -10,7 +10,7 @@ import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
 import { getPlayBlocker } from './playActionHelpers.js';
 
 export class PlayAttachmentToRingAction extends PlayCardSourceAction {
-    title = 'Play this attachment';
+    override title = 'Play this attachment';
 
     constructor(card: DrawCard) {
         super(card, [payTargetDependentFateCost('target')], {
@@ -20,7 +20,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
         });
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
+    override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
         if(
             !ignoredBlockers.includes(Blocker.WrongPhase) &&
             context.game.currentPhase === Phase.Dynasty &&
@@ -31,15 +31,15 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
         return getPlayBlocker(context.source, context, ignoredBlockers, PlayType.PlayFromHand) ?? super.meetsRequirements(context, ignoredBlockers);
     }
 
-    canResolveTargets() {
+    override canResolveTargets() {
         return true;
     }
 
-    displayMessage(context: AbilityContext) {
+    override displayMessage(context: AbilityContext) {
         context.game.addMessage(msg`${context.player} plays ${context.source}, attaching it to ${context.ring}`);
     }
 
-    executeHandler(context: AbilityContext<DrawCard>) {
+    override executeHandler(context: AbilityContext<DrawCard>) {
         const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         context.game.openEventWindow([
             attachToRing({ attachment: context.source }).getEvent(context.ring, context),
@@ -47,7 +47,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
         ]);
     }
 
-    isCardPlayed() {
+    override isCardPlayed() {
         return true;
     }
 }

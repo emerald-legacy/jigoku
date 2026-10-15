@@ -9,7 +9,7 @@ const elementSymbol = { key: 'isawa-ujina-void', element: Element.Void };
 class IsawaUjina extends DrawCard {
     static id = 'isawa-ujina';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('Remove a character from the game')
             .when({
                 onClaimRing: (event) => claimsRingOf(this, elementSymbol.key, event)
@@ -21,7 +21,7 @@ class IsawaUjina extends DrawCard {
             .limit(unlimited());
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

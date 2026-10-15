@@ -5,7 +5,7 @@ import { reduceNextPlayedCardCost } from '../../effects.js';
 class CityOfLies extends DrawCard {
     static id = 'city-of-lies';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce cost of next event by 1')
             .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,

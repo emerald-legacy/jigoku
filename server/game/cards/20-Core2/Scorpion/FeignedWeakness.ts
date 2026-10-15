@@ -7,7 +7,7 @@ import type Player from '../../../Player.js';
 export default class FeignedWeakness extends DrawCard {
     static id = 'feigned-weakness';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

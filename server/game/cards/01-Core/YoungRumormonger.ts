@@ -5,7 +5,7 @@ import { CardType, EventName } from '../../Constants.js';
 class YoungRumormonger extends DrawCard {
     static id = 'young-rumormonger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Honor/dishonor a different character')
             .when({
                 onCardHonored: (event) => event.card.type === CardType.Character,

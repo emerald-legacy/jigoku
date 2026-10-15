@@ -7,7 +7,7 @@ const elementKey = 'isawa-atsuko-void';
 class IsawaAtsuko extends DrawCard {
     static id = 'isawa-atsuko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Wield the power of the void')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
             .cardLastingEffect((context) => ({
@@ -21,7 +21,7 @@ class IsawaAtsuko extends DrawCard {
             .chatText('give friendly characters +1/+1 and opposing characters -1/-1');
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

@@ -11,7 +11,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KuniJuurou extends DrawCard {
     static id = 'kuni-juurou';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.controllerCannotPayHonorCostsEffect();
 
         this.persistentEffect({

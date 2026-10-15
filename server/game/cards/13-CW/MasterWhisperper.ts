@@ -6,7 +6,7 @@ import { playerChoices } from '../playerChoices.js';
 class MasterWhisperer extends DrawCard {
     static id = 'master-whisperer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Select a player to discard 3 cards and draw 3 cards')
             .selectFrom({
                 targets: true

@@ -5,7 +5,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class AlibiArtist extends DrawCard {
     static id = 'alibi-artist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at top 2 cards of conflict deck')
             .condition((context) => context.player.honor <= 6)
             .deckSearch({

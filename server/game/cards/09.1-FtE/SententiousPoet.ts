@@ -4,7 +4,7 @@ import { Stage } from '../../Constants.js';
 class SententiousPoet extends DrawCard {
     static id = 'sententious-poet';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain 1 fate')
             .when({
                 onSpendFate: (event, context) =>

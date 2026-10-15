@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class WayOfTheLion extends DrawCard {
     static id = 'way-of-the-lion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Double the base mil of a character')
             .target({
                 cardType: CardType.Character,

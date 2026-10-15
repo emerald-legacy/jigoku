@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class Yoritomo extends DrawCard {
     static id = 'yoritomo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyBothSkills((card) => card.controller.fate)
         });

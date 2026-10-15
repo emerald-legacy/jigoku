@@ -6,7 +6,7 @@ import { bow } from '../../../GameActions/GameActions.js';
 class Spearhead extends DrawCard {
     static id = 'spearhead';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .cost(costs.sacrifice({

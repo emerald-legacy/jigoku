@@ -4,7 +4,7 @@ import * as costs from '../../costs/index.js';
 class AncestralShrine extends DrawCard {
     static id = 'ancestral-shrine';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Return rings to gain honor')
             .cost(costs.returnRings())
             .gainHonor((context) => ({

@@ -15,7 +15,7 @@ import { CardType, Players, Trait } from '../../../Constants.js';
 class SurgingWave extends DrawCard {
     static id = 'surging-wave';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Prevent bowing after conflict')
             .target({
                 cardType: CardType.Character,

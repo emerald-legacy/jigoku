@@ -5,7 +5,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class DiscipleOfShinsei extends DrawCard {
     static id = 'disciple-of-shinsei';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Discard an attachment')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ParanoidHososhi extends DrawCard {
     static id = 'paranoid-hososhi';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.legendary(2);
 
         this.action('Steal fate from a character')

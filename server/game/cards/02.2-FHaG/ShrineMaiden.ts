@@ -9,7 +9,7 @@ const isSpellOrKiho = (card: DrawCard) => card.hasTrait(Trait.Kiho) || card.hasT
 class ShrineMaiden extends DrawCard {
     static id = 'shrine-maiden';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Reveal your top 3 conflict cards')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

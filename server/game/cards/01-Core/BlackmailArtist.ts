@@ -4,7 +4,7 @@ import { ConflictType } from '../../Constants.js';
 class BlackmailArtist extends DrawCard {
     static id = 'blackmail-artist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Take 1 honor')
             .when({
                 afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller &&

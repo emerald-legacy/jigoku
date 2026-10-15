@@ -11,14 +11,14 @@ const elementSymbols = [
 class ReaderOfOmens extends DrawCard {
     static id = 'reader-of-omens';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
             effect: modifyPoliticalSkill(3)
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols(elementSymbols)];
     }
 }

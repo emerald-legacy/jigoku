@@ -8,7 +8,7 @@ const elementSymbol = { key: 'asako-tsuki-water', element: Element.Water };
 class AsakoTsuki extends DrawCard {
     static id = 'asako-tsuki';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a scholar character')
             .when({
                 onClaimRing: (event) => claimsRingOf(this, elementSymbol.key, event)
@@ -19,7 +19,7 @@ class AsakoTsuki extends DrawCard {
             }, honor());
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

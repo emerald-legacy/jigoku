@@ -5,7 +5,7 @@ import { CardType, Location, Trait } from '../../Constants.js';
 class NorthernCurtainWall extends DrawCard {
     static id = 'northern-curtain-wall';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card, context) => {

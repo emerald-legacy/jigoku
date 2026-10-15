@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class FortifiedLumberCamp extends DrawCard {
     static id = 'fortified-lumber-camp';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard all cards in and attached to a province')
             .cost(costs.sacrificeSelf())
             .target({

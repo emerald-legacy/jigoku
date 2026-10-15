@@ -8,7 +8,7 @@ import { giveHonorToTriggerCost } from '../../giveHonorToTriggerCost.js';
 export default class BashfulConfidante extends DrawCard {
     static id = 'bashful-confidante';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Pick a character to spend honor to use abilities')
             .when({
                 onConflictStarted: (_, context) => context.source.isParticipating()

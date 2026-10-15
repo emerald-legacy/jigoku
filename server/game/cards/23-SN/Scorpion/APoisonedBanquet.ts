@@ -5,7 +5,7 @@ import { perRound } from '../../../AbilityLimit.js';
 export default class APoisonedBanquet extends DrawCard {
     static id = 'a-poisoned-banquet';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Injure everyone poisoned')
             .when({
                 onPhaseEnded: (event) => event.phase === Phase.Conflict

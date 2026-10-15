@@ -15,14 +15,14 @@ export class IfAbleAction<C extends AbilityContext = AbilityContext> extends Com
         return [properties.ifAbleGameAction, properties.otherwiseGameAction];
     }
 
-    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { properties: { ifAbleGameAction, otherwiseGameAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
         return ifAbleGameAction.hasLegalTarget(context, overrides)
             ? ifAbleGameAction.getEffectMessage(context, overrides)
             : otherwiseGameAction.getEffectMessage(context, overrides);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}) {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}) {
         const { properties: { ifAbleGameAction, otherwiseGameAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
         const gameAction = ifAbleGameAction.hasLegalTarget(context, overrides) ? ifAbleGameAction : otherwiseGameAction;
         gameAction.addEventsToArray(events, context, overrides);

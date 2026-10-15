@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class ObsidianTalisman extends DrawCard {
     static id = 'obsidian-talisman';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard attached character\'s token')
             .condition((context) => !!context.source.parentCharacter)
             .cost(costs.payHonor(1))

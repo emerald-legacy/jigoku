@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class SilentSkirmisher extends DrawCard {
     static id = 'silent-skirmisher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Sacrifice another for +2 military')
             .condition((context) => context.game.isDuringConflict())
             .cost(costs.sacrifice({

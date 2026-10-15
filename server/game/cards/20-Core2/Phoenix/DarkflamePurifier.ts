@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DarkflamePurifier extends DrawCard {
     static id = 'darkflame-purifier';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Dishonor a character')
             .when({
                 onMoveFate: (event, context) =>

@@ -9,7 +9,7 @@ const elementSymbol = { key: 'isawa-eju-air', element: Element.Air };
 class IsawaEju extends DrawCard {
     static id = 'isawa-eju';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard all cards in a province and refill it faceup')
             .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .target({
@@ -26,7 +26,7 @@ class IsawaEju extends DrawCard {
             .refillFaceup((context) => ({ target: context.target.controller, location: context.target.location }));
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

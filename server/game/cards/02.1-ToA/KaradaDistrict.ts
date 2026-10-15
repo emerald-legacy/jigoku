@@ -7,7 +7,7 @@ import { attach } from '../../GameActions/GameActions.js';
 class KaradaDistrict extends DrawCard {
     static id = 'karada-district';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Take control of an attachment')
             .cost(costs.giveFateToOpponent(1))
             .target({

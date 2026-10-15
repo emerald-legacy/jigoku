@@ -17,7 +17,7 @@ export class Ring extends EffectSource {
         { command: 'conflict', text: 'Initiate Conflict' }
     ];
 
-    printedType = 'ring';
+    override printedType = 'ring';
     claimed = false;
     claimedBy = '';
     conflictType: ConflictType;

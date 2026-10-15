@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class LightningAscends extends DrawCard {
     static id = 'lightning-ascends';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase a monk\'s military skill and remove traits from an opponent')
             .target({
                 name: 'monk',

@@ -7,7 +7,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class Assassination extends DrawCard {
     static id = 'assassination';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Discard a character')
             .cost(costs.payHonor(3))
             .target({

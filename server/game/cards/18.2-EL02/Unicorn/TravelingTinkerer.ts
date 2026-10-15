@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TravelingTinkerer extends DrawCard {
     static id = 'traveling-tinkerer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Flip the modifiers of an attachment', { evenFromHome: true })
             .target({
                 cardType: CardType.Attachment

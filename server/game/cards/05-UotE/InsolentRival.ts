@@ -6,7 +6,7 @@ import { Players, CardType, DuelType } from '../../Constants.js';
 class InsolentRival extends DrawCard {
     static id = 'insolent-rival';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
             effect: modifyBothSkills(2)

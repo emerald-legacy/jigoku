@@ -10,7 +10,7 @@ const validSacrificeTraits = ['courtier', 'bushi', 'shugenja'];
 class SufferTheConsequences extends DrawCard {
     static id = 'suffer-the-consequences';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain another political conflict')
             .condition((context) => context.game.currentPhase === Phase.Conflict)
             .cost(costs.sacrifice({

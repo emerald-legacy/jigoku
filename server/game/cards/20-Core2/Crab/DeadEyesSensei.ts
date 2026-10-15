@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DeadEyesSensei extends DrawCard {
     static id = 'dead-eyes-sensei';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Ready a character and give them Berserker')
             .target({
                 cardType: CardType.Character,

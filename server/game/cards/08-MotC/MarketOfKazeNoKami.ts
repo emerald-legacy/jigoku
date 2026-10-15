@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 export default class MarketOfKazeNoKami extends ProvinceCard {
     static id = 'market-of-kaze-no-kami';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow a character')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

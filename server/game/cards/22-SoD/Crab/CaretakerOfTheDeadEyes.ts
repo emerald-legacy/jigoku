@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CaretakerOfTheDeadEyes extends DrawCard {
     static id = 'caretaker-of-the-dead-eyes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Honor a character')
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.hasTrait(Trait.Bushi)

@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class WritOfSanctification extends DrawCard {
     static id = 'writ-of-sanctification';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { title: 1 },
             trait: Trait.Shugenja

@@ -10,7 +10,7 @@ import { countTargetable } from '../countTargetable.js';
 class ImbuedWithShadows extends DrawCard {
     static id = 'imbued-with-shadows';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Lose honor to discard status tokens')
             .cost(costs.payVariableHonor((context) => this.getNumberOfLegalTargets(context)))
             .targetCards({

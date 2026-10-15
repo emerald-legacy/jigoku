@@ -8,7 +8,7 @@ import { msg } from '../../GameChat.js';
 class SmugglingDeal extends DrawCard {
     static id = 'smuggling-deal';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase an ability\'s limit')
             .cost(costs.giveHonorToOpponent())
             .abilityTarget({

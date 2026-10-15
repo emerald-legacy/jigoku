@@ -8,7 +8,7 @@ import { copyBaseSkillEffects } from '../../copyBaseSkills.js';
 export default class CloudHands extends DrawCard {
     static id = 'cloud-hands';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Change base skill to match another character\'s')
             .target({
                 name: 'myCharacter',

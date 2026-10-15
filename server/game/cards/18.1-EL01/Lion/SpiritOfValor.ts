@@ -10,7 +10,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SpiritOfValor extends DrawCard {
     static id = 'spirit-of-valor';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

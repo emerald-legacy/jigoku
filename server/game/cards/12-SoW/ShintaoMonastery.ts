@@ -4,7 +4,7 @@ import { additionalCardPlayed } from '../../effects.js';
 class ShintaoMonastery extends DrawCard {
     static id = 'shintao-monastery';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: additionalCardPlayed(1)
         });

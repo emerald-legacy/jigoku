@@ -5,7 +5,7 @@ import { turnFacedown } from '../../GameActions/GameActions.js';
 export default class UntamedSteppe extends ProvinceCard {
     static id = 'untamed-steppe';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Turn another unbroken province facedown')
             .target({
                 cardType: CardType.Province,

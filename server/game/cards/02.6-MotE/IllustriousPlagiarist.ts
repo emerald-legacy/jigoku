@@ -8,7 +8,7 @@ import { Location, Duration, Players, AbilityType, CardType } from '../../Consta
 class IllustriousPlagiarist extends DrawCard {
     static id = 'illustrious-plagiarist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Copy action ability of opponent\'s top event')
             .target({
                 location: Location.ConflictDiscardPile,

@@ -5,7 +5,7 @@ import { Location } from '../../Constants.js';
 class RepentantLegion extends DrawCard {
     static id = 'repentant-legion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('fill provinces with a card')
             .when({
                 // RRG: a province broken outside conflict resolution is broken by its controller's opponent

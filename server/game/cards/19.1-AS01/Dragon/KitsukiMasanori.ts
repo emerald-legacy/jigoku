@@ -29,7 +29,7 @@ function isSearchableCard(card: BaseCard, context: AbilityContext) {
 export default class KitsukiMasanori extends DrawCard {
     static id = 'kitsuki-masanori';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             effect: cardCannot({ cannot: RestrictionType.ApplyCovert, appliesTo: RestrictionScope.OpponentsCardEffects })
         });

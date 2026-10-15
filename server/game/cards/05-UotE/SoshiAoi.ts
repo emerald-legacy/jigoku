@@ -8,7 +8,7 @@ import { Duration, Players, CardType, Trait } from '../../Constants.js';
 class SoshiAoi extends DrawCard {
     static id = 'soshi-aoi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character +1/+0 and the Bushi trait or +0/+1 and the Courtier trait')
             .cost(costs.payHonor(1))
             .target({

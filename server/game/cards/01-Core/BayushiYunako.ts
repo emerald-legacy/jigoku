@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class BayushiYunako extends DrawCard {
     static id = 'bayushi-yunako';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch a character\'s M and P skill')
             .condition((context) => context.source.isParticipating())
             .target({

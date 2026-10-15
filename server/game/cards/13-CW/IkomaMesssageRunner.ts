@@ -7,7 +7,7 @@ import { flipDynasty } from '../../GameActions/GameActions.js';
 class IkomaMessageRunner extends DrawCard {
     static id = 'ikoma-message-runner';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Flip a card faceup')
             .targetCards({
                 name: 'myCard',

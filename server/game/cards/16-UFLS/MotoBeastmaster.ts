@@ -5,7 +5,7 @@ import { putIntoConflict } from '../../GameActions/GameActions.js';
 class MotoBeastmaster extends DrawCard {
     static id = 'moto-beastmaster';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false

@@ -8,7 +8,7 @@ import { msg } from '../../GameChat.js';
 class ParalyzingDelicacy extends DrawCard {
     static id = 'paralyzing-delicacy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('-X military equal to facedown provinces')
             .target({
                 cardType: CardType.Character,

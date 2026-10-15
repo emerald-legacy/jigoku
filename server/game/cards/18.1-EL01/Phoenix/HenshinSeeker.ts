@@ -8,7 +8,7 @@ const RING_CLAIM = 'henshin-seeker-fire';
 export default class HenshinSeeker extends DrawCard {
     static id = 'henshin-seeker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Ready a character')
             .when({
                 onClaimRing: (event) => claimsRingOf(this, RING_CLAIM, event)
@@ -19,7 +19,7 @@ export default class HenshinSeeker extends DrawCard {
             }, ready());
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({ key: RING_CLAIM, prettyName: 'Ring', element: Element.Fire });
         return symbols;

@@ -4,7 +4,7 @@ import { mustBeDeclaredAsAttacker, mustBeDeclaredAsDefender } from '../../effect
 class YoungWarrior extends DrawCard {
     static id = 'young-warrior';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.game.conflictRecord.filter((record) => record.completed).length === 0,
             effect: [

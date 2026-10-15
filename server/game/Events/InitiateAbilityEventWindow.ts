@@ -15,7 +15,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
         this.playEvent = eventWindow.events.find((event) => event.is(EventName.OnCardPlayed));
     }
 
-    getPromptForSelectProperties() {
+    override getPromptForSelectProperties() {
         const buttons: Array<{ text: string; arg: string }> = [];
         if(this.playEvent && this.currentPlayer === this.playEvent.player && this.playEvent.resolver?.canCancel) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
@@ -47,7 +47,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
         return 0;
     }
 
-    resolveAbility(context: TriggeredAbilityContext) {
+    override resolveAbility(context: TriggeredAbilityContext) {
         if(this.playEvent?.resolver) {
             this.playEvent.resolver.canCancel = false;
         }
@@ -56,9 +56,9 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
 }
 
 export class InitiateAbilityEventWindow extends EventWindow {
-    eventsToExecute: Event[] = [];
+    override eventsToExecute: Event[] = [];
 
-    openWindow(abilityType: AbilityType) {
+    override openWindow(abilityType: AbilityType) {
         if(this.events.length && abilityType === AbilityType.Interrupt) {
             this.queueStep(new InitiateAbilityInterruptWindow(this.game, abilityType, this));
         } else {
@@ -66,7 +66,7 @@ export class InitiateAbilityEventWindow extends EventWindow {
         }
     }
 
-    executeHandler() {
+    override executeHandler() {
         this.executeEvents();
 
         // We need to separate executing the handler and emitting events as in this window, the handler just

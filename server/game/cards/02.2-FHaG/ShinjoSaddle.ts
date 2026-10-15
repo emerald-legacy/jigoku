@@ -5,7 +5,7 @@ import { attach } from '../../GameActions/GameActions.js';
 class ShinjoSaddle extends DrawCard {
     static id = 'shinjo-saddle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             trait: Trait.Cavalry

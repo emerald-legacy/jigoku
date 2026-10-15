@@ -3,7 +3,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TattooedMan extends DrawCard {
     static id = 'tattooed-man';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Ready this character')
             .when({
                 onMoveFate: (event, context) =>

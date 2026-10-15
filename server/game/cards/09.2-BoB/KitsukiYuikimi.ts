@@ -6,7 +6,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 export default class KitsukiYuikimi extends DrawCard {
     static id = 'kitsuki-yuikimi';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Cannot be targeted by opponent\'s triggered abilities')
             .when({
                 onMoveFate: (event, context) =>

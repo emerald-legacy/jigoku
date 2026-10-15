@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class Ichiro extends DrawCard {
     static id = 'ichiro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
             match: (card) => card.type === CardType.Character && card.attachments.length > 0,

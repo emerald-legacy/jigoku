@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class EmbraceTheVoid extends DrawCard {
     static id = 'embrace-the-void';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
         this.wouldInterrupt('Take Fate')

@@ -17,11 +17,11 @@ export class MulliganDynastyPrompt extends AllPlayerPrompt {
         game.getPlayers().forEach((player: Player) => this.selectedCards[player.name] = []);
     }
 
-    completionCondition(player: Player): boolean {
+    override completionCondition(player: Player): boolean {
         return player.takenDynastyMulligan;
     }
 
-    continue(): boolean {
+    override continue(): boolean {
         if(!this.isComplete()) {
             this.highlightSelectableCards();
         }
@@ -38,7 +38,7 @@ export class MulliganDynastyPrompt extends AllPlayerPrompt {
         });
     }
 
-    activePrompt() {
+    override activePrompt() {
         return {
             selectCard: true,
             selectRing: true,
@@ -48,7 +48,7 @@ export class MulliganDynastyPrompt extends AllPlayerPrompt {
         };
     }
 
-    onCardClicked(player: Player, card: DrawCard): boolean {
+    override onCardClicked(player: Player, card: DrawCard): boolean {
         if(!player || !this.activeCondition(player) || !card) {
             return false;
         }
@@ -70,13 +70,13 @@ export class MulliganDynastyPrompt extends AllPlayerPrompt {
         return card.isDynasty && card.isInProvince();
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return {
             menuTitle: 'Waiting for opponent to mulligan dynasty cards'
         };
     }
 
-    menuCommand(player: Player, arg: string): boolean {
+    override menuCommand(player: Player, arg: string): boolean {
         if(arg === 'done') {
             if(this.selectedCards[player.name].length > 0) {
                 for(const card of this.selectedCards[player.name]) {

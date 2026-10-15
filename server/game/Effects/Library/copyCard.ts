@@ -30,7 +30,7 @@ export class CopyCard<C extends BaseCard> extends EffectValue<C, BaseCard> {
         this.persistentEffects = card.abilities.persistentEffects.map((effect) => Object.assign({}, effect));
     }
 
-    apply(target: BaseCard) {
+    override apply(target: BaseCard) {
         this.abilitiesForTargets.set(target, {
             actions: this.actions.flatMap((value) => {
                 value.apply(target);
@@ -53,7 +53,7 @@ export class CopyCard<C extends BaseCard> extends EffectValue<C, BaseCard> {
         }
     }
 
-    unapply(target: BaseCard) {
+    override unapply(target: BaseCard) {
         for(const value of this.abilitiesForTargets.get(target)?.reactions ?? []) {
             value.unregisterEvents();
         }

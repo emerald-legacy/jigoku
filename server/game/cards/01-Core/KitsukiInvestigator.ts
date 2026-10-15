@@ -8,7 +8,7 @@ import { ConflictType } from '../../Constants.js';
 class KitsukiInvestigator extends DrawCard {
     static id = 'kitsuki-investigator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at opponent\'s hand')
             .condition((context) => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Political) &&
                                   !!context.player.opponent && context.player.opponent.hand.length > 0)

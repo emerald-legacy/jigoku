@@ -5,7 +5,7 @@ import { chosenDiscard, draw, sequential } from '../../GameActions/GameActions.j
 class SettingTheStandard extends DrawCard {
     static id = 'setting-the-standard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.reaction('Draw 2 cards and discard one', (ability) => ability
                 .when({

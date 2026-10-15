@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class MidnightProwler extends DrawCard {
     static id = 'midnight-prowler';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Look at the top two cards of your opponent\'s conflict deck')
             .when({
                 afterConflict: (event, context) =>

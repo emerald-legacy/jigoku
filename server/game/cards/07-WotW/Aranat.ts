@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class Aranat extends DrawCard {
     static id = 'aranat';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place additional fate')
             .when({
                 onCardPlayed: (event, context) => context.player.opponent && event.card === context.source

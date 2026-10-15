@@ -33,20 +33,20 @@ export class MenuPrompt extends UiPrompt {
         this.properties = properties;
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return player === this.player;
     }
 
-    activePrompt() {
+    override activePrompt() {
         const promptTitle = this.properties.promptTitle || (this.properties.source && typeof this.properties.source !== 'string' ? this.properties.source.name : undefined);
         return Object.assign({ promptTitle: promptTitle }, this.properties.activePrompt);
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: this.properties.waitingPromptTitle || 'Waiting for opponent' };
     }
 
-    menuCommand(player: Player, arg: string, method: string): boolean {
+    override menuCommand(player: Player, arg: string, method: string): boolean {
         const handler = Object.hasOwn(this.handlers, method) ? this.handlers[method] : undefined;
         if(!handler) {
             return false;

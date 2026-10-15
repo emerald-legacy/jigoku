@@ -6,7 +6,7 @@ import { cardLastingEffect, gainHonor, selectAttackedProvince } from '../../Game
 class HeroOfThreeTrees extends DrawCard {
     static id = 'hero-of-three-trees';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain 1 honor or reduce the attacked province strength')
             .condition((context) => !!(context.source.isParticipating()
                 && context.player.opponent

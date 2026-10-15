@@ -7,7 +7,7 @@ import { fillProvince } from '../../GameActions/GameActions.js';
 export default class CityOfTheRichFrog extends ProvinceCard {
     static id = 'city-of-the-rich-frog';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.currentPhase !== Phase.Setup,
             effect: refillProvinceTo(3)

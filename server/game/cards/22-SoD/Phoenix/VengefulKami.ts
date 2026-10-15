@@ -8,7 +8,7 @@ import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 export default class VengefulKami extends DrawCard {
     static id = 'vengeful-kami';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
 
         this.conflictAction('Resolve Ring Effect', { evenFromHome: true })

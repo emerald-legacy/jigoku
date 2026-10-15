@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TrailOfBloodAndLies extends DrawCard {
     static id = 'trail-of-blood-and-lies';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Dishonor a character')
             .when({
                 onMoveFate: (event, context) => {

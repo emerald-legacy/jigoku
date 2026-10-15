@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class AWarOnTwoFronts extends DrawCard {
     static id = 'a-war-on-two-fronts';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Attack a second province')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && event.conflict.conflictType === ConflictType.Military && context.player.isMoreHonorable()

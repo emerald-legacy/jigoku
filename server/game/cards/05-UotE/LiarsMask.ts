@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class LiarsMask extends DrawCard {
     static id = 'liar-s-mask';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => context.player.honor <= 6);
 
         this.action('Discard status token from attached character')

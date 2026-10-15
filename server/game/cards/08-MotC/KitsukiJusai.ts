@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class KitsukiJusai extends DrawCard {
     static id = 'kitsuki-jusai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a fate from your opponent pool on an unclaimed ring')
             .when({
                 onHonorDialsRevealed: (_event, context) =>

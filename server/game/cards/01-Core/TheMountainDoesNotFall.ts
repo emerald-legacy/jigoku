@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class TheMountainDoesNotFall extends DrawCard {
     static id = 'the-mountain-does-not-fall';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Choose a character to not bow when defending')
             .target({
                 cardType: CardType.Character

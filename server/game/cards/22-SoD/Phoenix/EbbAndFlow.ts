@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class EbbAndFlow extends DrawCard {
     static id = 'ebb-and-flow';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Switch a character\'s skills')
             .target({
                 name: 'mine',

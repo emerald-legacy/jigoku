@@ -11,7 +11,7 @@ import {
 export default class HighHouseOfLight extends StrongholdCard {
     static id = 'high-house-of-light';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Prevent a monk from being targeted by opponent\'s events')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.bowSelf())

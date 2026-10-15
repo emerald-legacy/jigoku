@@ -4,7 +4,7 @@ import { modifyGlory } from '../../effects.js';
 class DutifulAssistant extends DrawCard {
     static id = 'dutiful-assistant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => !!(context.source.parentCharacter && context.source.parentCharacter.isHonored),
             effect: modifyGlory(2)

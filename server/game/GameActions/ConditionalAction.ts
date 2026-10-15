@@ -14,14 +14,14 @@ export interface ConditionalProperties<C extends AbilityContext = AbilityContext
 }
 
 export class ConditionalAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<ConditionalProperties<C>, C, 'falseGameAction'> {
-    defaultProperties = { falseGameAction: noAction() };
+    override defaultProperties = { falseGameAction: noAction() };
 
     protected children(properties: ConditionalProperties<C>) {
         return [properties.trueGameAction, properties.falseGameAction];
     }
 
     /** Only the branch the condition picks. */
-    protected resolving(context: C, properties: WithDefaults<ConditionalProperties<C>, 'falseGameAction'>): GameAction[] {
+    protected override resolving(context: C, properties: WithDefaults<ConditionalProperties<C>, 'falseGameAction'>): GameAction[] {
         return [this.#pick(context, properties)];
     }
 
@@ -37,12 +37,12 @@ export class ConditionalAction<C extends AbilityContext = AbilityContext> extend
         return condition ? properties.trueGameAction : properties.falseGameAction;
     }
 
-    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         return this.#pick(context, properties).getEffectMessage(context, overrides);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         this.#pick(context, properties).addEventsToArray(events, context, overrides);
     }

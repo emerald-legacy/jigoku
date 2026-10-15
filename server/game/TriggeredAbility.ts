@@ -52,7 +52,7 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
         this.collectiveTrigger = !!properties.collectiveTrigger;
     }
 
-    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
+    override meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         const canOpponentTrigger =
             this.card.anyEffect(EffectName.CanBeTriggeredByOpponent) &&
             this.abilityType !== AbilityType.ForcedInterrupt &&
@@ -102,7 +102,7 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
     }
 
     /** A context for resolving this ability outside a trigger window, with the event it reacts to if any. */
-    createContext(player: Player = this.card.controller, event?: Event | Event[]): TriggeredAbilityContext<BaseCard, BaseCard, TriggeringEvent> {
+    override createContext(player: Player = this.card.controller, event?: Event | Event[]): TriggeredAbilityContext<BaseCard, BaseCard, TriggeringEvent> {
         return this.newContext(player, event);
     }
 
@@ -125,7 +125,7 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
         });
     }
 
-    isTriggeredAbilityInstance(): this is TriggeredAbility {
+    override isTriggeredAbilityInstance(): this is TriggeredAbility {
         return true;
     }
 

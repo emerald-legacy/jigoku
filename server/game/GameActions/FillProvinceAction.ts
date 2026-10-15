@@ -14,21 +14,21 @@ export interface FillProvinceProperties extends PlayerActionProperties {
 }
 
 export class FillProvinceAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FillProvinceProperties, EventName.Unnamed, C, 'location' | 'fillTo' | 'faceup'> {
-    defaultProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
-    name = 'fillProvince';
-    effect = 'fills {0} with more cards';
+    override defaultProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
+    override name = 'fillProvince';
+    override effect = 'fills {0} with more cards';
 
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { fillTo, amount } = this.getProperties(context, additionalProperties);
         return amount === undefined ? ['fills {0} to {1} cards!', [fillTo]] : ['fills {0} with {1} cards', [amount]];
     }
 
-    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         return this.getProperties(context, additionalProperties).location;
     }
 
-    eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         const player = event.player;

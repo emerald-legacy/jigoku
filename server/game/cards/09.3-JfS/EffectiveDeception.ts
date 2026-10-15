@@ -4,7 +4,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class EffectiveDeception extends ProvinceCard {
     static id = 'effective-deception';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel triggered ability')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

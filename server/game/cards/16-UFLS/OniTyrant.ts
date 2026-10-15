@@ -48,7 +48,7 @@ const oniTyrantCost = function (): Cost<{ oniTyrantCostCreature: DrawCard | unde
 class OniTyrant extends DrawCard {
     static id = 'oni-tyrant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Summon a Shadowlands Creature')
             .condition((context) => context.source.isParticipating())
             .cost(costs.payHonor(1))

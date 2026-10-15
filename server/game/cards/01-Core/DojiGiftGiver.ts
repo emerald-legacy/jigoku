@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class DojiGiftGiver extends DrawCard {
     static id = 'doji-gift-giver';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
             .cost(costs.giveFateToOpponent(1))

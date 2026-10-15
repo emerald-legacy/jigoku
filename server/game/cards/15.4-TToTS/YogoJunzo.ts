@@ -7,7 +7,7 @@ import { chooseAmount, removeFate } from '../../GameActions/GameActions.js';
 class YogoJunzo extends DrawCard {
     static id = 'yogo-junzo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             effect: gainAbility.action('Remove all fate from a character', (ability) => ability
                 .target({

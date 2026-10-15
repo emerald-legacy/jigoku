@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ImperialAdjutant extends DrawCard {
     static id = 'imperial-adjutant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

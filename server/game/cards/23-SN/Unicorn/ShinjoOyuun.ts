@@ -5,7 +5,7 @@ import { Players, CardType } from '../../../Constants.js';
 export default class ShinjoOyuun extends DrawCard {
     static id = 'shinjo-oyuun';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Move a character into the conflict')
             .target({
                 cardType: CardType.Character,

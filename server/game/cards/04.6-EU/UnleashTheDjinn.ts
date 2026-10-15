@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class UnleashTheDjinn extends DrawCard {
     static id = 'unleash-the-djinn';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Make all participating characters 3/3')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.payHonor(3))

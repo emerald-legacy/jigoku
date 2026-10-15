@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class SinisterSoshi extends DrawCard {
     static id = 'sinister-soshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character -2/-2')
             .target({
                 cardType: CardType.Character,

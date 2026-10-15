@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class MirumotoHitomi extends DrawCard {
     static id = 'mirumoto-hitomi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a military duel')
             .condition((context) => context.source.isParticipating())
             .targetCards({

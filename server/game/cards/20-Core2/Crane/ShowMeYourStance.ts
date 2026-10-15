@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShowMeYourStance extends DrawCard {
     static id = 'show-me-your-stance';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.duelChallenge('Apply status tokens to the duel')
             .duelLastingEffect({
                 effect: applyStatusTokensToDuel()

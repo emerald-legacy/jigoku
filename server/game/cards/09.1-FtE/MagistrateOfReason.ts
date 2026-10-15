@@ -6,7 +6,7 @@ import { CardType, Players } from '../../Constants.js';
 class MagistrateOfReason extends DrawCard {
     static id = 'magistrate-of-reason';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             targetController: Players.Opponent,

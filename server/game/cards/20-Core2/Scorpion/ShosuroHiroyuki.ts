@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShosuroHiroyuki extends DrawCard {
     static id = 'shosuro-hiroyuki';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Force opponent to discard card or dishonor a character', { conflictType: ConflictType.Political })
             .target({
                 cardType: CardType.Character,

@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShibasOath extends DrawCard {
     static id = 'shiba-s-oath';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { title: 1 },
             cardCondition: (card) => card.hasTrait(Trait.Bushi)

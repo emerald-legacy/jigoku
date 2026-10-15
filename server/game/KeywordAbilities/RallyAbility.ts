@@ -31,11 +31,11 @@ export class RallyAbility extends TriggeredAbility<DrawCard> {
         });
     }
 
-    isTriggeredAbility() {
+    override isTriggeredAbility() {
         return false;
     }
 
-    isKeywordAbility() {
+    override isKeywordAbility() {
         return true;
     }
 }

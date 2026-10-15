@@ -8,7 +8,7 @@ const elementSymbol = { key: 'solemn-scholar-earth', element: Element.Earth };
 export default class SolemnScholar extends DrawCard {
     static id = 'solemn-scholar';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow an attacking character', { evenFromHome: true })
             .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .target({
@@ -17,7 +17,7 @@ export default class SolemnScholar extends DrawCard {
             }, bow());
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

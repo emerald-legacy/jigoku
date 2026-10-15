@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CornerThePrey extends DrawCard {
     static id = 'corner-the-prey';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Sacrifice followers to kill')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .cost(costs.sacrifice({

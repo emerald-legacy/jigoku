@@ -31,7 +31,7 @@ export class CardEffect extends ActiveEffect<BaseCard> {
         this.targetLocation = properties.targetLocation || Location.PlayArea;
     }
 
-    isValidTarget(target: BaseCard): boolean {
+    override isValidTarget(target: BaseCard): boolean {
         if(target === this.match) {
             // This is a hack to check whether this is a lasting effect
             return true;
@@ -44,7 +44,7 @@ export class CardEffect extends ActiveEffect<BaseCard> {
         );
     }
 
-    getTargets(matchFn: EffectMatchFn<BaseCard>): BaseCard[] {
+    override getTargets(matchFn: EffectMatchFn<BaseCard>): BaseCard[] {
         if(this.targetLocation === Location.Any) {
             return this.game.allCards.filter((card: BaseCard) => matchFn(card, this.context));
         } else if(this.targetLocation === Location.Provinces) {

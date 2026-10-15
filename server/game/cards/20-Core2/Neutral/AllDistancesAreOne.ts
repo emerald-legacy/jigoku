@@ -8,7 +8,7 @@ import { controlsParticipating } from '../../controlsParticipating.js';
 export default class AllDistancesAreOne extends DrawCard {
     static id = 'all-distances-are-one';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move conflict to a different province')
             .condition((context) =>
                 !!(context.game.currentConflict

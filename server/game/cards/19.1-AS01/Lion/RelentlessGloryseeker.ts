@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class RelentlessGloryseeker extends DrawCard {
     static id = 'relentless-gloryseeker';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Put this character into play')
             .when({
                 onCardLeavesPlay: (event, context) =>

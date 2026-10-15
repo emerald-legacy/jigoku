@@ -8,7 +8,7 @@ import {CardType, Duration, Location} from '../../Constants.js';
 class ChampionsOfYomi extends DrawCard {
     static id = 'champions-of-yomi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put into play')
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player

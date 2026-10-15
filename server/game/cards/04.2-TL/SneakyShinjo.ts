@@ -4,7 +4,7 @@ import { Location } from '../../Constants.js';
 class SneakyShinjo extends DrawCard {
     static id = 'sneaky-shinjo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Play this character')
             .when({
                 onPassDuringDynasty: (event, context) => event.player === context.player

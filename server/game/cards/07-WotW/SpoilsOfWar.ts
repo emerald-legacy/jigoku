@@ -6,7 +6,7 @@ import { ConflictType } from '../../Constants.js';
 class SpoilsOfWar extends DrawCard {
     static id = 'spoils-of-war';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw 3 cards and discard 1')
             .when({
                 afterConflict: (event, context) => event.conflict.conflictType === ConflictType.Military &&

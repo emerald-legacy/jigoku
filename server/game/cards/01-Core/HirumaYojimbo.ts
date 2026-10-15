@@ -4,7 +4,7 @@ import { cannotBeDeclaredAsAttacker } from '../../effects.js';
 class HirumaYojimbo extends DrawCard {
     static id = 'hiruma-yojimbo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cannotBeDeclaredAsAttacker()
         });

@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 export default class TacticiansApprentice extends DrawCard {
     static id = 'tactician-s-apprentice';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
                 onHonorDialsRevealed: (_event, context) =>

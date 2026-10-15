@@ -5,7 +5,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class ShinjoAltansarnai extends DrawCard {
     static id = 'shinjo-altansarnai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard a character')
             .when({
                 onBreakProvince: (event, context) => event.conflict?.conflictType === ConflictType.Military && context.source.isAttacking()

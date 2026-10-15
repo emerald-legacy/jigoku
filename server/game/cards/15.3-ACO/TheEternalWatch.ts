@@ -6,7 +6,7 @@ import { bow, takeHonor } from '../../GameActions/GameActions.js';
 export default class TheEternalWatch extends ProvinceCard {
     static id = 'the-eternal-watch';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character or take an honor from your opponent')
             .target({
                 name: 'character',

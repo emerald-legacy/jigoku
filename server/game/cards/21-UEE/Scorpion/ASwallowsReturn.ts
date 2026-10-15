@@ -9,7 +9,7 @@ const CARD_COUNT = 3;
 export default class ASwallowsReturn extends DrawCard {
     static id = 'a-swallow-s-return';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
             .condition((context) =>
                 context.game.currentConflict !== null &&

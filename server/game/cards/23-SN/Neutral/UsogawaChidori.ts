@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class UsogawaChidori extends DrawCard {
     static id = 'usogawa-chidori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Blank a character')
             .cost(costs.giveFateToOpponent())
             .target({

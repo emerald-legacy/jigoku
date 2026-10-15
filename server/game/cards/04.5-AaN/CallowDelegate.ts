@@ -5,7 +5,7 @@ import { Players, CardType } from '../../Constants.js';
 class CallowDelegate extends DrawCard {
     static id = 'callow-delegate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Honor a character')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

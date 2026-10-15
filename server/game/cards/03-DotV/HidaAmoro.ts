@@ -7,7 +7,7 @@ import { CardType, Players } from '../../Constants.js';
 class HidaAmoro extends DrawCard {
     static id = 'hida-amoro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('Sacrifice a character')
             .when({
                 onConflictPass: () => true

@@ -27,7 +27,7 @@ function fluff(element: Element): string {
 export default class DayOfBrotherHorse extends DrawCard {
     static id = 'day-of-brother-horse';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Protect a ring and draw three cards')
             .when({
                 onConflictPass: (event, context) =>

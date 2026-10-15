@@ -5,7 +5,7 @@ import { CardType, Trait } from '../../Constants.js';
 class VoidFist extends DrawCard {
     static id = 'void-fist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow and send a character home')
             .condition((context) =>
                 !!this.game.currentConflict &&

@@ -7,7 +7,7 @@ import { controlsShugenja } from '../controlsShugenja.js';
 class SupernaturalStorm extends DrawCard {
     static id = 'supernatural-storm';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase the skill of one character')
             .condition(() => controlsShugenja(this.controller))
             .target({

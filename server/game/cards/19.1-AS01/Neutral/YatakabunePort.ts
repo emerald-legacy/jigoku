@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 export default class YatakabunePort extends ProvinceCard {
     static id = 'yatakabune-port';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.interrupt('Claim the imperial favor')
             .when({
                 onBreakProvince: (event, context) => event.card === context.source && context.game.isDuringConflict()

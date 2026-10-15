@@ -16,7 +16,7 @@ import { CardAbility } from '../../CardAbility.js';
 class CaptivatingStory extends DrawCard {
     static id = 'captivating-story';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character +X pol')
             .condition((context) => (this.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
             .target({

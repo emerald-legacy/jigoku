@@ -161,7 +161,7 @@ export class EventWindow extends BaseStepWithPipeline {
         }
     }
 
-    abort(): void {
+    override abort(): void {
         super.abort();
         if(this.game.currentEventWindow === this) {
             this.game.currentEventWindow = this.previousEventWindow;

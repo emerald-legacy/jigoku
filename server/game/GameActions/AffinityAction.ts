@@ -21,12 +21,12 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     /** With the affinity its game action, without it the other one (if any). */
-    protected resolving(context: C, properties: AffinityProperties): GameAction[] {
+    protected override resolving(context: C, properties: AffinityProperties): GameAction[] {
         const action = context.player.hasAffinity(properties.trait, context) ? properties.gameAction : properties.noAffinityGameAction;
         return action ? [action] : [];
     }
 
-    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         if(context.player.hasAffinity(properties.trait, context)) {
             return properties.gameAction.getEffectMessage(context, overrides);
@@ -35,7 +35,7 @@ export class AffinityAction<C extends AbilityContext = AbilityContext> extends C
         return properties.noAffinityGameAction?.getEffectMessage(context, overrides) ?? ['', []];
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         if(!context.player.hasAffinity(properties.trait, context)) {
             return properties.noAffinityGameAction?.addEventsToArray(events, context, overrides);

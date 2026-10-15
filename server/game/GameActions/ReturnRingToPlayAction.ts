@@ -7,10 +7,10 @@ import type { ActionEvent } from './GameAction.js';
 export type ReturnRingToPlayProperties = RingActionProperties;
 
 export class ReturnRingToPlayAction<C extends AbilityContext = AbilityContext> extends RingAction<ReturnRingToPlayProperties, EventName.OnReturnRingToPlay, C> {
-    name = 'returnRingToPlay';
-    eventName = EventName.OnReturnRingToPlay;
-    effect = 'return the {0} to play';
-    canAffect(ring: Ring, context: C): boolean {
+    override name = 'returnRingToPlay';
+    override eventName = EventName.OnReturnRingToPlay;
+    override effect = 'return the {0} to play';
+    override canAffect(ring: Ring, context: C): boolean {
         if(!ring.removedFromGame) {
             return false;
         }
@@ -18,7 +18,7 @@ export class ReturnRingToPlayAction<C extends AbilityContext = AbilityContext> e
         return super.canAffect(ring, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnReturnRingToPlay, C>, _additionalProperties: Record<string, unknown> = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnReturnRingToPlay, C>, _additionalProperties: Record<string, unknown> = {}): void {
         const ring = event.ring;
         const context = event.context;
 

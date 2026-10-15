@@ -6,7 +6,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class FallenInBattle extends DrawCard {
     static id = 'fallen-in-battle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard a character')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military &&

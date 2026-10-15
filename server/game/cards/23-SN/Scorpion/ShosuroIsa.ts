@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShosuroIsa extends DrawCard {
     static id = 'shosuro-isa';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Manifest a shadow')
             .target({
                 activePromptTitle: 'Choose a character from a discard pile',

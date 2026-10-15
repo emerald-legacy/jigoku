@@ -16,7 +16,7 @@ import { perConflict } from '../../../AbilityLimit.js';
 export default class FloatingFortress extends DrawCard {
     static id = 'floating-fortress';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Become another holding')
             .condition((context) => context.player.isDefendingPlayer())
             .cost(costs.payFate(1))

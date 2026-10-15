@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class OutskirtsSentry extends DrawCard {
     static id = 'outskirts-sentry';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a participating character')
             .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()

@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class HirumaAmbusher extends DrawCard {
     static id = 'hiruma-ambusher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Disable a character')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source && context.source.isDefending()

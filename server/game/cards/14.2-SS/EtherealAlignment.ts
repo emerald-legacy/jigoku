@@ -5,7 +5,7 @@ import { moveCard, multiple, restoreProvince } from '../../GameActions/GameActio
 class EtherealAlignment extends DrawCard {
     static id = 'ethereal-alignment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Restore a province')
             .when({
                 onPhaseEnded: (event) => event.phase === Phase.Conflict

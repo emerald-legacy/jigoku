@@ -21,30 +21,30 @@ type MatchingDiscardEvent<C extends AbilityContext> = ActionEvent<EventName.OnCa
 };
 
 export class DiscardMatchingAction<C extends AbilityContext = AbilityContext> extends PlayerAction<MatchingDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount' | 'reveal' | 'match'> {
-    defaultProperties = {
+    override defaultProperties = {
         amount: -1,
         reveal: false,
         match: () => true
     };
 
-    defaultTargets(context: C): Player[] {
+    override defaultTargets(context: C): Player[] {
         return this.opponentTargets(context);
     }
 
-    name = 'discardMatching';
+    override name = 'discardMatching';
 
-    restriction = RestrictionType.Discard;
-    eventName = EventName.OnCardsDiscardedFromHand;
+    override restriction = RestrictionType.Discard;
+    override eventName = EventName.OnCardsDiscardedFromHand;
 
-    protected effectMessage(): MessageArgs {
+    protected override effectMessage(): MessageArgs {
         return ['make {0} discard all cards that match a condition', []];
     }
 
-    canAffect(player: Player, context: C, _additionalProperties = {}): boolean {
+    override canAffect(player: Player, context: C, _additionalProperties = {}): boolean {
         return player.hand.length > 0 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(
             context,
             additionalProperties
@@ -56,7 +56,7 @@ export class DiscardMatchingAction<C extends AbilityContext = AbilityContext> ex
         event.match = properties.match;
     }
 
-    eventHandler(event: MatchingDiscardEvent<C>): void {
+    override eventHandler(event: MatchingDiscardEvent<C>): void {
         const context = event.context;
         const player = event.player;
         let amount = Math.min(event.amount, player.hand.length);

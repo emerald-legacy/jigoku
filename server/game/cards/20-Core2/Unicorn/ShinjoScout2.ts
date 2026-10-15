@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShinjoScout2 extends DrawCard {
     static id = 'shinjo-scout-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Cancel the province effect')
             .when({
                 onCardRevealed: (event, context) =>

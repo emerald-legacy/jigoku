@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class ArmamentArtisan extends DrawCard {
     static id = 'armament-artisan';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor this character')
             .when({
                 onCardHonored: (event, context) => event.card.controller === context.player && event.card !== context.source

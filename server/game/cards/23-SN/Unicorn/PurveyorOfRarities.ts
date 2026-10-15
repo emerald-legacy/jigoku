@@ -9,7 +9,7 @@ import type BaseCard from '../../../BaseCard.js';
 export default class PurveyorOfRarities extends DrawCard {
     static id = 'purveyor-of-rarities';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Discard a card for bonuses')
             .cost(costs.discardCard({ location: Location.Hand }))
             .if((context) => this.cardCondition(context.costs.discardCard))

@@ -5,7 +5,7 @@ import { addKeyword } from '../../effects.js';
 class TwoHeavensTechnique extends DrawCard {
     static id = 'two-heavens-technique';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Bushi
         });

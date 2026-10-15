@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class AkodoGunso extends DrawCard {
     static id = 'akodo-gunso';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Refill province faceup')
             .when({
                 onCharacterEntersPlay: (event, context) =>

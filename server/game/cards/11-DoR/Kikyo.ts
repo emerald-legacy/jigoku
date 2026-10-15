@@ -4,7 +4,7 @@ import { gainAbility } from '../../effects.js';
 class Kikyo extends DrawCard {
     static id = 'kikyo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             unique: true,
             faction: 'crab'

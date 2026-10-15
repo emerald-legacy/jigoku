@@ -13,7 +13,7 @@ function doesCardDraw(recipient: DrawCard, source: DrawCard) {
 export default class WhiteLotusMethod extends DrawCard {
     static id = 'white-lotus-method';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a status token')
             .condition((context) => context.player.cardsInPlay.some((card) => card.hasTrait(Trait.Courtier)))
             .tokenTarget({

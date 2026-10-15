@@ -6,7 +6,7 @@ import { flipDynasty, playCard, selectCard, sequential } from '../../GameActions
 class WayfarersCamp extends DrawCard {
     static id = 'wayfarer-s-camp';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Play two characters')
             .phase(Phase.Dynasty)
             .gameAction(sequential([

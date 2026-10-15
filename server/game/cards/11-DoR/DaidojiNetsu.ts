@@ -5,7 +5,7 @@ import { cardCannot } from '../../effects.js';
 class DaidojiNetsu extends DrawCard {
     static id = 'daidoji-netsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.currentPhase === Phase.Conflict,
             targetController: Players.Any,

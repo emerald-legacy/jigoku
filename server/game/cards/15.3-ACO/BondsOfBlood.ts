@@ -7,7 +7,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class BondsOfBlood extends DrawCard {
     static id = 'bonds-of-blood';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send a character home')
             .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
             .target({
@@ -18,7 +18,7 @@ class BondsOfBlood extends DrawCard {
             .cannotTargetFirst();
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

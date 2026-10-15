@@ -8,7 +8,7 @@ import DrawCard from '../../DrawCard.js';
 export default class CourteousScheming extends DrawCard {
     static id = 'courteous-scheming';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Initiate a political duel', { conflictType: ConflictType.Political })
             .initiateDuel(() => ({
                 type: DuelType.Political,

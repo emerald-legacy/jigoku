@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class AgashaTaiko extends DrawCard {
     static id = 'agasha-taiko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Choose a province')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source

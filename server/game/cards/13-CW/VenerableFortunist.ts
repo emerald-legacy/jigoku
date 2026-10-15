@@ -4,7 +4,7 @@ import * as costs from '../../costs/index.js';
 class VenerableFortunist extends DrawCard {
     static id = 'venerable-fortunist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain 2 fate')
             .condition((context) => !!context.player.role)
             .cost(costs.returnRings(1, (ring, context) => (context.player.role?.getElement() ?? []).some((a) => ring.hasElement(a))))

@@ -6,7 +6,7 @@ import { CardType, Players } from '../../Constants.js';
 class EmissaryOfLies extends DrawCard {
     static id = 'emissary-of-lies';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character home')
             .condition((context) => context.source.isParticipating())
             .target({

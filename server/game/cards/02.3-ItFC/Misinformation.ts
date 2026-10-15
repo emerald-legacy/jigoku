@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class Misinformation extends DrawCard {
     static id = 'misinformation';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give opponent\'s participating cards -1/-1')
             .condition((context) => this.game.isDuringConflict() &&
                                   !!context.player.opponent && context.player.showBid > context.player.opponent.showBid + 1)

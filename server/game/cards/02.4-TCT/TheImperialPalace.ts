@@ -4,7 +4,7 @@ import { changePlayerGloryModifier } from '../../effects.js';
 class TheImperialPalace extends DrawCard {
     static id = 'the-imperial-palace';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: changePlayerGloryModifier(3)
         });

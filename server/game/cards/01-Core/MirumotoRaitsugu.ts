@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class MirumotoRaitsugu extends DrawCard {
     static id = 'mirumoto-raitsugu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Duel an opposing character')
             .condition((context) => context.source.isParticipating())
             .target({

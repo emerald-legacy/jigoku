@@ -9,7 +9,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class Castigated extends DrawCard {
     static id = 'castigated';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait(Trait.Imperial)));
 
         this.whileAttached({
@@ -21,7 +21,7 @@ class Castigated extends DrawCard {
         });
     }
 
-    canPlayOn(card: BaseCard | Ring) {
+    override canPlayOn(card: BaseCard | Ring) {
         return card instanceof DrawCard && card.isParticipating() && super.canPlayOn(card);
     }
 }

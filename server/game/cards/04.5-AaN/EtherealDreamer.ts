@@ -6,7 +6,7 @@ import { Duration, Phase } from '../../Constants.js';
 class EtherealDreamer extends DrawCard {
     static id = 'ethereal-dreamer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain +2/+2 while contesting the target ring')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

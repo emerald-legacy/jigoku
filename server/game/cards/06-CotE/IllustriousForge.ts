@@ -5,7 +5,7 @@ import { attachmentSearch } from '../attachmentSearch.js';
 export default class IllustriousForge extends ProvinceCard {
     static id = 'illustrious-forge';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Search for an attachment')
             .when({
                 onCardRevealed: (event, context) =>

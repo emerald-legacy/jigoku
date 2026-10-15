@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class Cursecatcher extends DrawCard {
     static id = 'cursecatcher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel province ability')
             .when({
                 onInitiateAbilityEffects: (event) => event.card.type === CardType.Province &&

@@ -5,7 +5,7 @@ import { playerCannot } from '../../effects.js';
 export default class BloodOfOnnotangu extends ProvinceCard {
     static id = 'blood-of-onnotangu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
             condition: (context) => context.source.isConflictProvince(),

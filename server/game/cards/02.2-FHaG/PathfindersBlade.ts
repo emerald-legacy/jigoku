@@ -5,7 +5,7 @@ import * as costs from '../../costs/index.js';
 class PathfindersBlade extends DrawCard {
     static id = 'pathfinder-s-blade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel conflict province ability')
             .when({
                 onInitiateAbilityEffects: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isAttacking() && event.card.isConflictProvince()

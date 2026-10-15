@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class DojiRepresentative extends DrawCard {
     static id = 'doji-representative';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move this character home')
             .sendHome();
     }

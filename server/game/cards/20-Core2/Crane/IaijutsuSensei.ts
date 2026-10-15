@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IaijutsuSensei extends DrawCard {
     static id = 'iaijutsu-sensei';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.attachments.filter((card) => card.hasTrait(Trait.Weapon)).length === 1,
             effect: modifyBothSkills(1)

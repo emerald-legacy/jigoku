@@ -44,7 +44,7 @@ export class InitiateConflictPrompt extends UiPrompt {
         this.checkForMustSelect();
     }
 
-    continue(): boolean {
+    override continue(): boolean {
         if(!this.isComplete()) {
             this.highlightSelectableRings();
         }
@@ -76,11 +76,11 @@ export class InitiateConflictPrompt extends UiPrompt {
         this.choosingPlayer.setSelectableRings(selectableRings);
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return player === this.choosingPlayer;
     }
 
-    activePrompt() {
+    override activePrompt() {
         const buttons: Array<{ text: string; arg: string }> = [];
         let menuTitle: string;
         let promptTitle: string;
@@ -119,15 +119,15 @@ export class InitiateConflictPrompt extends UiPrompt {
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to declare conflict' };
     }
 
-    onCardClicked(player: Player, card: BaseCard): boolean {
+    override onCardClicked(player: Player, card: BaseCard): boolean {
         return player === this.choosingPlayer && this.checkCardCondition(card) && this.selectCard(card);
     }
 
-    onRingClicked(player: Player, ring: Ring): boolean {
+    override onRingClicked(player: Player, ring: Ring): boolean {
         return player === this.choosingPlayer && this.checkRingCondition(ring) && this.selectRing(ring);
     }
 
@@ -311,7 +311,7 @@ export class InitiateConflictPrompt extends UiPrompt {
         this.conflict.removeFromConflict(card);
     }
 
-    menuCommand(_player: Player, arg: string): boolean {
+    override menuCommand(_player: Player, arg: string): boolean {
         if(arg === 'done') {
             if(!this.conflict.ring || this.game.rings[this.conflict.ring.element] !== this.conflict.ring ||
                 (!this.conflict.isSinglePlayer && !this.conflict.conflictProvince) || this.conflict.attackers.length === 0) {

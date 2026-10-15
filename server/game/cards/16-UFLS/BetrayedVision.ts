@@ -8,7 +8,7 @@ import { msg } from '../../GameChat.js';
 export default class BetrayedVision extends DrawCard {
     static id = 'betrayed-vision';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Make a character a copy')
             .playOnlyIf((context) => controlsShugenja(context.player))
             .target({

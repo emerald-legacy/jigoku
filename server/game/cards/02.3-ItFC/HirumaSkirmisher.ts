@@ -5,7 +5,7 @@ import { addKeyword } from '../../effects.js';
 class HirumaSkirmisher extends DrawCard {
     static id = 'hiruma-skirmisher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain covert until end of phase')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source

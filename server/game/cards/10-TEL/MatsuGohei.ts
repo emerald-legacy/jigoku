@@ -5,7 +5,7 @@ import { doesNotBow } from '../../effects.js';
 class MatsuGohei extends DrawCard {
     static id = 'matsu-gohei';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking() &&
                             context.player.cardsInPlay

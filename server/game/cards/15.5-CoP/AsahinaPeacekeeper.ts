@@ -5,7 +5,7 @@ import { cardCostToAttackMilitary } from '../../effects.js';
 class AsahinaPeacekeeper extends DrawCard {
     static id = 'asahina-peacekeeper';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
             targetLocation: Location.PlayArea,

@@ -8,7 +8,7 @@ import { assignRoles, moveCard, placeInProvince } from '../../../GameActions/Gam
 export default class MiokosSong extends StrongholdCard {
     static id = 'mioko-s-song';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) =>
                 !!context && card.controller === context.player &&

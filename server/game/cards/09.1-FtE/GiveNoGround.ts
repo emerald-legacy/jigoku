@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class GiveNoGround extends DrawCard {
     static id = 'give-no-ground';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

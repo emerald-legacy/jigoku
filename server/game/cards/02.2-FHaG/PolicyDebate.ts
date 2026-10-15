@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class PolicyDebate extends DrawCard {
     static id = 'policy-debate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a political duel')
             .target({
                 name: 'challenger',

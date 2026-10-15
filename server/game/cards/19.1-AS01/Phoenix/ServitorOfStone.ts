@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ServitorOfStone extends DrawCard {
     static id = 'servitor-of-stone';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => this.controllerHasShugenjaAtSameLocation(context),
             effect: cardCannot({ cannot: RestrictionType.LeavePlay })

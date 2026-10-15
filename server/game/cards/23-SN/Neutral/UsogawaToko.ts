@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 export default class UsogawaToko extends DrawCard {
     static id = 'usogawa-toko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give a participating character -3 glory')
             .target({
                 cardType: CardType.Character,

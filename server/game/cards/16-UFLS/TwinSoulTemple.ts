@@ -10,7 +10,7 @@ import { capitalize } from '../../utils/capitalize.js';
 export default class TwinSoulTemple extends StrongholdCard {
     static id = 'twin-soul-temple';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow this stronghold')
             .cost(costs.bowSelf())
             .elementTarget({

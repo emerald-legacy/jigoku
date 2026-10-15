@@ -4,7 +4,7 @@ import { perRound } from '../../AbilityLimit.js';
 class Spyglass extends DrawCard {
     static id = 'spyglass';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
                 onConflictDeclared: (event, context) => (event.attackers ?? []).some((card) => card === context.source.parentCharacter),

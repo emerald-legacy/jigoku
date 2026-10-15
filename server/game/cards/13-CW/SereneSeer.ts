@@ -9,7 +9,7 @@ const elementSymbol = { key: 'serene-seer-void', element: Element.Void };
 class SereneSeer extends DrawCard {
     static id = 'serene-seer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at a province')
             .condition((context) => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
             .selectCard({
@@ -24,7 +24,7 @@ class SereneSeer extends DrawCard {
             .chatText('look at a province');
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

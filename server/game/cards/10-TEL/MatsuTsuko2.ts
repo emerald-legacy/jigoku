@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class MatsuTsuko2 extends DrawCard {
     static id = 'matsu-tsuko-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Break the province')
             .when({
                 afterConflict: (event, context) =>

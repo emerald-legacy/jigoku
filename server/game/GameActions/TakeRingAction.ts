@@ -11,15 +11,15 @@ export interface TakeRingProperties extends RingActionProperties {
 }
 
 export class TakeRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeRingProperties, EventName.OnTakeRing, C, 'takeFate'> {
-    name = 'takeRing';
-    eventName = EventName.OnTakeRing;
-    effect = 'take {0}';
-    defaultProperties = { takeFate: true };
-    canAffect(ring: Ring, context: C): boolean {
+    override name = 'takeRing';
+    override eventName = EventName.OnTakeRing;
+    override effect = 'take {0}';
+    override defaultProperties = { takeFate: true };
+    override canAffect(ring: Ring, context: C): boolean {
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnTakeRing, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnTakeRing, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const { takeFate } = this.getProperties(context, additionalProperties);
         const ring = event.ring;

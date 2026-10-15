@@ -6,7 +6,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class SoshiDiviner extends DrawCard {
     static id = 'soshi-diviner';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a card in a province')
             .condition((context) => context.game.isDuringConflict())
             .target({

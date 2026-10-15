@@ -6,7 +6,7 @@ import { addKeyword } from '../../effects.js';
 class SubterraneanGuile extends DrawCard {
     static id = 'subterranean-guile';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => this.game.isDuringConflict(ConflictType.Military) && this.isHoldingOnUnbrokenProvince(context),
             effect: addKeyword('covert')

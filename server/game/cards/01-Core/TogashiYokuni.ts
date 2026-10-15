@@ -8,7 +8,7 @@ import { msg } from '../../GameChat.js';
 class TogashiYokuni extends DrawCard {
     static id = 'togashi-yokuni';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Copy another character\'s ability')
             .abilityTarget({
                 activePromptTitle: 'Select a character to copy from',

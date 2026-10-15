@@ -5,7 +5,7 @@ import { Players, CardType } from '../../Constants.js';
 class MotoAriq extends DrawCard {
     static id = 'moto-ariq';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a ready character to the conflict')
             .condition((context) => !!(context.source.isParticipating()
                 && context.player.opponent

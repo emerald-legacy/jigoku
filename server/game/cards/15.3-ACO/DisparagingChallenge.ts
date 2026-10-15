@@ -5,7 +5,7 @@ import { DuelType } from '../../Constants.js';
 class DisparagingChallenge extends DrawCard {
     static id = 'disparaging-challenge';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,

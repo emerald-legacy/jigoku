@@ -8,7 +8,7 @@ import { bow } from '../../GameActions/GameActions.js';
 class AkodoMastermind extends DrawCard {
     static id = 'akodo-mastermind';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Remove tactics to bow a character')
             .condition((context) => context.source.isParticipating())
             .cost(costs.removeFromGame({

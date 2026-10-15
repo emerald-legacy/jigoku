@@ -29,7 +29,7 @@ class PlayCardResolver extends AbilityResolver {
         context.payFateCostToOpponent = this.gameActionProperties.payFateToOpponent;
     }
 
-    resolveEarlyTargets() {
+    override resolveEarlyTargets() {
         if(this.gameActionProperties.playCardTarget) {
             this.context.stage = Stage.PreTarget;
             this.targetResults = {
@@ -44,7 +44,7 @@ class PlayCardResolver extends AbilityResolver {
         }
     }
 
-    checkForCancel() {
+    override checkForCancel() {
         super.checkForCancel();
         if(this.cancelled && this.gameActionProperties.resetOnCancel) {
             this.playGameAction.cancelAction(this.gameActionContext, this.gameActionProperties);
@@ -52,13 +52,13 @@ class PlayCardResolver extends AbilityResolver {
         }
     }
 
-    resolveCosts() {
+    override resolveCosts() {
         if(this.gameActionProperties.payCosts) {
             super.resolveCosts();
         }
     }
 
-    payCosts() {
+    override payCosts() {
         if(this.gameActionProperties.payCosts) {
             super.payCosts();
         }
@@ -68,7 +68,7 @@ class PlayCardResolver extends AbilityResolver {
         }
     }
 
-    moveEventCardToDiscard() {
+    override moveEventCardToDiscard() {
         if(this.context.source.location === Location.BeingPlayed) {
             const location =
                 (this.initiateAbility && this.gameActionProperties.destination) || Location.ConflictDiscardPile;
@@ -82,7 +82,7 @@ class PlayCardResolver extends AbilityResolver {
         }
     }
 
-    refillProvinces() {
+    override refillProvinces() {
         super.refillProvinces();
         if(!this.cancelPressed) {
             this.game.queueSimpleStep(() => this.gameActionProperties.postHandler(this.context));
@@ -127,9 +127,9 @@ interface PlayableAbility {
 }
 
 export class PlayCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlayCardProperties, EventName.Unnamed, C, PlayCardDefaults> {
-    name = 'playCard';
-    effect = 'play {0} as if it were in their hand';
-    defaultProperties = {
+    override name = 'playCard';
+    override effect = 'play {0} as if it were in their hand';
+    override defaultProperties = {
         resetOnCancel: false,
         postHandler: () => true,
         playType: PlayType.Other,
@@ -140,7 +140,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         ignoredBlockers: []
     };
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         if(!super.canAffect(card, context)) {
             return false;
         }
@@ -188,7 +188,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         }
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const [card] = targetList(properties.target);
         if(!card || !card.isDrawCard()) {
@@ -214,7 +214,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         });
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.Unnamed, C>, card: DrawCard, context: C): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.Unnamed, C>, card: DrawCard, context: C): void {
         super.addPropertiesToEvent(event, card, context);
         event.onPlayCardSource = context.source;
     }
@@ -235,7 +235,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         return event;
     }
 
-    checkEventCondition(): boolean {
+    override checkEventCondition(): boolean {
         return true;
     }
 }

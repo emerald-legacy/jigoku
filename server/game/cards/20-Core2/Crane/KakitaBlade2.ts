@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KakitaBlade2 extends DrawCard {
     static id = 'kakita-blade-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.reaction('Take an action', (ability) => ability
                 .when({

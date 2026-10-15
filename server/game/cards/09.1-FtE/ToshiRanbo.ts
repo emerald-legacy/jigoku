@@ -5,7 +5,7 @@ import { cardCannot, gainExtraFateWhenPlayed } from '../../effects.js';
 export default class ToshiRanbo extends ProvinceCard {
     static id = 'toshi-ranbo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.facedown = false;
 
         this.persistentEffect({
@@ -19,11 +19,11 @@ export default class ToshiRanbo extends ProvinceCard {
         });
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 
-    startsGameFaceup() {
+    override startsGameFaceup() {
         return true;
     }
 }

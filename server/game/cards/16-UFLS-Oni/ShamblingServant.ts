@@ -5,7 +5,7 @@ import { taint } from '../../GameActions/GameActions.js';
 export default class ShamblingServant extends BaseOni {
     static id = 'shambling-servant';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Taint a character')
             .when({

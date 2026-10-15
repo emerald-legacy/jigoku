@@ -5,7 +5,7 @@ import { ConflictType, RestrictionScope } from '../../Constants.js';
 class ReinforcedPlate extends DrawCard {
     static id = 'reinforced-plate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => context.source.parentCharacter !== null && context.source.parentCharacter !== undefined && context.source.parentCharacter.isParticipating() && this.game.isDuringConflict(ConflictType.Military),
             effect: immunity({

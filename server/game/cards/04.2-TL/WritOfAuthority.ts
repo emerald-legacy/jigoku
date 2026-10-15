@@ -6,7 +6,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class WritOfAuthority extends DrawCard {
     static id = 'writ-of-authority';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: delayedEffect({
                 condition: (context) => !!context.player.opponent && context.player.opponent.isMoreHonorable(),

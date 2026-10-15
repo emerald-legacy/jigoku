@@ -5,7 +5,7 @@ import { Players, elementTrait } from '../../Constants.js';
 class InquisitiveIshika extends DrawCard {
     static id = 'inquisitive-ishika';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(),
             targetController: Players.Any,

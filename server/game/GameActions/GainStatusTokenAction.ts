@@ -11,13 +11,13 @@ export interface GainStatusTokenProperties extends CardActionProperties {
 }
 
 export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<GainStatusTokenProperties, EventName.OnStatusTokenGained, C, 'token'> {
-    name = 'gainStatusToken';
-    eventName = EventName.OnStatusTokenGained;
-    defaultProperties = {
+    override name = 'gainStatusToken';
+    override eventName = EventName.OnStatusTokenGained;
+    override defaultProperties = {
         token: CharacterStatus.Honored
     };
 
-    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { token } = this.getProperties(context, additionalProperties);
         if(
             (token === CharacterStatus.Honored && card.isHonored) ||
@@ -35,17 +35,17 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
         return super.canAffect(card, context);
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['give {0} a {1} status token', [this.getProperties(context, additionalProperties).token]];
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenGained, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenGained, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { token } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.token = token;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnStatusTokenGained, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnStatusTokenGained, C>): void {
         if(event.token) {
             event.card.addStatusToken(event.token);
         }

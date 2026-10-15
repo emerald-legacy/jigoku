@@ -9,7 +9,7 @@ import { shuffle } from '../../../utils/random.js';
 export default class SneakAttack extends DrawCard {
     static id = 'sneak-attack';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('The attacker gets the first action opportunity')
             .when({
                 onConflictStarted: (event, context) => event.conflict.attackingPlayer === context.player

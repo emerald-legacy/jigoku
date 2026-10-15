@@ -2,7 +2,7 @@ import { BaseAbility } from '../BaseAbility.js';
 import { AbilityType } from '../Constants.js';
 
 export class CovertAbility extends BaseAbility {
-    title: string;
+    override title: string;
 
     constructor() {
         super({});
@@ -10,11 +10,11 @@ export class CovertAbility extends BaseAbility {
         this.abilityType = AbilityType.KeywordReaction;
     }
 
-    isCardAbility() {
+    override isCardAbility() {
         return true;
     }
 
-    isKeywordAbility() {
+    override isKeywordAbility() {
         return true;
     }
 }

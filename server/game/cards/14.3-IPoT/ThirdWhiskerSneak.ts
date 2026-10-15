@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class ThirdWhiskerSneak extends DrawCard {
     static id = 'third-whisker-sneak';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
                 immunity({

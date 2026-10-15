@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 export default class ObservantDaidoji extends DrawCard {
     static id = 'observant-daidoji';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDishonored,
             effect: cardCannot({

@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Spyglass2 extends DrawCard {
     static id = 'spyglass-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.reaction('Draw a card', (ability) => ability
                 .when({

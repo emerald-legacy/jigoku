@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class UnbridledRage extends DrawCard {
     static id = 'unbridled-rage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Military duel to stop contribution')
             .initiateDuel(() => ({
                 type: DuelType.Military,

@@ -11,7 +11,7 @@ import { msg } from '../../../GameChat.js';
 export default class ToConnectThePeople extends DrawCard {
     static id = 'to-connect-the-people';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Play a character from your opponent\'s discard pile')
             .condition((context) =>
                 !context.game.isDuringConflict() &&

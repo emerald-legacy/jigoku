@@ -6,7 +6,7 @@ import { Location } from '../../Constants.js';
 class Reprieve extends DrawCard {
     static id = 'reprieve';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Prevent a character from leaving play')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter && event.card.location === Location.PlayArea &&

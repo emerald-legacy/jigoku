@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class HanteiXXXVIII extends DrawCard {
     static id = 'hantei-xxxviii';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: delayedEffect({
                 condition: (context) => context.player.opponent && !!context.player.opponent.imperialFavor,

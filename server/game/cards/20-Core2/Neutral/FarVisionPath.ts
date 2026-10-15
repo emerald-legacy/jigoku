@@ -5,7 +5,7 @@ import { moveConflict } from '../../../GameActions/GameActions.js';
 export default class FarVisionPath extends ProvinceCard {
     static id = 'far-vision-path';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Move the conflict')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
@@ -17,7 +17,7 @@ export default class FarVisionPath extends ProvinceCard {
             }, moveConflict());
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

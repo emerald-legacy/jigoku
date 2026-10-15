@@ -7,18 +7,18 @@ import type BaseCard from '../../BaseCard.js';
 export class MulliganConflictPrompt extends MulliganDynastyPrompt {
     readyToStart?: boolean;
 
-    completionCondition(player: Player): boolean {
+    override completionCondition(player: Player): boolean {
         return !!player.takenConflictMulligan;
     }
 
-    activePrompt() {
+    override activePrompt() {
         return Object.assign(super.activePrompt(), {
             menuTitle: 'Select conflict cards to mulligan',
             promptTitle: 'Conflict Mulligan'
         });
     }
 
-    highlightSelectableCards(): void {
+    override highlightSelectableCards(): void {
         this.game.getPlayers().forEach((player: Player) => {
             if(!this.selectableCards[player.name]) {
                 this.selectableCards[player.name] = player.hand.slice();
@@ -27,15 +27,15 @@ export class MulliganConflictPrompt extends MulliganDynastyPrompt {
         });
     }
 
-    cardCondition(card: BaseCard): boolean {
+    override cardCondition(card: BaseCard): boolean {
         return card.location === Location.Hand;
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to mulligan conflict cards' };
     }
 
-    menuCommand(player: Player, arg: string): boolean {
+    override menuCommand(player: Player, arg: string): boolean {
         if(arg === 'done') {
             if(this.selectedCards[player.name].length > 0) {
                 for(const card of this.selectedCards[player.name]) {

@@ -4,7 +4,7 @@ import { CardType } from '../../Constants.js';
 class VoiceOfHonor extends DrawCard {
     static id = 'voice-of-honor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && context.player.opponent &&

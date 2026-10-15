@@ -10,13 +10,13 @@ export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAc
         super(card, intoLocation);
     }
 
-    createContext(player: Player = this.card.controller) {
+    override createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
         context.playType = PlayType.PlayFromHand;
         return context;
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
+    override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
         const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation)
             ? ignoredBlockers
             : ignoredBlockers.concat(Blocker.WrongLocation);
@@ -38,7 +38,7 @@ export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedChara
 
 // Like PlayFacedownCharacterAsIfFromHand: putIntoPlay refuses a facedown card.
 export class PlayFacedownDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAsIfFromHand {
-    executeHandler(context: AbilityContext<DrawCard>) {
+    override executeHandler(context: AbilityContext<DrawCard>) {
         context.source.facedown = false;
         super.executeHandler(context);
     }

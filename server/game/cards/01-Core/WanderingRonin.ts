@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class WanderingRonin extends DrawCard {
     static id = 'wandering-ronin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give this character +2/+2')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.removeFateFromSelf())

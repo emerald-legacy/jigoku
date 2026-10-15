@@ -6,7 +6,7 @@ import { CardType, Players, ConflictType, Trait } from '../../Constants.js';
 class HonedNodachi extends DrawCard {
     static id = 'honed-nodachi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Bushi
         });

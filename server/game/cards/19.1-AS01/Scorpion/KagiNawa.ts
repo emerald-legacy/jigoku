@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KagiNawa extends DrawCard {
     static id = 'kagi-nawa';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             match: (card) => card.hasTrait(Trait.Shinobi),
             effect: gainAbility.conflictAction('Move a character to the conflict', (ability) => ability

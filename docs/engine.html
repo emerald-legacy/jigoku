@@ -129,7 +129,7 @@
 <pre><code>import { EventRegistrar } from '../../EventRegistrar.js';
 import { AbilityType, EventName } from '../../Constants.js';
 
-setupCardAbilities() {
+override setupCardAbilities() {
     const registrar = new EventRegistrar(this.game);
     // after the event happened: event name → handler, the event typed by its name
     registrar.register({

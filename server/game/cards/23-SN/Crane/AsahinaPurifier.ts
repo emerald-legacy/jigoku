@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class AsahinaPurifier extends DrawCard {
     static id = 'asahina-purifier';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Gain honor instead of losing honor')
             .when({
                 onModifyHonor: (event) => event.dueToStatusToken && event.amount < 0

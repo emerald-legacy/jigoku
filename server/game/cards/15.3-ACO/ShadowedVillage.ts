@@ -6,7 +6,7 @@ import { CardType, Phase } from '../../Constants.js';
 class ShadowedVillage extends DrawCard {
     static id = 'shadowed-village';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw cards')
             .when({
                 onMoveFate: (event, context) =>

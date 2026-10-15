@@ -5,7 +5,7 @@ import { Players, CardType } from '../../Constants.js';
 class AdoptedKin extends DrawCard {
     static id = 'adopted-kin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             limit: 1
         });

@@ -4,7 +4,7 @@ import * as costs from '../../costs/index.js';
 class ImperialStorehouse extends DrawCard {
     static id = 'imperial-storehouse';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Draw a card')
             .cost(costs.sacrificeSelf())
             .draw();

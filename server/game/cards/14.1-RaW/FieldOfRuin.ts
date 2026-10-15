@@ -5,7 +5,7 @@ import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 export default class FieldOfRuin extends BattlefieldAttachment {
     static id = 'field-of-ruin';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
 
         this.persistentEffect({
@@ -29,7 +29,7 @@ export default class FieldOfRuin extends BattlefieldAttachment {
             .chatText('discard each card in the attached province');
     }
 
-    protected unbrokenOnly() {
+    protected override unbrokenOnly() {
         return false;
     }
 }

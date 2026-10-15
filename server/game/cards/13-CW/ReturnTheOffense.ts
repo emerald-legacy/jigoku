@@ -7,7 +7,7 @@ import { DuelType, RestrictionType, RestrictionScope } from '../../Constants.js'
 class ReturnTheOffense extends DrawCard {
     static id = 'return-the-offense';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,

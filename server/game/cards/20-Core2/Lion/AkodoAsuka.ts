@@ -11,7 +11,7 @@ function charactersOnYourSide(context: AbilityContext) {
 export default class AkodoAsuka extends DrawCard {
     static id = 'akodo-asuka';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
                 afterConflict: (event, context) =>

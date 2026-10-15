@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MethodicalSecretary extends DrawCard {
     static id = 'methodical-secretary';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Ready for Glory Count')
             .when({
                 onGloryCount: () => true

@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class CripplingTaxes extends DrawCard {
     static id = 'crippling-taxes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard all cards in a province')
             .target({
                 location: Location.Provinces,

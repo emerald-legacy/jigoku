@@ -6,7 +6,7 @@ import { chooseAmount, placeFate, removeFate } from '../../GameActions/GameActio
 class TheFiresOfJustice extends DrawCard {
     static id = 'the-fires-of-justice';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Remove fate or move fate to a character')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Military

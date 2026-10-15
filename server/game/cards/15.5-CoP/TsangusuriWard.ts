@@ -6,7 +6,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 class TsangusuriWard extends DrawCard {
     static id = 'tsangusuri-ward';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
         this.attachmentConditions({

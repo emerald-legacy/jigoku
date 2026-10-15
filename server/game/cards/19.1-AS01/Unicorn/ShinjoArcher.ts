@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShinjoArcher extends DrawCard {
     static id = 'shinjo-archer';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Move and give -2/-2')
             .cost(costs.switchLocation())
             .target({

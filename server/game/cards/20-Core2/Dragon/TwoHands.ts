@@ -8,7 +8,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 export default class TwoHands extends DrawCard {
     static id = 'two-hands';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.duelChallenge('Add a character to the duel', (duel, context) => duel.challengingPlayer === context.player)
             .target({
                 controller: Players.Opponent

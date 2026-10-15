@@ -7,7 +7,7 @@ import type { GameEvent } from '../../Events/EventPayloads.js';
 export default class HenshinMysteries extends ProvinceCard {
     static id = 'henshin-mysteries';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         new EventRegistrar(this.game).registerTriggerWindow(EventName.OnClaimRing, AbilityType.OtherEffects, (event) => this.cancelRingClaim(event));
     }
 

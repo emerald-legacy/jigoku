@@ -8,7 +8,7 @@ const elementSymbol = { key: 'alchemical-laboratory-fire', element: Element.Fire
 class AlchemicalLaboratory extends DrawCard {
     static id = 'alchemical-laboratory';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => hasClaimedRing(this, elementSymbol.key, context.player),
             match: (card, context) => card.type === CardType.Attachment && card.parentCharacter !== null && card.parentCharacter !== undefined && card.parentCharacter.controller !== context?.player,
@@ -17,7 +17,7 @@ class AlchemicalLaboratory extends DrawCard {
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

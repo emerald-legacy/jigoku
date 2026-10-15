@@ -4,7 +4,7 @@ import { RingAttachment } from '../RingAttachment.js';
 class GreaterUnderstanding extends RingAttachment {
     static id = 'greater-understanding';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve the attached ring\'s effect')
             .when({
                 onMoveFate: (event) => event.recipient === this.parent,

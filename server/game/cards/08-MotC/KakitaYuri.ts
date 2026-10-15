@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class KakitaYuri extends DrawCard {
     static id = 'kakita-yuri';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Political duel to stop military conflicts')
             .initiateDuel(() => ({
                 type: DuelType.Political,

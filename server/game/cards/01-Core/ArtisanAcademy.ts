@@ -5,7 +5,7 @@ import { revealedTopCardPlayable } from '../revealedTopCardPlayable.js';
 class ArtisanAcademy extends DrawCard {
     static id = 'artisan-academy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Make top card of conflict deck playable')
             .condition((context) => context.player.conflictDeck.length > 0)
             .phase(Phase.Conflict)

@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SenseisHeirloom extends DrawCard {
     static id = 'sensei-s-heirloom';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({ trait: Trait.Bushi });
 
         this.reaction('Search the top of your deck for a card')

@@ -17,7 +17,7 @@ export class DuelEffect extends ActiveEffect<Duel> {
         this.duel = target instanceof Duel ? target : undefined;
     }
 
-    getTargets(): Duel[] {
+    override getTargets(): Duel[] {
         return this.duel ? [this.duel] : [];
     }
 }

@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class CunningNegotiator extends DrawCard {
     static id = 'cunning-negotiator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Political duel to resolve the attacked province\'s action ability')
             .condition((context) => context.game.isDuringConflict())
             .initiateDuel(() => ({

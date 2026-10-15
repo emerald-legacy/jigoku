@@ -5,7 +5,7 @@ import { ConflictType } from '../../../Constants.js';
 class LiquidCourage extends DrawCard {
     static id = 'liquid-courage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: addKeyword('pride')
         });

@@ -5,7 +5,7 @@ import { bow, removeFate } from '../../GameActions/GameActions.js';
 class RelentlessInquisitor extends DrawCard {
     static id = 'relentless-inquisitor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Remove a fate from or bow a character')
             .target({
                 name: 'character',

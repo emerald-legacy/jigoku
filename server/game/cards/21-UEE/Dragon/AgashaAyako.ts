@@ -7,7 +7,7 @@ import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromH
 export default class AgashaAyako extends DrawCard {
     static id = 'agasha-ayako';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source

@@ -6,7 +6,7 @@ import { handler, multiple, removeFromGame } from '../../GameActions/GameActions
 export default class ScavengingGoblin extends BaseOni {
     static id = 'scavenging-goblin';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Remove cards from the game')
             .when({

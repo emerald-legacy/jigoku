@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class WickedTetsubo extends DrawCard {
     static id = 'wicked-tetsubo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Berserker
         });

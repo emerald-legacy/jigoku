@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class DefendTheWall extends ProvinceCard {
     static id = 'defend-the-wall';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve the ring effect')
             .when({
                 afterConflict: (event, context) =>

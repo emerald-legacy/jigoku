@@ -6,7 +6,7 @@ import { CardType, Trait } from '../../Constants.js';
 class PurityOfSpirit extends DrawCard {
     static id = 'purity-of-spirit';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Choose a bushi character to honor')
             .target({
                 cardType: CardType.Character,

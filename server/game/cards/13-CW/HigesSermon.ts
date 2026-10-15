@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class HigesSermon extends DrawCard {
     static id = 'hige-s-sermon';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow characters')
             .condition((context) => context.player.cardsInPlay.some((a) => !a.bowed) && context.player.opponent !== undefined && context.player.opponent.cardsInPlay.some((a) => !a.bowed))
             .phase(Phase.Draw)

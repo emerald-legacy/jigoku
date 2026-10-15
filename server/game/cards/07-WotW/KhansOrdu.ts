@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class KhansOrdu extends ProvinceCard {
     static id = 'khan-s-ordu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Make all conflicts military')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

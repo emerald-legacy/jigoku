@@ -9,7 +9,7 @@ import { playerChoices } from '../playerChoices.js';
 class SoshisMemory extends DrawCard {
     static id = 'soshi-s-memory';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put a card into a player\'s hand')
             .condition((context) => controlsShugenja(context.player))
             .selectFrom({

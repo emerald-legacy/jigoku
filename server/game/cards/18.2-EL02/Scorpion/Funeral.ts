@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Funeral extends DrawCard {
     static id = 'funeral';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.wouldInterrupt('Cancel honor loss')
             .when({
                 onModifyHonor: (event, context) =>

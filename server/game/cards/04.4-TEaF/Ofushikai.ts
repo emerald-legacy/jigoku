@@ -6,7 +6,7 @@ import { Duration, CardType, Trait } from '../../Constants.js';
 class Ofushikai extends DrawCard {
     static id = 'ofushikai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             unique: true,

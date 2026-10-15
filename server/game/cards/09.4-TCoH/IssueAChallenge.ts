@@ -6,7 +6,7 @@ import { restrictNumberOfDefenders } from '../../effects.js';
 class IssueAChallenge extends DrawCard {
     static id = 'issue-a-challenge';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent more than 1 declared defender')
             .when({
                 onConflictDeclared: (_event, context) => {

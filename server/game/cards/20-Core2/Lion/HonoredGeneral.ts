@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class HonoredGeneral extends DrawCard {
     static id = 'honored-general';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             match: (card, context) => card.isParticipating() && card.isFaction('lion') && card !== context?.source,

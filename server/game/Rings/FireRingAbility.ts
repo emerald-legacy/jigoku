@@ -7,8 +7,8 @@ import type DrawCard from '../DrawCard.js';
 import { dishonor, honor } from '../GameActions/GameActions.js';
 
 export class FireRingAbility extends BaseAbility {
-    public title = 'Fire Ring Effect';
-    public cannotTargetFirst = true;
+    public override title = 'Fire Ring Effect';
+    public override cannotTargetFirst = true;
     public defaultPriority = 4; // Default resolution priority when players have ordering switched off
 
     constructor(
@@ -26,7 +26,7 @@ export class FireRingAbility extends BaseAbility {
         });
     }
 
-    public executeHandler(context: AbilityContext) {
+    public override executeHandler(context: AbilityContext) {
         const target = context.target;
         if(!target) {
             context.game.addMessage(msg`${context.player} chooses not to resolve the ${'fire'} ring`);

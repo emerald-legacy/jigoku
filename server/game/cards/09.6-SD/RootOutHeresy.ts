@@ -8,7 +8,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class RootOutHeresy extends DrawCard {
     static id = 'root-out-heresy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Discard a card at random from your opponent\'s hand', { conflictType: ConflictType.Political })
             .discardAtRandom()
             .then()

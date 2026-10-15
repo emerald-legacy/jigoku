@@ -6,7 +6,7 @@ import { placeFate, selectCard } from '../../GameActions/GameActions.js';
 export default class SharingShinseisWisdom extends ProvinceCard {
     static id = 'sharing-shinsei-s-wisdom';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Move 1 fate to another character')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

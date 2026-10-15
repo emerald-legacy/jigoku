@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class SinisterPeacekeeper extends DrawCard {
     static id = 'sinister-peacekeeper';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Make opponent lose an honor')
             .when({
                 onModifyHonor: (event, context) =>

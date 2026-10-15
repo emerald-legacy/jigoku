@@ -5,7 +5,7 @@ import { cardCannot } from '../../effects.js';
 class SteadfastSamurai extends DrawCard {
     static id = 'steadfast-samurai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('Can\'t be discarded or remove fate')
             .when({
                 onPhaseStarted: (event, context) => event.phase === Phase.Fate && context.player.opponent &&

@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class NorthernWallSensei extends DrawCard {
     static id = 'northern-wall-sensei';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Grant immunity to events')
             .condition((context) => context.source.isParticipating())
             .target({

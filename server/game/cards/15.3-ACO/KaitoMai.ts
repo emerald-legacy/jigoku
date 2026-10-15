@@ -6,7 +6,7 @@ import { removeFate } from '../../GameActions/GameActions.js';
 class KaitoMai extends DrawCard {
     static id = 'kaito-mai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             effect: modifyGlory(3)
         });

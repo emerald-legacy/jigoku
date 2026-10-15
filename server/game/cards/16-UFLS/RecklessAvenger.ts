@@ -7,7 +7,7 @@ import { ready } from '../../GameActions/GameActions.js';
 class RecklessAvenger extends DrawCard {
     static id = 'reckless-avenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready and honor characters')
             .condition((context) => context.player.cardsInPlay.some((a) => a.bowed) && !!context.player.opponent || !!context.player.opponent?.cardsInPlay.some((a) => a.bowed))
             .target({

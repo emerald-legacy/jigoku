@@ -6,7 +6,7 @@ import { Duration, RestrictionType } from '../../Constants.js';
 class YoungHarrier extends DrawCard {
     static id = 'young-harrier';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Prevent other characters from being dishonored')
             .cost(costs.dishonorSelf())
             .cardLastingEffect((context) => ({

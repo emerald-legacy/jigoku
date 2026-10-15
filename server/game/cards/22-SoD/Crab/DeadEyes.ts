@@ -7,7 +7,7 @@ import { ConflictType, RestrictionType, Trait } from '../../../Constants.js';
 export default class DeadEyes extends DrawCard {
     static id = 'dead-eyes';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({ trait: Trait.Berserker });
 
         this.whileAttached({

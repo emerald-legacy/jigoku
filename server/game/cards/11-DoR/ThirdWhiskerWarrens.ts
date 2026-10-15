@@ -8,7 +8,7 @@ import { defendingAtKaiuWall } from '../kaiuWall.js';
 export default class ThirdWhiskerWarrens extends DrawCard {
     static id = 'third-whisker-warrens';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => defendingAtKaiuWall(context.player, context.game.currentConflict),
             targetLocation: Location.DynastyDeck,

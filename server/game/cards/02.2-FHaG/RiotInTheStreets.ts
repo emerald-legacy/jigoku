@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 export default class RiotInTheStreets extends ProvinceCard {
     static id = 'riot-in-the-streets';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow character if you have 3 participating bushi')
             .condition((context) =>
                 context.player.getNumberOfCardsInPlay((card) => card.hasTrait(Trait.Bushi) && card.isParticipating()) >= 3)

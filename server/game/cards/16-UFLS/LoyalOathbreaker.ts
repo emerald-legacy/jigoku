@@ -4,7 +4,7 @@ import { consideredLessHonorable } from '../../effects.js';
 class LoyalOathbreaker extends DrawCard {
     static id = 'loyal-oathbreaker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: consideredLessHonorable()
         });

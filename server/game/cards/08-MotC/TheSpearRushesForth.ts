@@ -6,7 +6,7 @@ import { CardType, Players, ConflictType } from '../../Constants.js';
 class TheSpearRushesForth extends DrawCard {
     static id = 'the-spear-rushes-forth';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a participating character')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .cost(costs.discardStatusToken({

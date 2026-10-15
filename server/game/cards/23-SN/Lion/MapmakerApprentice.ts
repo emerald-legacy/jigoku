@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MapmakerApprentice extends DrawCard {
     static id = 'mapmaker-apprentice';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Map a province')
             .target({
                 cardType: CardType.Province,

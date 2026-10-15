@@ -8,7 +8,7 @@ const elementKey = 'asako-azunami-water';
 class AsakoAzunami extends DrawCard {
     static id = 'asako-azunami';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Bow and ready two characters instead of the ring effect')
             .when({
                 onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
@@ -36,7 +36,7 @@ class AsakoAzunami extends DrawCard {
             .chatText(() => msg`replace the ${this.getCurrentElementSymbol(elementKey)} ring effect with bowing and readying two characters`);
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class KikuMatsuri extends ProvinceCard {
     static id = 'kiku-matsuri';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor a character home from each side')
             .target({
                 name: 'myCharacter',

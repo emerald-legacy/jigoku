@@ -5,7 +5,7 @@ import { CardType, Phase, RestrictionType } from '../../Constants.js';
 class CommanderOfTheLegions extends DrawCard {
     static id = 'commander-of-the-legions';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => card.isFaction('lion')
             && card !== context?.source

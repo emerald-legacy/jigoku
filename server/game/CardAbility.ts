@@ -66,18 +66,18 @@ function nextPrintedAbilityNumber(card: BaseCard): number {
 
 export class CardAbility extends ThenAbility {
     declare properties: CardAbilityProperties;
-    title?: string;
-    limit: IAbilityLimit;
+    override title?: string;
+    override limit: IAbilityLimit;
     abilityCost: Cost[];
     location: Location[];
-    printedAbility: boolean;
-    cannotBeCancelled?: boolean;
+    override printedAbility: boolean;
+    override cannotBeCancelled?: boolean;
     declare cannotTargetFirst: boolean;
-    cannotBeMirrored: boolean;
-    max?: IAbilityLimit;
+    override cannotBeMirrored: boolean;
+    override max?: IAbilityLimit;
     abilityIdentifier: string;
-    maxIdentifier: string;
-    origin?: BaseCard;
+    override maxIdentifier: string;
+    override origin?: BaseCard;
     /** With a duel, its challenger check is part of it. */
     condition?: (context: AbilityContext) => boolean;
 
@@ -133,7 +133,7 @@ export class CardAbility extends ThenAbility {
         return defaultedLocation;
     }
 
-    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
+    override meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         // keywords are switched by the keyword itself (hasKeyword)
         const blanked = this.printedAbility
             ? this.card.isBlank()
@@ -178,7 +178,7 @@ export class CardAbility extends ThenAbility {
         return super.meetsRequirements(context, ignoredBlockers);
     }
 
-    getCosts(context: AbilityContext, playCosts = true, triggerCosts = true): Cost[] {
+    override getCosts(context: AbilityContext, playCosts = true, triggerCosts = true): Cost[] {
         let costs = super.getCosts(context, playCosts);
         if(!context.subResolution && triggerCosts && context.player.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.player
@@ -201,7 +201,7 @@ export class CardAbility extends ThenAbility {
         return costs;
     }
 
-    getReducedCost(context: AbilityContext): number {
+    override getReducedCost(context: AbilityContext): number {
         return this.reducedFateCost(context);
     }
 
@@ -223,7 +223,7 @@ export class CardAbility extends ThenAbility {
         return location;
     }
 
-    displayMessage(context: AbilityContext, messageVerb = context.source.type === CardType.Event ? 'plays' : 'uses'): void {
+    override displayMessage(context: AbilityContext, messageVerb = context.source.type === CardType.Event ? 'plays' : 'uses'): void {
         if(
             context.source.type === CardType.Event &&
             context.source.isConflict &&
@@ -305,15 +305,15 @@ export class CardAbility extends ThenAbility {
         this.game.addMessage('{0}{1}{2}{3}{4}{5}{6}{7}{8}', ...messageArgs);
     }
 
-    isCardPlayed(): boolean {
+    override isCardPlayed(): boolean {
         return !this.isKeywordAbility() && this.card.getType() === CardType.Event;
     }
 
-    isTriggeredAbility(): boolean {
+    override isTriggeredAbility(): boolean {
         return true;
     }
 
-    isCardAbilityInstance(): this is CardAbility {
+    override isCardAbilityInstance(): this is CardAbility {
         return true;
     }
 

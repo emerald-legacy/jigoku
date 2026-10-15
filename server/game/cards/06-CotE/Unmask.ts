@@ -7,7 +7,7 @@ import { Players, CardType } from '../../Constants.js';
 class Unmask extends DrawCard {
     static id = 'unmask';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a character\'s status token and set skills to printed value')
             .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
             .target({

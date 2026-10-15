@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class MomentOfPerfectBeauty extends DrawCard {
     static id = 'moment-of-perfect-beauty';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('One more action and then end the conflict')
             .condition((context) => {
                 const conflict = this.game.currentConflict;

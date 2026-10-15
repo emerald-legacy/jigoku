@@ -15,7 +15,7 @@ import { controlsShugenja } from '../../controlsShugenja.js';
 export default class WisdomOfTheWind extends DrawCard {
     static id = 'wisdom-of-the-wind';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor or dishonor a character')
             .condition((context) => controlsShugenja(context.player))
             .target({

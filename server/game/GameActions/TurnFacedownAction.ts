@@ -8,18 +8,18 @@ import type { ActionEvent } from './GameAction.js';
 export type TurnCardFacedownProperties = CardActionProperties;
 
 export class TurnFacedownAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TurnCardFacedownProperties, EventName.OnCardTurnedFacedown, C> {
-    name = 'turnFacedown';
-    restriction = RestrictionType.TurnFacedown;
-    eventName = EventName.OnCardTurnedFacedown;
-    cost = 'turning {0} facedown';
-    effect = 'turn {0} facedown';
-    targetType = [CardType.Character, CardType.Holding, CardType.Province, CardType.Event];
+    override name = 'turnFacedown';
+    override restriction = RestrictionType.TurnFacedown;
+    override eventName = EventName.OnCardTurnedFacedown;
+    override cost = 'turning {0} facedown';
+    override effect = 'turn {0} facedown';
+    override targetType = [CardType.Character, CardType.Holding, CardType.Province, CardType.Event];
 
-    canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: C): boolean {
         return card.isFaceup() && super.canAffect(card, context) && card.isInProvince();
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardTurnedFacedown, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardTurnedFacedown, C>): void {
         const context = event.context;
         const card = event.card;
         if(card.controller !== card.owner) {

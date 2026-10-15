@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DiplomatOfTheSteppes extends DrawCard {
     static id = 'diplomat-of-the-steppes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Change the conflict to military', { conflictType: ConflictType.Political })
             .condition((context) => {
                 const conflict = this.game.currentConflict;

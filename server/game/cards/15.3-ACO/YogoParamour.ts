@@ -7,7 +7,7 @@ import { dishonor } from '../../GameActions/GameActions.js';
 class YogoParamour extends DrawCard {
     static id = 'yogo-paramour';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             effect: gainAbility.action('Dishonor any character', (ability) => ability
                 .cost(costs.bowSelf())

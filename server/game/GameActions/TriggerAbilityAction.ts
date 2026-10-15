@@ -54,17 +54,17 @@ export function canResolveAbility(properties: AbilityToResolve, context: Ability
 }
 
 export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TriggerAbilityProperties, EventName.Unnamed, C, 'ignoredBlockers' | 'subResolution'> {
-    name = 'triggerAbility';
-    defaultProperties = {
+    override name = 'triggerAbility';
+    override defaultProperties = {
         ignoredBlockers: [],
         subResolution: false
     };
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['resolve {0}\'s {1} ability', [this.getProperties(context, additionalProperties).ability.title]];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             super.canAffect(card, context) &&
@@ -72,13 +72,13 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         );
     }
 
-    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName, C>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
         const newContext = getResolutionContext(properties, event.context);
         event.context.game.queueStep(new AbilityResolver(event.context.game, newContext));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}) {
+    override hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
         return (
             properties.ability &&

@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KayoTheShrinetender extends DrawCard {
     static id = 'kayo-the-shrinetender';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a Temple')
             .target({
                 cardCondition: (card) => card.hasTrait(Trait.Temple) && !card.facedown,

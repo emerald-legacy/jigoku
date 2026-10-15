@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class WindsweptYurt extends DrawCard {
     static id = 'windswept-yurt';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain 2 fate or 2 honor')
             .cost(costs.sacrificeSelf())
             .select({

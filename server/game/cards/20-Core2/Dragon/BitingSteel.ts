@@ -24,7 +24,7 @@ function getAttachmentSkill(card: DrawCard) {
 export default class BitingSteel extends DrawCard {
     static id = 'biting-steel';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
         this.attachmentConditions({

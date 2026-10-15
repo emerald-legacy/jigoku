@@ -5,7 +5,7 @@ import { discardFromPlay } from '../../../GameActions/GameActions.js';
 export default class LostDeedsTemple extends ProvinceCard {
     static id = 'lost-deeds-temple';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard an attachment')
             .target({
                 cardType: CardType.Attachment,

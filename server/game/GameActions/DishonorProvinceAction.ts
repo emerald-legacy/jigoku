@@ -8,23 +8,23 @@ import { targetList, type ActionEvent, type ActionOverrides } from './GameAction
 export type DishonorProvinceProperties = CardActionProperties;
 
 export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProvinceProperties, EventName.OnCardDishonored, C> {
-    name = 'dishonorProvince';
-    restriction = RestrictionType.Dishonor;
-    eventName = EventName.OnCardDishonored;
-    targetType = [CardType.Province];
-    cost = 'dishonoring {0}';
-    effect = 'dishonor {0}';
+    override name = 'dishonorProvince';
+    override restriction = RestrictionType.Dishonor;
+    override eventName = EventName.OnCardDishonored;
+    override targetType = [CardType.Province];
+    override cost = 'dishonoring {0}';
+    override effect = 'dishonor {0}';
 
-    protected effectMessage(): MessageArgs {
+    protected override effectMessage(): MessageArgs {
         return ['place a dishonored status token on {0}, blanking it', []];
     }
 
     /** A facedown province is named by its location. */
-    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         return targetList(this.getProperties(context, additionalProperties).target).map((target) => target.isFacedown() ? target.location : target);
     }
 
-    canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: C): boolean {
         if(card.type !== CardType.Province || card.isDishonored) {
             return false;
         } else if(!card.isHonored && !card.checkRestrictions(RestrictionType.ReceiveDishonorToken, context)) {
@@ -33,7 +33,7 @@ export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> e
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardDishonored, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardDishonored, C>): void {
         event.card.dishonor();
     }
 }

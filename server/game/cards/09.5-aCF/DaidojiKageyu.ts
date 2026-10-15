@@ -6,7 +6,7 @@ import { ConflictType } from '../../Constants.js';
 class DaidojiKageyu extends DrawCard {
     static id = 'daidoji-kageyu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const cardsPlayed = (opponent: Player | undefined): number => {
             const conflict = this.game.currentConflict;
             if(!conflict || !opponent) {

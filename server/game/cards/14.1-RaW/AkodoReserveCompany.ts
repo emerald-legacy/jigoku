@@ -5,7 +5,7 @@ import { joint, moveToConflict, sendHome } from '../../GameActions/GameActions.j
 class AkodoReserveCompany extends DrawCard {
     static id = 'akodo-reserve-company';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow an attacking character')
             .condition((context) => context.game.isTraitInPlay(Trait.Battlefield))
             .target({

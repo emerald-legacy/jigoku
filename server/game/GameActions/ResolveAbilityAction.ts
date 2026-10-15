@@ -23,7 +23,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         this.ignoreCosts = ignoreCosts;
     }
 
-    initialise() {
+    override initialise() {
         this.pipeline.initialise([
             new SimpleStep(this.game, () => this.createSnapshot()),
             new SimpleStep(this.game, () => this.openInitiateAbilityEventWindow()),
@@ -31,7 +31,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         ]);
     }
 
-    getCostResults() {
+    override getCostResults() {
         const results = super.getCostResults();
         results.canCancel = false;
         results.playCosts = false;
@@ -39,7 +39,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         return results;
     }
 
-    openInitiateAbilityEventWindow() {
+    override openInitiateAbilityEventWindow() {
         const params = { card: this.context.source, ability: this.context.ability, context: this.context };
         const events: Event[] = [
             this.game.getEvent(EventName.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps())
@@ -58,7 +58,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         this.game.openEventWindow(events);
     }
 
-    initiateAbilityEffects() {
+    override initiateAbilityEffects() {
         if(this.cancelled) {
             for(const event of this.events) {
                 event.cancel();
@@ -78,13 +78,13 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         );
     }
 
-    resolveCosts() {
+    override resolveCosts() {
         if(!this.ignoreCosts) {
             super.resolveCosts();
         }
     }
 
-    payCosts() {
+    override payCosts() {
         if(!this.ignoreCosts) {
             super.payCosts();
         }
@@ -101,17 +101,17 @@ export interface ResolveAbilityProperties extends CardActionProperties {
 }
 
 export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ResolveAbilityProperties, EventName.Unnamed, C, 'ignoredBlockers' | 'subResolution'> {
-    name = 'resolveAbility';
-    defaultProperties = {
+    override name = 'resolveAbility';
+    override defaultProperties = {
         ignoredBlockers: [],
         subResolution: false
     };
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['resolve {0}\'s {1} ability', [this.getProperties(context, additionalProperties).ability.title]];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             super.canAffect(card, context) &&
@@ -123,7 +123,7 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
         );
     }
 
-    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
         const properties = this.getProperties(event.context, additionalProperties);
         const newContext = getResolutionContext(properties, event.context);
         if(properties.choosingPlayerOverride) {
@@ -139,7 +139,7 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
         );
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.ability.hasTargetsChosenByInitiatingPlayer(abilityContext(properties, context));
     }

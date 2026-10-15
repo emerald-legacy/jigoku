@@ -13,7 +13,7 @@ import {
 class CraftyTsukumogami extends RingAttachment {
     static id = 'crafty-tsukumogami';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Attach to a ring')
             .ringTarget({
                 activePromptTitle: 'Choose a ring to attach to',

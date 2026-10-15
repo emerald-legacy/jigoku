@@ -8,7 +8,7 @@ import { msg } from '../../GameChat.js';
 export default class TogashiAcolyte extends DrawCard {
     static id = 'togashi-acolyte';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
         this.reaction('Give attached character +1/+1')
             .when({

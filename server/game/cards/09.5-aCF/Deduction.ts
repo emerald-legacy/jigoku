@@ -6,7 +6,7 @@ import { CardType, ConflictType, Players } from '../../Constants.js';
 class Deduction extends DrawCard {
     static id = 'deduction';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
             .cost(costs.returnRings(1))

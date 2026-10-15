@@ -11,14 +11,14 @@ import DrawCard from '../../../DrawCard.js';
 export default class Kuro extends DrawCard {
     static id = 'kuro';
 
-    public allowAttachment(attachment: DrawCard) {
+    public override allowAttachment(attachment: DrawCard) {
         if((attachment.printedCost ?? 0) < 1) {
             return false;
         }
         return super.allowAttachment(attachment);
     }
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Play opponent discarded attachment', { evenFromHome: true })
             .target({
                 location: Location.ConflictDiscardPile,

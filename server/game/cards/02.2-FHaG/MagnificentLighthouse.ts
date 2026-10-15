@@ -9,7 +9,7 @@ const decks = new DeckChoice({ players: Players.Opponent, pile: 'deck' });
 class MagnificentLighthouse extends DrawCard {
     static id = 'magnificent-lighthouse';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at top 3 cards')
             .selectFrom({
                 activePromptTitle: 'Choose which deck to look at:'

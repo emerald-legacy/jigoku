@@ -6,7 +6,7 @@ import { resolveRingEffect } from '../../GameActions/GameActions.js';
 class GarantoGuardian extends DrawCard {
     static id = 'garanto-guardian';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve a ring effect')
             .when({
                 afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.source.controller && context.source.isParticipating()

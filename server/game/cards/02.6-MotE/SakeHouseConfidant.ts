@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 class SakeHouseConfidant extends DrawCard {
     static id = 'sake-house-confidant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give Shinobi +2 political')
             .condition((context) => context.source.isParticipating())
             .cost(costs.discardImperialFavor())

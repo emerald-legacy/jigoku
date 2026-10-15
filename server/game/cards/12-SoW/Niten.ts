@@ -7,7 +7,7 @@ import { captureParentCost } from '../captureParentCost.js';
 class Niten extends DrawCard {
     static id = 'niten';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             faction: 'dragon'
         });

@@ -6,7 +6,7 @@ import { CardType, Players, Trait } from '../../../Constants.js';
 export default class EmissaryOfTheFiveRivers extends DrawCard {
     static id = 'emissary-of-the-five-rivers';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a spirit')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

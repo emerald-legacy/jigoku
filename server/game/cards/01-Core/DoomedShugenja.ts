@@ -5,7 +5,7 @@ import { playerCannot } from '../../effects.js';
 class DoomedShugenja extends DrawCard {
     static id = 'doomed-shugenja';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             effect: playerCannot({

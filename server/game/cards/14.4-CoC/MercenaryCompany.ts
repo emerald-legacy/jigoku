@@ -8,7 +8,7 @@ import { msg } from '../../GameChat.js';
 class MercenaryCompany extends DrawCard {
     static id = 'mercenary-company';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('Give control of this character')
             .when({
                 afterConflict: (event, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()

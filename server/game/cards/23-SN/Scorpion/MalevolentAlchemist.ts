@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MalevolentAlchemist extends DrawCard {
     static id = 'malevolent-alchemist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
             match: (card) => card.type === CardType.Character,

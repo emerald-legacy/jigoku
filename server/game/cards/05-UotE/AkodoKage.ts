@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 export default class AkodoKage extends DrawCard {
     static id = 'akodo-kage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Set your opponent\'s dial to equal yours')
             .when({
                 onHonorDialsRevealed: (event, context) =>

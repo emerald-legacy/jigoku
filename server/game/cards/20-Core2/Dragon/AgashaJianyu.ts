@@ -25,7 +25,7 @@ function bonusBase(context: AbilityContext) {
 export default class AgashaJianyu extends DrawCard {
     static id = 'agasha-jianyu';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Empower a character with the combined strength of the elements', { evenFromHome: true })
             .target({
                 cardType: CardType.Character,

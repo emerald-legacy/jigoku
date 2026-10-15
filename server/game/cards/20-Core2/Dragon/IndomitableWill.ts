@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IndomitableWill extends DrawCard {
     static id = 'indomitable-will';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent a character from bowing at the end of the conflict')
             .when({
                 afterConflict: (event, context) =>

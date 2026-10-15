@@ -8,7 +8,7 @@ import type { EffectApplier } from '../../../Effects/EffectApplier.js';
 export default class ShoreOfTheAshenFlames extends ProvinceCard {
     static id = 'shore-of-the-ashen-flames';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,

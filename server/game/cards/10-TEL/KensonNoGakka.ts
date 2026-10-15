@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class KensonNoGakka extends ProvinceCard {
     static id = 'kenson-no-gakka';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor all defenders')
             .when({
                 afterConflict: (event, context) =>

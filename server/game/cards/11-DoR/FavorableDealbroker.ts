@@ -5,7 +5,7 @@ import { putIntoPlay } from '../../GameActions/GameActions.js';
 class FavorableDealbroker extends DrawCard {
     static id = 'favorable-dealbroker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

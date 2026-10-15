@@ -7,7 +7,7 @@ import { CardType } from '../../Constants.js';
 class DarknessRising extends DrawCard {
     static id = 'darkness-rising';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow weaker military characters')
             .condition((context) => context.game.isDuringConflict())
             .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card, context) => card.isParticipating() && this.getLegalTargetsForCard(card, context).length > 0 }))
@@ -17,7 +17,7 @@ class DarknessRising extends DrawCard {
             .cannotTargetFirst();
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 

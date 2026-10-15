@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class StayYourHand extends DrawCard {
     static id = 'stay-your-hand';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel a duel')
             .when({
                 onDuelInitiated: (event, context) =>

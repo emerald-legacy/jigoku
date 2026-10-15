@@ -7,7 +7,7 @@ import { DuelType } from '../../Constants.js';
 class HonorableChallenger extends DrawCard {
     static id = 'honorable-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,

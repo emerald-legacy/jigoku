@@ -14,7 +14,7 @@ function honorTokens(context: AbilityContext) {
 class DistinguishedDojo extends DrawCard {
     static id = 'distinguished-dojo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place an honor token')
             .when({
                 afterDuel: (event, context) => {

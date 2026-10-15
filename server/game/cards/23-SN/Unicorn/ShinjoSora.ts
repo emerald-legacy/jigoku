@@ -5,7 +5,7 @@ import UnleashedHound from '../../UnleashedHound.js';
 export default class ShinjoSora extends DrawCard {
     static id = 'shinjo-sora';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Create beasts from facedown dynasty cards')
             .gameAction(createToken((context) => ({
                 target: context.game

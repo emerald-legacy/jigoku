@@ -9,7 +9,7 @@ const STARTED_AT_HOME = 'started_out';
 export default class CloudStepValley extends ProvinceCard {
     static id = 'cloud-step-valley';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch the location of two characters')
             .target({
                 name: STARTED_IN_CONFLICT,

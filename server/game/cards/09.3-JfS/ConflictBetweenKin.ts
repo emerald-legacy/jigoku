@@ -5,7 +5,7 @@ import { cardCannot } from '../../effects.js';
 export default class ConflictBetweenKin extends ProvinceCard {
     static id = 'conflict-between-kin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,

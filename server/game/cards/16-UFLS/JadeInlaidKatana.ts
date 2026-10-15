@@ -6,7 +6,7 @@ import { CardType, Players } from '../../Constants.js';
 class JadeInlaidKatana extends DrawCard {
     static id = 'jade-inlaid-katana';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.reaction('Remove 1 fate from a character', (ability) => ability
                 .when({

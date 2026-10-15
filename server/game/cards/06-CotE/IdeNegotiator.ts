@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class IdeNegotiator extends DrawCard {
     static id = 'ide-negotiator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Modify honor dial')
             .when({ onHonorDialsRevealed: () => true })
             .chooseAction((context) => ({

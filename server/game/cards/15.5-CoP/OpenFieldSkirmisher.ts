@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class OpenFieldSkirmisher extends DrawCard {
     static id = 'open-field-skirmisher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce Province Strength')
             .condition((context) => context.source.isAttacking())
             .cost(costs.removeFateFromSelf())

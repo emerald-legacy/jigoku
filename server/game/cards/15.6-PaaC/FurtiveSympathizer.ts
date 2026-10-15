@@ -4,7 +4,7 @@ import { switchBaseSkills } from '../../effects.js';
 class FurtiveSympathizer extends DrawCard {
     static id = 'furtive-sympathizer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch each character\'s base skills')
             .condition((context) => context.source.isParticipating() && context.source.isOrdinary())
             .cardLastingEffect((context) => ({

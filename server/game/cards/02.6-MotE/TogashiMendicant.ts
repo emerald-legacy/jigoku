@@ -5,7 +5,7 @@ import { rearrangeDeck } from '../../GameActions/GameActions.js';
 class TogashiMendicant extends DrawCard {
     static id = 'togashi-mendicant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Rearrange top 3 cards of dynasty deck')
             .when({
                 onPhaseStarted: (event, context) => event.phase === Phase.Fate && context.player.dynastyDeck.length > 0

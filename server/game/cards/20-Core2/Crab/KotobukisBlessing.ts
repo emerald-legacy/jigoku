@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KotobukisBlessing extends DrawCard {
     static id = 'kotobuki-s-blessing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Place a fate on a character')
             .target({
                 cardType: CardType.Character,

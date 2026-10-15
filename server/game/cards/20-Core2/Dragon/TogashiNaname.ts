@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TogashiNaname extends DrawCard {
     static id = 'togashi-naname';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             effect: cannotReceiveDishonorToken()
         });

@@ -14,17 +14,17 @@ export class RingAction<
     C extends AbilityContext = AbilityContext,
     D extends keyof P = never
 > extends GameAction<P, N, C, D> {
-    targetType = ['ring'];
+    override targetType = ['ring'];
 
-    defaultTargets(context: C): Ring[] {
+    override defaultTargets(context: C): Ring[] {
         return context.game.currentConflict && context.game.currentConflict.ring ? [context.game.currentConflict.ring] : [];
     }
 
-    checkEventCondition(event: RingEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
+    override checkEventCondition(event: RingEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.ring, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: RingEvent<N, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: RingEvent<N, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.ring = ring;
     }

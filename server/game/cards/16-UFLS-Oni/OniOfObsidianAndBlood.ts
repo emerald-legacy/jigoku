@@ -6,7 +6,7 @@ import type BaseCard from '../../BaseCard.js';
 export default class OniOfObsidianAndBlood extends BaseOni {
     static id = 'oni-of-obsidian-and-blood';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Discard a character')
             .when({
@@ -20,7 +20,7 @@ export default class OniOfObsidianAndBlood extends BaseOni {
             }, discardFromPlay());
     }
 
-    public allowAttachment(attachment: BaseCard) {
+    public override allowAttachment(attachment: BaseCard) {
         return attachment.isFaction('shadowlands') && super.allowAttachment(attachment);
     }
 }

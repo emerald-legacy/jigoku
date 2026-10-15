@@ -7,7 +7,7 @@ const elementKey = 'student-of-the-tao-void';
 class StudentOfTheTao extends DrawCard {
     static id = 'student-of-the-tao';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move in/out the conflict')
             .condition((context) => context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false)
             .target({
@@ -16,7 +16,7 @@ class StudentOfTheTao extends DrawCard {
             }, sendHome());
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

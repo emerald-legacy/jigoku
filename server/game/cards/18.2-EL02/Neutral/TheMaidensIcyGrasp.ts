@@ -8,7 +8,7 @@ import { controlsParticipating } from '../../controlsParticipating.js';
 export default class TheMaidensIcyGrasp extends DrawCard {
     static id = 'the-maiden-s-icy-grasp';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const charactersEntered = new CharactersEnteredThisConflict(this.game);
         this.action('Remove a character from play')
             .condition((context) => controlsParticipating(context.player, Trait.Shugenja))

@@ -12,7 +12,7 @@ interface MaxStatCardSelectorProperties extends BaseCardSelectorProperties {
 export class MaxStatCardSelector extends BaseCardSelector {
     cardStat: (card: BaseCard) => number;
     maxStat: () => number;
-    numCards: number;
+    override numCards: number;
 
     constructor(properties: MaxStatCardSelectorProperties) {
         super(properties);
@@ -21,20 +21,20 @@ export class MaxStatCardSelector extends BaseCardSelector {
         this.numCards = properties.numCards;
     }
 
-    canTarget(card: BaseCard, context: AbilityContext, choosingPlayer?: Player, selectedCards: BaseCard[] = []): boolean {
+    override canTarget(card: BaseCard, context: AbilityContext, choosingPlayer?: Player, selectedCards: BaseCard[] = []): boolean {
         return super.canTarget(card, context, choosingPlayer, selectedCards) && this.cardStat(card) <= this.maxStat();
     }
 
-    wouldExceedLimit(selectedCards: BaseCard[], card: BaseCard): boolean {
+    override wouldExceedLimit(selectedCards: BaseCard[], card: BaseCard): boolean {
         const currentStatSum = selectedCards.reduce((sum: number, c: BaseCard) => sum + this.cardStat(c), 0);
         return this.cardStat(card) + currentStatSum > this.maxStat();
     }
 
-    hasReachedLimit(selectedCards: BaseCard[]): boolean {
+    override hasReachedLimit(selectedCards: BaseCard[]): boolean {
         return this.numCards > 0 && selectedCards.length >= this.numCards;
     }
 
-    hasExceededLimit(selectedCards: BaseCard[]): boolean {
+    override hasExceededLimit(selectedCards: BaseCard[]): boolean {
         const currentStatSum = selectedCards.reduce((sum: number, c: BaseCard) => sum + this.cardStat(c), 0);
         return currentStatSum > this.maxStat() || (this.numCards > 0 && selectedCards.length > this.numCards);
     }

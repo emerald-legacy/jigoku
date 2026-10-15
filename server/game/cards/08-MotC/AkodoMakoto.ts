@@ -5,7 +5,7 @@ import { injure } from '../../GameActions/GameActions.js';
 class AkodoMakoto extends DrawCard {
     static id = 'akodo-makoto';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Remove fate/discard character')
             .when({
                 afterConflict: (event, context) => {

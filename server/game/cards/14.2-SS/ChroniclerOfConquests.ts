@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class ChroniclerOfConquests extends DrawCard {
     static id = 'chronicler-of-conquests';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain 1 honor')
             .condition((context) => context.source.isParticipating() && context.game.isTraitInPlay(Trait.Battlefield))
             .gainHonor();

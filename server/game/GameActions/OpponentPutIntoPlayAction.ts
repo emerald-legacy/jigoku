@@ -7,17 +7,17 @@ import type { Defaults } from './GameAction.js';
 export type OpponentPutIntoPlayProperties = PutIntoPlayProperties;
 
 export class OpponentPutIntoPlayAction<C extends AbilityContext = AbilityContext> extends PutIntoPlayAction<C> {
-    defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
+    override defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
         status: 'ordinary',
         controller: Players.Opponent
     };
 
-    getDefaultSide(context: AbilityContext): Player {
+    override getDefaultSide(context: AbilityContext): Player {
         return context.player.opponent ?? context.player;
     }
 
-    getPutIntoPlayPlayer(context: AbilityContext): Player {
+    override getPutIntoPlayPlayer(context: AbilityContext): Player {
         return context.player.opponent ?? context.player;
     }
 }

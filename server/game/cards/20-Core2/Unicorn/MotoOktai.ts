@@ -11,7 +11,7 @@ function skillBonus(card: DrawCard) {
 export default class MotoOktai extends DrawCard {
     static id = 'moto-oktai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Increase this character\'s skill')
             .when({
                 onCardLeavesPlay: ({ card }, context) =>

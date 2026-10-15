@@ -5,7 +5,7 @@ import { CardType, Location } from '../../Constants.js';
 class DiscerningYoriki extends DrawCard {
     static id = 'discerning-yoriki';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
                 onCardRevealed: (event, context) =>

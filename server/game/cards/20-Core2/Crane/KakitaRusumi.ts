@@ -11,7 +11,7 @@ function statusOfIntern(context: AbilityContext) {
 export default class KakitaRusumi extends DrawCard {
     static id = 'kakita-rusumi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Put a character into play', { evenFromHome: true })
             .condition((context) => context.player.isDefendingPlayer())
             .deckSearch({

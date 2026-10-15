@@ -5,7 +5,7 @@ import * as costs from '../../../costs/index.js';
 export default class ExemplaryNegotiator extends DrawCard {
     static id = 'exemplary-negotiator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard cards to cause opponent to discard')
             .condition((context) => context.player.anyCardsInPlay((card) => card.isDishonored))
             .cost(costs.discardCardsUpToVariableX(() => 2))

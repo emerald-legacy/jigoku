@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CorneringManeuver extends DrawCard {
     static id = 'cornering-maneuver';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give a character +2 mil', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

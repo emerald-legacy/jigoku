@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class GoldenPlainsRaider extends DrawCard {
     static id = 'golden-plains-raider';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Discard a card in a province')
             .when({
                 afterConflict: (event, context) =>

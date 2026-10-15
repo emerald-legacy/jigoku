@@ -71,11 +71,11 @@ export class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice =
         this.context = properties.context || new AbilityContext({ game: game, player: player, source: source });
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return player === this.player;
     }
 
-    activePrompt() {
+    override activePrompt() {
         let buttons: PromptButton[] = [];
         if(this.properties.cards) {
             const cardQuantities: Record<string, number> = {};
@@ -130,11 +130,11 @@ export class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice =
         return [targetingControl(this.context.source, targetsOrEventCard(this.context, targets), this.player)];
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: this.properties.waitingPromptTitle || 'Waiting for opponent' };
     }
 
-    menuCommand(_player: Player, arg: string | number): boolean {
+    override menuCommand(_player: Player, arg: string | number): boolean {
         if(typeof arg === 'string') {
             if(arg === 'cancel') {
                 this.complete();

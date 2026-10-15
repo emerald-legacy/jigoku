@@ -5,7 +5,7 @@ import { DuelType, EffectName } from '../../Constants.js';
 class BayushiGensato extends DrawCard {
     static id = 'bayushi-gensato';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,

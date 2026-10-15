@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class NightingaleTattoo extends DrawCard {
     static id = 'nightingale-tattoo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             trait: Trait.Monk

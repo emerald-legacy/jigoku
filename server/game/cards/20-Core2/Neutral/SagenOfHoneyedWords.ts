@@ -10,7 +10,7 @@ function skillBonus(companion: DrawCard): number {
 export default class SagenOfHoneyedWords extends DrawCard {
     static id = 'sagen-of-honeyed-words';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Gain a skill bonus based on your company')
             .target({
                 cardType: CardType.Character,

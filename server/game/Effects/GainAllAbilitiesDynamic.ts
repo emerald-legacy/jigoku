@@ -85,7 +85,7 @@ export class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, BaseCard>
         }
     }
 
-    unapply(target: BaseCard) {
+    override unapply(target: BaseCard) {
         if(this.abilitiesForTargets[target.uuid]) {
             for(const value of this.abilitiesForTargets[target.uuid].reactions) {
                 value.unregisterEvents();

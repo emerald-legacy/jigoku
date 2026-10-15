@@ -10,7 +10,7 @@ export default class InfernoGuardInvoker extends DrawCard {
     private provinceBroken = false;
     private eventRegistrar?: EventRegistrar;
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game);
         this.eventRegistrar.register({
             [EventName.OnBreakProvince]: () => this.onBreakProvince(),

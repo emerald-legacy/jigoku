@@ -6,7 +6,7 @@ import { RestrictionType } from '../../Constants.js';
 class MaraudingOni extends DrawCard {
     static id = 'marauding-oni';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
                 cardCannot(RestrictionType.Honor),

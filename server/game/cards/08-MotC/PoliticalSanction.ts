@@ -7,7 +7,7 @@ import { ConflictType } from '../../Constants.js';
 class PoliticalSanction extends DrawCard {
     static id = 'political-sanction';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => {
             const conflict = context.game.currentConflict;
             if(!conflict || !context.game.isDuringConflict(ConflictType.Political)) {
@@ -22,7 +22,7 @@ class PoliticalSanction extends DrawCard {
         });
     }
 
-    canPlayOn(card: BaseCard | Ring) {
+    override canPlayOn(card: BaseCard | Ring) {
         return card instanceof DrawCard && card.isParticipating() && super.canPlayOn(card);
     }
 }

@@ -4,7 +4,7 @@ import { Phase } from '../../Constants.js';
 class ForgottenLibrary extends DrawCard {
     static id = 'forgotten-library';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Draw

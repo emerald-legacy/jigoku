@@ -7,7 +7,7 @@ import { TargetMode } from '../../Constants.js';
 class ShojusDiviner extends DrawCard {
     static id = 'shoju-s-diviner';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             effect: gainAbility.action('Divine your conflict deck', (ability) => ability
                 .deckSearch({

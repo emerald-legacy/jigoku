@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Kinki extends DrawCard {
     static id = 'kinki';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

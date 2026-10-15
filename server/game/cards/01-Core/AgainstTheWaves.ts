@@ -5,7 +5,7 @@ import { bow, ready } from '../../GameActions/GameActions.js';
 class AgainstTheWaves extends DrawCard {
     static id = 'against-the-waves';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow or ready a shugenja')
             .target({
                 cardType: CardType.Character,

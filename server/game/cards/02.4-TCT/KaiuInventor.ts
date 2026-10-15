@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class KaiuInventor extends DrawCard {
     static id = 'kaiu-inventor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add an additional ability use to a holding')
             .target({
                 cardType: CardType.Holding,

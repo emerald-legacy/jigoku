@@ -6,7 +6,7 @@ import { moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 class FavorableGround extends DrawCard {
     static id = 'favorable-ground';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character into or out of the conflict')
             .cost(costs.sacrificeSelf())
             .target({

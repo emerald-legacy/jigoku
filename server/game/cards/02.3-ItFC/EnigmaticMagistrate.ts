@@ -4,7 +4,7 @@ import { cannotContribute } from '../../effects.js';
 class EnigmaticMagistrate extends DrawCard {
     static id = 'enigmatic-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             effect: cannotContribute(() => {

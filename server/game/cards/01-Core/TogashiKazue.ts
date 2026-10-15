@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class TogashiKazue extends DrawCard {
     static id = 'togashi-kazue';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
         this.action('Steal a fate')
             .condition((context) =>

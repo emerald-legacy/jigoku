@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ALegionOfOne extends DrawCard {
     static id = 'a-legion-of-one';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give a solitary character +3/+0', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

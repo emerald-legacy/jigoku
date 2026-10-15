@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CherishedFamilyServant extends DrawCard {
     static id = 'cherished-family-servant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetLocation: Location.Any,

@@ -24,11 +24,11 @@ export class SelectDefendersPrompt extends UiPrompt {
         }
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return player === this.player;
     }
 
-    activePrompt() {
+    override activePrompt() {
         let promptTitle = (capitalize(this.conflict.conflictType ?? '') + ' ' + capitalize(this.conflict.element ?? '') + ' Conflict: '
             + this.conflict.attackerSkill + ' vs ' + this.conflict.defenderSkill);
 
@@ -42,11 +42,11 @@ export class SelectDefendersPrompt extends UiPrompt {
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to choose defenders' };
     }
 
-    onCardClicked(player: Player, card: DrawCard): boolean {
+    override onCardClicked(player: Player, card: DrawCard): boolean {
         if(player !== this.player) {
             return false;
         }
@@ -85,7 +85,7 @@ export class SelectDefendersPrompt extends UiPrompt {
         return true;
     }
 
-    menuCommand(): boolean {
+    override menuCommand(): boolean {
         this.conflict.defenders.forEach((card: DrawCard) => card.covert = false);
         this.conflict.setDefendersChosen(true);
         this.complete();

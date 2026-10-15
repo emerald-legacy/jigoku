@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class ScoutedTerrain extends DrawCard {
     static id = 'scouted-terrain';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Allow attacking the stronghold')
             .condition((context) => !!context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 4)
             .phase(Phase.Conflict)

@@ -4,7 +4,7 @@ import { controlsShugenja } from '../../controlsShugenja.js';
 export default class ThereAreNoSecrets extends DrawCard {
     static id = 'there-are-no-secrets';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
         this.wouldInterrupt('Gain 1 fate')

@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class FieldsOfRollingThunder extends DrawCard {
     static id = 'fields-of-rolling-thunder';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.forcedReaction('Discard this holding')
             .when({
                 afterConflict: (event, context) =>

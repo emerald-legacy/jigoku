@@ -7,7 +7,7 @@ import { LimitedPlaysFromOutOfPlay } from '../LimitedPlaysFromOutOfPlay.js';
 export default class BayushiKachiko2 extends DrawCard {
     static id = 'bayushi-kachiko-2';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const plays = new LimitedPlaysFromOutOfPlay<this>(this, {
             max: 3,
             active: (context) => context.game.isDuringConflict(ConflictType.Political) && context.source.isParticipating(),

@@ -5,7 +5,7 @@ import { unlimited } from '../../AbilityLimit.js';
 class ThirdTower extends DrawCard {
     static id = 'third-tower';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Take an honor from your opponent')
             .when({
                 onConflictDeclared: (event, context) => {

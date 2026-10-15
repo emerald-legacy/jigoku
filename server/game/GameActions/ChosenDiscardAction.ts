@@ -15,24 +15,24 @@ export interface ChosenDiscardProperties<C extends AbilityContext = AbilityConte
 }
 
 export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount' | 'targets' | 'cardCondition'> {
-    defaultProperties = {
+    override defaultProperties = {
         amount: 1,
         targets: true,
         cardCondition: () => true
     };
-    name = 'chosenDiscard';
-    restriction = RestrictionType.Discard;
-    eventName = EventName.OnCardsDiscardedFromHand;
+    override name = 'chosenDiscard';
+    override restriction = RestrictionType.Discard;
+    override eventName = EventName.OnCardsDiscardedFromHand;
 
-    defaultTargets(context: C): Player[] {
+    override defaultTargets(context: C): Player[] {
         return this.opponentTargets(context);
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['make {0} discard {1} cards', [this.getProperties(context, additionalProperties).amount]];
     }
 
-    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
 
@@ -42,7 +42,7 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
         return super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         for(const player of targetList(properties.target)) {
             const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
@@ -80,7 +80,7 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
         }
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
@@ -88,7 +88,7 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
         event.discardedAtRandom = false;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>): void {
         const context = event.context;
         context.game.addMessage(msg`${event.player} discards ${event.cards}`);
         event.discardedCards = event.cards;

@@ -8,7 +8,7 @@ import { shuffle } from '../../utils/random.js';
 export default class IsawaTadaka2 extends DrawCard {
     static id = 'isawa-tadaka-2';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Remove discarded characters to discard a card')
             .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
             .cost(costs.removeFromGame({

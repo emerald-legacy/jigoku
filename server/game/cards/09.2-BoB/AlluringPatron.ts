@@ -5,7 +5,7 @@ import { dishonor, moveToConflict } from '../../GameActions/GameActions.js';
 class AlluringPatron extends DrawCard {
     static id = 'alluring-patron';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move or dishonor a character')
             .condition((context) => context.source.isParticipating())
             .target({

@@ -6,7 +6,7 @@ import { placeInProvince } from '../../GameActions/GameActions.js';
 class MiyaSatoshi extends DrawCard {
     static id = 'miya-satoshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard dynasty cards until you find an Imperial')
             .condition((context) => context.player.dynastyDeck.length > 0)
             .handler((context) => {

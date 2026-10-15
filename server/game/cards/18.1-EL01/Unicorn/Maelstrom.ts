@@ -83,7 +83,7 @@ const elementKey = 'maelstrom-water';
 
 export default class Maelstrom extends ProvinceCard {
     static id = 'maelstrom';
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character into the conflict')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .cost(maelstromCost())
@@ -120,7 +120,7 @@ export default class Maelstrom extends ProvinceCard {
             .cannotTargetFirst();
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

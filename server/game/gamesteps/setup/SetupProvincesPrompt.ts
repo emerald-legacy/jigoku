@@ -24,11 +24,11 @@ export class SetupProvincesPrompt extends AllPlayerPrompt {
         }
     }
 
-    completionCondition(player: Player): boolean {
+    override completionCondition(player: Player): boolean {
         return this.clickedDone[player.uuid];
     }
 
-    continue(): boolean {
+    override continue(): boolean {
         if(!this.isComplete()) {
             this.highlightSelectableCards();
         }
@@ -46,7 +46,7 @@ export class SetupProvincesPrompt extends AllPlayerPrompt {
         });
     }
 
-    activePrompt(player: Player) {
+    override activePrompt(player: Player) {
         let menuTitle = 'Choose province order, or press Done to place them at random';
         if(!this.strongholdProvince[player.uuid]) {
             menuTitle = 'Select stronghold province';
@@ -62,7 +62,7 @@ export class SetupProvincesPrompt extends AllPlayerPrompt {
         };
     }
 
-    onCardClicked(player: Player, card: ProvinceCard): boolean {
+    override onCardClicked(player: Player, card: ProvinceCard): boolean {
         if(!player || !this.activeCondition(player) || !card) {
             return false;
         } else if(!this.selectableCards[player.uuid].includes(card)) {
@@ -86,13 +86,13 @@ export class SetupProvincesPrompt extends AllPlayerPrompt {
         return true;
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return {
             menuTitle: 'Waiting for opponent to finish selecting provinces'
         };
     }
 
-    menuCommand(player: Player, arg: string): boolean {
+    override menuCommand(player: Player, arg: string): boolean {
         const stronghold = this.strongholdProvince[player.uuid];
         if(arg === 'change' || !stronghold) {
             if(stronghold) {

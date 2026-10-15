@@ -9,7 +9,7 @@ const elementSymbol = { key: 'stride-the-waves-water', element: Element.Water };
 class StrideTheWaves extends DrawCard {
     static id = 'stride-the-waves';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
@@ -29,7 +29,7 @@ class StrideTheWaves extends DrawCard {
             .limit(perRound(2));
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

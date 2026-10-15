@@ -17,7 +17,7 @@ function penalty(context: AbilityContext): number {
 export default class AsakoShun extends DrawCard {
     static id = 'asako-shun';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give a skill penalty to a participating character')
             .target({
                 cardType: CardType.Character,

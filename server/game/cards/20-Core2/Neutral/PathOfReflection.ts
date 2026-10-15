@@ -9,7 +9,7 @@ export default class PathOfReflection extends ProvinceCard {
     private readonly conflictElement = `${PathOfReflection.id}-conflict-water`;
     private readonly provinceElement = `${PathOfReflection.id}-province-water`;
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('switch a character\'s base skills')
             .conflictProvinceCondition((province, context) =>
                 province.isElement(this.getCurrentElementSymbol(this.provinceElement)) ||
@@ -21,7 +21,7 @@ export default class PathOfReflection extends ProvinceCard {
             .chatText('switch {0}\'s military and political skill');
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push(
             { prettyName: 'Conflict Element', key: this.conflictElement, element: Element.Water },

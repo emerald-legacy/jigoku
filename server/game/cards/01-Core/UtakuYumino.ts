@@ -7,7 +7,7 @@ import { modifyBothSkills } from '../../effects.js';
 class UtakuYumino extends DrawCard {
     static id = 'utaku-yumino';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a card for +2/+2')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.discardCard({ location: Location.Hand }))

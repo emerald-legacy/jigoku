@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 export default class MeekInformant extends DrawCard {
     static id = 'meek-informant';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Look at opponent\'s hand')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source && context.player.opponent !== undefined

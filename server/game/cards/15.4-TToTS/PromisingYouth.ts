@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class PromisingYouth extends DrawCard {
     static id = 'promising-youth';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
         this.whileAttached({
             effect: modifyBothSkills(2)

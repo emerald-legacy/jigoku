@@ -18,7 +18,7 @@ function sumModifiers(
 export default class MirumotoRei extends DrawCard {
     static id = 'mirumoto-rei';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give a skill bonus based on attachments')
             .target({
                 cardType: CardType.Character,

@@ -6,7 +6,7 @@ import { bow, sendHome } from '../../GameActions/GameActions.js';
 class KanjoDistrict extends DrawCard {
     static id = 'kanjo-district';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow and send home a participating character')
             .cost(costs.discardImperialFavor())
             .target({

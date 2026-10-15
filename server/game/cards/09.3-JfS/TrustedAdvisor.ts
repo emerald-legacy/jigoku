@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class TrustedAdvisor extends DrawCard {
     static id = 'trusted-advisor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
                 onMoveFate: (event, context) => context.source.isParticipating() &&

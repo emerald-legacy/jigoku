@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class GallantQuartermaster extends DrawCard {
     static id = 'gallant-quartermaster';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Gain two fate')
             .when({
                 onCardLeavesPlay: (event, context) => event.isSacrifice && event.card === context.source

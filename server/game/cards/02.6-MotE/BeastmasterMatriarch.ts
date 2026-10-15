@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class BeastmasterMatriarch extends DrawCard {
     static id = 'beastmaster-matriarch';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyMilitarySkill((card) => this.getTwiceOpponentsClaimedRings(card.controller))
         });

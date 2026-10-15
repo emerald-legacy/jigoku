@@ -5,7 +5,7 @@ import { putIntoPlay } from '../../../GameActions/GameActions.js';
 class HotSpringsProprietor extends DrawCard {
     static id = 'hot-springs-proprietor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

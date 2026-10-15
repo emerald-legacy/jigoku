@@ -80,7 +80,7 @@ function disruptedSupplyLinesCost(): Cost<{ disruptedSupplyLinesCostFatePaid: bo
 export default class DisruptedSupplyLines extends DrawCard {
     static id = 'disrupted-supply-lines';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Remove attachment from game')
             .when({
                 onCardAttached: (event, context) => (

@@ -6,7 +6,7 @@ import { msg } from '../../../GameChat.js';
 export default class BlackMarketeer extends DrawCard {
     static id = 'black-marketeer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Play an attachment')
             .target({
                 cardType: CardType.Attachment,

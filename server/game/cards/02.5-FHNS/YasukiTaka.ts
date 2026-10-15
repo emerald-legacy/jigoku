@@ -5,7 +5,7 @@ import { Phase, CardType, Location } from '../../Constants.js';
 class YasukiTaka extends DrawCard {
     static id = 'yasuki-taka';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain fate')
             .when({
                 onCardLeavesPlay: (event) => {

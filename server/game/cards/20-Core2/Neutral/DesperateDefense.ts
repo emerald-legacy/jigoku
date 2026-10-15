@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DesperateDefense extends DrawCard {
     static id = 'desperate-defense';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add Province Strength')
             .condition((context) => context.player.cardsInPlay.some((card) => card.isParticipating()))
             .selectAttackedProvince({

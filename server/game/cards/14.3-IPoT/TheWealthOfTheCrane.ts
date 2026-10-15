@@ -8,7 +8,7 @@ import { placeInProvinces } from '../placeInProvinces.js';
 class TheWealthOfTheCrane extends DrawCard {
     static id = 'the-wealth-of-the-crane';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

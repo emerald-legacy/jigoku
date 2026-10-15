@@ -16,7 +16,7 @@ import { randomHandCards } from '../../randomHandCards.js';
 export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gaze into the void')
             .condition((context) => controlsShugenja(context.player))
             .gameAction(sequential((context) => {

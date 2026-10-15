@@ -7,7 +7,7 @@ import { CardType, Location } from '../../Constants.js';
 class IuchiDaiyu extends DrawCard {
     static id = 'iuchi-daiyu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('+1 military for each faceup province')
             .condition(() => this.game.isDuringConflict())
             .target({

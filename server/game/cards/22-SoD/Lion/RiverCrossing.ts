@@ -5,7 +5,7 @@ import { changeConflictSkillFunction } from '../../../effects.js';
 export default class RiverCrossing extends ProvinceCard {
     static id = 'river-crossing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Make characters count 1 skill')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source

@@ -9,22 +9,22 @@ import { targetList, type ActionEvent, type ActionOverrides } from './GameAction
 export type DiscardStatusProperties = TokenActionProperties;
 
 export class DiscardStatusTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<DiscardStatusProperties, EventName.OnStatusTokenDiscarded, C> {
-    name = 'discardStatusToken';
-    eventName = EventName.OnStatusTokenDiscarded;
-    cost = 'discarding a status token';
+    override name = 'discardStatusToken';
+    override eventName = EventName.OnStatusTokenDiscarded;
+    override cost = 'discarding a status token';
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const cardsLosingStatus = this.#cardsLosingStatus(context, additionalProperties);
         return cardsLosingStatus.length === 0
             ? ['discard a status token', []]
             : ['discard {0}\'s status token', cardsLosingStatus.slice(1)];
     }
 
-    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         return this.#cardsLosingStatus(context, additionalProperties)[0];
     }
 
-    addPropertiesToEvent(
+    override addPropertiesToEvent(
         event: ActionEvent<EventName.OnStatusTokenDiscarded, C>,
         token: StatusToken,
         context: C,
@@ -34,7 +34,7 @@ export class DiscardStatusTokenAction<C extends AbilityContext = AbilityContext>
         event.cards = this.#cardsLosingStatus(context, additionalProperties);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnStatusTokenDiscarded, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnStatusTokenDiscarded, C>): void {
         const token = event.token;
         if(token.card) {
             token.card.removeStatusToken(token);

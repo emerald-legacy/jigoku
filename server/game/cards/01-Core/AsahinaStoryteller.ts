@@ -5,7 +5,7 @@ import { addKeyword } from '../../effects.js';
 class AsahinaStoryteller extends DrawCard {
     static id = 'asahina-storyteller';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.type === CardType.Character && card.isHonored && card.isFaction('crane'),
             effect: addKeyword('sincerity')

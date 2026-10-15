@@ -1373,7 +1373,7 @@ export class Player extends GameObject {
         return this.stateBuilder.getState(activePlayer);
     }
 
-    getShortSummary() {
+    override getShortSummary() {
         return this.stateBuilder.getShortSummary();
     }
 }

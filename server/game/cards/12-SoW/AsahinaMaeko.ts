@@ -5,7 +5,7 @@ import { increaseCost } from '../../effects.js';
 class AsahinaMaeko extends DrawCard {
     static id = 'asahina-maeko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase cost to play cards')
             .condition(() => this.game.isDuringConflict())
             .playerLastingEffect({

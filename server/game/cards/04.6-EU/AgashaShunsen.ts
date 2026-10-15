@@ -7,7 +7,7 @@ import { Players, CardType, Location } from '../../Constants.js';
 class AgashaShunsen extends DrawCard {
     static id = 'agasha-shunsen';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Return rings to fetch an attachment')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.returnRings())

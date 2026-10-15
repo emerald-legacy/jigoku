@@ -24,15 +24,15 @@ export class FateBidPrompt extends AllPlayerPrompt {
         this.menuTitle = menuTitle || 'Choose a bid';
     }
 
-    activeCondition(player: Player) {
+    override activeCondition(player: Player) {
         return !this.bids.has(player);
     }
 
-    completionCondition(player: Player) {
+    override completionCondition(player: Player) {
         return this.bids.has(player);
     }
 
-    continue() {
+    override continue() {
         if(!super.continue()) {
             return false;
         }
@@ -64,7 +64,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
         return true;
     }
 
-    activePrompt(player: Player) {
+    override activePrompt(player: Player) {
         const prohibitedBids = this.prohibitedBids[player.uuid] || [];
         const buttons: Array<{ text: string; arg: string }> = [];
         for(let i = 0, max = player.fate; i <= max; i++) {
@@ -81,11 +81,11 @@ export class FateBidPrompt extends AllPlayerPrompt {
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to decide how much fate to spend.' };
     }
 
-    menuCommand(player: Player, bid: string) {
+    override menuCommand(player: Player, bid: string) {
         const parsed = parseInt(bid, 10);
         const amount = isNaN(parsed) ? 0 : parsed;
 

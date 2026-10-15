@@ -4,7 +4,7 @@ import { fateCostToAttack } from '../../effects.js';
 class CaravanGuard extends DrawCard {
     static id = 'caravan-guard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: fateCostToAttack()
         });

@@ -4,7 +4,7 @@ import { doesNotBow } from '../../effects.js';
 class AgashaSumiko extends DrawCard {
     static id = 'agasha-sumiko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => (
                 context.player.imperialFavor !== '' &&

@@ -8,7 +8,7 @@ import { Players, CardType, ConflictType } from '../../Constants.js';
 class BayushiAramoro extends DrawCard {
     static id = 'bayushi-aramoro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character -2/-0')
             .condition((context) => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
             .cost(costs.dishonorSelf())

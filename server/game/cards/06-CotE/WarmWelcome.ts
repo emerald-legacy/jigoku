@@ -5,7 +5,7 @@ import { moveCard, playCard, sequential } from '../../GameActions/GameActions.js
 class WarmWelcome extends DrawCard {
     static id = 'warm-welcome';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Play a conflict card from discard')
             .condition((context) => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid))
             .target({

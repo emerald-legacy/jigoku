@@ -5,7 +5,7 @@ import { ConflictType } from '../../../Constants.js';
 export default class Pacifism extends DrawCard {
     static id = 'pacifism';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: [
                 cannotParticipateAsAttacker(ConflictType.Military),

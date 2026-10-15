@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IuchiTadamatsu extends DrawCard {
     static id = 'iuchi-tadamatsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: reduceCost({
                 match: (card) => card.hasTrait(Trait.Meishodo),

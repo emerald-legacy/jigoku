@@ -6,7 +6,7 @@ import { dishonorProvince, reveal, sequential } from '../../GameActions/GameActi
 class ReturnFromShadows extends DrawCard {
     static id = 'return-from-shadows';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Blank and reveal a province')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictUnopposed

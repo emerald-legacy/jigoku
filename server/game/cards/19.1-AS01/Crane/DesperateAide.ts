@@ -9,7 +9,7 @@ import type Player from '../../../Player.js';
 export default class DesperateAide extends DrawCard {
     static id = 'desperate-aide';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.composure({
             effect: gainAbility.conflictAction('Draw a card', (ability) => ability
                 .gameAction(sequential([

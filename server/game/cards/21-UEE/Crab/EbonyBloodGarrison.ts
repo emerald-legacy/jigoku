@@ -10,7 +10,7 @@ const OPP_PROVINCE = 'oppProvince';
 export default class EbonyBloodGarrison extends StrongholdCard {
     static id = 'ebony-blood-garrison';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Break a province from each player')
             .when({
                 onPhaseEnded: (event, context) => event.phase === Phase.Dynasty && context.game.roundNumber === 1

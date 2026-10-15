@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class DaimyosGunbai extends DrawCard {
     static id = 'daimyo-s-gunbai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a military duel and attach this to the winner')
             .location(Location.Hand)
             .cost(costs.revealCardsOf((context) => [context.source]))

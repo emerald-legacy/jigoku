@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AsahinaEnvoy extends DrawCard {
     static id = 'asahina-envoy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Put a character into a province')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

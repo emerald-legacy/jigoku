@@ -7,7 +7,7 @@ import { modifyRestrictedAttachmentAmount, reduceNextPlayedCardCost } from '../.
 export default class IronMountainCastle extends StrongholdCard {
     static id = 'iron-mountain-castle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.isFaction('dragon'),
             targetController: Players.Self,

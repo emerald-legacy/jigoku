@@ -6,8 +6,8 @@ import type DrawCard from '../DrawCard.js';
 import { removeFate } from '../GameActions/GameActions.js';
 
 export class VoidRingAbility extends BaseAbility {
-    public title = 'Void Ring Effect';
-    public cannotTargetFirst = true;
+    public override title = 'Void Ring Effect';
+    public override cannotTargetFirst = true;
     public defaultPriority = 2; // Default resolution priority when players have ordering switched off
 
     constructor(
@@ -27,7 +27,7 @@ export class VoidRingAbility extends BaseAbility {
         });
     }
 
-    public executeHandler(context: AbilityContext): void {
+    public override executeHandler(context: AbilityContext): void {
         if(context.target) {
             context.game.addMessage(msg`${context.player} resolves the ${'void'} ring, removing a fate from ${context.target}`);
             this.onResolution(true);

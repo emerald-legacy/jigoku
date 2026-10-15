@@ -5,7 +5,7 @@ import { reduceCost } from '../../effects.js';
 class ResourcefulMahoTsukai extends DrawCard {
     static id = 'resourceful-maho-tsukai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDishonored,
             effect: reduceCost({

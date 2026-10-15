@@ -6,7 +6,7 @@ import { discardStatusToken } from '../../GameActions/GameActions.js';
 export default class PledgeOfLoyalty extends ProvinceCard {
     static id = 'pledge-of-loyalty';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Prevent a character from leaving play')
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.isHonored

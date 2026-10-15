@@ -7,7 +7,7 @@ import { CardType, ConflictType } from '../../Constants.js';
 class DojiKuwanan extends DrawCard {
     static id = 'doji-kuwanan';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: delayedEffect({
                 condition: (context) =>

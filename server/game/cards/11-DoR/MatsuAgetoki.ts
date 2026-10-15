@@ -6,7 +6,7 @@ import { moveConflict } from '../../GameActions/GameActions.js';
 class MatsuAgetoki extends DrawCard {
     static id = 'matsu-agetoki';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move the conflict to another eligible province')
             .condition((context) => context.player.isMoreHonorable() && context.source.isAttacking())
             .selectCard({

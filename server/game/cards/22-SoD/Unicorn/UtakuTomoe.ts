@@ -7,7 +7,7 @@ export default class UtakuTomoe extends DrawCard {
 
     private defendingAtConflictResolution = false;
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         new EventRegistrar(this.game).register({
             [EventName.AfterConflict]: () => this.afterConflict(),
             [EventName.OnConflictDeclared]: () => this.onConflictDeclared()

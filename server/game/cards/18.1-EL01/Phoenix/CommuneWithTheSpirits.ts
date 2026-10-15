@@ -6,7 +6,7 @@ import { ConflictType } from '../../../Constants.js';
 class CommuneWithTheSpirits extends DrawCard {
     static id = 'commune-with-the-spirits';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Claim a ring')
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring',

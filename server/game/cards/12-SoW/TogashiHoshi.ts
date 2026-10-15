@@ -7,7 +7,7 @@ import { CardType, Duration } from '../../Constants.js';
 class TogashiHoshi extends DrawCard {
     static id = 'togashi-hoshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Turn attachment into character')
             .selectCard({
                 cardType: CardType.Attachment,

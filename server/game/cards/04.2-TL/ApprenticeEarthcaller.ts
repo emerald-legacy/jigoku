@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class ApprenticeEarthcaller extends DrawCard {
     static id = 'apprentice-earthcaller';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Set skill values to printed values')
             .target({
                 cardType: CardType.Character,

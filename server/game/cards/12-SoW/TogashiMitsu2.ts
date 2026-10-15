@@ -7,7 +7,7 @@ import { RingAbilities } from '../../RingAbilities.js';
 class TogashiMitsu2 extends DrawCard {
     static id = 'togashi-mitsu-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cardCannot({
                 cannot: RestrictionType.ApplyCovert,

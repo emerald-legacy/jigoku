@@ -5,7 +5,7 @@ import { bow, selectCard } from '../../GameActions/GameActions.js';
 class IdeRyoma extends DrawCard {
     static id = 'ide-ryoma';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Choose one character to bow and one to ready')
             .condition((context) => context.source.isParticipating())
             .target({

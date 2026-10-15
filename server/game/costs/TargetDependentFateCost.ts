@@ -11,7 +11,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         super(ignoreType);
     }
 
-    public canPay(context: AbilityContext<DrawCard>): boolean {
+    public override canPay(context: AbilityContext<DrawCard>): boolean {
         if(context.source.printedCost === null) {
             return false;
         }
@@ -36,7 +36,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         );
     }
 
-    public payEvent(context: AbilityContext<DrawCard>): Event {
+    public override payEvent(context: AbilityContext<DrawCard>): Event {
         const amount = (context.costs.targetDependentFate = this.getReducedCost(context));
 
         if(context.payFateCostToOpponent) {
@@ -69,7 +69,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         return Array.isArray(target) ? undefined : target;
     }
 
-    public getReducedCost(context: AbilityContext<DrawCard>): number {
+    public override getReducedCost(context: AbilityContext<DrawCard>): number {
         return context.player.getReducedCost(
             context.playType,
             context.source,

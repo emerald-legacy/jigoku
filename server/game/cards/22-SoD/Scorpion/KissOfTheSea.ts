@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KissOfTheSea extends DrawCard {
     static id = 'kiss-of-the-sea';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow attached character')
             .when({
                 onEffectApplied: (event, context) => {

@@ -6,7 +6,7 @@ import { cardLastingEffect, ready } from '../../GameActions/GameActions.js';
 export default class SacredSanctuary extends ProvinceCard {
     static id = 'sacred-sanctuary';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Choose a monk character')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source

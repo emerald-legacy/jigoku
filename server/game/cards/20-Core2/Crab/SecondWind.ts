@@ -19,7 +19,7 @@ function cardsToDiscard(context: AbilityContext) {
 export default class SecondWind extends DrawCard {
     static id = 'second-wind';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('put a character from your discard pile into play')
             .gameAction(sequential([
                 discardCard((context) => ({

@@ -5,7 +5,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class ChrysanthemumSteward extends DrawCard {
     static id = 'chrysanthemum-steward';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('put a conflict card on top')
             .condition((context) => context.source.isParticipating())
             .target({

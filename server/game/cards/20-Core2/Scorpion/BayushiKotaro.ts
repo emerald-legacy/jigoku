@@ -13,7 +13,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class BayushiKotaro extends DrawCard {
     static id = 'bayushi-kotaro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Put a character into play')
             .gameAction(sequential([
                 reveal((context) => ({

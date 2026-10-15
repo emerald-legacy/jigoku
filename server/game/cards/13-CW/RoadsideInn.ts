@@ -8,7 +8,7 @@ import { honorTransferMessage } from '../honorTransferMessage.js';
 class RoadsideInn extends DrawCard {
     static id = 'roadside-inn';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place a fate on a character')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Fate

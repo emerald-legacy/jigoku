@@ -7,7 +7,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 class TwinSisterBlades extends DrawCard {
     static id = 'twin-sister-blades';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.conflictAction('Draw cards', (ability) => ability
                 .condition((context) => context.source.hasTrait(Trait.Bushi))

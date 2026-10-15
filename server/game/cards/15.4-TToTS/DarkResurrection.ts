@@ -5,7 +5,7 @@ import { putIntoConflict } from '../../GameActions/GameActions.js';
 class DarkResurrection extends DrawCard {
     static id = 'dark-resurrection';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Put characters into play from your discard', { conflictType: ConflictType.Military })
             .targetCards({
                 activePromptTitle: 'Choose up to three characters',
@@ -19,7 +19,7 @@ class DarkResurrection extends DrawCard {
             }, putIntoConflict({ status: CharacterStatus.Dishonored }));
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

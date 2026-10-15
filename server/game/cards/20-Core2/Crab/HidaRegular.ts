@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class HidaRegular extends DrawCard {
     static id = 'hida-regular';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.interrupt('Remove fate from a character')
             .when({
                 onCardLeavesPlay: ({ card }, context) =>

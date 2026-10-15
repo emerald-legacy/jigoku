@@ -5,7 +5,7 @@ import { TargetMode, CardType, ConflictType } from '../../Constants.js';
 class KakitaYoshi2 extends DrawCard {
     static id = 'kakita-yoshi-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Dishonor characters')
             .when({
                 afterConflict: (event, context) =>

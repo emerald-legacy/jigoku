@@ -4,7 +4,7 @@ import { CardType, Players, Location } from '../../Constants.js';
 class KnowTheTerrain extends DrawCard {
     static id = 'know-the-terrain';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Switch the attacked province with a facedown province')
             .when({
                 onConflictDeclaredBeforeProvinceReveal: (event, context) => !!event.conflict.conflictProvince && event.conflict.conflictProvince.isFacedown() &&

@@ -5,7 +5,7 @@ import { draw, gainFate } from '../../GameActions/GameActions.js';
 class IdeTrader extends DrawCard {
     static id = 'ide-trader';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain a fate/card')
             .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()

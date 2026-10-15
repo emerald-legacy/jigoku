@@ -49,7 +49,7 @@ export class StaticEffect<N extends EffectName = EffectName, T extends GameObjec
         return this.value.getValue();
     }
 
-    recalculate(_target: T) {
+    override recalculate(_target: T) {
         return this.value.recalculate();
     }
 

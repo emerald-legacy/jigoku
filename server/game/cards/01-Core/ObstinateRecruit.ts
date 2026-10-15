@@ -6,7 +6,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class ObstinateRecruit extends DrawCard {
     static id = 'obstinate-recruit';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: delayedEffect({
                 condition:  (context) => context.player.opponent && context.player.opponent.isMoreHonorable(),

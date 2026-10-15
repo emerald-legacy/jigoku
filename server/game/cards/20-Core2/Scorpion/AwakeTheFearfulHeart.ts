@@ -8,7 +8,7 @@ import { controlsParticipating } from '../../controlsParticipating.js';
 export default class AwakeTheFearfulHeart extends DrawCard {
     static id = 'awake-the-fearful-heart';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move home each character without fate')
             .condition((context) => controlsParticipating(context.player, Trait.Shugenja))
             .gameAction(sequential([

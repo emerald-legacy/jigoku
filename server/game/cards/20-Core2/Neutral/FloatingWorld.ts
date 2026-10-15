@@ -5,7 +5,7 @@ import { dishonor } from '../../../GameActions/GameActions.js';
 export default class FloatingWorld extends ProvinceCard {
     static id = 'floating-world';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Dishonor a character')
             .target({
                 activePromptTitle: 'Choose a character to dishonor',

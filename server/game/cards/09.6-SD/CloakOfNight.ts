@@ -8,7 +8,7 @@ import { controlsShugenja } from '../controlsShugenja.js';
 class CloakOfNight extends DrawCard {
     static id = 'cloak-of-night';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a participating character +3 glory')
             .playOnlyIf((context) => controlsShugenja(context.player))
             .target({

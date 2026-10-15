@@ -18,10 +18,10 @@ export class LeavesPlayAction<
     C extends AbilityContext = AbilityContext,
     D extends keyof P = never
 > extends CardGameAction<P, EventName.OnCardLeavesPlay, C, D> {
-    eventName = EventName.OnCardLeavesPlay;
+    override eventName = EventName.OnCardLeavesPlay;
     isSacrifice = false;
 
-    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
+    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
         super.updateEvent(event, card, context, additionalProperties);
         const destination = additionalProperties.destination;
         event.isSacrifice = this.isSacrifice;
@@ -74,7 +74,7 @@ export class LeavesPlayAction<
         };
     }
 
-    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: LeavesPlayEvent<C>, additionalProperties: ActionOverrides = {}): void {
         const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination)) {
@@ -89,10 +89,10 @@ export class LeavesPlayAction<
 export type DiscardFromPlayProperties = CardActionProperties;
 
 export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<DiscardFromPlayProperties, C> {
-    name = 'discardFromPlay';
-    restriction = RestrictionType.DiscardFromPlay;
-    cost = 'sacrificing {0}';
-    targetType = [CardType.Character, CardType.Attachment, CardType.Holding];
+    override name = 'discardFromPlay';
+    override restriction = RestrictionType.DiscardFromPlay;
+    override cost = 'sacrificing {0}';
+    override targetType = [CardType.Character, CardType.Attachment, CardType.Holding];
 
     constructor(propertyFactory: DiscardFromPlayProperties | ((context: C) => DiscardFromPlayProperties), isSacrifice = false) {
         super(propertyFactory);
@@ -103,11 +103,11 @@ export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> ex
         }
     }
 
-    protected effectMessage(): MessageArgs {
+    protected override effectMessage(): MessageArgs {
         return [this.isSacrifice ? 'sacrifice {0}' : 'discard {0}', []];
     }
 
-    canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: C): boolean {
         if(card.type === CardType.Holding) {
             if(this.isSacrifice && card.facedown) {
                 return false;

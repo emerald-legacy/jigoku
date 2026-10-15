@@ -9,7 +9,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class InLadyDojisService extends DrawCard {
     static id = 'in-lady-doji-s-service';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Pacify a character')
             .cost(costs.bow({ cardType: CardType.Character }))
             .target({

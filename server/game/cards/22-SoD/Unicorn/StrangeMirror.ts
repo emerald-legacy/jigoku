@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class StrangeMirror extends DrawCard {
     static id = 'strange-mirror';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Put the event underneath attached character')
             .when({
                 onCardPlayed: (event, context) =>

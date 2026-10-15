@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ReligiousConclave extends DrawCard {
     static id = 'religious-conclave';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Prevent an opponent contesting a ring')
             .condition((context) => context.player.opponent !== undefined)
             .cost(costs.sacrificeSelf())

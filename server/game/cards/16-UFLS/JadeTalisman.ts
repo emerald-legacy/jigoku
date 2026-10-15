@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class JadeTalisman extends DrawCard {
     static id = 'jade-talisman';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

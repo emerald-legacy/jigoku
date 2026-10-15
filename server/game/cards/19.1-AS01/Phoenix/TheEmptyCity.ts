@@ -9,7 +9,7 @@ import { cardLastingEffect, claimRing, joint, putIntoPlay } from '../../../GameA
 export default class TheEmptyCity extends ProvinceCard {
     static id = 'the-empty-city';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const sharedLimit = perRound(1);
 
         this.action('Claim a ring')

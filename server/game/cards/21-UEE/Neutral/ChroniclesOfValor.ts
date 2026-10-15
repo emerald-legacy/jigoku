@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ChroniclesOfValor extends DrawCard {
     static id = 'chronicles-of-valor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Take honor from your opponent')
             .when({
                 afterConflict: ({ conflict }, context) =>

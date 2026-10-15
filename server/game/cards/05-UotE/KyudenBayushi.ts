@@ -8,7 +8,7 @@ import { cardLastingEffect, ready } from '../../GameActions/GameActions.js';
 export default class KyudenBayushi extends StrongholdCard {
     static id = 'kyuden-bayushi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a dishonored character')
             .cost(costs.bowSelf())
             .target({

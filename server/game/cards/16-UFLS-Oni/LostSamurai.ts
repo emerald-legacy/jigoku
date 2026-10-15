@@ -5,7 +5,7 @@ import { dishonor } from '../../GameActions/GameActions.js';
 export default class LostSamurai extends BaseOni {
     static id = 'lost-samurai';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Dishonor a character')
             .when({

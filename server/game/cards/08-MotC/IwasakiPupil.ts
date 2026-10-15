@@ -5,7 +5,7 @@ import { Players } from '../../Constants.js';
 class IwasakiPupil extends DrawCard {
     static id = 'iwasaki-pupil';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
             effect: modifyCardsDrawnInDrawPhase(-2)

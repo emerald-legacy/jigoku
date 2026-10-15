@@ -6,7 +6,7 @@ import { Players, Location, CardType } from '../../Constants.js';
 class ProceduralInterference extends DrawCard {
     static id = 'procedural-interference';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard all cards in a province or gain 2 honor')
             .target({
                 name: 'province',

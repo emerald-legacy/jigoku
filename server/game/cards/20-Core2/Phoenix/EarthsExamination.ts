@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class EarthsExamination extends DrawCard {
     static id = 'earth-s-examination';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Taint a character')
             .condition((context) =>
                 context.game.isDuringConflict(ConflictType.Political) && controlsShugenja(context.player))

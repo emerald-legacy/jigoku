@@ -6,7 +6,7 @@ import { bow, removeFate } from '../../GameActions/GameActions.js';
 class HeavyBallista extends DrawCard {
     static id = 'heavy-ballista';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow or remove 1 fate')
             .condition((context) => this.game.isDuringConflict(ConflictType.Military) && context.player.isDefendingPlayer())
             .cost(costs.discardCard({ location: Location.Hand }))

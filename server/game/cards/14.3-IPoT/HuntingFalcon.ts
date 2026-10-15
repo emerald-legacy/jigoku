@@ -6,7 +6,7 @@ import { lookAt } from '../../GameActions/GameActions.js';
 class HuntingFalcon extends DrawCard {
     static id = 'hunting-falcon';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at a province')
             .when({
                 onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea

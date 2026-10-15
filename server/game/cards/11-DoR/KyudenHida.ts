@@ -7,7 +7,7 @@ import { cardMenu, moveCard, multiple, playCard, sequential } from '../../GameAc
 export default class KyudenHida extends StrongholdCard {
     static id = 'kyuden-hida';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Play a Character')
             .condition((context) => context.player.dynastyDeck.length > 0)
             .phase(Phase.Dynasty)

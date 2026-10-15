@@ -6,7 +6,7 @@ import { gainPlayAction } from '../../effects.js';
 export default class WindsPath extends ProvinceCard {
     static id = 'wind-s-path';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.game.isDuringConflict(),
             targetLocation: Location.Provinces,

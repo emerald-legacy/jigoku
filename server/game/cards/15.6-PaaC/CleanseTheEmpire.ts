@@ -6,7 +6,7 @@ import { CardType, Players } from '../../Constants.js';
 class CleanseTheEmpire extends DrawCard {
     static id = 'cleanse-the-empire';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Remove a fate from opponent\'s characters')
             .when({
                 afterConflict: (event, context) => context.player.opponent && context.player.isAttackingPlayer() && event.conflict.winner === context.player

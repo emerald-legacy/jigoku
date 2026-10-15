@@ -5,7 +5,7 @@ import { canBeTriggeredByOpponent } from '../../effects.js';
 class ContestedCountryside extends DrawCard {
     static id = 'contested-countryside';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.isConflictProvince(),
             targetLocation: Location.Provinces,

@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class WritOfSurvey extends DrawCard {
     static id = 'writ-of-survey';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { title: 1 }
         });
@@ -27,7 +27,7 @@ export default class WritOfSurvey extends DrawCard {
         });
     }
 
-    public canPlayOn(source: BaseCard): boolean {
+    public override canPlayOn(source: BaseCard): boolean {
         return source.isHonored && super.canPlayOn(source);
     }
 }

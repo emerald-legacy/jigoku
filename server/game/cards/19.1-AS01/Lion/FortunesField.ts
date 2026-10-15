@@ -5,7 +5,7 @@ import { reduceNextPlayedCardCost } from '../../../effects.js';
 export default class FortunesField extends ProvinceCard {
     static id = 'fortune-s-field';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Reduce cost of next character or follower by 1')
             .when({
                 onCardPlayed: (event, context) =>

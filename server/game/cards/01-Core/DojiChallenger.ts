@@ -5,7 +5,7 @@ import { moveToConflict } from '../../GameActions/GameActions.js';
 class DojiChallenger extends DrawCard {
     static id = 'doji-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character into the conflict')
             .condition((context) => context.source.isAttacking())
             .target({

@@ -7,7 +7,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 export default class BrothersGiftDojo extends ProvinceCard {
     static id = 'brother-s-gift-dojo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character home')
             .conflictProvinceCondition(() => true)
             .cost(costs.payHonor(1))

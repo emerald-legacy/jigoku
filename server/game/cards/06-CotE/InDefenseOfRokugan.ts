@@ -8,7 +8,7 @@ import { CardType } from '../../Constants.js';
 class InDefenseOfRokugan extends DrawCard {
     static id = 'in-defense-of-rokugan';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Set an attacking character to 0 military skill')
             .cost(costs.sacrifice({
                 cardType: CardType.Character,

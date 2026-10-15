@@ -52,30 +52,30 @@ function playersFor(target: Players | Player | Player[], context: AbilityContext
 }
 
 export class LastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName.OnEffectApplied, C, 'duration'> {
-    name = 'applyLastingEffect';
-    eventName = EventName.OnEffectApplied;
-    effect = 'apply a lasting effect';
-    defaultProperties = {
+    override name = 'applyLastingEffect';
+    override eventName = EventName.OnEffectApplied;
+    override effect = 'apply a lasting effect';
+    override defaultProperties = {
         duration: Duration.UntilEndOfConflict
     };
 
-    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
+    override getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }
 
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.effect.length > 0;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown>): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown>): void {
         if(this.hasLegalTarget(context, additionalProperties)) {
             events.push(this.getEvent(null, context, additionalProperties));
         }
     }
 
-    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
         const properties = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;
@@ -86,11 +86,11 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
 
 /** A lasting effect on a duel: by default the current duel, until it ends. */
 export class DuelLastingEffectAction<C extends AbilityContext = AbilityContext> extends LastingEffectAction<C> {
-    defaultProperties = {
+    override defaultProperties = {
         duration: Duration.UntilEndOfDuel
     };
 
-    defaultTargets(context: C): GameObject[] {
+    override defaultTargets(context: C): GameObject[] {
         return context.game.currentDuel ? [context.game.currentDuel] : [];
     }
 }
@@ -105,33 +105,33 @@ export class PlayerLastingEffectAction<C extends AbilityContext = AbilityContext
         });
     }
 
-    name = 'applyLastingEffect';
-    eventName = EventName.OnEffectApplied;
-    effect = 'apply a lasting effect';
-    defaultProperties = {
+    override name = 'applyLastingEffect';
+    override eventName = EventName.OnEffectApplied;
+    override effect = 'apply a lasting effect';
+    override defaultProperties = {
         duration: Duration.UntilEndOfConflict
     };
 
-    defaultTargets(context: C): Player[] {
+    override defaultTargets(context: C): Player[] {
         return context.player ? [context.player] : [];
     }
 
-    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
+    override getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }
 
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         return this.getProperties(context, additionalProperties).effect.length > 0;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown>): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown>): void {
         if(this.hasLegalTarget(context, additionalProperties)) {
             events.push(this.getEvent(null, context, additionalProperties));
         }
     }
 
-    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
         const { target, ...properties } = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;

@@ -85,7 +85,7 @@ class Process {
 export default class RiddlesOfTheHenshin extends DrawCard {
     static id = 'riddles-of-the-henshin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Resolve ring effects')
             .condition((context) => getNumberOfMonks(context) > 0 && context.player.getClaimedRings().length > 0)
             .handler((context) => new Process(getNumberOfMonks(context), context).promptPlayer())

@@ -16,21 +16,21 @@ export class TokenAction<
     C extends AbilityContext = AbilityContext,
     D extends keyof P = never
 > extends GameAction<P, N, C, D> {
-    targetType = ['token'];
+    override targetType = ['token'];
 
-    defaultTargets(context: C): StatusToken[] {
+    override defaultTargets(context: C): StatusToken[] {
         return context.source.statusTokens ? [...context.source.statusTokens] : [];
     }
 
-    canAffect(target: StatusToken, _context: C, _additionalProperties = {}): boolean {
+    override canAffect(target: StatusToken, _context: C, _additionalProperties = {}): boolean {
         return target.type === 'token';
     }
 
-    checkEventCondition(event: TokenEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
+    override checkEventCondition(event: TokenEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.token, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: TokenEvent<N, C>, token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: TokenEvent<N, C>, token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.token = token;
     }

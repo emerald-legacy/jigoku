@@ -6,7 +6,7 @@ import { CardType } from '../../Constants.js';
 class VanguardWarrior extends DrawCard {
     static id = 'vanguard-warrior';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Sacrifice to put fate on one character')
             .cost(costs.sacrificeSelf())
             .target({

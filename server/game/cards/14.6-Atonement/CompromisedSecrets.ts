@@ -5,7 +5,7 @@ import { giveHonorToTriggerCost } from '../giveHonorToTriggerCost.js';
 class CompromisedSecrets extends DrawCard {
     static id = 'compromised-secrets';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => !!context.player.opponent && context.player.isLessHonorable());
 
         this.whileAttached({

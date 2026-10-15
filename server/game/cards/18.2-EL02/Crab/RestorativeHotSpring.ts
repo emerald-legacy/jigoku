@@ -7,7 +7,7 @@ import { removeFromGame } from '../../../GameActions/GameActions.js';
 class RestorativeHotSpring extends DrawCard {
     static id = 'restorative-hot-spring';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Prevent a character from leaving play')
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.type === CardType.Character && event.card.location === Location.PlayArea

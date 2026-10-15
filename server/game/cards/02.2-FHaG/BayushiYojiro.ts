@@ -9,7 +9,7 @@ import {
 class BayushiYojiro extends DrawCard {
     static id = 'bayushi-yojiro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,

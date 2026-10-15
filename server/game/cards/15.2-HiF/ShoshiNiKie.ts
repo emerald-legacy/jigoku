@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 class ShoshiNiKie extends DrawCard {
     static id = 'shoshi-ni-kie';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('ready an ordinary character')
             .cost(costs.reveal({ cardCondition: (card) => card.isFacedown(), cardType: CardType.Province }))
             .target({

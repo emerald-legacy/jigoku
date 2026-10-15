@@ -5,7 +5,7 @@ import { CardType, RestrictionType, RestrictionScope, Trait } from '../../Consta
 class ForwardGarrison extends DrawCard {
     static id = 'forward-garrison';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.game.isTraitInPlay(Trait.Battlefield),
             match: (card, context) => card.type === CardType.Character && card.controller === context?.player,

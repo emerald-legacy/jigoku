@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class BeingAndBecoming extends DrawCard {
     static id = 'being-and-becoming';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

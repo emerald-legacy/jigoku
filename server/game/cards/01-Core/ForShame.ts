@@ -6,7 +6,7 @@ import { controlsParticipating } from '../controlsParticipating.js';
 class ForShame extends DrawCard {
     static id = 'for-shame';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Dishonor or bow a character')
             .condition((context) => controlsParticipating(context.player, Trait.Courtier))
             .target({

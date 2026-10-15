@@ -22,29 +22,29 @@ export class PutIntoProvinceAction<C extends AbilityContext = AbilityContext> ex
     C,
     'switch' | 'faceup' | 'changePlayer' | 'discardDestinationCards'
 > {
-    name = 'putIntoProvince';
-    eventName = EventName.OnCardLeavesPlay;
-    targetType = [CardType.Character, CardType.Attachment];
-    defaultProperties = {
+    override name = 'putIntoProvince';
+    override eventName = EventName.OnCardLeavesPlay;
+    override targetType = [CardType.Character, CardType.Attachment];
+    override defaultProperties = {
         switch: false,
         faceup: true,
         changePlayer: false,
         discardDestinationCards: false
     };
 
-    getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['putting {0} into {1}', [properties.destination]];
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         const [target] = targetList(properties.target);
         const destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
         return ['move {0} to {1}\'s {2}', [destinationController, properties.destination]];
     }
 
-    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { changePlayer, destination } = this.getProperties(
             context,
             additionalProperties
@@ -57,7 +57,7 @@ export class PutIntoProvinceAction<C extends AbilityContext = AbilityContext> ex
         return canMove;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
         event.cardStateWhenMoved = card.createSnapshot();

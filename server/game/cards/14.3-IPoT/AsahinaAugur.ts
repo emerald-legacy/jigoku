@@ -8,7 +8,7 @@ import { Location, Players, CardType } from '../../Constants.js';
 class AsahinaAugur extends DrawCard {
     static id = 'asahina-augur';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFacedown(),

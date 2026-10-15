@@ -4,7 +4,7 @@ import { Phase, EventName } from '../../Constants.js';
 class SeizeTheDay extends DrawCard {
     static id = 'seize-the-day';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Become first player')
             .when({
                 onPhaseStarted: (event, context) => event.phase === Phase.Conflict && this.game.getFirstPlayer() !== context.player

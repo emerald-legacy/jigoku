@@ -4,7 +4,7 @@ import { modifyBothSkills } from '../../effects.js';
 class SeekerOfEnlightenment extends DrawCard {
     static id = 'seeker-of-enlightenment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyBothSkills(() => this.getFateOnRings())
         });

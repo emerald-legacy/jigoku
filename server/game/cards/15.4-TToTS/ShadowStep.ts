@@ -5,7 +5,7 @@ import { removeFromGame } from '../../GameActions/GameActions.js';
 class ShadowStep extends DrawCard {
     static id = 'shadow-step';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Remove a character from the game and put it into play')
             .target({
                 cardType: CardType.Character,

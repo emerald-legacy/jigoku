@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class CurvedBlade extends DrawCard {
     static id = 'curved-blade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             faction: 'unicorn'
         });

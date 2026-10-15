@@ -6,13 +6,13 @@ import { doesNotReady } from '../../effects.js';
 class PitTrap extends DrawCard {
     static id = 'pit-trap';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: doesNotReady()
         });
     }
 
-    canPlayOn(card: BaseCard | Ring): boolean {
+    override canPlayOn(card: BaseCard | Ring): boolean {
         return card instanceof DrawCard && card.isAttacking() && super.canPlayOn(card);
     }
 }

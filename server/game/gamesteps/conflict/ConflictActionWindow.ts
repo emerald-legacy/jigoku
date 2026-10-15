@@ -21,7 +21,7 @@ export class ConflictActionWindow extends ActionWindow {
         return capitalize(this.conflict.conflictType ?? '') + ' ' + capitalize(this.conflict.element ?? '') + ' conflict';
     }
 
-    continue(): boolean {
+    override continue(): boolean {
         const completed = super.continue();
         if(!completed && this.displayTotals) {
             const conflictText = this.conflictText();
@@ -51,7 +51,7 @@ export class ConflictActionWindow extends ActionWindow {
         return completed;
     }
 
-    activePrompt() {
+    override activePrompt() {
         const props = super.activePrompt();
 
         const conflictText = this.conflictText();
@@ -63,7 +63,7 @@ export class ConflictActionWindow extends ActionWindow {
         };
     }
 
-    postResolutionUpdate(resolver: AbilityResolver): void {
+    override postResolutionUpdate(resolver: AbilityResolver): void {
         super.postResolutionUpdate(resolver);
         if(!this.game.manualMode) {
             this.displayTotals = true;

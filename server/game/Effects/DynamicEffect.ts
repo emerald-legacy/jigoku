@@ -31,7 +31,7 @@ export class DynamicEffect<N extends EffectName = EffectName, T extends GameObje
         target.removeEffect(this);
     }
 
-    recalculate(target: T): boolean {
+    override recalculate(target: T): boolean {
         if(!target) {
             return false;
         }

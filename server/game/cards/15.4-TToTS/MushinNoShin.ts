@@ -4,7 +4,7 @@ import { CardType, Location } from '../../Constants.js';
 class MushinNoShin extends DrawCard {
     static id = 'mushin-no-shin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel an ability')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

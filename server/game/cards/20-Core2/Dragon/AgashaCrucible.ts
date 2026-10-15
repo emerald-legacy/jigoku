@@ -30,7 +30,7 @@ const options: Record<string, ChooseActionOption> = Object.fromEntries(
 export default class AgashaCrucible extends DrawCard {
     static id = 'agasha-crucible';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Give Elemental Trait to a Fire Shugenja')
             .target({
                 cardType: CardType.Character,

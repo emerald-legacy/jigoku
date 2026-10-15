@@ -7,7 +7,7 @@ import { additionalAction } from '../../effects.js';
 class AustereExemplar extends DrawCard {
     static id = 'austere-exemplar';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Take three actions')
             .condition((context) => context.source.isAttacking())
             .cost(costs.payFateToRing())

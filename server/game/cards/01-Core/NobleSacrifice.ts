@@ -6,7 +6,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class NobleSacrifice extends DrawCard {
     static id = 'noble-sacrifice';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Sacrifice honored character to discard dishonored one')
             .cost(costs.sacrifice({
                 cardType: CardType.Character,

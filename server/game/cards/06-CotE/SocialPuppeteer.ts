@@ -7,7 +7,7 @@ import { RestrictionScope } from '../../Constants.js';
 class SocialPuppeteer extends DrawCard {
     static id = 'social-puppeteer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.composure({
             effect: mustBeChosen({ appliesTo: RestrictionScope.OpponentsEvents })
         });

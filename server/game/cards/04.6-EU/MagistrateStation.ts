@@ -5,7 +5,7 @@ import { ready } from '../../GameActions/GameActions.js';
 export default class MagistrateStation extends ProvinceCard {
     static id = 'magistrate-station';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready an honored character')
             .canTriggerOutsideConflict()
             .target({

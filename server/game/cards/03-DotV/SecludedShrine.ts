@@ -6,7 +6,7 @@ import { Duration, Phase } from '../../Constants.js';
 class SecludedShrine extends DrawCard {
     static id = 'secluded-shrine';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Count a ring as claimed')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

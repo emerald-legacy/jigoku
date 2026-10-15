@@ -5,7 +5,7 @@ import { playerCannot } from '../../effects.js';
 class IkomaTsanuri2 extends DrawCard {
     static id = 'ikoma-tsanuri-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Opponent,

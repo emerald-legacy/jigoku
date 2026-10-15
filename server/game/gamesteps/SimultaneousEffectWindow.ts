@@ -33,7 +33,7 @@ export class SimultaneousEffectWindow extends BaseStep {
         }
     }
 
-    continue(): boolean {
+    override continue(): boolean {
         this.game.currentAbilityWindow = this;
         if(this.filterChoices()) {
             this.game.currentAbilityWindow = null;

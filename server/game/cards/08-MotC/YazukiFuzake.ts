@@ -11,7 +11,7 @@ function statusTokensOf(character: DrawCard | [] | undefined): StatusToken[] {
 class YasukiFuzake extends DrawCard {
     static id = 'yasuki-fuzake';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Discard the status token on up to two characters')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

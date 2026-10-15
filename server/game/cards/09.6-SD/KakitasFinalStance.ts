@@ -7,7 +7,7 @@ import { DuelsThisConflict } from '../DuelsThisConflict.js';
 export default class KakitasFinalStance extends DrawCard {
     static id = 'kakita-s-final-stance';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const duelParticipants = DuelsThisConflict.participants(this.game);
         this.conflictAction('Character cannot be bowed and doesn\'t bow during resolution', { conflictType: ConflictType.Military })
             .target({

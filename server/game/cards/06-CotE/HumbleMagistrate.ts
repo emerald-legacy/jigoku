@@ -4,7 +4,7 @@ import { cannotContribute } from '../../effects.js';
 class HumbleMagistrate extends DrawCard {
     static id = 'humble-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             effect: cannotContribute(() => {

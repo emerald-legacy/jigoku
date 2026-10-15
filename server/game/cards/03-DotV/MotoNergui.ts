@@ -5,7 +5,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class MotoNergui extends DrawCard {
     static id = 'moto-nergui';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move highest glory character home')
             .condition((context) => this.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
             .target({

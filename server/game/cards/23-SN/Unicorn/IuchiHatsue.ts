@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class IuchiHatsue extends DrawCard {
     static id = 'iuchi-hatsue';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => {
                 if(!context.game.currentConflict) {

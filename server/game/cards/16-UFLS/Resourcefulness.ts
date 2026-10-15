@@ -6,7 +6,7 @@ import { honor } from '../../GameActions/GameActions.js';
 class Resourcefulness extends DrawCard {
     static id = 'resourcefulness';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor a character')
             .cost(costs.dishonor())
             .target({

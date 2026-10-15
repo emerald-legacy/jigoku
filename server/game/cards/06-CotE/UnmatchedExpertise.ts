@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class UnmatchedExpertise extends DrawCard {
     static id = 'unmatched-expertise';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: cannotReceiveDishonorToken()
         });

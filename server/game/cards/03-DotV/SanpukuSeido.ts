@@ -4,14 +4,14 @@ import { changeConflictSkillFunction } from '../../effects.js';
 export default class SanpukuSeido extends ProvinceCard {
     static id = 'sanpuku-seido';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             effect: changeConflictSkillFunction((card) => card.glory)
         });
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

@@ -9,7 +9,7 @@ const ELEMENT = 'steward-of-cryptic-lore-earth';
 export default class StewardOfCrypticLore extends DrawCard {
     static id = 'steward-of-cryptic-lore';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             effect: modifyPoliticalSkill(3)
         });
@@ -37,7 +37,7 @@ export default class StewardOfCrypticLore extends DrawCard {
             .chatText('change the province strength of an attacked province');
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: ELEMENT,

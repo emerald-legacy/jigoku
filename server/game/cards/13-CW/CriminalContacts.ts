@@ -8,7 +8,7 @@ import { honorTransferMessage } from '../honorTransferMessage.js';
 class CriminalContacts extends DrawCard {
     static id = 'criminal-contacts';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a fate from a character')
             .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
             .cost(costs.optionalTakeHonorFromOpponent())

@@ -5,7 +5,7 @@ import { RestrictionType } from '../../Constants.js';
 class ShapeTheFlesh extends DrawCard {
     static id = 'shape-the-flesh';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: [
                 cardCannot(RestrictionType.Honor),
@@ -14,7 +14,7 @@ class ShapeTheFlesh extends DrawCard {
         });
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

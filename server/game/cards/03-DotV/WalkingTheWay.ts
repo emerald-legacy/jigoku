@@ -8,7 +8,7 @@ import { placeInProvince } from '../../GameActions/GameActions.js';
 class WalkingTheWay extends DrawCard {
     static id = 'walking-the-way';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

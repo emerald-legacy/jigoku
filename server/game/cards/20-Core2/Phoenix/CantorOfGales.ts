@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CantorOfGales extends DrawCard {
     static id = 'cantor-of-gales';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
                 context.source.isAtHome() &&

@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 class IchigenkinSoloist extends DrawCard {
     static id = 'ichigenkin-soloist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.composure({
             effect: cardCannot({
                 cannot: RestrictionType.Target,

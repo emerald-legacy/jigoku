@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class RecalledDefenses extends DrawCard {
     static id = 'recalled-defenses';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a card to your stronghold')
             .target({
                 location: Location.Provinces,

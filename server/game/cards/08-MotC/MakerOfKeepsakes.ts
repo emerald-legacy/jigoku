@@ -4,7 +4,7 @@ import { cannotReceiveDishonorToken } from '../../effects.js';
 class MakerOfKeepsakes extends DrawCard {
     static id = 'maker-of-keepsakes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cannotReceiveDishonorToken()
         });

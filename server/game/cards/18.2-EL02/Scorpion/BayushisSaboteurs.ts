@@ -19,7 +19,7 @@ function defender(context: AbilityContext): Player {
 export default class BayushisSaboteurs extends DrawCard {
     static id = 'bayushi-s-saboteurs';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard or flip facedown cards in the defender\'s provinces')
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source),

@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class YasukiHikaru extends DrawCard {
     static id = 'yasuki-hikaru';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send home character')
             .condition((context) => context.source.isDefending())
             .target({

@@ -5,7 +5,7 @@ import { dishonorProvince, reveal, sequential } from '../../GameActions/GameActi
 class MeticulousScout extends DrawCard {
     static id = 'meticulous-scout';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Blank and reveal a province')
             .condition((context) => context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2)
             .target({

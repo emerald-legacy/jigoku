@@ -5,7 +5,7 @@ import { placeFate, removeFate } from '../../GameActions/GameActions.js';
 class KamiOfAncientWisdom extends DrawCard {
     static id = 'kami-of-ancient-wisdom';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Give or take fate')
             .when({
                 onMoveFate: (event, context) => context.game.currentPhase !== Phase.Fate &&

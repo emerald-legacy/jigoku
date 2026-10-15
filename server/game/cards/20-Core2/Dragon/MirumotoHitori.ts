@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MirumotoHitori extends DrawCard {
     static id = 'mirumoto-hitori';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.interrupt('A new incarnation awaits')
             .when({
                 onCardLeavesPlay: (event, context) =>

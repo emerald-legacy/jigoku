@@ -6,7 +6,7 @@ import { bow } from '../../GameActions/GameActions.js';
 export default class KyudenIkoma extends StrongholdCard {
     static id = 'kyuden-ikoma';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow a non-champion')
             .when({
                 afterConflict: (event, context) =>

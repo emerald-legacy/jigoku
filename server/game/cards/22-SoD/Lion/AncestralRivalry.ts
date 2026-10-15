@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AncestralRivalry extends DrawCard {
     static id = 'ancestral-rivalry';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character +3/+3 or claim favor')
             .target({
                 name: 'character',

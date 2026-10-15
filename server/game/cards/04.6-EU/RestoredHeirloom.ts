@@ -8,7 +8,7 @@ const elementKey = 'restored-heirloom-water';
 class RestoredHeirloom extends DrawCard {
     static id = 'restored-heirloom';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Put into play')
             .when({
                 onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
@@ -24,7 +24,7 @@ class RestoredHeirloom extends DrawCard {
     }
 
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

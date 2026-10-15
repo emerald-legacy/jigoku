@@ -14,13 +14,13 @@ class IsawaSkycallerPlayAction extends PlayCharacterAction {
         super(card, PlayIntoLocation.Conflict);
     }
 
-    createContext(player: Player = this.card.controller) {
+    override createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
         context.playType = PlayType.PlayFromHand;
         return context;
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
+    override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
         const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation) ? ignoredBlockers : ignoredBlockers.concat(Blocker.WrongLocation);
         return super.meetsRequirements(context, newIgnoredBlockers);
     }
@@ -29,7 +29,7 @@ class IsawaSkycallerPlayAction extends PlayCharacterAction {
 class IsawaSkycaller extends DrawCard {
     static id = 'isawa-skycaller';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             targetLocation: Location.Provinces,
@@ -39,7 +39,7 @@ class IsawaSkycaller extends DrawCard {
     }
 
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

@@ -7,7 +7,7 @@ import { flipDynasty, handler } from '../../../GameActions/GameActions.js';
 export default class KaiuScout extends DrawCard {
     static id = 'kaiu-scout';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at cards in a province')
             .evenDuringDynasty()
             .target({

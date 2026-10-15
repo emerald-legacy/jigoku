@@ -5,7 +5,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class BladeOf10000Battles extends DrawCard {
     static id = 'blade-of-10-000-battles';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             unique: true

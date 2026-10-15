@@ -5,7 +5,7 @@ import { TargetMode, CardType } from '../../Constants.js';
 class UnfulfilledDuty extends DrawCard {
     static id = 'unfulfilled-duty';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready characters')
             .targetCards({
                 mode: TargetMode.MaxStat,

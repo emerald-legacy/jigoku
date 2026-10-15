@@ -8,7 +8,7 @@ import { moveCard, selectCard } from '../../GameActions/GameActions.js';
 export default class EmperorsSummons extends ProvinceCard {
     static id = 'emperor-s-summons';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Search for a character card')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

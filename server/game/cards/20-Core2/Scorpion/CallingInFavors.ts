@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CallingInFavors extends DrawCard {
     static id = 'calling-in-favors';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Take control of an attachment')
             .cost(costs.dishonor())
             .target({

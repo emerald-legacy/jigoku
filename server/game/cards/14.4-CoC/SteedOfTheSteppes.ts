@@ -7,7 +7,7 @@ import { captureParentCost } from '../captureParentCost.js';
 class SteedOfTheSteppes extends DrawCard {
     static id = 'steed-of-the-steppes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: addTrait(Trait.Cavalry)
         });

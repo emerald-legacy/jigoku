@@ -16,15 +16,15 @@ export class BaseStepWithPipeline extends BaseStep implements Step {
         return this.pipeline.length === 0;
     }
 
-    onCardClicked(player: Player, card: BaseCard): boolean {
+    override onCardClicked(player: Player, card: BaseCard): boolean {
         return this.pipeline.handleCardClicked(player, card);
     }
 
-    onRingClicked(player: Player, ring: Ring) {
+    override onRingClicked(player: Player, ring: Ring) {
         return this.pipeline.handleRingClicked(player, ring);
     }
 
-    onMenuCommand(player: Player, arg: MenuArg, uuid: string, method?: string | null) {
+    override onMenuCommand(player: Player, arg: MenuArg, uuid: string, method?: string | null) {
         return this.pipeline.handleMenuCommand(player, arg, uuid, method);
     }
 
@@ -32,7 +32,7 @@ export class BaseStepWithPipeline extends BaseStep implements Step {
         this.pipeline.cancelStep();
     }
 
-    continue() {
+    override continue() {
         try {
             return this.pipeline.continue();
         } catch(e) {

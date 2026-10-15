@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class DazzlingDuelist extends DrawCard {
     static id = 'dazzling-duelist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Military duel to stop a player from claiming rings')
             .initiateDuel(() => ({
                 type: DuelType.Military,

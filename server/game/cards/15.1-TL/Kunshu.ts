@@ -7,7 +7,7 @@ import { CardType, Location, Players, PlayType } from '../../Constants.js';
 class Kunshu extends DrawCard {
     static id = 'kunshu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             unique: true

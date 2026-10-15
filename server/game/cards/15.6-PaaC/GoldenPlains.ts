@@ -6,7 +6,7 @@ import { moveConflict } from '../../GameActions/GameActions.js';
 export default class GoldenPlains extends ProvinceCard {
     static id = 'golden-plains';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => card.controller === context?.player && card.location === Location.PlayArea,
             targetController: Players.Self,

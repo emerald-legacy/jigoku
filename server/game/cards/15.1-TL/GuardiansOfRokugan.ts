@@ -6,7 +6,7 @@ import { CardType, DeckType, RemainingCards } from '../../Constants.js';
 class GuardiansOfRokugan extends DrawCard {
     static id = 'guardians-of-rokugan';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
                 afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player

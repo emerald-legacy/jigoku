@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({ myControl: true, trait: Trait.Monk });
 
         this.whileAttached({ effect: addTrait(Trait.Tattooed) });

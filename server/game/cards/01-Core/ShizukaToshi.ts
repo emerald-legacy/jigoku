@@ -6,7 +6,7 @@ import { bow } from '../../GameActions/GameActions.js';
 export default class ShizukaToshi extends StrongholdCard {
     static id = 'shizuka-toshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
             .cost(costs.bowSelf())

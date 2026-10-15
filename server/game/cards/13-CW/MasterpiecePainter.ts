@@ -8,7 +8,7 @@ import { revealedTopCardPlayable } from '../revealedTopCardPlayable.js';
 class MasterpiecePainter extends DrawCard {
     static id = 'masterpiece-painter';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reveal and may play top conflict card')
             .selectFrom({
                 targets: true,

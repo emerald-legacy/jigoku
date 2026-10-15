@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class TattooedWanderer extends DrawCard {
     static id = 'tattooed-wanderer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
         this.whileAttached({
             effect: addKeyword('covert')

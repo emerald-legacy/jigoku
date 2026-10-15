@@ -6,7 +6,7 @@ import { discardCard } from '../../GameActions/GameActions.js';
 class DaidojiHarrier extends DrawCard {
     static id = 'daidoji-harrier';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard an opponent\'s card')
             .when({
                 afterConflict: (event, context) => context.source.isParticipating() &&

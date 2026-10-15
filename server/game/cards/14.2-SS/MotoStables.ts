@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class MotoStables extends DrawCard {
     static id = 'moto-stables';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Give +2 military')
             .when({
                 onMoveToConflict: (event, context) =>

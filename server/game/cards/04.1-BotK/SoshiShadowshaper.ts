@@ -11,7 +11,7 @@ export default class SoshiShadowshaper extends DrawCard {
 
     private charactersPlayedThisPhase = new Set<BaseCard>();
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const eventRegistrar = new EventRegistrar(this.game);
         eventRegistrar.register({
             [EventName.OnPhaseStarted]: () => this.onPhaseStarted(),

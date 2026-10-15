@@ -6,7 +6,7 @@ import { placeFateOnRing } from '../../../GameActions/GameActions.js';
 export default class TempleOfTheFivefoldPath extends StrongholdCard {
     static id = 'temple-of-the-fivefold-path';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const sharedLimit = perRound(1);
 
         this.action('Place fate on a ring without fate')

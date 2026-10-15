@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 class SolitaryHero extends DrawCard {
     static id = 'solitary-hero';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cardCannot({
                 cannot: RestrictionType.ApplyCovert,

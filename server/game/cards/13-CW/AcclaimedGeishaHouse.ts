@@ -6,7 +6,7 @@ import { CardType } from '../../Constants.js';
 class AcclaimedGeishaHouse extends DrawCard {
     static id = 'acclaimed-geisha-house';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch the contested ring')
             .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card) => card.isParticipating() }))
             .ringTarget({

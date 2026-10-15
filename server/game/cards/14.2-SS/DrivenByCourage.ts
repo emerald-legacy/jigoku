@@ -9,7 +9,7 @@ const elementKey = 'driven-by-courage-air';
 export default class DrivenByCourage extends ProvinceCard {
     static id = 'driven-by-courage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('give target character +2/+2')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .target({
@@ -22,7 +22,7 @@ export default class DrivenByCourage extends ProvinceCard {
             .chatText((context) => msg`give ${context.chatTarget()} +2${'political'} and +2${'military'}`);
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

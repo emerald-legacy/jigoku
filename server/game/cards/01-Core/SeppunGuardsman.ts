@@ -5,7 +5,7 @@ import { cannotParticipateAsAttacker } from '../../effects.js';
 class SeppunGuardsman extends DrawCard {
     static id = 'seppun-guardsman';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             condition: (context) => !!context.player.opponent && context.player.opponent.imperialFavor !== '',

@@ -9,13 +9,13 @@ export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
         super(card, intoLocation);
     }
 
-    public createContext(player: Player = this.card.controller) {
+    public override createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
         context.playType = PlayType.PlayFromHand;
         return context;
     }
 
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
+    public override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
         const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation)
             ? ignoredBlockers
             : ignoredBlockers.concat(Blocker.WrongLocation);
@@ -38,7 +38,7 @@ export class PlayCharacterAsIfFromHandAtHome extends PlayCharacterAsIfFromHand {
 // A card in hand is never facedown, and putIntoPlay refuses a facedown card, so a
 // facedown card played this way is turned face up as it is played.
 export class PlayFacedownCharacterAsIfFromHand extends PlayCharacterAsIfFromHand {
-    public executeHandler(context: AbilityContext<DrawCard>): void {
+    public override executeHandler(context: AbilityContext<DrawCard>): void {
         context.source.facedown = false;
         super.executeHandler(context);
     }

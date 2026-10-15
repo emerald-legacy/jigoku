@@ -11,20 +11,20 @@ import type { AnyEvent } from '../TriggeredAbilityContext.js';
 export type DiscardCardProperties = CardActionProperties;
 
 export class DiscardCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DiscardCardProperties, EventName.OnCardsDiscarded, C> {
-    name = 'discardCard';
-    eventName = EventName.OnCardsDiscarded;
-    cost = 'discarding {0}';
-    effect = 'discard {0}';
-    targetType = [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding];
+    override name = 'discardCard';
+    override eventName = EventName.OnCardsDiscarded;
+    override cost = 'discarding {0}';
+    override effect = 'discard {0}';
+    override targetType = [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding];
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return (
             (card.location !== Location.Hand || card.controller.checkRestrictions(RestrictionType.Discard, context)) &&
             super.canAffect(card, context, additionalProperties)
         );
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
         const cards = targetList(target).filter((card) => card.isDrawCard() && this.canAffect(card, context, additionalProperties));
         if(cards.length === 0) {
@@ -35,14 +35,14 @@ export class DiscardCardAction<C extends AbilityContext = AbilityContext> extend
         events.push(event);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscarded, C>, cards: BaseCard | BaseCard[] | null | undefined, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscarded, C>, cards: BaseCard | BaseCard[] | null | undefined, context: C, additionalProperties: ActionOverrides = {}): void {
         const resolved = targetList(cards || this.getProperties(context, additionalProperties).target).filter((card) => card.isDrawCard());
         event.originalCardStateInfo = resolved.map((a: DrawCard) => ({ location: a.location, owner: a.owner }));
         event.cards = resolved;
         event.context = context;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardsDiscarded, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardsDiscarded, C>, additionalProperties: ActionOverrides = {}): void {
         for(const card of event.cards) {
             this.checkForRefillProvince(card, event, additionalProperties);
             card.controller.moveCard(
@@ -52,11 +52,11 @@ export class DiscardCardAction<C extends AbilityContext = AbilityContext> extend
         }
     }
 
-    isEventFullyResolved(event: AnyEvent): boolean {
+    override isEventFullyResolved(event: AnyEvent): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 
-    checkEventCondition(): boolean {
+    override checkEventCondition(): boolean {
         return true;
     }
 }

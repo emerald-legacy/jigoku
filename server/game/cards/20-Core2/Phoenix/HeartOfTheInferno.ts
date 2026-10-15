@@ -6,7 +6,7 @@ import { controlsParticipating } from '../../controlsParticipating.js';
 export default class HeartOfTheInferno extends DrawCard {
     static id = 'heart-of-the-inferno';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow a card')
             .condition((context) => controlsParticipating(context.player, Trait.Shugenja))
             .target({

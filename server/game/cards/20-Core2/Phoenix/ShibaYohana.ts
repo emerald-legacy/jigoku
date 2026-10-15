@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShibaYohana extends DrawCard {
     static id = 'shiba-yohana';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.wouldInterrupt('Prevent this character from leaving play')
             .when({
                 onCardLeavesPlay: (event, context) =>

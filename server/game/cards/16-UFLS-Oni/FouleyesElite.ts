@@ -5,7 +5,7 @@ import { BaseOni } from './_BaseOni.js';
 export default class FouleyesElite extends BaseOni {
     static id = 'fouleye-s-elite';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Bow a character')
             .when({

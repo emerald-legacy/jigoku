@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class PerfectLandEthos extends DrawCard {
     static id = 'perfect-land-ethos';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard each status token')
             .discardStatusToken((context) => ({
                 target: context.game.findAnyCardsInAnyList((card) => card.hasStatusTokens).flatMap((card) => card.statusTokens)

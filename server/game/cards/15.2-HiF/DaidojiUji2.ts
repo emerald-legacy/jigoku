@@ -7,7 +7,7 @@ import { playableFromUnderneath } from '../cardsUnderneath.js';
 class DaidojiUji2 extends DrawCard {
     static id = 'daidoji-uji-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Search your conflict deck')
             .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
             .deckSearch({

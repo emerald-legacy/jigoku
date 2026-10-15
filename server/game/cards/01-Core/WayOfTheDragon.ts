@@ -4,7 +4,7 @@ import { increaseLimitOnAbilities } from '../../effects.js';
 class WayOfTheDragon extends DrawCard {
     static id = 'way-of-the-dragon';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             limit: 1,
             myControl: true

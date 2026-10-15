@@ -5,7 +5,7 @@ import { dishonorProvince, reveal, sequential } from '../../../GameActions/GameA
 export default class ShrineOfVengeance extends ProvinceCard {
     static id = 'shrine-of-vengeance';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.interrupt('Blank and reveal a province')
             .when({
                 onBreakProvince: (event, context) => event.card === context.source

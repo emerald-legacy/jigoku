@@ -11,7 +11,7 @@ const elementSymbol = { key: 'cinder-salamander-fire', element: Element.Fire };
 export default class CinderSalamander extends DrawCard {
     static id = 'cinder-salamander';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Shuffle this character back into the deck')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
@@ -48,7 +48,7 @@ export default class CinderSalamander extends DrawCard {
             .max(perRound(1));
     }
 
-    public getPrintedElementSymbols() {
+    public override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 

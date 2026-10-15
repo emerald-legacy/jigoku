@@ -5,7 +5,7 @@ import { BaseOni } from './_BaseOni.js';
 export default class DarkMoto extends BaseOni {
     static id = 'dark-moto';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Place a fate and prevent from bowing')
             .when({

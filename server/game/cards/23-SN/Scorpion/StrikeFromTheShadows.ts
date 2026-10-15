@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class StrikeFromTheShadows extends DrawCard {
     static id = 'strike-from-the-shadows';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Give Shinobi +1/+1')
             .when({
                 afterConflict: (_event, context) => context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait(Trait.Shinobi)).length > 0

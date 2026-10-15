@@ -4,7 +4,7 @@ import { modifyBothSkills } from '../../effects.js';
 class DesperateNegotiator extends DrawCard {
     static id = 'desperate-negotiator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             effect: modifyBothSkills(2)
         });

@@ -5,7 +5,7 @@ import { CardType, Location, Players } from '../../Constants.js';
 class IuchiFarseer extends DrawCard {
     static id = 'iuchi-farseer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Reveal an opponent\'s province')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

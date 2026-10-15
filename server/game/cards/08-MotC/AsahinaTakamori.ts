@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class AsahinaTakamori extends DrawCard {
     static id = 'asahina-takamori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Pacify a character')
             .when({
                 onCardPlayed: (event, context) => event.player === context.player && event.card.type === CardType.Character && event.card.isFaction('crane')

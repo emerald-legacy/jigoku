@@ -4,7 +4,7 @@ import { ConflictType } from '../../Constants.js';
 class FormalInvitation extends DrawCard {
     static id = 'formal-invitation';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({ cardCondition: (card) => card.glory >= 2 });
 
         this.action('Move attached character into the conflict')

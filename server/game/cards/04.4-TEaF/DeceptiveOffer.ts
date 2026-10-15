@@ -7,7 +7,7 @@ import { Players, CardType } from '../../Constants.js';
 class DeceptiveOffer extends DrawCard {
     static id = 'deceptive-offer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase a character\'s military and political skill or take an honor from your opponent')
             .target({
                 name: 'character',

@@ -4,7 +4,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class FloodedWaste extends ProvinceCard {
     static id = 'flooded-waste';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow each attacking character')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

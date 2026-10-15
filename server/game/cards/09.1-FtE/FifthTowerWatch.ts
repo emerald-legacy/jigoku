@@ -5,7 +5,7 @@ import { CardType, Location, Players } from '../../Constants.js';
 class FifthTowerWatch extends DrawCard {
     static id = 'fifth-tower-watch';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Bow a character')
             .when({
                 onCardLeavesPlay: (event, context) => event.isSacrifice && event.card.controller === context.player && event.card.location === Location.PlayArea

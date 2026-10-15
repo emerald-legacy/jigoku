@@ -7,7 +7,7 @@ import { Players, CardType, ConflictType } from '../../Constants.js';
 class CourtGames extends DrawCard {
     static id = 'court-games';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Honor or dishonor a character', { conflictType: ConflictType.Political })
             .select({
                 'Honor a friendly character': selectCard({

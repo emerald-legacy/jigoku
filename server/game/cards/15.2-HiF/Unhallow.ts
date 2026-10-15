@@ -8,7 +8,7 @@ import { ProvinceAttachment } from '../ProvinceAttachment.js';
 class Unhallow extends ProvinceAttachment {
     static id = 'unhallow';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
@@ -33,11 +33,11 @@ class Unhallow extends ProvinceAttachment {
         });
     }
 
-    protected controllerProvinceOnly(): boolean {
+    protected override controllerProvinceOnly(): boolean {
         return true;
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

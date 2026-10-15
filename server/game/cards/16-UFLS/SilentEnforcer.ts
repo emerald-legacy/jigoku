@@ -5,7 +5,7 @@ import { bow, sendHome } from '../../GameActions/GameActions.js';
 class SilentEnforcer extends DrawCard {
     static id = 'silent-enforcer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow or move home a character')
             .when({
                 onCardPlayed: (event, context) => event.card.type === CardType.Event && event.card.controller === context.player && context.source.isParticipating()

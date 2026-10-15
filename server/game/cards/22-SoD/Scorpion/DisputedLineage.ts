@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class DisputedLineage extends DrawCard {
     static id = 'disputed-lineage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Choose a character')
             .playOnlyIf((context) => context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait(Trait.Courtier)))
             .target({

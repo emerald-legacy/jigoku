@@ -7,7 +7,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class Pilgrimage extends ProvinceCard {
     static id = 'pilgrimage';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const eventRegistrar = new EventRegistrar(this.game);
         eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
     }

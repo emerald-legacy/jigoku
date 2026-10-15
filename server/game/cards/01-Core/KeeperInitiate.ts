@@ -5,7 +5,7 @@ import { claimsRoleElement } from '../claimedRings.js';
 class KeeperInitiate extends DrawCard {
     static id = 'keeper-initiate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put this into play')
             .when({
                 onClaimRing: (event, context) => event.player === context.player && claimsRoleElement(context.player, event)

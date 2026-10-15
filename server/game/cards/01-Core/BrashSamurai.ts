@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class BrashSamurai extends DrawCard {
     static id = 'brash-samurai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor this character')
             .condition((context) =>
                 context.source.isParticipatingFor(context.player) &&

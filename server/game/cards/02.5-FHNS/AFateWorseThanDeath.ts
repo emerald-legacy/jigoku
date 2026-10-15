@@ -6,7 +6,7 @@ import { bow, cardLastingEffect, dishonor, removeFate, sendHome } from '../../Ga
 class AFateWorseThanDeath extends DrawCard {
     static id = 'a-fate-worse-than-death';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow, move home, dishonor, remove a fate and blank a character')
             .target({
                 cardType: CardType.Character,

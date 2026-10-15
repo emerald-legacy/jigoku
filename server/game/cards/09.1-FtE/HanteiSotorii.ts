@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class HanteiSotorii extends DrawCard {
     static id = 'hantei-sotorii';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a participating character +3 glory')
             .condition((context) => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Military))
             .target({

@@ -5,7 +5,7 @@ import { addFaction, addTrait } from '../../effects.js';
 class SealOfTheCrane extends DrawCard {
     static id = 'seal-of-the-crane';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: [
                 addFaction('crane'),

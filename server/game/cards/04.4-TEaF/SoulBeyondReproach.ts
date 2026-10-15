@@ -5,7 +5,7 @@ import { Players, CardType } from '../../Constants.js';
 class SoulBeyondReproach extends DrawCard {
     static id = 'soul-beyond-reproach';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor a character, then honor it again')
             .target({
                 cardType: CardType.Character,

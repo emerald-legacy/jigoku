@@ -6,7 +6,7 @@ import { placeFate, selectCard } from '../../GameActions/GameActions.js';
 export default class FeastOrFamine extends ProvinceCard {
     static id = 'feast-or-famine';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Move 1 fate from an opposing character')
             .when({
                 onBreakProvince: (event, context) => event.card === context.source

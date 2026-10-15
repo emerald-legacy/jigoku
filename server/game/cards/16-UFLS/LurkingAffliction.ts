@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class LurkingAffliction extends DrawCard {
     static id = 'lurking-affliction';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Taint a participating character')
             .target({
                 cardType: CardType.Character,

@@ -6,7 +6,7 @@ import { nameCardType, revealCount, takeUpToTwoOfNamedType } from '../../nameCar
 export default class WorkInProgress extends DrawCard {
     static id = 'work-in-progress';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reveal cards and take ones matching named type')
             .condition((context) => context.player.conflictDeck.length >= revealCount(context, Trait.Artisan))
             .cost(costs.revealCardsOf((context) => context.player.conflictDeck.slice(0, revealCount(context, Trait.Artisan))))

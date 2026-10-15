@@ -6,7 +6,7 @@ import Ring from '../../../Ring.js';
 export default class ZealousInspector extends DrawCard {
     static id = 'zealous-inspector';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Take an additional action')
             .when({
                 onCardDishonored: (event, context) =>

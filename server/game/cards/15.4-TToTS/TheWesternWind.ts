@@ -6,7 +6,7 @@ import { Location, CardType, Players, TargetMode, DeckType } from '../../Constan
 class TheWesternWind extends DrawCard {
     static id = 'the-western-wind';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at your dynasty deck')
             .condition((context) => !!context.player.opponent &&
                 context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince) > 0 &&

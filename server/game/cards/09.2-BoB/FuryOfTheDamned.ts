@@ -7,7 +7,7 @@ import { atEndOfConflict, cardLastingEffect, multiple, sacrifice } from '../../G
 class FuryOfTheDamned extends DrawCard {
     static id = 'fury-of-the-damned';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Double the base military skill')
             .targetCards({
                 activePromptTitle: 'Choose bushi characters',

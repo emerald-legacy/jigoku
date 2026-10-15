@@ -16,16 +16,16 @@ export interface PlaceFateProperties extends CardActionProperties {
 }
 
 export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName.OnMoveFate, C, 'amount'> {
-    name = 'placeFate';
-    restriction = RestrictionType.PlaceFate;
-    eventName = EventName.OnMoveFate;
-    targetType = [CardType.Character];
-    defaultProperties = { amount: 1 };
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override name = 'placeFate';
+    override restriction = RestrictionType.PlaceFate;
+    override eventName = EventName.OnMoveFate;
+    override targetType = [CardType.Character];
+    override defaultProperties = { amount: 1 };
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['place {1} fate on {0}', [this.getProperties(context, additionalProperties).amount]];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         if(amount === 0 || card.location !== Location.PlayArea) {
             return false;
@@ -49,7 +49,7 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         );
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         event.fate = amount;
         event.origin = origin;
@@ -57,11 +57,11 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         event.recipient = card;
     }
 
-    checkEventCondition(event: ActionEvent<EventName.OnMoveFate, C>): boolean {
+    override checkEventCondition(event: ActionEvent<EventName.OnMoveFate, C>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
@@ -72,7 +72,7 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         );
     }
 
-    eventHandler(event: ActionEvent<EventName.OnMoveFate, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnMoveFate, C>): void {
         this.moveFateEventHandler(event);
     }
 }

@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class KitsukiCounselor extends DrawCard {
     static id = 'kitsuki-counselor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.composure({
             effect: modifyBothSkills(1)
         });

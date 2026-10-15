@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 export default class SilentSuburb extends ProvinceCard {
     static id = 'silent-suburb';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve the ring effect')
             .when({
                 afterConflict: (event, context) =>

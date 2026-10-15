@@ -14,7 +14,7 @@ function countReadyShugenja(player: Player): number {
 export default class EnforcePropriety extends DrawCard {
     static id = 'enforce-propriety';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

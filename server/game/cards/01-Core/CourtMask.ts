@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class CourtMask extends DrawCard {
     static id = 'court-mask';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

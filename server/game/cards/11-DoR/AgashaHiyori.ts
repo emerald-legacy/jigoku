@@ -8,7 +8,7 @@ import { CardType, Duration, Phase } from '../../Constants.js';
 class AgashaHiyori extends DrawCard {
     static id = 'agasha-hiyori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Blank an attachment')
             .when({
                 onPhaseStarted: (event) => event.phase !== Phase.Setup

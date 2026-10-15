@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class ArrogantKakita extends DrawCard {
     static id = 'arrogant-kakita';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('Initiate a military duel')
             .when({
                 onDefendersDeclared: (_event, context) => context.source.isParticipating()

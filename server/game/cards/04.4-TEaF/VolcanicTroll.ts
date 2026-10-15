@@ -6,14 +6,14 @@ const elementKey = 'isawa-tsuke-2-fire';
 class VolcanicTroll extends DrawCard {
     static id = 'volcanic-troll';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed(),
             effect: modifyBothSkills(2)
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

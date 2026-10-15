@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class Penanggalan extends BaseOni {
     static id = 'penanggalan';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Move a fate onto this character')
             .when({

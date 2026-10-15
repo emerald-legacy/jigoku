@@ -4,7 +4,7 @@ import * as costs from '../../costs/index.js';
 export default class SevenFoldPalace extends StrongholdCard {
     static id = 'seven-fold-palace';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain 2 Honor')
             .when({
                 afterConflict: (event, context) =>

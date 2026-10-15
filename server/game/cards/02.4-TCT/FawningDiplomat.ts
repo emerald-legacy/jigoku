@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class FawningDiplomat extends DrawCard {
     static id = 'fawning-diplomat';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Claim Imperial favor')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

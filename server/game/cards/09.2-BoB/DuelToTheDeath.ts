@@ -5,7 +5,7 @@ import { discardFromPlay, dishonor } from '../../GameActions/GameActions.js';
 class DuelToTheDeath extends DrawCard {
     static id = 'duel-to-the-death';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a military duel, discarding the loser')
             .initiateDuel(() => ({
                 type: DuelType.Military,

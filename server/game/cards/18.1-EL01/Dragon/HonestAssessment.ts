@@ -9,7 +9,7 @@ import { randomHandCards } from '../../randomHandCards.js';
 export default class HonestAssessment extends DrawCard {
     static id = 'honest-assessment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({ trait: Trait.Courtier });
 
         this.reaction('Name a card')

@@ -34,15 +34,15 @@ export class TriggeredAbilityContext<
         this.event = properties.event;
     }
 
-    copy(newProps: Partial<TriggeredAbilityContextProperties<E>>): TriggeredAbilityContext<S, T, E> {
+    override copy(newProps: Partial<TriggeredAbilityContextProperties<E>>): TriggeredAbilityContext<S, T, E> {
         return this.copyStateTo(this.createCopy(newProps));
     }
 
-    createCopy(newProps: Partial<TriggeredAbilityContextProperties<E>>): TriggeredAbilityContext<S, T, E> {
+    override createCopy(newProps: Partial<TriggeredAbilityContextProperties<E>>): TriggeredAbilityContext<S, T, E> {
         return new TriggeredAbilityContext<S, T, E>(Object.assign(this.getProps(), newProps));
     }
 
-    getProps(): TriggeredAbilityContextProperties<E> {
+    override getProps(): TriggeredAbilityContextProperties<E> {
         return Object.assign(super.getProps(), { ability: this.ability, event: this.event });
     }
 

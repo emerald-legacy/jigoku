@@ -24,19 +24,19 @@ export interface SetAsideProperties<C extends AbilityContext = AbilityContext> e
 }
 
 export class SetAsideAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SetAsideProperties, EventName.Unnamed, C, 'hidden' | 'returnAtEndOfConflict'> {
-    name = 'setAside';
-    effect = 'set aside {0}';
-    targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
-    defaultProperties = {
+    override name = 'setAside';
+    override effect = 'set aside {0}';
+    override targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
+    override defaultProperties = {
         hidden: false,
         returnAtEndOfConflict: false
     };
 
-    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return card.location !== Location.RemovedFromGame && super.canAffect(card, context, additionalProperties);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const cards = targetList(properties.target).filter((card): card is DrawCard => card.isDrawCard() && this.canAffect(card, context, additionalProperties));
         if(cards.length === 0) {
@@ -52,7 +52,7 @@ export class SetAsideAction<C extends AbilityContext = AbilityContext> extends C
         }
     }
 
-    eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
         if(!card.isDrawCard()) {

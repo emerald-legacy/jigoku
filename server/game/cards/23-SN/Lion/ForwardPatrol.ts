@@ -5,7 +5,7 @@ import { ready } from '../../../GameActions/GameActions.js';
 export default class ForwardPatrol extends DrawCard {
     static id = 'forward-patrol';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Ready a character')
             .target({
                 cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Bushi),

@@ -11,7 +11,7 @@ const elementKey = 'isawa-tsuke-2-fire';
 class IsawaTsuke2 extends DrawCard {
     static id = 'isawa-tsuke-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Lose honor to discard fate')
             .condition((context) =>
                 context.game.isDuringConflict() &&
@@ -39,7 +39,7 @@ class IsawaTsuke2 extends DrawCard {
         return countTargetable(context.game.requireConflict().getParticipants((card) => removeFate().canAffect(card, context)), context);
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

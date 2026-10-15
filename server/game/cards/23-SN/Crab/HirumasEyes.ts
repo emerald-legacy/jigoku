@@ -9,7 +9,7 @@ import type BaseCard from '../../../BaseCard.js';
 export default class HirumasEyes extends DrawCard {
     static id = 'hiruma-s-eyes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give skill bonus or penalty')
             .target({
                 name: 'provinceCard',

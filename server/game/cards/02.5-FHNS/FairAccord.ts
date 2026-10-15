@@ -5,7 +5,7 @@ import * as costs from '../../costs/index.js';
 class FairAccord extends DrawCard {
     static id = 'fair-accord';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard favor to gain 2 fate')
             .phase(Phase.Dynasty)
             .cost(costs.discardImperialFavor())

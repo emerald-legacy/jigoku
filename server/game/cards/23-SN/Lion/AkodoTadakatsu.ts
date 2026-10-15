@@ -6,7 +6,7 @@ import Ring from '../../../Ring.js';
 export default class AkodoTadakatsu extends DrawCard {
     static id = 'akodo-tadakatsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Injure a character')
             .when({
                 onMoveFate: (event, context) => {

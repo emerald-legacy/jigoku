@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class HeirOfTheSerpent extends DrawCard {
     static id = 'heir-of-the-serpent';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Move a character into or out of the conflict')
             .target({
                 cardType: CardType.Character,

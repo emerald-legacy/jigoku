@@ -6,7 +6,7 @@ import { Duration, Players } from '../../Constants.js';
 class CourtMusician extends DrawCard {
     static id = 'court-musician';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Decrease cost to play cards')
             .condition((context) => context.source.isParticipating())
             .playerLastingEffect({

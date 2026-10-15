@@ -4,7 +4,7 @@ import { honorCostToDeclare, loseAllNonKeywordAbilities } from '../../effects.js
 class UnleashedExperiment extends DrawCard {
     static id = 'unleashed-experiment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             effect: loseAllNonKeywordAbilities()
         });

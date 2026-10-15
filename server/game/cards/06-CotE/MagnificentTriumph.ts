@@ -8,7 +8,7 @@ import { DuelsThisConflict } from '../DuelsThisConflict.js';
 export default class MagnificentTriumph extends DrawCard {
     static id = 'magnificent-triumph';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const duelWinners = DuelsThisConflict.winners(this.game);
         this.conflictAction('Give a character +2/+2')
             .target({

@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 export default class MatsuTsuko extends DrawCard {
     static id = 'matsu-tsuko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce the cost of the next card')
             .condition((context) => context.source.isAttacking() && context.player.isMoreHonorable())
             .playerLastingEffect({

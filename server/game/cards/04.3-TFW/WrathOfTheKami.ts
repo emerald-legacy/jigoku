@@ -8,7 +8,7 @@ import { Location } from '../../Constants.js';
 class WrathOfTheKami extends DrawCard {
     static id = 'the-wrath-of-the-kami';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add Province Strength')
             .condition((context) => this.game.isDuringConflict() && context.source.isInConflictProvince())
             .cost(costs.payHonor(1))

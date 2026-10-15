@@ -7,7 +7,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 export default class PathsNotTaken extends DrawCard {
     static id = 'paths-not-taken';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Send home a character')
             .when({
                 onConflictStarted: (event, context) => event.conflict.defendingPlayer === context.player

@@ -8,7 +8,7 @@ const elementKey = 'isawa-tsuke-fire';
 class IsawaTsuke extends DrawCard {
     static id = 'isawa-tsuke';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Fire ring same cost characters')
             .when({
                 onCardDishonored: (event, context) =>
@@ -30,7 +30,7 @@ class IsawaTsuke extends DrawCard {
         );
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

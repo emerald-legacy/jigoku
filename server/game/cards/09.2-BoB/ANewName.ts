@@ -5,7 +5,7 @@ import { addTrait } from '../../effects.js';
 class ANewName extends DrawCard {
     static id = 'a-new-name';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: [
                 addTrait(Trait.Courtier),

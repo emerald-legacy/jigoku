@@ -4,7 +4,7 @@ import { Stage } from '../../Constants.js';
 class ShiotomeHeroine extends DrawCard {
     static id = 'shiotome-heroine';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Ready this character')
             .when({
                 onModifyHonor: (event, context) =>

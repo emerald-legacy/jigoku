@@ -14,9 +14,9 @@ import type { StateViewer } from './types/StateViewer.js';
 import { discardCard } from './GameActions/GameActions.js';
 
 export class ProvinceCard extends BaseCard {
-    isProvince = true;
+    override isProvince = true;
     isBroken = false;
-    menu = [
+    override menu = [
         { command: 'break', text: 'Break/unbreak this province' },
         { command: 'hide', text: 'Flip face down' },
         { command: 'dishonor', text: 'Dishonor' },
@@ -157,11 +157,11 @@ export class ProvinceCard extends BaseCard {
         return this.element.some((provinceElement) => provinceElement === element);
     }
 
-    hasElementSymbols(): boolean {
+    override hasElementSymbols(): boolean {
         return !!this.cardData.elements && this.cardData.elements.length > 0;
     }
 
-    getPrintedElementSymbols(): ElementSymbolInfo[] {
+    override getPrintedElementSymbols(): ElementSymbolInfo[] {
         if(!this.hasElementSymbols()) {
             return [];
         }
@@ -173,13 +173,13 @@ export class ProvinceCard extends BaseCard {
         }));
     }
 
-    leavesPlay() {
+    override leavesPlay() {
         this.removeAllTokens();
         this.makeOrdinary();
         super.leavesPlay();
     }
 
-    isConflictProvince(): boolean {
+    override isConflictProvince(): boolean {
         return !!this.game.currentConflict?.getConflictProvinces().includes(this);
     }
 
@@ -214,7 +214,7 @@ export class ProvinceCard extends BaseCard {
         return this.sumEffects(EffectName.FateCostToRingToDeclareConflictAgainst);
     }
 
-    isBlank(): boolean {
+    override isBlank(): boolean {
         return this.hasBlankText() || super.isBlank();
     }
 
@@ -277,11 +277,11 @@ export class ProvinceCard extends BaseCard {
         return this.hasEminent();
     }
 
-    hideWhenFacedown(): boolean {
+    override hideWhenFacedown(): boolean {
         return false;
     }
 
-    getMenu() {
+    override getMenu() {
         const menu = super.getMenu();
         if(!menu) {
             return menu;
@@ -300,7 +300,7 @@ export class ProvinceCard extends BaseCard {
         return menu;
     }
 
-    getSummary(activePlayer: StateViewer, hideWhenFaceup: boolean) {
+    override getSummary(activePlayer: StateViewer, hideWhenFaceup: boolean) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,
@@ -312,7 +312,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     /** Provinces take any attachment: their 'no attachments' restrictions don't apply. */
-    allowAttachment(_attachment: DrawCard): boolean {
+    override allowAttachment(_attachment: DrawCard): boolean {
         return true;
     }
 
@@ -321,11 +321,11 @@ export class ProvinceCard extends BaseCard {
         return this.hasKeyword('eminent') || (!this.isBlank() && this.hasPrintedKeyword('eminent'));
     }
 
-    isFaceup(): boolean {
+    override isFaceup(): boolean {
         return this.game.rules.setupHaveProvinceCards && super.isFaceup();
     }
 
-    isFacedown(): boolean {
+    override isFacedown(): boolean {
         return this.game.rules.setupHaveProvinceCards && super.isFacedown();
     }
 

@@ -14,7 +14,7 @@ import { playableFromUnderneath } from '../../cardsUnderneath.js';
 export default class SandRoadMerchant extends DrawCard {
     static id = 'sand-road-merchant';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect(playableFromUnderneath(this));
 
         this.reaction('Look at your opponent\'s conflict deck')

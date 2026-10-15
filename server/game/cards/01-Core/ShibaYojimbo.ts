@@ -4,7 +4,7 @@ import { Location, Trait } from '../../Constants.js';
 class ShibaYojimbo extends DrawCard {
     static id = 'shiba-yojimbo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel ability')
             .when({
                 onInitiateAbilityEffects: (event, context) => event.context.ability.isTriggeredAbility() && event.cardTargets.some((card) => (

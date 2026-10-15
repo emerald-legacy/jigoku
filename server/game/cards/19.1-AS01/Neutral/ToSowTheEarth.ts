@@ -10,7 +10,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ToSowTheEarth extends DrawCard {
     static id = 'to-sow-the-earth';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Play a peasant from the discard pile')
             .target({
                 cardType: CardType.Character,

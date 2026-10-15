@@ -19,11 +19,11 @@ interface StatusTokenEffect {
 
 export class StatusToken extends EffectSource {
     persistentEffects: StatusTokenEffect[] = [];
-    printedType = 'token';
+    override printedType = 'token';
     overrideStatus?: CharacterStatus;
 
     constructor(
-        public game: Game,
+        public override game: Game,
         public card: BaseCard | null,
         private initialStatus: CharacterStatus,
         title: string
@@ -47,11 +47,11 @@ export class StatusToken extends EffectSource {
         return this.card?.controller;
     }
 
-    getEffectController() {
+    override getEffectController() {
         return this.controller;
     }
 
-    getPersistentEffectRecords(): readonly StatusTokenEffect[] {
+    override getPersistentEffectRecords(): readonly StatusTokenEffect[] {
         return this.persistentEffects;
     }
 

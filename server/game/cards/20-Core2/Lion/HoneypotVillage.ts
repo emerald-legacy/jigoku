@@ -5,7 +5,7 @@ import { moveToConflict } from '../../../GameActions/GameActions.js';
 export default class HoneypotVillage extends ProvinceCard {
     static id = 'honeypot-village';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character in')
             .target({
                 cardType: CardType.Character,

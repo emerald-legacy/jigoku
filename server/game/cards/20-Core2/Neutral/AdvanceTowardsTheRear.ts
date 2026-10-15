@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AdvanceTowardsTheRear extends DrawCard {
     static id = 'advance-towards-the-rear';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character home')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .cost(costs.payHonor(1))

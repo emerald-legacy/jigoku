@@ -7,7 +7,7 @@ import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 class ByAnyMeans extends DrawCard {
     static id = 'by-any-means';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Change base skill to match another character\'s')
             .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
             .target({

@@ -6,7 +6,7 @@ import { ProvinceAttachment } from '../ProvinceAttachment.js';
 class Untainted extends ProvinceAttachment {
     static id = 'untainted';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('discard status token')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player &&

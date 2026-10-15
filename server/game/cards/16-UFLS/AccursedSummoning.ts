@@ -98,7 +98,7 @@ const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature:
 class AccursedSummoning extends DrawCard {
     static id = 'accursed-summoning';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Summon a Shadowlands Creature')
             .cost(accursedSummoningCost())
             .gameAction(putIntoConflict((context) => ({
@@ -107,7 +107,7 @@ class AccursedSummoning extends DrawCard {
             .chatText(summonEffectMessage, (context) => summonEffectArgs(context.costs.accursedSummoningCostCreature));
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

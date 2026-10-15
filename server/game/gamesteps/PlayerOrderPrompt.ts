@@ -35,16 +35,16 @@ export class PlayerOrderPrompt extends UiPrompt {
         (this.players ?? []).shift();
     }
 
-    public isComplete(): boolean {
+    public override isComplete(): boolean {
         this.lazyFetchPlayers();
         return (this.players ?? []).length === 0;
     }
 
-    public activeCondition(player: Player): boolean {
+    public override activeCondition(player: Player): boolean {
         return player === this.currentPlayer;
     }
 
-    public continue(): boolean {
+    public override continue(): boolean {
         this.skipPlayers();
         return super.continue();
     }

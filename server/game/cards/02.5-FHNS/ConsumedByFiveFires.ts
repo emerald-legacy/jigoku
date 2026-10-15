@@ -10,7 +10,7 @@ import { controlsShugenja } from '../controlsShugenja.js';
 class ConsumedByFiveFires extends DrawCard {
     static id = 'consumed-by-five-fires';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Remove up to 5 fate from characters')
             .condition((context) =>
                 controlsShugenja(context.player) &&

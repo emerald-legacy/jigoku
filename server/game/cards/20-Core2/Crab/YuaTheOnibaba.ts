@@ -34,7 +34,7 @@ function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict | nul
 export default class YuaTheOnibaba extends DrawCard {
     static id = 'yua-the-onibaba';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Weaken non-bushi, empower bushi')
             .gameAction(multiple((context) => {
                 const targets = charactersToBuffAndNerf(context.player, context.game.currentConflict);

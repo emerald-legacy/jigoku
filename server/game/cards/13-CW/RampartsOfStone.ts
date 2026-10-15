@@ -5,7 +5,7 @@ import { bow, chosenDiscard } from '../../GameActions/GameActions.js';
 class RampartsOfStone extends DrawCard {
     static id = 'ramparts-of-stone';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Attacker bows participating characters or discards three cards from hand')
             .select({
                 name: 'select',

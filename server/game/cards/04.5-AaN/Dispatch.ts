@@ -6,7 +6,7 @@ import { conditional, moveToConflict, sendHome } from '../../GameActions/GameAct
 class Dispatch extends DrawCard {
     static id = 'dispatch';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character into or out of the conflict')
             .selectCard({
                 cardType: CardType.Character,

@@ -7,7 +7,7 @@ import { soldierAttachCheck } from '../../soldierAttachCheck.js';
 class NobleVanguard extends DrawCard {
     static id = 'noble-vanguard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const canAttachSoldier = soldierAttachCheck(this.owner);
 
         this.reaction('Attach a follower to a character')

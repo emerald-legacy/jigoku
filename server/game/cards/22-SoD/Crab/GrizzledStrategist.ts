@@ -6,7 +6,7 @@ import { CardType } from '../../../Constants.js';
 export default class GrizzledStrategist extends DrawCard {
     static id = 'grizzled-strategist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cannotReceiveDishonorToken()
         });

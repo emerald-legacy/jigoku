@@ -9,7 +9,7 @@ const ELEMENT_TO_RESOLVE = 'firebrand-fire-ability';
 export default class Firebrand extends DrawCard {
     static id = 'firebrand';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Resolve the fire ring')
             .cost(costs.returnRings(1, (ring) =>
                 ring.hasElement(this.getCurrentElementSymbol(ELEMENT_TO_RETURN))
@@ -21,7 +21,7 @@ export default class Firebrand extends DrawCard {
             .chatText((context) => msg`resolve the ${context.game.rings.fire} effect`);
     }
 
-    public getPrintedElementSymbols() {
+    public override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: ELEMENT_TO_RETURN,

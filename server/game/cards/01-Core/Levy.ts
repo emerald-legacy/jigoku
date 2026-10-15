@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class Levy extends DrawCard {
     static id = 'levy';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Take an honor or a fate from your opponent')
             .condition((context) => context.player.opponent !== undefined)
             .select({

@@ -13,21 +13,21 @@ export interface LookAtProperties<C extends AbilityContext = AbilityContext> ext
 }
 
 export class LookAtAction<C extends AbilityContext = AbilityContext> extends CardGameAction<LookAtProperties, EventName.OnLookAtCards, C, 'message'> {
-    name = 'lookAt';
-    eventName = EventName.OnLookAtCards;
-    effect = 'look at a facedown card';
-    defaultProperties = {
+    override name = 'lookAt';
+    override eventName = EventName.OnLookAtCards;
+    override effect = 'look at a facedown card';
+    override defaultProperties = {
         message: (context: AbilityContext, cards: BaseCard[]) => msg`${context.source} sees ${cards}`
     };
 
-    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}) {
+    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}) {
         if(!card.isFacedown() && (card.isInProvince() || card.location === Location.PlayArea)) {
             return false;
         }
         return super.canAffect(card, context, additionalProperties);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
         const cards = targetList(target).filter((card) => this.canAffect(card, context, additionalProperties));
         if(cards.length === 0) {
@@ -38,7 +38,7 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
         events.push(event);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnLookAtCards, C>, cards: BaseCard | BaseCard[] | null | undefined, context: C, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnLookAtCards, C>, cards: BaseCard | BaseCard[] | null | undefined, context: C, additionalProperties: Record<string, unknown>): void {
         const resolved = targetList(cards || this.getProperties(context, additionalProperties).target);
         event.cards = resolved;
         event.stateBeforeResolution = resolved.map((a: BaseCard) => {
@@ -47,17 +47,17 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
         event.context = context;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnLookAtCards, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnLookAtCards, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         context.game.addMessage(properties.message(context, event.cards));
     }
 
-    isEventFullyResolved(event: AnyEvent): boolean {
+    override isEventFullyResolved(event: AnyEvent): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 
-    checkEventCondition(): boolean {
+    override checkEventCondition(): boolean {
         return true;
     }
 }

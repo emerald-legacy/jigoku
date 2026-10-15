@@ -5,7 +5,7 @@ import { discardCard } from '../../GameActions/GameActions.js';
 class Softskin extends DrawCard {
     static id = 'softskin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: unlessActionCost({
                 actionName: 'ready',

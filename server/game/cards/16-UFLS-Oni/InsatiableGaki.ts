@@ -3,7 +3,7 @@ import { BaseOni } from './_BaseOni.js';
 export default class InsatiableGaki extends BaseOni {
     static id = 'insatiable-gaki';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Make opponent discard a card')
             .when({

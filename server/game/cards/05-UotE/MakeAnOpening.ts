@@ -8,7 +8,7 @@ import { Players, CardType } from '../../Constants.js';
 class MakeAnOpening extends DrawCard {
     static id = 'make-an-opening';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give -X/-X to opposing character, where X is the difference between current honor dial bid values')
             .condition((context) => {
                 const conflict = this.game.currentConflict;

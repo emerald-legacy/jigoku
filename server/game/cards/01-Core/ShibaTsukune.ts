@@ -9,7 +9,7 @@ import { resolveRingEffect } from '../../GameActions/GameActions.js';
 class ShibaTsukune extends DrawCard {
     static id = 'shiba-tsukune';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Resolve 2 rings')
             .when({
                 onPhaseEnded: (event) => event.phase === Phase.Conflict

@@ -5,7 +5,7 @@ import { Players, CardType } from '../../Constants.js';
 class FightOn extends DrawCard {
     static id = 'fight-on';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready character and move to conflict')
             .condition((context) => context.player.isDefendingPlayer())
             .target({

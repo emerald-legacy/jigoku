@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class LiaisonToTheAncestors extends DrawCard {
     static id = 'liaison-to-the-ancestors';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Protect the honor of a character')
             .when({
                 onCardDishonored: ({ card }, context) =>

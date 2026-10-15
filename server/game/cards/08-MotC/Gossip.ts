@@ -7,7 +7,7 @@ import { Duration, PlayType, Players, RestrictionScope } from '../../Constants.j
 class Gossip extends DrawCard {
     static id = 'gossip';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Name a card that your opponent cannot play for the phase')
             .cost(costs.nameCard())
             .playerLastingEffect((context) => ({

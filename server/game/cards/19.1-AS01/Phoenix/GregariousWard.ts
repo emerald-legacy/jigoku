@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class GregariousWard extends DrawCard {
     static id = 'gregarious-ward';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Gain fate')
             .when({
                 afterConflict: (event, context) =>

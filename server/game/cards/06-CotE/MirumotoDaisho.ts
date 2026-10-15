@@ -5,7 +5,7 @@ import { Players } from '../../Constants.js';
 class MirumotoDaisho extends DrawCard {
     static id = 'mirumoto-daisho';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: cannotHaveOtherRestrictedAttachments(this)
         });

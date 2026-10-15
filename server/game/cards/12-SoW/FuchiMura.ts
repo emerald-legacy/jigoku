@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class FuchiMura extends ProvinceCard {
     static id = 'fuchi-mura';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place one fate on each unclaimed ring')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source

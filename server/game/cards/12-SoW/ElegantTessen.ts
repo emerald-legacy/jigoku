@@ -4,7 +4,7 @@ import { Location } from '../../Constants.js';
 class ElegantTessen extends DrawCard {
     static id = 'elegant-tessen';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Ready attached character')
             .when({
                 onCardAttached: (event, context) => (

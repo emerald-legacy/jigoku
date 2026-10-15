@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class OutmaneuveredByForce extends DrawCard {
     static id = 'outmaneuvered-by-force';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Declare a conflict right now')
             .playOnlyIf((context) => !context.game.isDuringConflict() && this.controlsBerserkerOrBigCharacter(context))
             .condition((context) => context.game.getConflicts(Players.All).every((conflict) => conflict.passed))

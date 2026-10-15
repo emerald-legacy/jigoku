@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DeployedGarrison extends DrawCard {
     static id = 'deployed-garrison';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cardCannot({
                 cannot: RestrictionType.ApplyCovert,

@@ -6,7 +6,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 class KaiuForges extends DrawCard {
     static id = 'kaiu-forges';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Choose a province')
             .target({
                 location: Location.Provinces,

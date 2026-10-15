@@ -8,7 +8,7 @@ import { cardLastingEffect, discardFromPlay } from '../../GameActions/GameAction
 class BayushiShoju extends DrawCard {
     static id = 'bayushi-shoju';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character -0/-1')
             .condition((context) => context.source.isParticipating() && this.game.isDuringConflict(ConflictType.Political))
             .target({

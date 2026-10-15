@@ -5,7 +5,7 @@ import { dishonor } from '../../GameActions/GameActions.js';
 class DisplayOfLoyalty extends DrawCard {
     static id = 'display-of-loyalty';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Dishonor a character')
             .target({
                 controller: Players.Any,

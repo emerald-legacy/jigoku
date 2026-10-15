@@ -5,7 +5,7 @@ import { honor } from '../../GameActions/GameActions.js';
 export default class TheWayOfPeace extends ProvinceCard {
     static id = 'the-way-of-peace';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('honor up to 3 characters')
             .when({
                 onBreakProvince: (event, context) => event.card === context.source

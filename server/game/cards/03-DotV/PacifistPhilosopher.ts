@@ -4,7 +4,7 @@ import { perRound } from '../../AbilityLimit.js';
 class PacifistPhilosopher extends DrawCard {
     static id = 'pacifist-philosopher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain 1 fate')
             .when({
                 onConflictPass: () => true

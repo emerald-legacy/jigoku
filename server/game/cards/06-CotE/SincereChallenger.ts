@@ -7,7 +7,7 @@ import { DuelType, RestrictionScope } from '../../Constants.js';
 class SincereChallenger extends DrawCard {
     static id = 'sincere-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.composure({
             effect: modifyPoliticalSkill(2)
         });

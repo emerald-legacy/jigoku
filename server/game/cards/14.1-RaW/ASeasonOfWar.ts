@@ -6,7 +6,7 @@ import { discardCard, playerLastingEffect, refillFaceup, sequential } from '../.
 class ASeasonOfWar extends DrawCard {
     static id = 'a-season-of-war';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard all cards from provinces, refill faceup, and start a new dynasty phase')
             .gameAction(sequential([
                 discardCard((context) => ({

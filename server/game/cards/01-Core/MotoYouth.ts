@@ -5,7 +5,7 @@ import { ConflictType } from '../../Constants.js';
 class MotoYouth extends DrawCard {
     static id = 'moto-youth';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             // a switched conflict counts as both a military and a political conflict
             condition: () => {

@@ -9,7 +9,7 @@ type Choice = 'Even' | 'Odd';
 export default class MazeOfIllusion extends DrawCard {
     static id = 'maze-of-illusion';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Dishonor and bow a character if your opponent can\'t guess your dial')
             .condition((context) => context.player.opponent !== undefined)
             .target({

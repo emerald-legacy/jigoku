@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class ExiledGuardian extends DrawCard {
     static id = 'exiled-guardian';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a status token off a character or province')
             .cost(costs.sacrificeSelf())
             .tokenTarget({

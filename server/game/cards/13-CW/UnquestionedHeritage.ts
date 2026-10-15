@@ -6,7 +6,7 @@ import { attach, selectCard } from '../../GameActions/GameActions.js';
 class UnquestionedHeritage extends DrawCard {
     static id = 'unquestioned-heritage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move an attachment')
             .condition((context) => context.game.rings.air.isConsideredClaimed(context.player))
             .target({

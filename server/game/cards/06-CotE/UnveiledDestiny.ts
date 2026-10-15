@@ -4,7 +4,7 @@ import { addElementAsAttacker } from '../../effects.js';
 class UnveiledDestiny extends DrawCard {
     static id = 'unveiled-destiny';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !!context.player.role,
             effect: addElementAsAttacker((card) => card.controller.role?.getElement() ?? [])

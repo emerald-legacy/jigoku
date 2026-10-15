@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class HonestChallenger extends DrawCard {
     static id = 'honest-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.composure({
             effect: modifyMilitarySkill(2)
         });

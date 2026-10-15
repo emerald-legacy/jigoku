@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Onibi extends DrawCard {
     static id = 'onibi';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Steal a fate')
             .when({
                 onCharacterEntersPlay: (event, context) =>

@@ -6,7 +6,7 @@ import { Location } from '../../Constants.js';
 class UtakuKamoko extends DrawCard {
     static id = 'utaku-kamoko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDishonored,
             effect: honorStatusDoesNotModifySkill()

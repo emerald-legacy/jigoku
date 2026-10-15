@@ -5,7 +5,7 @@ import { honor, multiple, placeFate } from '../../GameActions/GameActions.js';
 export default class CycleOfVengeance extends ProvinceCard {
     static id = 'cycle-of-vengeance';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Place a fate on a character then honor it')
             .when({
                 onBreakProvince: (event, context) => event.card === context.source

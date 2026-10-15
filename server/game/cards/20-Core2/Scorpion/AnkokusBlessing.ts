@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AnkokusBlessing extends DrawCard {
     static id = 'ankoku-s-blessing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain 2 fate and draw 2 cards')
             .phase(Phase.Fate)
             .cost(costs.discardCard({

@@ -5,7 +5,7 @@ import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 export default class PalaceOfKnowledge extends StrongholdCard {
     static id = 'palace-of-knowledge';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve another ring effect')
             .when({
                 onResolveRingElement: (event, context) =>

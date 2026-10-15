@@ -6,7 +6,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 export default class AbandoningHonor extends ProvinceCard {
     static id = 'abandoning-honor';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !!context.player.role && context.player.role.hasTrait(Trait.Fire),
             effect: modifyProvinceStrength(2)

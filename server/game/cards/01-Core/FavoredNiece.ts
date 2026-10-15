@@ -6,7 +6,7 @@ import { perRound } from '../../AbilityLimit.js';
 class FavoredNiece extends DrawCard {
     static id = 'favored-niece';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard then draw a card')
             .cost(costs.discardCard({
                 location: Location.Hand,

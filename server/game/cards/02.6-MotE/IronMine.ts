@@ -6,7 +6,7 @@ import { sacrifice } from '../../GameActions/GameActions.js';
 class IronMine extends DrawCard {
     static id = 'iron-mine';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Prevent a character from leaving play')
             .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.type === CardType.Character && event.card.location === Location.PlayArea

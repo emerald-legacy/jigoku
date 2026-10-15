@@ -14,7 +14,7 @@ import { msg } from '../../GameChat.js';
 class DiversionaryManeuver extends DrawCard {
     static id = 'diversionary-maneuver';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move the conflict to another province')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military) && context.player.isAttackingPlayer())
             .target({

@@ -18,7 +18,7 @@ import {
 export default class RetireToTheBrotherhood extends ProvinceCard {
     static id = 'retire-to-the-brotherhood';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Retire characters with no fate')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

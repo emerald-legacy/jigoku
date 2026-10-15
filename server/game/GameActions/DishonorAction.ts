@@ -7,14 +7,14 @@ import type { ActionEvent } from './GameAction.js';
 export type DishonorProperties = CardActionProperties;
 
 export class DishonorAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProperties, EventName.OnCardDishonored, C> {
-    name = 'dishonor';
-    restriction = RestrictionType.Dishonor;
-    eventName = EventName.OnCardDishonored;
-    targetType = [CardType.Character];
-    cost = 'dishonoring {0}';
-    effect = 'dishonor {0}';
+    override name = 'dishonor';
+    override restriction = RestrictionType.Dishonor;
+    override eventName = EventName.OnCardDishonored;
+    override targetType = [CardType.Character];
+    override cost = 'dishonoring {0}';
+    override effect = 'dishonor {0}';
 
-    canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: C): boolean {
         if(card.location !== Location.PlayArea || card.type !== CardType.Character || card.isDishonored) {
             return false;
         } else if(!card.isHonored && !card.checkRestrictions(RestrictionType.ReceiveDishonorToken, context)) {
@@ -23,7 +23,7 @@ export class DishonorAction<C extends AbilityContext = AbilityContext> extends C
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardDishonored, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardDishonored, C>): void {
         event.card.dishonor();
         if(event.card.isDishonored) {
             event.card.game.raiseEvent(EventName.OnStatusTokenGained, {
@@ -33,7 +33,7 @@ export class DishonorAction<C extends AbilityContext = AbilityContext> extends C
         }
     }
 
-    getCostMessage(context: C) {
+    override getCostMessage(context: C) {
         const dishonoredCharacters = context.costs[this.name];
         if(Array.isArray(dishonoredCharacters) && dishonoredCharacters.length === 0) {
             return undefined;

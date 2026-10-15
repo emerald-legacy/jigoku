@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class ShibaTetsu extends DrawCard {
     static id = 'shiba-tetsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain +1/+1')
             .when({
                 onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait(Trait.Spell) && this.game.isDuringConflict()

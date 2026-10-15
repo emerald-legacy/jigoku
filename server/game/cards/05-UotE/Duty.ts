@@ -5,7 +5,7 @@ import { Stage } from '../../Constants.js';
 class Duty extends DrawCard {
     static id = 'duty';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel honor loss')
             .when({
                 onModifyHonor: (event, context) =>

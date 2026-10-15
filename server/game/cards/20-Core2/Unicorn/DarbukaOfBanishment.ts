@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DarbukaOfBanishment extends DrawCard {
     static id = 'darbuka-of-banishment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
             effect: playerCannot({

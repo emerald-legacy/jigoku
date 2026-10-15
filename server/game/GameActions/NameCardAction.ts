@@ -15,18 +15,18 @@ export interface NameCardProperties<C extends AbilityContext = AbilityContext> e
 }
 
 export class NameCardAction<C extends AbilityContext = AbilityContext> extends GameAction<NameCardProperties, EventName.Unnamed, C> {
-    name = 'nameCard';
+    override name = 'nameCard';
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const chooser = resolveChoosingPlayer(context, this.getProperties(context, additionalProperties).player);
         return chooser && chooser !== context.player ? ['have {1} name a card', [chooser]] : ['name a card', []];
     }
 
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         return !!resolveChoosingPlayer(context, this.getProperties(context, additionalProperties).player);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const chooser = resolveChoosingPlayer(context, properties.player);
         if(!chooser) {

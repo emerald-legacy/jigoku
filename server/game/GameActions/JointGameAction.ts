@@ -10,8 +10,8 @@ export interface JointGameProperties extends GameActionProperties {
 }
 
 export class JointGameAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<JointGameProperties, C> {
-    effect = 'do several things';
-    protected requiresAll = true;
+    override effect = 'do several things';
+    protected override requiresAll = true;
 
     constructor(gameActions: GameAction<GameActionProperties, EventName, C>[]) {
         super({ gameActions: gameActions });
@@ -21,7 +21,7 @@ export class JointGameAction<C extends AbilityContext = AbilityContext> extends 
         return properties.gameActions;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         if(this.hasLegalTarget(context, additionalProperties)) {
             for(const gameAction of properties.gameActions) {

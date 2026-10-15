@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class TrueStrikeKenjutsu extends DrawCard {
     static id = 'true-strike-kenjutsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.action('Initiate a military duel', (ability) => ability
                 .initiateDuel(() => ({

@@ -12,7 +12,7 @@ function isEvil(character: BaseCard): boolean {
 export default class KaitoYoshiaki extends DrawCard {
     static id = 'kaito-yoshiaki';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Punish the wicked')
             .target({
                 cardType: CardType.Character,

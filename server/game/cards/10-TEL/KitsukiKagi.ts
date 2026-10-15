@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class KitsukiKagi extends DrawCard {
     static id = 'kitsuki-kagi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Remove cards from the game')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()

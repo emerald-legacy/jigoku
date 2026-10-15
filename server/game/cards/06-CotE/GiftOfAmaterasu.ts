@@ -5,7 +5,7 @@ import { CardType, Players } from '../../Constants.js';
 class GiftofAmaterasu extends DrawCard {
     static id = 'gift-of-amaterasu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && (event.conflict.skillDifference ?? 0) >= 5

@@ -9,7 +9,7 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
     return class TempleOfFortuneX extends ProvinceCard {
         static id = id;
 
-        setupCardAbilities() {
+        override setupCardAbilities() {
             this.persistentEffect({
                 condition: () => isRingClaimed(this, elementKeys[0]),
                 effect: modifyProvinceStrength(2)
@@ -26,7 +26,7 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
                 }));
         }
 
-        getPrintedElementSymbols() {
+        override getPrintedElementSymbols() {
             const symbols = super.getPrintedElementSymbols();
             symbols.push({ element, key: elementKeys[0], prettyName: 'Strength Bonus' });
             symbols.push({ element, key: elementKeys[1], prettyName: 'Fate Ring' });

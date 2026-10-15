@@ -5,7 +5,7 @@ import { ConflictType, Trait } from '../../../Constants.js';
 export default class Sashimono extends DrawCard {
     static id = 'sashimono';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({ myControl: true, trait: Trait.Bushi });
 
         this.whileAttached({

@@ -13,12 +13,12 @@ export interface TransferHonorProperties extends PlayerActionProperties {
 }
 
 export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferHonorProperties, EventName.OnTransferHonor, C, 'amount' | 'afterBid'> {
-    name = 'takeHonor';
-    restriction = RestrictionType.TakeHonor;
-    eventName = EventName.OnTransferHonor;
-    defaultProperties = { amount: 1, afterBid: false };
+    override name = 'takeHonor';
+    override restriction = RestrictionType.TakeHonor;
+    override eventName = EventName.OnTransferHonor;
+    override defaultProperties = { amount: 1, afterBid: false };
 
-    defaultTargets(context: C): Player[] {
+    override defaultTargets(context: C): Player[] {
         return this.opponentTargets(context);
     }
 
@@ -32,7 +32,7 @@ export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends 
         return amountToTransfer;
     }
 
-    getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         const opponent = context.player.opponent;
         if(!opponent) {
@@ -42,7 +42,7 @@ export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends 
         return ['giving {1} honor to {2}', [amountToTransfer, opponent]];
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const opponent = context.player.opponent;
         if(!opponent) {
             return ['take {1} honor from {0}', [0]];
@@ -51,11 +51,11 @@ export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends 
         return ['take {1} honor from {0}', [amountToTransfer]];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
+    protected override effectMessageTarget(context: C): MsgArg {
         return context.player.opponent ?? null;
     }
 
-    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { amount } = this.getProperties(context, additionalProperties);
         const gainsHonor = amount > 0;
         if(!gainsHonor) {
@@ -80,14 +80,14 @@ export class TakeHonorAction<C extends AbilityContext = AbilityContext> extends 
         return super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnTransferHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnTransferHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
         const { afterBid, amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.afterBid = afterBid;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnTransferHonor, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnTransferHonor, C>): void {
         const player = event.player;
         const opponent = player.opponent;
         if(!opponent) {

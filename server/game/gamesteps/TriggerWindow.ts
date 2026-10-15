@@ -57,7 +57,7 @@ export class TriggerWindow extends BaseStep {
         }
     }
 
-    continue() {
+    override continue() {
         this.game.currentAbilityWindow = this;
         if(this.eventWindow) {
             this.emitEvents();

@@ -6,7 +6,7 @@ import { CardType, Location, Players } from '../../Constants.js';
 class SpiritcallerProdigy extends DrawCard {
     static id = 'spiritcaller-prodigy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Resurrect a character')
             .cost(costs.sacrificeSelf())
             .target({

@@ -6,7 +6,7 @@ import { honor } from '../../GameActions/GameActions.js';
 export default class KyudenKakita extends StrongholdCard {
     static id = 'kyuden-kakita';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a Character')
             .when({ onDuelFinished: () => true })
             .cost(costs.bowSelf())

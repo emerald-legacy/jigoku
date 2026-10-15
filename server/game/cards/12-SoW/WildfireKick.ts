@@ -6,7 +6,7 @@ import { CardType, Players, Trait } from '../../Constants.js';
 class WildfireKick extends DrawCard {
     static id = 'wildfire-kick';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give opponent\'s characters -2/-2')
             .condition((context) =>
                 !!this.game.currentConflict &&

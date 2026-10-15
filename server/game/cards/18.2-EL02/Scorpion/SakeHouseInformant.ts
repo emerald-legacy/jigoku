@@ -5,7 +5,7 @@ import { FavorType, Trait } from '../../../Constants.js';
 class SakeHouseInformant extends DrawCard {
     static id = 'sake-house-informant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.game.getFavorSide() === FavorType.Military,
             match: (card) => card.hasTrait(Trait.Shinobi),

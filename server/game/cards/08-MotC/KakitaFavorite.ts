@@ -4,7 +4,7 @@ import { modifyPoliticalSkill } from '../../effects.js';
 class KakitaFavorite extends DrawCard {
     static id = 'kakita-favorite';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
                 this.game.currentDuel !== null &&

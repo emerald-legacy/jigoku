@@ -6,7 +6,7 @@ import { flipDynasty, putIntoConflict } from '../../GameActions/GameActions.js';
 class RaiseTheAlarm extends DrawCard {
     static id = 'raise-the-alarm';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Flip a dynasty card', { conflictType: ConflictType.Military })
             .condition((context) => context.player.isDefendingPlayer())
             .target({

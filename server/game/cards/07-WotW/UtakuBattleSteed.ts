@@ -5,7 +5,7 @@ import { ConflictType, Trait } from '../../Constants.js';
 class UtakuBattleSteed extends DrawCard {
     static id = 'utaku-battle-steed';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             faction: 'unicorn'
         });

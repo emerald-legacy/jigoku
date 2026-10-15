@@ -7,7 +7,7 @@ import { CardType, Location, RestrictionScope } from '../../Constants.js';
 class AkodoKaede extends DrawCard {
     static id = 'akodo-kaede';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: immunity({
                 appliesTo: RestrictionScope.OpponentsRingEffects

@@ -5,7 +5,7 @@ import { playerCannot } from '../../effects.js';
 class MasterOfGiseiToshi extends DrawCard {
     static id = 'master-of-gisei-toshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent non-spell events from being played while contesting a ring')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

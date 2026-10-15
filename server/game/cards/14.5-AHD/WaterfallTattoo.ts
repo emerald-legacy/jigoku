@@ -5,7 +5,7 @@ import { addTrait } from '../../effects.js';
 class WaterfallTattoo extends DrawCard {
     static id = 'waterfall-tattoo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

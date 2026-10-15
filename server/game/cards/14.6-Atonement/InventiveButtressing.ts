@@ -5,7 +5,7 @@ import { ProvinceAttachment } from '../ProvinceAttachment.js';
 class InventiveButtressing extends ProvinceAttachment {
     static id = 'inventive-buttressing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(ConflictType.Military),
             targetLocation: Location.Provinces,
@@ -14,7 +14,7 @@ class InventiveButtressing extends ProvinceAttachment {
         });
     }
 
-    protected controllerProvinceOnly(): boolean {
+    protected override controllerProvinceOnly(): boolean {
         return true;
     }
 }

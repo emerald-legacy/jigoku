@@ -6,7 +6,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class MountaintopStatuary extends DrawCard {
     static id = 'mountaintop-statuary';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Move this to stronghold province')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

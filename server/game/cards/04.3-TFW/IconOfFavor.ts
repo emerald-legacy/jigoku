@@ -7,7 +7,7 @@ const elementKey = 'icon-of-favor-fire';
 class IconOfFavor extends DrawCard {
     static id = 'icon-of-favor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => context.player.imperialFavor !== '',
             effect: modifyGlory(1)
@@ -23,7 +23,7 @@ class IconOfFavor extends DrawCard {
             }));
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

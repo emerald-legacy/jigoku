@@ -7,7 +7,7 @@ import { playerChoices } from '../playerChoices.js';
 class JoinTheFray extends DrawCard {
     static id = 'join-the-fray';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Put a character into play from a province', { conflictType: ConflictType.Military })
             .target({
                 name: 'character',

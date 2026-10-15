@@ -8,7 +8,7 @@ import { controlsParticipating } from '../controlsParticipating.js';
 class EsteemedTeaHouse extends DrawCard {
     static id = 'esteemed-tea-house';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Return attachment to owners hand')
             .condition((context) => controlsParticipating(context.player, Trait.Courtier))
             .target({

@@ -6,7 +6,7 @@ import { honor, multiple, ready } from '../../GameActions/GameActions.js';
 class CommonCause extends DrawCard {
     static id = 'common-cause';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready character')
             .cost(costs.sacrifice({ cardType: CardType.Character }))
             .target({

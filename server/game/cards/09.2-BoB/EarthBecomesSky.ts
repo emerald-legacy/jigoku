@@ -4,7 +4,7 @@ import { CardType } from '../../Constants.js';
 class EarthBecomesSky extends DrawCard {
     static id = 'earth-becomes-sky';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow a character that just readied')
             .when({
                 onCardReadied: (event, context) =>

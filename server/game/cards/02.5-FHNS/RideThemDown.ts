@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class RideThemDown extends DrawCard {
     static id = 'ride-them-down';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce province strength')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.discardImperialFavor())

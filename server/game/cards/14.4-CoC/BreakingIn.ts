@@ -8,7 +8,7 @@ import { placeInProvince } from '../../GameActions/GameActions.js';
 export default class BreakingIn extends ProvinceCard {
     static id = 'breaking-in';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Search for a character card')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

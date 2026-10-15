@@ -13,7 +13,7 @@ const elementKeys = {
 class HallowedGround extends DrawCard {
     static id = 'hallowed-ground';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
             condition: (context) => context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player.opponent),
@@ -49,7 +49,7 @@ class HallowedGround extends DrawCard {
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKeys.air,

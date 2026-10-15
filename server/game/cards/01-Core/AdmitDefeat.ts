@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 class AdmitDefeat extends DrawCard {
     static id = 'admit-defeat';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .condition(() => this.game.currentConflict?.getNumberOfParticipantsFor('defender') === 1)
             .target({

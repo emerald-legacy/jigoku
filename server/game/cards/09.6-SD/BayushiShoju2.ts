@@ -5,7 +5,7 @@ import { playerCannot } from '../../effects.js';
 class BayushiShoju2 extends DrawCard {
     static id = 'bayushi-shoju-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
             effect: playerCannot(RestrictionType.HaveImperialFavor)

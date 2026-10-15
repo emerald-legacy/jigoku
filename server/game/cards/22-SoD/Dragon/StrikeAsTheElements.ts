@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class StrikeAsTheElements extends DrawCard {
     static id = 'strike-as-the-elements';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase a character\'s military skill')
             .target({
                 name: 'character',

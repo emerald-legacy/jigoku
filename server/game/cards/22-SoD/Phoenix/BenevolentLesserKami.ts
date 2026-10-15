@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class BenevolentLesserKami extends DrawCard {
     static id = 'benevolent-lesser-kami';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating() &&
                 (context.game.currentConflict?.getConflictProvinces() ?? []).some(

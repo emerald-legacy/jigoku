@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 export default class AboveQuestion extends DrawCard {
     static id = 'above-question';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: cardCannot({
                 cannot: RestrictionType.Target,

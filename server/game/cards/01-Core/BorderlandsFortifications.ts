@@ -6,7 +6,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class BorderlandsFortifications extends DrawCard {
     static id = 'borderlands-fortifications';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch this card with another')
             .target({
                 location: Location.Provinces,

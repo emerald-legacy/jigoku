@@ -4,7 +4,7 @@ import Ring from '../../../Ring.js';
 export default class ReadyForBattle extends DrawCard {
     static id = 'ready-for-battle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Ready a character')
             .when({
                 onCardBowed: (event, context) =>

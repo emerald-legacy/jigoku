@@ -9,7 +9,7 @@ const elementSymbol = { key: 'inventive-mirumoto-water', element: Element.Water 
 class InventiveMirumoto extends DrawCard {
     static id = 'inventive-mirumoto';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Play attachment onto this character')
             .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .target({
@@ -28,7 +28,7 @@ class InventiveMirumoto extends DrawCard {
             .chatText((context) => msg`play ${context.chatTarget()} onto ${context.source}`);
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

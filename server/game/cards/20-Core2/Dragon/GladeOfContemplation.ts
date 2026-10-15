@@ -10,7 +10,7 @@ function cardDifference(context: AbilityContext): number {
 export default class GladeOfContemplation extends ProvinceCard {
     static id = 'glade-of-contemplation';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Draw cards or force the opponent to discard cards')
             .when({
                 onConflictDeclared: (event, context) =>

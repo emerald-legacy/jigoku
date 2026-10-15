@@ -5,7 +5,7 @@ import { Location, CardType, Trait } from '../../Constants.js';
 class YogoKikuyo extends DrawCard {
     static id = 'yogo-kikuyo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel a spell')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

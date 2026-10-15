@@ -5,7 +5,7 @@ import { cardCannot } from '../../effects.js';
 class RingOfBinding extends DrawCard {
     static id = 'ring-of-binding';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => context.game.currentPhase === Phase.Fate && context.player.firstPlayer,
             effect: [

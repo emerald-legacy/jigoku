@@ -4,7 +4,7 @@ import { cannotBeDeclaredAsDefender } from '../../effects.js';
 class AggressiveMoto extends DrawCard {
     static id = 'aggressive-moto';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cannotBeDeclaredAsDefender()
         });

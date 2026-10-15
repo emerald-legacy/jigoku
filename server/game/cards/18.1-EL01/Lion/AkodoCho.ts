@@ -9,7 +9,7 @@ const SELECT = 'SELECT';
 export default class AkodoCho extends DrawCard {
     static id = 'akodo-cho';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow a character')
             .condition((context) =>
                 context.source.attachments.some((attachment) => attachment.hasTrait(Trait.Follower)))

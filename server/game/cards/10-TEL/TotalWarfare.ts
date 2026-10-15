@@ -5,7 +5,7 @@ import { sacrifice } from '../../GameActions/GameActions.js';
 export default class TotalWarfare extends BattlefieldAttachment {
     static id = 'total-warfare';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
 
         this.forcedReaction('Loser sacrifices a character')

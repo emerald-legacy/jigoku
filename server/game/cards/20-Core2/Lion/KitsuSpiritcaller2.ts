@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KitsuSpiritcaller2 extends DrawCard {
     static id = 'kitsu-spiritcaller-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Resurrect a character', { evenFromHome: true })
             .cost(costs.bowSelf())
             .target({

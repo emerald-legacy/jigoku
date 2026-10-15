@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class CivilDiscourse extends DrawCard {
     static id = 'civil-discourse';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,

@@ -7,7 +7,7 @@ import { controlsShugenja } from '../../controlsShugenja.js';
 export default class SerenadeOfAThousandLanterns extends DrawCard {
     static id = 'serenade-of-a-thousand-lanterns';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send characters home')
             .condition((context) => controlsShugenja(context.player))
             .targetCards({

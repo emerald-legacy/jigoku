@@ -72,7 +72,7 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
         return this.heldActions(this.properties.gameAction, context);
     }
 
-    protected actionOverrides(context: AbilityContext): ActionOverrides {
+    protected override actionOverrides(context: AbilityContext): ActionOverrides {
         return { target: context.tokens[this.name] };
     }
 

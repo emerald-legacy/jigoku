@@ -7,7 +7,7 @@ import { CardType, RestrictionScope } from '../../Constants.js';
 class ScholarOfOldRempet extends DrawCard {
     static id = 'scholar-of-old-rempet';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Make character immune to events')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.payHonor(1))

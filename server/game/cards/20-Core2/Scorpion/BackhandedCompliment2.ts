@@ -6,7 +6,7 @@ import { playerChoices } from '../../playerChoices.js';
 export default class BackhandedCompliment2 extends DrawCard {
     static id = 'backhanded-compliment-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Select a player to lose an honor and draw a card')
             .selectFrom({
                 targets: true

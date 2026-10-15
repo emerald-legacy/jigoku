@@ -17,13 +17,13 @@ export enum PlayIntoLocation {
 }
 
 export class PlayCharacterAction extends PlayCardSourceAction {
-    public title = 'Play this character';
+    public override title = 'Play this character';
 
     public constructor(card: DrawCard, private intoLocation = PlayIntoLocation.Any) {
         super(card, [chooseFate(PlayType.PlayFromHand), payReduceableFateCost()]);
     }
 
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
+    public override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
         if(
             !ignoredBlockers.includes(Blocker.WrongPhase) &&
             context.game.currentPhase === Phase.Dynasty &&
@@ -44,7 +44,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         return super.meetsRequirements(context, ignoredBlockers);
     }
 
-    public executeHandler(context: AbilityContext<DrawCard>): void {
+    public override executeHandler(context: AbilityContext<DrawCard>): void {
         const extraFate = getExtraFateWhenPlayed(context.source, context);
         const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         const atHomeHandler = () => {
@@ -85,7 +85,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         return atHomeHandler();
     }
 
-    public isCardPlayed(): boolean {
+    public override isCardPlayed(): boolean {
         return true;
     }
 }

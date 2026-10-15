@@ -13,7 +13,7 @@ function parentCard(context: AbilityContext): BaseCard | null {
 export default class WiseQuartermaster extends DrawCard {
     static id = 'wise-quartermaster';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move an attachment')
             .condition((context) => !context.game.isDuringConflict())
             .target({

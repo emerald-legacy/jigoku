@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IkomaMasterHunter extends DrawCard {
     static id = 'ikoma-master-hunter';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('move in and ready when target joins')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

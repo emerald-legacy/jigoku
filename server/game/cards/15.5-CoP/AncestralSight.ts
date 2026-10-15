@@ -53,7 +53,7 @@ function ancestralSightCost(): Cost<{ ancestralSightCost: DrawCard }> {
 class AncestralSight extends DrawCard {
     static id = 'ancestral-sight';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Shugenja
         });

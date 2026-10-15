@@ -19,7 +19,7 @@ function selfDishonorSelect() {
 export default class NaturesWrath extends DrawCard {
     static id = 'nature-s-wrath';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Dishonor or move home a character')
             .condition((context) =>
                 context.game.isDuringConflict(ConflictType.Military) &&

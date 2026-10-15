@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TheStranger extends DrawCard {
     static id = 'the-stranger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain 1 honor')
             .when({
                 onClaimFavor: (event, context) => event.player === context.player

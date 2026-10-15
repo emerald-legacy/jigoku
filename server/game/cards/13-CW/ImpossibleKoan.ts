@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class ImpossibleKoan extends DrawCard {
     static id = 'impossible-koan';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Make all participating characters have base skills of 1/1')
             .cardLastingEffect((context) => ({
                 target: context.game.findAnyCardsInPlay((card) => card.type === CardType.Character),

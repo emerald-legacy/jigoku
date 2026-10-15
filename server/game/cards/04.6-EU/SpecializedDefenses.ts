@@ -8,7 +8,7 @@ import { isEnumValue } from '../../utils/helpers.js';
 class SpecializedDefenses extends DrawCard {
     static id = 'specialized-defenses';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Double province strength')
             .selectAttackedProvince((context) => ({
                 cardCondition: (card) => card.element.some((element: string) => {

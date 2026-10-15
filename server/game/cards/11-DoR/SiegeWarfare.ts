@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class SiegeWarfare extends DrawCard {
     static id = 'siege-warfare';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give attacked province -2 strength')
             .condition((context) => context.player.isAttackingPlayer() && context.player.getNumberOfHoldingsInPlay() > 0)
             .selectAttackedProvince({

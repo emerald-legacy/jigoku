@@ -15,7 +15,7 @@ import { randomHandCards } from '../../randomHandCards.js';
 export default class TranquilOverlookDojo extends StrongholdCard {
     static id = 'tranquil-overlook-dojo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const limit = perRound(1);
         actionVersion(this, limit, DuelType.Military, 'Initiate a Military duel');
         actionVersion(this, limit, DuelType.Political, 'Initiate a Political duel');

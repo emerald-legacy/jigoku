@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class KakitaToshimoko extends DrawCard {
     static id = 'kakita-toshimoko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Initiate a military duel')
             .when({
                 afterConflict: (event, context) =>

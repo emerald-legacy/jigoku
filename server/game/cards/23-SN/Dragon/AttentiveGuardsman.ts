@@ -5,7 +5,7 @@ import { canOnlyBeDeclaredAsAttackerWithCondition, cardCannot, modifyBothSkills 
 export default class AttentiveGuardsman extends DrawCard {
     static id = 'attentive-guardsman';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: canOnlyBeDeclaredAsAttackerWithCondition((props) => {
                 const { incomingAttackers } = props;

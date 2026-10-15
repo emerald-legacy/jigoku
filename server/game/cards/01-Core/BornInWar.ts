@@ -5,7 +5,7 @@ import { attachmentMilitarySkillModifier } from '../../effects.js';
 class BornInWar extends DrawCard {
     static id = 'born-in-war';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Cavalry
         });

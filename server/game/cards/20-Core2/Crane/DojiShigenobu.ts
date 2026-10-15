@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DojiShigenobu extends DrawCard {
     static id = 'doji-shigenobu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow a character')
             .cost(costs.bow({
                 cardType: CardType.Character,

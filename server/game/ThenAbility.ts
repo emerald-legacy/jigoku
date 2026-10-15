@@ -27,7 +27,7 @@ export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext
 export class ThenAbility extends BaseCardAbility {
     properties: ThenAbilityProperties;
     handler: (context: AbilityContext) => void;
-    cannotTargetFirst = true;
+    override cannotTargetFirst = true;
 
     constructor(card: BaseCard, properties: ThenAbilityProperties) {
         super(card, properties);
@@ -36,7 +36,7 @@ export class ThenAbility extends BaseCardAbility {
         this.handler = properties.handler || this.executeGameActions.bind(this);
     }
 
-    checkGameActionsForPotential(context: AbilityContext): boolean {
+    override checkGameActionsForPotential(context: AbilityContext): boolean {
         if(super.checkGameActionsForPotential(context)) {
             return true;
         } else if(this.gameAction.every((gameAction) => gameAction.isOptional(context)) && this.properties.then) {
@@ -72,7 +72,7 @@ export class ThenAbility extends BaseCardAbility {
         return context;
     }
 
-    displayMessage(context: AbilityContext): void {
+    override displayMessage(context: AbilityContext): void {
         const message = this.properties.message?.(context);
         if(message) {
             this.game.addMessage(message);
@@ -86,7 +86,7 @@ export class ThenAbility extends BaseCardAbility {
         return actions.concat(this.gameAction.map((action) => ({ action, overrides: {} })));
     }
 
-    executeHandler(context: AbilityContext): void {
+    override executeHandler(context: AbilityContext): void {
         this.properties.onResolve?.(context);
         this.handler(context);
         this.game.queueSimpleStep(() => this.game.checkGameState());
@@ -121,7 +121,7 @@ export class ThenAbility extends BaseCardAbility {
         return this.game.openThenEventWindow(events);
     }
 
-    isCardAbility(): boolean {
+    override isCardAbility(): boolean {
         return true;
     }
 }

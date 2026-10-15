@@ -7,7 +7,7 @@ import { playerChoices } from '../../playerChoices.js';
 class DiplomaticHall extends DrawCard {
     static id = 'diplomatic-hall';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Select a player to draw a card', { conflictType: ConflictType.Political })
             .selectFrom({
                 targets: true

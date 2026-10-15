@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 class InSearchOfSelf extends DrawCard {
     static id = 'in-search-of-self';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow attacking character')
             .target({
                 cardType: CardType.Character,

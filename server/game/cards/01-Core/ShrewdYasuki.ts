@@ -5,7 +5,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class ShrewdYasuki extends DrawCard {
     static id = 'shrewd-yasuki';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at top 2 cards of conflict deck')
             .condition((context) => context.player.conflictDeck.length > 0 && context.source.isParticipating() &&
                                   this.game.allCards.some((card) => card.type === CardType.Holding && card.isInProvince() && card.isFaceup()))

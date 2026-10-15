@@ -7,7 +7,7 @@ import { cardLastingEffect, loseHonor, multiple } from '../../GameActions/GameAc
 class SeizeTheMind extends DrawCard {
     static id = 'seize-the-mind';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Take control of a character')
             .target({
                 cardType: CardType.Character,
@@ -30,7 +30,7 @@ class SeizeTheMind extends DrawCard {
             });
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

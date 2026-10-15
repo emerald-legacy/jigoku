@@ -6,7 +6,7 @@ import { playerChoices } from '../playerChoices.js';
 class EndlessPlainsSkirmisher extends DrawCard {
     static id = 'endless-plains-skirmisher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move this character to the conflict')
             .selectFrom({
                 targets: true,

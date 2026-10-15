@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 class IsawaUona extends DrawCard {
     static id = 'isawa-uona';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow a non-unique character in the conflict')
             .when({
                 onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait(Trait.Air) && this.game.isDuringConflict()

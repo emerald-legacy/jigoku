@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class YoungIseZumi extends DrawCard {
     static id = 'young-ise-zumi';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Prevent a ring from being used for a conflict')
             .when({
                 afterConflict: (event, context) =>

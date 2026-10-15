@@ -8,7 +8,7 @@ import { controlsParticipating } from '../controlsParticipating.js';
 class DisdainfulRemark extends DrawCard {
     static id = 'disdainful-remark';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add Province Strength')
             .condition((context) => controlsParticipating(context.player, Trait.Courtier) &&
                                   !!context.player.opponent && context.player.opponent.hand.length > 0)

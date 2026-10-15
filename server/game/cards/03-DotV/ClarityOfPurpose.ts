@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class ClarityOfPurpose extends DrawCard {
     static id = 'clarity-of-purpose';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Character cannot be bowed and doesn\'t bow during political conflicts')
             .target({
                 cardType: CardType.Character,

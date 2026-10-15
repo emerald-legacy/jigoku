@@ -9,7 +9,7 @@ import { FatePhase } from '../../gamesteps/FatePhase.js';
 export default class JurojinsCurse extends DrawCard {
     static id = 'jurojin-s-curse';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedInterrupt('Resolve a second fate phase')
             .when({
                 onPhaseEnded: (event, context) =>

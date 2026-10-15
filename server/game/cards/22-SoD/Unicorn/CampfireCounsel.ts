@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class CampfireCounsel extends DrawCard {
     static id = 'campfire-counsel';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a character')
             .cost(costs.sacrificeSelf())
             .target({

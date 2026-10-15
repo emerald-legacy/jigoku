@@ -5,7 +5,7 @@ import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 export default class MakeshiftWarCamp extends BattlefieldAttachment {
     static id = 'makeshift-war-camp';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
 
         this.persistentEffect({

@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class YogoNorio extends DrawCard {
     static id = 'yogo-norio';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain another political conflict')
             .condition((context) => context.game.currentPhase === Phase.Conflict)
             .cost(costs.sacrifice({

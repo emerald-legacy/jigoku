@@ -7,21 +7,21 @@ import type { ActionEvent } from './GameAction.js';
 export type ReadyProperties = CardActionProperties;
 
 export class ReadyAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ReadyProperties, EventName.OnCardReadied, C> {
-    name = 'ready';
-    restriction = RestrictionType.Ready;
-    eventName = EventName.OnCardReadied;
-    cost = 'readying {0}';
-    effect = 'ready {0}';
-    targetType = [CardType.Character, CardType.Attachment, CardType.Stronghold];
+    override name = 'ready';
+    override restriction = RestrictionType.Ready;
+    override eventName = EventName.OnCardReadied;
+    override cost = 'readying {0}';
+    override effect = 'ready {0}';
+    override targetType = [CardType.Character, CardType.Attachment, CardType.Stronghold];
 
-    canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: C): boolean {
         if((card.location !== Location.PlayArea && card.type !== CardType.Stronghold) || !card.bowed) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardReadied, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardReadied, C>): void {
         event.card.ready();
     }
 }

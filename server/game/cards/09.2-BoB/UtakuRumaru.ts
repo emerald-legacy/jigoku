@@ -7,7 +7,7 @@ import { honor } from '../../GameActions/GameActions.js';
 class UtakuRumaru extends DrawCard {
     static id = 'utaku-rumaru';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.isHonored && card.type === CardType.Character,
             targetController: Players.Self,

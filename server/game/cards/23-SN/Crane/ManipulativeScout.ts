@@ -5,7 +5,7 @@ import { flipDynasty, turnFacedown } from '../../../GameActions/GameActions.js';
 export default class ManipulativeScout extends DrawCard {
     static id = 'manipulative-scout';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Flip a card in a province')
             .target({
                 controller: Players.Any,

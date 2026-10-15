@@ -11,33 +11,33 @@ export interface LoseFateProperties extends PlayerActionProperties {
 }
 
 export class LoseFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, C, 'amount'> {
-    name = 'loseFate';
-    restriction = RestrictionType.SpendFate;
-    eventName = EventName.OnModifyFate;
-    defaultProperties = { amount: 1 };
+    override name = 'loseFate';
+    override restriction = RestrictionType.SpendFate;
+    override eventName = EventName.OnModifyFate;
+    override defaultProperties = { amount: 1 };
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['make {0} lose {1} fate', [this.getProperties(context, additionalProperties).amount]];
     }
 
-    getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['spending {1} fate', [properties.amount]];
     }
 
 
-    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.amount > 0 && player.fate > 0 && super.canAffect(player, context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = -amount;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnModifyFate, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnModifyFate, C>): void {
         event.player.modifyFate(event.amount);
     }
 }

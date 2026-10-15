@@ -5,7 +5,7 @@ import { Location, Players, CardType, Trait } from '../../Constants.js';
 class BenevolentHost extends DrawCard {
     static id = 'benevolent-host';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a Courtier into play')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source

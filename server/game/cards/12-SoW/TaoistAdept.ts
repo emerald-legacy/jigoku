@@ -7,7 +7,7 @@ import type Player from '../../Player.js';
 export default class TaoistAdept extends DrawCard {
     static id = 'taoist-adept';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,

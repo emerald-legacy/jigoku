@@ -4,7 +4,7 @@ import { msg } from '../../GameChat.js';
 class ParagonOfGrace extends DrawCard {
     static id = 'paragon-of-grace';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard opponent\'s card')
             .condition((context) =>
                 context.source.isParticipatingFor(context.player) &&

@@ -6,7 +6,7 @@ import { Location, Duration, Phase, Players } from '../../Constants.js';
 class TradingOnTheSandRoad extends DrawCard {
     static id = 'trading-on-the-sand-road';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Take top 4 cards from both players\' decks')
             .when({
                 onPhaseCreated: (event) => event.phase === Phase.Draw

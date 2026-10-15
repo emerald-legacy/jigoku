@@ -6,7 +6,7 @@ import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class TheMirrorsGaze extends DrawCard {
     static id = 'the-mirror-s-gaze';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             trait: Trait.Shugenja

@@ -8,7 +8,7 @@ import DrawCard from '../../DrawCard.js';
 export default class KakitaDojo extends DrawCard {
     static id = 'kakita-dojo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,

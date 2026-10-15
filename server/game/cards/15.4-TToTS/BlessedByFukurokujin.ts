@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class BlessedByFukurokujin extends DrawCard {
     static id = 'blessed-by-fukurokujin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: cannotReceiveDishonorToken()
         });

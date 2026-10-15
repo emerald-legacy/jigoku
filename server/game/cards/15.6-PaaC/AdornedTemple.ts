@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class AdornedTemple extends DrawCard {
     static id = 'adorned-temple';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw cards')
             .when({
                 onMoveFate: (event, context) => {

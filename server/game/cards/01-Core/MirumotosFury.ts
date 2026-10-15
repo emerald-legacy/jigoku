@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 class MirumotosFury extends DrawCard {
     static id = 'mirumoto-s-fury';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow attacking character')
             .target({
                 cardType: CardType.Character,

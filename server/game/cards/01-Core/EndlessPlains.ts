@@ -6,7 +6,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 export default class EndlessPlains extends ProvinceCard {
     static id = 'endless-plains';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Force opponent to discard a character')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source

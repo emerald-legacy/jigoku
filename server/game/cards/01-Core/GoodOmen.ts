@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class GoodOmen extends DrawCard {
     static id = 'good-omen';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add a fate to a character')
             .playOnlyIf((context) => !!context.player.opponent && context.player.showBid < context.player.opponent.showBid)
             .target({

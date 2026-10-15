@@ -8,7 +8,7 @@ import { setAside } from '../../GameActions/GameActions.js';
 class StolenSecrets extends DrawCard {
     static id = 'stolen-secrets';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Steal one of opponent\'s top 4 cards')
             .condition((context) => this.game.isDuringConflict(ConflictType.Political) && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0)
             .cost(costs.removeFate({

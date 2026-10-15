@@ -29,7 +29,7 @@ function isFriendlyCharacter(context: TriggeredAbilityContext, card: BaseCard) {
 export default class DiligentChaperone extends DrawCard {
     static id = 'diligent-chaperone';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             effect: cannotParticipateAsAttacker()

@@ -6,7 +6,7 @@ import { bow, ready } from '../../../GameActions/GameActions.js';
 export default class FortressAtTheSeaOfFire extends StrongholdCard {
     static id = 'fortress-at-the-sea-of-fire';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow a character')
             .when({ afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player })
             .cost(costs.bowSelf())

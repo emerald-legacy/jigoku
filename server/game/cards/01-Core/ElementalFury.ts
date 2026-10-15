@@ -5,7 +5,7 @@ import { switchConflictElement } from '../../GameActions/GameActions.js';
 export default class ElementalFury extends ProvinceCard {
     static id = 'elemental-fury';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Switch the contested ring')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source && this.game.isDuringConflict()

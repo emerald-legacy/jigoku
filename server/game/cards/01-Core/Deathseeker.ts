@@ -7,7 +7,7 @@ import { injure } from '../../GameActions/GameActions.js';
 class Deathseeker extends DrawCard {
     static id = 'deathseeker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Remove fate/discard character')
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && context.source.isAttacking()

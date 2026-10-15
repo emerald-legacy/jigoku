@@ -84,7 +84,7 @@ function merchantOfCuriositiesCost(): Cost<{ merchantOfCuriositiesCostPaid: bool
 class MerchantOfCuriosities extends DrawCard {
     static id = 'merchant-of-curiosities';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a card to draw a card')
             .cost(costs.discardCard())
             .cost(merchantOfCuriositiesCost())

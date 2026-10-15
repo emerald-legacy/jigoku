@@ -8,7 +8,7 @@ import DrawCard from '../../DrawCard.js';
 export default class ContemplativeWisdom extends DrawCard {
     static id = 'contemplative-wisdom';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.action('Give all abilities to another character', (ability) => ability
                 .cost(costs.returnRings(1))

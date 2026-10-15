@@ -6,8 +6,8 @@ import { EARTH_CHOICE, type GameRules } from '../GameRules.js';
 import { discardAtRandom, draw } from '../GameActions/GameActions.js';
 
 export class EarthRingAbility extends BaseAbility {
-    public title = 'Earth Ring Effect';
-    public cannotTargetFirst = true;
+    public override title = 'Earth Ring Effect';
+    public override cannotTargetFirst = true;
     public defaultPriority = 1; // Default resolution priority when players have ordering switched off
 
     public constructor(
@@ -25,7 +25,7 @@ export class EarthRingAbility extends BaseAbility {
         });
     }
 
-    public executeHandler(context: AbilityContext): void {
+    public override executeHandler(context: AbilityContext): void {
         if(context.select === EARTH_CHOICE.SKIP) {
             context.game.addMessage(msg`${context.player} chooses not to resolve the ${'earth'} ring`);
             this.onResolution(false);

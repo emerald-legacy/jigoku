@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 export default class IllusionaryTerrain extends DrawCard {
     static id = 'illusionary-terrain';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

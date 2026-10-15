@@ -6,7 +6,7 @@ import { Location, Players, CardType } from '../../Constants.js';
 class Rebuild extends DrawCard {
     static id = 'rebuild';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put a holding into play from your discard')
             .cost(costs.shuffleIntoDeck({
                 location: Location.Provinces,

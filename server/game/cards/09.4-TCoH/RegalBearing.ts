@@ -9,7 +9,7 @@ import { controlsParticipating } from '../controlsParticipating.js';
 class RegalBearing extends DrawCard {
     static id = 'regal-bearing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Lower bid and draw bid difference as cards')
             .condition((context) => context.game.isDuringConflict(ConflictType.Political) &&
                 !!context.player.opponent &&

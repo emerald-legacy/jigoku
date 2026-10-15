@@ -6,7 +6,7 @@ import { Players, CardType } from '../../Constants.js';
 class HirumaSignaller extends DrawCard {
     static id = 'hiruma-signaller';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Sacrifice this card to ready and move a character to the conflict')
             .condition((context) => context.source.isDefending())
             .cost(costs.sacrificeSelf())

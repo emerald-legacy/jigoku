@@ -8,7 +8,7 @@ import { Location } from '../../Constants.js';
 class SpeakToTheHeart extends DrawCard {
     static id = 'speak-to-the-heart';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('give +1 political to a character for each faceup province')
             .target({
                 cardCondition: (card) => card.isFaction('unicorn')

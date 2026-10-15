@@ -31,15 +31,15 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
     C,
     'activePromptTitle' | 'tokenCondition' | 'singleToken' | 'subActionProperties'
 > {
-    name = 'selectToken';
-    defaultProperties = {
+    override name = 'selectToken';
+    override defaultProperties = {
         activePromptTitle: 'Which token do you wish to select?',
         tokenCondition: () => true,
         singleToken: true,
         subActionProperties: (tokens: StatusToken | StatusToken[]) => ({ target: tokens })
     };
 
-    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { chatText } = this.getProperties(context, additionalProperties);
         if(chatText) {
             return chatText(context);
@@ -47,7 +47,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         return super.getEffectMessage(context, additionalProperties);
     }
 
-    protected effectMessage(): MessageArgs {
+    protected override effectMessage(): MessageArgs {
         return ['choose a status token for {0}', []];
     }
 
@@ -57,7 +57,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         return card ? Object.assign(properties, { card }) : null;
     }
 
-    canAffect(token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.resolveProperties(context, additionalProperties);
         if(!properties) {
             return false;
@@ -75,7 +75,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         );
     }
 
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.resolveProperties(context, additionalProperties);
         if(!properties) {
             return false;
@@ -83,7 +83,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         return properties.card.statusTokens.some((token) => this.canAffect(token, context, additionalProperties));
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.resolveProperties(context, additionalProperties);
         if(!properties) {
             return;
@@ -133,7 +133,7 @@ export class SelectTokenAction<C extends AbilityContext = AbilityContext> extend
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = super.getProperties(context, additionalProperties);
         return !!properties.targets && isChosenByAbilityPlayer(context, properties.player);
     }

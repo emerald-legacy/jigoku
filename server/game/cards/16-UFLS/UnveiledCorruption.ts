@@ -6,7 +6,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 class UnveiledCorruption extends DrawCard {
     static id = 'unveiled-corruption';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Force opponent to discard cards to match your hand size')
             .cost(costs.taint({ cardCondition: (card) => {
                 return card.type === CardType.Province && !(card instanceof ProvinceCard && card.isBroken);

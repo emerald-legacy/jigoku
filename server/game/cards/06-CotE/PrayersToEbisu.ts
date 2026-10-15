@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class PrayersToEbisu extends DrawCard {
     static id = 'prayers-to-ebisu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Re-balance honor and draw a card')
             .loseHonor((context) => ({
                 target: context.game.getPlayers().filter((player) => player.honor >= 19),

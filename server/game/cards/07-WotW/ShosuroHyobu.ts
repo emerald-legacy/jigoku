@@ -5,7 +5,7 @@ import { CardType, Location } from '../../Constants.js';
 class ShosuroHyobu extends DrawCard {
     static id = 'shosuro-hyobu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Dishonor a character')
             .when({
                 onCardsDiscardedFromHand: (event, context) =>

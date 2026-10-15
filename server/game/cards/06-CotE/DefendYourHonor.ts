@@ -5,7 +5,7 @@ import { CardType, DuelType } from '../../Constants.js';
 class DefendYourHonor extends DrawCard {
     static id = 'defend-your-honor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Initiate a military duel')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

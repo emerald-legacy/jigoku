@@ -5,7 +5,7 @@ import { selectRing, switchConflictElement, switchConflictType } from '../../Gam
 export default class KuroiMori extends ProvinceCard {
     static id = 'kuroi-mori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch the conflict type or ring')
             .select({
                 'Switch the contested ring': selectRing({
@@ -19,7 +19,7 @@ export default class KuroiMori extends ProvinceCard {
             .chatText((context) => msg`${context.select.toLowerCase()}`);
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 export default class IsawaMoriSeido extends StrongholdCard {
     static id = 'isawa-mori-seido';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow this stronghold')
             .cost(costs.bowSelf())
             .target({

@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class DiscipleOfDeception extends DrawCard {
     static id = 'disciple-of-deception';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Treat a status token as a different token')
             .condition((context) => context.game.isDuringConflict())
             .tokenTarget({

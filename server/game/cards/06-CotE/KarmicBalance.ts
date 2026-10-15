@@ -4,7 +4,7 @@ import { Location } from '../../Constants.js';
 class KarmicBalance extends DrawCard {
     static id = 'karmic-balance';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Shuffle and draw 4 new conflict cards')
             .playOnlyIf((context) => !!context.player.opponent && context.player.showBid === context.player.opponent.showBid)
             .moveCard((context) => ({

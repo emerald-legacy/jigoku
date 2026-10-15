@@ -5,7 +5,7 @@ import { dishonorProvince, reveal, sequential } from '../../GameActions/GameActi
 class Overrun extends DrawCard {
     static id = 'overrun';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Blank and reveal a province')
             .when({
                 onBreakProvince: (event, context) => event.card.owner !== context.player

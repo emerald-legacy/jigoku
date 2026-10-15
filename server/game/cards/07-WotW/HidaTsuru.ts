@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class HidaTsuru extends DrawCard {
     static id = 'hida-tsuru';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Give this character +1/+1')
             .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()

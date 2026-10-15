@@ -6,7 +6,7 @@ import { isOpponentsRingOrCardEffect } from '../effectSource.js';
 class RighteousSamurai extends DrawCard {
     static id = 'righteous-samurai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
                 onModifyHonor: (event, context) =>

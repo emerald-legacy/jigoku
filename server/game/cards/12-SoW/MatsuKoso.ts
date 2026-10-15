@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class MatsuKoso extends DrawCard {
     static id = 'matsu-koso';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Lower military skill')
             .condition((context) => context.source.isParticipating())
             .cardLastingEffect((context) => ({

@@ -8,7 +8,7 @@ export class DynastyActionWindow extends ActionWindow {
         super(game, 'Play cards from provinces', 'dynasty');
     }
 
-    activePrompt() {
+    override activePrompt() {
         return {
             menuTitle: 'Click pass when done',
             buttons: super.activePrompt().buttons,
@@ -16,7 +16,7 @@ export class DynastyActionWindow extends ActionWindow {
         };
     }
 
-    pass() {
+    override pass() {
         this.currentPlayer.passDynasty();
 
         if(this.#opponentPassed()) {
@@ -33,7 +33,7 @@ export class DynastyActionWindow extends ActionWindow {
         this.nextPlayer();
     }
 
-    nextPlayer() {
+    override nextPlayer() {
         this.#checkPhaseRestart();
 
         const otherPlayer = this.currentPlayer.opponent;

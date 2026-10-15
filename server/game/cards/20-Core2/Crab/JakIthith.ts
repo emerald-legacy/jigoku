@@ -9,7 +9,7 @@ const ATTACHMENT = 'attachment';
 export default class JakIthith extends DrawCard {
     static id = 'jak-ithith';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
                 immunity({ appliesTo: { trait: Trait.Maho } }),

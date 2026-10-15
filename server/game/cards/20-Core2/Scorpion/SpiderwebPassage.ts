@@ -16,7 +16,7 @@ function shinobiCount(context: AbilityContext): number {
 export default class SpiderwebPassage extends DrawCard {
     static id = 'spiderweb-passage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a participating character with 0 skill')
             .condition((context) => shinobiCount(context) > 0)
             .cost(costs.sacrificeSelf())

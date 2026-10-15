@@ -5,7 +5,7 @@ import { addKeyword, gainAbility } from '../../effects.js';
 class Studious extends DrawCard {
     static id = 'studious';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Scholar
         });

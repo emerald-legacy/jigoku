@@ -4,7 +4,7 @@ import { unlimited } from '../../AbilityLimit.js';
 class WatchCommander extends DrawCard {
     static id = 'watch-commander';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             limit: 1,
             myControl: true

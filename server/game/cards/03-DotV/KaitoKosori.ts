@@ -7,7 +7,7 @@ const elementKey = 'kaito-kosori-air';
 class KaitoKosori extends DrawCard {
     static id = 'kaito-kosori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => {
                 const symbol = this.getCurrentElementSymbol(elementKey);
@@ -19,7 +19,7 @@ class KaitoKosori extends DrawCard {
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

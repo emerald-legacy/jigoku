@@ -7,7 +7,7 @@ import { CardType, Players, RestrictionType, RestrictionScope } from '../../Cons
 class DirectingTheBattle extends DrawCard {
     static id = 'directing-the-battle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Direct the Battle')
             .target({
                 name: 'character',

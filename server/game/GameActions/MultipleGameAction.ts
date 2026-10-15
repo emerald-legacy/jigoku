@@ -18,7 +18,7 @@ export class MultipleGameAction<C extends AbilityContext = AbilityContext> exten
         super(typeof gameActions === 'function' ? (context: C) => ({ gameActions: gameActions(context) }) : { gameActions });
     }
 
-    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { properties: { gameActions }, overrides } = this.getCompositeProperties(context, additionalProperties);
         const legal = gameActions.filter((action) => action.hasLegalTarget(context, overrides));
         return joinEffectMessages(context, legal.map((action) => ({ action, overrides })));
@@ -28,7 +28,7 @@ export class MultipleGameAction<C extends AbilityContext = AbilityContext> exten
         return properties.gameActions;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {

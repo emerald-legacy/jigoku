@@ -26,7 +26,7 @@ function giveOneCard(player: Player | undefined, activePromptTitle: string): Dec
 export default class PatronOfTheTradingCouncil extends DrawCard {
     static id = 'patron-of-the-trading-council';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
                 (context.game.currentConflict?.getNumberOfParticipants((card) =>

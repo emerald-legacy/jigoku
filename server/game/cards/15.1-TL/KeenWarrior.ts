@@ -5,7 +5,7 @@ import { Location } from '../../Constants.js';
 class KeenWarrior extends DrawCard {
     static id = 'keen-warrior';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw 2 cards and return 1')
             .when({
                 onCardRevealed: (event, context) =>

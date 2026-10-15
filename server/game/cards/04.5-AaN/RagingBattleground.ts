@@ -5,7 +5,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 export default class RagingBattleground extends ProvinceCard {
     static id = 'raging-battleground';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Choose a character to discard')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

@@ -4,7 +4,7 @@ import { canContributeGloryWhileBowed } from '../../../effects.js';
 export default class MiyaKogara extends DrawCard {
     static id = 'miya-kogara';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: canContributeGloryWhileBowed()
         });

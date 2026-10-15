@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class PerfectGuest extends DrawCard {
     static id = 'perfect-guest';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Give control of this character')
             .condition((context) => context.player.opponent !== undefined)
             .cardLastingEffect((context) => ({

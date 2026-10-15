@@ -7,7 +7,7 @@ import { draw, returnToDeck, selectCard, sequential } from '../../../GameActions
 class FieldOfTheFallen extends DrawCard {
     static id = 'field-of-the-fallen';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard then draw a card')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .cost(costs.discardCard({ location: Location.Hand }))

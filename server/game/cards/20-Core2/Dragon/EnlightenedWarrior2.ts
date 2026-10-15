@@ -3,7 +3,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class EnlightenedWarrior2 extends DrawCard {
     static id = 'enlightened-warrior-2';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Gain 1 fate')
             .when({
                 onConflictDeclared: (event, context) =>

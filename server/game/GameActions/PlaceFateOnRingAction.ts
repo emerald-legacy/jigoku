@@ -15,16 +15,16 @@ export interface PlaceFateRingProperties extends RingActionProperties {
 }
 
 export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, C, 'amount'> {
-    name = 'placeFateOnRing';
-    restriction = RestrictionType.PlaceFate;
-    eventName = EventName.OnMoveFate;
-    defaultProperties = { amount: 1 };
-    getCostMessage(context: C): MessageArgs {
+    override name = 'placeFateOnRing';
+    override restriction = RestrictionType.PlaceFate;
+    override eventName = EventName.OnMoveFate;
+    override defaultProperties = { amount: 1 };
+    override getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['placing {1} fate on the {0}', [properties.amount]];
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.origin) {
             return ['move {1} fate from {2} to {0}', [properties.amount, properties.origin]];
@@ -32,7 +32,7 @@ export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> ex
         return ['place {1} fate on {0}', [properties.amount]];
     }
 
-    canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(
             properties.origin &&
@@ -47,7 +47,7 @@ export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> ex
         return properties.amount > 0 && super.canAffect(ring, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         event.fate = amount;
         event.origin = origin;
@@ -55,11 +55,11 @@ export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> ex
         event.recipient = ring;
     }
 
-    checkEventCondition(event: ActionEvent<EventName.OnMoveFate, C>): boolean {
+    override checkEventCondition(event: ActionEvent<EventName.OnMoveFate, C>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
@@ -70,7 +70,7 @@ export class PlaceFateOnRingAction<C extends AbilityContext = AbilityContext> ex
         );
     }
 
-    eventHandler(event: ActionEvent<EventName.OnMoveFate, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnMoveFate, C>): void {
         this.moveFateEventHandler(event);
     }
 }

@@ -4,7 +4,7 @@ import { BaseOni } from './_BaseOni.js';
 export default class OnikageRider extends BaseOni {
     static id = 'onikage-rider';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Discard cards in provinces')
             .when({

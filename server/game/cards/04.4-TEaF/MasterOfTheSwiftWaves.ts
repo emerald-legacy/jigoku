@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class MasterOfTheSwiftWaves extends DrawCard {
     static id = 'master-of-the-swift-waves';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch 2 characters you control')
             .target({
                 name: 'characterInConflict',

@@ -5,7 +5,7 @@ import { Phase, CardType } from '../../Constants.js';
 class KuniLaboratory extends DrawCard {
     static id = 'kuni-laboratory';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.type === CardType.Character,
             effect: modifyBothSkills(1)

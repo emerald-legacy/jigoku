@@ -6,7 +6,7 @@ import { draw, returnToDeck, sequential } from '../../GameActions/GameActions.js
 class InspiredVisionary extends DrawCard {
     static id = 'inspired-visionary';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow to discard an attachment')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Fate

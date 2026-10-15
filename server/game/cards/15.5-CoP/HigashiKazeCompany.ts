@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class HigashiKazeCompany extends DrawCard {
     static id = 'higashi-kaze-company';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent a character from bowing')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()

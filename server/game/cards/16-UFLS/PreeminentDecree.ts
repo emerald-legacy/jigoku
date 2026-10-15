@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class PreeminentDecree extends DrawCard {
     static id = 'preeminent-decree';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give all participating characters a political penalty')
             .target({
                 cardType: CardType.Character,

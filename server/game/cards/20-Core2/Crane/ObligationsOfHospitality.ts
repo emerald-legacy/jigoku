@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ObligationsOfHospitality extends DrawCard {
     static id = 'obligations-of-hospitality';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

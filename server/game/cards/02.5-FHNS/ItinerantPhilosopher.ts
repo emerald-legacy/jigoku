@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class ItinerantPhilosopher extends DrawCard {
     static id = 'itinerant-philosopher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .condition((context) => context.source.isParticipating())
             .cost(costs.discardImperialFavor())

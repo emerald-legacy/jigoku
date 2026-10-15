@@ -9,7 +9,7 @@ import type BaseCard from '../../../BaseCard.js';
 export default class BayushiGichin extends DrawCard {
     static id = 'bayushi-gichin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.duelStrike('Poison a character', (duel, context) => duel.participants.includes(context.source))
             .gameAction(sequential((context) => {
                 let character: BaseCard | undefined;

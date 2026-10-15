@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class MirumotoRikitaro extends DrawCard {
     static id = 'mirumoto-rikitaro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Reduce cost of next attachment')
             .when({
                 onAbilityResolverInitiated: (event, context) => {

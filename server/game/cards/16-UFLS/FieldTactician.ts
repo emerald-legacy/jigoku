@@ -6,7 +6,7 @@ import { handler } from '../../GameActions/GameActions.js';
 class FieldTactician extends DrawCard {
     static id = 'field-tactician';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Return a card to a deck')
             .when({
                 onCardPlayed: (event, context) => event.card.hasTrait(Trait.Tactic) && event.player === context.player

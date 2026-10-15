@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class WayOfTheChrysanthemum extends DrawCard {
     static id = 'way-of-the-chrysanthemum';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain extra honor after bid')
             .when({
                 onTransferHonor: (event, context) => event.player === context.player.opponent && event.afterBid

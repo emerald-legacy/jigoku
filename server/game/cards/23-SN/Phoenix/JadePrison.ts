@@ -6,7 +6,7 @@ import { controlsShugenja } from '../../controlsShugenja.js';
 export default class JadePrison extends DrawCard {
     static id = 'jade-prison';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

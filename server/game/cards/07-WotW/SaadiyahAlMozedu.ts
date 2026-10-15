@@ -6,7 +6,7 @@ import { Location, CardType } from '../../Constants.js';
 class SaadiyahAlMozedu extends DrawCard {
     static id = 'saadiyah-al-mozedu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Flip province facedown')
             .cost(costs.discardCard({
                 location: Location.Hand

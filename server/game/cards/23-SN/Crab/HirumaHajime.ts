@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class HirumaHajime extends DrawCard {
     static id = 'hiruma-hajime';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         moveCardInProvinceAction(this)
             .afterwardsIf((context) => context.targets.province.isConflictProvince() &&
                 context.targets.cardInProvince.type !== CardType.Attachment &&

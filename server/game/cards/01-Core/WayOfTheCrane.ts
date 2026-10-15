@@ -5,7 +5,7 @@ import { honor } from '../../GameActions/GameActions.js';
 class WayOfTheCrane extends DrawCard {
     static id = 'way-of-the-crane';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor a character')
             .target({
                 cardType: CardType.Character,

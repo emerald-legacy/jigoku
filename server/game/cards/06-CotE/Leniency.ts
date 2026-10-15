@@ -5,7 +5,7 @@ import { cancel, putIntoPlay } from '../../GameActions/GameActions.js';
 class Leniency extends DrawCard {
     static id = 'leniency';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Put a two cost or lower character into play instead of resolving the ring effects')
             .when({
                 onResolveRingElement: (event, context) => event.player === context.player

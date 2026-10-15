@@ -29,11 +29,11 @@ export class LeavesPlayKeywordAbility extends TriggeredAbility<DrawCard> {
         });
     }
 
-    isTriggeredAbility() {
+    override isTriggeredAbility() {
         return false;
     }
 
-    isKeywordAbility() {
+    override isKeywordAbility() {
         return true;
     }
 }

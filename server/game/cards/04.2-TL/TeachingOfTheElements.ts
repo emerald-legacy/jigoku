@@ -5,7 +5,7 @@ import { countClaimedRings } from '../claimedRings.js';
 export default class TeachingsOfTheElements extends ProvinceCard {
     static id = 'teachings-of-the-elements';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyProvinceStrength(() => countClaimedRings(this.game))
         });

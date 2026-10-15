@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class EminentHistorian extends DrawCard {
     static id = 'eminent-historian';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cannotReceiveDishonorToken()
         });

@@ -8,7 +8,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 export default class TheWeightOfDuty extends DrawCard {
     static id = 'the-weight-of-duty';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
                 onCardAbilityTriggered: (event, context) =>

@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class StoicGunso extends DrawCard {
     static id = 'stoic-gunso';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Sacrifice a character for +3/+0')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.sacrifice({ cardType: CardType.Character }))

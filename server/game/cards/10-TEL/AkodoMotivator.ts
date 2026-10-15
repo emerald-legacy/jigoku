@@ -4,7 +4,7 @@ import { isOpponentsRingOrCardEffect } from '../effectSource.js';
 class AkodoMotivator extends DrawCard {
     static id = 'akodo-motivator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Opponent discards an equal number of cards at random')
             .when({
                 onCardsDiscardedFromHand: (event, context) =>

@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class Infiltrator extends DrawCard {
     static id = 'infiltrator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => !!context.player.opponent && context.player.showBid > context.player.opponent.showBid);
 
         this.action('Look at the top card of an opponent\'s deck and play or discard it')

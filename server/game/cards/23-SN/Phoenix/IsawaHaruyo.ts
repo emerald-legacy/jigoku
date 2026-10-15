@@ -6,7 +6,7 @@ import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
 export default class IsawaHaruyo extends DrawCard {
     static id = 'isawa-haruyo';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Discard a card')
             .condition((context) => context.source.isDefending() && context.player.opponent !== undefined)
             .selectAttackedProvince((context) => ({

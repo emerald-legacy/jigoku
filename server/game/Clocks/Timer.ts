@@ -3,10 +3,10 @@ import { Clock, type Mode } from './Clock.js';
 import type { ClockInterface } from './types.js';
 
 export class Timer extends Clock implements ClockInterface {
-    mode: Mode = 'down';
-    name = 'Timer';
+    override mode: Mode = 'down';
+    override name = 'Timer';
 
-    protected timeRanOut() {
+    protected override timeRanOut() {
         this.player.game.addMessage(msg`${this.player}'s timer has expired`);
     }
 }

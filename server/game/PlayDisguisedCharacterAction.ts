@@ -51,7 +51,7 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayIntoLocation) {
 }
 
 class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
-    canPay(context: AbilityContext<DrawCard>) {
+    override canPay(context: AbilityContext<DrawCard>) {
         const maxCharacterCost = Math.max(
             ...context.player.cardsInPlay.map((card) =>
                 context.source.canDisguise(card, context, false) ? (card.getCost() ?? 0) : 0
@@ -63,7 +63,7 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
         );
     }
 
-    getReducedCost(context: AbilityContext<DrawCard>) {
+    override getReducedCost(context: AbilityContext<DrawCard>) {
         const replaced = chosenCharacter(context);
         if(replaced) {
             return Math.max(super.getReducedCost(context) - (replaced.getCost() ?? 0), 0);
@@ -73,7 +73,7 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
 }
 
 export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
-    public title = 'Play this character with Disguise';
+    public override title = 'Play this character with Disguise';
 
     constructor(
         card: DrawCard,
@@ -82,7 +82,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         super(card, [ChooseDisguisedCharacterCost(intoLocation), new DisguisedReduceableFateCost(false)]);
     }
 
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
+    public override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
         if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Conflict) {
             return Blocker.WrongPhase;
         }
@@ -96,7 +96,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         return super.meetsRequirements(context, ignoredBlockers);
     }
 
-    public executeHandler(context: AbilityContext<DrawCard>) {
+    public override executeHandler(context: AbilityContext<DrawCard>) {
         const extraFate = getExtraFateWhenPlayed(context.source, context);
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
         const events: Event[] = [createCardPlayedEvent(context, context.source, context.playType)];
@@ -156,11 +156,11 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         });
     }
 
-    public isCardPlayed() {
+    public override isCardPlayed() {
         return true;
     }
 
-    public isKeywordAbility() {
+    public override isKeywordAbility() {
         return true;
     }
 }

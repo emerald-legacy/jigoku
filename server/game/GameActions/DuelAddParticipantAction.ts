@@ -12,14 +12,14 @@ export interface DuelAddParticipantProperties extends CardActionProperties {
 }
 
 export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DuelAddParticipantProperties, EventName.OnAddDuelParticipant, C> {
-    name = 'duelAddParticipant';
-    eventName = EventName.OnAddDuelParticipant;
+    override name = 'duelAddParticipant';
+    override eventName = EventName.OnAddDuelParticipant;
 
-    protected effectMessage(): MessageArgs {
+    protected override effectMessage(): MessageArgs {
         return ['extend the duel challenge to {0}', []];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
 
         if(card.type !== CardType.Character) {
@@ -36,13 +36,13 @@ export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext>
         return properties.duel.canAddToDuel(card, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnAddDuelParticipant, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnAddDuelParticipant, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { duel } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.duel = duel;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnAddDuelParticipant, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnAddDuelParticipant, C>): void {
         event.duel.addTargetToDuel(event.card);
     }
 }

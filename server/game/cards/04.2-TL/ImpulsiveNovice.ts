@@ -11,14 +11,14 @@ const elementSymbols = [
 class ImpulsiveNovice extends DrawCard {
     static id = 'impulsive-novice';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
             effect: modifyBothSkills(1)
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols(elementSymbols)];
     }
 }

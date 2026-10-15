@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class HirumaPathfinder extends DrawCard {
     static id = 'hiruma-pathfinder';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at a province')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

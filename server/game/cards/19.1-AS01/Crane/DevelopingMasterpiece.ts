@@ -9,7 +9,7 @@ import { randomItem } from '../../../utils/random.js';
 export default class DevelopingMasterpiece extends DrawCard {
     static id = 'developing-masterpiece';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.playOnlyIf((context) => context.game.currentPhase === Phase.Draw);
 
         this.attachmentConditions({

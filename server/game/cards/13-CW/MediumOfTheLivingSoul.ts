@@ -7,7 +7,7 @@ import { AbilityType, CardType, Players } from '../../Constants.js';
 class MediumOfTheLivingSoul extends DrawCard {
     static id = 'medium-of-the-living-soul';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Grant an ability to resolve ring effects')
             .target({
                 cardType: CardType.Character,

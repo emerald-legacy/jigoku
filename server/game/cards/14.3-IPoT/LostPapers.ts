@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 class LostPapers extends DrawCard {
     static id = 'lost-papers';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow a character')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

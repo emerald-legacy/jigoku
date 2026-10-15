@@ -5,7 +5,7 @@ import { chosenDiscard, ready, sequential } from '../../GameActions/GameActions.
 class ForthrightIde extends DrawCard {
     static id = 'forthright-ide';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a character')
             .condition((context) => context.source.isParticipating())
             .target({

@@ -7,20 +7,20 @@ import type { ActionEvent } from './GameAction.js';
 export type DiscardFavorProperties = PlayerActionProperties;
 
 export class LoseImperialFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DiscardFavorProperties, EventName.OnDiscardFavor, C> {
-    name = 'loseImperialFavor';
-    eventName = EventName.OnDiscardFavor;
-    cost = 'discarding the Imperial Favor';
-    effect = 'make {0} lose the Imperial Favor';
+    override name = 'loseImperialFavor';
+    override eventName = EventName.OnDiscardFavor;
+    override cost = 'discarding the Imperial Favor';
+    override effect = 'make {0} lose the Imperial Favor';
 
-    defaultTargets(context: C): Player[] {
+    override defaultTargets(context: C): Player[] {
         return this.opponentTargets(context);
     }
 
-    canAffect(player: Player, context: C): boolean {
+    override canAffect(player: Player, context: C): boolean {
         return !!player.imperialFavor && super.canAffect(player, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnDiscardFavor, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnDiscardFavor, C>): void {
         event.player.loseImperialFavor();
     }
 }

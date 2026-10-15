@@ -5,7 +5,7 @@ import { flipImperialFavor } from '../../../GameActions/GameActions.js';
 class SoshiMika extends DrawCard {
     static id = 'soshi-mika';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('After the conflict phase begins')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

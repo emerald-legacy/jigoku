@@ -11,7 +11,7 @@ function applyFullEffect(duel: ResolvedDuel) {
 export default class TruthIsInTheKilling extends DrawCard {
     static id = 'truth-is-in-the-killing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Initiate a military duel, discarding the loser', { conflictType: ConflictType.Military })
             .initiateDuel(() => ({
                 type: DuelType.Military,

@@ -7,7 +7,7 @@ import { draw, gainFate, sequential } from '../../../GameActions/GameActions.js'
 class KaiuMitsurugi extends DrawCard {
     static id = 'kaiu-mitsurugi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Self,
             match: (card) => card.type === CardType.Holding,

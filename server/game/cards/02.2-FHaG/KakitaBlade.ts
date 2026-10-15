@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 export default class KakitaBlade extends DrawCard {
     static id = 'kakita-blade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: () => !!this.parentCharacter && (this.game.currentDuel?.isInvolvedInAnyDuel(this.parentCharacter) ?? false),
             effect: modifyPoliticalSkill(2)

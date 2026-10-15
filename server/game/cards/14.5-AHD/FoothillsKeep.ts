@@ -5,7 +5,7 @@ import { fateCostToRingToDeclareConflictAgainst } from '../../effects.js';
 export default class FoothillsKeep extends ProvinceCard {
     static id = 'foothills-keep';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,

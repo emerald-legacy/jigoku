@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class GraspOfEarth extends DrawCard {
     static id = 'grasp-of-earth';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             trait: Trait.Shugenja

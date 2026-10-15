@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Sato extends DrawCard {
     static id = 'sato';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({ opponentControlOnly: true });
 
         this.reaction('Force opponent to lose 1 honor')

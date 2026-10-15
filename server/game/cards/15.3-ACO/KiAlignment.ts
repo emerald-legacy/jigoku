@@ -5,7 +5,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class KiAlignment extends DrawCard {
     static id = 'ki-alignment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Search for kihos')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && (event.attackers?.some((card) => card.hasTrait(Trait.Monk)) ?? false),

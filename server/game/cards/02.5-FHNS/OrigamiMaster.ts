@@ -5,7 +5,7 @@ import { Players, CardType, CharacterStatus } from '../../Constants.js';
 class OrigamiMaster extends DrawCard {
     static id = 'origami-master';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move an honor token')
             .condition((context) => context.source.isHonored)
             .target({

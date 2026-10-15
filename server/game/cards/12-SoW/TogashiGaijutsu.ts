@@ -4,7 +4,7 @@ import { CardType, Trait } from '../../Constants.js';
 class TogashiGaijutsu extends DrawCard {
     static id = 'togashi-gaijutsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Ready a character')
             .when({
                 onCardPlayed: (event, context) =>

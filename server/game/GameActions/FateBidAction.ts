@@ -31,19 +31,19 @@ export function queuePostBidSteps(event: PostBid, context: AbilityContext): void
 }
 
 export class FateBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FateBidProperties, EventName.Unnamed, C> {
-    name = 'fateBid';
-    eventName = EventName.Unnamed;
+    override name = 'fateBid';
+    override eventName = EventName.Unnamed;
 
 
-    protected effectMessage(): MessageArgs {
+    protected override effectMessage(): MessageArgs {
         return ['have {0} select an amount of fate from their pool', []];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
+    protected override effectMessageTarget(context: C): MsgArg {
         return [context.player, context.player.opponent];
     }
 
-    addPropertiesToEvent(event: PlayerEvent<EventName.Unnamed, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: PlayerEvent<EventName.Unnamed, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
         const { postBidAction, message } = this.getProperties(
             context,
             additionalProperties
@@ -53,7 +53,7 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
         event.message = message;
     }
 
-    eventHandler(event: ActionEvent<EventName.Unnamed, C>): void {
+    override eventHandler(event: ActionEvent<EventName.Unnamed, C>): void {
         const context = event.context;
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {

@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class RazeToTheGround extends DrawCard {
     static id = 'raze-to-the-ground';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Break the attacked province')
             .when({
                 afterConflict: (event, context) =>

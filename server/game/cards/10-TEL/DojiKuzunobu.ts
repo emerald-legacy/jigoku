@@ -5,7 +5,7 @@ import { Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 class DojiKuzuNobu extends DrawCard {
     static id = 'doji-kuzunobu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,

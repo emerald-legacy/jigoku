@@ -8,7 +8,7 @@ import { attacksAloneWithTrait } from '../../attacksAlone.js';
 export default class RecklessAssault extends DrawCard {
     static id = 'reckless-assault';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Force defenders')
             .when({
                 onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, Trait.Berserker)

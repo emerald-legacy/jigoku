@@ -10,7 +10,7 @@ const CHARACTER = 'character';
 export default class ForDeathAndGlory extends DrawCard {
     static id = 'for-death-and-glory-';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .target({
                 name: CHARACTER,

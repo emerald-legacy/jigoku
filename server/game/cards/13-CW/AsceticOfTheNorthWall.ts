@@ -8,7 +8,7 @@ const elementSymbol = { key: 'ascetic-of-the-north-wall-earth', element: Element
 class AsceticOfTheNorthWall extends DrawCard {
     static id = 'ascetic-of-the-north-wall';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => hasClaimedRing(this, elementSymbol.key, context.player) && context.game.currentPhase !== Phase.Fate,
             effect: [
@@ -18,7 +18,7 @@ class AsceticOfTheNorthWall extends DrawCard {
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

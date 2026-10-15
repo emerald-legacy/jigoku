@@ -9,7 +9,7 @@ import type { TriggeredAbility } from '../TriggeredAbility.js';
 import type { TriggerChoice } from '../TriggeredAbility.js';
 
 export class TriggeredAbilityWindow extends TriggerWindow {
-    complete: boolean;
+    override complete: boolean;
     prevPlayerPassed: boolean;
     resolvedAbilitiesPerPlayer: Record<string, Array<{ ability: TriggeredAbility; event: Event | Event[] }>>;
 
@@ -65,7 +65,7 @@ export class TriggeredAbilityWindow extends TriggerWindow {
         return true;
     }
 
-    filterChoices(): boolean {
+    override filterChoices(): boolean {
         // If both players have passed, close the window
         if(this.complete) {
             return true;
@@ -98,7 +98,7 @@ export class TriggeredAbilityWindow extends TriggerWindow {
         return false;
     }
 
-    postResolutionUpdate(context: TriggerChoice): void {
+    override postResolutionUpdate(context: TriggerChoice): void {
         super.postResolutionUpdate(context);
         if(!this.resolvedAbilitiesPerPlayer[context.player.uuid]) {
             this.resolvedAbilitiesPerPlayer[context.player.uuid] = [];
@@ -110,7 +110,7 @@ export class TriggeredAbilityWindow extends TriggerWindow {
         this.currentPlayer = player.opponent || player;
     }
 
-    getPromptForSelectProperties() {
+    override getPromptForSelectProperties() {
         return Object.assign({}, super.getPromptForSelectProperties(), {
             selectCard: this.requireCurrentPlayer().optionSettings.markCardsUnselectable,
             buttons: [{ text: 'Pass', arg: 'pass' }],
@@ -121,7 +121,7 @@ export class TriggeredAbilityWindow extends TriggerWindow {
         });
     }
 
-    hasAbilityBeenTriggered(context: TriggerChoice): boolean {
+    override hasAbilityBeenTriggered(context: TriggerChoice): boolean {
         let alreadyResolved = false;
         if(Array.isArray(this.resolvedAbilitiesPerPlayer[context.player.uuid])) {
             alreadyResolved = this.resolvedAbilitiesPerPlayer[context.player.uuid].some((resolved) => resolved.ability === context.ability && (context.ability.collectiveTrigger || resolved.event === context.event));

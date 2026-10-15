@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class StewardOfCelestialOrder extends DrawCard {
     static id = 'steward-of-celestial-order';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: canContributeGloryWhileBowed()
         });

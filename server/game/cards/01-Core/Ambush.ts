@@ -5,7 +5,7 @@ import { putIntoConflict } from '../../GameActions/GameActions.js';
 class Ambush extends DrawCard {
     static id = 'ambush';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put characters from your hand or provinces into play')
             .targetCards({
                 activePromptTitle: 'Choose up to two characters',

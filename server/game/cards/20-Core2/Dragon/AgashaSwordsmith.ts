@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AgashaSwordsmith extends DrawCard {
     static id = 'agasha-swordsmith';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Search top 5 cards for attachment')
             .deckSearch({
                 cardsToLookAt: 5,

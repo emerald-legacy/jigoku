@@ -5,7 +5,7 @@ import { modifyBothSkills } from '../../effects.js';
 export default class TheScorpionClanCoup extends ProvinceCard {
     static id = 'the-scorpion-clan-coup';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
                 context.player.isDefendingPlayer() &&

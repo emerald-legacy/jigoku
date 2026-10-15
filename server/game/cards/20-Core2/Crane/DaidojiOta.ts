@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DaidojiOta extends DrawCard {
     static id = 'daidoji-ota';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
             condition: (context) =>

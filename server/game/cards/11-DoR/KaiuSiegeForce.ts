@@ -5,7 +5,7 @@ import { Location, CardType } from '../../Constants.js';
 class KaiuSiegeForce extends DrawCard {
     static id = 'kaiu-siege-force';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready this character')
             .cost(costs.returnToDeck({
                 location: Location.Provinces,

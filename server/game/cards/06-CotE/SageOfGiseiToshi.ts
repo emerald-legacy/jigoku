@@ -5,7 +5,7 @@ import { Players, CardType } from '../../Constants.js';
 class SageOfGiseiToshi extends DrawCard {
     static id = 'sage-of-gisei-toshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move home, then move character home')
             .condition((context) => context.player.isMoreHonorable())
             .target({

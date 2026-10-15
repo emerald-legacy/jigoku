@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class OneWithTheSea extends DrawCard {
     static id = 'one-with-the-sea';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character you control to the conflict')
             .target({
                 cardType: CardType.Character,

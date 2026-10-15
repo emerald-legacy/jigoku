@@ -8,7 +8,7 @@ const elementSymbol = { key: 'isawa-tadaka-earth', element: Element.Earth };
 class IsawaTadaka extends DrawCard {
     static id = 'isawa-tadaka';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
             condition: (context) => context.player.opponent === undefined || !hasClaimedRing(this, elementSymbol.key, context.player.opponent),
@@ -19,7 +19,7 @@ class IsawaTadaka extends DrawCard {
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

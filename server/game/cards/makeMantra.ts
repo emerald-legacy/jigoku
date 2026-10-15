@@ -7,7 +7,7 @@ export function makeMantra(id: string, element: Element, title: string, effect: 
     return class Mantra extends DrawCard {
         static id = id;
 
-        setupCardAbilities() {
+        override setupCardAbilities() {
             this.reaction(title)
                 .when({
                     onConflictDeclared: (event, context) =>

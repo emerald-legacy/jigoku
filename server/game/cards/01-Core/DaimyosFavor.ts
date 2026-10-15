@@ -8,7 +8,7 @@ import { Duration, CardType } from '../../Constants.js';
 class DaimyosFavor extends DrawCard {
     static id = 'daimyo-s-favor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

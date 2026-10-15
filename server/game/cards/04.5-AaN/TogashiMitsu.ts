@@ -5,7 +5,7 @@ import { Location, Players, PlayType, Trait } from '../../Constants.js';
 class TogashiMitsu extends DrawCard {
     static id = 'togashi-mitsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Play a monk, kiho or tattoo card from discard')
             .condition((context) => context.source.isParticipating())
             .target({

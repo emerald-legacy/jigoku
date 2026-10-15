@@ -6,7 +6,7 @@ import { bow } from '../../../GameActions/GameActions.js';
 class RamshackleFacade extends DrawCard {
     static id = 'ramshackle-facade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .cost(costs.sacrifice({
                 cardType: CardType.Holding

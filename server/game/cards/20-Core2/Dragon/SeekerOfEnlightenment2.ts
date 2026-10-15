@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SeekerOfEnlightenment2 extends DrawCard {
     static id = 'seeker-of-enlightenment-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyBothSkills(() => this.getFateOnRings())
         });

@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SigilOfCondemnation extends DrawCard {
     static id = 'sigil-of-condemnation';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Injure attached character', { conflictType: ConflictType.Military })
             .condition((context) =>
                 !!(context.source.parentCharacter &&

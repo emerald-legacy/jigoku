@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class ShinjoAmbusher extends DrawCard {
     static id = 'shinjo-ambusher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Disable a province')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source && context.source.isParticipating()

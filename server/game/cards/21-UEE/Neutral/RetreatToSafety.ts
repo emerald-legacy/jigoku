@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class RetreatToSafety extends DrawCard {
     static id = 'retreat-to-safety';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move characters out of the conflict')
             .targetCards({
                 mode: TargetMode.UpTo,

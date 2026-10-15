@@ -9,7 +9,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CeremonialRobes extends DrawCard {
     static id = 'ceremonial-robes';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyGlory((_character, context) =>
                 context.player.cardsInPlay.reduce(

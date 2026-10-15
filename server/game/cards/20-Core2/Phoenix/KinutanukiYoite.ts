@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KinutanukiYoite extends DrawCard {
     static id = 'kinutanuki-yoite';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard an enemy character')
             .when({
                 onCardPlayed: (event, context) =>

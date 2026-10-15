@@ -5,7 +5,7 @@ import { dishonor } from '../../GameActions/GameActions.js';
 class WayOfTheScorpion extends DrawCard {
     static id = 'way-of-the-scorpion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Dishonor a participating character')
             .target({
                 cardType: CardType.Character,

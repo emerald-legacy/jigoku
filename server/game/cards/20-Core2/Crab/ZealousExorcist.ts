@@ -6,7 +6,7 @@ import { CharactersEnteredThisConflict } from '../../CharactersEnteredThisConfli
 export default class ZealousExorcist extends DrawCard {
     static id = 'zealous-exorcist';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const charactersEntered = new CharactersEnteredThisConflict(this.game);
         this.conflictAction('Remove a character from play')
             .target({

@@ -7,7 +7,7 @@ const elementKey = 'the-pursuit-of-justice-water';
 export default class ThePursuitOfJustice extends ProvinceCard {
     static id = 'the-pursuit-of-justice';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a character')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .target({
@@ -16,7 +16,7 @@ export default class ThePursuitOfJustice extends ProvinceCard {
             }, ready());
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

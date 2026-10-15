@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MeddlingMediator extends DrawCard {
     static id = 'meddling-mediator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Take 1 fate or 1 honor')
             .condition((context) =>
                 context.player.opponent !== undefined &&

@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class ViceProprietor extends DrawCard {
     static id = 'vice-proprietor';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Bow a character')
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
             .cost(costs.dishonorSelf())

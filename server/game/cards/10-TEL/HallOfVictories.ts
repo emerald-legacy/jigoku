@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class HallOfVictories extends DrawCard {
     static id = 'hall-of-victories';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('Gain an honor')
             .when({
                 afterConflict: (event) => !!event.conflict.winner

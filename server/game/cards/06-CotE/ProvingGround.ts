@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class ProvingGround extends DrawCard {
     static id = 'proving-ground';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw a card after winning a duel')
             .when({
                 afterDuel: (event, context) => {

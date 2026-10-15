@@ -7,7 +7,7 @@ import { cardLastingEffect, loseHonor } from '../../GameActions/GameActions.js';
 class Banzai extends DrawCard {
     static id = 'banzai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase a character\'s military skill')
             .target({
                 cardType: CardType.Character,

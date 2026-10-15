@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CavalryReserves extends DrawCard {
     static id = 'cavalry-reserves';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Put Cavalry into play from your discard', { conflictType: ConflictType.Military })
             .targetCards({
                 mode: TargetMode.MaxStat,

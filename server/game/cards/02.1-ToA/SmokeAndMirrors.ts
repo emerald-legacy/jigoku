@@ -5,7 +5,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class SmokeAndMirrors extends DrawCard {
     static id = 'smoke-and-mirrors';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move shinobi home')
             .condition((context) => context.player.isAttackingPlayer())
             .targetCards({

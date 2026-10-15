@@ -5,7 +5,7 @@ import { RestrictionType } from '../../Constants.js';
 class Pragmatism extends DrawCard {
     static id = 'pragmatism';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

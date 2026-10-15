@@ -8,7 +8,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 export default class MountainsAnvilCastle extends StrongholdCard {
     static id = 'mountain-s-anvil-castle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character with attachments bonus skill')
             .condition(() => Boolean(this.game.currentConflict))
             .cost(costs.bowSelf())

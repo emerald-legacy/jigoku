@@ -18,7 +18,7 @@ type TanukiContext = AbilityContext & { fateTaken?: number };
 export default class MischievousTanuki extends DrawCard {
     static id = 'mischievous-tanuki';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.legendary(0);
 
         this.action('Set honor dials')

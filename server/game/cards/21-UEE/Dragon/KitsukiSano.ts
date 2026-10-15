@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KitsukiSano extends DrawCard {
     static id = 'kitsuki-sano';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.duelChallenge('Punish the injust', (duel, context) =>
             duel.participants.includes(context.source) &&
                 duel.participants.some(

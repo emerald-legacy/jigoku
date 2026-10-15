@@ -4,7 +4,7 @@ import { modifyBothSkills } from '../../effects.js';
 class YogoOutcast extends DrawCard {
     static id = 'yogo-outcast';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.player.isLessHonorable(),
             effect: modifyBothSkills(1)

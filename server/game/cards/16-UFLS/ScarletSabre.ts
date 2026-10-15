@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 export default class ScarletSabre extends DrawCard {
     static id = 'scarlet-sabre';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             match: (card) => card.controller.firstPlayer,
             effect: gainAbility.reaction('Make opponent lose 1 fate', (ability) => ability

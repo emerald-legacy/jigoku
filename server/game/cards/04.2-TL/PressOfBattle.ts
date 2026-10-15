@@ -5,7 +5,7 @@ import { CardType, ConflictType } from '../../Constants.js';
 class PressOfBattle extends DrawCard {
     static id = 'press-of-battle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a non-unique character')
             .condition((context) => this.game.isDuringConflict(ConflictType.Military) &&
                                  !!this.game.currentConflict &&

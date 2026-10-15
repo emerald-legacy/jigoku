@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 export default class SevenStingsKeep extends StrongholdCard {
     static id = 'seven-stings-keep';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Force defenders to assign first')
             .when({
                 onConflictOpportunityAvailable: (event, context) => event.player === context.player

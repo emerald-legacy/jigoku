@@ -6,7 +6,7 @@ import { returnToDeck } from '../../GameActions/GameActions.js';
 class HidaTomonatsu extends DrawCard {
     static id = 'hida-tomonatsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Return a character to deck')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()

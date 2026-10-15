@@ -7,7 +7,7 @@ import { Location, Players, CardType, Phase, ConflictType, RestrictionType } fro
 class Stinger extends DrawCard {
     static id = 'stinger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => context.game.currentPhase !== Phase.Fate,
             effect: cardCannot({

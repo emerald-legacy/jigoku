@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class DesertedShrine extends ProvinceCard {
     static id = 'deserted-shrine';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard the top 10 cards of a deck')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

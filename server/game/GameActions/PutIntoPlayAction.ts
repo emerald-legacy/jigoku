@@ -24,13 +24,13 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
     C,
     PutIntoPlayDefaults
 > {
-    name = 'putIntoPlay';
-    restriction = RestrictionType.PutIntoPlay;
-    eventName = EventName.OnCharacterEntersPlay;
-    cost = 'putting {0} into play';
-    targetType = [CardType.Character];
+    override name = 'putIntoPlay';
+    override restriction = RestrictionType.PutIntoPlay;
+    override eventName = EventName.OnCharacterEntersPlay;
+    override cost = 'putting {0} into play';
+    override targetType = [CardType.Character];
     intoConflict: boolean;
-    defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
+    override defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
         status: 'ordinary',
         controller: Players.Self
@@ -51,11 +51,11 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         return context.player;
     }
 
-    protected effectMessage(): MessageArgs {
+    protected override effectMessage(): MessageArgs {
         return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), []];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const contextCopy = context.copy({ source: card });
         const player = this.getPutIntoPlayPlayer(contextCopy);
@@ -95,7 +95,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         return true;
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
@@ -109,7 +109,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const player = this.getPutIntoPlayPlayer(context);
         const card = event.card;

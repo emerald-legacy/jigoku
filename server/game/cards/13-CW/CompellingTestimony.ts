@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class CompellingTestimony extends DrawCard {
     static id = 'compelling-testimony';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give a character -4 political', { conflictType: ConflictType.Political })
             .target({
                 cardType: CardType.Character,

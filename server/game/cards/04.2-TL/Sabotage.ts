@@ -5,7 +5,7 @@ import { Location, Players, CardType, ConflictType } from '../../Constants.js';
 class Sabotage extends DrawCard {
     static id = 'sabotage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Discard a card in a province', { conflictType: ConflictType.Military })
             .target({
                 location: Location.Provinces,

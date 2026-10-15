@@ -8,7 +8,7 @@ import { CardType, Players } from '../../../Constants.js';
 class NightshadeInfiltrator extends DrawCard {
     static id = 'nightshade-infiltrator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give a character -3/-3')
             .cost(costs.dishonorSelf())
             .target({

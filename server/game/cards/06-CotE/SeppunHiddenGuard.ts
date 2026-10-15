@@ -6,7 +6,7 @@ import * as costs from '../../costs/index.js';
 class SeppunHiddenGuard extends DrawCard {
     static id = 'seppun-hidden-guard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel ability')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

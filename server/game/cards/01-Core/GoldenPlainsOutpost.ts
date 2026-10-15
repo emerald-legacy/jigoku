@@ -6,7 +6,7 @@ import { moveToConflict } from '../../GameActions/GameActions.js';
 export default class GoldenPlainsOutpost extends StrongholdCard {
     static id = 'golden-plains-outpost';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a cavalry character to the conflict')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .cost(costs.bowSelf())

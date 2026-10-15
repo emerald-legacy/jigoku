@@ -9,7 +9,7 @@ function getNoOfUnicornCharacters(player: Player) {
 export default class UtakuInfantry extends DrawCard {
     static id = 'utaku-infantry';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             effect: modifyBothSkills((card) => getNoOfUnicornCharacters(card.controller))

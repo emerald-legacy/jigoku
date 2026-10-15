@@ -18,17 +18,17 @@ export interface TakeControlProperties extends CardActionProperties {
 }
 
 export class TakeControlAction<C extends AbilityContext = AbilityContext> extends CardLastingEffectAction<C> {
-    name = 'takeControl';
-    restriction = RestrictionType.TakeControl;
-    effect = 'take control of {0}';
-    defaultProperties = {
+    override name = 'takeControl';
+    override restriction = RestrictionType.TakeControl;
+    override effect = 'take control of {0}';
+    override defaultProperties = {
         duration: Duration.Custom,
         targetLocation: Location.PlayArea,
         canChangeZoneOnce: false,
         canChangeZoneNTimes: 0
     };
 
-    getProperties(context: C, additionalProperties: ActionOverrides = {}) {
+    override getProperties(context: C, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         if(properties.effect.length === 0) {
             properties.effect = [takeControl(context.player)];
@@ -36,11 +36,11 @@ export class TakeControlAction<C extends AbilityContext = AbilityContext> extend
         return properties;
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         return !card.anotherUniqueInPlay(context.player) && super.canAffect(card, context, additionalProperties);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
         event.context.source.applyDurationEffect(properties.duration, Object.assign({ match: event.card }, properties));
     }

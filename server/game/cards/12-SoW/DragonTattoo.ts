@@ -10,7 +10,7 @@ export default class DragonTattoo extends DrawCard {
 
     private cardPlayed = true;
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({ myControl: true });
 
         this.whileAttached({ effect: addTrait(Trait.Tattooed) });

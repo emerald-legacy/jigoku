@@ -11,7 +11,7 @@ function participatingCharacters(player: Player): number {
 export default class ChallengeOnTheFields extends DrawCard {
     static id = 'challenge-on-the-fields';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a military duel')
             .initiateDuel((context) => ({
                 type: DuelType.Military,

@@ -10,7 +10,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AshalanLantern extends DrawCard {
     static id = 'ashalan-lantern';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Play a character from your opponent\'s dynasty deck', { evenFromHome: true })
             .cost(costs.nameCard())
             .gameAction(sequential([

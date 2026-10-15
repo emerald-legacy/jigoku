@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class PeerlessDiscipline extends DrawCard {
     static id = 'peerless-discipline';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give each character +1 military and Bushi')
             .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter(() => true),

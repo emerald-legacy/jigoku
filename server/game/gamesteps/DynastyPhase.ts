@@ -34,7 +34,7 @@ export class DynastyPhase extends PhaseStep {
         this.steps.push(new SimpleStep(game, () => this.#checkForRepeatDynasty()));
     }
 
-    createPhase(): void {
+    override createPhase(): void {
         this.game.conflictRecord = [];
         super.createPhase();
     }

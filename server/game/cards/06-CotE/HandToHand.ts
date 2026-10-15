@@ -5,7 +5,7 @@ import { CardType, ConflictType } from '../../Constants.js';
 class HandToHand extends DrawCard {
     static id = 'hand-to-hand';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Discard an attachment', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Attachment,

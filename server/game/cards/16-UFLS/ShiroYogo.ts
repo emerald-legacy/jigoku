@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 export default class ShiroYogo extends StrongholdCard {
     static id = 'shiro-yogo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Prevent a character from triggering abilities')
             .cost(costs.bowSelf())
             .target({

@@ -5,7 +5,7 @@ import { ConflictType, RestrictionType } from '../../Constants.js';
 export default class HidaYakamo extends DrawCard {
     static id = 'hida-yakamo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => Boolean(context.player.opponent) && context.player.isLessHonorable(),
             effect: cardCannot(RestrictionType.LoseDuels)

@@ -16,7 +16,7 @@ const recruitInChat = {
 export default class AshigaruEncampment extends DrawCard {
     static id = 'ashigaru-encampment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Recruit a fresh Ashigaru')
             .tokenFromTopCard({
                 deck: DeckType.Dynasty,

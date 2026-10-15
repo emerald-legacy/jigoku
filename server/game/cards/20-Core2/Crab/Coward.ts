@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Coward extends DrawCard {
     static id = 'coward-';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.duelChallenge('Dishonor a character')
             .selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',

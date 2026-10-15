@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TwentyFourSteps extends DrawCard {
     static id = 'twenty-four-steps';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Ready a character and move it to the conflict', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

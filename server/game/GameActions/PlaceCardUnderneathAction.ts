@@ -13,27 +13,27 @@ export interface PlaceCardUnderneathProperties extends CardActionProperties {
 }
 
 export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceCardUnderneathProperties, EventName.Unnamed, C, 'hideWhenFaceup'> {
-    name = 'placeCardUnderneath';
-    targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
-    defaultProperties = {
+    override name = 'placeCardUnderneath';
+    override targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
+    override defaultProperties = {
         hideWhenFaceup: true
     };
 
-    getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['placing {0} underneath {1}', [properties.target, properties.destination]];
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['place {0} underneath {1}', [this.getProperties(context, additionalProperties).destination]];
     }
 
-    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { destination } = this.getProperties(context, additionalProperties);
         return !!(destination && destination.uuid) && super.canAffect(card, context);
     }
 
-    eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
         if(card.isDrawCard()) {

@@ -9,7 +9,7 @@ import Ring from '../../../Ring.js';
 export default class DaidojiAhma extends DrawCard {
     static id = 'daidoji-ahma';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.wouldInterrupt('Cancel ability')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

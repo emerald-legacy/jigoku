@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SawakitensBlessing extends DrawCard {
     static id = 'sawakiten-s-blessing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Character doesn\'t bow during resolution', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

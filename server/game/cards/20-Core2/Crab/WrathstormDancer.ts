@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class WrathstormDancer extends DrawCard {
     static id = 'wrathstorm-dancer';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
                 context.source.isParticipating() &&

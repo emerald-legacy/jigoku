@@ -6,7 +6,7 @@ import { CardType, Players, Trait } from '../../../Constants.js';
 class ShosuroBotanist extends DrawCard {
     static id = 'shosuro-botanist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Return attachment to owners hand')
             .target({
                 cardType: CardType.Attachment,

@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class EyesOfTheSerpent extends DrawCard {
     static id = 'eyes-of-the-serpent';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Taint a character')
             .playOnlyIf((context) => controlsShugenja(context.player))
             .cost(costs.chooseOne({

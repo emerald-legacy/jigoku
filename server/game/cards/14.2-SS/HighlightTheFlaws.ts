@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class HighlightTheFlaws extends DrawCard {
     static id = 'highlight-the-flaws';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel conflict province ability')
             .when({
                 onInitiateAbilityEffects: (event) => event.card.type === CardType.Province

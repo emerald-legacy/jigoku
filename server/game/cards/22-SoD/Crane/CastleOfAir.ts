@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CastleOfAir extends DrawCard {
     static id = 'castle-of-air';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Add Province Strength')
             .cost(costs.bow({
                 cardType: CardType.Character,

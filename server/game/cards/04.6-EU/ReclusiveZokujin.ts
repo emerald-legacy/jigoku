@@ -7,7 +7,7 @@ const elementKey = 'reclusive-zokujin-earth';
 class ReclusiveZokujin extends DrawCard {
     static id = 'reclusive-zokujin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             effect: [
@@ -19,7 +19,7 @@ class ReclusiveZokujin extends DrawCard {
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

@@ -14,7 +14,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class BayushiShinobu extends DrawCard {
     static id = 'bayushi-shinobu';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetLocation: Location.Any,

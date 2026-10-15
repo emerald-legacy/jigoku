@@ -6,7 +6,7 @@ import { ConflictType } from '../../Constants.js';
 class MenacingIronWarrior extends DrawCard {
     static id = 'menacing-iron-warrior';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Disable abilities of weaker military characters')
             .condition((context) => this.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
             .cardLastingEffect((context) => ({

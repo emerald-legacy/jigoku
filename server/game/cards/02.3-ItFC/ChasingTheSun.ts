@@ -6,7 +6,7 @@ import { moveConflict } from '../../GameActions/GameActions.js';
 class ChasingTheSun extends DrawCard {
     static id = 'chasing-the-sun';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move the conflict to another eligible province')
             .condition((context) => context.player.isAttackingPlayer())
             .selectCard({

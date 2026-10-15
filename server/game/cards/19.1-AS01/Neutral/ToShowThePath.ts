@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ToShowThePath extends DrawCard {
     static id = 'to-show-the-path';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Target unit costs more fate to target')
             .condition((context) =>
                 context.player.cardsInPlay.some(

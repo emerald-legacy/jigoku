@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShinjoAtagi extends DrawCard {
     static id = 'shinjo-atagi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Set a participating character\'s skills')
             .target({
                 cardType: CardType.Character,

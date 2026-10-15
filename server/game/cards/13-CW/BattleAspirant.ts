@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class BattleAspirant extends DrawCard {
     static id = 'battle-aspirant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Force a character to defend')
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) && this.game.isDuringConflict(ConflictType.Military)

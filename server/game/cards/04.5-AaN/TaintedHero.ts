@@ -6,7 +6,7 @@ import { Duration, CardType } from '../../Constants.js';
 class TaintedHero extends DrawCard {
     static id = 'tainted-hero';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
                 cannotBeDeclaredAsAttacker(),

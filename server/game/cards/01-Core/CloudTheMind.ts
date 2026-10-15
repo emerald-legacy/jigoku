@@ -5,7 +5,7 @@ import { controlsShugenja } from '../controlsShugenja.js';
 class CloudTheMind extends DrawCard {
     static id = 'cloud-the-mind';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
         this.whileAttached({

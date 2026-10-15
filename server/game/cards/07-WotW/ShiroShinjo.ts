@@ -5,7 +5,7 @@ import * as costs from '../../costs/index.js';
 export default class ShiroShinjo extends StrongholdCard {
     static id = 'shiro-shinjo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Collect additional fate')
             .when({
                 onFateCollected: (event, context) => event.player === context.player

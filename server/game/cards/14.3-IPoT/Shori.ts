@@ -5,7 +5,7 @@ import { AbilityType, Players, ConflictType, Trait } from '../../Constants.js';
 class Shori extends DrawCard {
     static id = 'shori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             unique: true,
             faction: 'lion'

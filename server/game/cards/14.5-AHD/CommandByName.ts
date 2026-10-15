@@ -8,7 +8,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class CommandByName extends DrawCard {
     static id = 'command-by-name';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce province strength')
             .condition((context) => context.game.isDuringConflict())
             .cost(costs.payHonor(1))

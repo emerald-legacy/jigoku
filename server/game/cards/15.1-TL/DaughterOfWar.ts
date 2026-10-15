@@ -6,7 +6,7 @@ import { CardType, DeckType} from '../../Constants.js';
 class DaughterOfWar extends DrawCard {
     static id = 'daughter-of-war';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

@@ -6,7 +6,7 @@ import { LimitedPlaysFromOutOfPlay } from '../LimitedPlaysFromOutOfPlay.js';
 export default class MasterTactician extends DrawCard {
     static id = 'master-tactician';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const plays = new LimitedPlaysFromOutOfPlay<this>(this, {
             max: 3,
             active: (context) => context.source.isParticipating() && context.game.isTraitInPlay(Trait.Battlefield),

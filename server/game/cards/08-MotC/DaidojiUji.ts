@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class DaidojiUji extends DrawCard {
     static id = 'daidoji-uji';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isHonored,
             targetLocation: Location.Provinces,

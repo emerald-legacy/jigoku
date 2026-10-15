@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class TogashiTsurumi extends DrawCard {
     static id = 'togashi-tsurumi';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyBothSkills(() => countCardsUnderneath(this))
         });

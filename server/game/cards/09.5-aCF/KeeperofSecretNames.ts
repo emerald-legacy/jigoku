@@ -5,7 +5,7 @@ import { resolveAbility } from '../../GameActions/GameActions.js';
 class KeeperOfSecretNames extends DrawCard {
     static id = 'keeper-of-secret-names';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Resolve the ability on a province')
             .condition(() => this.game.isDuringConflict())
             .target({

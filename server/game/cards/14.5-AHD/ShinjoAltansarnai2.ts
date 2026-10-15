@@ -6,7 +6,7 @@ import { cardMenu, putIntoConflict, sequential, shuffleDeck } from '../../GameAc
 class ShinjoAltansarnai2 extends DrawCard {
     static id = 'shinjo-altansarnai-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put a character into play')
             .condition((context) => this.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
             .gameAction(sequential([

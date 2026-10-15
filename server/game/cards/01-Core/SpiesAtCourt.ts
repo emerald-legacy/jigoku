@@ -6,7 +6,7 @@ import { CardType, ConflictType } from '../../Constants.js';
 class SpiesAtCourt extends DrawCard {
     static id = 'spies-at-court';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Force opponent to discard 2 cards')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Political

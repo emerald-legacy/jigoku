@@ -5,7 +5,7 @@ import { rearrangeDeck } from '../../GameActions/GameActions.js';
 class HirumaKogoe extends DrawCard {
     static id = 'hiruma-kogoe';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Rearrange top 3 cards of your conflict deck')
             .when({
                 onPhaseStarted: (event, context) => event.phase === Phase.Draw && context.player.opponent && context.player.honor < context.player.opponent.honor

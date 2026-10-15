@@ -6,7 +6,7 @@ import { CardType, ConflictType } from '../../Constants.js';
 class Daikyu extends DrawCard {
     static id = 'daikyu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => !!context.source.parentCharacter && !!context.source.controller.firstPlayer,
             effect: modifyMilitarySkill(2)

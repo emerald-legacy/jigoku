@@ -7,7 +7,7 @@ import { conditional, lookAt, moveCard, selectCards, sequential } from '../../Ga
 class Reconnaissance extends DrawCard {
     static id = 'reconnaissance';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at provinces')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

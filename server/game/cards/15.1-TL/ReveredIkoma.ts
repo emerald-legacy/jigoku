@@ -4,7 +4,7 @@ import { cannotReceiveDishonorToken } from '../../effects.js';
 class ReveredIkoma extends DrawCard {
     static id = 'revered-ikoma';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => card === context?.source,
             effect: cannotReceiveDishonorToken()

@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ChainOfCommand extends DrawCard {
     static id = 'chain-of-command';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             location: Location.ConflictDiscardPile,
             effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)

@@ -21,16 +21,16 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
     C,
     'leavingPlayMessage' | 'canEnterConflict'
 > {
-    name = 'createToken';
-    effect = 'create a token';
-    eventName = EventName.OnCreateTokenCharacter;
-    targetType = [CardType.Character, CardType.Holding, CardType.Event];
-    defaultProperties = {
+    override name = 'createToken';
+    override effect = 'create a token';
+    override eventName = EventName.OnCreateTokenCharacter;
+    override targetType = [CardType.Character, CardType.Holding, CardType.Event];
+    override defaultProperties = {
         leavingPlayMessage: '{0} returns to the deep',
         canEnterConflict: () => true
     };
 
-    canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { canEnterConflict } = this.getProperties(context, additionalProperties);
 
         if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince) {
@@ -43,7 +43,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const { token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
         const card = event.card;

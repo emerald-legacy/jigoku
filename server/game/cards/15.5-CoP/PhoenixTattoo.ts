@@ -5,7 +5,7 @@ import { addKeyword, addTrait } from '../../effects.js';
 class PhoenixTattoo extends DrawCard {
     static id = 'phoenix-tattoo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

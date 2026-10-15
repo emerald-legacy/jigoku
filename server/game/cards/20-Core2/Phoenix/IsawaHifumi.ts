@@ -11,8 +11,8 @@ import type Player from '../../../Player.js';
 import type { Event } from '../../../Events/Event.js';
 
 class HifumiCost extends ReduceableFateCost {
-    isPlayCost = false;
-    isPrintedFateCost = false;
+    override isPlayCost = false;
+    override isPrintedFateCost = false;
 
     private timesTriggered = new WeakMap<Player, number>();
 
@@ -24,7 +24,7 @@ class HifumiCost extends ReduceableFateCost {
         return this.timesTriggered.get(player) ?? 0;
     }
 
-    canPay(context: AbilityContext): boolean {
+    override canPay(context: AbilityContext): boolean {
         const cost = this.currentCost(context.player);
         if(cost === 0) {
             return true;
@@ -41,15 +41,15 @@ class HifumiCost extends ReduceableFateCost {
         return false;
     }
 
-    public getReducedCost(context: AbilityContext): number {
+    public override getReducedCost(context: AbilityContext): number {
         return this.currentCost(context.player);
     }
 
-    protected getAlternateFatePools(context: AbilityContext): Set<DrawCard> {
+    protected override getAlternateFatePools(context: AbilityContext): Set<DrawCard> {
         return this.cardsThatCanPayForHifumi(context);
     }
 
-    protected afterPayHook(event: Event): void {
+    protected override afterPayHook(event: Event): void {
         const player = event.context?.player;
         if(!player) {
             return;
@@ -69,7 +69,7 @@ export default class IsawaHifumi extends DrawCard {
 
     private hifumiCost?: HifumiCost;
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const hifumiCost = new HifumiCost(false);
         this.hifumiCost = hifumiCost;
         new EventRegistrar(this.game).register({

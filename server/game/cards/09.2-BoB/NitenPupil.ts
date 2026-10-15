@@ -6,7 +6,7 @@ import { Duration } from '../../Constants.js';
 class NitenPupil extends DrawCard {
     static id = 'niten-pupil';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Double base skills')
             .when({
                 onHonorDialsRevealed: (event, context) => event.duel && event.duel.isInvolved(context.source)

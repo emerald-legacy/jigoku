@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class Smoke extends DrawCard {
     static id = 'smoke';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give non-unique characters -2/+0')
             .condition((context) => !!(this.game.isDuringConflict() && context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .cost(costs.bowSelf())

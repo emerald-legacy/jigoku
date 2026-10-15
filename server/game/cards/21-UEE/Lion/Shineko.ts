@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Shineko extends DrawCard {
     static id = 'shineko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

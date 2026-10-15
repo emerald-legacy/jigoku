@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 export default class BorderlandsDefender extends DrawCard {
     static id = 'borderlands-defender';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDefending(),
             effect: [

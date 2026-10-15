@@ -5,7 +5,7 @@ import { CardType, Location, Players } from '../../Constants.js';
 class AkodoZentaro extends DrawCard {
     static id = 'akodo-zentaro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Take control of holding')
             .condition((context) => context.source.isAttacking())
             .target({

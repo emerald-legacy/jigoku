@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class TirelessSodanSenzo extends DrawCard {
     static id = 'tireless-sodan-senzo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => {
                 const conflict = this.game.currentConflict;

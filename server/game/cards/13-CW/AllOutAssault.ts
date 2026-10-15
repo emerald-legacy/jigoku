@@ -5,7 +5,7 @@ import { mustDeclareMaximumAttackers } from '../../effects.js';
 class AllOutAssault extends DrawCard {
     static id = 'all-out-assault';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Both players must attack with as many characters as they can every conflict')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

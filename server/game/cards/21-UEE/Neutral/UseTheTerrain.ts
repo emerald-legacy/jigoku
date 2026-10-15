@@ -8,7 +8,7 @@ import { controlsParticipating } from '../../controlsParticipating.js';
 export default class UseTheTerrain extends DrawCard {
     static id = 'use-the-terrain';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give each character a military bonus', { conflictType: ConflictType.Military })
             .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter(() => true),

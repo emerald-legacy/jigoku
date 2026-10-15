@@ -6,7 +6,7 @@ import type Player from '../../Player.js';
 class InsolentOutcast extends DrawCard {
     static id = 'insolent-outcast';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyBothSkills((_card, context) => context.player.opponent ? this.getNoOfHonoredCharacters(context.player.opponent) : 0)
         });

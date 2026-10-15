@@ -7,7 +7,7 @@ import { BattlefieldAttachment } from '../../BattlefieldAttachment.js';
 export default class DeclarationOfDominion extends BattlefieldAttachment {
     static id = 'declaration-of-dominion';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
 
         this.action('Gives Pride to chosen characters')
@@ -39,7 +39,7 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
             .chatText((context) => msg`give pride to ${(context.targets.myCard ?? []).concat(context.targets.opponentsCard ?? [])}`);
     }
 
-    protected unbrokenOnly() {
+    protected override unbrokenOnly() {
         return false;
     }
 }

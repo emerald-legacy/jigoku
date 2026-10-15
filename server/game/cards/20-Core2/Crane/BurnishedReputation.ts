@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class BurnishedReputation extends DrawCard {
     static id = 'burnished-reputation';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor a participating character')
             .target({
                 cardType: CardType.Character,

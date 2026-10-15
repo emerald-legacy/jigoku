@@ -7,7 +7,7 @@ import { playCard } from '../../GameActions/GameActions.js';
 export default class KyudenIsawa extends StrongholdCard {
     static id = 'kyuden-isawa';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Play a spell event from discard')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.bowSelf())

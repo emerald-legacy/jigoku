@@ -5,7 +5,7 @@ import { Players, PlayType } from '../../Constants.js';
 class UtakuTetsuko extends DrawCard {
     static id = 'utaku-tetsuko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             targetController: Players.Opponent,

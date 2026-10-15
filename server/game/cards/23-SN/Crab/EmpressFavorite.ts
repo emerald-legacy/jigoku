@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class EmpressFavorite extends DrawCard {
     static id = 'empress-favorite';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Take 1 honor', { conflictType: ConflictType.Political })
             .condition((context) => context.source.isDefending() &&
                 !!context.player.opponent &&

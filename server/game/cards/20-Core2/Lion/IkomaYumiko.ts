@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IkomaYumiko extends DrawCard {
     static id = 'ikoma-yumiko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
                 modifyBothSkills(

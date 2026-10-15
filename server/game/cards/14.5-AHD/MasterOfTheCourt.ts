@@ -5,7 +5,7 @@ import { CardType, CharacterStatus } from '../../Constants.js';
 class MasterOfTheCourt extends DrawCard {
     static id = 'master-of-the-court';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && context.source.isHonored

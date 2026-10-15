@@ -6,7 +6,7 @@ import { CardType, Location, Trait } from '../../Constants.js';
 class KitsukiYaruma extends DrawCard {
     static id = 'kitsuki-yaruma';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Flip province facedown')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
@@ -18,7 +18,7 @@ class KitsukiYaruma extends DrawCard {
             }, turnFacedown());
     }
 
-    allowAttachment(attachment: BaseCard): boolean {
+    override allowAttachment(attachment: BaseCard): boolean {
         if(attachment.hasTrait(Trait.Poison) && !this.isBlank()) {
             return false;
         }

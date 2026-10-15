@@ -8,7 +8,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 export default class ShiroGisu extends StrongholdCard {
     static id = 'shiro-gisu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Draw a card')
             .condition((context) => !!(this.getCharactersWithoutFate(context) && context.player.conflictDeck.length > 0))
             .cost(costs.bowSelf())

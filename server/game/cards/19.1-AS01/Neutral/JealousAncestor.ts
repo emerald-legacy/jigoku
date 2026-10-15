@@ -10,7 +10,7 @@ const elementSymbol = { key: 'jealous-ancestor-void', element: Element.Void };
 export default class JealousAncestor extends DrawCard {
     static id = 'jealous-ancestor';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
 
         this.whileAttached({ effect: addTrait(Trait.Shadowlands) });
@@ -27,7 +27,7 @@ export default class JealousAncestor extends DrawCard {
         }
     }
 
-    public getPrintedElementSymbols() {
+    public override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 

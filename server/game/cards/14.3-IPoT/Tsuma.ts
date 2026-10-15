@@ -5,7 +5,7 @@ import { entersPlayWithStatus } from '../../effects.js';
 export default class Tsuma extends ProvinceCard {
     static id = 'tsuma';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,

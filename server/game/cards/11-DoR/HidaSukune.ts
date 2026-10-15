@@ -5,7 +5,7 @@ import { chosenDiscard, draw, sequential } from '../../GameActions/GameActions.j
 class HidaSukune extends DrawCard {
     static id = 'hida-sukune';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Draw and discard a card')
             .condition((context) => context.source.isDefending())
             .gameAction(sequential([

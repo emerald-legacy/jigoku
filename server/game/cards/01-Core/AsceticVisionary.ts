@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class AsceticVisionary extends DrawCard {
     static id = 'ascetic-visionary';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a character')
             .condition((context) => context.source.isAttacking())
             .cost(costs.payFateToRing(1))

@@ -9,7 +9,7 @@ const SECOND = 'second';
 export default class TributeToANewDawn extends DrawCard {
     static id = 'tribute-to-a-new-dawn';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Remove multiple attachments from the game')
             .condition((context) => context.game.allCards.some((card) => card.type === CardType.Attachment && card.isInPlay()))
             .targetCards({

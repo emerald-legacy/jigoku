@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class Harmonize extends DrawCard {
     static id = 'harmonize';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send a character home from each side')
             .target({
                 name: 'myCharacter',

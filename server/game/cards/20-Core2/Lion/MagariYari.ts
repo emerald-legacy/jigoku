@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MagariYari extends DrawCard {
     static id = 'magari-yari';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             match: (card) => card.hasTrait(Trait.Bushi),
             effect: gainAbility<DrawCard>(AbilityType.Reaction, {

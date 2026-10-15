@@ -6,7 +6,7 @@ import { DuelType } from '../../Constants.js';
 class DaringChallenger extends DrawCard {
     static id = 'daring-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => Boolean(context.player.opponent) && context.player.isLessHonorable(),
             effect: modifyMilitarySkill(1)

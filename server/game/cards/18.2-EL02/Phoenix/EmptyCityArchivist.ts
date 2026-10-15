@@ -5,7 +5,7 @@ import { Location, RemainingCards, Trait } from '../../../Constants.js';
 class EmptyCityArchivist extends DrawCard {
     static id = 'empty-city-archivist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Search your deck for a card')
             .when({
                 onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea

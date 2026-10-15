@@ -6,7 +6,7 @@ import { ready } from '../../GameActions/GameActions.js';
 export default class HayakenNoShiro extends StrongholdCard {
     static id = 'hayaken-no-shiro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a character')
             .cost(costs.bowSelf())
             .target({

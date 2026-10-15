@@ -7,7 +7,7 @@ import { CardType } from '../../Constants.js';
 class IAmReady extends DrawCard {
     static id = 'i-am-ready';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a character')
             .cost(costs.removeFate({
                 cardType: CardType.Character,

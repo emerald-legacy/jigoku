@@ -4,7 +4,7 @@ import { CardType } from '../../Constants.js';
 class Forgery extends DrawCard {
     static id = 'forgery';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event &&

@@ -4,7 +4,7 @@ import { Phase } from '../../Constants.js';
 class PiousGuardian extends DrawCard {
     static id = 'pious-guardian';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Gain 1 honor')
             .when({
                 onPhaseEnded: (event, context) => event.phase === Phase.Conflict && context.player.getProvinces((a) => a.isBroken).length < 2

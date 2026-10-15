@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class WaitUntilItSings extends DrawCard {
     static id = 'wait-until-it-sings';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Take an action during conflict resolution')
             .condition((context) => context.game.currentConflict?.getParticipants().some((p) => p.controller === context.player && p.hasTrait(Trait.Commander)) ?? false)
             .playerLastingEffect({

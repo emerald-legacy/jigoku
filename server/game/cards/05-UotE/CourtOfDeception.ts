@@ -5,7 +5,7 @@ import { Players, CardType, CharacterStatus } from '../../Constants.js';
 class CourtOfDeception extends DrawCard {
     static id = 'court-of-deception';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a dishonored character\'s status token')
             .condition((context) => context.player.honor <= 6)
             .target({

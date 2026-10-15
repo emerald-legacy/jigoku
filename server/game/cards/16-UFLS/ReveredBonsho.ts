@@ -12,7 +12,7 @@ type RingFate = { ring: Ring; fate: number };
 class ReveredBonsho extends DrawCard {
     static id = 'revered-bonsho';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: customFatePhaseFateRemoval((player, fate) => {
                 const context = this.game.getGameContext();

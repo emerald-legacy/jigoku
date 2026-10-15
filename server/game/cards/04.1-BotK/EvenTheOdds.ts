@@ -5,7 +5,7 @@ import { honor, moveToConflict } from '../../GameActions/GameActions.js';
 class EvenTheOdds extends DrawCard {
     static id = 'even-the-odds';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character to the conflict')
             .condition((context) =>
                 !!this.game.currentConflict &&

@@ -6,7 +6,7 @@ import { CardType, Players, Location } from '../../Constants.js';
 class MasterOfManyLifetimes extends DrawCard {
     static id = 'master-of-many-lifetimes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Return a character and attachments')
             .when({
                 onCardLeavesPlay: (event, context) => {

@@ -7,7 +7,7 @@ import { resolveRingEffect } from '../../GameActions/GameActions.js';
 class GanzuWarrior extends DrawCard {
     static id = 'ganzu-warrior';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve a ring effect')
             .when({
                 onCardRevealed: (event, context) =>

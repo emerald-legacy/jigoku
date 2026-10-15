@@ -97,7 +97,7 @@ export class DrawCard extends BaseCard {
     fromOutOfPlaySource?: BaseCard[];
     eventRegistrarForEphemeral?: EventRegistrar;
 
-    menu: MenuItem[] = [
+    override menu: MenuItem[] = [
         { command: 'bow', text: 'Bow/Ready' },
         { command: 'honor', text: 'Honor' },
         { command: 'dishonor', text: 'Dishonor' },
@@ -208,7 +208,7 @@ export class DrawCard extends BaseCard {
         this.abilities.reactions.push(new TutoredAbility(this, attachmentName));
     }
 
-    isDrawCard(): this is DrawCard {
+    override isDrawCard(): this is DrawCard {
         return true;
     }
 
@@ -333,7 +333,7 @@ export class DrawCard extends BaseCard {
         return this.hasKeyword('no duels');
     }
 
-    isDire(): boolean {
+    override isDire(): boolean {
         return this.getFate() === 0;
     }
 
@@ -351,11 +351,11 @@ export class DrawCard extends BaseCard {
         return copyEffect ? copyEffect.printedCost : this.printedCost;
     }
 
-    getFate(): number {
+    override getFate(): number {
         return this.anyEffect(EffectName.SetApparentFate) ? this.mostRecentEffect(EffectName.SetApparentFate) : this.fate;
     }
 
-    isInConflictProvince(): boolean {
+    override isInConflictProvince(): boolean {
         return !!this.game.currentConflict?.isCardInConflictProvince(this);
     }
 
@@ -403,7 +403,7 @@ export class DrawCard extends BaseCard {
         );
     }
 
-    createSnapshot(): DrawCard {
+    override createSnapshot(): DrawCard {
         // Use Object.create to skip expensive constructor (setupCardAbilities, parseKeywords, uuid generation)
         // so the clone has no #private members: card classes use TS `private` for anything a snapshot may call
         const clone = Object.create(DrawCard.prototype);
@@ -518,7 +518,7 @@ export class DrawCard extends BaseCard {
         return effectiveSkill(sumModifiers(this.skillCalculator.getGloryModifiers()));
     }
 
-    getProvinceStrengthBonus(): number {
+    override getProvinceStrengthBonus(): number {
         const bonus = sumModifiers(this.skillCalculator.getProvinceStrengthBonusModifiers());
         return bonus && this.isFaceup() ? bonus : 0;
     }
@@ -595,7 +595,7 @@ export class DrawCard extends BaseCard {
         );
     }
 
-    getActions(location: string = this.location): BaseCardAbility[] {
+    override getActions(location: string = this.location): BaseCardAbility[] {
         if(location === Location.PlayArea || this.type === CardType.Event) {
             return super.getActions();
         }
@@ -630,7 +630,7 @@ export class DrawCard extends BaseCard {
      * the state of the card should be here. This is also called in some strange corner cases e.g. for attachments
      * which aren't actually in play themselves when their parent (which is in play) leaves play.
      */
-    leavesPlay(_destination?: string): void {
+    override leavesPlay(_destination?: string): void {
         // If this is an attachment and is attached to another card, we need to remove all links between them
         if(this.parent) {
             this.parent.removeAttachment(this);
@@ -868,7 +868,7 @@ export class DrawCard extends BaseCard {
         return matching;
     }
 
-    getSummary(activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary {
+    override getSummary(activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup ?? false);
 
         return Object.assign(baseSummary, {

@@ -5,7 +5,7 @@ import { ConflictType, Trait } from '../../../Constants.js';
 export default class ForGreaterGlory extends DrawCard {
     static id = 'for-greater-glory';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a fate on all your bushi in this conflict')
             .when({
                 onBreakProvince: (event, context) =>

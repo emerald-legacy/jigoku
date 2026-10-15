@@ -7,7 +7,7 @@ import { Players, CardType, RestrictionType, RestrictionScope } from '../../Cons
 class YogoAsami extends DrawCard {
     static id = 'yogo-asami';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.name === 'Bayushi Kachiko',
             targetController: Players.Any,

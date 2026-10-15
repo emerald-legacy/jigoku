@@ -13,7 +13,7 @@ export default class KakitasFirstKata extends DrawCard {
     private bowedCharactersThisConflict = new Set<BaseCard>();
     private eventRegistrar?: EventRegistrar;
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game);
         this.eventRegistrar.register({
             [EventName.OnConflictFinished]: () => this.onConflictFinished(),

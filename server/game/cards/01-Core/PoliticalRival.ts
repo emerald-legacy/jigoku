@@ -4,7 +4,7 @@ import { modifyPoliticalSkill } from '../../effects.js';
 class PoliticalRival extends DrawCard {
     static id = 'political-rival';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDefending(),
             effect: modifyPoliticalSkill(3)

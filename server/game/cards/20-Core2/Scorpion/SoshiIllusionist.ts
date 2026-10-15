@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SoshiIllusionist extends DrawCard {
     static id = 'soshi-illusionist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard status from character')
             .cost(costs.payFate(1))
             .target({

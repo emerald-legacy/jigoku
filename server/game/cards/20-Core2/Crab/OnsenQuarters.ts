@@ -7,7 +7,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 export default class OnsenQuarters extends ProvinceCard {
     static id = 'onsen-quarters';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,

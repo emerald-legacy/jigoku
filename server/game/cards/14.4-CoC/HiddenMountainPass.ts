@@ -6,7 +6,7 @@ import { turnFacedown } from '../../GameActions/GameActions.js';
 class HiddenMountainPass extends DrawCard {
     static id = 'hidden-mountain-pass';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Flip this holding\'s province facedown')
             .when({
                 onPhaseEnded: (event, context) => event.phase === Phase.Conflict && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken

@@ -12,19 +12,19 @@ export interface MoveTokenProperties extends TokenActionProperties {
 }
 
 export class MoveStatusTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<MoveTokenProperties, EventName.OnStatusTokenMoved, C> {
-    name = 'moveStatusToken';
-    eventName = EventName.OnStatusTokenMoved;
+    override name = 'moveStatusToken';
+    override eventName = EventName.OnStatusTokenMoved;
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { target, recipient } = this.getProperties(context, additionalProperties);
         return ['move {0}\'s {1} to {2}', [target, recipient]];
     }
 
-    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         return targetList(this.getProperties(context, additionalProperties).target)[0].card;
     }
 
-    canAffect(token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { recipient } = this.getProperties(context, additionalProperties);
         if(recipient.location !== Location.PlayArea) {
             return false;
@@ -47,14 +47,14 @@ export class MoveStatusTokenAction<C extends AbilityContext = AbilityContext> ex
         return super.canAffect(token, context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenMoved, C>, token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenMoved, C>, token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): void {
         const { recipient } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.recipient = recipient;
         event.donor = token.card ?? undefined;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnStatusTokenMoved, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnStatusTokenMoved, C>): void {
         const token = event.token;
         const recipient = event.recipient;
         token.card?.removeStatusToken(token);

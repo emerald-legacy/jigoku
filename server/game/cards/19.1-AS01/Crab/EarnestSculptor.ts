@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class EarnestSculptor extends DrawCard {
     static id = 'earnest-sculptor';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Search top 8 card for a spell')
             .deckSearch({
                 cardsToLookAt: 8,

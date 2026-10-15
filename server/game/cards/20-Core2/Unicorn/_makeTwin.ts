@@ -20,7 +20,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
     return class Twin extends DrawCard {
         static id = id;
 
-        setupCardAbilities() {
+        override setupCardAbilities() {
             this.action(opt.title)
                 .deckSearch({
                     cardCondition: (card) => card.name === opt.siblingName,

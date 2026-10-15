@@ -14,25 +14,25 @@ export interface RevealProperties extends CardActionProperties {
 }
 
 export class RevealAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RevealProperties, EventName.OnCardRevealed, C, 'chatMessage'> {
-    name = 'reveal';
-    eventName = EventName.OnCardRevealed;
-    effect = 'reveal a card';
-    cost = 'revealing {0}';
-    defaultProperties = { chatMessage: false };
-    canAffect(card: BaseCard, context: C): boolean {
+    override name = 'reveal';
+    override eventName = EventName.OnCardRevealed;
+    override effect = 'reveal a card';
+    override cost = 'revealing {0}';
+    override defaultProperties = { chatMessage: false };
+    override canAffect(card: BaseCard, context: C): boolean {
         if(!card.isFacedown() && (card.isInProvince() || card.location === Location.PlayArea)) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCardRevealed, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardRevealed, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { onDeclaration } = this.getProperties(context, additionalProperties);
         event.onDeclaration = onDeclaration;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnCardRevealed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardRevealed, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         if(properties.chatMessage) {

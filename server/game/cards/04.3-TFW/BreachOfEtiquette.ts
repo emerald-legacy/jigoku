@@ -8,7 +8,7 @@ import { CardType, ConflictType, Players, Trait } from '../../Constants.js';
 class BreachOfEtiquette extends DrawCard {
     static id = 'breach-of-etiquette';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Force honor loss on players when their non-courtier characters use abilities', { conflictType: ConflictType.Political })
             .playerLastingEffect((context) => ({
                 target: Players.Self,

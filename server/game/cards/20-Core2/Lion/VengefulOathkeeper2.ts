@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class VengefulOathkeeper2 extends DrawCard {
     static id = 'vengeful-oathkeeper-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put this into play')
             .when({
                 afterConflict: (event, context) =>

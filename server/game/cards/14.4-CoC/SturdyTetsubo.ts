@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class SturdyTetsubo extends DrawCard {
     static id = 'sturdy-tetsubo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.reaction('Make opponent discard 1 card', (ability) => ability
                 .when({

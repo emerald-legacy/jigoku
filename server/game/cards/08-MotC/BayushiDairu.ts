@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class BayushiDairu extends DrawCard {
     static id = 'bayushi-dairu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a status token to this character')
             .condition((context) => context.source.isParticipating())
             .tokenTarget({

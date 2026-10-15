@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class FearlessSailor extends DrawCard {
     static id = 'fearless-sailor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character -2 military')
             .condition((context) => context.source.isParticipating())
             .target({

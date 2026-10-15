@@ -13,9 +13,9 @@ export interface InjureProperties extends GameActionProperties {
 }
 
 export class InjureAction<C extends AbilityContext = AbilityContext> extends GameAction<InjureProperties, EventName, C> {
-    name = 'injure';
-    targetType = [CardType.Character];
-    effect = 'injure {0}';
+    override name = 'injure';
+    override targetType = [CardType.Character];
+    override effect = 'injure {0}';
     removeFateGameAction: GameAction;
     discardGameAction: GameAction;
 
@@ -25,11 +25,11 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
         this.discardGameAction = new DiscardFromPlayAction({});
     }
 
-    defaultTargets(context: C): GameObject[] {
+    override defaultTargets(context: C): GameObject[] {
         return [context.source];
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         if(!target.isCard() || !target.isDrawCard()) {
             return false;
         }
@@ -45,7 +45,7 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
         return this.removeFateGameAction.canAffect(target, context, overrides);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const overrides = { ...additionalProperties, target: properties.target };
         for(const target of targetList(properties.target)) {

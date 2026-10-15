@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class HirumaYoshino extends DrawCard {
     static id = 'hiruma-yoshino';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Contribute printed military skill')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
             .target({

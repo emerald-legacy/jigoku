@@ -7,7 +7,7 @@ import type BaseCard from '../../../BaseCard.js';
 export default class TheEastWind extends StrongholdCard {
     static id = 'the-east-wind';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place fate on character')
             .when({
                 onCardPlayed: (event, context) =>

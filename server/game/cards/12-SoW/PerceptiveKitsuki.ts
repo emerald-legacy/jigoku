@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class PerceptiveKitsuki extends DrawCard {
     static id = 'perceptive-kitsuki';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Look at your opponent\'s hand')
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
             .cost(costs.returnRings(1))

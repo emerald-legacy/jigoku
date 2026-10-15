@@ -16,7 +16,7 @@ function revealCount(context: AbilityContext): number {
 export default class InquisitorialInitiate extends DrawCard {
     static id = 'inquisitorial-initiate';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Discard an opponent\'s card')
             .when({
                 afterConflict: (event, context) =>

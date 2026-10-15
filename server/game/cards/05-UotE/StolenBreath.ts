@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class StolenBreath extends DrawCard {
     static id = 'stolen-breath';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => !context.game.isDuringConflict());
 
         this.whileAttached({

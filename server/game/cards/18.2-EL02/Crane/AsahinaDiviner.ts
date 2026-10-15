@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 class AsahinaDiviner extends DrawCard {
     static id = 'asahina-diviner';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give a participating character +3 glory', { evenFromHome: true })
             .target({
                 cardType: CardType.Character,

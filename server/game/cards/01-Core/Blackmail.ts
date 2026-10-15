@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class Blackmail extends DrawCard {
     static id = 'blackmail';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Take control of a character')
             .playOnlyIf((context) => !!context.player.opponent && context.player.isLessHonorable())
             .target({

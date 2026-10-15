@@ -13,29 +13,29 @@ export interface LoseHonorProperties extends PlayerActionProperties {
 }
 
 export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseHonorProperties, EventName.OnModifyHonor, C, 'amount' | 'dueToUnopposed' | 'dueToStatusToken'> {
-    defaultProperties = { amount: 1, dueToUnopposed: false, dueToStatusToken: false };
+    override defaultProperties = { amount: 1, dueToUnopposed: false, dueToStatusToken: false };
 
-    name = 'loseHonor';
+    override name = 'loseHonor';
 
-    restriction = RestrictionType.LoseHonor;
-    eventName = EventName.OnModifyHonor;
+    override restriction = RestrictionType.LoseHonor;
+    override eventName = EventName.OnModifyHonor;
 
-    getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['losing {1} honor', [properties.amount]];
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['make {0} lose ' + this.getProperties(context, additionalProperties).amount + ' honor', []];
     }
 
 
-    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.amount === 0 ? false : super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount, dueToUnopposed, dueToStatusToken } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = -amount;
@@ -43,7 +43,7 @@ export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends 
         event.dueToStatusToken = dueToStatusToken;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
         event.player.modifyHonor(event.amount);
         event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: event.amount });
     }

@@ -4,7 +4,7 @@ import { CardType } from '../../Constants.js';
 class FestivalForTheFortunes extends DrawCard {
     static id = 'festival-for-the-fortunes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor each character')
             .honor(() => ({
                 target: this.game.findAnyCardsInPlay((card) => card.type === CardType.Character)

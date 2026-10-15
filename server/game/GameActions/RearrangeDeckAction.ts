@@ -25,14 +25,14 @@ export interface RearrangeDeckProperties<C extends AbilityContext = AbilityConte
 
 /** The player of the ability puts the top cards of the target player's deck back in the order they choose. */
 export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RearrangeDeckProperties, EventName.Unnamed, C, 'deck' | 'activePromptTitle'> {
-    name = 'rearrangeDeck';
-    defaultProperties = {
+    override name = 'rearrangeDeck';
+    override defaultProperties = {
         deck: DeckType.Conflict,
         activePromptTitle: 'Which card do you want to be on top?'
     };
 
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { amount, cards, deck } = this.getProperties(context, additionalProperties);
         return ['rearrange the top {1} cards of {0}\'s {2}', [cards?.length ?? derive(amount ?? 0, context), deck]];
     }
@@ -41,12 +41,12 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         return deck === DeckType.Dynasty ? player.dynastyDeck : player.conflictDeck;
     }
 
-    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { deck } = this.getProperties(context, additionalProperties);
         return this.#deck(player, deck).length > 0 && super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         for(const player of targetList(properties.target)) {
             if(!this.canAffect(player, context, additionalProperties)) {

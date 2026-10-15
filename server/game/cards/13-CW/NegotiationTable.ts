@@ -9,7 +9,7 @@ import type Player from '../../Player.js';
 export default class NegotiationTable extends DrawCard {
     static id = 'negotiation-table';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Make opponent pick from several options')
             .condition((context) => context.player.opponent !== undefined)
             .handler((context) => {

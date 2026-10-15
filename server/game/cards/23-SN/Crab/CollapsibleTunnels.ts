@@ -8,7 +8,7 @@ import { bow, cardLastingEffect } from '../../../GameActions/GameActions.js';
 export default class CollapsibleTunnels extends DrawCard {
     static id = 'collapsible-tunnels';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Add Province Strength')
             .selectAttackedProvince({
                 message: (context, cards) => msg`${context.player} increases the strength of ${cards}`,

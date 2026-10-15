@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class YojinNoShiro extends StrongholdCard {
     static id = 'yojin-no-shiro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give attacking characters +1/+0')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.bowSelf())

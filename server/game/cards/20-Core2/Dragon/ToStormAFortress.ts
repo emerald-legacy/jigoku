@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ToStormAFortress extends DrawCard {
     static id = 'to-storm-a-fortress';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

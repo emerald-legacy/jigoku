@@ -5,7 +5,7 @@ import { captureParentCost } from '../../captureParentCost.js';
 class AyubunePilot extends DrawCard {
     static id = 'ayubune-pilot';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

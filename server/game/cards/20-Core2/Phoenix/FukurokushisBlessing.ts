@@ -6,7 +6,7 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 export default class FukurokushisBlessing extends DrawCard {
     static id = 'fukurokushi-s-blessing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel conflict province ability')
             .when({
                 onInitiateAbilityEffects: ({ card }) => card instanceof ProvinceCard

@@ -8,7 +8,7 @@ import type { GameEvent } from '../../Events/EventPayloads.js';
 class DisplayOfPower extends DrawCard {
     static id = 'display-of-power';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Cancel opponent\'s ring effect and claim and resolve the ring')
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed

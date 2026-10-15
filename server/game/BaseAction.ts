@@ -8,8 +8,8 @@ import type { BaseAbilityProperties } from './BaseAbility.js';
 type TargetProperties = NonNullable<BaseAbilityProperties['target']>;
 
 export class BaseAction extends BaseCardAbility {
-    abilityType = AbilityType.Action;
-    cannotBeCancelled = true;
+    override abilityType = AbilityType.Action;
+    override cannotBeCancelled = true;
     declare cost: Cost[];
 
     constructor(card: BaseCard, costs: Cost[] = [], target?: TargetProperties) {
@@ -20,7 +20,7 @@ export class BaseAction extends BaseCardAbility {
         super(card, properties);
     }
 
-    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
+    override meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         if(this.breaksLimitedRule(context)) {
             return Blocker.LimitedAlreadyPlayed;
         }
@@ -28,11 +28,11 @@ export class BaseAction extends BaseCardAbility {
         return super.meetsRequirements(context, ignoredBlockers);
     }
 
-    getReducedCost(context: AbilityContext): number {
+    override getReducedCost(context: AbilityContext): number {
         return this.reducedFateCost(context);
     }
 
-    isAction(): boolean {
+    override isAction(): boolean {
         return true;
     }
 }

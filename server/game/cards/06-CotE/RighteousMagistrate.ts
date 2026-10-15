@@ -5,7 +5,7 @@ import { playerCannot } from '../../effects.js';
 class RighteousMagistrate extends DrawCard {
     static id = 'righteous-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDefending(),
             targetController: Players.Any,

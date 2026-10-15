@@ -42,8 +42,8 @@ const backAlleyPersistentEffect = {
 };
 
 class BackAlleyPlayCharacterAction extends DynastyCardAction {
-    title = 'Play this character from Back-Alley Hideaway';
-    limit: AbilityLimit;
+    override title = 'Play this character from Back-Alley Hideaway';
+    override limit: AbilityLimit;
 
     constructor(
         public backAlleyCard: BackAlleyHideaway,
@@ -53,7 +53,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         this.limit = backAlleyCard.backAlleyActionLimit;
     }
 
-    meetsRequirements(context = this.createContext()) {
+    override meetsRequirements(context = this.createContext()) {
         if(context.game.currentPhase !== Phase.Dynasty) {
             return Blocker.WrongPhase;
         }
@@ -72,7 +72,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         return Blocker.None;
     }
 
-    executeHandler(context: AbilityContext & { chooseFate: number }) {
+    override executeHandler(context: AbilityContext & { chooseFate: number }) {
         context.game.addMessage(msg`${context.player} plays ${context.source} from ${context.source.parent} with ${context.chooseFate} additional fate`);
         context.source.abilities.playActions = context.source.abilities.playActions.filter(
             (action) => action.title !== 'Play this character from Back-Alley Hideaway'
@@ -101,7 +101,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         window.addThenAbility(thenAbility, context);
     }
 
-    isCardAbility() {
+    override isCardAbility() {
         return true;
     }
 }
@@ -111,7 +111,7 @@ export default class BackAlleyHideaway extends DrawCard {
 
     backAlleyActionLimit = perRound(1);
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: customDetachedCard(backAlleyPersistentEffect)
         });

@@ -10,7 +10,7 @@ const TRIGGERED = 'triggeredPlantedFields';
 export default class PlantedFields extends DrawCard {
     static id = 'planted-fields';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.interrupt('Sacrifice Planted Fields')
             .when({
                 onPhaseEnded: (event, context) =>

@@ -5,7 +5,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class DaidojiStrategist extends DrawCard {
     static id = 'daidoji-strategist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move an honored character home')
             .condition((context) => context.source.isParticipating())
             .target({

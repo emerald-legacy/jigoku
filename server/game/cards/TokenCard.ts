@@ -15,7 +15,7 @@ export abstract class TokenCard extends DrawCard {
         return Location.DynastyDiscardPile;
     }
 
-    leavesPlay(destination?: string): void {
+    override leavesPlay(destination?: string): void {
         this.owner.moveCard(this.facedownCard, this.facedownDestination(destination));
         this.game.queueSimpleStep(() => {
             this.owner.removeCardFromPile(this);
@@ -24,7 +24,7 @@ export abstract class TokenCard extends DrawCard {
         super.leavesPlay();
     }
 
-    getSummary(activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary {
+    override getSummary(activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary {
         const summary = super.getSummary(activePlayer, hideWhenFaceup);
         const tokenProps: Record<string, unknown> = { isToken: true };
         if(activePlayer === this.controller) {

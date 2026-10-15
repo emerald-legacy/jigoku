@@ -13,11 +13,11 @@ export class GameWonPrompt extends AllPlayerPrompt {
         this.clickedButton = {};
     }
 
-    completionCondition(player: Player): boolean {
+    override completionCondition(player: Player): boolean {
         return !!this.clickedButton[player.name];
     }
 
-    activePrompt() {
+    override activePrompt() {
         return {
             promptTitle: 'Game Won',
             menuTitle: this.winner.name + ' has won the game!',
@@ -25,11 +25,11 @@ export class GameWonPrompt extends AllPlayerPrompt {
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to choose to continue' };
     }
 
-    menuCommand(player: Player): boolean {
+    override menuCommand(player: Player): boolean {
         this.game.addMessage(msg`${player} wants to continue`);
 
         this.clickedButton[player.name] = true;

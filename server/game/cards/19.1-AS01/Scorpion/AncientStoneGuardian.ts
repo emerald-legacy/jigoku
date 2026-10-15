@@ -10,7 +10,7 @@ import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.j
 export default class AncientStoneGuardian extends DrawCard {
     static id = 'ancient-stone-guardian';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             effect: cannotParticipateAsAttacker()
         });

@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class ShosuroMiyako extends DrawCard {
     static id = 'shosuro-miyako';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Opponent discards or dishonors')
             .when({
                 onCardPlayed: (event, context) =>

@@ -5,7 +5,7 @@ import { dishonor } from '../../GameActions/GameActions.js';
 class HitsuDoDisciple extends DrawCard {
     static id = 'hitsu-do-disciple';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Dishonor a character')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military) &&
                 context.source.isParticipating() &&

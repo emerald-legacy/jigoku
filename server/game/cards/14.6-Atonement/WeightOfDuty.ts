@@ -10,7 +10,7 @@ const ELEMENT_KEY = 'weight-of-duty-void';
 export default class WeightOfDuty extends ProvinceCard {
     static id = 'weight-of-duty';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow & dishonor a character')
             .condition((context) => context.player.opponent !== undefined)
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
@@ -28,7 +28,7 @@ export default class WeightOfDuty extends ProvinceCard {
             .cannotTargetFirst();
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: ELEMENT_KEY,

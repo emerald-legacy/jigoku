@@ -8,7 +8,7 @@ const elementKey = 'feral-ningyo-water';
 class FeralNingyo extends DrawCard {
     static id = 'feral-ningyo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put into play')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
             .location(Location.Hand)
@@ -26,7 +26,7 @@ class FeralNingyo extends DrawCard {
             .chatText((context) => msg`put ${context.source} into play into the conflict and return ${context.chatTarget()} to the deck at the end of the conflict`);
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

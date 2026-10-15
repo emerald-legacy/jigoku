@@ -82,7 +82,7 @@ export class UiPrompt extends BaseStep {
         return { menuTitle: 'Waiting for opponent' };
     }
 
-    public continue(): boolean {
+    public override continue(): boolean {
         const completed = this.isComplete();
 
         if(completed) {
@@ -100,7 +100,7 @@ export class UiPrompt extends BaseStep {
         }
     }
 
-    public onMenuCommand(player: Player, arg: MenuArg, uuid: string, method?: string | null): boolean {
+    public override onMenuCommand(player: Player, arg: MenuArg, uuid: string, method?: string | null): boolean {
         if(!this.activeCondition(player) || uuid !== this.uuid || !this.#offers(player, arg, method)) {
             return false;
         }

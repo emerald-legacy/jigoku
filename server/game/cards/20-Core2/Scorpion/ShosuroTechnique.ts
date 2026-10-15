@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShosuroTechnique extends DrawCard {
     static id = 'shosuro-technique';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.duelChallenge('Apply status tokens to the duel', (duel, context) => duel.challengingPlayer && duel.challengingPlayer.opponent === context.player)
             .duelLastingEffect({
                 effect: duelIgnorePrintedSkill()

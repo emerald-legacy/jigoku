@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class ExpertBartering extends DrawCard {
     static id = 'expert-bartering';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         // only attachments that can be switched both ways
         const switchAttachments = joint([
             attach((context) => ({

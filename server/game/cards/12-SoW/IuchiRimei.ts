@@ -6,7 +6,7 @@ import { attach, selectCard } from '../../GameActions/GameActions.js';
 class IuchiRimei extends DrawCard {
     static id = 'iuchi-rimei';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move an attachment')
             .target({
                 cardType: CardType.Attachment,

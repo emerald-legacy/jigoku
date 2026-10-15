@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SeijisFate extends DrawCard {
     static id = 'seiji-s-fate';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.whileAttached({
             effect: [
                 addTrait(Trait.Creature),

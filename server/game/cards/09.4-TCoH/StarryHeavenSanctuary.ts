@@ -4,7 +4,7 @@ import { Phase, EventName } from '../../Constants.js';
 class StarryHeavenSanctuary extends DrawCard {
     static id = 'starry-heaven-sanctuary';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain 2 fate')
             .aggregateWhen((events, context) =>
                 context.game.currentPhase === Phase.Fate &&

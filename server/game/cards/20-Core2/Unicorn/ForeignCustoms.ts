@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ForeignCustoms extends DrawCard {
     static id = 'foreign-customs';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.duelStrike('Put a character into play', (duel, context) => duel.loserController === context.player)
             .selectCard({
                 activePromptTitle: 'Choose a character',

@@ -5,7 +5,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class MasterOfTheSpear extends DrawCard {
     static id = 'master-of-the-spear';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send home character')
             .condition((context) => context.source.isAttacking())
             .target({

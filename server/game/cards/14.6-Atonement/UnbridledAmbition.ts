@@ -5,7 +5,7 @@ import { cannotContribute } from '../../effects.js';
 export default class UnbridledAmbition extends ProvinceCard {
     static id = 'unbridled-ambition';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Any,
@@ -13,7 +13,7 @@ export default class UnbridledAmbition extends ProvinceCard {
         });
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

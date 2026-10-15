@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AcademyOfEtiquette extends DrawCard {
     static id = 'academy-of-etiquette';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Give characters courtesy')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Fate

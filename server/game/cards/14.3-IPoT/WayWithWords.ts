@@ -5,7 +5,7 @@ import { ConflictType } from '../../Constants.js';
 class WayWithWords extends DrawCard {
     static id = 'way-with-words';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.reaction('Take 1 honor', (ability) => ability
                 .when({

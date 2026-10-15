@@ -8,7 +8,7 @@ import { CardType, Duration } from '../../Constants.js';
 class StudentOfAnatomies extends DrawCard {
     static id = 'student-of-anatomies';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Sacrifice a character to blank an enemy')
             .cost(costs.sacrifice({
                 cardType: CardType.Character

@@ -5,7 +5,7 @@ import { removeFate } from '../../GameActions/GameActions.js';
 class SecludedTemple extends DrawCard {
     static id = 'secluded-temple';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Remove a fate from opponent\'s characters')
             .when({
                 onPhaseStarted: (event, context) => event.phase === Phase.Conflict && context.player.opponent &&

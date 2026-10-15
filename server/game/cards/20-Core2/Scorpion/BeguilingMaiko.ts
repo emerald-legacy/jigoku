@@ -13,7 +13,7 @@ import type { GameAction } from '../../../GameActions/GameAction.js';
 export default class BeguilingMaiko extends DrawCard {
     static id = 'beguiling-maiko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Employ your charm')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source

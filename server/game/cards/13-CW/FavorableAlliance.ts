@@ -6,7 +6,7 @@ import { setAside } from '../../GameActions/GameActions.js';
 class FavorableAlliance extends DrawCard {
     static id = 'favorable-alliance';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Draw cards')
             .cost(costs.payVariableFate({
                 minAmount: 1,

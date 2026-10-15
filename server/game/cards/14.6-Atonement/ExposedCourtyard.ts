@@ -31,7 +31,7 @@ const exposedCourtyardCost = (): Cost<{ exposedCourtyardCost: DrawCard[] }> => (
 class ExposedCourtyard extends DrawCard {
     static id = 'exposed-courtyard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Make an event in your conflict discard playable')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .cost(exposedCourtyardCost())

@@ -6,7 +6,7 @@ import { Location, Players, Trait } from '../../Constants.js';
 class InvokeTheDivine extends DrawCard {
     static id = 'invoke-the-divine';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const getSelectCardAction = (fate: number, spellsCast: number) => selectCard({
             location: Location.Hand,
             controller: Players.Self,

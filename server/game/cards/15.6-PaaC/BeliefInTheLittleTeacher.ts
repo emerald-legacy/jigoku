@@ -6,7 +6,7 @@ import { discardStatusToken } from '../../GameActions/GameActions.js';
 class BeliefInTheLittleTeacher extends DrawCard {
     static id = 'belief-in-the-little-teacher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.action('Discard character\'s status token', (ability) => ability
                 .selectToken((context) => ({

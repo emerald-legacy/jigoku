@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class EruditePrestige extends DrawCard {
     static id = 'erudite-prestige';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Courtier
         });

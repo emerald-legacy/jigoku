@@ -6,7 +6,7 @@ import { CardType } from '../../Constants.js';
 class CommandTheTributary extends DrawCard {
     static id = 'command-the-tributary';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.action('Move 1 fate to a character', (ability) => ability
                 .target({

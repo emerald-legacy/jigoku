@@ -41,7 +41,7 @@ export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProper
         return this.heldActions(this.properties.gameAction, context);
     }
 
-    protected actionOverrides(context: AbilityContext): ActionOverrides {
+    protected override actionOverrides(context: AbilityContext): ActionOverrides {
         return { target: context.rings[this.name] };
     }
 

@@ -6,7 +6,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class ShosuroHametsu extends DrawCard {
     static id = 'shosuro-hametsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Search conflict deck for a poison card')
             .cost(costs.payHonor(1))
             .deckSearch({

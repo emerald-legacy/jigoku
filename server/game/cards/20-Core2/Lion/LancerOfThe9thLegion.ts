@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class LancerOfThe9thLegion extends DrawCard {
     static id = 'lancer-of-the-9th-legion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow a character', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

@@ -4,7 +4,7 @@ import { cannotContribute } from '../../effects.js';
 class SwiftMagistrate extends DrawCard {
     static id = 'swift-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             effect: cannotContribute((_conflict, context) => {

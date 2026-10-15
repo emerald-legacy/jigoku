@@ -15,7 +15,7 @@ function modifier(_: unknown, context: AbilityContext) {
 export default class EmpressRetainer extends DrawCard {
     static id = 'empress-retainer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => card === context?.source,
             effect: modifyBothSkills(modifier)

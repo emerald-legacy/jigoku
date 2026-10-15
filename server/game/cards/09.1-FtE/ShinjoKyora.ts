@@ -6,7 +6,7 @@ import { switchConflictElement } from '../../GameActions/GameActions.js';
 class ShinjoKyora extends DrawCard {
     static id = 'shinjo-kyora';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch the contested ring')
             .condition((context) => context.source.isParticipating())
             .selectRing({

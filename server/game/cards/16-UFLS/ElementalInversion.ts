@@ -4,7 +4,7 @@ import { placeFateOnRing, sequential, switchConflictElement } from '../../GameAc
 class ElementalInversion extends DrawCard {
     static id = 'elemental-inversion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Switch the contested ring')
             .ringTarget({
                 activePromptTitle: 'Choose an uncontested ring',

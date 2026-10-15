@@ -6,7 +6,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class UnyieldingSensei extends DrawCard {
     static id = 'unyielding-sensei';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Choose a province')
             .target({
                 cardType: CardType.Province,

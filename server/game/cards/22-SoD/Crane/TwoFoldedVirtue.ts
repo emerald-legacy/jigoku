@@ -7,7 +7,7 @@ import { CardType, Players, Trait } from '../../../Constants.js';
 export default class TwoFoldedVirtue extends DrawCard {
     static id = 'two-folded-virtue';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase a character\'s military skill')
             .target({
                 cardType: CardType.Character,

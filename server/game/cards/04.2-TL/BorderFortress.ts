@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 export default class BorderFortress extends ProvinceCard {
     static id = 'border-fortress';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reveal a province')
             .target({
                 cardType: CardType.Province,

@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class KakitaKaezin extends DrawCard {
     static id = 'kakita-kaezin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Duel an opposing character')
             .condition((context) => context.source.isParticipating())
             .target({

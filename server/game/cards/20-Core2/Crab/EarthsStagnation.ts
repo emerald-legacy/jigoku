@@ -13,7 +13,7 @@ function penaltyAmount(context: AbilityContext): number {
 export default class EarthsStagnation extends DrawCard {
     static id = 'earth-s-stagnation';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
         this.forcedReaction('Give attached character a skill penalty')

@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class LetHimGoBy extends DrawCard {
     static id = 'let-him-go-by';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Bow a character')
             .when({
                 onMoveToConflict: (event, context) =>

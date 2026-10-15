@@ -6,7 +6,7 @@ import { modifyBothSkills } from '../../effects.js';
 class RighteousDelegate extends DrawCard {
     static id = 'righteous-delegate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Weaken bushi, empower non-bushi')
             .condition((context) => context.source.isParticipating())
             .cardLastingEffect((context) => {

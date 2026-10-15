@@ -11,7 +11,7 @@ const TARGET_TO_BOW = 'characterToBow';
 export default class PalmStrike extends DrawCard {
     static id = 'palm-strike';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .target({
                 name: TARGET_MONK,

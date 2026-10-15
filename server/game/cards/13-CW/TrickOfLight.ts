@@ -6,7 +6,7 @@ import { CardType } from '../../Constants.js';
 class TrickOfTheLight extends DrawCard {
     static id = 'trick-of-the-light';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('blanks printed text for conflict')
             .target({
                 cardType: CardType.Character,

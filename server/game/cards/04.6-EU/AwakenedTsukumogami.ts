@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class AwakenedTsukumogami extends DrawCard {
     static id = 'awakened-tsukumogami';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: Object.values(this.game.rings).map((ring) =>
                 alternateFatePool((card) => card.isConflict && ring.getElements().some((element) => card.hasTrait(elementTrait(element))) && ring)

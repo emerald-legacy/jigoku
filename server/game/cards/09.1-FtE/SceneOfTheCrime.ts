@@ -4,7 +4,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class SceneOfTheCrime extends ProvinceCard {
     static id = 'scene-of-the-crime';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Look at opponent\'s hand')
             .when({
                 onCardRevealed: (event, context) =>

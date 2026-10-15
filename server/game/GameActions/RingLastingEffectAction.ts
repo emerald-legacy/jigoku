@@ -8,15 +8,15 @@ import type { ActionEvent } from './GameAction.js';
 export type LastingEffectRingProperties<C extends AbilityContext = AbilityContext> = LastingEffectGeneralProperties<C>;
 
 export class RingLastingEffectAction<C extends AbilityContext = AbilityContext> extends RingAction<LastingEffectRingProperties, EventName.OnEffectApplied, C, 'duration' | 'effect'> {
-    name = 'ringLastingEffect';
-    eventName = EventName.OnEffectApplied;
-    effect = 'apply a lasting effect';
-    defaultProperties = {
+    override name = 'ringLastingEffect';
+    override eventName = EventName.OnEffectApplied;
+    override effect = 'apply a lasting effect';
+    override defaultProperties = {
         duration: Duration.UntilEndOfConflict,
         effect: []
     };
 
-    eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;

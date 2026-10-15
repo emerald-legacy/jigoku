@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class Desolation extends DrawCard {
     static id = 'desolation';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Blank opponent\'s provinces')
             .condition((context) => context.player.opponent !== undefined)
             .cost(costs.payHonor(2))

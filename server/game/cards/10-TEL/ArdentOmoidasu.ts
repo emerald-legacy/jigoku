@@ -5,7 +5,7 @@ import { isOpponentsRingOrCardEffect } from '../effectSource.js';
 class ArdentOmoidasu extends DrawCard {
     static id = 'ardent-omoidasu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Steal 2 honor')
             .when({
                 onCardDishonored: (event, context) =>

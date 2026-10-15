@@ -7,7 +7,7 @@ import { Location, Players, CardType, ConflictType, Trait } from '../../Constant
 class TimeForWar extends DrawCard {
     static id = 'time-for-war';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const attachAction = attach();
         this.reaction('Put a weapon into play')
             .when({

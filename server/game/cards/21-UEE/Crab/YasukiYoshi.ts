@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class YasukiYoshi extends DrawCard {
     static id = 'yasuki-yoshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.tutored('Writ of Survey');
 
         this.reaction('Cause honor loss to the conflict loser')

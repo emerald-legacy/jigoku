@@ -4,7 +4,7 @@ import { perRound } from '../../AbilityLimit.js';
 class MediatorOfHostilities extends DrawCard {
     static id = 'mediator-of-hostilities';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
                 onConflictPass: () => true

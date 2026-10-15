@@ -10,7 +10,7 @@ const MAX_FATE = 3;
 export default class AppeasingTheRestless extends DrawCard {
     static id = 'appeasing-the-restless';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Place fates on spirits')
             .condition((context) => this.canMoveFate(context) && context.player.cardsInPlay.some((card) => this.canReceiveFate(card, context)))
             .cost(costs.bow({

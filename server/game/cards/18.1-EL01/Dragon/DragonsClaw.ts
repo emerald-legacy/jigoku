@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DragonsClaw extends DrawCard {
     static id = 'dragon-s-claw';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             match: (card) => card.attachments.some((a) => a.name === 'Dragon\'s Fang'),
             effect: gainAbility.conflictAction('Bow and send home a participating character with lower military skill', (ability) => ability

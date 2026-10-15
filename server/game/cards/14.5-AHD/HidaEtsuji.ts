@@ -5,7 +5,7 @@ import { cardCannot, increaseLimitOnAbilities } from '../../effects.js';
 class HidaEtsuji extends DrawCard {
     static id = 'hida-etsuji';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => card.type === CardType.Province && card.controller === context?.player,
             targetLocation: Location.Provinces,

@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class HeartlessIntimidator extends DrawCard {
     static id = 'heartless-intimidator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Force opponent to discard 1 card')
             .when({
                 onModifyHonor: (event, context) => event.player === context.player.opponent && event.amount < 0,

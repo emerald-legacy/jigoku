@@ -6,7 +6,7 @@ import { DuelType } from '../../Constants.js';
 class MakeYourCase extends DrawCard {
     static id = 'make-your-case';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a political duel')
             .initiateDuel(() => ({
                 type: DuelType.Political,

@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class DisguisedProtector extends DrawCard {
     static id = 'disguised-protector';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add each players honor bid to their skill total')
             .condition((context) => context.source.isParticipating())
             // read when the conflict resolves: a later bid (Regal Bearing, a duel) counts

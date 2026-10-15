@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class RestorationOfBalance extends ProvinceCard {
     static id = 'restoration-of-balance';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.interrupt('Force opponent to discard to 4 cards')
             .when({
                 onBreakProvince: (event, context) =>

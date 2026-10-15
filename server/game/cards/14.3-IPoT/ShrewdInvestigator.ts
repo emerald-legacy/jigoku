@@ -5,7 +5,7 @@ import { randomHandCards } from '../randomHandCards.js';
 export default class ShrewdInvestigator extends DrawCard {
     static id = 'shrewd-investigator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at random cards from your opponent\'s hand')
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
             .lookAt((context) => ({

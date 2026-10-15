@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class DojiFumiki extends DrawCard {
     static id = 'doji-fumiki';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a dishonored character')
             .condition((context) => context.source.isParticipating())
             .target({

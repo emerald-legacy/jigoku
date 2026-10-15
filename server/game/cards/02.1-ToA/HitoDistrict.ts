@@ -5,7 +5,7 @@ import { Location, ConflictType } from '../../Constants.js';
 class HitoDistrict extends DrawCard {
     static id = 'hito-district';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card, context) => !!context && card.isProvince && card.location === context.source.location,

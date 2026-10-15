@@ -870,7 +870,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         this.game.openEventWindow(events);
     }
 
-    abort(): void {
+    override abort(): void {
         super.abort();
         if(this.game.currentConflict === this.conflict) {
             this.game.updateCurrentConflict(null);

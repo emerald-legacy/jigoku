@@ -8,7 +8,7 @@ import type { GameAction } from '../../../GameActions/GameAction.js';
 export default class IsawaHouseGuard extends DrawCard {
     static id = 'isawa-house-guard';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.duelFocus('Help a character with a duel', (duel, context) => duel.participants.includes(context.source) && context.source.isHonored)
             .duelLastingEffect((context) => ({
                 effect: modifyDuelTotal({ amount: 1, player: context.player })

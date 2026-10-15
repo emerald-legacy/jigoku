@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class SeppunTruthseeker extends DrawCard {
     static id = 'seppun-truthseeker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedInterrupt('Each player draws 2 cards')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class HurricanePunch extends DrawCard {
     static id = 'hurricane-punch';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase a monk\'s military skill and draw 1 card')
             .target({
                 cardType: CardType.Character,

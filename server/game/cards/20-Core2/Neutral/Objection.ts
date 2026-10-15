@@ -49,7 +49,7 @@ class ObjectionCost implements Cost {
 export default class Objection extends DrawCard {
     static id = 'objection-';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         new EventRegistrar(this.game).register({
             [EventName.OnPhaseStarted]: () => this.onPhaseStarted()
         });

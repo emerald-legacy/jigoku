@@ -8,7 +8,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class AsahinaArtisan extends DrawCard {
     static id = 'asahina-artisan';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character +0/+3')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.bowSelf())

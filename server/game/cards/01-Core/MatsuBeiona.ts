@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class MatsuBeiona extends DrawCard {
     static id = 'matsu-beiona';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put 2 fate on this character')
             .when({
                 onCharacterEntersPlay: (event, context) => (

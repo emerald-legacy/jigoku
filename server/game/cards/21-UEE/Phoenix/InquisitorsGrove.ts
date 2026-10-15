@@ -6,7 +6,7 @@ import { sendHome } from '../../../GameActions/GameActions.js';
 export default class InquisitorsGrove extends StrongholdCard {
     static id = 'inquisitor-s-grove';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Attacker moves a character home')
             .condition((context) => context.player.honor >= 9 && context.player.isDefendingPlayer())
             .cost(costs.bowSelf())

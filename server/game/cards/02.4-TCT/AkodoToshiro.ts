@@ -7,7 +7,7 @@ import { Location, RestrictionType, Trait } from '../../Constants.js';
 class AkodoToshiro extends DrawCard {
     static id = 'akodo-toshiro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain +5/+0 and provinces can\'t be broken')
             .condition((context) => context.source.isAttacking())
             .cardLastingEffect(() => ({

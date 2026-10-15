@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 class CulturedFacade extends DrawCard {
     static id = 'cultured-facade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Prevent targeting')
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants() ?? [],

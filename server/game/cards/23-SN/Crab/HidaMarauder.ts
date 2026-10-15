@@ -6,7 +6,7 @@ import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
 export default class HidaMarauder extends DrawCard {
     static id = 'hida-marauder';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard an opponent\'s card')
             .when({
                 afterConflict: (event, context) => context.source.isParticipating() &&

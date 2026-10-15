@@ -7,7 +7,7 @@ import { cardLastingEffect, playerLastingEffect, sequential } from '../../GameAc
 class CenteredBreath extends DrawCard {
     static id = 'centered-breath';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add an additional ability use to a monk')
             .target({
                 cardType: CardType.Character,

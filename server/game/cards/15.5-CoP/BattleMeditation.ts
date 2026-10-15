@@ -5,7 +5,7 @@ import { perConflict } from '../../AbilityLimit.js';
 class BattleMeditation extends DrawCard {
     static id = 'battle-meditation';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('draw 3 cards')
             .when({
                 onBreakProvince: (event, context) => event.card.owner !== context.player

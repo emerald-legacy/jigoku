@@ -11,7 +11,7 @@ function cardsInPlay(context: AbilityContext, predicate: (card: DrawCard) => boo
 export default class CripplingCurse extends DrawCard {
     static id = 'crippling-curse';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('Discard fate and characters')
             .when({
                 onPhaseStarted: (event, context) =>

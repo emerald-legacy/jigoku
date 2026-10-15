@@ -8,7 +8,7 @@ const elementKey = 'isawa-masahiro-fire';
 class IsawaMasahiro extends DrawCard {
     static id = 'isawa-masahiro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow to discard an enemy character')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
             .cost(costs.bowSelf())
@@ -18,7 +18,7 @@ class IsawaMasahiro extends DrawCard {
             }, discardFromPlay());
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

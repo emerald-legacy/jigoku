@@ -5,7 +5,7 @@ import { Players, PlayType } from '../../Constants.js';
 class AkodoToturi2 extends DrawCard {
     static id = 'akodo-toturi-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Prevent each player playing cards from hand')
             .condition((context) => context.source.isParticipating() && context.player.imperialFavor !== '')
             .playerLastingEffect({

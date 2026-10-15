@@ -5,7 +5,7 @@ import { multiple, placeFate, sendHome } from '../../GameActions/GameActions.js'
 class WayOfTheOpenHand extends DrawCard {
     static id = 'way-of-the-open-hand';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send home opponent\'s character')
             .condition((context) => context.game.isDuringConflict() && !(context.game.currentConflict?.getConflictProvinces() ?? []).some((a) => a.location === Location.StrongholdProvince))
             .target({

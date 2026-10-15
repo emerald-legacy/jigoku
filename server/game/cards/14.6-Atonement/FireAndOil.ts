@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class FireAndOil extends DrawCard {
     static id = 'fire-and-oil';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !context.player.getProvinceCardInProvince(context.source.location)?.isBroken,
             effect: gainAbility.action('Dishonor a character', (ability) => ability

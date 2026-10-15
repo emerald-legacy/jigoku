@@ -4,7 +4,7 @@ import { StrongholdCard } from '../../../StrongholdCard.js';
 export default class TheatreOfHonestLies extends StrongholdCard {
     static id = 'theatre-of-honest-lies';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
                 onModifyHonor: (event, context) => event.player === context.player.opponent && event.amount < 0,

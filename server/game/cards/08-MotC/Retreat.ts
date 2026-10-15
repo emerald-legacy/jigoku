@@ -5,7 +5,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class Retreat extends DrawCard {
     static id = 'retreat';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Move a character home', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

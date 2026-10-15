@@ -4,7 +4,7 @@ import { eventsCannotBeCancelled } from '../../effects.js';
 class PersuasiveCounselor extends DrawCard {
     static id = 'persuasive-counselor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Prevent your events from being cancelled')
             .condition((context) => context.source.isParticipating())
             .playerLastingEffect({

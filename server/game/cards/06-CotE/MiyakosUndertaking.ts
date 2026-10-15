@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 export default class MiyakosUndertaking extends DrawCard {
     static id = 'miyako-s-undertaking';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Make a character a copy')
             .playOnlyIf((context) => context.player.honor <= 6)
             .target({

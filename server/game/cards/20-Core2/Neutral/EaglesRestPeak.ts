@@ -7,7 +7,7 @@ import { shuffle } from '../../../utils/random.js';
 export default class EaglesRestPeak extends ProvinceCard {
     static id = 'eagle-s-rest-peak';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Look at random cards from opponent\'s hand')
             .condition((context) => (context.player.opponent?.hand.length ?? 0) > 0)
             .target({

@@ -29,7 +29,7 @@ export class RoleCard extends BaseCard {
         return (this.cardData.influence_pool ?? 0) + this.influenceModifier;
     }
 
-    getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
+    override getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,
@@ -38,7 +38,7 @@ export class RoleCard extends BaseCard {
         };
     }
 
-    allowGameAction(actionType: GameActionName, context?: AbilityContext): boolean {
+    override allowGameAction(actionType: GameActionName, context?: AbilityContext): boolean {
         return !illegalActions.has(actionType) && super.allowGameAction(actionType, context);
     }
 

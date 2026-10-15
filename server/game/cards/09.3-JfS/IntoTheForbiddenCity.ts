@@ -5,7 +5,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 export default class IntoTheForbiddenCity extends ProvinceCard {
     static id = 'into-the-forbidden-city';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard an attachment')
             .target({
                 cardType: CardType.Attachment,

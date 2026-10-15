@@ -10,7 +10,7 @@ export default class WithstandTheDarkness extends DrawCard {
 
     private currentTargets = new Set<BaseCard>();
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place a fate on a character')
             .when({
                 onCardPlayed: (event, context) => {

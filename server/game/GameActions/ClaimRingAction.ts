@@ -12,12 +12,12 @@ export interface ClaimRingProperties extends RingActionProperties {
 }
 
 export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends RingAction<ClaimRingProperties, EventName.OnClaimRing, C, 'takeFate' | 'type'> {
-    name = 'claimRing';
-    eventName = EventName.OnClaimRing;
-    effect = 'claim {0}';
-    defaultProperties = { takeFate: true, type: ConflictType.Military };
+    override name = 'claimRing';
+    override eventName = EventName.OnClaimRing;
+    override effect = 'claim {0}';
+    override defaultProperties = { takeFate: true, type: ConflictType.Military };
 
-    canAffect(ring: Ring, context: C): boolean {
+    override canAffect(ring: Ring, context: C): boolean {
         if(!context.player.checkRestrictions(RestrictionType.ClaimRings, context)) {
             return false;
         }
@@ -25,7 +25,7 @@ export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends 
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnClaimRing, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnClaimRing, C>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const { takeFate, type } = this.getProperties(context, additionalProperties);
         const ring = event.ring;

@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 export default class ShosuroActor extends DrawCard {
     static id = 'shosuro-actor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Choose a character to copy')
             .condition((context) => context.source.isParticipating())
             .target({

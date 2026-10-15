@@ -7,13 +7,13 @@ import { CardType } from '../../Constants.js';
 class PeacemakersBlade extends DrawCard {
     static id = 'peacemaker-s-blade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: cannotBeDeclaredAsAttacker()
         });
     }
 
-    canPlayOn(card: BaseCard | Ring) {
+    override canPlayOn(card: BaseCard | Ring) {
         return card instanceof DrawCard && card.type === CardType.Character && !card.isAttacking() && super.canPlayOn(card);
     }
 }

@@ -5,7 +5,7 @@ import { ready } from '../../GameActions/GameActions.js';
 class TwilightRider extends DrawCard {
     static id = 'twilight-rider';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Ready a character')
             .when({
                 onMoveToConflict: (event, context) => event.card === context.source

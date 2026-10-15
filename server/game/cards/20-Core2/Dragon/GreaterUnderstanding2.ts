@@ -8,7 +8,7 @@ import { RingAttachment } from '../../RingAttachment.js';
 export default class GreaterUnderstanding2 extends RingAttachment {
     static id = 'greater-understanding-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Any,
             effect: immunity({

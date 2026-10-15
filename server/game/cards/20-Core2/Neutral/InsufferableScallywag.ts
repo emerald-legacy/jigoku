@@ -13,7 +13,7 @@ function theTarget(context: AbilityContext) {
 export default class InsufferableScallywag extends DrawCard {
     static id = 'insufferable-scallywag';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Dishonor or send a character home')
             .cost(costs.removeFateFromSelf())
             .target({

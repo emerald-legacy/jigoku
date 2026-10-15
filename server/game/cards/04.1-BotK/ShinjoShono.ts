@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class ShinjoShono extends DrawCard {
     static id = 'shinjo-shono';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase skill of friendly cavalry')
             .condition((context) => context.source.isParticipating() &&
                                   (context.game.currentConflict?.hasMoreParticipants(context.player) ?? false))

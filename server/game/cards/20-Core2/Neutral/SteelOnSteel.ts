@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SteelOnSteel extends DrawCard {
     static id = 'steel-on-steel';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Initiate a military duel, injuring the loser', { conflictType: ConflictType.Military })
             .initiateDuel(() => ({
                 type: DuelType.Military,

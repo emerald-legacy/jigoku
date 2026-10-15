@@ -7,7 +7,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class DojiHotaru2 extends DrawCard {
     static id = 'doji-hotaru-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: delayedEffect({
                 condition: (context) => !!context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan'),

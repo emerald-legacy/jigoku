@@ -6,7 +6,7 @@ import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 export default class PreparedAmbush extends BattlefieldAttachment {
     static id = 'prepared-ambush';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
 
         this.persistentEffect({

@@ -7,7 +7,7 @@ import { CardType, Players, RestrictionType, RestrictionScope, Trait } from '../
 class IronFoundationsStance extends DrawCard {
     static id = 'iron-foundations-stance';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Prevent opponent\'s bow and send home effects')
             .target({
                 cardType: CardType.Character,

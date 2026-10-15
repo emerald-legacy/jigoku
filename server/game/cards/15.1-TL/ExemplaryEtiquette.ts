@@ -5,7 +5,7 @@ import { RestrictionType } from '../../Constants.js';
 class ExemplaryEtiquette extends DrawCard {
     static id = 'exemplary-etiquette';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Stop characters from triggering abilities')
             .conflictLastingEffect({
                 effect: charactersCannot({

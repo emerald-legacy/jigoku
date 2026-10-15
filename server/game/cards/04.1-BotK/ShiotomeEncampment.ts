@@ -5,7 +5,7 @@ import { CardType, ConflictType, Trait } from '../../Constants.js';
 class ShiotomeEncampment extends DrawCard {
     static id = 'shiotome-encampment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a Cavalry character')
             .condition((context) =>
                 Object.values(this.game.rings).some(

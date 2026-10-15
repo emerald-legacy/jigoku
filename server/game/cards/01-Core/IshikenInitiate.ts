@@ -5,7 +5,7 @@ import { countClaimedRings } from '../claimedRings.js';
 class IshikenInitiate extends DrawCard {
     static id = 'ishiken-initiate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyBothSkills(() => countClaimedRings(this.game))
         });

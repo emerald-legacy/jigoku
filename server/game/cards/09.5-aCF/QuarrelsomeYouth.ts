@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class QuarrelsomeYouth extends DrawCard {
     static id = 'quarrelsome-youth';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Force opponent to discard a card')
             .when({
                 afterConflict: (event, context) =>

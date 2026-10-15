@@ -7,7 +7,7 @@ import type { ProvinceCard } from './ProvinceCard.js';
 
 export class CardAction extends CardAbility {
     declare properties: ActionProps;
-    abilityType = AbilityType.Action;
+    override abilityType = AbilityType.Action;
 
     anyPlayer: boolean;
     canTriggerOutsideConflict: boolean;
@@ -47,7 +47,7 @@ export class CardAction extends CardAbility {
         }
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []) {
+    override meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []) {
         if(!ignoredBlockers.includes(Blocker.WrongLocation) && !this.isInValidLocation(context)) {
             return Blocker.WrongLocation;
         }
@@ -92,11 +92,11 @@ export class CardAction extends CardAbility {
         );
     }
 
-    isAction() {
+    override isAction() {
         return true;
     }
 
-    isCardAction(): this is CardAction {
+    override isCardAction(): this is CardAction {
         return true;
     }
 }

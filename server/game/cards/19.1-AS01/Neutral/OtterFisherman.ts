@@ -9,7 +9,7 @@ const ELEMENT_KEY = 'otter-fisherman-water';
 export default class OtterFisherman extends DrawCard {
     static id = 'otter-fisherman';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             effect: [immunity({ appliesTo: { trait: Trait.Creature } })]
         });
@@ -34,7 +34,7 @@ export default class OtterFisherman extends DrawCard {
             });
     }
 
-    public getPrintedElementSymbols() {
+    public override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: ELEMENT_KEY,

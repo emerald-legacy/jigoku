@@ -7,7 +7,7 @@ import { putIntoConflict, reveal, selectCards, sequential } from '../../GameActi
 class IkomaUjiaki extends DrawCard {
     static id = 'ikoma-ujiaki';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put characters into play')
             .condition((context) => context.source.isParticipating())
             .cost(costs.discardImperialFavor())

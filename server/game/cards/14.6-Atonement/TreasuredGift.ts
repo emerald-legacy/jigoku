@@ -4,7 +4,7 @@ import { cannotBeDeclaredAsAttacker } from '../../effects.js';
 class TreasuredGift extends DrawCard {
     static id = 'treasured-gift';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             opponentControlOnly: true
         });

@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Pressure extends DrawCard {
     static id = 'pressure';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Move home a character')
             .when({
                 onConflictDeclared: (_event, _context) => true,

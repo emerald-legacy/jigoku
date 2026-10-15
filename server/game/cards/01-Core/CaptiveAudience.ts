@@ -5,7 +5,7 @@ import { ConflictType } from '../../Constants.js';
 class CaptiveAudience extends DrawCard {
     static id = 'captive-audience';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Change the conflict to military')
             .condition(() => this.game.isDuringConflict(ConflictType.Political))
             .cost(costs.payHonor(1))

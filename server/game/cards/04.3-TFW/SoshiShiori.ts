@@ -6,7 +6,7 @@ import { playerChoices } from '../playerChoices.js';
 class SoshiShiori extends DrawCard {
     static id = 'soshi-shiori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Make opponent lose 1 honor')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.player

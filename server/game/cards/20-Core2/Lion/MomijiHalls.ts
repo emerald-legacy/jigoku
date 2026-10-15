@@ -5,7 +5,7 @@ import { ConflictType } from '../../../Constants.js';
 export default class MomijiHalls extends StrongholdCard {
     static id = 'momiji-halls';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Draw 2 cards')
             .condition((context) => context.player.cardsInPlay.some((card) => card.isAttacking(ConflictType.Military)))
             .cost(costs.bowSelf())

@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class BeforeTheThrone extends ProvinceCard {
     static id = 'before-the-throne';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Take 2 honor')
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
@@ -11,7 +11,7 @@ export default class BeforeTheThrone extends ProvinceCard {
             .takeHonor({ amount: 2 });
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

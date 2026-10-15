@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 export default class HisuMoriToride extends StrongholdCard {
     static id = 'hisu-mori-toride-lion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain additional military conflict')
             .when({
                 afterConflict: (event, context) =>

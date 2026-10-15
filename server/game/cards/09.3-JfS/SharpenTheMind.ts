@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class SharpenTheMind extends DrawCard {
     static id = 'sharpen-the-mind';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give +3/+3 to attached character')
             .condition((context) => context.game.isDuringConflict())
             .cost(costs.discardCard({ location: Location.Hand }))

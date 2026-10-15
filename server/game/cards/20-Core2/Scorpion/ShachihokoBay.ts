@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class ShachihokoBay extends ProvinceCard {
     static id = 'shachihoko-bay';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Look at the top 6 cards of the attacker\'s deck and steal up to 3 of them')
             .when({
                 onBreakProvince: (event, context) =>

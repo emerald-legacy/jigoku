@@ -16,7 +16,7 @@ const spiritsInChat = {
 export default class ForceOfTheRiver extends DrawCard {
     static id = 'force-of-the-river';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({ myControl: true, trait: Trait.Shugenja });
 
         this.action('Create spirits from facedown dynasty cards')

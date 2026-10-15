@@ -5,7 +5,7 @@ import { cannotResolveRings } from '../../effects.js';
 class MountaintopVigil extends DrawCard {
     static id = 'mountaintop-vigil';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('cancel all ring effects')
             .playerLastingEffect({
                 target: Players.Any,

@@ -6,7 +6,7 @@ import { canPlayFromOutOfPlay, showTopConflictCard } from '../../effects.js';
 class CallingTheStorm extends DrawCard {
     static id = 'calling-the-storm';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Make top card of conflict deck playable')
             .cost(costs.discardHand())
             .cardLastingEffect((context) => ({

@@ -9,7 +9,7 @@ import { honorTransferMessage } from '../honorTransferMessage.js';
 class AgashaProdigys extends DrawCard {
     static id = 'agasha-prodigy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a card to try and attach it to a character')
             .cost(costs.optionalTakeHonorFromOpponent((context) => !!context.player.opponent && context.player.opponent.conflictDeck.length > 0))
             .target({

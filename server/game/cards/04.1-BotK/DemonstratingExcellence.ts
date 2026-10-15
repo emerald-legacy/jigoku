@@ -5,7 +5,7 @@ import { modifyProvinceStrength } from '../../effects.js';
 export default class DemonstratingExcellence extends ProvinceCard {
     static id = 'demonstrating-excellence';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             condition: (context) => !!context.player.role && context.player.role.hasTrait(Trait.Air),

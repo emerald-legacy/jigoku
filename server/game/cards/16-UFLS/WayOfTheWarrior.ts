@@ -6,7 +6,7 @@ import { cardLastingEffect, ready, sequential } from '../../GameActions/GameActi
 class WayOfTheWarrior extends DrawCard {
     static id = 'way-of-the-warrior';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Let a bushi embrace the way of the warrior')
             .target({
                 cardType: CardType.Character,

@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class CourtlyChallenger extends DrawCard {
     static id = 'courtly-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
                 delayedEffect({

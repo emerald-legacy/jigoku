@@ -13,7 +13,7 @@ const ELEMENT_KEY = 'kitsuki-seiji-water';
 export default class KitsukiSeiji extends DrawCard {
     static id = 'kitsuki-seiji';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.player.showBid % 2 === 1,
             effect: [modifyMilitarySkill(+2), modifyPoliticalSkill(-2)]
@@ -43,7 +43,7 @@ export default class KitsukiSeiji extends DrawCard {
             .chatText((context) => msg`put the fate that would go on the ${this.getCurrentElementSymbol(ELEMENT_KEY)} ring on ${context.chatTarget()} instead`);
     }
 
-    public getPrintedElementSymbols() {
+    public override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: ELEMENT_KEY,

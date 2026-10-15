@@ -10,7 +10,7 @@ function discardedCost(discarded: DrawCard[] | undefined): number {
 class WarDogMaster extends DrawCard {
     static id = 'war-dog-master';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain a +X/+0 bonus')
             .when({
                 onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source)

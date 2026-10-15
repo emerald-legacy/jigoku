@@ -5,7 +5,7 @@ import { ConflictType, Location, RemainingCards } from '../../../Constants.js';
 class EloquentAdvocate extends DrawCard {
     static id = 'eloquent-advocate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at top 2 cards of conflict deck')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() &&

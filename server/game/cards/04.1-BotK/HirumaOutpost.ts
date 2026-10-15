@@ -5,7 +5,7 @@ import { gainAbility } from '../../effects.js';
 class HirumaOutpost extends DrawCard {
     static id = 'hiruma-outpost';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => {
                 const province = context.player.getProvinceCardInProvince(context.source.location);

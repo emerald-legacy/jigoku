@@ -5,7 +5,7 @@ import { joint, returnRing, selectRing, takeRing } from '../../GameActions/GameA
 class KnowTheWorld extends DrawCard {
     static id = 'know-the-world';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch a claimed ring with an unclaimed one')
             .gameAction(joint([
                 selectRing((context) => ({

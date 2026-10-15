@@ -5,7 +5,7 @@ import { BaseOni } from './_BaseOni.js';
 export default class EndlessRanks extends BaseOni {
     static id = 'endless-ranks';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Put a dynasty character on top of your deck')
             .when({

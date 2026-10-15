@@ -7,7 +7,7 @@ import { CardType, Location, Players, Phase, Duration } from '../../../Constants
 export default class ShaperOfStone extends DrawCard {
     static id = 'shaper-of-stone';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,

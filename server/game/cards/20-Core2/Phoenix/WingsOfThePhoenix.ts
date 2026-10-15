@@ -8,7 +8,7 @@ import { controlsShugenja } from '../../controlsShugenja.js';
 export default class WingsOfThePhoenix extends DrawCard {
     static id = 'wings-of-the-phoenix';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character')
             .condition((context) =>
                 context.game.isDuringConflict() &&

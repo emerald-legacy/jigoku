@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class TaintedKoku extends DrawCard {
     static id = 'tainted-koku';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Move attachment to another character')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter

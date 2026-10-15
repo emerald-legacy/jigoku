@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class OurDuty extends DrawCard {
     static id = 'our-duty-';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Make your opponent sacrifice a character')
             .condition((context) => context.game.roundNumber > 1 && Boolean(context.player.opponent))
             .cost(costs.sacrifice({

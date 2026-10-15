@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShibaShaHeiden extends DrawCard {
     static id = 'shiba-sha-heiden';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         /**
          * The card is a single action, but implementing the cost was too much work
          * Should be fixed later when choice costs are implemented

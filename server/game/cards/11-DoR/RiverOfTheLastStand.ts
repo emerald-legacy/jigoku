@@ -5,7 +5,7 @@ import { defendingAtKaiuWall } from '../kaiuWall.js';
 class RiverOfTheLastStand extends DrawCard {
     static id = 'river-of-the-last-stand';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Make opponent discard two cards and draw a card')
             .condition((context) => defendingAtKaiuWall(context.player, context.game.currentConflict))
             .gameAction(sequential([

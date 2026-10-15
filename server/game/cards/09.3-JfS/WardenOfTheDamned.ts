@@ -5,7 +5,7 @@ import { sacrifice } from '../../GameActions/GameActions.js';
 class WardenOfTheDamned extends DrawCard {
     static id = 'warden-of-the-damned';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedInterrupt('Each player sacrifices a dishonored character')
             .when({
                 onPhaseEnded: (event) => event.phase === Phase.Conflict

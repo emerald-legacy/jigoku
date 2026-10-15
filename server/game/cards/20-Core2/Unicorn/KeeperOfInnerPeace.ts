@@ -6,7 +6,7 @@ import Ring from '../../../Ring.js';
 export default class KeeperOfInnerPeace extends DrawCard {
     static id = 'keeper-of-inner-peace';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Add fate to a character')
             .when({
                 onMoveFate: (event, context) =>

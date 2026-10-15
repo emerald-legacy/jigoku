@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class ShamelessGossip extends DrawCard {
     static id = 'shameless-gossip';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a status token')
             .condition((context) => context.source.isParticipating())
             .target({

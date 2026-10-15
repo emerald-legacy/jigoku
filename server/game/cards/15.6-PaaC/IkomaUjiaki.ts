@@ -4,7 +4,7 @@ import * as costs from '../../costs/index.js';
 class IkomaUjiaki2 extends DrawCard {
     static id = 'ikoma-ujiaki-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch the conflict type')
             .condition((context) => context.source.isParticipating())
             .cost(costs.payHonor(2))

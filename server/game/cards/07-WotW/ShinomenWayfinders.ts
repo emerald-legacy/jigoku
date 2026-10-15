@@ -5,7 +5,7 @@ import { reduceCost } from '../../effects.js';
 class ShinomenWayfinders extends DrawCard {
     static id = 'shinomen-wayfinders';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

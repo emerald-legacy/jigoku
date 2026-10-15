@@ -7,7 +7,7 @@ import { Location, Players } from '../../Constants.js';
 class KitsuSpiritcaller extends DrawCard {
     static id = 'kitsu-spiritcaller';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Resurrect a character')
             .cost(costs.bowSelf())
             .target({

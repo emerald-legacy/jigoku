@@ -4,7 +4,7 @@ import * as costs from '../../costs/index.js';
 class FingerOfJade extends DrawCard {
     static id = 'finger-of-jade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

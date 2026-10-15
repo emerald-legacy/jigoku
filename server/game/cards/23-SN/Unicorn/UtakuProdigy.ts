@@ -6,7 +6,7 @@ import { cancel, gainHonor, sequential } from '../../../GameActions/GameActions.
 export default class UtakuProdigy extends DrawCard {
     static id = 'utaku-prodigy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cannotReceiveDishonorToken()
         });

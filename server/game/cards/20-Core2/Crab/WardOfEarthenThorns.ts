@@ -7,7 +7,7 @@ import { ProvinceAttachment } from '../../ProvinceAttachment.js';
 export default class WardOfEarthenThorns extends ProvinceAttachment {
     static id = 'ward-of-earthen-thorns';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
         this.persistentEffect({

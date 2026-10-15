@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class PearlOfTheBalash extends DrawCard {
     static id = 'pearl-of-the-balash';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Shugenja
         });

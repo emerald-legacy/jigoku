@@ -7,13 +7,13 @@ const elementSymbol = { key: 'prodigy-of-the-waves-water', element: Element.Wate
 class ProdigyOfTheWaves extends DrawCard {
     static id = 'prodigy-of-the-waves';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready this character')
             .condition(() => isRingClaimed(this, elementSymbol.key))
             .ready();
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

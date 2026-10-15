@@ -9,7 +9,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class JadeInfusedArrows extends DrawCard {
     static id = 'jade-infused-arrows';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give attached character a skill bonus', { conflictType: ConflictType.Military })
             .cost(costs.payFate(1))
             .cardLastingEffect((context) => ({

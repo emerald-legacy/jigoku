@@ -6,7 +6,7 @@ import { Players } from '../../Constants.js';
 class KuniSilencer extends DrawCard {
     static id = 'kuni-silencer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Take a ring from opponent\'s claimed pool')
             .when({
                 afterConflict: (event, context) => context.player.opponent && event.conflict.winner === context.source.controller && context.source.isDefending()

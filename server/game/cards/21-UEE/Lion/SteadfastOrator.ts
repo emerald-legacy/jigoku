@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SteadfastOrator extends DrawCard {
     static id = 'steadfast-orator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Move the character back to the conflict')
             .when({
                 onSendHome: (event, context) =>

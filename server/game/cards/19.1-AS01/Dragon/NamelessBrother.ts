@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class NamelessBrother extends DrawCard {
     static id = 'nameless-brother';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => card.controller === context?.player && card.type === CardType.Character,
             effect: modifyBothSkills((character, context) =>

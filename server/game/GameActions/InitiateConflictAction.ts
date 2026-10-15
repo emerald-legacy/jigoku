@@ -12,20 +12,20 @@ export interface InitiateConflictProperties extends PlayerActionProperties {
 }
 
 export class InitiateConflictAction<C extends AbilityContext = AbilityContext> extends PlayerAction<InitiateConflictProperties, EventName.OnConflictInitiated, C, 'canPass'> {
-    name = 'initiateConflict';
-    eventName = EventName.OnConflictInitiated;
-    effect = 'declare a new conflict';
-    defaultProperties = {
+    override name = 'initiateConflict';
+    override eventName = EventName.OnConflictInitiated;
+    override effect = 'declare a new conflict';
+    override defaultProperties = {
         canPass: true
     };
 
-    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { forcedDeclaredType } = this.getProperties(context, additionalProperties);
         return super.canAffect(player, context) && player.hasLegalConflictDeclaration({ forcedDeclaredType });
     }
 
 
-    eventHandler(event: ActionEvent<EventName.OnConflictInitiated, C>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName.OnConflictInitiated, C>, additionalProperties: Record<string, unknown>): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         context.game.initiateConflict(

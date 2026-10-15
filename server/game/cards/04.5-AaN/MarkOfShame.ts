@@ -5,7 +5,7 @@ import { dishonor, sequential } from '../../GameActions/GameActions.js';
 class MarkOfShame extends DrawCard {
     static id = 'mark-of-shame';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Dishonor attached character')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source

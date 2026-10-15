@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class ABadDeath extends DrawCard {
     static id = 'a-bad-death';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Sacrifice a character to dishonor characters')
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && !!context.player.opponent

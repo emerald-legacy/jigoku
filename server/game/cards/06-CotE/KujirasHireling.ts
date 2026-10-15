@@ -9,7 +9,7 @@ import { Duration } from '../../Constants.js';
 class KujirasHireling extends DrawCard {
     static id = 'kujira-s-hireling';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('+1/+1 or -1/-1')
             .anyPlayer()
             .cost(costs.payFate())

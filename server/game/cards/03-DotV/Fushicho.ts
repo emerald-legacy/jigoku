@@ -5,7 +5,7 @@ import { putIntoPlay } from '../../GameActions/GameActions.js';
 class Fushicho extends DrawCard {
     static id = 'fushicho';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Resurrect a character')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

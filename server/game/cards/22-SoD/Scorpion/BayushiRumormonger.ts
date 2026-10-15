@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class BayushiRumormonger extends DrawCard {
     static id = 'bayushi-rumormonger';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Discard cards from opponent\'s conflict deck')
             .condition((context) => Boolean(context.player.opponent))
             .discardCard((context) => ({

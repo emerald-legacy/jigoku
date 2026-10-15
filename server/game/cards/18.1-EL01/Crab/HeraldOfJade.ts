@@ -6,7 +6,7 @@ import { msg } from '../../../GameChat.js';
 class HeraldOfJade extends DrawCard {
     static id = 'herald-of-jade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard a status token and gain 1 honor')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

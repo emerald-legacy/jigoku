@@ -8,7 +8,7 @@ import DrawCard from '../../DrawCard.js';
 export default class HiddenMoonDojo extends DrawCard {
     static id = 'hidden-moon-dojo';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card, context) =>

@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class HeraldOfJustice extends DrawCard {
     static id = 'herald-of-justice';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain another military conflict')
             .condition((context) => context.game.currentPhase === Phase.Conflict)
             .cost(costs.sacrifice({ cardType: CardType.Character }))

@@ -13,7 +13,7 @@ const enum Timing {
 export default class DaidojiAmbusher extends DrawCard {
     static id = 'daidoji-ambusher';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Give someone -2 military', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

@@ -5,7 +5,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class Outwit extends DrawCard {
     static id = 'outwit';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send a character home')
             .target({
                 cardType: CardType.Character,

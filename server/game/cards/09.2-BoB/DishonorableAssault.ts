@@ -8,7 +8,7 @@ import { msg } from '../../GameChat.js';
 export default class DishonorableAssault extends ProvinceCard {
     static id = 'dishonorable-assault';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard cards to dishonor attackers')
             .cost(costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)))
             .targetCards({

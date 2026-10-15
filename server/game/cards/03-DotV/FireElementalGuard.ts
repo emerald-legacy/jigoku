@@ -5,7 +5,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class FireElementalGuard extends DrawCard {
     static id = 'fire-elemental-guard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard an attachment')
             .condition((context) =>
                 (this.game.currentConflict?.getNumberOfCardsPlayed(context.player, (card) => card.hasTrait(Trait.Spell)) ?? 0) > 2)

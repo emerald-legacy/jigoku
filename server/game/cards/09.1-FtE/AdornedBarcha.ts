@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 class AdornedBarcha extends DrawCard {
     static id = 'adorned-barcha';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             unique: true

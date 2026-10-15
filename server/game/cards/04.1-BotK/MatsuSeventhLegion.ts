@@ -5,7 +5,7 @@ import { Players, Trait } from '../../Constants.js';
 class MatsuSeventhLegion extends DrawCard {
     static id = 'matsu-seventh-legion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             match: (card) => card.hasTrait(Trait.Courtier),

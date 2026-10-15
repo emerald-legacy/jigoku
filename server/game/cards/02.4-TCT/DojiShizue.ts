@@ -5,7 +5,7 @@ import { cardCannot } from '../../effects.js';
 class DojiShizue extends DrawCard {
     static id = 'doji-shizue';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => this.game.currentPhase === Phase.Fate && context.player.imperialFavor !== '',
             effect: [

@@ -7,7 +7,7 @@ import type { ConflictRecord } from '../../../ConflictTracker.js';
 export default class CliffsOfTheSeaDragon extends ProvinceCard {
     static id = 'cliffs-of-the-sea-dragon';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
             condition: (context) =>

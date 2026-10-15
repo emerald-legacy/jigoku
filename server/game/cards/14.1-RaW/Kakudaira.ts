@@ -6,7 +6,7 @@ import { flipDynasty } from '../../GameActions/GameActions.js';
 export default class Kakudaira extends ProvinceCard {
     static id = 'kakudaira';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: playerDelayedEffect({
                 when: {

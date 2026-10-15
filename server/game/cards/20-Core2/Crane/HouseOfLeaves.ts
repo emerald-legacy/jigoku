@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 export default class HouseOfLeaves extends StrongholdCard {
     static id = 'house-of-leaves';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow this stronghold')
             .phase(Phase.Conflict)
             .cost(costs.bowSelf())

@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DojiReiha extends DrawCard {
     static id = 'doji-reiha';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Initiate a duel that honors participants and move loser home')
             .initiateDuel(() => ({
                 type: DuelType.Political,

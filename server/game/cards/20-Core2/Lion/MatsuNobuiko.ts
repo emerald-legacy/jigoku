@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MatsuNobuiko extends DrawCard {
     static id = 'matsu-nobuiko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Initiate a military duel')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

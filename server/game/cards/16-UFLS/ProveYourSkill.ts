@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class ProveYourSkill extends DrawCard {
     static id = 'prove-your-skill';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a status token off a character')
             .playOnlyIf((context) => context.player.isMoreHonorable())
             .tokenTarget({

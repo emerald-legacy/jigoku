@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
 class VineTattoo extends DrawCard {
     static id = 'vine-tattoo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

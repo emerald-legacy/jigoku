@@ -21,7 +21,7 @@ export abstract class CompositeGameAction<P extends GameActionProperties = GameA
         return this.children(properties).filter((action) => action !== undefined);
     }
 
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         const legal = (action: GameAction) => action.hasLegalTarget(context, overrides);
         const actions = this.resolving(context, properties);
@@ -29,18 +29,18 @@ export abstract class CompositeGameAction<P extends GameActionProperties = GameA
     }
 
     /** Its actions may target something else than it does (a look at the hand for a chosen province), so they answer for themselves. */
-    allTargetsLegal(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override allTargetsLegal(context: C, additionalProperties: ActionOverrides = {}): boolean {
         return this.hasLegalTarget(context, additionalProperties);
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         const affects = (action: GameAction) => action.canAffect(target, context, overrides);
         const actions = this.resolving(context, properties);
         return this.requiresAll ? actions.every(affects) : actions.some(affects);
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         return this.resolving(context, properties).some((action) => action.hasTargetsChosenByInitiatingPlayer(context, overrides));
     }

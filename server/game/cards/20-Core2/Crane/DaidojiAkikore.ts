@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DaidojiAkikore extends DrawCard {
     static id = 'daidoji-akikore';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.duelFocus('Add +1 to your duel total', (duel, context) =>
             context.game.isDuringConflict(ConflictType.Political) && duel.participants.includes(context.source))
             .duelLastingEffect((context) => ({

@@ -6,7 +6,7 @@ import { Duration } from '../../Constants.js';
 class TenguSensei extends DrawCard {
     static id = 'tengu-sensei';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent a character from attacking this phase')
             .when({
                 onCovertResolved: (event, context) => {

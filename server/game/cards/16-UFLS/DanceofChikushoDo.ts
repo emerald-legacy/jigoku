@@ -9,7 +9,7 @@ import { playerChoices } from '../playerChoices.js';
 class DanceOfChikushoDo extends DrawCard {
     static id = 'dance-of-chikusho-do';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put cards into provinces')
             .selectFrom({
                 targets: true,

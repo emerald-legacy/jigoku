@@ -5,7 +5,7 @@ import { PlayType } from '../../Constants.js';
 class KhanbulakBenefactor extends DrawCard {
     static id = 'khanbulak-benefactor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             condition: (context) => context.source.isParticipating(),
             effect: reduceCost({

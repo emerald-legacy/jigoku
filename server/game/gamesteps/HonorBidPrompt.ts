@@ -26,15 +26,15 @@ export class HonorBidPrompt extends AllPlayerPrompt {
         this.raiseEvent = raiseEvent;
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return !this.bid[player.uuid];
     }
 
-    completionCondition(player: Player): boolean {
+    override completionCondition(player: Player): boolean {
         return this.bid[player.uuid] > 0;
     }
 
-    continue(): boolean {
+    override continue(): boolean {
         const completed = super.continue();
 
         if(completed) {
@@ -79,7 +79,7 @@ export class HonorBidPrompt extends AllPlayerPrompt {
         takeHonor({ amount: Math.abs(difference), afterBid: true }).resolve(givingPlayer, context);
     }
 
-    activePrompt(player: Player) {
+    override activePrompt(player: Player) {
         let buttons = [...this.game.rules.honorBidValues];
 
         const prohibitedBids = this.prohibitedBids[player.uuid] || [];
@@ -91,11 +91,11 @@ export class HonorBidPrompt extends AllPlayerPrompt {
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to choose a bid.' };
     }
 
-    menuCommand(player: Player, bid: string): boolean {
+    override menuCommand(player: Player, bid: string): boolean {
         this.game.addMessage(msg`${player} has chosen a bid.`);
 
         this.bid[player.uuid] = parseInt(bid);

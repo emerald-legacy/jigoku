@@ -7,7 +7,7 @@ import { msg } from '../../../GameChat.js';
 export default class UnderTheNewMoon extends DrawCard {
     static id = 'under-the-new-moon';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Force defenders to assign first')
             .when({
                 onConflictOpportunityAvailable: (event, context) => event.player === context.player

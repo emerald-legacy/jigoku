@@ -8,7 +8,7 @@ import { randomHandCards } from '../randomHandCards.js';
 class KitsukiChiari extends DrawCard {
     static id = 'kitsuki-chiari';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Name a card')
             .when({
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player &&
@@ -34,7 +34,7 @@ class KitsukiChiari extends DrawCard {
     }
 
 
-    allowAttachment(attachment: DrawCard) {
+    override allowAttachment(attachment: DrawCard) {
         if(attachment.hasTrait(Trait.Poison) && !this.isBlank()) {
             return false;
         }

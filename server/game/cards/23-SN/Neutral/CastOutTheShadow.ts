@@ -6,7 +6,7 @@ import { controlsShugenja } from '../../controlsShugenja.js';
 export default class CastOutTheShadow extends DrawCard {
     static id = 'cast-out-the-shadow';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Sacrifice a character or take 2 honor')
             .playOnlyIf((context) => controlsShugenja(context.player))
             .target({

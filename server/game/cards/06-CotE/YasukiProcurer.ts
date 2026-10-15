@@ -7,7 +7,7 @@ import { Duration, CardType } from '../../Constants.js';
 class YasukiProcurer extends DrawCard {
     static id = 'yasuki-procurer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce the cost of the next attachment or character')
             .cost(costs.dishonorSelf())
             .playerLastingEffect({

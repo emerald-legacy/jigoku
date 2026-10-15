@@ -4,7 +4,7 @@ import { ConflictType } from '../../Constants.js';
 class AkodoToturi extends DrawCard {
     static id = 'akodo-toturi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve ring effect')
             .when({
                 onClaimRing: (event, context) => this.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating() &&

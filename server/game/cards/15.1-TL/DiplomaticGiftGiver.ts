@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class DiplomaticGiftGiver extends DrawCard {
     static id = 'diplomatic-gift-giver';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put fate on characters')
             .condition((context) => !!(context.source.isParticipating() && context.player.opponent && loseFate().canAffect(context.player.opponent, context) && loseFate().canAffect(context.player, context)))
             .target({

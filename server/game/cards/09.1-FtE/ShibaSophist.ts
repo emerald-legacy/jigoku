@@ -5,7 +5,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class ShibaSophist extends DrawCard {
     static id = 'shiba-sophist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Search top 5 cards for a card with the contested ring trait')
             .condition((context) => context.source.isParticipating())
             .deckSearch({

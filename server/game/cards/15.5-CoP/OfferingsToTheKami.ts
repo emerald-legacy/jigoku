@@ -5,7 +5,7 @@ import { claimRing, multiple, resolveRingEffect } from '../../GameActions/GameAc
 export default class OfferingsToTheKami extends ProvinceCard {
     static id = 'offerings-to-the-kami';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve the ring as if you were the attacker')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AsceticVisionary2 extends DrawCard {
     static id = 'ascetic-visionary-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Ready a character', { evenFromHome: true })
             .cost(costs.payFateToRing(1))
             .target({

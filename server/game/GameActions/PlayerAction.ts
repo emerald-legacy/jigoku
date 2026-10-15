@@ -16,10 +16,10 @@ export class PlayerAction<
     C extends AbilityContext = AbilityContext,
     D extends keyof P = never
 > extends GameAction<P, N, C, D> {
-    targetType = ['player'];
+    override targetType = ['player'];
 
     /** The ability's player; actions aimed at the opponent return `opponentTargets(context)`. */
-    defaultTargets(context: C): Player[] {
+    override defaultTargets(context: C): Player[] {
         return context.player ? [context.player] : [];
     }
 
@@ -27,11 +27,11 @@ export class PlayerAction<
         return context.player?.opponent ? [context.player.opponent] : [];
     }
 
-    checkEventCondition(event: PlayerEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
+    override checkEventCondition(event: PlayerEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.player, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: PlayerEvent<N, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: PlayerEvent<N, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.player = player;
     }

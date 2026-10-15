@@ -10,7 +10,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class KakitaTechnique extends DrawCard {
     static id = 'kakita-technique';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.duelFocus('Set bid to 0')
             .modifyBid((context) => {
                 const currentBid = context.player.honorBid;

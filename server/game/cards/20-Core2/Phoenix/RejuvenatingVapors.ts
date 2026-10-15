@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class RejuvenatingVapors extends DrawCard {
     static id = 'rejuvenating-vapors';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready a character')
             .target({
                 cardType: CardType.Character,

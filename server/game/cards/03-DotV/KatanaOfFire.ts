@@ -9,7 +9,7 @@ const elementSymbol = { key: 'katana-of-fire-fire', element: Element.Fire };
 class KatanaOfFire extends DrawCard {
     static id = 'katana-of-fire';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
         this.whileAttached({
@@ -30,7 +30,7 @@ class KatanaOfFire extends DrawCard {
         return skillModifier;
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

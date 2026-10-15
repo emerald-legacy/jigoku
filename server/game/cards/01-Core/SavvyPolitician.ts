@@ -5,7 +5,7 @@ import { honor } from '../../GameActions/GameActions.js';
 class SavvyPolitician extends DrawCard {
     static id = 'savvy-politician';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
                 onCardHonored: (event, context) => event.card === context.source

@@ -5,7 +5,7 @@ import { Direction } from '../../GameActions/ModifyBidAction.js';
 class IaijutsuMaster extends DrawCard {
     static id = 'iaijutsu-master';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Duelist
         });

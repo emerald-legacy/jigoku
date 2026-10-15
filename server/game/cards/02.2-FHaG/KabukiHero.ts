@@ -6,7 +6,7 @@ import { modifyMilitarySkill } from '../../effects.js';
 class KabukiHero extends DrawCard {
     static id = 'kabuki-hero';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain military bonus')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.payFate(1))

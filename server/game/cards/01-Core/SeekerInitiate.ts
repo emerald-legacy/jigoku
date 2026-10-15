@@ -6,7 +6,7 @@ import { claimsRoleElement } from '../claimedRings.js';
 class SeekerInitiate extends DrawCard {
     static id = 'seeker-initiate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at top 5 cards')
             .when({
                 onClaimRing: (event, context) => claimsRoleElement(context.player, event) && event.player === context.player && context.player.conflictDeck.length > 0

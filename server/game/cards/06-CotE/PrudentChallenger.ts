@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class PrudentChallenger extends DrawCard {
     static id = 'prudent-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a duel to discard attachment')
             .initiateDuel(() => ({
                 type: DuelType.Military,

@@ -27,8 +27,8 @@ function options<C extends AbilityContext>(choices: ChooseActionProperties<C>['c
 }
 
 export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<ChooseActionProperties<C>, C, 'activePromptTitle' | 'choices'> {
-    effect = 'choose between different actions';
-    defaultProperties = {
+    override effect = 'choose between different actions';
+    override defaultProperties = {
         activePromptTitle: 'Select an action:',
         choices: {}
     };
@@ -37,7 +37,7 @@ export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends
         return options(properties.choices).map(([_, option]) => option.action);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         const legalChoices = options(properties.choices).filter(([_, option]) =>
             option.action.hasLegalTarget(context, overrides)

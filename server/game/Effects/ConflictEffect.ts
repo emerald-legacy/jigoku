@@ -12,7 +12,7 @@ export class ConflictEffect extends ActiveEffect<Conflict> {
         this.match = () => true;
     }
 
-    getTargets(): Conflict[] {
+    override getTargets(): Conflict[] {
         return this.game.currentConflict ? [this.game.currentConflict] : [];
     }
 }

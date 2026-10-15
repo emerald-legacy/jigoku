@@ -5,7 +5,7 @@ import { putIntoProvince, selectCard } from '../../GameActions/GameActions.js';
 class TheRecedingTide extends DrawCard {
     static id = 'the-receding-tide';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Return a character to a province')
             .target({
                 cardType: CardType.Character,

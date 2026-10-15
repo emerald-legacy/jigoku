@@ -8,7 +8,7 @@ import { Players, CardType, RestrictionType, RestrictionScope } from '../../Cons
 class SpreadingTheDarkness extends DrawCard {
     static id = 'spreading-the-darkness';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character +4/+0')
             .cost(costs.payHonor(2))
             .target({

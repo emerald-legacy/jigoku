@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class DojiDiplomat extends DrawCard {
     static id = 'doji-diplomat';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Reveal provinces')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

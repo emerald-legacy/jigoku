@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class HojatsuDevotee extends DrawCard {
     static id = 'hojatsu-devotee';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.interrupt('Initiate a military duel, discarding the loser')
             .when({
                 onCardLeavesPlay: (event, context) =>

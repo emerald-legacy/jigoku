@@ -5,7 +5,7 @@ import { cannotBeDeclaredAsDefender } from '../../effects.js';
 class ButcherOfTheFallen extends DrawCard {
     static id = 'butcher-of-the-fallen';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             match: (card, context) => card.militarySkill < (context?.player.getProvinces((a) => !a.isBroken).length ?? 0),

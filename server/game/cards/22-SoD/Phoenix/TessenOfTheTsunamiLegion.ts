@@ -10,7 +10,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TessenOfTheTsunamiLegion extends DrawCard {
     static id = 'tessen-of-the-tsunami-legion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Shugenja
         });

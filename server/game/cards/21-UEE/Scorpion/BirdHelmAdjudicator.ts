@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class BirdHelmAdjudicator extends DrawCard {
     static id = 'bird-helm-adjudicator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Make the opponent lose an honor')
             .when({
                 onConflictPass: (event, context) =>

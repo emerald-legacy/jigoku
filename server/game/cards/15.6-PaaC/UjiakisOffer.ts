@@ -5,7 +5,7 @@ import { placeFate } from '../../GameActions/GameActions.js';
 class UjiakisOffer extends DrawCard {
     static id = 'ujiaki-s-offer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Place a fate on a participating character, bow it, move it home, and dishonor it', { conflictType: ConflictType.Political })
             .target({
                 cardType: CardType.Character,

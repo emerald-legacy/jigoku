@@ -4,7 +4,7 @@ import { modifyMilitarySkill } from '../../effects.js';
 class DamnedHida extends DrawCard {
     static id = 'damned-hida';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             effect: modifyMilitarySkill(3)
         });

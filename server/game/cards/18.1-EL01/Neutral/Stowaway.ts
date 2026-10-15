@@ -8,7 +8,7 @@ import { countCardsUnderneath } from '../../cardsUnderneath.js';
 class Stowaway extends DrawCard {
     static id = 'stowaway';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place cards underneath self')
             .when({
                 onConflictDeclared: (event, context) => !!event.attackers?.includes(context.source),

@@ -5,7 +5,7 @@ import { discardFromPlay } from '../../../GameActions/GameActions.js';
 class Disarm extends DrawCard {
     static id = 'disarm';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard an attachment')
             .target({
                 cardType: CardType.Attachment

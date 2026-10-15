@@ -15,7 +15,7 @@ function isamuWentHome(event: SendOrReturnHomeEvent, context: TriggeredAbilityCo
 export default class ShinjoIsamu extends DrawCard {
     static id = 'shinjo-isamu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve a ring effect')
             .when({
                 onSendHome: isamuWentHome,

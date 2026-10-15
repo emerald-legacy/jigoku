@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class TaryuJiai extends DrawCard {
     static id = 'taryu-jiai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Initiate a glory duel between two shugenja')
             .target({
                 name: 'myShugenja',

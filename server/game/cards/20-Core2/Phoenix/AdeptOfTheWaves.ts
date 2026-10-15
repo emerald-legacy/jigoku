@@ -9,7 +9,7 @@ const COVERT_ELEMENT = 'adept-of-the-waves-water';
 export default class AdeptOfTheWaves extends DrawCard {
     static id = 'adept-of-the-waves';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Grant Covert to a character')
             .target({
                 cardType: CardType.Character
@@ -24,7 +24,7 @@ export default class AdeptOfTheWaves extends DrawCard {
             .chatText((context) => msg`grant Covert during ${this.getCurrentElementSymbol(COVERT_ELEMENT)} conflicts to ${context.chatTarget()}`);
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: COVERT_ELEMENT,

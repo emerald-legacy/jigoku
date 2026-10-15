@@ -16,7 +16,7 @@ import {
 export default class SpectralVisitation extends ProvinceCard {
     static id = 'spectral-visitation';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('put a character from your discard pile into play')
             .when({
                 onCardRevealed: (event, context) => context.source === event.card

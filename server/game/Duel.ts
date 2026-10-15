@@ -43,7 +43,7 @@ export class Duel extends GameObject {
     private eventRegistrar?: EventRegistrar;
 
     constructor(
-        public game: Game,
+        public override game: Game,
         public challenger: DrawCard,
         public targets: DrawCard[],
         public duelType: DuelType,

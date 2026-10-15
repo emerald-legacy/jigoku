@@ -13,7 +13,7 @@ import { CardType, Players } from '../../../Constants.js';
 class DaidojiIenori extends DrawCard {
     static id = 'daidoji-ienori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Set a participating character to 3/3')
             .target({
                 cardType: CardType.Character,

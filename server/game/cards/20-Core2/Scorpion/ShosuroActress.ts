@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShosuroActress extends DrawCard {
     static id = 'shosuro-actress';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Put an opponent\'s character into play')
             .cost(costs.sacrificeSelf())
             .target({

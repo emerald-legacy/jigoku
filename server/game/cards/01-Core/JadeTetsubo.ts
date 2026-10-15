@@ -6,7 +6,7 @@ import { removeFate } from '../../GameActions/GameActions.js';
 class JadeTetsubo extends DrawCard {
     static id = 'jade-tetsubo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class NaturalNegotiator extends DrawCard {
     static id = 'natural-negotiator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Courtier,
             myControl: true

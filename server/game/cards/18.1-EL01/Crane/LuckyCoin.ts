@@ -8,7 +8,7 @@ const ACTIVE_LOCATIONS = [Location.Hand, Location.PlayArea];
 export default class LuckyCoin extends DrawCard {
     static id = 'lucky-coin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Replace all cards in your provinces')
             .when({
                 onRevealFacedownDynastyCards: (_, context) => {

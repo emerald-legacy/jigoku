@@ -6,7 +6,7 @@ import { CardType, Location, Blocker } from '../../Constants.js';
 class CountrysideTrader extends DrawCard {
     static id = 'countryside-trader';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Resolve the attacked province ability')
             .condition((context) => context.game.isDuringConflict() && context.source.isAttacking())
             .cost(costs.payFate(1))

@@ -6,7 +6,7 @@ import { bow, chooseAction, takeHonor } from '../../../GameActions/GameActions.j
 export default class IkomaUjio extends DrawCard {
     static id = 'ikoma-ujio';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Military duel to bow', { conflictType: ConflictType.Political })
             .initiateDuel(() => ({
                 type: DuelType.Military,

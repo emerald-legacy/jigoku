@@ -5,7 +5,7 @@ import { CardType, Players } from '../../Constants.js';
 class NimbleNoyan extends DrawCard {
     static id = 'nimble-noyan';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,

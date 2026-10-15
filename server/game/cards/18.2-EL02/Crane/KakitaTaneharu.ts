@@ -7,7 +7,7 @@ import { RemainingCards } from '../../../Constants.js';
 class KakitaTaneharu extends DrawCard {
     static id = 'kakita-taneharu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Search your conflict deck', { evenFromHome: true })
             .deckSearch({
                 cardsToLookAt: 4,

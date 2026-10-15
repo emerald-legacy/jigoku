@@ -7,7 +7,7 @@ const elementKey = 'courteous-greeting-earth';
 
 export default class CourteousGreeting extends ProvinceCard {
     static id = 'courteous-greeting';
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character from each side')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .target({
@@ -25,7 +25,7 @@ export default class CourteousGreeting extends ProvinceCard {
             .chatText((context) => msg`bow ${context.targets.myCharacter} and ${context.targets.oppCharacter}`);
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

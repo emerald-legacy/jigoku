@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class HidaGuardian extends DrawCard {
     static id = 'hida-guardian';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character a bonus for each holding')
             .condition((context) => context.source.isParticipating())
             .target({

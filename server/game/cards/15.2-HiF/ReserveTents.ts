@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 class ReserveTents extends DrawCard {
     static id = 'reserve-tents';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character to the conflict')
             .target({
                 cardType: CardType.Character,

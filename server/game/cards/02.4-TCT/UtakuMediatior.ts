@@ -4,7 +4,7 @@ import { modifyBothSkills } from '../../effects.js';
 class UtakuMediator extends DrawCard {
     static id = 'utaku-mediator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.player.imperialFavor === '',
             effect: modifyBothSkills(1)

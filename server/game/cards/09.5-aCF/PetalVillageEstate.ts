@@ -5,7 +5,7 @@ import { CardType, Trait } from '../../Constants.js';
 class PetalVillageEstate extends DrawCard {
     static id = 'petal-village-estate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.type === CardType.Character && card.hasTrait(Trait.Imperial),
             effect: modifyBothSkills(1)

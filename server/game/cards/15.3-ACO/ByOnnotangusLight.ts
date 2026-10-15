@@ -5,7 +5,7 @@ import { cardCannot, setApparentFate } from '../../effects.js';
 export default class ByOnnotangusLight extends ProvinceCard {
     static id = 'by-onnotangu-s-light';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Any,

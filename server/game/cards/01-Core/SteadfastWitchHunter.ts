@@ -6,7 +6,7 @@ import { ready } from '../../GameActions/GameActions.js';
 class SteadfastWitchHunter extends DrawCard {
     static id = 'steadfast-witch-hunter';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready character')
             .cost(costs.sacrifice({ cardType: CardType.Character }))
             .target({

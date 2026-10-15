@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class AsahinaTakako extends DrawCard {
     static id = 'asahina-takako';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFacedown(),

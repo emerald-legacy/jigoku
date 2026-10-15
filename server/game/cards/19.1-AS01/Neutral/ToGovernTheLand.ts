@@ -8,7 +8,7 @@ import type { GameAction } from '../../../GameActions/GameAction.js';
 export default class ToGovernTheLand extends DrawCard {
     static id = 'to-govern-the-land';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Send home and bow based on bushi\'s power')
             .condition((context) => this.conditionToTrigger(ConflictType.Political, context))
             .target({

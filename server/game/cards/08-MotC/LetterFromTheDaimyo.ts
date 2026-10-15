@@ -5,7 +5,7 @@ import { ConflictType } from '../../Constants.js';
 class LetterFromTheDaimyo extends DrawCard {
     static id = 'letter-from-the-daimyo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class AsakoDiplomat extends DrawCard {
     static id = 'asako-diplomat';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor or dishonor a character')
             .when({
                 afterConflict: (event, context) =>

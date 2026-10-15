@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IntoTheStorm extends DrawCard {
     static id = 'into-the-storm';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Increase the cost to play events')
             .playerLastingEffect((context) => ({
                 target: Players.Any,

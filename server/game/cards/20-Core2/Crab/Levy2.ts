@@ -13,7 +13,7 @@ function hasFewerCards(context: AbilityContext): boolean {
 export default class Levy2 extends DrawCard {
     static id = 'levy-2';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Take an honor or a fate from your opponent')
             .condition((context) => context.player.opponent !== undefined)
             .select({

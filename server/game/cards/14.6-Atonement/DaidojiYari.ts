@@ -5,7 +5,7 @@ import { loseKeyword } from '../../effects.js';
 class DaidojiYari extends DrawCard {
     static id = 'daidoji-yari';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid),
             targetController: Players.Opponent,

@@ -9,7 +9,7 @@ export default class RoadToShakyakuMura extends DrawCard {
     static id = 'road-to-shakyaku-mura';
 
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Return a character and attachments')
             .when({
                 onCardLeavesPlay: (event, context) => {

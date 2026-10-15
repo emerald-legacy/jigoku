@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IkomaNatsuko extends DrawCard {
     static id = 'ikoma-natsuko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow and send home a participating character')
             .cost(costs.discardImperialFavor())
             .target({

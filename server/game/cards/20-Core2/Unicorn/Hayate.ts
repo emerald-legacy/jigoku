@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class Hayate extends DrawCard {
     static id = 'hayate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

@@ -5,7 +5,7 @@ import { reveal } from '../../../GameActions/GameActions.js';
 class DragonflyMediator extends DrawCard {
     static id = 'dragonfly-mediator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Have each player reveal cards from their hand')
             .target({
                 name: 'myCard',

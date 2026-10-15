@@ -8,7 +8,7 @@ const ELEMENT_KEY = 'along-the-river-of-gold-water';
 export default class AlongTheRiverOfGold extends ProvinceCard {
     static id = 'along-the-river-of-gold';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('switch a character\'s base skills')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
             .target({
@@ -20,7 +20,7 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
             .chatText('switch {0}\'s military and political skill');
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: ELEMENT_KEY,

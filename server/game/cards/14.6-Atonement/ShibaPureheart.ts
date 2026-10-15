@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class ShibaPureheart extends DrawCard {
     static id = 'shiba-pureheart';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
                 onConflictDeclared: (event, context) => {

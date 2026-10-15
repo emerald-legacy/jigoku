@@ -5,7 +5,7 @@ import { addKeyword } from '../../effects.js';
 class FuSuiTemple extends DrawCard {
     static id = 'fu-sui-temple';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
             condition: (context) => context.game.isDuringConflict(ConflictType.Political),

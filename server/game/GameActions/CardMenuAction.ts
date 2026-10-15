@@ -30,8 +30,8 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
     C,
     'activePromptTitle' | 'targets' | 'cards' | 'subActionProperties' | 'cardCondition'
 > {
-    effect = 'choose a target for {0}';
-    defaultProperties = {
+    override effect = 'choose a target for {0}';
+    override defaultProperties = {
         activePromptTitle: 'Select a card:',
         targets: false,
         cards: [],
@@ -39,7 +39,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         cardCondition: () => true
     };
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.cards.some((c) =>
             properties.gameAction.canAffect(
@@ -50,7 +50,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.options) {
             return true;
@@ -66,7 +66,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const cardCondition = (card: DrawCard, context: C) =>
             properties.gameAction.hasLegalTarget(
@@ -103,7 +103,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         });
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             properties.targets ||

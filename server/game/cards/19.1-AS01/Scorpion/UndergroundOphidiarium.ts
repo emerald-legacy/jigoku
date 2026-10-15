@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class UndergroundOphidiarium extends DrawCard {
     static id = 'underground-ophidiarium';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Search for a Poison')
             .cost(costs.sacrificeSelf())
             .deckSearch({

@@ -6,7 +6,7 @@ import { moveToConflict } from '../../GameActions/GameActions.js';
 class ShinjoTatsuo extends DrawCard {
     static id = 'shinjo-tatsuo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move this and another character to the conflict')
             .target({
                 name: 'self',

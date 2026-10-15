@@ -5,7 +5,7 @@ import { dishonor } from '../../GameActions/GameActions.js';
 class HidaBackbreaker extends DrawCard {
     static id = 'hida-backbreaker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Dishonor a character')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
@@ -19,7 +19,7 @@ class HidaBackbreaker extends DrawCard {
             }, dishonor());
     }
 
-    allowAttachment(attachment: DrawCard) {
+    override allowAttachment(attachment: DrawCard) {
         if(attachment.controller === this.controller.opponent) {
             return false;
         }

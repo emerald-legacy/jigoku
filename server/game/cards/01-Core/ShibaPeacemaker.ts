@@ -5,7 +5,7 @@ import { cannotParticipateAsAttacker } from '../../effects.js';
 class ShibaPeacemaker extends DrawCard {
     static id = 'shiba-peacemaker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             effect: cannotParticipateAsAttacker()

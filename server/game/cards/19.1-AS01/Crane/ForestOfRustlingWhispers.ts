@@ -6,7 +6,7 @@ import { chooseAction, dishonor, honor } from '../../../GameActions/GameActions.
 export default class ForestOfRustlingWhispers extends ProvinceCard {
     static id = 'forest-of-rustling-whispers';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Honor or dishonor a character')
             .target({
                 activePromptTitle: 'Choose a character to honor or dishonor',

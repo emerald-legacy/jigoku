@@ -8,7 +8,7 @@ import { ProvinceAttachment } from '../../ProvinceAttachment.js';
 export default class LessonsFromEarth extends ProvinceAttachment {
     static id = 'lessons-from-earth';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('Winner draws, loser discards')
             .when({
                 afterConflict: (event, context) => {

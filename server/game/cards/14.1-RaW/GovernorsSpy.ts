@@ -10,7 +10,7 @@ import { playerChoices } from '../playerChoices.js';
 class GovernorsSpy extends DrawCard {
     static id = 'governor-s-spy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Flip a player\'s dynasty cards facedown and rearrange them')
             .condition((context) => context.source.isParticipating())
             .selectFrom({

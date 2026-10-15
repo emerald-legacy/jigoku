@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DaiTsuchi extends DrawCard {
     static id = 'dai-tsuchi';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             cardCondition: (card) => card.printedMilitarySkill >= 3
         });

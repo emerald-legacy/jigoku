@@ -5,7 +5,7 @@ import { moveConflict } from '../../GameActions/GameActions.js';
 class TheCrashingWave extends DrawCard {
     static id = 'the-crashing-wave';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Move the conflict')
             .when({
                 onTheCrashingWave: (event, context) => event.conflict.defendingPlayer === context.player

@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class IuchiShahai extends DrawCard {
     static id = 'iuchi-shahai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: reduceCost({
                 match: (card) => card.hasTrait(Trait.Meishodo),

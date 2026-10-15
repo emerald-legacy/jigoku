@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 class WhiteHordeVanguard extends DrawCard {
     static id = 'white-horde-vanguard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.game.isDuringConflict() && context.game.conflictRecord.filter((record) => record.completed).length === 0,
             effect: [

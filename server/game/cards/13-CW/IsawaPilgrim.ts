@@ -9,7 +9,7 @@ const elementSymbol = { key: 'isawa-pilgrim-water', element: Element.Water };
 class IsawaPilgrim extends DrawCard {
     static id = 'isawa-pilgrim';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give control of this character')
             .condition((context) => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
             .cardLastingEffect((context) => ({
@@ -19,7 +19,7 @@ class IsawaPilgrim extends DrawCard {
             .chatText((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`);
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

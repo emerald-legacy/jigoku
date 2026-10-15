@@ -5,7 +5,7 @@ import { Players, CardType, ConflictType, Trait } from '../../Constants.js';
 class CrisisBreaker extends DrawCard {
     static id = 'crisis-breaker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready and bring into play')
             .condition((context) => {
                 if(this.game.isDuringConflict(ConflictType.Military) && this.game.currentConflict) {

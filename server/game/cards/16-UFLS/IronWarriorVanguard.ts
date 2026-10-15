@@ -5,7 +5,7 @@ import { honor } from '../../GameActions/GameActions.js';
 class IronWarriorVanguard extends DrawCard {
     static id = 'iron-warrior-vanguard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller &&

@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class BustlingAcademy extends DrawCard {
     static id = 'bustling-academy';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Discard a card in a province and refill it faceup')
             .condition((context) =>
                 context.player.cardsInPlay.some((card) => card.hasTrait(Trait.Scholar)) &&

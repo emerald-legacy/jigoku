@@ -12,13 +12,13 @@ export interface MoveToConflictProperties extends CardActionProperties {
 }
 
 export class MoveToConflictAction<C extends AbilityContext = AbilityContext> extends CardGameAction<MoveToConflictProperties, EventName.OnMoveToConflict, C> {
-    name = 'moveToConflict';
-    restriction = RestrictionType.MoveToConflict;
-    eventName = EventName.OnMoveToConflict;
-    cost = 'moving {0} into the conflict';
-    effect = 'move {0} into the conflict';
-    targetType = [CardType.Character];
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override name = 'moveToConflict';
+    override restriction = RestrictionType.MoveToConflict;
+    override eventName = EventName.OnMoveToConflict;
+    override cost = 'moving {0} into the conflict';
+    override effect = 'move {0} into the conflict';
+    override targetType = [CardType.Character];
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(!super.canAffect(card, context)) {
             return false;
@@ -43,13 +43,13 @@ export class MoveToConflictAction<C extends AbilityContext = AbilityContext> ext
         return card.location === Location.PlayArea;
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveToConflict, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveToConflict, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.side = properties.side || card.controller;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnMoveToConflict, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnMoveToConflict, C>): void {
         const context = event.context;
         const player = event.side;
         const conflict = context.game.requireConflict();

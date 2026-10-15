@@ -6,7 +6,7 @@ import { CardType, ConflictType } from '../../Constants.js';
 class BayushiKachiko extends DrawCard {
     static id = 'bayushi-kachiko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send a character home')
             .condition((context) => this.game.isDuringConflict(ConflictType.Political) && context.source.isParticipating())
             .target({

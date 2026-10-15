@@ -5,7 +5,7 @@ import { putIntoConflict } from '../../GameActions/GameActions.js';
 class Charge extends DrawCard {
     static id = 'charge';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Put a character into play from a province', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,

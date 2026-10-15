@@ -11,34 +11,34 @@ export interface GainFateProperties extends PlayerActionProperties {
 }
 
 export class GainFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainFateProperties, EventName.OnModifyFate, C, 'amount'> {
-    defaultProperties = { amount: 1 };
+    override defaultProperties = { amount: 1 };
 
-    name = 'gainFate';
+    override name = 'gainFate';
 
-    restriction = RestrictionType.GainFate;
-    eventName = EventName.OnModifyFate;
+    override restriction = RestrictionType.GainFate;
+    override eventName = EventName.OnModifyFate;
 
 
-    protected effectMessage(): MessageArgs {
+    protected override effectMessage(): MessageArgs {
         return ['gain {0} fate', []];
     }
 
-    protected effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
         return this.getProperties(context, additionalProperties).amount;
     }
 
-    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.amount > 0 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnModifyFate, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnModifyFate, C>): void {
         event.player.modifyFate(event.amount);
     }
 }

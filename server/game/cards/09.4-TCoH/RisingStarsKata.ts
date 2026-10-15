@@ -9,7 +9,7 @@ import { DuelsThisConflict } from '../DuelsThisConflict.js';
 export default class RisingStarsKata extends DrawCard {
     static id = 'rising-stars-kata';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const duelWinners = DuelsThisConflict.winners(this.game);
         this.action('Give a participating unique character +3 military skill')
             .target({

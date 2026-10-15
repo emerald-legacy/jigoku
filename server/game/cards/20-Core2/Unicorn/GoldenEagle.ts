@@ -6,7 +6,7 @@ import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js
 export default class GoldenEagle extends DrawCard {
     static id = 'golden-eagle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
 
         this.persistentEffect({

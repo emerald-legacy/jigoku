@@ -6,7 +6,7 @@ import { discardCard, moveCard, multiple, selectCard } from '../../GameActions/G
 class ApprenticeEngineer extends DrawCard {
     static id = 'apprentice-engineer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a holding in a province')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

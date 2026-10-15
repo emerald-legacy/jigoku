@@ -8,7 +8,7 @@ import type Player from '../../Player.js';
 export default class MirumotoDojo extends DrawCard {
     static id = 'mirumoto-dojo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a military duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,

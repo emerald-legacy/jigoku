@@ -5,7 +5,7 @@ import { CardType, Players, Location, Trait } from '../../Constants.js';
 class UnifiedCompany extends DrawCard {
     static id = 'unified-company';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a 2 cost or less bushi into play from dynasty discard')
             .when({
                 afterConflict: (event, context) => {

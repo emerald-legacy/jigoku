@@ -5,7 +5,7 @@ import { Players, CardType, ConflictType } from '../../Constants.js';
 class MatsuMitsuko extends DrawCard {
     static id = 'matsu-mitsuko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character to the conflict')
             .condition((context) => !!(this.game.isDuringConflict(ConflictType.Military) && context.player.opponent && context.player.isMoreHonorable()))
             .target({

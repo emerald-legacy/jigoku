@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class IkomaTsanuri extends DrawCard {
     static id = 'ikoma-tsanuri';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give your characters +1/+1')
             .condition((context) => context.source.isParticipating() &&
                                   context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait(Trait.Bushi)).length > 2)

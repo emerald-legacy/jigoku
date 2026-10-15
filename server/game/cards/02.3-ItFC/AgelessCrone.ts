@@ -5,7 +5,7 @@ import { increaseCost } from '../../effects.js';
 class AgelessCrone extends DrawCard {
     static id = 'ageless-crone';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,

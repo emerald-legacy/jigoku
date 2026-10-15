@@ -8,7 +8,7 @@ import { chooseCardToDiscard, randomHandCards } from '../../randomHandCards.js';
 export default class LoyalAttendant extends DrawCard {
     static id = 'loyal-attendant';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.conflictAction('Discard a card')
             .target({
                 controller: Players.Opponent,

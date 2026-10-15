@@ -5,7 +5,7 @@ import { Location, CardType, Trait } from '../../Constants.js';
 class SeppunIshikawa extends DrawCard {
     static id = 'seppun-ishikawa';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyBothSkills((card) => this.getImperialCardsInPlay(card))
         });

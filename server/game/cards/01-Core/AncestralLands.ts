@@ -5,7 +5,7 @@ import { ConflictType } from '../../Constants.js';
 export default class AncestralLands extends ProvinceCard {
     static id = 'ancestral-lands';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(ConflictType.Political),
             effect: modifyProvinceStrength(5)

@@ -12,29 +12,29 @@ export interface HandlerProperties<C extends AbilityContext = AbilityContext> ex
 }
 
 export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties<C>, EventName.Unnamed, C, 'handler' | 'hasTargetsChosenByInitiatingPlayer'> {
-    defaultProperties = {
+    override defaultProperties = {
         handler: () => true,
         hasTargetsChosenByInitiatingPlayer: false
     };
 
-    hasLegalTarget(_context: C): boolean {
+    override hasLegalTarget(_context: C): boolean {
         return true;
     }
 
-    canAffect(_target: GameObject, _context: C): boolean {
+    override canAffect(_target: GameObject, _context: C): boolean {
         return true;
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName, C>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
         properties.handler(event.context, targetList(properties.target));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
         return this.getProperties(context, additionalProperties).hasTargetsChosenByInitiatingPlayer;
     }
 }

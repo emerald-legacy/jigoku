@@ -16,7 +16,7 @@ function penalty(context: AbilityContext): number {
 export default class TheHundredHandStrike extends DrawCard {
     static id = 'the-hundred-hand-strike';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give a skill penalty to a participating character')
             .target({
                 name: 'puncher',

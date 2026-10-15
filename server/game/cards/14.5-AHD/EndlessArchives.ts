@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class EndlessArchives extends DrawCard {
     static id = 'endless-archives';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place an honor token and draw cards')
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player

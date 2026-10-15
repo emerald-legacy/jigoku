@@ -6,7 +6,7 @@ import type Ring from '../Ring.js';
 
 /** An attachment played on and attached to a province: by default an unbroken one, optionally only its controller's. */
 export class ProvinceAttachment extends DrawCard {
-    public canPlayOn(source: BaseCard | Ring) {
+    public override canPlayOn(source: BaseCard | Ring) {
         return (
             source.type === CardType.Province &&
             (!this.unbrokenOnly() || !(source instanceof ProvinceCard && source.isBroken)) &&
@@ -15,7 +15,7 @@ export class ProvinceAttachment extends DrawCard {
         );
     }
 
-    public canAttach(parent: BaseCard) {
+    public override canAttach(parent: BaseCard) {
         if(this.unbrokenOnly() && parent instanceof ProvinceCard && parent.isBroken) {
             return false;
         }

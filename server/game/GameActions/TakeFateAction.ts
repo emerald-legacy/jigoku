@@ -11,24 +11,24 @@ export interface TransferFateProperties extends PlayerActionProperties {
 }
 
 export class TakeFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferFateProperties, EventName.OnMoveFate, C, 'amount'> {
-    name = 'takeFate';
-    eventName = EventName.OnMoveFate;
-    defaultProperties = { amount: 1 };
+    override name = 'takeFate';
+    override eventName = EventName.OnMoveFate;
+    override defaultProperties = { amount: 1 };
 
-    defaultTargets(context: C): Player[] {
+    override defaultTargets(context: C): Player[] {
         return this.opponentTargets(context);
     }
 
-    getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return ['giving {1} fate to {2}', [properties.amount, context.player.opponent]];
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['take {1} fate from {0}', [this.getProperties(context, additionalProperties).amount]];
     }
 
-    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { amount } = this.getProperties(context, additionalProperties);
         return (
             !!player.opponent &&
@@ -38,7 +38,7 @@ export class TakeFateAction<C extends AbilityContext = AbilityContext> extends P
         );
     }
 
-    addPropertiesToEvent(event: PlayerEvent<EventName.OnMoveFate, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: PlayerEvent<EventName.OnMoveFate, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.fate = amount;
@@ -46,11 +46,11 @@ export class TakeFateAction<C extends AbilityContext = AbilityContext> extends P
         event.recipient = player.opponent;
     }
 
-    checkEventCondition(event: ActionEvent<EventName.OnMoveFate, C>): boolean {
+    override checkEventCondition(event: ActionEvent<EventName.OnMoveFate, C>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    eventHandler(event: ActionEvent<EventName.OnMoveFate, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnMoveFate, C>): void {
         this.moveFateEventHandler(event);
     }
 }

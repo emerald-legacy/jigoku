@@ -15,7 +15,7 @@ import { attach, cardLastingEffect, playCard, playerLastingEffect, sequential } 
 class VoiceOfTheAncestors extends DrawCard {
     static id = 'voice-of-the-ancestors';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const DummySpiritAttachment = new DrawCard(this.owner, {
             cost: '0',
             glory: '0',

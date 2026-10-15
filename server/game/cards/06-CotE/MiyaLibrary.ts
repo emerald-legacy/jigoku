@@ -6,7 +6,7 @@ import { rearrangeDeck } from '../../GameActions/GameActions.js';
 class MiyaLibrary extends DrawCard {
     static id = 'miya-library';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Replace Miya Library for a faceup imperial character')
             .condition((context) => context.player.dynastyDeck.length > 0)
             .deckSearch({

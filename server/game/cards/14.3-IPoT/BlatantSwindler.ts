@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class BlatantSwindler extends DrawCard {
     static id = 'blatant-swindler';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Move home a character')
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
             .cost(costs.giveHonorToOpponent(1))

@@ -5,7 +5,7 @@ import { placeFateOnRing } from '../../GameActions/GameActions.js';
 class TogashiDreamer extends DrawCard {
     static id = 'togashi-dreamer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Move a fate from a character to a ring')
             .when({
                 onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait(Trait.Kiho) && context.source.isParticipating()

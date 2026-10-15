@@ -7,7 +7,7 @@ import { Location, PlayType, TargetMode, CardType, Players, Trait } from '../../
 class RightHandOfTheEmperor extends DrawCard {
     static id = 'right-hand-of-the-emperor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.player.opponent !== undefined && context.player.isMoreHonorable(),
             location: Location.ConflictDiscardPile,

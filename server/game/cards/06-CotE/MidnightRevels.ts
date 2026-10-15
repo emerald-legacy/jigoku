@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 export default class MidnightRevels extends ProvinceCard {
     static id = 'midnight-revels';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow a character')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source

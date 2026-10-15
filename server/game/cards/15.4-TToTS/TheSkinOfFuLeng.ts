@@ -5,7 +5,7 @@ import { canBeTriggeredByOpponent, playerCannot } from '../../effects.js';
 class TheSkinOfFuLeng extends DrawCard {
     static id = 'the-skin-of-fu-leng';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             unique: true

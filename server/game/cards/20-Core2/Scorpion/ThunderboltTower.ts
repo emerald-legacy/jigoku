@@ -8,7 +8,7 @@ import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 export default class ThunderboltTower extends StrongholdCard {
     static id = 'thunderbolt-tower';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character -2/-2')
             .cost(costs.bowSelf())
             .target({

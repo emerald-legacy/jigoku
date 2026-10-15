@@ -53,10 +53,10 @@ type DeckSearchDefaults =
 type ResolvedDeckSearchProperties<C extends AbilityContext> = WithDefaults<DeckSearchProperties<C>, DeckSearchDefaults>;
 
 export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DeckSearchProperties<C>, EventName.OnDeckSearch, C, DeckSearchDefaults> {
-    name = 'deckSearch';
-    eventName = EventName.OnDeckSearch;
+    override name = 'deckSearch';
+    override eventName = EventName.OnDeckSearch;
 
-    defaultProperties = {
+    override defaultProperties = {
         cardsToLookAt: -1,
         numCards: 1,
         mode: TargetMode.Single,
@@ -67,7 +67,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         cardCondition: () => true
     };
 
-    hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(derive(properties.cardsToLookAt, context) === 0) {
             return false;
@@ -76,7 +76,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         return this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         const { cardsToLookAt } = properties;
         const player = this.#searched(properties, context);
@@ -86,24 +86,24 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         return [message, player !== context.player ? [player] : []];
     }
 
-    protected effectMessageTarget(): MsgArg {
+    protected override effectMessageTarget(): MsgArg {
         return undefined;
     }
 
-    canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const amount = derive(properties.cardsToLookAt, context);
         return amount !== 0 && this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
         const { cardsToLookAt } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = derive(cardsToLookAt, context);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const player = this.#searched(properties, context);
         const event = this.getEvent(player, context, additionalProperties);

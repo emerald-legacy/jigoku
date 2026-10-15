@@ -7,7 +7,7 @@ import { CardType } from '../../Constants.js';
 class YogoHiroue extends DrawCard {
     static id = 'yogo-hiroue';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Move a character into the conflict')
             .target({
                 cardType: CardType.Character,

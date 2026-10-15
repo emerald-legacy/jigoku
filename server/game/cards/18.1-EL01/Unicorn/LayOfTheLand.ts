@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class LayOfTheLand extends DrawCard {
     static id = 'lay-of-the-land';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reveal a province and discard status tokens')
             .target({
                 activePromptTitle: 'Choose an unbroken province',

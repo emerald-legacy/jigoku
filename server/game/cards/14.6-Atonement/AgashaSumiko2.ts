@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 export default class AgashaSumiko2 extends DrawCard {
     static id = 'agasha-sumiko-2';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.interrupt('Honor a character')
             .when({
                 onCardLeavesPlay: (event, context) =>

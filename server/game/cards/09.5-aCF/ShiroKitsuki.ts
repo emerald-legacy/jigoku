@@ -9,7 +9,7 @@ import { msg } from '../../GameChat.js';
 export default class ShiroKitsuki extends StrongholdCard {
     static id = 'shiro-kitsuki';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Name a card')
             .when({
                 onConflictDeclared: () => true

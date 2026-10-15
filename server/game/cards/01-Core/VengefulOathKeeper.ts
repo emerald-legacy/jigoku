@@ -4,7 +4,7 @@ import { Location, ConflictType } from '../../Constants.js';
 class VengefulOathkeeper extends DrawCard {
     static id = 'vengeful-oathkeeper';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put this into play')
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player &&

@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 class MotoJuro extends DrawCard {
     static id = 'moto-juro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move this character to the conflict or home from the conflict')
             .if((context) => context.source.isDrawCard() && context.source.isParticipating())
                 .sendHome()

@@ -5,7 +5,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class HidaKotoe extends DrawCard {
     static id = 'hida-kotoe';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard an attachment')
             .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()

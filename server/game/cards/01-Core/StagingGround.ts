@@ -5,7 +5,7 @@ import { flipDynasty } from '../../GameActions/GameActions.js';
 class StagingGround extends DrawCard {
     static id = 'staging-ground';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Flip up to 2 dynasty cards')
             .targetCards({
                 mode: TargetMode.UpTo,

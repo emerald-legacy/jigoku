@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class InsultToInjury extends DrawCard {
     static id = 'insult-to-injury';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Dishonor the loser of a duel')
             .when({
                 afterDuel: (event, context) =>

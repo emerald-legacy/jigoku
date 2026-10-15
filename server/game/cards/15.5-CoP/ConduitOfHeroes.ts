@@ -8,7 +8,7 @@ import * as costs from '../../costs/index.js';
 class ConduitOfHeroes extends DrawCard {
     static id = 'conduit-of-heroes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character +3/+1/+1')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.unless((context) => !!context.player.opponent && context.player.honor >= context.player.opponent.honor + 5, costs.bowSelf()))

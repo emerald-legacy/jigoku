@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class CurryFavor extends DrawCard {
     static id = 'curry-favor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Ready a character')
             .when({
                 onReturnHome: (event, context) => {

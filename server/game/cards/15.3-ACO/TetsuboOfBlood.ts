@@ -5,13 +5,13 @@ import { RestrictionType } from '../../Constants.js';
 class TetsuboOfBlood extends DrawCard {
     static id = 'tetsubo-of-blood';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: cardCannot(RestrictionType.Honor)
         });
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

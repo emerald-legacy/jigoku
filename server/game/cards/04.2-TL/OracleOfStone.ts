@@ -4,7 +4,7 @@ import { chosenDiscard, draw, sequential } from '../../GameActions/GameActions.j
 class OracleOfStone extends DrawCard {
     static id = 'oracle-of-stone';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Draw 2 cards, then discard 2 cards')
             .gameAction(sequential([
                 draw((context) => ({

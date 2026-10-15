@@ -5,7 +5,7 @@ import { CardType, ConflictType } from '../../Constants.js';
 class HonorInBattle extends DrawCard {
     static id = 'honor-in-battle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor a character')
             .condition((context) => context.player.getClaimedRings().some((ring) => ring.isConflictType(ConflictType.Military)))
             .target({

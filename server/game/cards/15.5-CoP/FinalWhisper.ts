@@ -6,7 +6,7 @@ import { StatusToken } from '../../StatusToken.js';
 class FinalWhisper extends DrawCard {
     static id = 'final-whisper';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Copy status token')
             .when({
                 onStatusTokenGained: (event, context) =>

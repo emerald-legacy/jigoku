@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class HidaHonoka extends DrawCard {
     static id = 'hida-honoka';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Restore a province')
             .target({
                 location: Location.Provinces,

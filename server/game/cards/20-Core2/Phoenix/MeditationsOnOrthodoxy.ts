@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MeditationsOnOrthodoxy extends DrawCard {
     static id = 'meditations-on-orthodoxy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => Boolean(context.player.opponent) && context.player.isMoreHonorable(),
             location: Location.ConflictDiscardPile,

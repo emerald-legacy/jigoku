@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class IsawaHeiko extends DrawCard {
     static id = 'isawa-heiko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Switch a character\'s base skills')
             .when({
                 onCardPlayed: (event, context) => {

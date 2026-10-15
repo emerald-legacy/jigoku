@@ -5,7 +5,7 @@ import { fateCostToTarget } from '../../effects.js';
 class MonasteryProtector extends DrawCard {
     static id = 'monastery-protector';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => card.type === CardType.Character && card.controller === context?.player && card.hasTrait(Trait.Tattooed),
             effect: fateCostToTarget({

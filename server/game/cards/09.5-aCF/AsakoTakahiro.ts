@@ -4,7 +4,7 @@ import { modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 class AsakoTakahiro extends DrawCard {
     static id = 'asako-takahiro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             effect: [

@@ -5,7 +5,7 @@ import { Players, Location } from '../../Constants.js';
 class SeasonedPatroller extends DrawCard {
     static id = 'seasoned-patroller';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.isConflictProvince(),
             targetLocation: Location.Provinces,

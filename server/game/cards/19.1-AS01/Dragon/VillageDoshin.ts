@@ -9,7 +9,7 @@ const DOSHIN_TAX = 2;
 export default class VillageDoshin extends DrawCard {
     static id = 'village-doshin';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.wouldInterrupt('Protect attachment from leaving play')
             .when({
                 onInitiateAbilityEffects: (event, context) =>

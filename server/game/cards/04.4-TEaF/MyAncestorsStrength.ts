@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class MyAncestorsStrength extends DrawCard {
     static id = 'my-ancestor-s-strength';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Modify base military and political skills')
             .target({
                 name: 'shugenja',

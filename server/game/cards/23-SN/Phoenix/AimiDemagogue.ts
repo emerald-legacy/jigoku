@@ -8,7 +8,7 @@ import type { GameAction } from '../../../GameActions/GameAction.js';
 export default class AimiDemagogue extends DrawCard {
     static id = 'aimi-demagogue';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give pride')
             .target({
                 controller: Players.Any,

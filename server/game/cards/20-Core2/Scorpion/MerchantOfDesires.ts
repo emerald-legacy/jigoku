@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class MerchantOfDesires extends DrawCard {
     static id = 'merchant-of-desires';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Draw a card')
             .cost(costs.payHonor(1))
             .cost(costs.optionalOpponentLoseHonor('Lose 1 honor to draw a card?'))

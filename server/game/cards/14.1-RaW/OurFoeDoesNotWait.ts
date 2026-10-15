@@ -6,7 +6,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class OurFoeDoesNotWait extends DrawCard {
     static id = 'our-foe-does-not-wait';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place a card from your deck faceup on a province')
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player

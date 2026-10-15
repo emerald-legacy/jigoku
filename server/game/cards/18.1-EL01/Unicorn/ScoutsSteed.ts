@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ScoutsSteed extends DrawCard {
     static id = 'scout-s-steed';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({ myControl: true });
 
         this.reaction('Call your steed and go out to explore')

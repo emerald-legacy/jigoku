@@ -5,7 +5,7 @@ import { playableFromUnderneath } from '../../cardsUnderneath.js';
 export default class DisloyalOathkeeper extends DrawCard {
     static id = 'disloyal-oathkeeper';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect(playableFromUnderneath(this));
 
         this.reaction('Put card under this')

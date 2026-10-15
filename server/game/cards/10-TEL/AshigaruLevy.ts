@@ -5,7 +5,7 @@ import { CardType, Location } from '../../Constants.js';
 class AshigaruLevy extends DrawCard {
     static id = 'ashigaru-levy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Release the levies')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

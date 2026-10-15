@@ -5,7 +5,7 @@ import { cannotApplyLastingEffects, suppressEffects } from '../../effects.js';
 export default class FestivalOfTheDeparted extends ProvinceCard {
     static id = 'festival-of-the-departed';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             match: (card) => card.type === CardType.Character,

@@ -6,7 +6,7 @@ import { moveToConflict, ready } from '../../GameActions/GameActions.js';
 class TakeUpCommand extends DrawCard {
     static id = 'take-up-command';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: [
                 addTrait(Trait.Commander),

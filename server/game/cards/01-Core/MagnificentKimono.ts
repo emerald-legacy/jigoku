@@ -4,7 +4,7 @@ import { addKeyword } from '../../effects.js';
 class MagnificentKimono extends DrawCard {
     static id = 'magnificent-kimono';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: addKeyword('pride')
         });

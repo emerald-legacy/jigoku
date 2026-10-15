@@ -35,15 +35,15 @@ export interface AssignRolesProperties<R extends string = string, C extends Abil
  * two cards while the action resolves. The roles' actions resolve together, in this action's window.
  */
 export class AssignRolesAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AssignRolesProperties, EventName.Unnamed, C, 'player'> {
-    name = 'assignRoles';
-    defaultProperties: { player: Chooser } = { player: Players.Self };
+    override name = 'assignRoles';
+    override defaultProperties: { player: Chooser } = { player: Players.Self };
 
     #canTake(role: string, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const action = this.getProperties(context, additionalProperties).roles[role];
         return !!action && action.canAffect(card, context, { target: card });
     }
 
-    canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const { roles } = this.getProperties(context, additionalProperties);
         return target.isCard() && Object.keys(roles).some((role) => this.#canTake(role, target, context, additionalProperties));
     }
@@ -52,7 +52,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
         return resolveChoosingPlayer(context, this.getProperties(context, additionalProperties).player);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const cards = targetList(properties.target).filter((target) => target.isCard());
         const [first, second] = Object.keys(properties.roles);

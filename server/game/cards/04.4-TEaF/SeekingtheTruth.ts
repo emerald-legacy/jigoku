@@ -6,7 +6,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 export default class SeekingtheTruth extends ProvinceCard {
     static id = 'seeking-the-truth';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             condition: (context) => !!context.player.role && context.player.role.hasTrait(Trait.Water),

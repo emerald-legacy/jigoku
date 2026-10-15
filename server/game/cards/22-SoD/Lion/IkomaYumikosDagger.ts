@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IkomaYumikosDagger extends DrawCard {
     static id = 'ikoma-yumiko-s-dagger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Prevent discarding the Imperial Favor')
             .when({
                 onDiscardFavor: (event, context) => event.player === context.player &&

@@ -7,13 +7,13 @@ const elementKey = 'seeker-of-knowledge-air';
 class SeekerOfKnowledge extends DrawCard {
     static id = 'seeker-of-knowledge';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

@@ -9,7 +9,7 @@ import * as GameActions from '../../GameActions/GameActions.js';
 class DuelistTraining extends DrawCard {
     static id = 'duelist-training';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: gainAbility.action('Initiate a duel to bow', (ability) => ability
                 .condition((context) => context.source.isParticipating())

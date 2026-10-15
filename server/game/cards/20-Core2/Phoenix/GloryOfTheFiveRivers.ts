@@ -22,7 +22,7 @@ function resolveActionOnSelection(context: AbilityContext, player: Player, actio
 export default class GloryOfTheFiveRivers extends DrawCard {
     static id = 'glory-of-the-five-rivers';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Honor a character and dishonor a character')
             .condition((context) => context.player.isTraitInPlay(Trait.Courtier))
             .gameAction(handler({

@@ -5,7 +5,7 @@ import { perConflictOpportunity } from '../../../AbilityLimit.js';
 export default class PrayersOnTheEveOfBattle extends DrawCard {
     static id = 'prayers-on-the-eve-of-battle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.forcedReaction('Reap your rewards')
             .when({
                 afterConflict: (_event, context) => !!context.source.parentCharacter

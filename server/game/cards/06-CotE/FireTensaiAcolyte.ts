@@ -7,13 +7,13 @@ const elementKey = 'fire-tensai-acolyte-fire';
 class FireTensaiAcolyte extends DrawCard {
     static id = 'fire-tensai-acolyte';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: canOnlyBeDeclaredAsAttackerWithElement(() => this.getCurrentElementSymbol(elementKey))
         });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

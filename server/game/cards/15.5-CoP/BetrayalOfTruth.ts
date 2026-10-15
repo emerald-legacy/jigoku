@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class BetrayalOfTruth extends DrawCard {
     static id = 'betrayal-of-truth';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow honored and dishonored characters')
             .condition((context) => context.game.isDuringConflict() && context.game.findAnyCardsInPlay((card) => card.isParticipating() && !card.isOrdinary()).length > 0)
             .bow((context) => ({

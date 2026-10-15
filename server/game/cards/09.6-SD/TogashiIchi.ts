@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class TogashiIchi extends DrawCard {
     static id = 'togashi-ichi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Break the province')
             .condition((context) => {
                 const conflict = this.game.currentConflict;

@@ -7,7 +7,7 @@ import DrawCard from '../../DrawCard.js';
 export default class WayOfThePhoenix extends DrawCard {
     static id = 'way-of-the-phoenix';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Prevent an opponent contesting a ring')
             .condition((context) => context.player.opponent !== undefined)
             .ringTarget({

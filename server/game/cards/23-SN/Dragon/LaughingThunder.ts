@@ -8,7 +8,7 @@ import { attach, cardLastingEffect, sequential } from '../../../GameActions/Game
 export default class LaughingThunder extends DrawCard {
     static id = 'laughing-thunder';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: gainAllAbilitiesDynamic(
                 (card) => {

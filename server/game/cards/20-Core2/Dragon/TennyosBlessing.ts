@@ -7,7 +7,7 @@ import { perRound } from '../../../AbilityLimit.js';
 export default class TennyosBlessing extends DrawCard {
     static id = 'tennyo-s-blessing';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Look at your dynasty deck')
             .evenDuringDynasty()
             .target({

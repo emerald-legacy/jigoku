@@ -14,7 +14,7 @@ const elementKey = 'void-wielder-void';
 class VoidWielder extends DrawCard {
     static id = 'void-wielder';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Wield the power of the void')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
             .target({
@@ -49,7 +49,7 @@ class VoidWielder extends DrawCard {
             });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

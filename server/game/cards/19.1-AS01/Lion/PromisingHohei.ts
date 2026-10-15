@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class PromisingHohei extends DrawCard {
     static id = 'promising-hohei';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

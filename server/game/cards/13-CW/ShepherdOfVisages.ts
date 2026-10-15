@@ -6,7 +6,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class ShepherdOfVisages extends DrawCard {
     static id = 'shepherd-of-visages';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a participating character -2 glory')
             .target({
                 cardType: CardType.Character,

@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class AsakoMaezawa2 extends DrawCard {
     static id = 'asako-maezawa-2';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Bow a character with no fate')
             .when({
                 afterConflict: (event, context) =>

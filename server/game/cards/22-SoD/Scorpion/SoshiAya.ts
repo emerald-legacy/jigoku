@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiAya extends DrawCard {
     static id = 'soshi-aya';
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel an ability')
             .when({
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Character &&

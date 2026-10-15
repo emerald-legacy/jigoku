@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class LetGo extends DrawCard {
     static id = 'let-go';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard an attachment')
             .target({
                 cardType: CardType.Attachment

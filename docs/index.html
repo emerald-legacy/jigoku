@@ -71,7 +71,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 export default class Assassination extends DrawCard {
     static id = 'assassination';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Discard a character')
             .cost(costs.payHonor(3))
             .target({
@@ -84,7 +84,7 @@ export default class Assassination extends DrawCard {
 <ul>
     <li><strong>The base class</strong> follows the card type: <code>DrawCard</code> for characters, attachments, events and holdings; <code>ProvinceCard</code>, <code>StrongholdCard</code> and <code>RoleCard</code> for those. Some families have their own base, such as <code>TokenCard</code> or <code>ProvinceAttachment</code> (see <a href="helpers.html">card helpers</a>).</li>
     <li><strong><code>static id</code></strong> is the card's id in the card data (<code>test/json/Card/&lt;id&gt;.json</code>), which also holds the card's text. A card without a class still works with its printed stats and keywords, but has no abilities.</li>
-    <li><strong><code>setupCardAbilities()</code></strong> declares every ability once, when the card is created. Don't keep game state in it; everything that changes during a game goes through the context and the game actions.</li>
+    <li><strong><code>setupCardAbilities()</code></strong> declares every ability once, when the card is created. Write <code>override</code> in front of it: the compiler requires that modifier on every method that overrides a base method. Don't keep game state in it; everything that changes during a game goes through the context and the game actions.</li>
     <li><strong>Imports:</strong> game actions from <code>GameActions/GameActions.js</code>, effects from <code>effects.js</code>, costs as <code>import * as costs from '…/costs/index.js'</code>, limits from <code>AbilityLimit.js</code>, enums from <code>Constants.js</code>, chat templates (<code>msg</code>) from <code>GameChat.js</code>. Import types with <code>import type</code>; the linter enforces it.</li>
     <li><strong>Keywords</strong> (Covert, Sincerity, Pride, Restricted, …) come from the card data; you don't declare them.</li>
 </ul>

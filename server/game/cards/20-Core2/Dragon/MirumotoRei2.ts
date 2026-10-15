@@ -12,7 +12,7 @@ export default class MirumotoRei2 extends DrawCard {
         return context.source.attachments.filter((card) => card.hasTrait(Trait.Weapon)).length;
     }
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.duelChallenge('Help a character with a duel', (duel, context) =>
             duel.participants.includes(context.source) && this.getWeaponCount(context) > 0)
             .duelLastingEffect((context) => ({

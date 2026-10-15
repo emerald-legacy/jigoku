@@ -31,7 +31,7 @@ export class GainAllAbilities extends EffectValue<BaseCard, BaseCard> {
         this.abilitiesForTargets = {};
     }
 
-    apply(target: BaseCard) {
+    override apply(target: BaseCard) {
         this.abilitiesForTargets[target.uuid] = {
             actions: this.actions.flatMap((value) => {
                 value.apply(target);
@@ -49,7 +49,7 @@ export class GainAllAbilities extends EffectValue<BaseCard, BaseCard> {
         }
     }
 
-    unapply(target: BaseCard) {
+    override unapply(target: BaseCard) {
         const entry = this.abilitiesForTargets[target.uuid];
         if(entry) {
             for(const value of entry.reactions) {

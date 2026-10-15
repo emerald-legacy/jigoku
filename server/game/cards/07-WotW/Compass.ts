@@ -7,7 +7,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 class Compass extends DrawCard {
     static id = 'compass';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at top 3 cards of a deck')
             .when({
                 onCardRevealed: (event, context) =>

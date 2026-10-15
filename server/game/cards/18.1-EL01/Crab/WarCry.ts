@@ -11,7 +11,7 @@ function areAllAttackersBerserker(conflict: Conflict) {
 export default class WarCry extends DrawCard {
     static id = 'war-cry';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Break the attacked province')
             .when({
                 afterConflict: (event, context) =>

@@ -6,7 +6,7 @@ import { CardType } from '../../Constants.js';
 class MantisTenkinja extends DrawCard {
     static id = 'mantis-tenkinja';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Reduce cost of next event')
             .when({
                 onCardPlayed: (event, context) =>

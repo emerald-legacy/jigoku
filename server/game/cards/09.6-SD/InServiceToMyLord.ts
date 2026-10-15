@@ -8,7 +8,7 @@ import { Location, PlayType, CardType } from '../../Constants.js';
 class InServiceToMyLord extends DrawCard {
     static id = 'in-service-to-my-lord';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.ConflictDiscardPile,
             effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)

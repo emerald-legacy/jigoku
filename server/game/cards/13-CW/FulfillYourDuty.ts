@@ -8,7 +8,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class FulfillYourDuty extends DrawCard {
     static id = 'fulfill-your-duty';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add Province Strength')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.sacrifice({ cardType: CardType.Character }))

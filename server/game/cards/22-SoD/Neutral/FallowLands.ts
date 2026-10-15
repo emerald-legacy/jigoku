@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 export default class FallowLands extends ProvinceCard {
     static id = 'fallow-lands';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain resources')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

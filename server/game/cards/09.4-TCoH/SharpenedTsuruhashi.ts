@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class SharpenedTsuruhashi extends DrawCard {
     static id = 'sharpened-tsuruhashi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Return Sharpened Tsuruhashi to your hand')
             .when({
                 onCardLeavesPlay: (event, context) => event.isSacrifice && event.card === context.source.parentCharacter

@@ -5,7 +5,7 @@ import { Element } from '../../Constants.js';
 class AllAndNothing extends DrawCard {
     static id = 'all-and-nothing';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Replace a void effect with another ring effect')
             .when({
                 onResolveRingElement: (event, context) =>

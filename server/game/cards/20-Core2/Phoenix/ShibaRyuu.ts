@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShibaRyuu extends DrawCard {
     static id = 'shiba-ryuu';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             effect: changeConflictSkillFunction(

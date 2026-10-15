@@ -8,7 +8,7 @@ import DrawCard from '../../DrawCard.js';
 export default class NezumiInfiltrator extends DrawCard {
     static id = 'nezumi-infiltrator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
                 immunity({

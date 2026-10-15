@@ -6,7 +6,7 @@ import { Phase } from '../../Constants.js';
 class Subterfuge extends DrawCard {
     static id = 'subterfuge';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Prevent draw')
             .when({
                 onCardsDrawn: (event, context) => {

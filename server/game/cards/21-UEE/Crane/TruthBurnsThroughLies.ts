@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TruthBurnsThroughLies extends DrawCard {
     static id = 'truth-burns-through-lies';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({ trait: [Trait.Courtier, Trait.Magistrate] });
 
         this.whileAttached({

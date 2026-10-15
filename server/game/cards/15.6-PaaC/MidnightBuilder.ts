@@ -5,7 +5,7 @@ import { CardType, Location, Players } from '../../Constants.js';
 class MidnightBuilder extends DrawCard {
     static id = 'midnight-builder';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,

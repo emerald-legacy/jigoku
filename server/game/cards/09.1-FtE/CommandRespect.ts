@@ -8,7 +8,7 @@ import { additionalPlayCost } from '../../effects.js';
 class CommandRespect extends DrawCard {
     static id = 'command-respect';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Take honor from opponent when they play an event')
             .condition((context) => !!(context.game.isDuringConflict() && context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length))

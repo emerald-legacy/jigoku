@@ -8,7 +8,7 @@ import { injure } from '../../../GameActions/GameActions.js';
 export default class TwilightAmbush extends DrawCard {
     static id = 'twilight-ambush';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Sacrifice dishonored character to injure dishonored one')
             .cost(costs.sacrifice({
                 cardType: CardType.Character,

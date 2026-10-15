@@ -5,7 +5,7 @@ import { perRound } from '../../AbilityLimit.js';
 class WholenessOfTheWorld extends DrawCard {
     static id = 'wholeness-of-the-world';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Keep a claimed ring')
             .when({
                 onReturnRing: (event, context) => event.ring.claimedBy === context.player.name

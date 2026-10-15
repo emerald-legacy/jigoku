@@ -10,28 +10,28 @@ export interface SwitchConflictTypeProperties extends RingActionProperties {
 }
 
 export class SwitchConflictTypeAction<C extends AbilityContext = AbilityContext> extends RingAction<SwitchConflictTypeProperties, EventName.OnSwitchConflictType, C> {
-    name = 'switchConflictType';
-    eventName = EventName.OnSwitchConflictType;
+    override name = 'switchConflictType';
+    override eventName = EventName.OnSwitchConflictType;
 
-    getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: C): MessageArgs {
         const currentConflictType = context.game.currentConflict && context.game.currentConflict.conflictType;
         const newConflictType =
             currentConflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military;
         return ['switching the conflict type from {0} to {1}', [currentConflictType, newConflictType]];
     }
 
-    protected effectMessage(context: C): MessageArgs {
+    protected override effectMessage(context: C): MessageArgs {
         const currentConflictType = context.game.currentConflict && context.game.currentConflict.conflictType;
         const newConflictType =
             currentConflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military;
         return ['switch the conflict type from {0} to {1}', [newConflictType]];
     }
 
-    protected effectMessageTarget(context: C): MsgArg {
+    protected override effectMessageTarget(context: C): MsgArg {
         return context.game.currentConflict && context.game.currentConflict.conflictType;
     }
 
-    canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}) {
+    override canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}) {
         if(!context.game.currentConflict) {
             return false;
         }
@@ -39,7 +39,7 @@ export class SwitchConflictTypeAction<C extends AbilityContext = AbilityContext>
         return ring.conflictType !== targetConflictType;
     }
 
-    eventHandler(event: ActionEvent<EventName.OnSwitchConflictType, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnSwitchConflictType, C>): void {
         const context = event.context;
         context.game.requireConflict().switchType();
     }

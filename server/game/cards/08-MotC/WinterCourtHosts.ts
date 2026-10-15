@@ -4,7 +4,7 @@ import { unlimited } from '../../AbilityLimit.js';
 class WinterCourtHosts extends DrawCard {
     static id = 'winter-court-hosts';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
                 onCardPlayed: (event, context) => {

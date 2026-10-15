@@ -27,7 +27,7 @@ const trigger = {
 export default class SanctifiedEarth extends DrawCard {
     static id = 'sanctified-earth';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({ trait: Trait.Shugenja, myControl: true });
 
         this.reaction('Give character a skill bonus')

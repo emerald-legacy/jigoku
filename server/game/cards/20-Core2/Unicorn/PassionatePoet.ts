@@ -5,7 +5,7 @@ import { msg } from '../../../GameChat.js';
 export default class PassionatePoet extends DrawCard {
     static id = 'passionate-poet';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give all participating enemies -1/-1')
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getCharacters(context.player.opponent),

@@ -5,7 +5,7 @@ import { CardType, Trait } from '../../Constants.js';
 class ForgedEdict extends DrawCard {
     static id = 'forged-edict';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: (event) => event.card.type === CardType.Event

@@ -9,7 +9,7 @@ import { controlsParticipating } from '../../controlsParticipating.js';
 export default class ArrowsFromTheWoods extends DrawCard {
     static id = 'arrows-from-the-woods';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Reduce opponent\'s characters mil')
             .condition((context) =>
                 context.game.isDuringConflict(ConflictType.Military) &&

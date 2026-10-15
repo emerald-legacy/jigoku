@@ -6,7 +6,7 @@ import { moveToConflict } from '../../GameActions/GameActions.js';
 class YasukiOguri2 extends DrawCard {
     static id = 'yasuki-oguri-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a character in')
             .condition((context) => context.source.isDefending())
             .cost(costs.payFate(1))

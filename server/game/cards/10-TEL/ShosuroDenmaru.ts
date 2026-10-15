@@ -5,7 +5,7 @@ import { Players } from '../../Constants.js';
 class ShosuroDenmaru extends DrawCard {
     static id = 'shosuro-denmaru';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
             match: (card) => card.isHonored,

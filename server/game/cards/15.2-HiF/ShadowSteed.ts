@@ -6,7 +6,7 @@ import { addTrait } from '../../effects.js';
 class ShadowSteed extends DrawCard {
     static id = 'shadow-steed';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: addTrait(Trait.Cavalry)
         });
@@ -17,7 +17,7 @@ class ShadowSteed extends DrawCard {
             .ready((context) => ({target: context.source.parentCharacter ?? []}));
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

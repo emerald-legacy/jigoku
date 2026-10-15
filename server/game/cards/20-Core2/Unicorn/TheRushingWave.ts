@@ -19,7 +19,7 @@ function adjacentProvinces(centralProvince: ProvinceCard): ProvinceCard[] {
 export default class TheRushingWave extends DrawCard {
     static id = 'the-rushing-wave';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Set a province to zero strength')
             .condition((context) => controlsShugenja(context.player))
             .target({

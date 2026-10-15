@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class OutmaneuveredInCourt extends DrawCard {
     static id = 'outmaneuvered-in-court';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .cost(costs.discardImperialFavor())
             .target({

@@ -4,7 +4,7 @@ import { CardType, Trait } from '../../Constants.js';
 class Kamayari extends DrawCard {
     static id = 'kamayari';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Bushi
         });

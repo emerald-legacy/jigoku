@@ -4,7 +4,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class GuardiansOfTheSeikitsu extends ProvinceCard {
     static id = 'guardians-of-the-seikitsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow all characters 2 cost or less')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

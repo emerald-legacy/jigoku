@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 export default class ForegateVillage extends ProvinceCard {
     static id = 'foregate-village';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Switch the conflict type')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
@@ -12,7 +12,7 @@ export default class ForegateVillage extends ProvinceCard {
             .chatText('switch the conflict type');
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

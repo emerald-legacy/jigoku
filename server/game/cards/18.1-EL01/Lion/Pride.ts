@@ -8,7 +8,7 @@ import { soldierAttachCheck } from '../../soldierAttachCheck.js';
 export default class Pride extends StrongholdCard {
     static id = 'pride';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const canAttachSoldier = soldierAttachCheck(this.controller);
 
         this.action('Give a character a +1/+1 attachment')

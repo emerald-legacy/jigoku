@@ -6,7 +6,7 @@ import { Location, Players, CardType, EventName, ConflictType } from '../../Cons
 class OfferTestimony extends DrawCard {
     static id = 'offer-testimony';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Both players reveal a card')
             .condition((context) => !!(context.player.opponent && context.game.isDuringConflict(ConflictType.Political)))
             .target({

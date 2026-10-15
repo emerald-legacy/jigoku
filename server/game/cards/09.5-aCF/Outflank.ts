@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class Outflank extends DrawCard {
     static id = 'outflank';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent a character from declaring as a defender')
             .when({
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player.opponent && this.game.isDuringConflict()

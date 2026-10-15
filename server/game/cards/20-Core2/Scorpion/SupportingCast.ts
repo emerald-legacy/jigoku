@@ -8,7 +8,7 @@ import { msg } from '../../../GameChat.js';
 export default class SupportingCast extends DrawCard {
     static id = 'supporting-cast';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Give +3 military to a character')
             .when({
                 onInitiateAbilityEffects: (event, context) => {

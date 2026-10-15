@@ -4,7 +4,7 @@ import { placeFateOnRing, takeFateFromRing } from '../../GameActions/GameActions
 class WrittenInTheStars extends DrawCard {
     static id = 'written-in-the-stars';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Place or take fate from rings')
             .select({
                 'Place one fate on each unclaimed ring with no fate': placeFateOnRing(() => ({

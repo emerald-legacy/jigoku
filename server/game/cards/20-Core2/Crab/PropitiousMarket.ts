@@ -15,7 +15,7 @@ function amountOfFateGain(context: AbilityContext) {
 export default class PropitiousMarket extends DrawCard {
     static id = 'propitious-market';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,

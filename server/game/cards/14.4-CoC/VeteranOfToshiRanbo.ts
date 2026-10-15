@@ -4,7 +4,7 @@ import { modifyGlory } from '../../effects.js';
 class VeteranOfToshiRanbo extends DrawCard {
     static id = 'veteran-of-toshi-ranbo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyGlory(() => this.controller ? this.controller.getNumberOfFaceupProvinces() : 0)
         });

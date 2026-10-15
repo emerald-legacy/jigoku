@@ -18,7 +18,7 @@ import {
 class UnderSiege extends DrawCard {
     static id = 'under-siege';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place defender under siege')
             .when({
                 onConflictDeclared: (_event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null

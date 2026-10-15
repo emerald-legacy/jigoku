@@ -238,7 +238,7 @@ export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt 
         return [targetingControl(this.context.source, targetsOrEventCard(this.context, targets), this.choosingPlayer)];
     }
 
-    continue(): boolean {
+    override continue(): boolean {
         if(this.hideIfNoLegalTargets && this.selector.optional && !this.selector.hasEnoughTargets(this.context, this.choosingPlayer)) {
             this.complete();
         }
@@ -255,11 +255,11 @@ export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt 
         this.choosingPlayer.setSelectableCards(this.selector.findPossibleCards(this.context).filter((card: BaseCard) => this.checkCardCondition(card)));
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return player === this.choosingPlayer;
     }
 
-    activePrompt() {
+    override activePrompt() {
         let buttons = this.properties.buttons;
         if(!this.selector.automaticFireOnSelect(this.context) && this.selector.hasEnoughSelected(this.selectedCards, this.context) || this.selector.optional) {
             if(buttons.every((button: PromptButton) => button.arg !== 'done')) {
@@ -280,11 +280,11 @@ export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt 
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: this.properties.waitingPromptTitle || 'Waiting for opponent' };
     }
 
-    onCardClicked(player: Player, card: BaseCard): boolean {
+    override onCardClicked(player: Player, card: BaseCard): boolean {
         if(player !== this.choosingPlayer) {
             return false;
         }
@@ -348,7 +348,7 @@ export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt 
         return false;
     }
 
-    menuCommand(player: Player, arg: string): boolean {
+    override menuCommand(player: Player, arg: string): boolean {
         if(arg === 'cancel') {
             this.properties.onCancel(player);
             this.complete();
@@ -362,7 +362,7 @@ export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt 
         return false;
     }
 
-    complete(): void {
+    override complete(): void {
         this.clearSelection();
         return super.complete();
     }

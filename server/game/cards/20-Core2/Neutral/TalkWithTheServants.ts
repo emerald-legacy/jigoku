@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TalkWithTheServants extends DrawCard {
     static id = 'talk-with-the-servants';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Force opponent to discard 2 cards')
             .when({
                 afterConflict: (event, context) =>

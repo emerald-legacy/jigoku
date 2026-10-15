@@ -5,7 +5,7 @@ import { CardType, Location } from '../../Constants.js';
 class AppealToSympathy extends DrawCard {
     static id = 'appeal-to-sympathy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel an event')
             .when({
                 onInitiateAbilityEffects: (event) => event.card.type === CardType.Event

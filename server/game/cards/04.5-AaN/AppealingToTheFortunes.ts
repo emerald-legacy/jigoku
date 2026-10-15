@@ -6,7 +6,7 @@ import { putIntoPlay } from '../../GameActions/GameActions.js';
 export default class AppealingToTheFortunes extends ProvinceCard {
     static id = 'appealing-to-the-fortunes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !!context.player.role && context.player.role.hasTrait(Trait.Void),
             effect: modifyProvinceStrength(2)

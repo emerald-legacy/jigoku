@@ -6,7 +6,7 @@ import { msg } from '../../GameChat.js';
 class FalseLoyalties extends DrawCard {
     static id = 'false-loyalties';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Switch 2 characters your opponent controls')
             .when({
                 afterConflict: (event, context) => {

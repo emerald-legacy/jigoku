@@ -23,12 +23,12 @@ export class OptionalAction<C extends AbilityContext = AbilityContext> extends C
         return [properties.gameAction];
     }
 
-    getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         return properties.gameAction.getEffectMessage(context, overrides);
     }
 
-    addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         const chooser = resolveChoosingPlayer(context, properties.player);
         if(!chooser) {

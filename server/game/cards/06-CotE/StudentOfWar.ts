@@ -4,7 +4,7 @@ import { RestrictionType } from '../../Constants.js';
 class StudentOfWar extends DrawCard {
     static id = 'student-of-war';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.composure({
             effect: [
                 cardCannot(RestrictionType.RemoveFate),

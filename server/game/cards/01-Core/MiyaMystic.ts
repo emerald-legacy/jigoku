@@ -6,7 +6,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 class MiyaMystic extends DrawCard {
     static id = 'miya-mystic';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Sacrifice to discard an attachment')
             .phase(Phase.Conflict)
             .cost(costs.sacrificeSelf())

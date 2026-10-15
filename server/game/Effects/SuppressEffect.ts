@@ -8,7 +8,7 @@ export class SuppressEffect extends EffectValue<EffectValueMap[EffectName.Suppre
         super([]);
     }
 
-    recalculate() {
+    override recalculate() {
         const oldValue = this.value;
         const suppressedEffects = this.requireContext().game.effectEngine.effects.filter((effect) =>
             this.predicate(effect.effect)

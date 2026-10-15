@@ -4,7 +4,7 @@ import * as costs from '../../costs/index.js';
 export default class CityOfTheOpenHand extends StrongholdCard {
     static id = 'city-of-the-open-hand';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain an honor')
             .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
             .cost(costs.bowSelf())

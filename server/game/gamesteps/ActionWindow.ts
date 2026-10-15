@@ -35,11 +35,11 @@ export class ActionWindow extends UiPrompt {
         this.prevPlayerPassed = false;
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return player === this.currentPlayer;
     }
 
-    onCardClicked(player: Player, card: BaseCard): boolean {
+    override onCardClicked(player: Player, card: BaseCard): boolean {
         if(player !== this.currentPlayer) {
             return false;
         }
@@ -88,7 +88,7 @@ export class ActionWindow extends UiPrompt {
         }
     }
 
-    continue() {
+    override continue() {
         if(this.currentPlayer.opponent) {
             if(this.currentPlayer.opponent.actionPhasePriority && this.currentPlayer.actionPhasePriority) {
                 // Both players have action phase priority, don't do anything, it'll clear on its own
@@ -121,7 +121,7 @@ export class ActionWindow extends UiPrompt {
         }
     }
 
-    activePrompt() {
+    override activePrompt() {
         const buttons: Array<{ text: string; arg: string }> = [
             { text: 'Pass', arg: 'pass' }
         ];
@@ -135,11 +135,11 @@ export class ActionWindow extends UiPrompt {
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to take an action or pass' };
     }
 
-    menuCommand(_player: Player, choice: string) {
+    override menuCommand(_player: Player, choice: string) {
         if(choice === 'manual') {
             this.game.promptForSelect(this.currentPlayer, {
                 source: 'Manual Action',
@@ -289,7 +289,7 @@ export class ActionWindow extends UiPrompt {
         this.bonusActions = undefined;
     }
 
-    complete() {
+    override complete() {
         this.teardownBonusActions();
         super.complete();
     }

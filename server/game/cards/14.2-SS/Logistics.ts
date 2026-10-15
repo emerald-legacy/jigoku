@@ -6,7 +6,7 @@ import { draw } from '../../GameActions/GameActions.js';
 class Logistics extends DrawCard {
     static id = 'logistics';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a card in a province')
             .target({
                 name: 'cardInProvince',

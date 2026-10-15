@@ -6,7 +6,7 @@ import type Player from '../../../Player.js';
 export default class WhispersOfTheLordsOfDeath extends DrawCard {
     static id = 'whispers-of-the-lords-of-death';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
             effect: changePlayerGloryModifier((player) => this.highestMilitaryForPlayer(player))

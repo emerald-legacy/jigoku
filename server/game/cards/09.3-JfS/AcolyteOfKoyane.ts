@@ -7,7 +7,7 @@ import { CardType, Players, ConflictType } from '../../Constants.js';
 class AcolyteOfKoyane extends DrawCard {
     static id = 'acolyte-of-koyane';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain or lose pride')
             .condition((context) => context.game.isDuringConflict(ConflictType.Political))
             .target({

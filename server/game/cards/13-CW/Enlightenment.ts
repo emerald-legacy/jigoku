@@ -4,7 +4,7 @@ import { handler, resolveRingEffect, sequential } from '../../GameActions/GameAc
 class Enlightenment extends DrawCard {
     static id = 'enlightenment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Resolve all claimed ring effects')
             .condition((context) => context.player.getClaimedRings().length > 0)
             .gameAction(sequential([

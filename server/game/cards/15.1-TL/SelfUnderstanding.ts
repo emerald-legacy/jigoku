@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 export default class SelfUnderstanding extends DrawCard {
     static id = 'self-understanding';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: cardCannot({
                 cannot: RestrictionType.Target,

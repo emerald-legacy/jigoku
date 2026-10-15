@@ -4,7 +4,7 @@ import { CardType, ConflictType } from '../../Constants.js';
 class GloriousVictory extends DrawCard {
     static id = 'glorious-victory';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor each character you control')
             .when({
                 onBreakProvince: (event, context) =>

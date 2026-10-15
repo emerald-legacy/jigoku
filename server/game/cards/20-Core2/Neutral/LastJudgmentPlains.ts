@@ -9,7 +9,7 @@ const RECIPIENT = 'recipient';
 export default class LastJudgmentPlains extends ProvinceCard {
     static id = 'last-judgment-plains';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Move fate between two of your characters')
             .target({
                 name: DONOR,

@@ -9,7 +9,7 @@ import { honorTransferMessage } from '../honorTransferMessage.js';
 class ExpertInterpreter extends DrawCard {
     static id = 'expert-interpreter';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent characters from entering play while contesting a ring')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

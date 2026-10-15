@@ -7,7 +7,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class Defiance extends DrawCard {
     static id = 'defiance';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a character a skill bonus')
             .condition((context) => !!(context.game.isDuringConflict() && context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length))

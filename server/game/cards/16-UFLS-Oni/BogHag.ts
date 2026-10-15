@@ -4,7 +4,7 @@ import { msg } from '../../GameChat.js';
 export default class BogHag extends BaseOni {
     static id = 'bog-hag';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Discard from the conflict deck')
             .when({

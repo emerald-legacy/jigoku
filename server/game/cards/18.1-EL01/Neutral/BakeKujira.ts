@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class BakeKujira extends DrawCard {
     static id = 'bake-kujira';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.legendary(1);
 
         this.reaction('Eat a character')

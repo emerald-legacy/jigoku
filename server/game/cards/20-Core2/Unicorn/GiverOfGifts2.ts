@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class GiverOfGifts2 extends DrawCard {
     static id = 'giver-of-gifts-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move an attachment')
             .target({
                 cardType: CardType.Attachment,

@@ -5,7 +5,7 @@ import { perRound } from '../../AbilityLimit.js';
 class NitenMaster extends DrawCard {
     static id = 'niten-master';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Ready this character')
             .when({
                 onCardAttached: (event, context) => (

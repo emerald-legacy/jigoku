@@ -4,7 +4,7 @@ import { ConflictType, Location } from '../../Constants.js';
 class CallousAshigaru extends DrawCard {
     static id = 'callous-ashigaru';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             unique: true
         });

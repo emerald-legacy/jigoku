@@ -5,7 +5,7 @@ import { modifyProvinceStrength } from '../../effects.js';
 export default class Ninkatoshi extends ProvinceCard {
     static id = 'ninkatoshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,

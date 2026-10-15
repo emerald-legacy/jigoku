@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class HanteiDaisetsu extends DrawCard {
     static id = 'hantei-daisetsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Blank a participating character')
             .condition((context) => context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Political))
             .target({

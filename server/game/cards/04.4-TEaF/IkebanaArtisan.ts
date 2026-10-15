@@ -5,7 +5,7 @@ import { cancel, loseFate, sequential } from '../../GameActions/GameActions.js';
 class IkebanaArtisan extends DrawCard {
     static id = 'ikebana-artisan';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Lose fate instead of honor')
             .when({
                 onModifyHonor: (event, context) => event.dueToUnopposed && event.player === context.player

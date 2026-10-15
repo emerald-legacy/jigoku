@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class WolfsProposal extends DrawCard {
     static id = 'wolf-s-proposal';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Adjust glory')
             .chooseAction({
                 choices: {

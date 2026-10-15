@@ -7,7 +7,7 @@ import { CardType, Players, Trait } from '../../Constants.js';
 class SwellOfSeafoam extends DrawCard {
     static id = 'swell-of-seafoam';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Prevent bowing after conflict')
             .target({
                 cardType: CardType.Character,

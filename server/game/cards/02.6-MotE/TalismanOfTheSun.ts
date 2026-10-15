@@ -7,7 +7,7 @@ import { moveConflict } from '../../GameActions/GameActions.js';
 class TalismanOfTheSun extends DrawCard {
     static id = 'talisman-of-the-sun';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move conflict to a different province')
             .condition((context) => context.player.isDefendingPlayer())
             .cost(costs.bowSelf())

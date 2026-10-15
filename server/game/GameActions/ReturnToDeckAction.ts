@@ -14,16 +14,16 @@ export interface ReturnToDeckProperties extends CardActionProperties {
 }
 
 export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<ReturnToDeckProperties, C, 'bottom' | 'shuffle' | 'location'> {
-    name = 'returnToDeck';
-    restriction = RestrictionType.ReturnToDeck;
-    targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
-    defaultProperties = {
+    override name = 'returnToDeck';
+    override restriction = RestrictionType.ReturnToDeck;
+    override targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
+    override defaultProperties = {
         bottom: false,
         shuffle: false,
         location: Location.PlayArea
     };
 
-    getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: C): MessageArgs {
         const properties = this.getProperties(context);
         return [
             properties.shuffle
@@ -33,7 +33,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         ];
     }
 
-    protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.shuffle) {
             return ['shuffle {0} into its owner\'s deck', []];
@@ -41,7 +41,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         return ['return {0} to the ' + (properties.bottom ? 'bottom' : 'top') + ' of its owner\'s deck', []];
     }
 
-    canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         let location: Location[] = Array.isArray(properties.location) ? [...properties.location] : [properties.location];
         const index = location.indexOf(Location.Provinces);
@@ -56,7 +56,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         );
     }
 
-    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
         const { shuffle, target, bottom } = this.getProperties(context, additionalProperties);
         super.updateEvent(event, card, context, additionalProperties);
         event.destination = card.isDynasty ? Location.DynastyDeck : Location.ConflictDeck;
@@ -67,7 +67,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         }
     }
 
-    eventHandler(event: LeavesPlayEvent<C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: LeavesPlayEvent<C>, additionalProperties: ActionOverrides = {}): void {
         super.eventHandler(event, additionalProperties);
         const card = event.card;
         if(event.shuffle) {

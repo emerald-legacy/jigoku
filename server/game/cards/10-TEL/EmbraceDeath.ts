@@ -6,7 +6,7 @@ import { CardType, Players, Trait } from '../../Constants.js';
 class EmbraceDeath extends DrawCard {
     static id = 'embrace-death';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Sacrifice a bushi, remove a fate/discard')
             .when({
                 afterConflict: (event, context) =>

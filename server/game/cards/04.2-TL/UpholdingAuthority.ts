@@ -10,7 +10,7 @@ import DrawCard from '../../DrawCard.js';
 export default class UpholdingAuthority extends ProvinceCard {
     static id = 'upholding-authority';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => !!(context.player.role && context.player.role.hasTrait(Trait.Earth)),
             effect: modifyProvinceStrength(2)

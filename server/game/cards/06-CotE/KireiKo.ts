@@ -4,7 +4,7 @@ import { CardType } from '../../Constants.js';
 class KireiKo extends DrawCard {
     static id = 'kirei-ko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Bow a character who triggered an ability')
             .when({
                 onCardAbilityInitiated: (event, context) =>

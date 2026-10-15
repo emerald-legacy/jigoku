@@ -5,7 +5,7 @@ import { honor } from '../../GameActions/GameActions.js';
 class MirumotoMasashige extends DrawCard {
     static id = 'mirumoto-masashige';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
                 onPhaseStarted: (event, context) => event.phase === Phase.Conflict && context.player.opponent &&

@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ContemplateTheEternal extends DrawCard {
     static id = 'contemplate-the-eternal';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Return rings to put fate on character')
             .cost(costs.returnRings())
             .target({

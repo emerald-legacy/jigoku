@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class TheLionsShadow extends DrawCard {
     static id = 'the-lion-s-shadow';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { title: 1 },
             trait: [Trait.Courtier, Trait.Scout]

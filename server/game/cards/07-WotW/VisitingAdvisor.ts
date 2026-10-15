@@ -6,7 +6,7 @@ import { sendHome } from '../../GameActions/GameActions.js';
 class VisitingAdvisor extends DrawCard {
     static id = 'visiting-advisor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Send this and up to 1 other character home')
             .condition((context) => context.source.isParticipating())
             .target({

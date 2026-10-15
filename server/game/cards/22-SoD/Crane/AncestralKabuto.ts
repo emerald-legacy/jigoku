@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class AncestralKabuto extends DrawCard {
     static id = 'ancestral-kabuto';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({ trait: Trait.Bushi });
 
         this.whileAttached({

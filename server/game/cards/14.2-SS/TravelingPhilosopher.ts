@@ -6,7 +6,7 @@ import { CardType, Location, Players } from '../../Constants.js';
 class TravelingPhilosopher extends DrawCard {
     static id = 'traveling-philosopher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Flip a province facedown')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

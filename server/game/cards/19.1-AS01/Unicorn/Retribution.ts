@@ -18,7 +18,7 @@ function brokenProvinceCountForPlayer(player: Player): number {
 export default class Retribution extends DrawCard {
     static id = 'retribution-';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Immediately declare a military conflict')
             .when({
                 onConflictFinished: (event, context) =>

@@ -6,7 +6,7 @@ import { Location, Players, CardType, ConflictType, Trait } from '../../Constant
 class IkomaEiji extends DrawCard {
     static id = 'ikoma-eiji';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put a character into play')
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === ConflictType.Political

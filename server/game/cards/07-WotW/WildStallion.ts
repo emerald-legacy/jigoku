@@ -6,7 +6,7 @@ import { Players, CardType } from '../../Constants.js';
 class WildStallion extends DrawCard {
     static id = 'wild-stallion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move this and another character to the conflict')
             .condition((context) => !!(context.game.currentConflict && !context.source.isParticipating()))
             .target({

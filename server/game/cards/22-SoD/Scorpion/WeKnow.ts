@@ -9,7 +9,7 @@ import { msg } from '../../../GameChat.js';
 export default class WeKnow extends DrawCard {
     static id = 'we-know';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Choose an honored status token')
             .cost(costs.bow({
                 cardType: CardType.Character,

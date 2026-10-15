@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ProtectedMerchant extends DrawCard {
     static id = 'protected-merchant';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyGlory(() => Math.min(2, this.getHoldingsInPlay()))
         });

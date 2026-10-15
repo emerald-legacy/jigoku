@@ -5,7 +5,7 @@ import { Location } from '../../Constants.js';
 class CeaselessDuty extends DrawCard {
     static id = 'ceaseless-duty';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Prevent a character from leaving play')
             .when({
                 onCardLeavesPlay: (event, context) => event.card.isCharacter() && event.card.costLessThan(context.player.getProvinces((a) => !a.isBroken).length + 1) && event.card.location === Location.PlayArea

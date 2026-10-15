@@ -8,7 +8,7 @@ const elementSymbol = { key: 'fu-sui-disciple-air', element: Element.Air };
 class FuSuiDisciple extends DrawCard {
     static id = 'fu-sui-disciple';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor or dishonor a character')
             .select({
                 name: 'player',
@@ -38,7 +38,7 @@ class FuSuiDisciple extends DrawCard {
             });
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }

@@ -3,7 +3,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class TearsOfAmaterasu extends ProvinceCard {
     static id = 'tears-of-amaterasu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain fate equal to the number of attackers')
             .when({
                 onCardRevealed: (event, context) => event.card === context.source

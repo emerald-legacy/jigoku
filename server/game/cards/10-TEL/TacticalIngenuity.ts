@@ -6,7 +6,7 @@ import { CardType, Location, Trait } from '../../Constants.js';
 class TacticalIngenuity extends DrawCard {
     static id = 'tactical-ingenuity';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Commander
         });

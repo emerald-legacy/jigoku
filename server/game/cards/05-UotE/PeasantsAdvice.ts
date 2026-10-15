@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 class PeasantsAdvice extends DrawCard {
     static id = 'peasant-s-advice';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('look at a province and return its dynasty card to deck')
             .phase(Phase.Conflict)
             .cost(costs.dishonor())

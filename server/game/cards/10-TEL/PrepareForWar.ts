@@ -15,7 +15,7 @@ import { CardType, Players, TargetMode, Trait } from '../../Constants.js';
 class PrepareForWar extends DrawCard {
     static id = 'prepare-for-war';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Remove honor token and any attachment')
             .target({
                 cardType: CardType.Character,

@@ -5,7 +5,7 @@ import { gainAbility } from '../../effects.js';
 class Shukujo extends DrawCard {
     static id = 'shukujo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             unique: true,

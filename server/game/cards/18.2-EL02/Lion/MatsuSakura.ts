@@ -5,7 +5,7 @@ import { Location } from '../../../Constants.js';
 class MatsuSakura extends DrawCard {
     static id = 'matsu-sakura';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Cancel conflict province ability')
             .when({
                 onInitiateAbilityEffects: (event, context) => context.source.isAttacking() && event.card.isConflictProvince() && event.card.controller &&

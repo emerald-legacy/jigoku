@@ -7,7 +7,7 @@ import { deckSearch, placeInProvince } from '../../GameActions/GameActions.js';
 class FrontlineEngineer extends DrawCard {
     static id = 'frontline-engineer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: modifyGlory(() => this.getHoldingsInPlay())
         });

@@ -6,7 +6,7 @@ import { honor, multiple, ready } from '../../../GameActions/GameActions.js';
 class NoBreathWasted extends DrawCard {
     static id = 'no-breath-wasted';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready character')
             .cost(costs.sacrifice({ cardType: CardType.Character, cardCondition: (card, context) => card !== context.target }))
             .target({

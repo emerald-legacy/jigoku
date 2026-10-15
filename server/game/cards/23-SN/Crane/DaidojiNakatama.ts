@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DaidojiNakatama extends DrawCard {
     static id = 'daidoji-nakatama';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking() && context.game.currentConflict?.getNumberOfParticipantsFor('attacker') === 1,
             effect: [

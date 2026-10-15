@@ -5,7 +5,7 @@ import { Players, CardType, DuelType } from '../../Constants.js';
 class GameOfSadane extends DrawCard {
     static id = 'game-of-sadane';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Initiate a political duel')
             .target({
                 name: 'challenger',

@@ -5,7 +5,7 @@ import { cannotReceiveDishonorToken } from '../../effects.js';
 class StewardOfLaw extends DrawCard {
     static id = 'steward-of-law';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,

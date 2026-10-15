@@ -5,7 +5,7 @@ import { Duration, Trait } from '../../Constants.js';
 class CurrentOfTheBeryt extends DrawCard {
     static id = 'current-of-the-beryt';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             trait: Trait.Shugenja

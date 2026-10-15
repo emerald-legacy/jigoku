@@ -10,7 +10,7 @@ const elementKey = 'kuni-yori-earth';
 class KuniYori extends DrawCard {
     static id = 'kuni-yori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             match: (card) => card.type === CardType.Character,
@@ -26,7 +26,7 @@ class KuniYori extends DrawCard {
             }, (context) => playerChoices(context.player, (player) => discardAtRandom({ target: player })));
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

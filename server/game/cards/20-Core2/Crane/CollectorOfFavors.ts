@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CollectorOfFavors extends DrawCard {
     static id = 'collector-of-favors';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({ trait: Trait.Courtier });
 
         this.whileAttached({

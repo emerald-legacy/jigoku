@@ -8,7 +8,7 @@ import DrawCard from '../../DrawCard.js';
 export default class WayOfTheCrab extends DrawCard {
     static id = 'way-of-the-crab';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Make your opponent sacrifice a character')
             .condition((context) => context.player.opponent !== undefined)
             .cost(costs.sacrifice({

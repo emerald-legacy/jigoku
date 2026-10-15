@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ObstinateWitchHunter extends DrawCard {
     static id = 'obstinate-witch-hunter';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.forcedReaction('Can\'t be discarded or remove fate')
             .when({
                 onPhaseStarted: (event, context) =>

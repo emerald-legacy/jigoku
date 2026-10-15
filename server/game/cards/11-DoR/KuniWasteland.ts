@@ -5,7 +5,7 @@ import { cardCannot } from '../../effects.js';
 export default class KuniWasteland extends ProvinceCard {
     static id = 'kuni-wasteland';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,

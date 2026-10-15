@@ -8,7 +8,7 @@ import type Player from '../../Player.js';
 export default class StokeInsurrection extends DrawCard {
     static id = 'stoke-insurrection';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,

@@ -7,7 +7,7 @@ import type { GameAction } from '../../../GameActions/GameAction.js';
 export default class LoyalWarhound extends DrawCard {
     static id = 'loyal-warhound';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const DummyHoundAttachment = new DrawCard(this.owner, {
             cost: '0',
             glory: '0',

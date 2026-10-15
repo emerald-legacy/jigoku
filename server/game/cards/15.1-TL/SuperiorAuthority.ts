@@ -4,7 +4,7 @@ import { cannotContribute } from '../../effects.js';
 class SuperiorAuthority extends DrawCard {
     static id = 'superior-authority';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Stop characters with 0 fate from contributing skill')
             .conflictLastingEffect((context) => ({
                 effect: cannotContribute(() => {

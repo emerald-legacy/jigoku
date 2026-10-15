@@ -7,7 +7,7 @@ import { CardType, Trait } from '../../Constants.js';
 class Chikara extends DrawCard {
     static id = 'chikara';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             unique: true,
             faction: 'crab'

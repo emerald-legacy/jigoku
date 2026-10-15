@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CounselFromYumeDo extends DrawCard {
     static id = 'counsel-from-yume-do';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Shuffle cards back into your deck')
             .condition((context) => controlsShugenja(context.player))
             .targetCards({

@@ -9,7 +9,7 @@ const ELEMENT = 'master-alchemist-fire';
 export default class MasterAlchemist extends DrawCard {
     static id = 'master-alchemist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor or dishonor a character')
             .condition(() => this.game.isDuringConflict())
             .cost(costs.payFateToRing(1, (ring) => ring.hasElement(this.getCurrentElementSymbol(ELEMENT))))
@@ -30,7 +30,7 @@ export default class MasterAlchemist extends DrawCard {
             }));
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: ELEMENT,

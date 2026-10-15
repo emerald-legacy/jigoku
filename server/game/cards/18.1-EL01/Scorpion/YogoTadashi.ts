@@ -7,7 +7,7 @@ import { CardType, Players, RestrictionType, RestrictionScope } from '../../../C
 class YogoTadashi extends DrawCard {
     static id = 'yogo-tadashi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Prevent a character from being targeted by events')
             .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false,

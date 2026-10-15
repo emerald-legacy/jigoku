@@ -5,7 +5,7 @@ import { joint, returnRing, selectRing, takeRing } from '../../GameActions/GameA
 class AsakoTogama extends DrawCard {
     static id = 'asako-togama';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Switch a claimed ring with an unclaimed one')
             .condition((context) => context.source.isParticipating())
             .gameAction(joint([

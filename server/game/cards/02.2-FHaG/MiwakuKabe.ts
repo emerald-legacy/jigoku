@@ -4,7 +4,7 @@ import { Location } from '../../Constants.js';
 class MiwakuKabe extends DrawCard {
     static id = 'miwaku-kabe';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.interrupt('Shuffle this into deck')
             .when({
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location

@@ -11,7 +11,7 @@ function penalty(target: DrawCard): number {
 export default class StrikeBeneathTheVeil extends DrawCard {
     static id = 'strike-beneath-the-veil';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give a military penalty to a participating character')
             .target({
                 cardType: CardType.Character,

@@ -7,7 +7,7 @@ import { bow, cardLastingEffect } from '../../GameActions/GameActions.js';
 class HighKick extends DrawCard {
     static id = 'high-kick';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow and Disable a character')
             .condition(() => this.game.isDuringConflict(ConflictType.Military))
             .cost(costs.bow({

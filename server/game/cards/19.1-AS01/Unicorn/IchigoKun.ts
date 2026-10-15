@@ -13,7 +13,7 @@ const LESS_MIL_MORE_GLORY = 'Reduce own military, increase other glory';
 export default class IchigoKun extends DrawCard {
     static id = 'ichigo-kun';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
                 context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT)) ?? false,
@@ -39,7 +39,7 @@ export default class IchigoKun extends DrawCard {
                 : msg`give ${context.chatTarget()} -2 ${'military'} and ${context.targets.otherCharacter} +2 glory - ${context.chatTarget()} is well-behaved. Impressive`);
     }
 
-    public getPrintedElementSymbols() {
+    public override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({ key: VULNERABLE_ELEMENT, prettyName: 'Restricted Ring', element: Element.Fire });
         return symbols;

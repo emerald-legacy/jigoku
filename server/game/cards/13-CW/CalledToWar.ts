@@ -8,7 +8,7 @@ import { honorTransferMessage } from '../honorTransferMessage.js';
 class CalledToWar extends DrawCard {
     static id = 'called-to-war';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Place a fate on a bushi')
             .cost(costs.optionalTakeHonorFromOpponent())
             .target({

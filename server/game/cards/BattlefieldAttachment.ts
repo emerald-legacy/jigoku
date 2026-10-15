@@ -1,7 +1,7 @@
 import { ProvinceAttachment } from './ProvinceAttachment.js';
 
 export class BattlefieldAttachment extends ProvinceAttachment {
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { battlefield: 1 }
         });

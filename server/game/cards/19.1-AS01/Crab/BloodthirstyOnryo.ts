@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class BloodthirstyOnryo extends DrawCard {
     static id = 'bloodthirsty-onryo';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             effect: removeFromGameInsteadOfLeavingPlay({
                 message: (card) => msg`${card} is removed from the game due to leaving play`

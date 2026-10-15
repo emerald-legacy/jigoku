@@ -8,7 +8,7 @@ import { moveCardInProvinceAction } from '../../moveCardInProvince.js';
 class StoneBreaker extends DrawCard {
     static id = 'stone-breaker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         moveCardInProvinceAction(this)
             .cost(costs.sacrificeSelf())
             .refillFaceup((context) => ({ location: context.cardStateWhenInitiated?.location ?? [] }));

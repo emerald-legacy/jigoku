@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class AncientMaster extends DrawCard {
     static id = 'ancient-master';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
         this.reaction('Search top 5 cards for kiho or tattoo')
             .when({

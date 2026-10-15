@@ -74,11 +74,11 @@ export class SelectRingPrompt extends UiPrompt {
         this.selectedRing = null;
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return player === this.choosingPlayer;
     }
 
-    continue(): boolean {
+    override continue(): boolean {
         if(this.properties.hideIfNoLegalTargets && this.properties.optional && this.getSelectableRings().length === 0) {
             this.complete();
         }
@@ -102,7 +102,7 @@ export class SelectRingPrompt extends UiPrompt {
         return selectableRings;
     }
 
-    activePrompt() {
+    override activePrompt() {
         const buttons = [...this.properties.buttons];
         if(this.properties.optional) {
             buttons.push({ text: 'Done', arg: 'done' });
@@ -125,11 +125,11 @@ export class SelectRingPrompt extends UiPrompt {
         return 'Choose a ring';
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: this.properties.waitingPromptTitle || 'Waiting for opponent' };
     }
 
-    onRingClicked(player: Player, ring: Ring): boolean {
+    override onRingClicked(player: Player, ring: Ring): boolean {
         if(player !== this.choosingPlayer) {
             return false;
         }
@@ -145,7 +145,7 @@ export class SelectRingPrompt extends UiPrompt {
         return true;
     }
 
-    menuCommand(player: Player, arg: string): boolean {
+    override menuCommand(player: Player, arg: string): boolean {
         if(arg === 'cancel') {
             this.properties.onCancel(player);
             this.complete();
@@ -157,7 +157,7 @@ export class SelectRingPrompt extends UiPrompt {
         return false;
     }
 
-    complete(): void {
+    override complete(): void {
         this.choosingPlayer.clearSelectableRings();
         return super.complete();
     }

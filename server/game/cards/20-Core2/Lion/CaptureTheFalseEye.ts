@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class CaptureTheFalseEye extends DrawCard {
     static id = 'capture-the-false-eye';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow a character')
             .target({
                 cardType: CardType.Character,

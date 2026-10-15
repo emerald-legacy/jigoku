@@ -17,7 +17,7 @@ export class PlayerEffect extends ActiveEffect<Player> {
         }
     }
 
-    isValidTarget(target: Player): boolean {
+    override isValidTarget(target: Player): boolean {
         if(this.targetController !== Players.Any && this.targetController !== Players.Self && this.targetController !== Players.Opponent && this.targetController !== target) {
             return false;
         }
@@ -31,7 +31,7 @@ export class PlayerEffect extends ActiveEffect<Player> {
         return true;
     }
 
-    getTargets(matchFn: EffectMatchFn<Player>): Player[] {
+    override getTargets(matchFn: EffectMatchFn<Player>): Player[] {
         return this.game.getPlayers().filter((player: Player) => matchFn(player));
     }
 }

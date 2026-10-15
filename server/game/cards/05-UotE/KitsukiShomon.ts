@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class KitsukiShomon extends DrawCard {
     static id = 'kitsuki-shomon';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.wouldInterrupt('Dishonor this character instead')
             .when({
                 onCardDishonored: ({ card }, context) =>

@@ -5,7 +5,7 @@ import { moveCard } from '../../../GameActions/GameActions.js';
 class AshigaruCompany extends DrawCard {
     static id = 'ashigaru-company';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Search your conflict deck')
             .when({
                 onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea

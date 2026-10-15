@@ -5,7 +5,7 @@ import { CardType, CharacterStatus } from '../../Constants.js';
 class BayushiCollector extends DrawCard {
     static id = 'bayushi-collector';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard an attachment and a status token')
             .target({
                 cardType: CardType.Attachment,

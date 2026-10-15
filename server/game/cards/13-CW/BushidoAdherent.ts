@@ -6,7 +6,7 @@ import { honor } from '../../GameActions/GameActions.js';
 class BushidoAdherent extends DrawCard {
     static id = 'bushido-adherent';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor a character')
             .condition((context) => context.source.isParticipating())
             .target({

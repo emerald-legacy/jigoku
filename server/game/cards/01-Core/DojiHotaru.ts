@@ -4,7 +4,7 @@ import { ConflictType } from '../../Constants.js';
 class DojiHotaru extends DrawCard {
     static id = 'doji-hotaru';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve ring effect')
             .when({
                 onClaimRing: (event, context) => this.game.isDuringConflict(ConflictType.Political) && context.source.isParticipating() &&

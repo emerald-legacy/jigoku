@@ -5,7 +5,7 @@ import { honor } from '../../GameActions/GameActions.js';
 class CelebratedRenown extends DrawCard {
     static id = 'celebrated-renown';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Honor a character')
             .target({
                 controller: Players.Any,

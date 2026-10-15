@@ -6,7 +6,7 @@ import { cardCannot } from '../../effects.js';
 class KaitoNobukai extends DrawCard {
     static id = 'kaito-nobukai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow each participating characters')
             .condition((context) => context.source.isParticipating())
             .cost(costs.sacrificeSelf())

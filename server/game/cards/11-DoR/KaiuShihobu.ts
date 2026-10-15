@@ -8,7 +8,7 @@ import { placeInProvince } from '../../GameActions/GameActions.js';
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at your dynasty deck')
             .when({
                 onCharacterEntersPlay: (event, context) =>

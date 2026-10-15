@@ -6,7 +6,7 @@ import { msg } from '../../../GameChat.js';
 export default class SupplyOfficer extends DrawCard {
     static id = 'supply-officer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Switch 2 characters you control', { evenFromHome: true })
             .target({
                 name: 'characterInConflict',

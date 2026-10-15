@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DaidojiNami extends DrawCard {
     static id = 'daidoji-nami';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Send a character home')
             .cost(costs.sacrifice({
                 cardType: CardType.Character,

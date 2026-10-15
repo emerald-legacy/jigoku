@@ -7,7 +7,7 @@ import { Duration, RestrictionType, RestrictionScope } from '../../Constants.js'
 class BayushisWhisperers extends DrawCard {
     static id = 'bayushi-s-whisperers';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Look at opponent\'s hand and name a card')
             .condition((context) => !!(context.player.opponent && this.game.isDuringConflict()))
             .gameAction(sequential([

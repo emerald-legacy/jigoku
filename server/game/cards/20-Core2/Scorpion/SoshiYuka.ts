@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class SoshiYuka extends DrawCard {
     static id = 'soshi-yuka';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Bow a character')
             .targetCards({
                 mode: TargetMode.Exactly,

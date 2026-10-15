@@ -6,7 +6,7 @@ export function createKeeperRole(id: string, element: Element) {
     return class KeeperRole extends RoleCard {
         static id = id;
 
-        setupCardAbilities() {
+        override setupCardAbilities() {
             this.reaction('Gain 1 fate')
                 .when({
                     afterConflict: (event, context) =>
@@ -17,7 +17,7 @@ export function createKeeperRole(id: string, element: Element) {
                 .gainFate();
         }
 
-        getElement(): Element[] {
+        override getElement(): Element[] {
             return [element];
         }
     };
@@ -27,7 +27,7 @@ export function createSeekerRole(id: string, element: Element) {
     return class SeekerRole extends RoleCard {
         static id = id;
 
-        setupCardAbilities() {
+        override setupCardAbilities() {
             this.reaction('Gain 1 fate')
                 .when({
                     onCardRevealed: (event, context) =>
@@ -38,7 +38,7 @@ export function createSeekerRole(id: string, element: Element) {
                 .gainFate();
         }
 
-        getElement(): Element[] {
+        override getElement(): Element[] {
             return [element];
         }
     };

@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class UjikTactics extends DrawCard {
     static id = 'ujik-tactics';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Give each non-unique character +1 military during this conflict')
             .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => !card.isUnique()),

@@ -8,7 +8,7 @@ import { moveHoldingAction, otherHoldingsInSameProvince } from '../../moveHoldin
 export default class StormFromSakkaku extends DrawCard {
     static id = 'storm-from-sakkaku';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         new EventRegistrar(this.game).registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
 
         moveHoldingAction(this)

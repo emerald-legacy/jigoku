@@ -6,7 +6,7 @@ import { Location } from '../../Constants.js';
 class ThePerfectGift extends DrawCard {
     static id = 'the-perfect-gift';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Give each player a gift')
             .gameAction(sequential([
                 lookAt((context) => ({

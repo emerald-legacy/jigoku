@@ -4,7 +4,7 @@ import { CardType, CharacterStatus, ConflictType } from '../../Constants.js';
 class AGameOfLetters extends DrawCard {
     static id = 'a-game-of-letters';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Honor or dishonor a character', { conflictType: ConflictType.Political })
             .tokenTarget({
                 name: 'token',

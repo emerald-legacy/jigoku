@@ -6,7 +6,7 @@ import { CardType } from '../../Constants.js';
 class KakitaYoshi extends DrawCard {
     static id = 'kakita-yoshi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Draw 3 cards')
             .condition((context) => context.source.isParticipating())
             .cost(costs.discardImperialFavor())

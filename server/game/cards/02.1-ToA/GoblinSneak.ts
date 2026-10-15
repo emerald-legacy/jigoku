@@ -4,7 +4,7 @@ import DrawCard from '../../DrawCard.js';
 export default class GoblinSneak extends DrawCard {
     static id = 'goblin-sneak';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Steal a fate')
             .when({
                 onCharacterEntersPlay: (event, context) =>

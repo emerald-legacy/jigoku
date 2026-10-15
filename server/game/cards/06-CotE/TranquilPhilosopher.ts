@@ -5,7 +5,7 @@ import { gainHonor, placeFateOnRing, selectRing, sequential } from '../../GameAc
 class TranquilPhilosopher extends DrawCard {
     static id = 'tranquil-philosopher';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move fate on rings')
             .ringTarget({
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',

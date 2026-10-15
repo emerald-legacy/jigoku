@@ -6,7 +6,7 @@ import { moveToConflict, multiple, playerLastingEffect, ready } from '../../../G
 export default class ShatteredBladePass extends ProvinceCard {
     static id = 'shattered-blade-pass';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Ready a character and move it to the conflict')
             .condition((context) => context.game.currentConflict !== null && context.game.currentConflict.defenders.length === 0)
             .target({

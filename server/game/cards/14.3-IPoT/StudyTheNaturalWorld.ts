@@ -13,7 +13,7 @@ import { capitalize } from '../../utils/capitalize.js';
 class StudyTheNaturalWorld extends DrawCard {
     static id = 'study-the-natural-world';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add elements to the conflict ring')
             .condition((context) => context.player.anyCardsInPlay((card) => card.isAttacking() && card.hasTrait(Trait.Scholar)))
             .ringLastingEffect((context) => ({

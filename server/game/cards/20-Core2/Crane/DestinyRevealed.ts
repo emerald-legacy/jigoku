@@ -9,7 +9,7 @@ import { msg } from '../../../GameChat.js';
 export default class DestinyRevealed extends DrawCard {
     static id = 'destiny-revealed';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.duelStrike('Place a fate on a character', (duel, context) => duel.winnerController === context.player)
             .selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',

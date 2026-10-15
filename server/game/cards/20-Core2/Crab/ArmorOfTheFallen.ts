@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ArmorOfTheFallen extends DrawCard {
     static id = 'armor-of-the-fallen';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({ trait: Trait.Bushi });
 
         this.whileAttached({

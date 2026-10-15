@@ -5,7 +5,7 @@ import { limitHonorGainPerPhase } from '../../effects.js';
 export default class SilentOnesMonastery extends ProvinceCard {
     static id = 'silent-ones-monastery';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
             effect: limitHonorGainPerPhase(2)

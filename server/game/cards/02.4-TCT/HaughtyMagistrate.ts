@@ -4,7 +4,7 @@ import { cannotContribute } from '../../effects.js';
 class HaughtyMagistrate extends DrawCard {
     static id = 'haughty-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             effect: cannotContribute((_conflict, context) => {

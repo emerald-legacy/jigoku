@@ -6,7 +6,7 @@ import { addTrait } from '../../effects.js';
 class FavoredMount extends DrawCard {
     static id = 'favored-mount';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });

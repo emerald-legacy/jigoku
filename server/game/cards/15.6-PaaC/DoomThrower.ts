@@ -8,7 +8,7 @@ import { cardLastingEffect } from '../../GameActions/GameActions.js';
 class DoomThrower extends DrawCard {
     static id = 'doom-thrower';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Reduce Province Strength')
             .condition((context) => context.game.isDuringConflict())
             .cost(costs.sacrifice({ cardType: CardType.Character }))

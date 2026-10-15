@@ -9,7 +9,7 @@ const decks = new DeckChoice({ players: Players.Any, pile: 'deck' });
 class Truthseeker extends DrawCard {
     static id = 'truthseeker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at top 3 cards')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

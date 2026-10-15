@@ -5,7 +5,7 @@ import { CardType, Location } from '../../Constants.js';
 class VengefulBerserker extends DrawCard {
     static id = 'vengeful-berserker';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Double military skill')
             .when({
                 onCardLeavesPlay: (event, context) => {

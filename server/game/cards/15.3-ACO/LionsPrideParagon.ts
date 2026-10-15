@@ -5,7 +5,7 @@ import { doesNotBow } from '../../effects.js';
 class LionsPrideParagon extends DrawCard {
     static id = 'lion-s-pride-paragon';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
             effect: doesNotBow()
         });

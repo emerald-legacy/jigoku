@@ -19,7 +19,7 @@ function participatingCavGlory(conflict: Conflict, player: Player): number {
 export default class UtakuStableMaster extends DrawCard {
     static id = 'utaku-stable-master';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow participating character with lower glory than participating cavalry', { evenFromHome: true })
             .target({
                 cardType: CardType.Character,

@@ -8,7 +8,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class RightsOfTheChallenged extends DrawCard {
     static id = 'rights-of-the-challenged';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         const hasReplacement = (duel: Duel, target: DrawCard, context: AbilityContext) =>
             target.controller === context.player &&
             context.player.cardsInPlay.some((card) => duel.canReplaceTarget(target, card, context));

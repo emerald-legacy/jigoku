@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 class TheStrengthOfTheMountain extends DrawCard {
     static id = 'the-strength-of-the-mountain';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Defending characters do not bow')
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getDefenders(),

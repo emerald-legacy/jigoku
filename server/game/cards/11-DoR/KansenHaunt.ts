@@ -4,7 +4,7 @@ import * as costs from '../../costs/index.js';
 class KansenHaunt extends DrawCard {
     static id = 'kansen-haunt';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Resolve ring effect')
             .when({
                 onClaimRing: (event, context) =>

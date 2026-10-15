@@ -5,7 +5,7 @@ import { msg } from '../../GameChat.js';
 class SubdueTheSpirits extends DrawCard {
     static id = 'subdue-the-spirits';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Add glory to both skills')
             .condition((context) => this.game.isDuringConflict() && context.player.isMoreHonorable())
             .cardLastingEffect((context) => ({

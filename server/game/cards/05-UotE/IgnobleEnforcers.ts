@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class IgnobleEnforcers extends DrawCard {
     static id = 'ignoble-enforcers';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place additional fate on this character')
             .when({
                 onCardPlayed: (event, context) => event.card === context.source

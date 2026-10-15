@@ -7,7 +7,7 @@ import { Players, CardType } from '../../Constants.js';
 class InvocationOfAsh extends DrawCard {
     static id = 'invocation-of-ash';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move to another character')
             .cost(costs.payHonor(1))
             .target({

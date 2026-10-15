@@ -6,7 +6,7 @@ import { placeFateOnRing, selectRing } from '../../GameActions/GameActions.js';
 class JadeMasterpiece extends DrawCard {
     static id = 'jade-masterpiece';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move a fate to an unclaimed ring')
             .cost(costs.bowSelf())
             .ringTarget({

@@ -7,8 +7,8 @@ import { AIR_CHOICE, type GameRules } from '../GameRules.js';
 import { gainHonor, takeHonor } from '../GameActions/GameActions.js';
 
 export class AirRingAbility extends BaseAbility {
-    public title = 'Air Ring Effect';
-    public cannotTargetFirst = true;
+    public override title = 'Air Ring Effect';
+    public override cannotTargetFirst = true;
     public defaultPriority = 5; // Default resolution priority when players have ordering switched off
 
     public constructor(
@@ -26,7 +26,7 @@ export class AirRingAbility extends BaseAbility {
         });
     }
 
-    public executeHandler(context: AbilityContext): void {
+    public override executeHandler(context: AbilityContext): void {
         if(context.select === AIR_CHOICE.GAIN_2) {
             const [, amountToTransfer] = calculateHonorLimit(
                 context.player,

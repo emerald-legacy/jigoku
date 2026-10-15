@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class MinamiKazeRegulars extends DrawCard {
     static id = 'minami-kaze-regulars';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain a fate and draw a card')
             .when({
                 afterConflict: (event, context) =>

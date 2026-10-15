@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 export default class RovingMichibiku extends DrawCard {
     static id = 'roving-michibiku';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.reaction('Take a ring from opponent\'s claimed pool')
             .when({
                 afterConflict: (event, context) =>

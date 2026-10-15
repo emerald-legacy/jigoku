@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 export default class UnwaveringDevotion extends DrawCard {
     static id = 'unwavering-devotion';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => card === context?.source.parentCharacter,
             effect: modifyGlory(1)

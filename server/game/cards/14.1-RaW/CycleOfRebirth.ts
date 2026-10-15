@@ -8,7 +8,7 @@ import { Location, Players, CardType } from '../../Constants.js';
 class CycleOfRebirth extends DrawCard {
     static id = 'cycle-of-rebirth';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Shuffle this and target into deck')
             .target({
                 location: Location.Provinces,

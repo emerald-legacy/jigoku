@@ -6,7 +6,7 @@ import { Location, Players, CardType } from '../../Constants.js';
 class IuchiWayfinder extends DrawCard {
     static id = 'iuchi-wayfinder';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Look at a province')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

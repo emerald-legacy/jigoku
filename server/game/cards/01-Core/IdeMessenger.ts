@@ -6,7 +6,7 @@ import { moveToConflict } from '../../GameActions/GameActions.js';
 class IdeMessenger extends DrawCard {
     static id = 'ide-messenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move an ally to a conflict')
             .cost(costs.payFate(1))
             .target({

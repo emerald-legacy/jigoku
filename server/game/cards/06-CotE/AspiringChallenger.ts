@@ -6,7 +6,7 @@ import { DuelType } from '../../Constants.js';
 class AspiringChallenger extends DrawCard {
     static id = 'aspiring-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.composure({
             effect: modifyGlory(2)
         });

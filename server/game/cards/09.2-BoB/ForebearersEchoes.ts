@@ -6,7 +6,7 @@ import { atEndOfConflict, joint, putIntoConflict, returnToDeck } from '../../Gam
 class ForebearersEchoes extends DrawCard {
     static id = 'forebearer-s-echoes';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Put a character into play', { conflictType: ConflictType.Military })
             .target({
                 activePromptTitle: 'Choose a character from your dynasty discard pile',

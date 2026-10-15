@@ -7,7 +7,7 @@ import { shuffle } from '../../utils/random.js';
 export default class Overhear extends DrawCard {
     static id = 'overhear';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Place random card on top of deck')
             .condition((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.opponent !== undefined)
             .gameAction(multiple((context) => {

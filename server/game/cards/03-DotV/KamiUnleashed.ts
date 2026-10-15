@@ -5,7 +5,7 @@ import { perConflict } from '../../AbilityLimit.js';
 class KamiUnleashed extends DrawCard {
     static id = 'kami-unleashed';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Resolve ring effect')
             .condition((context) => context.source.isAttacking())
             .cost(costs.sacrificeSelf())

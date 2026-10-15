@@ -6,7 +6,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class ShamefulDisplay extends ProvinceCard {
     static id = 'shameful-display';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Dishonor/Honor two characters')
             .targetCards({
                 mode: TargetMode.Exactly,

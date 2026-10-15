@@ -12,14 +12,14 @@ import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
 import { getExtraFateWhenPlayed, getPlayBlocker } from './playActionHelpers.js';
 
 export class DynastyCardAction extends BaseAction {
-    title = 'Play this character';
+    override title = 'Play this character';
     declare card: DrawCard;
 
     constructor(card: BaseCard) {
         super(card, [chooseFate(PlayType.PlayFromProvince), payReduceableFateCost()]);
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []): Blocker {
+    override meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []): Blocker {
         if(!ignoredBlockers.includes(Blocker.Facedown) && this.card.isFacedown()) {
             return Blocker.Facedown;
         } else if(!ignoredBlockers.includes(Blocker.WrongPlayer) && context.player !== this.card.controller) {
@@ -30,7 +30,7 @@ export class DynastyCardAction extends BaseAction {
         return getPlayBlocker(this.card, context, ignoredBlockers, PlayType.PlayFromProvince) ?? super.meetsRequirements(context, ignoredBlockers);
     }
 
-    displayMessage(context: AbilityContext): void {
+    override displayMessage(context: AbilityContext): void {
         context.game.addMessage(msg`${context.player} plays ${context.source} with ${context.chooseFate} additional fate`);
         if(context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
             for(const effect of context.source.getRawEffects()) {
@@ -41,7 +41,7 @@ export class DynastyCardAction extends BaseAction {
         }
     }
 
-    executeHandler(context: AbilityContext<DrawCard>): void {
+    override executeHandler(context: AbilityContext<DrawCard>): void {
         const extraFate = getExtraFateWhenPlayed(context.source, context);
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
         const enterPlayEvent = putIntoPlay({ fate: context.chooseFate + extraFate, status }).getEvent(
@@ -51,7 +51,7 @@ export class DynastyCardAction extends BaseAction {
         context.game.openEventWindow([enterPlayEvent, createCardPlayedEvent(context, context.source, PlayType.PlayFromProvince)]);
     }
 
-    isCardPlayed(): boolean {
+    override isCardPlayed(): boolean {
         return true;
     }
 }

@@ -5,7 +5,7 @@ import { sendHome } from '../../../GameActions/GameActions.js';
 export default class ObsidianCaves extends ProvinceCard {
     static id = 'obsidian-caves';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.action('Attacker moves a character home')
             .target({
                 cardType: CardType.Character,

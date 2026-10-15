@@ -7,7 +7,7 @@ import { msg } from '../../GameChat.js';
 export default class SpellScroll extends DrawCard {
     static id = 'spell-scroll';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) =>
                 !!(context.source.parentCharacter?.isParticipating() &&

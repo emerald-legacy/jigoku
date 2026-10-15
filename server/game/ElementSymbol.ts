@@ -10,7 +10,7 @@ export type ElementSymbolInfo = {
 };
 
 export class ElementSymbol extends EffectSource {
-    printedType = 'elementSymbol';
+    override printedType = 'elementSymbol';
     element: Element;
     key: string;
     prettyName: string;

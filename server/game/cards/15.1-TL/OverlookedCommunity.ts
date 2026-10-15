@@ -6,7 +6,7 @@ import { CardType, Location } from '../../Constants.js';
 class OverlookedCommunity extends DrawCard {
     static id = 'overlooked-community';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Discard a status token')
             .cost(costs.returnRings(1))
             .tokenTarget({

@@ -5,7 +5,7 @@ import { cannotReceiveDishonorToken } from '../../effects.js';
 class StewardOfTheRichFrog extends DrawCard {
     static id = 'steward-of-the-rich-frog';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
                 !!context.player.opponent &&

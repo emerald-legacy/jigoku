@@ -8,7 +8,7 @@ const elementKey = 'honor-s-reward-fire';
 export default class HonorsReward extends ProvinceCard {
     static id = 'honor-s-reward';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('give target character +3 glory')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .target({
@@ -21,7 +21,7 @@ export default class HonorsReward extends ProvinceCard {
             .chatText('give {0} +3 glory');
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

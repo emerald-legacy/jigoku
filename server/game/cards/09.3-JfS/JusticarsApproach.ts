@@ -8,7 +8,7 @@ import DrawCard from '../../DrawCard.js';
 export default class JusticarsApproach extends DrawCard {
     static id = 'justicar-s-approach';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({ trait: Trait.Courtier });
 
         this.whileAttached({

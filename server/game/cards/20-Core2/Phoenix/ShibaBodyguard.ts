@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class ShibaBodyguard extends DrawCard {
     static id = 'shiba-bodyguard';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.interrupt('Place a fate on a character')
             .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source

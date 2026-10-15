@@ -4,7 +4,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class SmugglersCove extends ProvinceCard {
     static id = 'smuggler-s-cove';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Moves a character to or from a conflict at this province')
             .target({
                 cardType: CardType.Character,

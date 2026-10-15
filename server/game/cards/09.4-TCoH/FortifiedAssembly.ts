@@ -5,7 +5,7 @@ import { modifyProvinceStrength } from '../../effects.js';
 export default class FortifiedAssembly extends ProvinceCard {
     static id = 'fortified-assembly';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Place an honor token on this province')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
@@ -17,7 +17,7 @@ export default class FortifiedAssembly extends ProvinceCard {
         });
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

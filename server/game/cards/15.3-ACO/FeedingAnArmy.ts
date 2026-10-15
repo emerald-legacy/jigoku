@@ -5,7 +5,7 @@ import { Phase } from '../../Constants.js';
 class FeedingAnArmy extends DrawCard {
     static id = 'feeding-an-army';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Put fate on characters')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict

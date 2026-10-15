@@ -8,7 +8,7 @@ import { attach, multiple, shuffleDeck } from '../../../GameActions/GameActions.
 export default class APlagueOfYokai extends DrawCard {
     static id = 'a-plague-of-yokai';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: attachmentMilitarySkillModifier((_card, context) => -this.getSkillModifier(context))
         });

@@ -6,7 +6,7 @@ import { CardType } from '../../Constants.js';
 class KarmicTwist extends DrawCard {
     static id = 'karmic-twist';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Move fate from a non-unique character')
             .target({
                 activePromptTitle: 'Choose a donor character',

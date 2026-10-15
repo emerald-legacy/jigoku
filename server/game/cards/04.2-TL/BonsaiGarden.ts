@@ -6,13 +6,13 @@ const elementKey = 'bonsai-garden-air';
 class BonsaiGarden extends DrawCard {
     static id = 'bonsai-garden';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Gain 1 honor')
             .condition((context) => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
             .gainHonor();
     }
 
-    getPrintedElementSymbols() {
+    override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,

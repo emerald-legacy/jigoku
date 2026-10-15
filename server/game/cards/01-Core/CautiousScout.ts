@@ -5,7 +5,7 @@ import { blank } from '../../effects.js';
 class CautiousScout extends DrawCard {
     static id = 'cautious-scout';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.isConflictProvince(),
             targetLocation: Location.Provinces,

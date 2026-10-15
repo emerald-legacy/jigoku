@@ -5,7 +5,7 @@ import { RestrictionType, RestrictionScope } from '../../Constants.js';
 class ChukanNobue extends DrawCard {
     static id = 'chukan-nobue';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: playerCannot({
                 cannot: RestrictionType.Discard,

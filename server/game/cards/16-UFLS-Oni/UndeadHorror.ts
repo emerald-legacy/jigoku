@@ -8,7 +8,7 @@ import { randomItem } from '../../utils/random.js';
 export default class UndeadHorror extends BaseOni {
     static id = 'undead-horror';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
         this.reaction('Attach a character to this card')
             .when({

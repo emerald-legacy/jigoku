@@ -5,7 +5,7 @@ import { TargetMode, CardType, Players } from '../../Constants.js';
 class EleganceAndGrace extends DrawCard {
     static id = 'elegance-and-grace';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Ready characters')
             .targetCards({
                 mode: TargetMode.MaxStat,

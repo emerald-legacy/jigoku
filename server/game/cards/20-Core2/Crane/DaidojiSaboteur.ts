@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class DaidojiSaboteur extends DrawCard {
     static id = 'daidoji-saboteur';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Disable a character')
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source

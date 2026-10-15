@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 export default class IntrepidScout extends DrawCard {
     static id = 'intrepid-scout';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Move a character to the conflict')
             .target({
                 cardType: CardType.Character,

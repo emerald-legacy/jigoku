@@ -6,7 +6,7 @@ import { Duration, Players } from '../../Constants.js';
 class GracefulGuardian extends DrawCard {
     static id = 'graceful-guardian';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Increase cost to play cards')
             .condition((context) => context.source.isParticipating())
             .playerLastingEffect({

@@ -8,7 +8,7 @@ import { unlimited } from '../../../AbilityLimit.js';
 export default class SeppunRyo extends DrawCard {
     static id = 'seppun-ryo';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.duelFocus('Help a character with a duel', (duel, context) =>
             context.player.imperialFavor !== '' && duel.participants.includes(context.source)
         )

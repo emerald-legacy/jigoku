@@ -5,7 +5,7 @@ import { bow } from '../../GameActions/GameActions.js';
 class ExposedSecrets extends DrawCard {
     static id = 'exposed-secrets';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.conflictAction('Bow attacking character', { conflictType: ConflictType.Political })
             .target({
                 cardType: CardType.Character,

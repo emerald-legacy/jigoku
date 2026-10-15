@@ -6,7 +6,7 @@ import { Location, CardType } from '../../Constants.js';
 class KyofukisHammer extends DrawCard {
     static id = 'kyofuki-s-hammer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Discard a card from a province')
             .when({
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&

@@ -6,7 +6,7 @@ import { multiple, removeRingFromPlay, returnRingToPlay, ringLastingEffect } fro
 class SuddenTempest extends DrawCard {
     static id = 'sudden-tempest';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Remove a ring from the unclaimed ring pool')
             .ringTarget({
                 ringCondition: (ring) => ring.isUnclaimed()

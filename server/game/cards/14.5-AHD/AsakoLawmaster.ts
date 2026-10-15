@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 class AsakoLawmaster extends DrawCard {
     static id = 'asako-lawmaster';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain an honor')
             .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player

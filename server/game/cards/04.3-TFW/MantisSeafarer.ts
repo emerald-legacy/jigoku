@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class MantisSeafarer extends DrawCard {
     static id = 'mantis-seafarer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Gain a fate')
             .when({
                 afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller

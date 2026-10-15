@@ -4,7 +4,7 @@ import { restrictNumberOfDefenders } from '../../effects.js';
 class MirumotoProdigy extends DrawCard {
     static id = 'mirumoto-prodigy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
                 context.source.isAttacking() &&

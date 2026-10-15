@@ -5,7 +5,7 @@ import { CardType } from '../../Constants.js';
 class TacticiansCamp extends DrawCard {
     static id = 'tactician-s-camp';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card) => card.type === CardType.Character && card.isHonored,
             effect: modifyMilitarySkill(1)

@@ -8,7 +8,7 @@ import { hasMoreParticipatingGlory } from '../participatingGlory.js';
 class AsakoMaezawa extends DrawCard {
     static id = 'asako-maezawa';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Double a character\'s base political skill')
             .condition((context) => context.source.isParticipating() && hasMoreParticipatingGlory(context.player))
             .target({

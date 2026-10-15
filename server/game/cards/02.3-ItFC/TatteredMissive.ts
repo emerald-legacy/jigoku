@@ -6,7 +6,7 @@ import { moveCard } from '../../GameActions/GameActions.js';
 class TatteredMissive extends DrawCard {
     static id = 'tattered-missive';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             trait: Trait.Courtier

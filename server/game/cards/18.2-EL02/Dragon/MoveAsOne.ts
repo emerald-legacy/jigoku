@@ -6,7 +6,7 @@ import { moveCard } from '../../../GameActions/GameActions.js';
 class MoveAsOne extends DrawCard {
     static id = 'move-as-one';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.reaction('Search for kihos')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && (event.attackers ?? []).some((card) => card.hasTrait(Trait.Monk)),

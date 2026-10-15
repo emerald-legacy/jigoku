@@ -10,7 +10,7 @@ import { playerChoices } from '../playerChoices.js';
 class AnOceanInADrop extends DrawCard {
     static id = 'an-ocean-in-a-drop';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.action('Place hand on bottom of deck and draw cards')
             .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
             .cost(costs.sacrificeSelf())

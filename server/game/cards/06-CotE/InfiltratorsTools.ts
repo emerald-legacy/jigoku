@@ -5,7 +5,7 @@ import DrawCard from '../../DrawCard.js';
 class InfiltratorsTools extends DrawCard {
     static id = 'infiltrator-s-tools';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             trait: Trait.Shinobi
         });

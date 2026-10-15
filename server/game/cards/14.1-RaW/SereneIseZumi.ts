@@ -6,7 +6,7 @@ import DrawCard from '../../DrawCard.js';
 export default class SereneIseZumi extends DrawCard {
     static id = 'serene-ise-zumi';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
         this.attachmentConditions({
             myControl: true
