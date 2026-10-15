@@ -1,10 +1,10 @@
-import { msg } from '../GameChat.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { ConflictType, EventName, RestrictionType } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
+import { takeFateFromRing } from './Shared/RingFate.js';
 
 export interface ClaimRingProperties extends RingActionProperties {
     takeFate?: boolean;
@@ -31,17 +31,8 @@ export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends 
         const ring = event.ring;
         ring.contested = false;
         ring.conflictType = type;
-        if(takeFate && ring.fate > 0 && context.player.checkRestrictions(RestrictionType.TakeFateFromRings, context)) {
-            context.game.addMessage(msg`${context.player} takes ${ring.fate} fate from ${ring}`);
-            const fate = ring.fate;
-            context.player.modifyFate(ring.fate);
-            ring.removeFate();
-            context.game.raiseEvent(EventName.OnMoveFate, {
-                fate: fate,
-                origin: ring,
-                context: context,
-                recipient: context.player
-            });
+        if(takeFate) {
+            takeFateFromRing(ring, context);
         }
         event.player = context.player;
         event.conflict = context.game.currentConflict ?? undefined;

@@ -104,6 +104,48 @@ describe('Four Temples Advisor', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
         });
+
+        describe('Four Temples Advisor with Know the World', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['brash-samurai'],
+                        hand: ['four-temples-advisor', 'know-the-world']
+                    },
+                    player2: {
+                        inPlay: ['bayushi-shoju']
+                    }
+                });
+
+                this.brash = this.player1.findCardByName('brash-samurai');
+                this.advisor = this.player1.findCardByName('four-temples-advisor');
+                this.player1.playAttachment(this.advisor, this.brash);
+                this.player2.pass();
+                this.player1.claimRing('earth');
+                this.game.rings.air.fate = 2;
+                this.fate = this.player1.fate;
+            });
+
+            it('should trigger when the ring that is taken has fate', function() {
+                this.player1.clickCard('know-the-world');
+                this.player1.clickRing('earth');
+                this.player1.clickRing('air');
+                expect(this.player1.fate).toBe(this.fate - 1 + 2);
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.advisor);
+            });
+
+            it('should not trigger when the ring that is taken has no fate', function() {
+                this.game.rings.air.fate = 0;
+                this.player1.clickCard('know-the-world');
+                this.player1.clickRing('earth');
+                this.player1.clickRing('air');
+                expect(this.player1.fate).toBe(this.fate - 1);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(10)).not.toContain('player1 takes 0 fate from Air Ring');
+            });
+        });
     });
 });
 

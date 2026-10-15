@@ -1200,7 +1200,7 @@ this.reaction('Gain 1 fate from an unclaimed ring')
 <div class="ref" id="ga-takeRing" data-name="takeRing">
     <h3><code>takeRing(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-takeRing">#</a></h3>
     <p>The ability's player claims the ring, taking the fate on it. No builder shortcut.</p>
-    <p>Chat: <code>take {0}</code>; taking the fate adds <code>{player} takes {n} fate from {ring}</code>.</p>
+    <p>Chat: <code>take {0}</code>; taking fate from a ring that has some adds <code>{player} takes {n} fate from {ring}</code>.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1210,7 +1210,7 @@ this.reaction('Gain 1 fate from an unclaimed ring')
     </table>
     <ul class="edge">
       <li>Illegal for a ring removed from play or already claimed by the ability's player. A ring the opponent claimed can be taken.</li>
-      <li>The ring stops being contested. The fate is not taken if the player can't take fate from rings. Raises <code>onTakeRing</code>.</li>
+      <li>The ring stops being contested. The fate is not taken if the ring has none or the player can't take fate from rings; taking it raises <code>onMoveFate</code> like <a href="#ga-claimRing"><code>claimRing</code></a> does (Four Temples Advisor reacts). Raises <code>onTakeRing</code>.</li>
     </ul>
     <pre><code>// Know the World: … Switch a ring in your claimed ring pool with an unclaimed ring and gain all fate on that ring. …
 selectRing({
