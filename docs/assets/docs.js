@@ -41,9 +41,9 @@ function highlight(root) {
             } else if(number) {
                 html += `<span class="num">${number}</span>`;
             } else if(keywords.test(call || word)) {
-                html += `<span class="kw">${all}</span>`;
+                html += `<span class="kw">${escapeHtml(all)}</span>`;
             } else if(call) {
-                html += `<span class="fn">${call}</span>`;
+                html += `<span class="fn">${escapeHtml(call)}</span>`;
             } else {
                 html += escapeHtml(all);
             }
