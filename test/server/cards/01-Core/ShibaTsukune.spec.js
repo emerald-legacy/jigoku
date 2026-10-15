@@ -64,6 +64,18 @@ describe('Shiba Tsukune', function() {
             expect(this.getChatLogs(5)).toContain('player1 resolves Fire Ring');
         });
 
+        it('should not trigger when every ring is claimed', function() {
+            this.player1.claimRing('air');
+            this.player1.claimRing('earth');
+            this.player1.claimRing('fire');
+            this.player2.claimRing('void');
+            this.player2.claimRing('water');
+            this.noMoreActions();
+            this.player1.clickPrompt('Military');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.game.currentPhase).toBe('fate');
+        });
+
         it('should not prompt for a second ring when only one ring is unclaimed', function() {
             this.player1.claimRing('air');
             this.player1.claimRing('earth');

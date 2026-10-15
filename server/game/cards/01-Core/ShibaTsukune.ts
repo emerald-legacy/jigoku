@@ -12,7 +12,8 @@ class ShibaTsukune extends DrawCard {
     override setupCardAbilities() {
         this.interrupt('Resolve 2 rings')
             .when({
-                onPhaseEnded: (event) => event.phase === Phase.Conflict
+                onPhaseEnded: (event, context) =>
+                    event.phase === Phase.Conflict && Object.values(context.game.rings).some((ring) => ring.isUnclaimed())
             })
             .handler((context) => this.game.promptForRingSelect(context.player, {
                 activePromptTitle: 'Choose a ring to resolve',

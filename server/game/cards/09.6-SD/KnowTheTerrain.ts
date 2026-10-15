@@ -9,7 +9,11 @@ class KnowTheTerrain extends DrawCard {
             .when({
                 onConflictDeclaredBeforeProvinceReveal: (event, context) => !!event.conflict.conflictProvince && event.conflict.conflictProvince.isFacedown() &&
                     event.conflict.defendingPlayer === context.player &&
-                    event.conflict.conflictProvince.location !== Location.StrongholdProvince
+                    event.conflict.conflictProvince.location !== Location.StrongholdProvince &&
+                    context.game.getProvinceArray(false).some((location) => {
+                        const province = context.player.getProvinceCardInProvince(location);
+                        return !!province && province !== event.conflict.conflictProvince && !province.isBroken && province.isFacedown();
+                    })
             })
             .handler((context) => {
                 const conflict = context.event.conflict;

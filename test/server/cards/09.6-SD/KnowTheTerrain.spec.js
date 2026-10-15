@@ -45,6 +45,18 @@ describe('Know the Terrain', function() {
                 expect(this.rally.facedown).toBe(true);
             });
 
+            it('should not interrupt when no other facedown province can be switched with', function() {
+                this.endless.facedown = false;
+                this.cache.facedown = false;
+                this.garden.facedown = false;
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rider],
+                    province: this.rally
+                });
+                expect(this.player2).not.toBeAbleToSelect(this.p2Terrain);
+            });
+
             it('should not interrupt the province being revealed if it is faceup', function() {
                 this.rally.facedown = false;
                 this.initiateConflict({
