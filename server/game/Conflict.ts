@@ -36,6 +36,10 @@ export class Conflict extends GameObject {
     isSinglePlayer: boolean;
     loser?: Player;
     loserSkill?: number;
+    /** The provinces broken while this conflict was the current one. */
+    brokenProvinces: ProvinceCard[] = [];
+    attackersAtResolution: DrawCard[] = [];
+    defendersAtResolution: DrawCard[] = [];
     provinceStrengthsAtResolution: Array<{ province: ProvinceCard; strength: number }> = [];
     skillDifference?: number;
     winner?: Player;
@@ -471,6 +475,8 @@ export class Conflict extends GameObject {
     determineWinner() {
         this.calculateSkill();
         this.winnerDetermined = true;
+        this.attackersAtResolution = this.getAttackers().slice();
+        this.defendersAtResolution = this.getDefenders().slice();
         this.provinceStrengthsAtResolution = [];
         this.getConflictProvinces()
             .filter((a) => a)

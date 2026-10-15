@@ -29,5 +29,6 @@ export class BreakProvinceAction<C extends AbilityContext = AbilityContext> exte
 
     override eventHandler(event: ActionEvent<EventName.OnBreakProvince, C>): void {
         event.card.breakProvince();
+        event.conflict?.brokenProvinces.push(event.card);
     }
 }

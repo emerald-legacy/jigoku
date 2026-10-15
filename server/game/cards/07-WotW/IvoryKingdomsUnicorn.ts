@@ -1,40 +1,18 @@
-import { ConflictType, EventName } from '../../Constants.js';
-import { EventRegistrar } from '../../EventRegistrar.js';
+import { ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class IvoryKingdomsUnicorn extends DrawCard {
     static id = 'ivory-kingdoms-unicorn';
 
-    private attackingAtConflictResolution = false;
-    private provinceBroken = false;
-
     public override setupCardAbilities() {
-        new EventRegistrar(this.game).register({
-            [EventName.AfterConflict]: () => this.afterConflict(),
-            [EventName.OnBreakProvince]: () => this.onBreakProvince(),
-            [EventName.OnConflictDeclared]: () => this.onConflictDeclared()
-        });
-
         this.reaction('Immediately declare a military conflict')
             .when({
-                onConflictFinished: () => this.provinceBroken && this.attackingAtConflictResolution
+                onConflictFinished: (event, context) =>
+                    event.conflict.brokenProvinces.length > 0 && event.conflict.attackersAtResolution.includes(context.source)
             })
             .initiateConflict({
                 canPass: false,
                 forcedDeclaredType: ConflictType.Military
             });
-    }
-
-    public afterConflict() {
-        this.attackingAtConflictResolution = this.isAttacking();
-    }
-
-    public onBreakProvince() {
-        this.provinceBroken = true;
-    }
-
-    public onConflictDeclared() {
-        this.attackingAtConflictResolution = false;
-        this.provinceBroken = false;
     }
 }
