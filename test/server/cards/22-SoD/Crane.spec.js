@@ -55,7 +55,10 @@ describe('SoD - Crane', function () {
                 this.player1.clickCard(this.momoko);
                 expect(this.pilgrimage.getStrength()).toBe(9);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4 and prevent unopposed honor loss'
+                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4'
+                );
+                expect(this.getChatLogs(5)).toContain(
+                    'player1 channels their air affinity to prevent unopposed honor loss'
                 );
                 expect(this.getChatLogs(5)).toContain(
                     'player1 increases the strength of Pilgrimage'
@@ -102,7 +105,10 @@ describe('SoD - Crane', function () {
                 this.player1.clickCard(this.momoko);
                 expect(this.pilgrimage.getStrength()).toBe(9);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4 and prevent unopposed honor loss'
+                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4'
+                );
+                expect(this.getChatLogs(5)).toContain(
+                    'player1 channels their air affinity to prevent unopposed honor loss'
                 );
                 expect(this.getChatLogs(5)).toContain(
                     'player1 increases the strength of Pilgrimage'

@@ -9,8 +9,7 @@ export default class CastleOfAir extends DrawCard {
     static id = 'castle-of-air';
 
     setupCardAbilities() {
-        this.action('Add Province Strength')
-            .condition((context) => context.game.isDuringConflict())
+        this.conflictAction('Add Province Strength')
             .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('shugenja')
@@ -21,14 +20,13 @@ export default class CastleOfAir extends DrawCard {
                     effect: modifyProvinceStrength(4)
                 })
             })
-            .if((context) => context.player.hasAffinity(Element.Air, context))
+            .chatText(() => msg`increase the strength of an attacked province by 4`)
+            .afterwards()
+            .onAffinity(Element.Air, { chatText: () => msg`prevent unopposed honor loss` })
             .playerLastingEffect({
                 target: Players.Self,
                 duration: Duration.UntilEndOfConflict,
                 effect: noUnopposedHonorLoss()
-            })
-            .chatText((context) => context.player.hasAffinity(Element.Air, context)
-                ? msg`increase the strength of an attacked province by 4${' and prevent unopposed honor loss'}`
-                : msg`increase the strength of an attacked province by 4`);
+            });
     }
 }
