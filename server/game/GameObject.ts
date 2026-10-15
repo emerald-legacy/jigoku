@@ -129,10 +129,7 @@ export class GameObject {
     }
 
     public getType(): CardType | string {
-        if(this.anyEffect(EffectName.ChangeType)) {
-            return this.mostRecentEffect(EffectName.ChangeType);
-        }
-        return this.printedType;
+        return this.mostRecentEffect(EffectName.ChangeType) ?? this.printedType;
     }
 
     public getShortSummary(): ShortSummary {
@@ -192,7 +189,7 @@ export class GameObject {
         return !this.facedown;
     }
 
-    public mostRecentEffect<N extends EffectName>(type: N): EffectValueMap[N] {
+    public mostRecentEffect<N extends EffectName>(type: N): EffectValueMap[N] | undefined {
         const effects = this.getEffects(type);
         return effects[effects.length - 1];
     }

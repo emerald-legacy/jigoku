@@ -406,8 +406,9 @@ export class Conflict extends GameObject {
                 card.anyEffect(EffectName.ContributeToConflict)
         );
 
-        if(this.attackingPlayer.anyEffect(EffectName.SetConflictTotalSkill)) {
-            this.attackerSkill = this.attackingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
+        const setAttackerSkill = this.attackingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
+        if(setAttackerSkill !== undefined) {
+            this.attackerSkill = setAttackerSkill;
         } else {
             const additionalAttackers = additionalContributingCards.filter((card) =>
                 card.getEffects(EffectName.ContributeToConflict).some((value) => value === this.attackingPlayer)
@@ -424,8 +425,9 @@ export class Conflict extends GameObject {
             }
         }
 
-        if(this.defendingPlayer.anyEffect(EffectName.SetConflictTotalSkill)) {
-            this.defenderSkill = this.defendingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
+        const setDefenderSkill = this.defendingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
+        if(setDefenderSkill !== undefined) {
+            this.defenderSkill = setDefenderSkill;
         } else {
             const additionalDefenders = additionalContributingCards.filter((card) =>
                 card.getEffects(EffectName.ContributeToConflict).some((value) => value === this.defendingPlayer)

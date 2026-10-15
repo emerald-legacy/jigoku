@@ -52,8 +52,9 @@ export class ProvinceCard extends BaseCard {
     }
 
     getStrength(): number {
-        if(this.anyEffect(EffectName.SetProvinceStrength)) {
-            return this.mostRecentEffect(EffectName.SetProvinceStrength);
+        const setStrength = this.mostRecentEffect(EffectName.SetProvinceStrength);
+        if(setStrength !== undefined) {
+            return setStrength;
         }
 
         const strength =
@@ -83,8 +84,9 @@ export class ProvinceCard extends BaseCard {
     }
 
     getBaseStrength(): number {
-        if(this.anyEffect(EffectName.SetBaseProvinceStrength)) {
-            return this.mostRecentEffect(EffectName.SetBaseProvinceStrength);
+        const setBaseStrength = this.mostRecentEffect(EffectName.SetBaseProvinceStrength);
+        if(setBaseStrength !== undefined) {
+            return setBaseStrength;
         }
         return this.sumEffects(EffectName.ModifyBaseProvinceStrength) + this.getCardStrength();
     }

@@ -352,7 +352,7 @@ export class DrawCard extends BaseCard {
     }
 
     override getFate(): number {
-        return this.anyEffect(EffectName.SetApparentFate) ? this.mostRecentEffect(EffectName.SetApparentFate) : this.fate;
+        return this.mostRecentEffect(EffectName.SetApparentFate) ?? this.fate;
     }
 
     override isInConflictProvince(): boolean {

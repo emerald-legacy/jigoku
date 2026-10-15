@@ -191,7 +191,7 @@ export class BaseCard extends EffectSource {
     }
 
     override getType(): CardType {
-        return this.anyEffect(EffectName.ChangeType) ? this.mostRecentEffect(EffectName.ChangeType) : this.printedType;
+        return this.mostRecentEffect(EffectName.ChangeType) ?? this.printedType;
     }
 
     private copiedAbilities(): ProvidedAbilities | undefined {
