@@ -13,7 +13,8 @@ class UtakuKamoko extends DrawCard {
         });
         this.reaction('Ready and honor')
             .when({
-                onBreakProvince: (event, context) => !!event.conflict && event.conflict.attackingPlayer === context.player.opponent
+                // RRG: a province broken outside conflict resolution is broken by its controller's opponent
+                onBreakProvince: (event, context) => event.card.controller === context.player
             })
             .cost(costs.discardCard({
                 location: Location.Hand,

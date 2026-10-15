@@ -1,3 +1,5 @@
+import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Utaku Kamoko', function() {
     integration(function() {
         describe('Utaku Kamoko', function() {
@@ -140,6 +142,32 @@ describe('Utaku Kamoko', function() {
                     expect(this.utakuKamoko.bowed).toBe(false);
                 });
             });
+        });
+    });
+});
+
+describe('Utaku Kamoko and a province broken outside a conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['utaku-kamoko'],
+                    hand: ['soul-beyond-reproach']
+                },
+                player2: {}
+            });
+            this.utakuKamoko = this.player1.findCardByName('utaku-kamoko');
+            this.province = this.player1.findCardByName('shameful-display', 'province 1');
+        });
+
+        it('should react, as the opponent broke the province', function() {
+            expect(this.game.currentConflict).toBeNull();
+            this.game.queueSimpleStep(() => breakProvince().resolve(this.province, this.game.getFrameworkContext(this.player2.player)));
+            this.game.continue();
+            expect(this.province.isBroken).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.utakuKamoko);
         });
     });
 });
