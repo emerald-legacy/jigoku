@@ -1,8 +1,7 @@
 import { UiPrompt } from '../UiPrompt.js';
 import { Location, ConflictType, RestrictionType } from '../../Constants.js';
 import { AttackersMatrix } from './AttackersMatrix.js';
-import { AbilityContext } from '../../AbilityContext.js';
-import { CovertAbility } from '../../KeywordAbilities/CovertAbility.js';
+import { covertContexts } from './covertContexts.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type Ring from '../../Ring.js';
@@ -251,17 +250,9 @@ export class InitiateConflictPrompt extends UiPrompt {
             }
 
             //Make sure the covert is legal
-            const attackersWithCovert = this.conflict.attackers.filter((card: DrawCard) => card.isCovert());
-            const covertContexts = attackersWithCovert.map((card: DrawCard) => new AbilityContext({
-                game: this.game,
-                player: this.conflict.attackingPlayer,
-                source: card,
-                ability: new CovertAbility()
-            }));
-
             let targetable = false;
 
-            for(const context of covertContexts) {
+            for(const context of covertContexts(this.game, this.conflict)) {
                 if(context.player.checkRestrictions(RestrictionType.InitiateKeywords, context)) {
                     if(card.canBeBypassedByCovert(context) && card.checkRestrictions(RestrictionType.Target, context)) {
                         targetable = true;

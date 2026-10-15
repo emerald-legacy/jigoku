@@ -1,11 +1,11 @@
 import { msg } from '../../GameChat.js';
-import { AbilityContext } from '../../AbilityContext.js';
+import { type AbilityContext } from '../../AbilityContext.js';
 import type DrawCard from '../../DrawCard.js';
 import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
 import { discardCard } from '../../costs/boardCosts.js';
 import type BaseCard from '../../BaseCard.js';
 import { payFate, payFateToRing, payHonor } from '../../costs/fateAndHonorCosts.js';
-import { CovertAbility } from '../../KeywordAbilities/CovertAbility.js';
+import { covertContexts } from './covertContexts.js';
 import { bow, breakProvince, loseHonor, resolveConflictRing, reveal, takeFateFromRing } from '../../GameActions/GameActions.js';
 import { SimpleStep } from '../SimpleStep.js';
 import { ConflictActionWindow } from './ConflictActionWindow.js';
@@ -373,17 +373,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         const targets = this.conflict.defendingPlayer.cardsInPlay.filter((card: DrawCard) => card.covert);
-        const sources = this.conflict.attackers.filter((card: DrawCard) => card.isCovert());
-        let contexts = sources.map(
-            (card: DrawCard) =>
-                new AbilityContext<DrawCard, DrawCard>({
-                    game: this.game,
-                    player: this.conflict.attackingPlayer,
-                    source: card,
-                    ability: new CovertAbility()
-                })
-        );
-        contexts = contexts.filter((context: AbilityContext) => context.source.canInitiateKeywords(context));
+        const contexts = covertContexts(this.game, this.conflict).filter((context) => context.source.canInitiateKeywords(context));
 
         for(const target of targets) {
             target.covert = false;
@@ -443,17 +433,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         const targets = this.conflict.defendingPlayer.cardsInPlay.filter((card: DrawCard) => card.covert);
-        const sources = this.conflict.attackers.filter((card: DrawCard) => card.isCovert());
-        let contexts = sources.map(
-            (card: DrawCard) =>
-                new AbilityContext<DrawCard, DrawCard>({
-                    game: this.game,
-                    player: this.conflict.attackingPlayer,
-                    source: card,
-                    ability: new CovertAbility()
-                })
-        );
-        contexts = contexts.filter((context: AbilityContext) => context.source.canInitiateKeywords(context));
+        const contexts = covertContexts(this.game, this.conflict).filter((context) => context.source.canInitiateKeywords(context));
 
         for(const target of targets) {
             target.covert = false;
