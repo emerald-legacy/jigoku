@@ -73,21 +73,25 @@ function gainedTrigger(abilityType: AbilityType.Reaction | AbilityType.Interrupt
         build(new TriggerBuilder<DrawCard>({
             when: (when) => {
                 const draft = createDraft(title, holdsTriggerEvent(when, () => false));
-                properties = () => toTriggerProps<DrawCard>(draft, when);
+                properties = () => {
+                    rejectPlayCondition(draft);
+                    return toTriggerProps<DrawCard>(draft, when);
+                };
                 return draft;
             },
             aggregateWhen: (aggregateWhen) => {
                 const draft = createDraft(title, holdsAggregateEvents(() => false));
-                properties = () => toAggregateProps<DrawCard>(draft, aggregateWhen);
+                properties = () => {
+                    rejectPlayCondition(draft);
+                    return toAggregateProps<DrawCard>(draft, aggregateWhen);
+                };
                 return draft;
             }
         }));
         if(!properties) {
             throw new Error(`${title}: a gained trigger starts with when() or aggregateWhen()`);
         }
-        const props = properties();
-        rejectPlayCondition(props);
-        return EffectBuilder.card.static(EffectName.GainAbility, new GainAbility(abilityType, props));
+        return EffectBuilder.card.static(EffectName.GainAbility, new GainAbility(abilityType, properties()));
     };
 }
 
