@@ -10,7 +10,7 @@ class KitsukiJusai extends DrawCard {
             .when({
                 onHonorDialsRevealed: (_event, context) =>
                     context.player.opponent &&
-                    context.player.honorBid === context.player.opponent.honorBid &&
+                    context.player.showBid === context.player.opponent.showBid &&
                     context.player.opponent.fate > 0
             })
             .selectRing((context) => ({

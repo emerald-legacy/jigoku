@@ -10,7 +10,7 @@ export default class AkodoKage extends DrawCard {
                 onHonorDialsRevealed: (event, context) =>
                     event.isHonorBid &&
                     context.player.opponent &&
-                    context.player.honorBid < context.player.opponent.honorBid &&
+                    context.player.showBid < context.player.opponent.showBid &&
                     context.player.isMoreHonorable()
             })
             .gameAction(setHonorDial((context) => ({ target: context.player.opponent ?? [], value: context.player.showBid })));

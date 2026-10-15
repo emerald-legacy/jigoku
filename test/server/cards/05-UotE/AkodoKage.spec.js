@@ -74,5 +74,33 @@ describe('Akodo Kage', function() {
             });
 
         });
+
+        describe('Akodo Kage and a modified bid', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'draw',
+                    player1: {
+                        honor: 11,
+                        inPlay: ['akodo-kage'],
+                        hand: ['contingency-plan']
+                    },
+                    player2: {
+                        honor: 10
+                    }
+                });
+                this.akodoKage = this.player1.findCardByName('akodo-kage');
+                this.contingencyPlan = this.player1.findCardByName('contingency-plan');
+            });
+
+            it('should not trigger when the dials are equal and the bid is decreased first', function() {
+                this.player1.clickPrompt('2');
+                this.player2.clickPrompt('2');
+                expect(this.player1).toBeAbleToSelect(this.contingencyPlan);
+                this.player1.clickCard(this.contingencyPlan);
+                this.player1.clickPrompt('Decrease honor bid');
+                expect(this.player1.player.honorBid).toBe(1);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            });
+        });
     });
 });

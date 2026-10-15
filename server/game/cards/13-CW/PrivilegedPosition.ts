@@ -12,7 +12,7 @@ export default class PrivilegedPosition extends DrawCard {
                 onHonorDialsRevealed: (event, context) =>
                     event.isHonorBid &&
                     context.player.opponent !== undefined &&
-                    context.player.honorBid < context.player.opponent.honorBid
+                    context.player.showBid < context.player.opponent.showBid
             })
             .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfRound,

@@ -57,5 +57,31 @@ describe('Kitsuki Jusai', function() {
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
         });
+
+        describe('Kitsuki Jusai and a modified bid', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'draw',
+                    player1: {
+                        inPlay: ['kitsuki-jusai', 'bayushi-manipulator']
+                    },
+                    player2: {
+                        fate: 2
+                    }
+                });
+                this.kitsukiJusai = this.player1.findCardByName('kitsuki-jusai');
+                this.manipulator = this.player1.findCardByName('bayushi-manipulator');
+            });
+
+            it('should still trigger when the dials are equal and the bid is increased first', function() {
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                expect(this.player1).toBeAbleToSelect(this.manipulator);
+                this.player1.clickCard(this.manipulator);
+                expect(this.player1.player.honorBid).toBe(2);
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.kitsukiJusai);
+            });
+        });
     });
 });
