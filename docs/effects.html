@@ -2534,7 +2534,7 @@ this.persistentEffect({
     </ul>
     <pre><code>// Bayushi Yojiro (see above)
 effect: [honorStatusDoesNotModifySkill(), honorStatusDoesNotAffectLeavePlay(), taintedStatusDoesNotCostHonor()]</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/BayushiYojiro.ts">Bayushi Yojiro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/UtakuKamoko.ts">Utaku Kamoko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/TheLionsShadow.ts">The Lion's Shadow</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/BayushiYojiro.ts">Bayushi Yojiro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/UtakuKamoko.ts">Utaku Kamoko</a></p>
   </div>
 <div class="ref" id="ef-honorStatusReverseModifySkill" data-name="honorStatusReverseModifySkill">
     <h3><code>honorStatusReverseModifySkill()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-honorStatusReverseModifySkill">#</a></h3>
@@ -2549,6 +2549,18 @@ this.persistentEffect({
     effect: honorStatusReverseModifySkill()
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/ShosuroSadako.ts">Shosuro Sadako</a></p>
+  </div>
+<div class="ref" id="ef-statusTokensDoNotDecreaseSkill" data-name="statusTokensDoNotDecreaseSkill">
+    <h3><code>statusTokensDoNotDecreaseSkill()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-statusTokensDoNotDecreaseSkill">#</a></h3>
+    <p>"Does not have its skills decreased by status tokens": a status-token modifier that would lower the character's skill is set to 0.</p>
+    <ul class="edge">
+      <li>Only decreases are removed: the dishonored token's penalty goes, the honored bonus and the tainted +2 stay. Compare <a href="#ef-honorStatusDoesNotModifySkill"><code>honorStatusDoesNotModifySkill</code></a>, which removes every token modifier.</li>
+    </ul>
+    <pre><code>// The Lion's Shadow: Attached character does not have its skills decreased by status tokens.
+this.whileAttached({
+    effect: statusTokensDoNotDecreaseSkill()
+});</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/TheLionsShadow.ts">The Lion's Shadow</a></p>
   </div>
 <div class="ref" id="ef-taintedStatusDoesNotCostHonor" data-name="taintedStatusDoesNotCostHonor">
     <h3><code>taintedStatusDoesNotCostHonor()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-taintedStatusDoesNotCostHonor">#</a></h3>
@@ -2702,6 +2714,7 @@ this.action('Gain abilities from a character in your discard pile')
     .cost(captureParentCost())
     .cost(costs.sacrificeSelf())
     .target({
+        cardType: CardType.Character,
         location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
         controller: Players.Self,
         cardCondition: (card) =&gt; card.isFaction('lion')
@@ -3194,7 +3207,7 @@ this.persistentEffect({
     </ul>
     <pre><code>// Castle of the Forgotten: Reaction:  After you break a province, bow this stronghold - each conflict declared this round is [conflict-military] instead of its normal type.
 this.reaction('Make all conflicts military')
-    .when({ onBreakProvince: (event, context) =&gt; event.conflict?.attackingPlayer === context.player })
+    .when({ onBreakProvince: (event, context) =&gt; event.card.controller !== context.player })
     .cost(costs.bowSelf())
     .playerLastingEffect({
         target: Players.Any,

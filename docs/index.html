@@ -107,6 +107,7 @@ export default class Assassination extends DrawCard {
         <tr><td>Composure – …</td><td><code>this.composure({ … })</code></td></tr>
         <tr><td>Dire – …</td><td><code>this.dire({ … })</code></td></tr>
         <tr><td>Legendary X</td><td><code>this.legendary(x)</code></td></tr>
+        <tr><td>Tutored — X</td><td><code>this.tutored('X')</code></td></tr>
         <tr><td>Play only if …</td><td><code>this.playOnlyIf((context) =&gt; …)</code></td></tr>
         <tr><td>Attached character gains "Action: …"</td><td><code>this.whileAttached({ effect: gainAbility.action(title, (ability) =&gt; ability…) })</code>; also <code>gainAbility.conflictAction</code> and <code>gainAbility.reaction(title, (ability) =&gt; ability.when({ … })…)</code></td></tr>
     </tbody>
@@ -148,7 +149,7 @@ export default class Assassination extends DrawCard {
 
 <h3 id="start-if">If, if able, otherwise</h3>
 <ul>
-    <li><strong>"If X, do A. Otherwise, do B."</strong> is <code>.if((context) =&gt; X).a().otherwise().b()</code>. Without <code>otherwise()</code>, nothing happens when the condition fails. Right after a card target without game actions of its own, the branches belong to that target: they resolve on the chosen card, and only cards a branch can affect are selectable.</li>
+    <li><strong>"If X, do A. Otherwise, do B."</strong> is <code>.if((context) =&gt; X).a().otherwise().b()</code>. Without <code>otherwise()</code>, nothing happens when the condition fails, and an ability whose only effect is that <code>if()</code> can't be used then. Right after a card target without game actions of its own, the branches belong to that target: they resolve on the chosen card, and only cards a branch can affect are selectable.</li>
     <li><strong>"Do A, if able. Otherwise, do B."</strong> is <code>.ifAble().a().otherwise().b()</code>: no condition, A resolves when it can. <code>otherwise()</code> is required, and the branches always stay on the ability, so their actions name their targets.</li>
 </ul>
 

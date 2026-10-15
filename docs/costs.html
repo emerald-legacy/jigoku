@@ -556,7 +556,7 @@ this.action('Move character to conflict and gain skill bonus')
 this.action('Ready a character')
     .cost(costs.removeFate({
         cardType: CardType.Character,
-        cardCondition: (card) =&gt; card.isFaction('unicorn') &amp;&amp; card.bowed
+        cardCondition: (card, context) =&gt; card.isFaction('unicorn') &amp;&amp; ready().canAffect(card, context)
     }))
     .handler((context) =&gt; ready().resolve(context.costs.removeFate, context))
     .chatText((context) =&gt; msg`ready ${context.costs.removeFate}`);</code></pre>

@@ -607,6 +607,7 @@ effect: delayedEffect({
           <tr><td><code>HideWhenFaceUp</code></td><td><code>'hideWhenFaceUp'</code></td><td><code>hideWhenFaceUp</code></td></tr>
           <tr><td><code>HonorStatusDoesNotAffectLeavePlay</code></td><td><code>'honorStatusDoesNotAffectLeavePlay'</code></td><td><code>honorStatusDoesNotAffectLeavePlay</code></td></tr>
           <tr><td><code>HonorStatusDoesNotModifySkill</code></td><td><code>'honorStatusDoesNotModifySkill'</code></td><td><code>honorStatusDoesNotModifySkill</code></td></tr>
+          <tr><td><code>StatusTokensDoNotDecreaseSkill</code></td><td><code>'statusTokensDoNotDecreaseSkill'</code></td><td><code>statusTokensDoNotDecreaseSkill</code></td></tr>
           <tr><td><code>TaintedStatusDoesNotCostHonor</code></td><td><code>'taintedStatusDoesNotCostHonor'</code></td><td><code>taintedStatusDoesNotCostHonor</code></td></tr>
           <tr><td><code>HonorStatusReverseModifySkill</code></td><td><code>'honorStatusReverseModifySkill'</code></td><td><code>honorStatusReverseModifySkill</code></td></tr>
           <tr><td><code>IncreaseLimitOnAbilities</code></td><td><code>'increaseLimitOnAbilities'</code></td><td><code>increaseLimitOnAbilities</code></td></tr>
@@ -1545,10 +1546,12 @@ onCardsDiscarded: (event, context) =&gt;
 this.reaction('Opponent discards an equal number of cards at random')
     .when({
         onCardsDiscardedFromHand: (event, context) =&gt;
-            event.player === context.player &amp;&amp; isOpponentsRingOrCardEffect(event.player, event.context)
+            event.player === context.player &amp;&amp;
+            (event.discardedCards?.length ?? 0) &gt; 0 &amp;&amp;
+            isOpponentsRingOrCardEffect(event.player, event.context)
     })
     .discardAtRandom((context) =&gt; ({
-        amount: context.event.amount
+        amount: context.event.discardedCards?.length ?? 0
     }));</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/AkodoMotivator.ts">Akodo Motivator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/ShosuroHyobu.ts">Shosuro Hyobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/RootOutHeresy.ts">Root Out Heresy</a></p>
 </div>

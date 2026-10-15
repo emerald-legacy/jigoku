@@ -816,7 +816,9 @@ private getNumberOfLegalTargets(context: AbilityContext) {
 // that opponent discards an equal number of cards at random from his or her hand.
 .when({
     onCardsDiscardedFromHand: (event, context) =&gt;
-        event.player === context.player &amp;&amp; isOpponentsRingOrCardEffect(event.player, event.context)
+        event.player === context.player &amp;&amp;
+        (event.discardedCards?.length ?? 0) &gt; 0 &amp;&amp;
+        isOpponentsRingOrCardEffect(event.player, event.context)
 })</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/AkodoMotivator.ts">Akodo Motivator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/ArdentOmoidasu.ts">Ardent Omoidasu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/IsawaTsuke.ts">Isawa Tsuke</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/RighteousSamurai.ts">Righteous Samurai</a></p>
   </div>

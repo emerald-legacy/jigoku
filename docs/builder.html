@@ -341,6 +341,26 @@ this.dire({
 this.legendary(1);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Neutral/BakeKujira.ts">Bake-Kujira</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MischievousTanuki.ts">Mischievous Tanuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a></p>
   </div>
+  <div class="ref" id="cm-tutored" data-name="tutored">
+    <h3><code>tutored(attachmentName)</code> <span class="kind">Card method</span> <a class="anchor" href="#cm-tutored">#</a></h3>
+    <p>"Tutored – X": after this character enters play, find the attachment named X and put it into play attached to the character. A keyword ability, like Rally or Sincerity: it resolves by itself and has no limit.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>attachmentName</code></td><td><code>string</code></td><td>required</td><td>X: the attachment's name.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Searches the conflict discard pile, then the conflict deck, then the hand (RRG "Tutored – X"). Only copies that can legally attach are offered.</li>
+      <li>The player may take nothing in an area (RRG Search: "A player is not obliged to find the object of a search effect"); the search then goes on to the next area.</li>
+      <li>The conflict deck is shuffled after it has been searched.</li>
+      <li>The attachment is put into play, not played, so its play restrictions ("Play only on an honored character") don't apply.</li>
+      <li>Chat: "<em>character</em> receives their <em>attachment</em>".</li>
+    </ul>
+    <pre><code>// Yasuki Yoshi: Tutored — Writ of Survey.
+this.tutored('Writ of Survey');</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crab/YasukiYoshi.ts">Yasuki Yoshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crane/KakitaMio.ts">Kakita Mio</a></p>
+  </div>
 
   <div class="ref" id="cm-persistentEffect" data-name="persistentEffect">
     <h3><code>persistentEffect(properties)</code> <span class="kind">Card method</span> <a class="anchor" href="#cm-persistentEffect">#</a></h3>
@@ -723,7 +743,7 @@ this.action('Dishonor a character')
 this.action('Ready a character')
     .cost(costs.removeFate({
         cardType: CardType.Character,
-        cardCondition: (card) =&gt; card.isFaction('unicorn') &amp;&amp; card.bowed
+        cardCondition: (card, context) =&gt; card.isFaction('unicorn') &amp;&amp; ready().canAffect(card, context)
     }))
     .handler((context) =&gt; ready().resolve(context.costs.removeFate, context))
     .chatText((context) =&gt; msg`ready ${context.costs.removeFate}`)
@@ -1220,7 +1240,7 @@ this.reaction('Put this into play')
     <p><strong>On a card target.</strong> Right after a card target, the branches belong to that target: they become its game actions and resolve on the chosen card (an action without its own <code>target</code> affects it). This applies when the last target is the only card target without game actions, or when the last target has game actions of its own and the ability has none yet (its own actions then come first in both branches). After several card targets without game actions, or once the ability has game actions of its own, the branches stay on the ability and the actions name their targets.</p>
     <ul class="edge">
       <li>On a target, <code>condition</code> is read for each candidate, before the other targets are chosen, and only cards the branch that applies can affect are selectable. Without <code>otherwise()</code>, the "no" branch is the target's own actions, or nothing.</li>
-      <li>Without <code>otherwise()</code>, the "no" branch does nothing and is always legal: an ability whose only effect is <code>if()</code> can be used even when the condition fails, and on a bare target every card that fails the condition stays selectable.</li>
+      <li>Without <code>otherwise()</code>, the "no" branch does nothing and has no legal target: an ability whose only effect is a failing <code>if()</code> can't be used, and on a bare target the cards that fail the condition aren't selectable. Actions before the <code>if()</code>, or a target's own actions, still make it usable.</li>
       <li>One <code>if()</code> or <code>ifAble()</code> per step: a second throws <code>"one if() per step"</code>. Targets after it throw <code>"targets come before if()"</code>.</li>
       <li>Each branch needs a game action: throws at registration <code>"if() and otherwise() each need a game action"</code>. Not with <code>handler()</code>.</li>
       <li>For several conditions in one step, or a condition nested inside another action, use the <code>conditional</code> game action.</li>

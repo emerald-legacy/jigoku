@@ -77,7 +77,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
     <ul class="edge">
       <li>The card must be faceup. A holding or province must be in a province; any other card must be in play.</li>
       <li>It has no restriction type, so only restrictions that name no action stop it.</li>
-      <li>Raises <code>onAddTokenToCard</code> (<code>event.tokenType</code>). Chat: "add a honor token to <em>card</em>".</li>
+      <li>Raises <code>onAddTokenToCard</code> (<code>event.tokenType</code>). Chat: "add an honor token to <em>card</em>".</li>
       <li>Builder shortcut: <code>.addToken(…)</code>.</li>
     </ul>
     <pre><code>// Fortified Assembly: Reaction: After an attack is declared against this province - place 1 honor token on it.
@@ -298,7 +298,7 @@ this.forcedReaction('Reap your rewards')
     <ul class="edge">
       <li>Illegal when <code>amount</code> is 0. Restriction: <code>RestrictionType.GainHonor</code>.</li>
       <li>A per-phase honor gain limit (<code>EffectName.LimitHonorGainPerPhase</code>) caps the amount; once a player has reached it, they are no longer a legal target.</li>
-      <li>Raises <code>onModifyHonor</code> (<code>event.amount</code>). Chat: "gain <em>N</em> honor", with <em>N</em> after the ability player's limit; it doesn't name the player.</li>
+      <li>Raises <code>onModifyHonor</code> (<code>event.amount</code>). Chat: "gain <em>N</em> honor" when only the ability's player gains it, otherwise "make <em>players</em> gain <em>N</em> honor"; <em>N</em> is capped by the receiving player's honor limit.</li>
       <li>Builder shortcut: <code>.gainHonor(n)</code> or <code>.gainHonor(properties)</code>.</li>
     </ul>
     <pre><code>// City of the Open Hand: Action: If you are less honorable than an opponent, bow this stronghold – gain 1 honor.
@@ -632,7 +632,7 @@ this.reaction('Name a card')
     <ul class="edge">
       <li>Illegal when <code>amount</code> is 0. Restriction: <code>RestrictionType.Draw</code>.</li>
       <li>When the deck runs out, the player draws what is left, loses honor as the game rules say, shuffles the discard pile into the deck, and draws the rest.</li>
-      <li>Raises <code>onCardsDrawn</code> (<code>event.amount</code>). Chat: "draw <em>N</em> cards"; it doesn't name the player.</li>
+      <li>Raises <code>onCardsDrawn</code> (<code>event.amount</code>). Chat: "draw <em>N</em> cards" when only the ability's player draws, otherwise "make <em>players</em> draw <em>N</em> cards".</li>
       <li>Builder shortcut: <code>.draw(n)</code> or <code>.draw(properties)</code>.</li>
     </ul>
     <pre><code>// Soshi Mika: Forced Reaction: After the conflict phase begins - each player draws 2 cards and loses 1 honor.
@@ -759,7 +759,7 @@ this.action('Take control of an attachment')
     <ul class="edge">
       <li>Only attachments in play that have a parent.</li>
       <li>Raises <code>onCardDetached</code>.</li>
-      <li>Chat: the format is "detach {1} from {0}" with the attachment as <code>{0}</code> and its parent as <code>{1}</code>, so it reads "detach <em>parent</em> from <em>attachment</em>". Give the ability a <code>chatText</code>.</li>
+      <li>Chat: "detach <em>attachment</em> from <em>character</em>".</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// Togashi Hoshi: Action: Detach an attachment from a character you control and turn it into a character. If that card has the printed attachment card type, its [conflict-military] and [conflict-political] skills are equal to its printed [conflict-military] and [conflict-political] modifiers and it has 0 glory.
@@ -2200,7 +2200,7 @@ this.reaction('Place additional fate')
 <div class="ref" id="ga-selectRing" data-name="selectRing">
     <h3><code>selectRing(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-selectRing">#</a></h3>
     <p>A player chooses a ring while the ability resolves, and <code>gameAction</code> resolves on it. Builder shortcut: <code>.selectRing(…)</code>.</p>
-    <p>Chat: <code>choose a ring for {0}</code>, where {0} is the select's own ring target (the conflict's ring by default); set the ability's chat text. <code>message</code> adds a line once the ring is chosen.</p>
+    <p>Chat: <code>choose a ring</code>; set the ability's chat text to say more. <code>message</code> adds a line once the ring is chosen.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2735,7 +2735,7 @@ this.reaction('Modify honor dial')
     .chooseAction((context) =&gt; ({
         choices: {
             'Increase bid by 1': {
-                action: setHonorDial({ target: context.player, value: context.player.honorBid + 1 }),
+                action: setHonorDial({ target: context.player, value: context.player.showBid + 1 }),
                 message: (_context, _target, player) =&gt; msg`${player} chooses to increase their honor bid by 1`
             },
             'Decrease bid by 1': { … }
