@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import { perConflict } from '../../AbilityLimit.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
-import { Location } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 
 class SpeakToTheHeart extends DrawCard {
     static id = 'speak-to-the-heart';
@@ -12,6 +12,7 @@ class SpeakToTheHeart extends DrawCard {
         this.action('give +1 political to a character for each faceup province')
             .condition((context) => context.game.isDuringConflict())
             .target({
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isFaction('unicorn')
             }, cardLastingEffect((context) => ({
                 effect: modifyPoliticalSkill(context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince))

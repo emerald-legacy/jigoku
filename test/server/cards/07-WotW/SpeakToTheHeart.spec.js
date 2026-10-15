@@ -68,6 +68,38 @@ describe('Speak to the Heart', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.dojiWhisperer);
             });
         });
+
+        describe('Speak to the Heart and a unicorn attachment', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: [{ card: 'border-rider', attachments: ['favored-mount'] }],
+                        hand: ['speak-to-the-heart']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer']
+                    }
+                });
+
+                this.borderRider = this.player1.findCardByName('border-rider');
+                this.favoredMount = this.player1.findCardByName('favored-mount');
+                this.speakToTheHeart = this.player1.findCardByName('speak-to-the-heart');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.borderRider],
+                    defenders: ['doji-whisperer']
+                });
+            });
+
+            it('should only choose a character', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.speakToTheHeart);
+                expect(this.player1).toBeAbleToSelect(this.borderRider);
+                expect(this.player1).not.toBeAbleToSelect(this.favoredMount);
+            });
+        });
     });
 });
 
