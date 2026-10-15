@@ -17,7 +17,7 @@ export default class FloatingFortress extends DrawCard {
     static id = 'floating-fortress';
 
     override setupCardAbilities() {
-        this.action('Become another holding')
+        this.conflictAction('Become another holding')
             .condition((context) => context.player.isDefendingPlayer())
             .cost(costs.payFate(1))
             .target({

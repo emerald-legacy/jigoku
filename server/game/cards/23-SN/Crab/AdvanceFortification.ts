@@ -7,7 +7,7 @@ export default class AdvanceFortification extends DrawCard {
     static id = 'advance-fortification';
 
     override setupCardAbilities() {
-        this.action('Take an honor from your opponent or give skill bonus')
+        this.conflictAction('Take an honor from your opponent or give skill bonus')
             .condition((context) => !!context.game.currentConflict && context.game.currentConflict.defendingPlayer === context.player && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken)
             .if((context) => !!context.player.getProvinceCardInProvince(context.source.location)?.isConflictProvince())
                 .cardLastingEffect((context) => ({

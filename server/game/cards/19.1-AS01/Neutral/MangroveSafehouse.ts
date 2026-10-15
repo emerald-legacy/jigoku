@@ -9,7 +9,7 @@ export default class MangroveSafehouse extends DrawCard {
     static id = 'mangrove-safehouse';
 
     public override setupCardAbilities() {
-        this.action('Move an attacker out of the conflict')
+        this.conflictAction('Move an attacker out of the conflict')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

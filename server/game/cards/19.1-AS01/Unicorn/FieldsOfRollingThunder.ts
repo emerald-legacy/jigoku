@@ -14,7 +14,7 @@ export default class FieldsOfRollingThunder extends DrawCard {
             })
             .discardFromPlay();
 
-        this.action('Honor a character')
+        this.conflictAction('Honor a character')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

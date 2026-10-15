@@ -17,7 +17,7 @@ export default class SpiderwebPassage extends DrawCard {
     static id = 'spiderweb-passage';
 
     override setupCardAbilities() {
-        this.action('Discard a participating character with 0 skill')
+        this.conflictAction('Discard a participating character with 0 skill')
             .condition((context) => shinobiCount(context) > 0)
             .cost(costs.sacrificeSelf())
             .target({

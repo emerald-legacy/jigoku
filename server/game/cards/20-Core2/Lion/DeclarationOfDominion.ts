@@ -10,7 +10,7 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
     public override setupCardAbilities() {
         super.setupCardAbilities();
 
-        this.action('Gives Pride to chosen characters')
+        this.conflictAction('Gives Pride to chosen characters')
             .condition((context) => !!context.source.parentProvince?.isConflictProvince())
             .targetCards({
                 name: 'myCard',

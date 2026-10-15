@@ -7,7 +7,7 @@ export default class BordersEdgeBarracks extends DrawCard {
     static id = 'border-s-edge-barracks';
 
     override setupCardAbilities() {
-        this.action('Move a character to the conflict')
+        this.conflictAction('Move a character to the conflict')
             .condition((context) => context.player.isDefendingPlayer())
             .target({
                 cardType: CardType.Character,
