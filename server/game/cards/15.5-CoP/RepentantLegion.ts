@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { moveCard, sequential } from '../../GameActions/GameActions.js';
-import { Location } from '../../Constants.js';
+import { fillProvince, sequential } from '../../GameActions/GameActions.js';
 
 class RepentantLegion extends DrawCard {
     static id = 'repentant-legion';
@@ -11,24 +10,9 @@ class RepentantLegion extends DrawCard {
                 // RRG: a province broken outside conflict resolution is broken by its controller's opponent
                 onBreakProvince: (event, context) => context.source.isParticipating() && event.card.controller !== context.player
             })
-            .gameAction(sequential([
-                moveCard((context) => ({
-                    target: context.player.dynastyDeck[0],
-                    destination: Location.ProvinceOne
-                })),
-                moveCard((context) => ({
-                    target: context.player.dynastyDeck[0],
-                    destination: Location.ProvinceTwo
-                })),
-                moveCard((context) => ({
-                    target: context.player.dynastyDeck[0],
-                    destination: Location.ProvinceThree
-                })),
-                moveCard((context) => ({
-                    target: context.player.dynastyDeck[0],
-                    destination: Location.ProvinceFour
-                }))
-            ]))
+            .gameAction(sequential((context) =>
+                context.game.getProvinceArray(false).map((location) => fillProvince({ location, amount: 1 }))
+            ))
             .chatText('put 1 card into each of their non-stronghold provinces');
     }
 }
