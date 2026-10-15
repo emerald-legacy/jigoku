@@ -9,7 +9,7 @@ export default class EyesOfTheSerpent extends DrawCard {
     static id = 'eyes-of-the-serpent';
 
     override setupCardAbilities() {
-        this.action('Taint a character')
+        this.conflictAction('Taint a character')
             .playOnlyIf((context) => controlsShugenja(context.player))
             .cost(costs.chooseOne({
                 'Spend 1 honor': costs.payHonor(1),

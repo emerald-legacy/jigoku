@@ -6,7 +6,7 @@ export default class BurnishedReputation extends DrawCard {
     static id = 'burnished-reputation';
 
     override setupCardAbilities() {
-        this.action('Honor a participating character')
+        this.conflictAction('Honor a participating character')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

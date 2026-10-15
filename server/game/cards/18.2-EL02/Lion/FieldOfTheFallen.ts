@@ -8,8 +8,7 @@ class FieldOfTheFallen extends DrawCard {
     static id = 'field-of-the-fallen';
 
     override setupCardAbilities() {
-        this.action('Discard then draw a card')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Discard then draw a card', { conflictType: ConflictType.Military })
             .cost(costs.discardCard({ location: Location.Hand }))
             .gameAction(sequential((context) => {
                 const moreHonorable = context.player.isMoreHonorable();

@@ -8,7 +8,7 @@ export default class TwoFoldedVirtue extends DrawCard {
     static id = 'two-folded-virtue';
 
     override setupCardAbilities() {
-        this.action('Increase a character\'s military skill')
+        this.conflictAction('Increase a character\'s military skill')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

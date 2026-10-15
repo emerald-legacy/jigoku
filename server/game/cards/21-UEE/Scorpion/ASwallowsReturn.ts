@@ -10,7 +10,7 @@ export default class ASwallowsReturn extends DrawCard {
     static id = 'a-swallow-s-return';
 
     override setupCardAbilities() {
-        this.action('Reveal cards and take ones matching named type')
+        this.conflictAction('Reveal cards and take ones matching named type')
             .condition((context) =>
                 context.game.currentConflict !== null &&
         context.player.opponent !== undefined &&

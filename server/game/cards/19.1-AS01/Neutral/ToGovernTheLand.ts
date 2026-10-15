@@ -9,14 +9,14 @@ export default class ToGovernTheLand extends DrawCard {
     static id = 'to-govern-the-land';
 
     public override setupCardAbilities() {
-        this.action('Send home and bow based on bushi\'s power')
+        this.conflictAction('Send home and bow based on bushi\'s power', { conflictType: ConflictType.Political })
             .condition((context) => this.conditionToTrigger(ConflictType.Political, context))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => this.conditionToTarget(ConflictType.Political, card, context)
             }, this.gameAction());
 
-        this.action('Send home and bow based on courtier\'s power')
+        this.conflictAction('Send home and bow based on courtier\'s power', { conflictType: ConflictType.Military })
             .condition((context) => this.conditionToTrigger(ConflictType.Military, context))
             .target({
                 cardType: CardType.Character,
@@ -51,11 +51,8 @@ export default class ToGovernTheLand extends DrawCard {
     }
 
     private conditionToTrigger(conflictType: ConflictType, context: AbilityContext): boolean {
-        return (
-            context.game.isDuringConflict(conflictType) &&
-            (context.game.currentConflict?.getParticipants() ?? []).some((card) =>
-                this.governFulfillTrait(conflictType, context, card)
-            )
+        return (context.game.currentConflict?.getParticipants() ?? []).some((card) =>
+            this.governFulfillTrait(conflictType, context, card)
         );
     }
 

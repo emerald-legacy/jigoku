@@ -16,7 +16,7 @@ export default class DeedsNotWords extends DrawCard {
     static id = 'deeds-not-words';
 
     override setupCardAbilities() {
-        this.action('Give a character +2 mil')
+        this.conflictAction('Give a character +2 mil')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

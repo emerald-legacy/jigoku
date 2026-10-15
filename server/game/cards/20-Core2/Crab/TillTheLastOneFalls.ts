@@ -10,7 +10,7 @@ export default class TillTheLastOneFalls extends DrawCard {
     static id = 'till-the-last-one-falls-';
 
     public override setupCardAbilities() {
-        this.action('Give a character a skill bonus')
+        this.conflictAction('Give a character a skill bonus')
             .condition((context) =>
                 !!context.game.currentConflict?.hasMoreParticipants(context.player.opponent))
             .target({

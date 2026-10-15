@@ -20,7 +20,7 @@ export default class KakitaTechnique extends DrawCard {
                 };
             });
 
-        this.action('Give character +1/+1')
+        this.conflictAction('Give character +1/+1')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

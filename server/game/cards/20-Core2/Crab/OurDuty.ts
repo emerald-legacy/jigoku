@@ -26,8 +26,7 @@ export default class OurDuty extends DrawCard {
             .chatText((context) => msg`force ${context.player.opponent} to sacrifice a character`)
             .max(perGame(1));
 
-        this.action('Move an attacker home')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+        this.conflictAction('Move an attacker home', { conflictType: ConflictType.Military })
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()

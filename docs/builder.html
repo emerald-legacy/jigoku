@@ -60,7 +60,7 @@ this.action('Sacrifice to discard an attachment')
 
   <div class="ref" id="cm-conflictAction" data-name="conflictAction">
     <h3><code>conflictAction(title, options?)</code> <span class="kind">Card method</span> <a class="anchor" href="#cm-conflictAction">#</a></h3>
-    <p>Starts a "Conflict Action:" (or "[military] Conflict Action:"): an action that can only be used during a conflict, of <code>conflictType</code> if given. A character must be participating; an attachment in play needs its character to be participating. Events and holdings only need the conflict. Defined on <code>DrawCard</code>. Only for a card whose text prints "Conflict Action:" (Emerald Legacy wording); an older card that prints "Action: During a conflict, …" or "While this character is participating …" is an <code>action()</code> with that condition written out.</p>
+    <p>Starts a "Conflict Action:" (or "[military] Conflict Action:"): an action that can only be used during a conflict, of <code>conflictType</code> if given. A character must be participating; an attachment in play needs its character to be participating. Events and holdings only need the conflict. Defined on <code>DrawCard</code>. Only for a card whose Emerald Legacy text prints "Conflict Action:". A card that exists only in its older print (A Fate Worse Than Death, Fate Has No Secrets) or whose text says "Action: During a conflict, …" or "While this character is participating …" is an <code>action()</code> with that condition written out.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -71,6 +71,7 @@ this.action('Sacrifice to discard an attachment')
     </table>
     <ul class="edge">
       <li>The conflict check is added to the ability's own <a href="#b-condition"><code>condition()</code></a> when the builder is registered; both must hold.</li>
+      <li>A copy of the ability (Illustrious Plagiarist) is checked for the card that has it: a character that copies a Conflict Action must be participating.</li>
       <li>The check reads the card's current type: a character played as an attachment (Togashi Kazue) is checked as an attachment.</li>
       <li>Provinces and strongholds have no <code>conflictAction()</code>. A province's <code>action()</code> already requires a conflict at the province (<a href="#b-conflictProvinceCondition"><code>conflictProvinceCondition</code></a>); a stronghold writes <code>action()</code> with <code>.condition((context) =&gt; context.game.isDuringConflict())</code>.</li>
     </ul>
@@ -86,7 +87,7 @@ this.conflictAction('Force opponent to discard card or dishonor a character', { 
         .discardAtRandom((context) =&gt; ({ target: context.target.controller }))
     .otherwise()
         .dishonor();</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/ShosuroHiroyuki.ts">Shosuro Hiroyuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/Kuro.ts">Kuro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crane/KakitaMio.ts">Kakita Mio</a> (131 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/ShosuroHiroyuki.ts">Shosuro Hiroyuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/Kuro.ts">Kuro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crane/KakitaMio.ts">Kakita Mio</a> (176 card files)</p>
   </div>
 </section>
 

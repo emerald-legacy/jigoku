@@ -12,7 +12,7 @@ export default class StrikeBeneathTheVeil extends DrawCard {
     static id = 'strike-beneath-the-veil';
 
     override setupCardAbilities() {
-        this.action('Give a military penalty to a participating character')
+        this.conflictAction('Give a military penalty to a participating character')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

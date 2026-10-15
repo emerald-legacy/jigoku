@@ -16,7 +16,7 @@ class SurgingWave extends DrawCard {
     static id = 'surging-wave';
 
     override setupCardAbilities() {
-        this.action('Prevent bowing after conflict')
+        this.conflictAction('Prevent bowing after conflict')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Any,

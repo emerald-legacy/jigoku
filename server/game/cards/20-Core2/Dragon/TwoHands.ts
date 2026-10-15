@@ -16,7 +16,7 @@ export default class TwoHands extends DrawCard {
                 duel: context.event.duel
             })));
 
-        this.action('Set the skill of two enemy character to the lowest between them')
+        this.conflictAction('Set the skill of two enemy character to the lowest between them')
             .condition((context) =>
                 !!context.game.currentConflict &&
                 context.player.cardsInPlay.some(

@@ -9,8 +9,7 @@ export default class MarvelousBeings extends DrawCard {
     static id = 'marvelous-beings';
 
     public override setupCardAbilities() {
-        this.action('Move character to conflict and gain skill bonus')
-            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
+        this.conflictAction('Move character to conflict and gain skill bonus', { conflictType: ConflictType.Political })
             .cost(costs.moveToConflict({
                 cardType: CardType.Character,
                 cardCondition: (card) =>

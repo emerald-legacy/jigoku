@@ -7,7 +7,7 @@ export default class CompetingInterests extends DrawCard {
     static id = 'competing-interests';
 
     override setupCardAbilities() {
-        this.action('Bow a character')
+        this.conflictAction('Bow a character')
             .condition((context) => this.hasEnoughUniques(context))
             .target({
                 cardType: CardType.Character,

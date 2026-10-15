@@ -6,7 +6,7 @@ export default class DevotionInAction extends DrawCard {
     static id = 'devotion-in-action';
 
     override setupCardAbilities() {
-        this.action('Put a character into play')
+        this.conflictAction('Put a character into play')
             .condition((context) =>
                 !!context.game.currentConflict?.hasMoreParticipants(context.player.opponent))
             .target({

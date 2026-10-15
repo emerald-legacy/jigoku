@@ -13,7 +13,7 @@ export default class ShowMeYourStance extends DrawCard {
             })
             .chatText('have status tokens count when resolving this duel');
 
-        this.action('Send a character home')
+        this.conflictAction('Send a character home')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>

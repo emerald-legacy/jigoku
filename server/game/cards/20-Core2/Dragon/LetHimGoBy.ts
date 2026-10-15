@@ -22,7 +22,7 @@ export default class LetHimGoBy extends DrawCard {
                 target: context.event.card
             }));
 
-        this.action('Challenge a character anywhere to a duel')
+        this.conflictAction('Challenge a character anywhere to a duel')
             .initiateDuel(() => ({
                 type: DuelType.Military,
                 targetCondition: () => true,

@@ -40,6 +40,51 @@ describe('Illustrious Plagiarist', function() {
             });
         });
 
+        describe('When copying A Fate Worse Than Death 2', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 0,
+                        inPlay: ['bayushi-shoju', 'illustrious-plagiarist']
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger'],
+                        hand: ['a-fate-worse-than-death-2']
+                    }
+                });
+                this.bayushiShoju = this.player1.findCardByName('bayushi-shoju');
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
+                this.dojiChallenger = this.player2.findCardByName('doji-challenger');
+                this.copyAfwtd2 = (attackers) => {
+                    this.noMoreActions();
+                    this.initiateConflict({
+                        attackers: attackers,
+                        defenders: [this.dojiChallenger]
+                    });
+                    this.aFateWorseThanDeath2 = this.player2.clickCard('a-fate-worse-than-death-2');
+                    this.player2.clickCard(this.bayushiShoju);
+                    this.player1.clickCard(this.illustriousPlagiarist);
+                    this.player1.clickCard(this.aFateWorseThanDeath2);
+                    this.player2.pass();
+                };
+            });
+
+            it('should allow a participating plagiarist to copy it', function() {
+                this.copyAfwtd2([this.bayushiShoju, this.illustriousPlagiarist]);
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Illustrious Plagiarist');
+                expect(this.player1).toBeAbleToSelect(this.dojiChallenger);
+            });
+
+            it('should not let a plagiarist at home use the copied conflict action', function() {
+                this.copyAfwtd2([this.bayushiShoju]);
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.dojiChallenger.isDishonored).toBe(false);
+            });
+        });
+
         describe('When copying Assassinate', function() {
             beforeEach(function() {
                 this.setupTest({

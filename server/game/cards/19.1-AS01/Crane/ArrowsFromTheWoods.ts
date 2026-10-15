@@ -10,10 +10,8 @@ export default class ArrowsFromTheWoods extends DrawCard {
     static id = 'arrows-from-the-woods';
 
     public override setupCardAbilities() {
-        this.action('Reduce opponent\'s characters mil')
-            .condition((context) =>
-                context.game.isDuringConflict(ConflictType.Military) &&
-                controlsParticipating(context.player, Trait.Bushi))
+        this.conflictAction('Reduce opponent\'s characters mil', { conflictType: ConflictType.Military })
+            .condition((context) => controlsParticipating(context.player, Trait.Bushi))
             .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyMilitarySkill(this.penaltyValue(context))

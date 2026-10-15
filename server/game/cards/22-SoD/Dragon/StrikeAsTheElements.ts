@@ -8,7 +8,7 @@ export default class StrikeAsTheElements extends DrawCard {
     static id = 'strike-as-the-elements';
 
     override setupCardAbilities() {
-        this.action('Increase a character\'s military skill')
+        this.conflictAction('Increase a character\'s military skill')
             .target({
                 name: 'character',
                 cardType: CardType.Character,

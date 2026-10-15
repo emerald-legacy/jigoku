@@ -9,10 +9,8 @@ export default class WingsOfThePhoenix extends DrawCard {
     static id = 'wings-of-the-phoenix';
 
     override setupCardAbilities() {
-        this.action('Move a character')
-            .condition((context) =>
-                context.game.isDuringConflict() &&
-                controlsShugenja(context.player))
+        this.conflictAction('Move a character')
+            .condition((context) => controlsShugenja(context.player))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

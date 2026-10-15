@@ -10,7 +10,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
 
     public override setupCardAbilities() {
         const charactersEntered = new CharactersEnteredThisConflict(this.game);
-        this.action('Remove a character from play')
+        this.conflictAction('Remove a character from play')
             .condition((context) => controlsParticipating(context.player, Trait.Shugenja))
             .target({
                 cardType: CardType.Character,

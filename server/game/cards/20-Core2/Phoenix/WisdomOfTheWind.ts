@@ -16,7 +16,7 @@ export default class WisdomOfTheWind extends DrawCard {
     static id = 'wisdom-of-the-wind';
 
     override setupCardAbilities() {
-        this.action('Honor or dishonor a character')
+        this.conflictAction('Honor or dishonor a character')
             .condition((context) => controlsShugenja(context.player))
             .target({
                 cardType: CardType.Character,

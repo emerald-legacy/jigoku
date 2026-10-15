@@ -6,7 +6,7 @@ export default class TarnishedReputation extends DrawCard {
     static id = 'tarnished-reputation';
 
     override setupCardAbilities() {
-        this.action('Dishonor a participating character')
+        this.conflictAction('Dishonor a participating character')
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

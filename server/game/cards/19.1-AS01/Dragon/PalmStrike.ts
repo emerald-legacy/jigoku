@@ -12,7 +12,7 @@ export default class PalmStrike extends DrawCard {
     static id = 'palm-strike';
 
     override setupCardAbilities() {
-        this.action('Bow a character')
+        this.conflictAction('Bow a character')
             .target({
                 name: TARGET_MONK,
                 activePromptTitle: 'Choose a bare-handed monk',

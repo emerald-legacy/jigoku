@@ -7,7 +7,7 @@ class RamshackleFacade extends DrawCard {
     static id = 'ramshackle-facade';
 
     override setupCardAbilities() {
-        this.action('Bow a character')
+        this.conflictAction('Bow a character')
             .cost(costs.sacrifice({
                 cardType: CardType.Holding
             }))

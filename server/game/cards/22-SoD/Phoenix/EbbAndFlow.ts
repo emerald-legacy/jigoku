@@ -8,7 +8,7 @@ export default class EbbAndFlow extends DrawCard {
     static id = 'ebb-and-flow';
 
     public override setupCardAbilities() {
-        this.action('Switch a character\'s skills')
+        this.conflictAction('Switch a character\'s skills')
             .target({
                 name: 'mine',
                 cardType: CardType.Character,

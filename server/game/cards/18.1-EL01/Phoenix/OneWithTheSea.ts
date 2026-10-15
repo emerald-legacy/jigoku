@@ -8,15 +8,14 @@ export default class OneWithTheSea extends DrawCard {
     static id = 'one-with-the-sea';
 
     override setupCardAbilities() {
-        this.action('Move a character you control to the conflict')
+        this.conflictAction('Move a character you control to the conflict')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
             }, moveToConflict());
 
-        this.action('Move any character to the conflict')
-            .condition((context) =>
-                context.game.isDuringConflict() && context.game.rings[Element.Water].isConsideredClaimed(context.player))
+        this.conflictAction('Move any character to the conflict')
+            .condition((context) => context.game.rings[Element.Water].isConsideredClaimed(context.player))
             .cost(costs.payFate(1))
             .target({
                 cardType: CardType.Character,
