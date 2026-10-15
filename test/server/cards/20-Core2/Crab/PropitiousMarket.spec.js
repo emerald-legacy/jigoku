@@ -41,6 +41,7 @@ describe('Propitious Market', function () {
             expect(this.player1.fate).toBe(initialFate);
             expect(this.propitiousMarket.getTokenCount('honor')).toBe(1);
             expect(this.manicured.getStrength()).toBe(5);
+            expect(this.getChatLogs(5)).toContain('player1 uses Propitious Market to add an honor token to Propitious Market');
             expect(this.getChatLogs(5)).toContain('player1 chooses not to sacrifice Propitious Market');
         });
 

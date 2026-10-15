@@ -36,3 +36,8 @@ export class PlayerAction<
         event.player = player;
     }
 }
+
+/** Whether an action's players are just the ability's own player, whom its chat line doesn't name. */
+export function onlyThePlayer(players: Player[], context: AbilityContext): boolean {
+    return players.length === 0 || (players.length === 1 && players[0] === context.player);
+}

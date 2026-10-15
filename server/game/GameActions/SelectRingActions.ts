@@ -30,7 +30,7 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
     };
 
     protected effectMessage(): MessageArgs {
-        return ['choose a ring for {0}', []];
+        return ['choose a ring', []];
     }
 
     canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {

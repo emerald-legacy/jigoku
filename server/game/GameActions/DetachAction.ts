@@ -15,7 +15,7 @@ export class DetachAction<C extends AbilityContext = AbilityContext> extends Car
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
         const [target] = targetList(this.getProperties(context, additionalProperties).target);
-        return ['detach {1} from {0}', [target.parent]];
+        return ['detach {0} from {1}', [target.parent]];
     }
 
     canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {

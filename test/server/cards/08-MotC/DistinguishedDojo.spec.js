@@ -67,7 +67,7 @@
                 this.player2.clickPrompt('1');
                 this.player1.clickCard(this.distinguishedDojo);
                 expect(this.distinguishedDojo.getTokenCount('honor')).toBe(1);
-                expect(this.getChatLogs(1)).toContain('player1 uses Distinguished Dōjō to add a honor token to Distinguished Dōjō');
+                expect(this.getChatLogs(1)).toContain('player1 uses Distinguished Dōjō to add an honor token to Distinguished Dōjō');
             });
 
             it('should prompt to optionally sacrifice itself', function() {

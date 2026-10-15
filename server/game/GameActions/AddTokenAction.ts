@@ -21,7 +21,7 @@ export class AddTokenAction<C extends AbilityContext = AbilityContext> extends C
     };
 
     protected effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
-        return ['add a {1} token to {0}', [this.getProperties(context, additionalProperties).tokenType]];
+        return ['add an {1} token to {0}', [this.getProperties(context, additionalProperties).tokenType]];
     }
 
     canAffect(card: BaseCard, context: C): boolean {

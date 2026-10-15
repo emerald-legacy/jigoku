@@ -183,7 +183,7 @@ describe('SelectRingAction', function() {
     describe('getEffectMessage()', function() {
         it('should return the default choose-a-ring-for template', function() {
             const action = new SelectRingAction({ target: 'tgt', gameAction: this.gameAction });
-            expect(action.getEffectMessage(this.context)).toEqual(['choose a ring for {0}', [['tgt']]]);
+            expect(action.getEffectMessage(this.context)).toEqual(['choose a ring', [['tgt']]]);
         });
     });
 });
