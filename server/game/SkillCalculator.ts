@@ -309,10 +309,6 @@ export class SkillCalculator {
             EffectName.SetBaseGlory
         ];
 
-        if(this.card.printedGlory === undefined) {
-            return [];
-        }
-
         const gloryEffects = this.card.getRawEffects().filter((effect) => gloryModifierEffects.includes(effect.type));
         const gloryModifiers: StatModifier[] = [];
 
@@ -369,10 +365,6 @@ export class SkillCalculator {
 
     getProvinceStrengthBonusModifiers(): StatModifier[] {
         const strengthModifierEffects = [EffectName.SetProvinceStrengthBonus, EffectName.ModifyProvinceStrengthBonus];
-
-        if(this.card.printedStrengthBonus === undefined) {
-            return [];
-        }
 
         const strengthEffects = this.card.getRawEffects().filter((effect) =>
             strengthModifierEffects.includes(effect.type)
