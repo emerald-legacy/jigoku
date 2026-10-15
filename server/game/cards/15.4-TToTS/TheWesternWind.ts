@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { deckSearch } from '../../GameActions/GameActions.js';
+import { deckSearch, placeInProvince } from '../../GameActions/GameActions.js';
 import { Location, CardType, Players, TargetMode, DeckType } from '../../Constants.js';
 
 class TheWesternWind extends DrawCard {
@@ -30,10 +30,7 @@ class TheWesternWind extends DrawCard {
                     }
                     if(cards.length > 0) {
                         this.game.addMessage(msg`${event.player} selects ${cards} and puts ${cards.length > 1 ? 'them' : 'it'} into ${target.facedown ? target.location : target}`);
-                        cards.forEach((card) => {
-                            event.player.moveCard(card, target.location);
-                            card.facedown = false;
-                        });
+                        cards.forEach((card) => placeInProvince({ destination: target.location }).resolve(card, context));
                     } else {
                         this.game.addMessage(msg`${event.player} selects no characters`);
                     }

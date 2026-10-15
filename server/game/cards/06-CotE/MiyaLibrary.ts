@@ -1,7 +1,7 @@
 
 import { CardType, DeckType, Location, RemainingCards, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import { rearrangeDeck } from '../../GameActions/GameActions.js';
+import { moveCard, placeInProvince, rearrangeDeck, sequential } from '../../GameActions/GameActions.js';
 
 class MiyaLibrary extends DrawCard {
     static id = 'miya-library';
@@ -18,9 +18,10 @@ class MiyaLibrary extends DrawCard {
                 remainingCards: RemainingCards.TopAnyOrder,
                 selectedCardsHandler: (context, _event, [card]) => {
                     if(card) {
-                        context.player.moveCard(card, context.source.location);
-                        card.facedown = false;
-                        context.player.moveCard(context.source, Location.DynastyDeck);
+                        sequential([
+                            placeInProvince({ target: card, destination: context.source.location }),
+                            moveCard({ target: context.source, destination: Location.DynastyDeck })
+                        ]).resolve(context.player, context);
                     }
                 },
                 remainingCardsHandler: (context, _event, cards) => rearrangeDeck({

@@ -102,6 +102,7 @@ describe('Kaiu Forges', function() {
                 this.player1.clickCard(this.kaiuForges);
                 expect(this.kaiuForges.location).toBe('dynasty deck');
                 expect(this.forgottenLibrary.location).toBe('province 1');
+                expect(this.forgottenLibrary.facedown).toBe(false);
 
                 expect(this.getChatLogs(3)).toContain('player1 uses Kaiu Forges to look at the top ten cards of their dynasty deck');
                 expect(this.getChatLogs(2)).toContain('player1 chooses to replace Kaiu Forges with Forgotten Library');

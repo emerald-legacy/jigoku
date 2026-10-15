@@ -1,6 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { placeInProvince } from '../../../GameActions/GameActions.js';
 
 export default class AsahinaEnvoy extends DrawCard {
     static id = 'asahina-envoy';
@@ -28,8 +29,7 @@ export default class AsahinaEnvoy extends DrawCard {
                         cardCondition: (card) => card.location !== Location.StrongholdProvince,
                         onSelect: (player, province) => {
                             this.game.addMessage(msg`${player} selects ${character} and puts it into ${province.facedown ? province.location : province}`);
-                            player.moveCard(character, province.location);
-                            character.facedown = false;
+                            placeInProvince({ destination: province.location }).resolve(character, context);
                             return true;
                         }
                     });

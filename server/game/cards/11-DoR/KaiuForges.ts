@@ -2,6 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, DeckType, Players, Trait } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import { moveCard, placeInProvince, sequential } from '../../GameActions/GameActions.js';
 
 class KaiuForges extends DrawCard {
     static id = 'kaiu-forges';
@@ -47,9 +48,10 @@ class KaiuForges extends DrawCard {
             cardCondition: (card) => cards.includes(card) && card.hasTrait(Trait.KaiuWall),
             onSelect: (player, card) => {
                 this.game.addMessage(msg`${player} chooses to replace ${card} with ${cardFromDeck}`);
-                context.player.moveCard(cardFromDeck, provinceLocation);
-                context.player.moveCard(card, Location.DynastyDeck);
-                cardFromDeck.facedown = false;
+                sequential([
+                    placeInProvince({ target: cardFromDeck, destination: provinceLocation }),
+                    moveCard({ target: card, destination: Location.DynastyDeck })
+                ]).resolve(context.player, context);
                 return true;
             }
         });

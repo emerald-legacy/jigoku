@@ -42,6 +42,7 @@ describe('Miya Library', function () {
                 expect(this.player1.dynastyDeck[4]).toBe(this.guardsman);
                 expect(this.player2).toHavePrompt('Play cards from provinces');
                 expect(this.miyaSatoshi.location).toBe('province 1');
+                expect(this.miyaSatoshi.facedown).toBe(false);
                 expect(this.miyaLibrary.location).toBe('dynasty deck');
                 this.player2.pass();
                 this.player1.clickCard(this.miyaSatoshi);
