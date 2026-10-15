@@ -14,7 +14,7 @@ export default class ShosuroActor extends DrawCard {
                 player: Players.Self,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => !card.isUnique()
+                cardCondition: (card, context) => !card.isUnique() && card.name !== context.source.name
             }, cardLastingEffect((context) => ({
                 target: context.source,
                 effect: context.target ? copyCard(context.target) : []

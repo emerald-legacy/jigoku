@@ -24,7 +24,7 @@ export default class BetrayedVision extends DrawCard {
                 activePromptTitle: 'Choose a character to turn into the copy',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.isParticipating() && card !== context.targets.cardToCopy
+                cardCondition: (card, context) => card.isParticipating() && card !== context.targets.cardToCopy && card.name !== context.targets.cardToCopy.name
             }, cardLastingEffect((context) => ({
                 effect: copyCard(context.targets.cardToCopy)
             })))
