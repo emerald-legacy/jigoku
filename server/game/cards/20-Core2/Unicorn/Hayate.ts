@@ -21,13 +21,10 @@ export default class Hayate extends DrawCard {
             })
         });
 
+        // Hayate isn't chosen: the ability works while either character can move in
         this.conflictAction('Move this and another character to the conflict', { evenFromHome: true })
-            .target({
-                name: 'self',
-                cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card, context) => card === context.source
-            }, moveToConflict())
+            .condition((context) =>
+                context.player.cardsInPlay.some((card) => moveToConflict().canAffect(card, context)))
             .target({
                 name: 'optional',
                 cardType: CardType.Character,
@@ -35,6 +32,7 @@ export default class Hayate extends DrawCard {
                 cardCondition: (card, context) => card !== context.source,
                 optional: true
             }, moveToConflict())
-            .chatText((context) => msg`move ${context.chatTarget()}${!Array.isArray(context.targets.optional) ? ' and ' : ''}${!Array.isArray(context.targets.optional) ? context.targets.optional : ''} into the conflict`);
+            .moveToConflict((context) => ({ target: context.source }))
+            .chatText((context) => msg`move ${context.source}${!Array.isArray(context.targets.optional) ? ' and ' : ''}${!Array.isArray(context.targets.optional) ? context.targets.optional : ''} into the conflict`);
     }
 }
