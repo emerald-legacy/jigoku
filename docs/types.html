@@ -113,7 +113,7 @@ this.reaction('Disable a character')
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>Any</code></td><td><code>'any'</code></td><td>Every location. In a target or selection, any card in the game (filtered by <code>controller</code>). Lasting effects are applied with <code>location: Location.Any</code>.</td></tr>
+          <tr><td><code>Any</code></td><td><code>'any'</code></td><td>Every location. In a target or selection: any card in the game, filtered by <code>controller</code>. Lasting effects use it internally, so they reach a card wherever it is.</td></tr>
           <tr><td><code>Hand</code></td><td><code>'hand'</code></td><td>A player's hand. Default ability location of events.</td></tr>
           <tr><td><code>ConflictDeck</code></td><td><code>'conflict deck'</code></td><td>The conflict deck.</td></tr>
           <tr><td><code>DynastyDeck</code></td><td><code>'dynasty deck'</code></td><td>The dynasty deck.</td></tr>
@@ -159,8 +159,14 @@ this.reaction('Play this character')
           <tr><td><code>All</code></td><td><code>'all'</code></td><td>Both players. Only accepted by <code>game.getConflicts(Players.All)</code> and by <code>playerLastingEffect({ target })</code>, where it means the same as <code>Any</code>.</td></tr>
         </tbody>
       </table>
+  <p>Where it is taken:</p>
   <ul class="edge">
-    <li>Where it is taken: <code>controller</code> of a target or selection (whose cards can be chosen; default <code>Players.Any</code>), <code>player</code> of a target (who chooses; <code>Self</code> or <code>Opponent</code>), <code>targetController</code> of <code>persistentEffect</code> (whose cards or which player it affects; default <code>Self</code>), <code>target</code> of <code>playerLastingEffect</code>, <code>controller</code> of <code>putIntoPlay</code> (who controls the card; default <code>Self</code>), and <code>players</code> of <code>honorBid</code> (default <code>Any</code>).</li>
+    <li><code>controller</code> of a target or selection: whose cards can be chosen. Default <code>Any</code>.</li>
+    <li><code>player</code> of a target: who chooses. <code>Self</code> or <code>Opponent</code>.</li>
+    <li><code>targetController</code> of <code>persistentEffect</code>: whose cards, or which player, it affects. Default <code>Self</code>.</li>
+    <li><code>target</code> of <code>playerLastingEffect</code>.</li>
+    <li><code>controller</code> of <code>putIntoPlay</code>: who controls the card. Default <code>Self</code>.</li>
+    <li><code>players</code> of <code>honorBid</code>: who bids. Default <code>Any</code>.</li>
   </ul>
   <pre><code>// Shinjo Altansarnai: Reaction: After you break a province during a [conflict-military] conflict in which this character is participating, your opponent chooses a character he or she controls – discard that character.
 .target({
@@ -215,12 +221,10 @@ chosenReturnToDeck((context) =&gt; ({
 })),</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/EndlessArchives.ts">Endless Archives</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DistinguishedDojo.ts">Distinguished Dōjō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/FortifiedAssembly.ts">Fortified Assembly</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/PropitiousMarket.ts">Propitious Market</a></p>
 </div>
-</section>
-
-<section class="group">
 <div class="ref" id="en-Trait" data-name="Trait elementTrait">
   <h3><code>Trait</code> <span class="kind">Enum</span> <a class="anchor" href="#en-Trait">#</a></h3>
-  <p>Every card trait, named after the lower-case trait the card data holds (<code>Trait.Shugenja</code> is <code>'shugenja'</code>, <code>Trait.BattleMaiden</code> is <code>'battle-maiden'</code>). Taken by <code>hasTrait</code>, <code>hasSomeTrait</code>, <code>hasEveryTrait</code>, <code>addTrait</code>, <code>loseTrait</code>, <code>satisfyAffinity</code>, <code>hasAffinity</code>, <code>onAffinity</code>, <code>isTraitInPlay</code>, <code>attachmentConditions({ trait, limitTrait })</code> and the <code>{ trait }</code> restriction scope. The full list is <code>server/game/Constants/Trait.ts</code>.</p>
+  <p>Every card trait, named after the lower-case trait in the card data (<code>Trait.Shugenja</code> is <code>'shugenja'</code>, <code>Trait.BattleMaiden</code> is <code>'battle-maiden'</code>). The full list is in <code>server/game/Constants/Trait.ts</code>.</p>
+  <p>Taken by <code>hasTrait</code>, <code>hasSomeTrait</code>, <code>hasEveryTrait</code>, <code>addTrait</code>, <code>satisfyAffinity</code>, <code>hasAffinity</code>, <code>onAffinity</code>, <code>isTraitInPlay</code>, <code>attachmentConditions({ trait, limitTrait })</code> and the <code>{ trait }</code> restriction scope. <code>loseTrait</code> takes any string.</p>
   <table>
     <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
     <tbody>
@@ -236,10 +240,13 @@ chosenReturnToDeck((context) =&gt; ({
   <pre><code>// Heart of the Inferno: … an attachment and you have Fire affinity, discard it.
 .gameAction(onAffinity({ trait: Trait.Fire, gameAction: discardFromPlay() }))</code></pre>
 </div>
+</section>
+
+<section class="group">
   <h3 class="group-title" id="en-group-abilities">Abilities, targets and durations</h3>
 <div class="ref" id="en-AbilityType" data-name="AbilityType">
   <h3><code>AbilityType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-AbilityType">#</a></h3>
-  <p>The kind of an ability, which decides in which window of an event window it is offered. Cards get it from the builder method (<code>this.action()</code>, <code>this.reaction()</code>, …). They name it directly only in <code>gainAbility(AbilityType.X, …)</code>, <code>registerTriggerWindow(eventName, AbilityType.X, handler)</code> and checks such as <code>event.context.ability.abilityType === AbilityType.Action</code>.</p>
+  <p>The kind of an ability. It decides which step of an event window offers the ability (see <a href="#ev-section-events">Events</a>). Cards get it from the card method (<code>this.action()</code>, <code>this.reaction()</code>, …). They name it directly only in <code>gainAbility(AbilityType.X, …)</code> (persistent effects and copied abilities), <code>registerTriggerWindow(eventName, AbilityType.X, handler)</code>, and checks such as <code>event.context.ability.abilityType === AbilityType.Action</code>.</p>
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
@@ -258,7 +265,6 @@ chosenReturnToDeck((context) =&gt; ({
       </table>
   <ul class="edge">
     <li><code>gainAbility</code> accepts <code>AbilityType.Action</code>, <code>AbilityType.Persistent</code>, a triggered type with triggered-ability properties, or any type with an existing <code>CardAbility</code> to copy.</li>
-    <li>The window order of an event is listed under <a href="#ev-section-events">Events</a>.</li>
   </ul>
   <pre><code>// Hida Kisada: While you have not lost a conflict this phase, cancel the effects of the first action ability your opponent triggers from a card during each conflict.
 const abilityRegistrar = new EventRegistrar(this.game);
@@ -278,9 +284,9 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
           <tr><td><code>CannotPayCost</code></td><td><code>'cost'</code></td><td>The costs cannot be paid.</td><td>yes</td></tr>
           <tr><td><code>CannotPlaceFate</code></td><td><code>'restriction'</code></td><td>Playing a character while the player has a <code>PlayCharacter</code> or <code>EnterPlay</code> restriction; a duplicate that cannot have fate placed.</td><td>no</td></tr>
           <tr><td><code>CannotTrigger</code></td><td><code>'cannotTrigger'</code></td><td>The card cannot trigger abilities (facedown or <code>TriggerAbilities</code> restriction), or the event or card cannot be played.</td><td>in play actions</td></tr>
-          <tr><td><code>ConditionNotMet</code></td><td><code>'condition'</code></td><td>The ability's <code>condition</code> is false, or it has game actions and none has a legal target.</td><td>yes</td></tr>
+          <tr><td><code>ConditionNotMet</code></td><td><code>'condition'</code></td><td>The ability's <code>condition</code> is false; or the ability has no targets and none of its game actions has a legal target.</td><td>yes</td></tr>
           <tr><td><code>DuplicateUnique</code></td><td><code>'unique'</code></td><td>Another copy of a unique card is in play (or, for a duplicate, none is).</td><td>no</td></tr>
-          <tr><td><code>Facedown</code></td><td><code>'facedown'</code></td><td>A facedown card used as a duplicate.</td><td>yes</td></tr>
+          <tr><td><code>Facedown</code></td><td><code>'facedown'</code></td><td>The card is facedown: a dynasty card in a province, or a card used as a duplicate.</td><td>yes</td></tr>
           <tr><td><code>LimitedAlreadyPlayed</code></td><td><code>'limited'</code></td><td>A Limited card when the player already played their Limited cards this round.</td><td>no</td></tr>
           <tr><td><code>LimitReached</code></td><td><code>'limit'</code></td><td>The ability's limit (<code>.limit()</code>) is used up.</td><td>yes</td></tr>
           <tr><td><code>MaxReached</code></td><td><code>'max'</code></td><td>The ability's max (<code>.max()</code>) is used up.</td><td>yes</td></tr>
@@ -293,7 +299,7 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
         </tbody>
       </table>
   <ul class="edge">
-    <li>"Ignorable" means some <code>meetsRequirements</code> checks it against <code>ignoredBlockers</code>; the others are always checked.</li>
+    <li>"Ignorable: yes" means that listing the blocker in <code>ignoredBlockers</code> skips its check (in at least one <code>meetsRequirements</code>). Blockers marked "no" are always checked.</li>
     <li><code>resolveAbility</code> always adds <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code> and <code>TriggeringRestricted</code> to the ignored blockers; <code>triggerAbility</code> adds <code>WrongPlayer</code>, <code>WrongLocation</code> and <code>LimitReached</code>.</li>
     <li><code>CannotPlaceFate</code> is also what playing a character returns for the <code>PlayCharacter</code> and <code>EnterPlay</code> restrictions, despite its name.</li>
   </ul>
@@ -566,7 +572,7 @@ effect: delayedEffect({
 <div class="ref" id="en-EffectName" data-name="EffectName">
   <h3><code>EffectName</code> <span class="kind">Enum</span> <a class="anchor" href="#en-EffectName">#</a></h3>
   <p>The type key of every effect the engine applies (<code>effect.type</code>). The engine looks effects up by it (<code>card.anyEffect(EffectName.Blank)</code>, <code>player.sumEffects(EffectName.AdditionalAction)</code>).</p>
-  <p>Cards do not create effects from it directly: they call the effect factories in <code>effects.ts</code> (<code>modifyMilitarySkill(2)</code>, <code>cardCannot(…)</code>), which pick the name. Cards name it only to inspect effects, as Kiss of the Sea does with <code>event.effectTypes</code> of <code>onEffectApplied</code>. The table lists every value with the factory that creates it.</p>
+  <p>Cards do not create effects from it directly. They call the effect factories in <code>effects.ts</code> (<code>modifyMilitarySkill(2)</code>, <code>cardCannot(…)</code>), which pick the name. Cards name it only to inspect effects, as Kiss of the Sea does with <code>event.effectTypes</code> of <code>onEffectApplied</code>. The table lists every value with the factories that create it; a few values are shared by several factories.</p>
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Created by</th></tr></thead>
         <tbody>
@@ -737,9 +743,6 @@ effect: delayedEffect({
           <tr><td><code>DuelIgnorePrintedSkill</code></td><td><code>'duelIgnorePrintedSkill'</code></td><td><code>duelIgnorePrintedSkill</code></td></tr>
         </tbody>
       </table>
-  <ul class="edge">
-    <li>Every value has a factory in <code>effects.ts</code>; a few names are shared, such as <code>AbilityRestrictions</code> (<code>cardCannot</code>, <code>playerCannot</code>, <code>charactersCannot</code>, <code>immunity</code>) and <code>CostReducer</code> (<code>reduceCost</code>, <code>reduceNextPlayedCardCost</code>).</li>
-  </ul>
   <pre><code>// Kiss of the Sea: Reaction: After a triggered ability changes the [conflict-military] or [conflict-political] skill of attached character while it is participating in a conflict – bow attached character. …
 onEffectApplied: (event, context) =&gt; {
     const effects: string[] = [
@@ -755,7 +758,12 @@ onEffectApplied: (event, context) =&gt; {
 </div>
 <div class="ref" id="en-RestrictionScope" data-name="RestrictionScope">
   <h3><code>RestrictionScope</code> <span class="kind">Enum</span> <a class="anchor" href="#en-RestrictionScope">#</a></h3>
-  <p>Which attempts a restriction applies to: <code>appliesTo</code> of <code>cardCannot</code>, <code>playerCannot</code>, <code>charactersCannot</code> and <code>immunity</code>. Without <code>appliesTo</code> a restriction applies to every attempt. <code>appliesTo</code> can be a list (every entry must match) and an entry can be <code>{ trait: 'x' }</code> (the attempt's source has that trait). "Applying player" is <code>applyingPlayer</code> if given, else the player of the effect's context.</p>
+  <p>Which attempts a restriction applies to: <code>appliesTo</code> of <code>cardCannot</code>, <code>playerCannot</code>, <code>charactersCannot</code> and <code>immunity</code>. Without <code>appliesTo</code>, a restriction applies to every attempt.</p>
+  <ul>
+    <li><code>appliesTo</code> can be a list: every entry must match.</li>
+    <li>An entry can be <code>{ trait: Trait.X }</code>: the attempt's source has that trait.</li>
+    <li>In the table, "the applying player" is <code>applyingPlayer</code> if the restriction sets it, else the player of the effect's context. "The opponent" is that player's opponent.</li>
+  </ul>
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
@@ -765,7 +773,7 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>AttachmentsWithSameClan</code></td><td><code>'attachmentsWithSameClan'</code></td><td>Non-neutral attachments whose printed clan the restricted card has.</td></tr>
           <tr><td><code>AttackedProvinceNonForced</code></td><td><code>'attackedProvinceNonForced'</code></td><td>Non-forced triggered abilities of an attacked province.</td></tr>
           <tr><td><code>CardAndRingEffects</code></td><td><code>'cardAndRingEffects'</code></td><td><code>CardEffects</code> or <code>RingEffects</code>.</td></tr>
-          <tr><td><code>CardEffects</code></td><td><code>'cardEffects'</code></td><td>Attempts whose source is a card (event, character, holding, attachment, stronghold, province or role) and that are not playing a card, outside the cost stage.</td></tr>
+          <tr><td><code>CardEffects</code></td><td><code>'cardEffects'</code></td><td>Attempts whose source is a card (event, character, holding, attachment, stronghold, province or role), made by a card ability or another non-play ability, outside <code>Stage.Cost</code>. Playing a character, attachment or holding does not count; an event's ability does. Costs are not effects.</td></tr>
           <tr><td><code>CardEffectsExceptOwn</code></td><td><code>'cardEffectsExceptOwn'</code></td><td><code>CardEffects</code> whose source is not the effect's source.</td></tr>
           <tr><td><code>Characters</code></td><td><code>'characters'</code></td><td>Sources that are characters (<code>charactersCannot</code> sets it).</td></tr>
           <tr><td><code>CharactersWithNoFate</code></td><td><code>'charactersWithNoFate'</code></td><td>Characters with no fate on them.</td></tr>
@@ -820,7 +828,7 @@ cardCannot({
           <tr><td><code>ApplyCovert</code></td><td><code>'applyCovert'</code></td><td>Covert: the character cannot be evaded by covert.</td></tr>
           <tr><td><code>ApplyEffect</code></td><td><code>'applyEffect'</code></td><td>Card effects: the card is not affected by matching effects.</td></tr>
           <tr><td><code>Bow</code></td><td><code>'bow'</code></td><td><code>bow</code></td></tr>
-          <tr><td><code>Break</code></td><td><code>'break'</code></td><td><code>breakProvince</code>; and the conflict action window.</td></tr>
+          <tr><td><code>Break</code></td><td><code>'break'</code></td><td><code>breakProvince</code>; also the "is breaking" line of the conflict action window's prompt.</td></tr>
           <tr><td><code>ChooseConflictRing</code></td><td><code>'chooseConflictRing'</code></td><td>Declaring a conflict: a restricted attacker does not choose the ring; the defender does.</td></tr>
           <tr><td><code>ClaimRings</code></td><td><code>'claimRings'</code></td><td><code>claimRing</code> and claiming the contested ring after a conflict.</td></tr>
           <tr><td><code>ContributeSkillToConflictResolution</code></td><td><code>'contributeSkillToConflictResolution'</code></td><td>Counting skill at conflict resolution.</td></tr>
@@ -911,11 +919,34 @@ cardCannot({
 
 <h2 id="ev-section-events">Events</h2>
 <p>Everything that happens in a game is an event (<code>Event</code>). A triggered ability names the events it responds to in <code>.when({ onX: (event, context) =&gt; … })</code>: the key is the event's string value, <code>event</code> is typed by the key, and the predicate returns whether the ability may trigger. In code the names are the <code>EventName</code> members (<code>EventName.OnCardPlayed</code>).</p>
-<p>Events resolve in an event window (<code>EventWindow</code>). For its events, in this order: each event's condition is checked (a game-action event re-checks that its target is still legal and is cancelled if not); would-interrupts; contingent events are added (a card leaving play adds its attachments' discards and its fate removal, with a would-interrupt window for them); forced interrupts; interrupts; keyword interrupts; other effects that cancel events; pre-resolution effects; the handlers, sorted by <code>order</code>; the game state is checked; keyword reactions; <code>then</code> steps waiting for these events; forced reactions; duel reactions; reactions.</p>
-<p>An event raised while another window is open (the effects of an ability, steps of a game flow) opens a "then" window: its interrupts are offered at once, but its reactions are handed to the enclosing window. So reactions to what an ability did are offered after the whole ability has resolved.</p>
-<p>An interrupt cancels its event with the <code>cancel()</code> step or game action: the handler does not run and no reactions follow. <code>cancel()</code> has no legal target when the event has <code>cannotBeCancelled</code> (a game action created with <code>cannotBeCancelled: true</code>), when the event's card is an event card whose owner has <code>eventsCannotBeCancelled()</code>, or for <code>onCardLeavesPlay</code> of a card that cannot be prevented from leaving play. Cancelling the event of a game action means the action does not happen to that target; the entries below say what cancelling means where it differs. An event without a handler only loses its reactions.</p>
-<p>Every event has <code>name</code>, <code>context</code>, <code>cancelled</code>, <code>resolved</code>, <code>cannotBeCancelled</code>, <code>window</code> and <code>is(name)</code> (<code>event.is(EventName.OnCardHonored)</code> narrows the type). Events a game action creates always have a <code>context</code>; events the game flow raises have <code>context: null</code>, which is why many predicates read <code>event.context?.player</code>. The payload tables list the other fields, typed as in <code>server/game/Events/EventPayloads.ts</code>. A <code>when</code> predicate is evaluated once per player, with <code>context.player</code> set to that player; the ability is then offered only to a player allowed to trigger it.</p>
-<p>Event names are also used outside triggers: <code>until</code> maps of lasting effects (<code>Duration.Custom</code>), <code>when</code> of <code>delayedEffect</code>, <code>EventRegistrar.register()</code> and <code>registerTriggerWindow()</code>. These listen to the event itself, so they also see the two events that open no window: <code>onCardMoved</code> (from moving a card) and <code>onDeckShuffled</code>.</p>
+<p>Events resolve in an event window (<code>EventWindow</code>). A window runs these steps for its events, in this order:</p>
+<ol>
+    <li>Each event's condition is checked. A game-action event re-checks that its target is still legal, and is cancelled if not.</li>
+    <li>Would-interrupts.</li>
+    <li>Contingent events are added: a card leaving play adds the discard of each attachment and the removal of its fate. A would-interrupt window opens for them.</li>
+    <li>Forced interrupts.</li>
+    <li>Interrupts.</li>
+    <li>Keyword interrupts (Courtesy, Sincerity, Thriving).</li>
+    <li>Other effects that cancel events.</li>
+    <li>Pre-resolution effects.</li>
+    <li>The handlers, sorted by <code>order</code>. This is where the event happens.</li>
+    <li>The game state is checked.</li>
+    <li>Keyword reactions (Pride, Rally, Tutored).</li>
+    <li><code>then</code> steps waiting for these events.</li>
+    <li>Forced reactions.</li>
+    <li>Duel reactions.</li>
+    <li>Reactions.</li>
+</ol>
+<p>An event raised while another window is open (by the effects of an ability, or by a step of the game flow) opens a "then" window. Its interrupts are offered at once. Its reactions are handed to the enclosing window, so reactions to what an ability did are offered after the whole ability has resolved.</p>
+<p><strong>Cancelling.</strong> An interrupt cancels its event with the <code>cancel()</code> step or game action. The handler does not run and no reactions follow. An event without a handler only loses its reactions. For a game action, a cancelled event means the action does not happen to that target; the entries below say where cancelling means something else. <code>cancel()</code> has no legal target when:</p>
+<ul>
+    <li>the event has <code>cannotBeCancelled</code> (from a game action created with <code>cannotBeCancelled: true</code>);</li>
+    <li>the event's card is an event card whose owner has <code>eventsCannotBeCancelled()</code>;</li>
+    <li>the event is <code>onCardLeavesPlay</code> of a card that cannot be prevented from leaving play.</li>
+</ul>
+<p><strong>Fields.</strong> Every event has <code>name</code>, <code>context</code>, <code>cancelled</code>, <code>resolved</code>, <code>cannotBeCancelled</code>, <code>window</code> and <code>is(name)</code>; <code>event.is(EventName.OnCardHonored)</code> narrows the type. Events a game action creates always have a <code>context</code>. Events the game flow raises have <code>context: null</code>, which is why many predicates read <code>event.context?.player</code>. The payload tables list the other fields, typed as in <code>server/game/Events/EventPayloads.ts</code>.</p>
+<p><strong>Who may trigger.</strong> A <code>when</code> predicate is evaluated once per player, with <code>context.player</code> set to that player. The ability is then offered only to a player allowed to trigger it.</p>
+<p><strong>Listening without a trigger.</strong> Event names are also used by <code>until</code> maps of lasting effects (<code>Duration.Custom</code>), <code>when</code> of <code>delayedEffect</code>, <code>EventRegistrar.register()</code> and <code>registerTriggerWindow()</code>. These listen to the event itself. So they also see the two events that open no window: <code>onCardMoved</code> (from moving a card) and <code>onDeckShuffled</code>.</p>
 
 <section class="group">
   <h3 class="group-title" id="ev-group-rounds">Rounds, phases and priority</h3>
@@ -1126,10 +1157,11 @@ this.wouldInterrupt('Keep the first player token')
 </div>
 <div class="ref" id="ev-onAbilityResolverInitiated" data-name="onAbilityResolverInitiated OnAbilityResolverInitiated">
   <h3><code>onAbilityResolverInitiated</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onAbilityResolverInitiated">#</a></h3>
-  <p>Raised by <code>AbilityResolver</code> when an ability that is not a card ability starts resolving: a play action (playing a character, attachment or dynasty card) or a ring effect. It is the only event of the initiate window; its handler queues the costs, the remaining targets and the effect. Play actions raise their <code>onCardPlayed</code> later, after costs.</p>
+  <p>Raised by <code>AbilityResolver</code> when an ability that is not a card ability starts resolving: a play action (playing a character, attachment or dynasty card) or a ring effect. It is the only event of the initiate window. Its handler queues the costs, the remaining targets and the effect. Play actions raise their <code>onCardPlayed</code> later, after costs.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
+          <tr><td><code>card</code>, <code>player</code></td><td><code>BaseCard</code>, <code>Player</code></td><td>Set only on the probe event that <code>PlayerCostManager.getMinimumCost()</code> builds to count interrupts that reduce a cost. The real event has only <code>context</code>.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1293,7 +1325,7 @@ onSpendFate: (event, context) =&gt;
 </div>
 <div class="ref" id="ev-unnamedEvent" data-name="unnamedEvent Unnamed">
   <h3><code>unnamedEvent</code> <span class="kind">Event</span> <a class="anchor" href="#ev-unnamedEvent">#</a></h3>
-  <p>The event of game actions that have no event name of their own (<code>moveCard</code>, <code>handler</code>, <code>playCard</code>, <code>shuffleDeck</code>, <code>cancel</code>, <code>resolveAbility</code>, …), and of a few framework steps (revealing honor dials without an event, resolving several ring effects).</p>
+  <p>The event of game actions that have no event name of their own (<code>moveCard</code>, <code>handler</code>, <code>playCard</code>, <code>shuffleDeck</code>, <code>cancel</code>, <code>resolveAbility</code>, <code>fateBid</code>, …), and of a few framework steps (resolving several ring effects at once, playing a character with Disguise).</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
@@ -1301,6 +1333,7 @@ onSpendFate: (event, context) =&gt;
           <tr><td><code>player</code></td><td><code>Player</code></td><td>Set by player actions.</td></tr>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>Set by ring actions.</td></tr>
           <tr><td><code>cardStateWhenMoved</code></td><td><code>DrawCard</code></td><td>Snapshot taken by some move actions.</td></tr>
+          <tr><td><code>postBidAction</code>, <code>message</code></td><td><code>GameAction</code>, <code>(context) =&gt; MessageArgs</code></td><td>Set by <code>fateBid</code>: what resolves after the bid, and its chat line.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1355,7 +1388,7 @@ this.reaction('Ready this character')
   <ul class="edge">
     <li>Only a card in play with a parent can be detached.</li>
   </ul>
-  <pre><code>// Loyal Warhound: Action: Choose a character you control - attach this card to that character as an attachment with the text: … "Action: If this card was not attached this round - detach this card and turn it into a character."
+  <pre><code>// Loyal Warhound: Action: Choose a character you control - attach this card to that character as an attachment with the text: "… Action: If this card was not attached this round - detach this card and turn it into a character."
 cardLastingEffect({
     target: context.source,
     duration: Duration.Custom,
@@ -1441,7 +1474,7 @@ this.reaction('Refill province faceup')
         </tbody>
       </table>
   <ul class="edge">
-    <li>The token is discarded when the conflict finishes (a delayed effect until the end of the phase).</li>
+    <li>The token is discarded when the conflict finishes. This is a delayed effect on <code>onConflictFinished</code> that lasts until the end of the phase.</li>
   </ul>
   <pre><code>// Composite Yumi: … Reaction: After a character moves to the conflict or enters play during a [conflict-military] conflict in which the attached character is participating - attached character gets +1[conflict-military] for the conflict. (Unlimited.)
 .when({
@@ -1502,6 +1535,7 @@ this.reaction('Double military skill')
           <tr><td><code>amount</code></td><td><code>number</code></td><td>How many to return.</td></tr>
           <tr><td><code>shuffle</code></td><td><code>boolean</code></td><td>Shuffle the deck afterwards.</td></tr>
           <tr><td><code>bottom</code></td><td><code>boolean</code></td><td>Put them on the bottom.</td></tr>
+          <tr><td><code>options</code></td><td><code>{ bottom?: boolean }</code></td><td>The move options passed on for each card; set by the handler.</td></tr>
           <tr><td><code>discardedCards</code></td><td><code>BaseCard[]</code></td><td>The cards actually returned; set by the handler.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
         </tbody>
@@ -1653,7 +1687,7 @@ until: {
     <li>Faceup cards in provinces or in play cannot be looked at.</li>
     <li>Its condition always holds.</li>
   </ul>
-  <pre><code>// Discerning Yoriki: Courtesy. / Reaction: After you look at 1 or more cards in an opponent's hand (or those are revealed), choose a character - honor it.
+  <pre><code>// Discerning Yoriki: Courtesy. Reaction: After you look at 1 or more cards in an opponent's hand (or those are revealed), choose a character - honor it.
 .when({
     onCardRevealed: (event, context) =&gt;
         event.card.location === Location.Hand &amp;&amp; event.card.controller === context.player.opponent,
@@ -1767,7 +1801,7 @@ this.reaction('Honor a character')
   <ul class="edge">
     <li>Only a bowed card in play, or a bowed stronghold, can be readied.</li>
   </ul>
-  <pre><code>// Earth Becomes Sky: Earth role only. / Reaction: After a character an opponent controls is readied - bow that character.
+  <pre><code>// Earth Becomes Sky: Earth role only. Reaction: After a character an opponent controls is readied - bow that character.
 this.reaction('Bow a character that just readied')
     .when({
         onCardReadied: (event, context) =&gt;
@@ -1867,7 +1901,7 @@ onStatusTokenDiscarded: (event, context) =&gt;
   <ul class="edge">
     <li>Raised after the fact by honor, dishonor, taint and move: cancelling it does not undo the status.</li>
   </ul>
-  <pre><code>// Final Whisper: Air role only. / Reaction: After an opponent's character receives a status token, that opponent chooses another character they control - the chosen character receives the same status token as well.
+  <pre><code>// Final Whisper: Air role only. Reaction: After an opponent's character receives a status token, that opponent chooses another character they control - the chosen character receives the same status token as well.
 this.reaction('Copy status token')
     .when({
         onStatusTokenGained: (event, context) =&gt;
@@ -2130,7 +2164,7 @@ this.reaction('Steal a fate')
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The covert context; <code>context.target</code> is the evaded character.</td></tr>
         </tbody>
       </table>
-  <pre><code>// Tengu Sensei: Covert. / Reaction: After this character chooses a character using covert – that character cannot be declared as an attacker this phase.
+  <pre><code>// Tengu Sensei: Covert. Reaction: After this character chooses a character using covert – that character cannot be declared as an attacker this phase.
 .when({
     onCovertResolved: (event, context) =&gt; {
         return (event.card === context.source || (Array.isArray(event.card) &amp;&amp; event.card.includes(context.source)));
@@ -2678,7 +2712,7 @@ this.reaction('Collect additional fate')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The ability's target player.</td></tr>
-          <tr><td><code>giveHonor</code></td><td><code>boolean</code></td><td>Whether honor is transferred after the bid.</td></tr>
+          <tr><td><code>giveHonor</code></td><td><code>boolean</code></td><td>Whether honor is transferred after the bid (default <code>false</code>).</td></tr>
           <tr><td><code>prohibitedBids</code></td><td><code>number[]</code></td><td>Bids not offered.</td></tr>
           <tr><td><code>players</code></td><td><code>Players</code></td><td>Who bids (default <code>Any</code>).</td></tr>
           <tr><td><code>postBidAction</code></td><td><code>GameAction</code></td><td>Resolved after the bid.</td></tr>
@@ -2690,11 +2724,11 @@ this.reaction('Collect additional fate')
 </div>
 <div class="ref" id="ev-onHonorDialsRevealed" data-name="onHonorDialsRevealed OnHonorDialsRevealed">
   <h3><code>onHonorDialsRevealed</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onHonorDialsRevealed">#</a></h3>
-  <p>Raised by the honor bid prompt when every bid is chosen (draw phase, duels, <code>honorBid</code>). Its handler sets each dial (an <code>onSetHonorDial</code> per player). A reveal that is not a bid raises an unnamed event instead.</p>
+  <p>Raised by the honor bid prompt when every player has chosen a bid: in the draw phase, in duels, and for <code>honorBid</code> when both players bid. Every reveal raises it, also one that transfers no honor. Its handler sets each dial (an <code>onSetHonorDial</code> per player).</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>isHonorBid</code></td><td><code>boolean</code></td><td>Whether honor is transferred afterwards.</td></tr>
+          <tr><td><code>isHonorBid</code></td><td><code>boolean</code></td><td>Whether the reveal is an honor bid, i.e. honor is transferred afterwards. <code>true</code> in the draw phase and in duels; <code>false</code> for <code>honorBid</code> without <code>giveHonor: true</code> (Mischievous Tanuki).</td></tr>
           <tr><td><code>duel</code></td><td><code>Duel | null</code></td><td>The duel, for a duel's bid.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
         </tbody>
@@ -2807,7 +2841,7 @@ this.wouldInterrupt('Take Fate')
   <ul class="edge">
     <li>Interrupts can change <code>recipients</code> or cancel the event (Kitsuki Seiji).</li>
   </ul>
-  <pre><code>// Greater Understanding: Attach to a ring. / Reaction: After fate is placed on attached ring - resolve that ring's effect as if you were the attacking player.
+  <pre><code>// Greater Understanding: Attach to a ring. Reaction: After fate is placed on attached ring - resolve that ring's effect as if you were the attacking player.
 this.reaction('Resolve the attached ring\'s effect')
     .when({
         onMoveFate: (event) =&gt; event.recipient === this.parent,
@@ -2948,15 +2982,26 @@ this.interrupt('Ready for Glory Count')
 </section>
 
 <h2 id="ctx-section-context">Context</h2>
-<p>Every callback of an ability gets <code>context</code>, an <code>AbilityContext</code> (a <code>TriggeredAbilityContext</code> for triggered abilities). It says whose ability it is, what was chosen and paid, and how far the resolution has got. Fields are filled in as the ability resolves, so what a callback can read depends on when it runs: a <code>cardCondition</code> runs while targets are chosen, a property factory of a game action when the effect resolves.</p>
-<p>Resolution order (<code>AbilityResolver</code>): snapshot of the source; targets chosen before costs (<code>Stage.PreTarget</code>); the initiate window (<code>onCardAbilityInitiated</code> / <code>onAbilityResolverInitiated</code>, <code>onCardAbilityTriggered</code>, <code>onCardPlayed</code> for events); costs (<code>Stage.Cost</code>); targets checked or chosen after costs (<code>Stage.Target</code>); limits used up, chat message; <code>onInitiateAbilityEffects</code> for card abilities; the effects (<code>Stage.Effect</code>); queued province refills.</p>
+<p>Every callback of an ability gets <code>context</code>, an <code>AbilityContext</code> (a <code>TriggeredAbilityContext</code> for triggered abilities). It says whose ability it is, what was chosen and paid, and how far the resolution has got.</p>
+<p>Fields are filled in as the ability resolves. So what a callback can read depends on when it runs: a <code>cardCondition</code> runs while targets are chosen, a property factory of a game action runs when the effect resolves. <code>AbilityResolver</code> resolves an ability in this order:</p>
+<ol>
+    <li>A snapshot of the source (<code>cardStateWhenInitiated</code>).</li>
+    <li>Targets chosen before costs (<code>Stage.PreTarget</code>).</li>
+    <li>The initiate window: <code>onCardAbilityInitiated</code> or <code>onAbilityResolverInitiated</code>, with <code>onCardAbilityTriggered</code>, and <code>onCardPlayed</code> for an event card.</li>
+    <li>Costs (<code>Stage.Cost</code>).</li>
+    <li>Targets checked, or chosen, after costs (<code>Stage.Target</code>).</li>
+    <li>Limits used up; the chat line.</li>
+    <li><code>onInitiateAbilityEffects</code>, for card abilities.</li>
+    <li>The effects (<code>Stage.Effect</code>).</li>
+    <li>Queued province refills.</li>
+</ol>
 
 <section class="group">
   <h3 class="group-title" id="ctx-group-object">The context object</h3>
 <div class="ref" id="ctx-AbilityContext" data-name="AbilityContext">
   <h3><code>AbilityContext&lt;Source, Target&gt;</code> <span class="kind">Class</span> <a class="anchor" href="#ctx-AbilityContext">#</a></h3>
   <p>The object every callback of an ability receives as <code>context</code>: conditions, <code>cardCondition</code>, property factories (<code>(context) =&gt; ({ … })</code>), <code>chatText</code>, <code>handler</code>, <code>then</code> factories. One is created each time an ability is used (for a trigger, one per player while checking). <code>Source</code> is the source's type, <code>Target</code> the type of <code>context.target</code>. Defined in <code>server/game/AbilityContext.ts</code>.</p>
-  <p>The table lists every field and method and when it is set. The fields cards use are described below.</p>
+  <p>The table lists every field and when it is set. The fields cards use most have their own entries below.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Set</th></tr></thead>
         <tbody>
@@ -2987,6 +3032,7 @@ this.interrupt('Ready for Glory Count')
           <tr><td><code>subResolution</code></td><td><code>boolean</code></td><td><code>true</code> when resolved again by <code>resolveAbility</code> with <code>subResolution</code>.</td></tr>
           <tr><td><code>choosingPlayerOverride</code></td><td><code>Player | null</code></td><td>Set by an effect that chooses the targets for another player (Hantei XXXVIII).</td></tr>
           <tr><td><code>provincesToRefill</code></td><td><code>{ player; location }[]</code></td><td>Provinces queued by <code>refillProvince()</code>; refilled when the ability finishes.</td></tr>
+          <tr><td><code>gameActionsResolutionChain</code></td><td><code>GameAction[]</code></td><td>Internal: the <code>playCard</code> actions that led to this play. Such an action cannot affect anything in this context, which stops a play from recursing.</td></tr>
           <tr><td><code>chatTarget()</code>, <code>messageTarget()</code></td><td>methods</td><td>See <a href="#ctx-chatTarget">chatTarget()</a>.</td></tr>
         </tbody>
       </table>
@@ -3045,11 +3091,11 @@ if(
   <h3><code>context.player</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-player">#</a></h3>
   <p>The player using the ability: who triggers or plays it, pays its costs and is "you" in its text. Player actions (<code>gainHonor</code>, <code>draw</code>, …) default to this player; <code>context.player.opponent</code> is the opponent (undefined in a solo game).</p>
   <ul class="edge">
-    <li>For a triggered ability the context is created for each player in turn and the <code>when</code> predicate runs with each; <code>meetsRequirements</code> then keeps only a player allowed to trigger it (the controller, unless <code>anyPlayer()</code> or <code>canBeTriggeredByOpponent</code>). Do not rely on <code>context.player</code> being the card's controller in the predicate; compare with <code>context.source.controller</code> if that is what the text means.</li>
+    <li>For a triggered ability, a context is created for each player in turn, and the <code>when</code> predicate runs with each. <code>meetsRequirements</code> then keeps only a player allowed to trigger it: the controller, unless <code>anyPlayer()</code> or <code>canBeTriggeredByOpponent</code> is set. So in the predicate <code>context.player</code> is not always the card's controller. When the text means the controller, compare with <code>context.source.controller</code>, as Asako Diplomat does below.</li>
     <li>An event card can be played by a player who can play it from where it is, even if they do not own it.</li>
     <li>The game context (<code>game.getGameContext()</code>) has no player, so <code>event.context.player</code> can be undefined.</li>
   </ul>
-  <pre><code>// Asako Diplomat: compares the conflict's winner with the card's controller, not with context.player
+  <pre><code>// Asako Diplomat: Reaction: After this character wins a conflict, choose a character – honor or dishonor that character.
 afterConflict: (event, context) =&gt;
     event.conflict.winner === context.source.controller &amp;&amp; context.source.isParticipating()</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsakoDiplomat.ts">Asako Diplomat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Blackmail.ts">Blackmail</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BlackmailArtist.ts">Blackmail Artist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CityOfTheOpenHand.ts">City of the Open Hand</a></p>
@@ -3100,7 +3146,7 @@ this.action('Send a character home')
   <ul class="edge">
     <li>Empty until the search took a card; copied into a then-step.</li>
   </ul>
-  <pre><code>// Opportunistic Rustler: (deckSearch gameAction)
+  <pre><code>// Opportunistic Rustler: … look at X cards from the top of your opponent's dynasty deck, … and put one card in that province faceup (remove it from the game instead if it has the Cavalry trait). For the conflict, this character gets +1[conflict-military] for each trait on that card. …
 gameAction: multiple((context) =&gt; {
     const selected = context.deckSearchSelected[0];
     if(!selected || !context.game.currentConflict) {
@@ -3207,7 +3253,7 @@ this.reaction('Honor a character')
   <p>A snapshot of the source taken in the first step of resolution, before targets and costs, when the source is a character, holding or attachment. <code>null</code> for other sources and before resolution starts.</p>
   <ul class="edge">
     <li>Use it when a cost moves the source (sacrifice, discard) and the effect still needs where it was.</li>
-    <li>Limits are only used up when the source is still where the snapshot was taken.</li>
+    <li>A limit (not a max) is used up only when the source is not in hand and is still where the snapshot was taken.</li>
   </ul>
   <pre><code>// Windswept Yurt: Action: Sacrifice this holding, select one – each player gains 2 fate or each player gains 2 honor. Refill this province faceup.
 this.action('Gain 2 fate or 2 honor')
@@ -3222,7 +3268,7 @@ this.action('Gain 2 fate or 2 honor')
   <ul class="edge">
     <li><code>null</code> by default; copied into contexts made with <code>copy()</code>.</li>
   </ul>
-  <pre><code>// Hantei XXXVIII: … Interrupt: … choose targets for opponent's ability
+  <pre><code>// Hantei XXXVIII: … Interrupt: When an opponent triggers an ability that chooses 1 or more targets - you choose those targets instead.
 .handler((context) =&gt; {
     context.event.context.choosingPlayerOverride = context.player;
 })</code></pre>
@@ -3233,7 +3279,7 @@ this.action('Gain 2 fate or 2 honor')
   <p><code>chosenCardTargets</code>: every card chosen as a target during this triggering, then-steps and sub-resolutions included. It is filled on <code>triggeringContext</code> when the effects initiate.</p>
   <p><code>originatingContext</code>: the context this one continues (a then-step, or a sub-resolution by <code>resolveAbility</code> / <code>triggerAbility</code>); <code>triggeringContext</code> is that context, or this one.</p>
   <p><code>subResolution</code>: <code>true</code> when the ability is resolved again as part of another resolution (it then raises no <code>onCardAbilityTriggered</code>, adds no extra trigger or play costs, and does not count its max again).</p>
-  <pre><code>// The Weight of Duty: Reaction … (onCardAbilityTriggered)
+  <pre><code>// The Weight of Duty: Reaction: After a Shugenja character you control is chosen as the target of an opponent’s triggered ability, choose a Bushi character you control - honor that character. …
 onCardAbilityTriggered: (event, context) =&gt;
     event.player === context.player.opponent &amp;&amp;
     // chosenCardTargets covers every resolution of the triggering, sub-resolutions included
@@ -3295,7 +3341,7 @@ onSpendFate: (event, context) =&gt;
     <li>A then-step's context has no <code>event</code>: read what you need in the first step, or use <code>previousEvents</code>.</li>
     <li><code>event.context</code> is the context of the ability or rule that raised the event (often another player's); it is <code>null</code> for events of the game flow.</li>
   </ul>
-  <pre><code>// Earth Becomes Sky: Earth role only. / Reaction: After a character an opponent controls is readied - bow that character.
+  <pre><code>// Earth Becomes Sky: Earth role only. Reaction: After a character an opponent controls is readied - bow that character.
 this.reaction('Bow a character that just readied')
     .when({
         onCardReadied: (event, context) =&gt;
@@ -3309,7 +3355,7 @@ this.reaction('Bow a character that just readied')
 <section class="group">
   <h3 class="group-title" id="ctx-group-helpers">Helpers</h3>
 <div class="ref" id="ctx-chatTarget" data-name="chatTarget messageTarget">
-  <h3><code>context.chatTarget()</code> <span class="kind">Card method</span> <a class="anchor" href="#ctx-chatTarget">#</a></h3>
+  <h3><code>context.chatTarget()</code> <span class="kind">Context method</span> <a class="anchor" href="#ctx-chatTarget">#</a></h3>
   <p><code>chatTarget()</code> returns what a chat text's <code>{0}</code> names: the target (the cards in <code>targets.target</code> if several, else <code>context.target</code>), else <code>context.ring</code>, else <code>context.source</code>. <code>messageTarget()</code> returns only the target part.</p>
   <ul class="edge">
     <li>Use it in a <code>msg</code> chat text to name the same thing <code>{0}</code> would.</li>
@@ -3319,7 +3365,7 @@ this.reaction('Bow a character that just readied')
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MantisRaider.ts">Mantis Raider</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsahinaArtisan.ts">Asahina Artisan</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CourtMask.ts">Court Mask</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Deathseeker.ts">Deathseeker</a></p>
 </div>
 <div class="ref" id="ctx-refillProvince" data-name="refillProvince">
-  <h3><code>context.refillProvince(player, location)</code> <span class="kind">Card method</span> <a class="anchor" href="#ctx-refillProvince">#</a></h3>
+  <h3><code>context.refillProvince(player, location)</code> <span class="kind">Context method</span> <a class="anchor" href="#ctx-refillProvince">#</a></h3>
   <p>Queues a refill of <code>player</code>'s province at <code>location</code>; the provinces are refilled (first player first) when the ability's resolution finishes, then the game state is checked.</p>
   <table>
         <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
@@ -3347,7 +3393,7 @@ this.reaction('Bow a character that just readied')
           <tr><td><code>TriggerContext&lt;Source, When&gt;</code></td><td><code>this.reaction()</code>, <code>interrupt()</code>, forced and duel triggers</td><td>A <code>TriggeredAbilityContext&lt;Source&gt;</code> whose <code>event</code> is the union of the payloads of the <code>when</code> keys <code>When</code>.</td></tr>
           <tr><td>targets</td><td>after <code>.target()</code>, <code>.targetCards()</code>, <code>.ringTarget()</code>, <code>.tokenTarget()</code>, <code>.select()</code></td><td><code>targets.&lt;name&gt;</code>, <code>rings.&lt;name&gt;</code>, <code>tokens.&lt;name&gt;</code>, <code>selects.&lt;name&gt;</code>, and <code>target</code> / <code>ring</code> / <code>token</code> / <code>select</code> for the name <code>target</code>.</td></tr>
           <tr><td>costs</td><td>after <code>.cost()</code></td><td><code>costs</code> as <code>Partial</code> of what the costs record.</td></tr>
-          <tr><td><code>StepContext</code></td><td>after <code>.then()</code>, <code>.thenIf()</code>, <code>.afterwards()</code></td><td>A plain <code>AbilityContext&lt;Source&gt;</code> with the earlier targets; no <code>event</code>, and action-only members are gone.</td></tr>
+          <tr><td><code>StepContext</code></td><td>after <code>.then()</code>, <code>.thenIf()</code>, <code>.afterwards()</code></td><td>A plain <code>AbilityContext&lt;Source&gt;</code> with the earlier targets. It has no <code>event</code>, and <code>ability</code> is a plain <code>BaseAbility</code>, not <code>CardAction</code> or <code>TriggeredAbility</code>.</td></tr>
           <tr><td><code>ResolvedAbilityContext&lt;Source, Target&gt;</code></td><td>object-form abilities (gained abilities written as objects)</td><td>An <code>AbilityContext&lt;Source, Target&gt;</code> whose <code>target</code> is not optional. Annotate a property factory with it only when the target is named <code>target</code>, is not optional and is a single card.</td></tr>
         </tbody>
       </table>

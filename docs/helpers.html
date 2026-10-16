@@ -185,16 +185,17 @@ this.action('Recruit a fresh Ashigaru')
 
   <div class="ref" id="he-CharactersEnteredThisConflict" data-name="CharactersEnteredThisConflict">
     <h3><code>new CharactersEnteredThisConflict(game)</code> <span class="kind">Tracker</span> <a class="anchor" href="#he-CharactersEnteredThisConflict">#</a></h3>
-    <p>Remembers each character that entered play (<code>onCharacterEntersPlay</code>) since the current conflict started. <code>has(card)</code> answers "did this character enter play during this conflict?".</p>
+    <p>Remembers, for each character that enters play (<code>onCharacterEntersPlay</code>), the conflict that was current at that moment. <code>has(card)</code> answers "did this character enter play during this conflict?".</p>
     <table>
       <thead><tr><th>Member</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>game</code></td><td><code>Game</code></td><td>required</td><td>Constructor parameter: <code>this.game</code>.</td></tr>
-        <tr><td><code>has(card)</code></td><td><code>(card: BaseCard) =&gt; boolean</code></td><td></td><td>Whether the card entered play since the last <code>onConflictStarted</code>.</td></tr>
+        <tr><td><code>has(card)</code></td><td><code>(card: BaseCard) =&gt; boolean</code></td><td></td><td>Whether the card last entered play during the current conflict.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>The list is cleared when a conflict starts, not when it ends. Between two conflicts it still holds the characters from the last one, so use it in abilities that only work during a conflict.</li>
+      <li>The conflict counts from its declaration: a character that enters play after the conflict is declared counts.</li>
+      <li><code>has(card)</code> is <code>false</code> outside a conflict, and for a character that entered play in an earlier conflict.</li>
     </ul>
     <pre><code>// Zealous Exorcist: Conflict Action: Choose a character that entered play during this conflict - remove that character from the game.
 const charactersEntered = new CharactersEnteredThisConflict(this.game);
@@ -485,7 +486,7 @@ moveHoldingAction(this)
     <ul class="edge">
       <li>Add <code>nameCardType()</code> as a cost before <code>.deckSearch(…)</code>, so the type is known when the search builds its properties.</li>
       <li>The search sets <code>hideIfNoLegalTargets</code>, so with no card of the named type the cards are discarded without a prompt. It writes no "takes nothing" line.</li>
-      <li>Chat: "{player} adds {cards} to their hand".</li>
+      <li>Chat: the cost text of <code>nameCardType()</code> is <code>naming {0}</code>, with the named type as <code>{0}</code>; the search adds "{player} adds {cards} to their hand".</li>
     </ul>
     <pre><code>// Test of Skill: Action: Name a card type. Reveal the top 3 cards of your conflict deck (top 4 cards instead if you control a Duelist character)
 // – add up to 2 revealed cards of that type to your hand and discard the rest.
@@ -751,8 +752,10 @@ this.playOnlyIf((context) =&gt; controlsShugenja(context.player));</code></pre>
         <tr><td><code>...traits</code></td><td><code>Trait[]</code></td><td>required</td><td>One or more traits; a character with any of them counts.</td></tr>
       </tbody>
     </table>
-    <pre><code>// Arrows from the Woods: … if you control a participating Bushi character.
-.condition((context) =&gt; controlsParticipating(context.player, Trait.Bushi))</code></pre>
+    <pre><code>// Arrows from the Woods: … X is equal to 1 if you control a participating Bushi character, or 2 if you also control a participating Shinobi or Scout character. …
+.condition((context) =&gt; controlsParticipating(context.player, Trait.Bushi))
+…
+return controlsParticipating(context.player, Trait.Scout, Trait.Shinobi) ? -2 : -1;</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/AllDistancesAreOne.ts">All Distances Are One</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/ArrowsFromTheWoods.ts">Arrows from the Woods</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/AwakeTheFearfulHeart.ts">Awake the Fearful Heart</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/ChikaiOrderProtector.ts">Chikai Order Protector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/DisdainfulRemark.ts">Disdainful Remark</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/EsteemedTeaHouse.ts">Esteemed Tea House</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForShame.ts">For Shame</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/HeartOfTheInferno.ts">Heart of the Inferno</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/RegalBearing.ts">Regal Bearing</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Neutral/TheMaidensIcyGrasp.ts">The Maiden's Icy Grasp</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/UseTheTerrain.ts">Use the Terrain</a></p>
   </div>
 
@@ -825,8 +828,8 @@ private getNumberOfLegalTargets(context: AbilityContext) {
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>isOpponentsRingOrCardEffect</code>: the event's player is <code>player.opponent</code>, and the source is a ring or the ability is a card ability. Framework steps don't count.</li>
-      <li><code>isOwnRingEffect</code>: the event's player is <code>player</code> and the source is a ring.</li>
+      <li><code>isOpponentsRingOrCardEffect</code>: the context's player (who resolved the ability or ring) is <code>player.opponent</code>, and the source is a ring or the ability is a card ability. Framework steps don't count.</li>
+      <li><code>isOwnRingEffect</code>: the context's player is <code>player</code> and the source is a ring.</li>
     </ul>
     <pre><code>// Akodo Motivator: Reaction: After an opponent's card ability or ring effect discards 1 or more cards from your hand -
 // that opponent discards an equal number of cards at random from his or her hand.
@@ -991,7 +994,7 @@ class ThirdTowerGuard extends DrawCard {
 
   <div class="ref" id="he-claimsRoleElement" data-name="claimsRoleElement">
     <h3><code>claimsRoleElement(player, event)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-claimsRoleElement">#</a></h3>
-    <p>For <code>onClaimRing</code>: "After you claim a ring that matches the element of your role". True if the player's role card has a trait equal to an element of the conflict's ring or of the claimed ring.</p>
+    <p>For <code>onClaimRing</code>: "After you claim a ring that matches the element of your role". True if the player's role card has a trait equal to one of the conflict's elements, or to the claimed ring's own element.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1098,7 +1101,7 @@ this.action('Ready this character')
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>name</code></td><td><code>string</code></td><td>required</td><td>The key in <code>context.costs</code>; it is typed for the rest of the builder chain.</td></tr>
-        <tr><td><code>capture</code></td><td><code>(context: AbilityContext) =&gt; V</code></td><td>required</td><td>The value to record.</td></tr>
+        <tr><td><code>capture</code></td><td><code>(context: AbilityContext) =&gt; Value</code></td><td>required</td><td>The value to record.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1176,7 +1179,8 @@ this.whileAttached({
     <ul class="edge">
       <li>It only looks at the first letter, so "Unicorn" gets "an".</li>
     </ul>
-    <pre><code>// Utaku Takeko: the chat line names the character found by the search with "a" or "an".
+    <p>Utaku Takeko's chat line names the character found by the search with "a" or "an":</p>
+    <pre><code>// Utaku Takeko: Action: Search the top 8 cards of your dynasty deck for a non-unique [clan-unicorn] character …
 private msgArticle(card: DrawCard): string {
     if(card.hasTrait(Trait.Army)) {
         return 'in the';
@@ -1193,7 +1197,7 @@ private msgArticle(card: DrawCard): string {
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>required</td><td>The ability's context.</td></tr>
-        <tr><td><code>chosen</code></td><td><code>T | [] | undefined</code></td><td>required</td><td>The opponent's optional target, <code>context.targets.oppCharacter</code>. An empty array means "not chosen".</td></tr>
+        <tr><td><code>chosen</code></td><td><code>Named | [] | undefined</code></td><td>required</td><td>The opponent's optional target, <code>context.targets.oppCharacter</code>. An empty array means "not chosen".</td></tr>
         <tr><td><code>what</code></td><td><code>(name: string) =&gt; string</code></td><td>required</td><td>The rest of the sentence for the chosen name.</td></tr>
       </tbody>
     </table>
@@ -1797,7 +1801,7 @@ effect: modifyBothSkills(2 * context.player.getNumberOfHoldingsInPlay())</code><
 
   <div class="ref" id="q-hasComposure" data-name="hasComposure">
     <h3><code>player.hasComposure()</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasComposure">#</a></h3>
-    <p>True if the player's honor bid is lower than the opponent's. Composure abilities use the builder's <code>composure(…)</code>, which checks this for you.</p>
+    <p>True if the player's revealed honor dial (<code>showBid</code>) is lower than the opponent's. Composure abilities use the builder's <code>composure(…)</code>, which checks this for you.</p>
     <ul class="edge">
       <li><code>false</code> without an opponent.</li>
     </ul>
@@ -2102,7 +2106,7 @@ const ring = context.game.ringFor(trait);</code></pre>
 
 <section class="group">
   <h3 class="group-title" id="q-group-conflict">Conflict</h3>
-  <p>Methods of <code>Conflict</code>, on <code>context.game.currentConflict</code> (can be <code>null</code>) or <code>event.conflict</code>. The conflict also has the properties <code>attackingPlayer</code>, <code>defendingPlayer</code>, <code>winner</code>, <code>loser</code> (set at resolution, <code>undefined</code> if both sides had 0 skill), <code>conflictType</code>, <code>ring</code>, <code>elements</code>, <code>declaredProvince</code> and <code>conflictProvince</code>. In a solo game <code>defendingPlayer</code> is a placeholder player with no cards.</p>
+  <p>Methods of <code>Conflict</code>, on <code>context.game.currentConflict</code> (can be <code>null</code>) or <code>event.conflict</code>. The conflict also has the properties <code>attackingPlayer</code>, <code>defendingPlayer</code>, <code>winner</code>, <code>loser</code> (set when the winner is determined, <code>undefined</code> if nobody wins; see <a href="#q-getWinningPlayer"><code>getWinningPlayer()</code></a>), <code>conflictType</code>, <code>ring</code>, <code>elements</code>, <code>declaredProvince</code> and <code>conflictProvince</code>. In a solo game <code>defendingPlayer</code> is a placeholder player with no cards.</p>
 
   <div class="ref" id="q-attackerSkill" data-name="attackerSkill defenderSkill skillDifference">
     <h3><code>conflict.attackerSkill</code>, <code>conflict.defenderSkill</code>, <code>conflict.skillDifference</code> <span class="kind">Field</span> <a class="anchor" href="#q-attackerSkill">#</a></h3>
@@ -2288,7 +2292,7 @@ target: context.ring.getElements().map((element) =&gt; this.game.rings[element])
     <h3><code>ring.isConflictType(type)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isConflictType">#</a></h3>
     <p>True if the ring's current conflict type is <code>type</code> ("a [conflict-military] ring in your claimed ring pool").</p>
     <ul class="edge">
-      <li>Always <code>false</code> for an unclaimed ring.</li>
+      <li>Always <code>false</code> for a ring in the unclaimed pool. The contested ring and claimed rings are checked.</li>
     </ul>
     <pre><code>// Honor in Battle: Action: If you have claimed a [conflict-military] ring, choose a character - honor that character.
 .condition((context) =&gt; context.player.getClaimedRings().some((ring) =&gt; ring.isConflictType(ConflictType.Military)))</code></pre>

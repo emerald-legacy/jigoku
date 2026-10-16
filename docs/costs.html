@@ -26,7 +26,7 @@
     <p>Every cost an ability can have, what it records, and the limits on how often an ability can be used.</p>
 </header>
 <h2 id="co-costs">Costs</h2>
-<p>A cost is what the player pays to use an ability: the imperative instructions before the dash ("Bow this character", "Lose 1 honor", "Sacrifice a character"). Costs come from the <code>costs</code> namespace (<code>import * as costs from '../../costs/index.js'</code>; the names clash with the game actions). Call <code>.cost(...)</code> once per cost; several calls add up and are all paid together. The functions live in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/boardCosts.ts"><code>boardCosts.ts</code></a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/fateAndHonorCosts.ts"><code>fateAndHonorCosts.ts</code></a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/variableAndOptionalCosts.ts"><code>variableAndOptionalCosts.ts</code></a>.</p>
+<p>A cost is what the player pays to use an ability: the imperative instructions before the dash ("Bow this character", "Lose 1 honor", "Sacrifice a character"). Import the costs as a namespace: <code>import * as costs from '../../costs/index.js'</code>. Many costs share a name with a game action (<code>bow</code>, <code>dishonor</code>, …); the namespace keeps them apart. Call <code>.cost(...)</code> once per cost; all costs of an ability are paid together. The functions live in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/boardCosts.ts"><code>boardCosts.ts</code></a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/fateAndHonorCosts.ts"><code>fateAndHonorCosts.ts</code></a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/variableAndOptionalCosts.ts"><code>variableAndOptionalCosts.ts</code></a>.</p>
 <div class="rule"><blockquote>Any imperative instruction (other than "choose…," which denotes one or more targets must be chosen, or "select…," which denotes that one or more of a number of effects must be selected) that appears before the dash of a triggered ability is considered a part of that ability’s cost.</blockquote><cite>Cost</cite></div>
 <div class="rule"><blockquote>If multiple costs for a single card or ability require payment, those costs must be paid simultaneously. If any part of a cost payment is prevented, once all costs that can be paid are paid, the process of initiating the ability or playing the card immediately ends without further resolution.</blockquote><cite>Cost</cite></div>
 <div class="rule"><blockquote>If the effects of an ability are canceled, the ability is still considered to have been used, and any costs have still been paid.</blockquote><cite>Cancel</cite></div>
@@ -49,9 +49,9 @@ this.conflictAction('Discard a character')
 </ol>
 <ul>
     <li>An event card gets <code>payReduceableFateCost()</code> (its printed fate cost) added after its own costs automatically; don't declare it.</li>
-    <li>Effects can add costs: <code>additionalTriggerCost</code> (on the player or the source card) and <code>additionalPlayCost</code> (on the player) are paid with the ability's own costs. They don't apply to a sub-resolution (an ability resolving again).</li>
-    <li>An ability resolved by another card's effect (<code>resolveAbility</code>) pays its own costs without a Cancel button, but skips the printed fate cost and the added costs.</li>
-    <li>Costs are checked and paid at <code>Stage.Cost</code>. A restriction scoped to card effects (<code>RestrictionScope.CardEffects</code>) doesn't stop a cost; one scoped to <code>RestrictionScope.LoseHonorAsCost</code> only stops costs.</li>
+    <li>Effects can add costs: <a href="effects.html#ef-additionalTriggerCost"><code>additionalTriggerCost</code></a> (on the player), <code>additionalTriggerCostForCard</code> (on the source card) and <a href="effects.html#ef-additionalPlayCost"><code>additionalPlayCost</code></a> (on the player). They are paid with the ability's own costs, but not by a sub-resolution (an ability resolving again).</li>
+    <li>An ability resolved by another card's effect (<code>resolveAbility</code>) pays its own costs without a Cancel button. It skips the printed fate cost and the added costs. With <code>Blocker.CannotPayCost</code> among its ignored blockers, it pays no costs at all.</li>
+    <li>Costs are checked and paid at <code>Stage.Cost</code>. A restriction scoped to card effects (<code>RestrictionScope.CardEffects</code>, and the scopes for one player's card effects) doesn't stop a cost. One scoped to <code>RestrictionScope.LoseHonorAsCost</code> stops only costs.</li>
     <li>Choosing a card for a cost is not targeting it: "cannot be targeted" doesn't protect it and no targeting cost is paid.</li>
     <li>A <code>then()</code> step can declare its own costs; its <code>context.costs</code> starts with a copy of what the ability recorded.</li>
 </ul>
@@ -96,8 +96,9 @@ this.conflictAction('Discard a character')
         <tr><td><code>addEventsToArray(events, context, result)</code></td><td>Collects the paying events in one go. When present, <code>resolve</code>, <code>payEvent</code> and <code>pay</code> are not used.</td></tr>
         <tr><td><code>resolve(context, result)</code></td><td>Asks the player and records the answer in <code>context.costs</code>. Set <code>result.cancelled = true</code> to cancel; offer Cancel only when <code>result.canCancel</code>.</td></tr>
         <tr><td><code>payEvent(context)</code> / <code>pay(context)</code></td><td>The event(s) that pay it, or a plain function run inside a <code>PayCost</code> event.</td></tr>
-        <tr><td><code>getActionName(context)</code>, <code>getCostMessage(context)</code></td><td>The <code>context.costs</code> key shown as <code>{0}</code>, and the cost text <code>[format, args]</code>.</td></tr>
-        <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something; the action window skips its one-click confirmation for such costs.</td></tr>
+        <tr><td><code>getActionName(context)</code></td><td>The <code>context.costs</code> key the cost records under. Its value is <code>{0}</code> in the cost text.</td></tr>
+        <tr><td><code>getCostMessage(context)</code></td><td>The cost text, as <code>[format, args]</code>; <code>args</code> become <code>{1}</code>, <code>{2}</code>, …</td></tr>
+        <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something. If so, the action window skips its one-click confirmation menu and starts the ability directly.</td></tr>
         <tr><td><code>dependsOn</code></td><td>The name of a target the cost depends on: while that target is offered first, a candidate is legal only if the cost can be paid for it (<code>targetDependentFate</code>).</td></tr>
         <tr><td><code>hasTargetsChosenByInitiatingPlayer(context)</code></td><td>Whether paying makes the ability's player choose cards. It counts toward the ability's <code>hasTargetsChosenByInitiatingPlayer</code> (Hantei XXXVIII).</td></tr>
         <tr><td><code>isPrintedFateCost</code>, <code>isPlayCost</code>, <code>getReducedCost(context)</code></td><td>Engine-only, set by the fate and play costs: <code>playCard</code> with <code>ignoreFateCost</code> skips the first, a play without play costs skips the second, and the ability's fate cost after reductions comes from the third.</td></tr>
@@ -140,7 +141,7 @@ this.action('Search top 5 cards')
     <h3><code>bowSelf()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-bowSelf">#</a></h3>
     <p>"Bow this character / this card": bows the source.</p>
     <ul class="edge">
-      <li>Can't be paid when the source is already bowed, can't be bowed, or is not in play (a stronghold can always be bowed while ready).</li>
+      <li>Can't be paid when the source is already bowed, is not in the play area, or a restriction stops the bow. A stronghold is the exception to the location check: it can be bowed from the stronghold province.</li>
       <li>Only characters, attachments and strongholds can be bowed; on a holding or province this cost can never be paid.</li>
       <li>Chat: <code>bowing {0}</code>.</li>
     </ul>
@@ -316,7 +317,7 @@ this.action('Put an attachment into play')
     <p>"Sacrifice this card": discards the source from play as a sacrifice.</p>
     <ul class="edge">
       <li>Can't be paid when the source is not a character or attachment in play or a faceup holding in a province, or can't be sacrificed.</li>
-      <li>The card leaves play, so its limit is not counted and resets (a new instance of the card).</li>
+      <li>The card leaves play while the cost is paid. Leaving play resets its limits, and a source that changed location is not counted against its limit (see <a href="#li-counting">When a use is counted</a>).</li>
       <li>Chat: <code>sacrificing {0}</code>.</li>
     </ul>
     <pre><code>// Planted Fields: Interrupt: When the conflict phase ends, if this card is in an unbroken province, sacrifice this card - if it is the first time this round you have triggered a copy of this ability, gain 2 fate and draw 2 cards.  Otherwise, gain 2 honor.
@@ -360,7 +361,7 @@ this.action('Move and give -2/-2')
       <tr><td><code>controller</code></td><td><code>Players</code></td><td><code>Players.Self</code></td><td>Whose cards. Costs are paid with "friendly" cards, so the default is right for nearly every card.</td></tr>
       <tr><td><code>location</code></td><td><code>Location | Location[]</code></td><td><code>Location.Any</code> (<code>discardCard</code>: <code>Location.Hand</code>)</td><td>Where the card is. <code>Location.Provinces</code> means every province.</td></tr>
       <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>any card</td><td>Extra condition. <code>context</code> is the context of the ability paying the cost.</td></tr>
-      <tr><td><code>mode</code></td><td><code>TargetMode</code></td><td>from <code>numCards</code>: <code>Single</code> for 1</td><td>How many cards: <code>Single</code>, <code>Exactly</code>, <code>UpTo</code>, <code>Unlimited</code>, … A multi-card mode records a list.</td></tr>
+      <tr><td><code>mode</code></td><td><code>TargetMode</code></td><td>from <code>numCards</code>: <code>Single</code> for 1, <code>UpTo</code> for more, <code>Unlimited</code> for 0</td><td>How many cards: <code>Single</code>, <code>Exactly</code>, <code>UpTo</code>, <code>Unlimited</code>, … A multi-card mode records a list.</td></tr>
       <tr><td><code>numCards</code></td><td><code>number</code></td><td>1</td><td>The count for <code>Exactly</code> and <code>UpTo</code>.</td></tr>
       <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>per cost (see each entry)</td><td>The prompt's title.</td></tr>
       <tr><td><code>hidePromptIfSingleCard</code></td><td><code>boolean</code></td><td><code>false</code></td><td>With exactly one legal card, pay with it without asking.</td></tr>
@@ -861,7 +862,7 @@ this.action('Reveal cards and take ones matching named type')
     </table>
     <ul class="edge">
       <li>Always payable. Offers 0 up to the fate left after the reduced cost, three numbers at a time with a "More" button.</li>
-      <li>Offers only 0 when the player can't spend fate or can't place fate when playing a character (from a province, for <code>PlayFromProvince</code>; Legendary characters set that).</li>
+      <li>Offers only 0 when the player can't spend fate, or a restriction stops placing fate on a played character (Hallowed Ground). With <code>PlayFromProvince</code>, also when a restriction stops it for characters played from a province (Legendary, Doomed Shugenja).</li>
       <li>Stores the amount in <code>context.chooseFate</code>, not <code>context.costs</code>, and takes it from the player's pool directly. No cost text.</li>
     </ul>
     <pre><code>// PlayCharacterAction (engine)
@@ -1199,7 +1200,7 @@ this.action('Draw cards')
     </table>
     <ul class="edge">
       <li>Offers 1 up to the smaller of <code>amountFunc</code> and the player's honor; there is no 0. Declining is the Cancel button, which cancels the whole ability.</li>
-      <li>Can't be paid when <code>amountFunc</code> is 0 or the player can't lose honor.</li>
+      <li>Can't be paid when <code>amountFunc</code> returns 0 or less, or the player can't lose honor.</li>
       <li>Prompt: "Choose how much honor to pay". Records <code>honorPaid</code>: the amount (0 on Cancel). No cost text.</li>
     </ul>
     <pre><code>// Ignoble Enforcers: Reaction: After you play this character, you may lose up to 3 honor – for each honor you lost by this ability, put 1 fate on this character.

@@ -26,12 +26,17 @@
     <p>The card methods that declare abilities, and every call of the ability builder: triggers, conditions, costs, targets, effects, chat text, limits and steps.</p>
 </header>
 <h2 id="cm-declaring-abilities">Declaring abilities</h2>
-<p>A card class declares its abilities in <code>setupCardAbilities()</code>. An action or a triggered ability starts with a card method that takes the ability's title and returns a builder; each chained call adds one part of the card text (see <a href="#b-the-ability-builder">The ability builder</a>). The builder is registered when <code>setupCardAbilities()</code> returns, so there is no closing <code>build()</code> call. Constant abilities (persistent effects, composure, dire, attachment restrictions, Legendary) take a properties object or a number and return nothing.</p>
+<p>A card class declares its abilities in <code>setupCardAbilities()</code>. An action or a triggered ability starts with a card method that takes the ability's title and returns a builder; each chained call adds one part of the card text (see <a href="#b-the-ability-builder">The ability builder</a>). The builder is registered when <code>setupCardAbilities()</code> returns, so there is no closing <code>build()</code> call. Constant abilities and keywords (persistent effects, composure, dire, attachment restrictions, Legendary, Tutored) don't use the builder: they take their settings in one call and return nothing.</p>
 <p>Every method that starts a builder throws <code>"&lt;title&gt;: abilities can only be declared in setupCardAbilities or declareAbilities"</code> when it is called anywhere else.</p>
 
 <section class="group">
   <h3 class="group-title" id="cm-group-actions">Actions</h3>
-  <p>An action is used by its player in an action window. Unless the ability says otherwise, it can be used once per round (the default <code>limit</code> is <code>perRound(1)</code>), only by the card's controller, from the play area (events: from where they can be played; holdings and provinces: from the provinces; strongholds: the stronghold province; roles: the role location).</p>
+  <p>A player uses an action in an action window. Unless the ability says otherwise, an action can be used:</p>
+  <ul>
+    <li>once per round (the default <code>limit</code> is <code>perRound(1)</code>);</li>
+    <li>only by the card's controller;</li>
+    <li>only while the card is in its default location: the play area; for events, wherever they can be played from; for holdings and provinces, the provinces; for strongholds, the stronghold province; for roles, the role location.</li>
+  </ul>
 
   <div class="ref" id="cm-action" data-name="action">
     <h3><code>action(title)</code> <span class="kind">Card method</span> <a class="anchor" href="#cm-action">#</a></h3>
@@ -93,7 +98,15 @@ this.conflictAction('Force opponent to discard card or dishonor a character', { 
 
 <section class="group">
   <h3 class="group-title" id="cm-group-triggers">Triggered abilities</h3>
-  <p>These methods return a <code>TriggerBuilder</code>: the next call is <a href="#b-when"><code>when()</code></a> or <a href="#b-aggregateWhen"><code>aggregateWhen()</code></a>, which returns the ability builder. When an event is about to resolve, the windows open in this order: would-interrupts, forced interrupts, interrupts; the event resolves; then the <a href="#b-then">next steps</a> of the ability that raised it, forced reactions, duel reactions, reactions. Like actions, a triggered ability can be used once per round by default, forced ones included (<code>limit(unlimited())</code> for "(Unlimited.)").</p>
+  <p>These methods return a <code>TriggerBuilder</code>. Its next call is <a href="#b-when"><code>when()</code></a> or <a href="#b-aggregateWhen"><code>aggregateWhen()</code></a>, which returns the ability builder. Like actions, a triggered ability can be used once per round by default, forced ones included; "(Unlimited.)" is <code>limit(unlimited())</code>.</p>
+  <p>When an event is about to resolve, the windows open in this order:</p>
+  <ol>
+    <li>would-interrupts, forced interrupts, interrupts;</li>
+    <li>the event resolves;</li>
+    <li>the <a href="#b-then">next steps</a> of the ability that raised the event;</li>
+    <li>forced reactions, duel reactions, reactions.</li>
+  </ol>
+  <p>Keyword abilities (Courtesy, Sincerity, Thriving before the event; Pride, Rally, Tutored after it) have windows of their own. The full order is under <a href="types.html#ev-section-events">Events</a>.</p>
   <p>On a province card the trigger methods return a builder whose <code>context.event</code> is optional: Countryside Trader resolves a province's triggered ability without its event.</p>
 
   <div class="ref" id="cm-forcedInterrupt" data-name="forcedInterrupt">
@@ -238,7 +251,7 @@ this.wouldInterrupt('Cancel an event')
     </table>
     <ul class="edge">
       <li>The ability only triggers while the duel lets that player use abilities of that step (an effect on the duel can stop it).</li>
-      <li>A Duel Focus or Duel Strike on a character needs that character in the duel (ruling 2026-10-11): pass <code>(duel, context) =&gt; duel.participants.includes(context.source)</code>.</li>
+      <li>A Duel Focus or Duel Strike printed on a character works only while that character is in the duel. The method doesn't check this; pass <code>(duel, context) =&gt; duel.participants.includes(context.source)</code>.</li>
     </ul>
     <pre><code>// Destiny Revealed: Duel Strike: If you won - move 1 fate from your fate pool to a winning character.
 this.duelStrike('Place a fate on a character', (duel, context) =&gt; duel.winnerController === context.player)
@@ -259,7 +272,7 @@ this.duelStrike('Place a fate on a character', (duel, context) =&gt; duel.winner
 
 <section class="group">
   <h3 class="group-title" id="cm-group-constant">Constant abilities and keywords</h3>
-  <p>These methods take a properties object and return nothing. The effects they declare are described on the <a href="effects.html">Effects</a> page.</p>
+  <p>These methods don't start a builder: each takes its settings in one call (a properties object, a number, a name or a condition) and returns nothing. The effects they use are described on the <a href="effects.html">Effects</a> page.</p>
 
   <div class="ref" id="cm-attachmentConditions" data-name="attachmentConditions">
     <h3><code>attachmentConditions(properties)</code> <span class="kind">Card method</span> <a class="anchor" href="#cm-attachmentConditions">#</a></h3>
@@ -460,7 +473,7 @@ this.declareAbilities(() =&gt; {
 </section>
 
 <h2 id="b-the-ability-builder">The ability builder</h2>
-<p><code>action()</code>, <code>conflictAction()</code>, the duel triggers and <code>when()</code>/<code>aggregateWhen()</code> return an <code>AbilityBuilder</code> (<code>server/game/AbilityBuilder.ts</code>). Each call records one part of the ability and returns the builder, typed with what was declared so far: a target, a cost or a select adds its name to <code>context</code> for every later callback, so card code needs no casts. The types are backed by runtime checks: a callback that is called with a context that doesn't hold its declared targets throws <code>"&lt;title&gt;: context does not match its declared targets"</code>.</p>
+<p><code>action()</code>, <code>conflictAction()</code>, the duel triggers and <code>when()</code>/<code>aggregateWhen()</code> return an <code>AbilityBuilder</code> (<code>server/game/AbilityBuilder.ts</code>). Each call records one part of the ability and returns the builder. The builder's type grows with each call: a target, a cost or a select adds its name to <code>context</code> for every later callback, so card code needs no casts. Runtime checks back the types: a callback called with a context that doesn't hold its declared targets throws <code>"&lt;title&gt;: context does not match its declared targets"</code>.</p>
 <p>Every error below names the ability by its title. Most are thrown when the call is made; the ones marked "at registration" are thrown when <code>setupCardAbilities()</code> returns.</p>
 
 <section class="group">
@@ -471,7 +484,7 @@ this.declareAbilities(() =&gt; {
     <li>When and where the ability can be used: <code>phase()</code>, <code>location()</code>, <code>condition()</code>, <code>playOnlyIf()</code>, <code>anyPlayer()</code>, <code>collectiveTrigger()</code>, <code>evenDuringDynasty()</code>, <code>canTriggerOutsideConflict()</code>, <code>conflictProvinceCondition()</code></li>
     <li><code>cost()</code></li>
     <li>Targets</li>
-    <li>Effects: game actions, <code>if()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>message()</code>, <code>onResolve()</code></li>
+    <li>Effects: game actions, <code>if()</code>/<code>ifAble()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>onResolve()</code>; in a step also <code>message()</code></li>
     <li><code>chatText()</code></li>
     <li><code>limit()</code> / <code>max()</code>, <code>cannotTargetFirst()</code>, <code>cannotBeMirrored()</code>, <code>notPrinted()</code></li>
     <li><code>then()</code> and the other next steps; a following step uses the same order, without the ability's settings</li>
@@ -749,9 +762,15 @@ this.action('Ready a character')
 
 <section class="group">
   <h3 class="group-title" id="b-group-targets">Targets</h3>
-  <p>"Choose …" before the effect. Each target method takes the target's properties and then the game actions that resolve on what was chosen; those actions get it as their default target (an action that sets its own <code>target</code> keeps it). Without a game action of its own, a target only records the choice, for later actions, <code>if()</code> or a step to read.</p>
-  <p>Targets are chosen when the ability is used, before costs are paid (the prompt offers "Pay costs first" and "Cancel"), unless <a href="#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a> is set or the opponent chooses; a step's targets are chosen when the step resolves. The ability can only be used when every target that doesn't depend on another has a legal choice (or is optional). Two targets with one name throw <code>"two targets named &lt;name&gt;"</code>; a target after <code>if()</code> throws <code>"targets come before if()"</code>.</p>
-  <p>For "choose" text after the dash (chosen while the effect resolves, not as a target), use <a href="#b-selectCard"><code>selectCard()</code></a>, <a href="#b-chooseAction"><code>chooseAction()</code></a> and the other choice shortcuts.</p>
+  <p>"Choose …" before the dash. Each target method takes the target's properties, then the game actions that resolve on what was chosen.</p>
+  <ul>
+    <li>The target's game actions get the choice as their default target. An action that sets its own <code>target</code> keeps it.</li>
+    <li>A target without game actions only records the choice. Later game actions, <code>if()</code> or a step read it.</li>
+    <li>Targets are chosen when the ability is used, before costs are paid; the prompt offers "Pay costs first" and "Cancel". Exceptions: <a href="#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a>, and targets the opponent chooses. A step's targets are chosen when the step resolves.</li>
+    <li>The ability can only be used when every target that doesn't depend on another has a legal choice, or is optional.</li>
+    <li>Two targets with one name throw <code>"two targets named &lt;name&gt;"</code>; a target after <code>if()</code> throws <code>"targets come before if()"</code>.</li>
+  </ul>
+  <p>A "choose" after the dash is made while the effect resolves, so it is not a target. Use <a href="#b-selectCard"><code>selectCard()</code></a>, <a href="#b-chooseAction"><code>chooseAction()</code></a> or another <a href="#b-group-shortcuts-choices">choice shortcut</a>.</p>
 
   <div class="ref" id="b-abilityTarget" data-name="abilityTarget">
     <h3><code>abilityTarget(properties, ...gameActions)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-abilityTarget">#</a></h3>
@@ -804,7 +823,7 @@ this.action('Copy another character\'s ability')
     </table>
     <ul class="edge">
       <li>No <code>name</code>, <code>controller</code>, <code>player</code>, <code>dependsOn</code> or <code>optional</code>: one element target per ability, chosen by the ability's player.</li>
-      <li>Any card with an element symbol can be chosen; the game actions don't decide that.</li>
+      <li>Any card in play with an element symbol can be chosen; the game actions don't decide that.</li>
       <li>When the card has several symbols, a menu asks which one.</li>
     </ul>
     <pre><code>// Twin Soul Temple: Action: Bow this stronghold. Choose an element symbol on a card in play - replace that symbol with the symbol of a different element until the end of the phase.
@@ -880,7 +899,7 @@ this.action('Prevent an opponent contesting a ring')
       <li>The ability can only be used when at least one choice is offered. Choices are listed in the object's key order.</li>
       <li>When only one choice is offered after costs are paid, it is taken without a prompt (before costs, the "Pay costs first" and "Cancel" buttons still show the prompt).</li>
       <li>A value that is none of the three throws <code>"not a game action"</code>.</li>
-      <li>With <code>{ action, chatText }</code> choices the ability has no <a href="#b-chatText"><code>chatText()</code></a> of its own: both throw at registration <code>"chatText() and a select's chatText choices both say what the ability does"</code>. A choice without <code>chatText</code> uses its game actions' text. Only one select per ability can have such choices. In a step, which prints no ability line, their <code>chatText</code> is not used; use <a href="#b-message"><code>message()</code></a>.</li>
+      <li>With <code>{ action, chatText }</code> choices the ability has no <a href="#b-chatText"><code>chatText()</code></a> of its own: both throw at registration <code>"chatText() and a select's chatText choices both say what the ability does"</code>. A choice without <code>chatText</code> uses its game actions' text. Only one select per ability can have such choices. A step prints no ability line, so there they throw at registration <code>"a then step prints its message with message()"</code>; use <a href="#b-message"><code>message()</code></a>.</li>
       <li>The choices' game actions keep their own default targets; name the target in them when it is an earlier target (<code>bow((context) =&gt; ({ target: context.targets.character }))</code>).</li>
     </ul>
     <pre><code>// Windswept Yurt: Action: Sacrifice this holding, select one – each player gains 2 fate or each player gains 2 honor. Refill this province faceup.
@@ -999,7 +1018,8 @@ this.conflictAction('Bow a character')
         <tr><td><code>maxStat</code></td><td><code>() =&gt; number</code></td><td>required for <code>MaxStat</code></td><td>The most the chosen cards' values may add up to.</td></tr>
         <tr><td><code>sameDiscardPile</code></td><td><code>boolean</code></td><td><code>false</code></td><td><code>Exactly</code>/<code>UpTo</code> only: after the first card, the others must come from the same pile of the same owner.</td></tr>
         <tr><td><code>optional</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The player may choose no card.</td></tr>
-        <tr><td colspan="4"><code>name</code>, <code>cardType</code>, <code>location</code>, <code>controller</code>, <code>player</code>, <code>cardCondition</code>, <code>dependsOn</code>, <code>hideIfNoLegalTargets</code>, <code>activePromptTitle</code>: as <a href="#b-target"><code>target()</code></a>.</td></tr>
+        <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>from <code>mode</code>, <code>numCards</code> and <code>cardType</code></td><td>The prompt's title. The defaults look like "Choose 2 characters" or "Select up to 3 characters"; <code>UpTo</code> always says "characters", so set a title for other card types.</td></tr>
+        <tr><td colspan="4"><code>name</code>, <code>cardType</code>, <code>location</code>, <code>controller</code>, <code>player</code>, <code>cardCondition</code>, <code>dependsOn</code>, <code>hideIfNoLegalTargets</code>: as <a href="#b-target"><code>target()</code></a>.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1050,7 +1070,7 @@ this.action('Move a status token to this character')
 
 <section class="group">
   <h3 class="group-title" id="b-group-effects">Effects</h3>
-  <p>What the ability (or step) does. All of a step's own game actions raise their events together and resolve in one window, at the same time; use <code>sequential([…])</code> inside <code>gameAction()</code> when one must finish before the next. For most game actions there is a <a href="#b-group-shortcuts-resources">shortcut</a>.</p>
+  <p>What the ability (or step) does. A step's own game actions raise their events together and resolve at the same time, in one window. When one must finish before the next starts, use <code>sequential([…])</code> inside <code>gameAction()</code>. Most game actions have a <a href="#b-group-shortcuts">shortcut</a>.</p>
 
   <div class="ref" id="b-gameAction" data-name="gameAction">
     <h3><code>gameAction(...actions)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-gameAction">#</a></h3>
@@ -1184,10 +1204,16 @@ this.action('Initiate a Military duel')
 
 <section class="group">
   <h3 class="group-title" id="b-group-flow">Flow</h3>
-  <p>Branches inside a step (<code>if()</code>, <code>ifAble()</code>, <code>otherwise()</code>) and the next step (<code>then()</code>, <code>afterwards()</code> and their conditional forms). A step has at most one next step: a second <code>then()</code>, <code>afterwards()</code>, <code>mayResolveAgain()</code> … throws <code>"a step has one next step"</code>. A step is declared with the same methods as the ability, minus the ability's own settings; its context is new but starts with the targets, selects, rings, tokens and costs chosen so far, and <code>context.previousEvents</code> holds the events of the step before.</p>
+  <p>Branches inside a step (<code>if()</code>, <code>ifAble()</code>, <code>otherwise()</code>) and the next step (<code>then()</code>, <code>afterwards()</code> and their conditional forms).</p>
+  <ul>
+    <li>A step is declared with the same methods as the ability, minus the ability's own settings.</li>
+    <li>Its context is new, but it starts with the targets, selects, rings, tokens and costs chosen so far. <code>context.previousEvents</code> holds the events of the step before.</li>
+    <li>A step has at most one next step: a second <code>then()</code>, <code>afterwards()</code>, <code>mayResolveAgain()</code> … throws <code>"a step has one next step"</code>.</li>
+  </ul>
   <div class="note">
-    <p><strong>"Then" or "if you do"?</strong> <code>then()</code> follows only when the step before resolved in full ("if you do"); <code>afterwards()</code> follows regardless. The rule: card text "if you do" is <code>then()</code>; a plain "Then" only sets the order, so it is <code>afterwards()</code>. The RRG has a success rule for "To" only, and its errata turn conditional "Then"s into "If you do". The same holds for <code>thenIf()</code> and <code>afterwardsIf()</code>.</p>
+    <p><strong>"Then" or "if you do"?</strong> <code>then()</code> follows only when the step before resolved in full; <code>afterwards()</code> follows regardless. Card text "if you do" is <code>then()</code>. A plain "Then" only sets the order, so it is <code>afterwards()</code>. The RRG has a success rule only for "to" (quoted below), and its errata turn conditional "Then"s into "If you do". The same holds for <code>thenIf()</code> and <code>afterwardsIf()</code>.</p>
   </div>
+  <div class="rule"><blockquote>If the effect text of a card ability includes the word "to," then the text that follows the word "to" can only be resolved if the preceding text was successfully resolved in full.</blockquote><cite>The word "To"</cite></div>
 
   <div class="ref" id="b-afterwards" data-name="afterwards">
     <h3><code>afterwards()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-afterwards">#</a></h3>
@@ -1235,8 +1261,8 @@ this.reaction('Put this into play')
     </table>
     <p><strong>On a card target.</strong> Right after a card target, the branches belong to that target: they become its game actions and resolve on the chosen card (an action without its own <code>target</code> affects it). This applies when the last target is the only card target without game actions, or when the last target has game actions of its own and the ability has none yet (its own actions then come first in both branches). After several card targets without game actions, or once the ability has game actions of its own, the branches stay on the ability and the actions name their targets.</p>
     <ul class="edge">
-      <li>On a target, <code>condition</code> is read for each candidate, before the other targets are chosen, and only cards the branch that applies can affect are selectable. Without <code>otherwise()</code>, the "no" branch is the target's own actions, or nothing.</li>
-      <li>Without <code>otherwise()</code>, the "no" branch does nothing and has no legal target: an ability whose only effect is a failing <code>if()</code> can't be used, and on a bare target the cards that fail the condition aren't selectable. Actions before the <code>if()</code>, or a target's own actions, still make it usable.</li>
+      <li>On a target, <code>condition</code> is read for each candidate, before the other targets are chosen. Only cards that the applying branch can affect are selectable.</li>
+      <li>Without <code>otherwise()</code>, the "no" branch has no legal target. An ability whose only effect is a failing <code>if()</code> can't be used, and on a bare target the cards that fail the condition aren't selectable. Game actions before the <code>if()</code>, or a target's own game actions (which then form the "no" branch), still make it usable.</li>
       <li>One <code>if()</code> or <code>ifAble()</code> per step: a second throws <code>"one if() per step"</code>. Targets after it throw <code>"targets come before if()"</code>.</li>
       <li>Each branch needs a game action: throws at registration <code>"if() and otherwise() each need a game action"</code>. Not with <code>handler()</code>.</li>
       <li>For several conditions in one step, or a condition nested inside another action, use the <code>conditional</code> game action.</li>
@@ -1514,10 +1540,11 @@ this.action('Discard cards to dishonor attackers')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Without <code>limit()</code> every ability, forced ones included, can be used once per round (RRG: each triggered ability can only be used once per game round unless otherwise specified). "(Unlimited.)" is <code>limit(unlimited())</code>.</li>
+      <li>Without <code>limit()</code> every ability, forced ones included, can be used once per round (see the rule below). "(Unlimited.)" is <code>limit(unlimited())</code>.</li>
       <li>The count is per player and per copy: two copies of a card each have their own. Effects can raise the limit.</li>
       <li>For "(Max X per …)" use <a href="#b-max"><code>max()</code></a>.</li>
     </ul>
+    <div class="rule"><blockquote>Unless otherwise specified, each triggered ability can only be used once per game round. This general restriction applies to any triggered ability that does not have "Limit X per [period]" printed as part of the ability’s text.</blockquote><cite>Limits of Triggered Abilities</cite></div>
     <pre><code>// Distinguished Dōjō: Reaction: After you win a duel - … (Limit 3 times per round.)
     .addToken()
     .limit(perRound(3))</code></pre>
@@ -1562,7 +1589,12 @@ this.action('Steal a fate')
 
 <section class="group">
   <h3 class="group-title" id="b-group-shortcuts">Game-action shortcuts</h3>
-  <p>Every game action with a builder shortcut is used through it: <code>.bow()</code> is <code>.gameAction(bow())</code>. A shortcut takes the same properties as the game action, or a function of the context returning them; callbacks inside the properties get the builder's typed context. Like any game action of the ability or step, it resolves on its default target unless the properties name one; to act on a chosen card, put the factory on the target (<code>.target(props, bow())</code>) or pass <code>(context) =&gt; ({ target: context.target })</code>. The full entries, with every property, are on the <a href="game-actions.html">Game actions</a> page.</p>
+  <p>A shortcut is a game action written as a builder call: <code>.bow()</code> is <code>.gameAction(bow())</code>. When a game action has a shortcut, use the shortcut.</p>
+  <ul>
+    <li>A shortcut takes the same properties as its game action, or a function of the context that returns them. Callbacks inside the properties get the builder's typed context.</li>
+    <li>It resolves on the game action's default target unless the properties name one. To act on a chosen card, put the factory on the target (<code>.target(props, bow())</code>) or pass <code>(context) =&gt; ({ target: context.target })</code>.</li>
+    <li>The entries below give the default target and an example. The full entries, with every property, are on the <a href="game-actions.html">Game actions</a> page.</li>
+  </ul>
   <p>The other game-action shortcut, <a href="#b-chatMessage"><code>chatMessage()</code></a>, is under Chat.</p>
 </section>
 
@@ -1571,7 +1603,7 @@ this.action('Steal a fate')
   <p>Honor, fate, cards in hand and the Imperial Favor. A number is the <code>amount</code> for the first five.</p>
   <div class="ref" id="b-chosenDiscard" data-name="chosenDiscard">
     <h3><code>chosenDiscard(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-chosenDiscard">#</a></h3>
-    <p>The target player (default: the opponent) chooses cards in their hand and discards them. The same as <code>gameAction(chosenDiscard(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-chosenDiscard"><code>chosenDiscard</code></a>.</p>
+    <p>The target player (default: the opponent) chooses cards in their hand and discards them. Full entry: <a href="game-actions.html#ga-chosenDiscard"><code>chosenDiscard</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1586,7 +1618,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-claimImperialFavor" data-name="claimImperialFavor">
     <h3><code>claimImperialFavor(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-claimImperialFavor">#</a></h3>
-    <p>The target player (default: the ability's player) claims the Imperial Favor. The same as <code>gameAction(claimImperialFavor(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-claimImperialFavor"><code>claimImperialFavor</code></a>.</p>
+    <p>The target player (default: the ability's player) claims the Imperial Favor. Full entry: <a href="game-actions.html#ga-claimImperialFavor"><code>claimImperialFavor</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1599,7 +1631,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-discardAtRandom" data-name="discardAtRandom">
     <h3><code>discardAtRandom(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-discardAtRandom">#</a></h3>
-    <p>Discards random cards from the target player's hand (default: the opponent). The same as <code>gameAction(discardAtRandom(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-discardAtRandom"><code>discardAtRandom</code></a>.</p>
+    <p>Discards random cards from the target player's hand (default: the opponent). Full entry: <a href="game-actions.html#ga-discardAtRandom"><code>discardAtRandom</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1612,7 +1644,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-draw" data-name="draw">
     <h3><code>draw(amount?)</code> · <code>draw(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-draw">#</a></h3>
-    <p>The target player (default: the ability's player) draws cards. The same as <code>gameAction(draw(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-draw"><code>draw</code></a>.</p>
+    <p>The target player (default: the ability's player) draws cards. Full entry: <a href="game-actions.html#ga-draw"><code>draw</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1626,7 +1658,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-gainFate" data-name="gainFate">
     <h3><code>gainFate(amount?)</code> · <code>gainFate(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-gainFate">#</a></h3>
-    <p>The target player (default: the ability's player) gains fate. The same as <code>gameAction(gainFate(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-gainFate"><code>gainFate</code></a>.</p>
+    <p>The target player (default: the ability's player) gains fate. Full entry: <a href="game-actions.html#ga-gainFate"><code>gainFate</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1640,7 +1672,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-gainHonor" data-name="gainHonor">
     <h3><code>gainHonor(amount?)</code> · <code>gainHonor(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-gainHonor">#</a></h3>
-    <p>The target player (default: the ability's player) gains honor. The same as <code>gameAction(gainHonor(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-gainHonor"><code>gainHonor</code></a>.</p>
+    <p>The target player (default: the ability's player) gains honor. Full entry: <a href="game-actions.html#ga-gainHonor"><code>gainHonor</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1654,7 +1686,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-loseFate" data-name="loseFate">
     <h3><code>loseFate(amount?)</code> · <code>loseFate(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-loseFate">#</a></h3>
-    <p>The target player (default: the ability's player) loses fate. The same as <code>gameAction(loseFate(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-loseFate"><code>loseFate</code></a>.</p>
+    <p>The target player (default: the ability's player) loses fate. Full entry: <a href="game-actions.html#ga-loseFate"><code>loseFate</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1668,7 +1700,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-loseHonor" data-name="loseHonor">
     <h3><code>loseHonor(amount?)</code> · <code>loseHonor(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-loseHonor">#</a></h3>
-    <p>The target player (default: the ability's player) loses honor. The same as <code>gameAction(loseHonor(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-loseHonor"><code>loseHonor</code></a>.</p>
+    <p>The target player (default: the ability's player) loses honor. Full entry: <a href="game-actions.html#ga-loseHonor"><code>loseHonor</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1682,7 +1714,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-modifyBid" data-name="modifyBid">
     <h3><code>modifyBid(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-modifyBid">#</a></h3>
-    <p>Changes the target player's honor bid (default: the ability's player). The same as <code>gameAction(modifyBid(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-modifyBid"><code>modifyBid</code></a>.</p>
+    <p>Changes the target player's honor bid (default: the ability's player). Full entry: <a href="game-actions.html#ga-modifyBid"><code>modifyBid</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1695,7 +1727,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-shuffleDeck" data-name="shuffleDeck">
     <h3><code>shuffleDeck(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-shuffleDeck">#</a></h3>
-    <p>Shuffles a deck of the target player (default: the ability's player). The same as <code>gameAction(shuffleDeck(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-shuffleDeck"><code>shuffleDeck</code></a>.</p>
+    <p>Shuffles a deck of the target player (default: the ability's player). Full entry: <a href="game-actions.html#ga-shuffleDeck"><code>shuffleDeck</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1709,7 +1741,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-takeFate" data-name="takeFate">
     <h3><code>takeFate(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-takeFate">#</a></h3>
-    <p>Takes fate from the target player (default: the opponent) and gives it to the ability's player. The same as <code>gameAction(takeFate(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-takeFate"><code>takeFate</code></a>.</p>
+    <p>Takes fate from the target player (default: the opponent) and gives it to the ability's player. Full entry: <a href="game-actions.html#ga-takeFate"><code>takeFate</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1722,7 +1754,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-takeHonor" data-name="takeHonor">
     <h3><code>takeHonor(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-takeHonor">#</a></h3>
-    <p>Takes honor from the target player (default: the opponent) and gives it to the ability's player. The same as <code>gameAction(takeHonor(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-takeHonor"><code>takeHonor</code></a>.</p>
+    <p>Takes honor from the target player (default: the opponent) and gives it to the ability's player. Full entry: <a href="game-actions.html#ga-takeHonor"><code>takeHonor</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1740,7 +1772,7 @@ this.action('Steal a fate')
   <p>Bowed, honored, fate and tokens. The default target is the ability's source.</p>
   <div class="ref" id="b-addToken" data-name="addToken">
     <h3><code>addToken(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-addToken">#</a></h3>
-    <p>Adds a token (default type: honor) to the target card (default: the source). The same as <code>gameAction(addToken(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-addToken"><code>addToken</code></a>.</p>
+    <p>Adds a token (default type: honor) to the target card (default: the source). Full entry: <a href="game-actions.html#ga-addToken"><code>addToken</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1753,7 +1785,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-bow" data-name="bow">
     <h3><code>bow(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-bow">#</a></h3>
-    <p>Bows the target card (default: the source). The same as <code>gameAction(bow(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-bow"><code>bow</code></a>.</p>
+    <p>Bows the target card (default: the source). Full entry: <a href="game-actions.html#ga-bow"><code>bow</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1766,7 +1798,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-discardStatusToken" data-name="discardStatusToken">
     <h3><code>discardStatusToken(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-discardStatusToken">#</a></h3>
-    <p>Discards the target status tokens (default: every status token on the source). The same as <code>gameAction(discardStatusToken(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-discardStatusToken"><code>discardStatusToken</code></a>.</p>
+    <p>Discards the target status tokens (default: every status token on the source). Full entry: <a href="game-actions.html#ga-discardStatusToken"><code>discardStatusToken</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1781,7 +1813,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-dishonor" data-name="dishonor">
     <h3><code>dishonor(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-dishonor">#</a></h3>
-    <p>Dishonors the target character (default: the source). The same as <code>gameAction(dishonor(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-dishonor"><code>dishonor</code></a>.</p>
+    <p>Dishonors the target character (default: the source). Full entry: <a href="game-actions.html#ga-dishonor"><code>dishonor</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1794,7 +1826,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-honor" data-name="honor">
     <h3><code>honor(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-honor">#</a></h3>
-    <p>Honors the target character (default: the source). The same as <code>gameAction(honor(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-honor"><code>honor</code></a>.</p>
+    <p>Honors the target character (default: the source). Full entry: <a href="game-actions.html#ga-honor"><code>honor</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1807,7 +1839,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-injure" data-name="injure">
     <h3><code>injure(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-injure">#</a></h3>
-    <p>Injures the target character (default: the source): removes 1 fate from it, or discards it if it has none. The same as <code>gameAction(injure(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-injure"><code>injure</code></a>.</p>
+    <p>Injures the target character (default: the source): removes 1 fate from it, or discards it if it has none. Full entry: <a href="game-actions.html#ga-injure"><code>injure</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1820,7 +1852,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-placeFate" data-name="placeFate">
     <h3><code>placeFate(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-placeFate">#</a></h3>
-    <p>Places fate on the target character (default: the source), from the general supply or an <code>origin</code>. The same as <code>gameAction(placeFate(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-placeFate"><code>placeFate</code></a>.</p>
+    <p>Places fate on the target character (default: the source), from the general supply or an <code>origin</code>. Full entry: <a href="game-actions.html#ga-placeFate"><code>placeFate</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1833,7 +1865,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-ready" data-name="ready">
     <h3><code>ready(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-ready">#</a></h3>
-    <p>Readies the target card (default: the source). The same as <code>gameAction(ready(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-ready"><code>ready</code></a>.</p>
+    <p>Readies the target card (default: the source). Full entry: <a href="game-actions.html#ga-ready"><code>ready</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1846,7 +1878,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-removeFate" data-name="removeFate">
     <h3><code>removeFate(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-removeFate">#</a></h3>
-    <p>Removes fate from the target character (default: the source), to the supply or a <code>recipient</code>. The same as <code>gameAction(removeFate(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-removeFate"><code>removeFate</code></a>.</p>
+    <p>Removes fate from the target character (default: the source), to the supply or a <code>recipient</code>. Full entry: <a href="game-actions.html#ga-removeFate"><code>removeFate</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1861,7 +1893,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-taint" data-name="taint">
     <h3><code>taint(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-taint">#</a></h3>
-    <p>Taints the target card (default: the source). The same as <code>gameAction(taint(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-taint"><code>taint</code></a>.</p>
+    <p>Taints the target card (default: the source). Full entry: <a href="game-actions.html#ga-taint"><code>taint</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1877,7 +1909,7 @@ this.action('Steal a fate')
   <p>Cards entering and leaving play, moving between conflict and home, and between hands, decks and provinces. The default target is the ability's source.</p>
   <div class="ref" id="b-attach" data-name="attach">
     <h3><code>attach(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-attach">#</a></h3>
-    <p>Attaches <code>attachment</code> to the target character (default: the source). The same as <code>gameAction(attach(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-attach"><code>attach</code></a>.</p>
+    <p>Attaches <code>attachment</code> to the target character (default: the source). Full entry: <a href="game-actions.html#ga-attach"><code>attach</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1893,7 +1925,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-discardCard" data-name="discardCard">
     <h3><code>discardCard(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-discardCard">#</a></h3>
-    <p>Discards the target cards (default: the source) from a hand, deck or province. The same as <code>gameAction(discardCard(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-discardCard"><code>discardCard</code></a>.</p>
+    <p>Discards the target cards (default: the source) from a hand, deck or province. Full entry: <a href="game-actions.html#ga-discardCard"><code>discardCard</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1906,7 +1938,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-discardFromPlay" data-name="discardFromPlay">
     <h3><code>discardFromPlay(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-discardFromPlay">#</a></h3>
-    <p>Discards the target card (default: the source) from play. The same as <code>gameAction(discardFromPlay(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-discardFromPlay"><code>discardFromPlay</code></a>.</p>
+    <p>Discards the target card (default: the source) from play. Full entry: <a href="game-actions.html#ga-discardFromPlay"><code>discardFromPlay</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1919,7 +1951,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-lookAt" data-name="lookAt">
     <h3><code>lookAt(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-lookAt">#</a></h3>
-    <p>The ability's player looks at the target cards (default: the source). The same as <code>gameAction(lookAt(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-lookAt"><code>lookAt</code></a>.</p>
+    <p>The ability's player looks at the target cards (default: the source). Full entry: <a href="game-actions.html#ga-lookAt"><code>lookAt</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1934,7 +1966,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-moveCard" data-name="moveCard">
     <h3><code>moveCard(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-moveCard">#</a></h3>
-    <p>Moves the target cards (default: the source) to <code>destination</code>. The same as <code>gameAction(moveCard(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-moveCard"><code>moveCard</code></a>.</p>
+    <p>Moves the target cards (default: the source) to <code>destination</code>. Full entry: <a href="game-actions.html#ga-moveCard"><code>moveCard</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1947,7 +1979,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-moveToConflict" data-name="moveToConflict">
     <h3><code>moveToConflict(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-moveToConflict">#</a></h3>
-    <p>Moves the target character (default: the source) to the conflict. The same as <code>gameAction(moveToConflict(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-moveToConflict"><code>moveToConflict</code></a>.</p>
+    <p>Moves the target character (default: the source) to the conflict. Full entry: <a href="game-actions.html#ga-moveToConflict"><code>moveToConflict</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1960,7 +1992,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-placeCardUnderneath" data-name="placeCardUnderneath">
     <h3><code>placeCardUnderneath(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-placeCardUnderneath">#</a></h3>
-    <p>Places the target card (default: the source) underneath <code>destination</code>. The same as <code>gameAction(placeCardUnderneath(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-placeCardUnderneath"><code>placeCardUnderneath</code></a>.</p>
+    <p>Places the target card (default: the source) underneath <code>destination</code>. Full entry: <a href="game-actions.html#ga-placeCardUnderneath"><code>placeCardUnderneath</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1977,7 +2009,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-playCard" data-name="playCard">
     <h3><code>playCard(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-playCard">#</a></h3>
-    <p>Plays the target card (default: the source) as if from hand, with the given play options. The same as <code>gameAction(playCard(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-playCard"><code>playCard</code></a>.</p>
+    <p>Plays the target card (default: the source) as if from hand, with the given play options. Full entry: <a href="game-actions.html#ga-playCard"><code>playCard</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1992,7 +2024,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-putIntoConflict" data-name="putIntoConflict">
     <h3><code>putIntoConflict(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-putIntoConflict">#</a></h3>
-    <p>Puts the target character (default: the source) into play in the conflict. The same as <code>gameAction(putIntoConflict(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-putIntoPlay"><code>putIntoConflict</code></a>.</p>
+    <p>Puts the target character (default: the source) into play in the conflict. Full entry: <a href="game-actions.html#ga-putIntoPlay"><code>putIntoConflict</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2005,7 +2037,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-putIntoPlay" data-name="putIntoPlay">
     <h3><code>putIntoPlay(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-putIntoPlay">#</a></h3>
-    <p>Puts the target character (default: the source) into play at home. The same as <code>gameAction(putIntoPlay(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-putIntoPlay"><code>putIntoPlay</code></a>.</p>
+    <p>Puts the target character (default: the source) into play at home. Full entry: <a href="game-actions.html#ga-putIntoPlay"><code>putIntoPlay</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2018,7 +2050,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-refillFaceup" data-name="refillFaceup">
     <h3><code>refillFaceup(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-refillFaceup">#</a></h3>
-    <p>Refills the province at <code>location</code> faceup. The same as <code>gameAction(refillFaceup(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-refillFaceup"><code>refillFaceup</code></a>.</p>
+    <p>Refills the province at <code>location</code> faceup. Full entry: <a href="game-actions.html#ga-refillFaceup"><code>refillFaceup</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2031,7 +2063,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-removeFromGame" data-name="removeFromGame">
     <h3><code>removeFromGame(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-removeFromGame">#</a></h3>
-    <p>Removes the target cards (default: the source) from the game. The same as <code>gameAction(removeFromGame(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-removeFromGame"><code>removeFromGame</code></a>.</p>
+    <p>Removes the target cards (default: the source) from the game. Full entry: <a href="game-actions.html#ga-removeFromGame"><code>removeFromGame</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2046,7 +2078,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-returnToDeck" data-name="returnToDeck">
     <h3><code>returnToDeck(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-returnToDeck">#</a></h3>
-    <p>Returns the target card (default: the source) to its owner's deck. The same as <code>gameAction(returnToDeck(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-returnToDeck"><code>returnToDeck</code></a>.</p>
+    <p>Returns the target card (default: the source) to its owner's deck. Full entry: <a href="game-actions.html#ga-returnToDeck"><code>returnToDeck</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2059,7 +2091,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-returnToHand" data-name="returnToHand">
     <h3><code>returnToHand(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-returnToHand">#</a></h3>
-    <p>Returns the target card (default: the source) to its owner's hand. The same as <code>gameAction(returnToHand(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-returnToHand"><code>returnToHand</code></a>.</p>
+    <p>Returns the target card (default: the source) to its owner's hand. Full entry: <a href="game-actions.html#ga-returnToHand"><code>returnToHand</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2072,7 +2104,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-reveal" data-name="reveal">
     <h3><code>reveal(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-reveal">#</a></h3>
-    <p>Reveals the target cards (default: the source). The same as <code>gameAction(reveal(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-reveal"><code>reveal</code></a>.</p>
+    <p>Reveals the target cards (default: the source). Full entry: <a href="game-actions.html#ga-reveal"><code>reveal</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2087,7 +2119,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-sacrifice" data-name="sacrifice">
     <h3><code>sacrifice(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-sacrifice">#</a></h3>
-    <p>Sacrifices the target card (default: the source). The same as <code>gameAction(sacrifice(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-sacrifice"><code>sacrifice</code></a>.</p>
+    <p>Sacrifices the target card (default: the source). Full entry: <a href="game-actions.html#ga-sacrifice"><code>sacrifice</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2098,7 +2130,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-sendHome" data-name="sendHome">
     <h3><code>sendHome(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-sendHome">#</a></h3>
-    <p>Moves the target character (default: the source) home from the conflict. The same as <code>gameAction(sendHome(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-sendHome"><code>sendHome</code></a>.</p>
+    <p>Moves the target character (default: the source) home from the conflict. Full entry: <a href="game-actions.html#ga-sendHome"><code>sendHome</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2116,7 +2148,7 @@ this.action('Steal a fate')
   <p>The default ring is the contested ring.</p>
   <div class="ref" id="b-cancel" data-name="cancel">
     <h3><code>cancel(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-cancel">#</a></h3>
-    <p>Cancels the triggering event; with <code>replacementGameAction</code>, that action resolves instead, and <code>thenGameAction</code> after it. Triggered abilities only (a compile error on an action); after <code>aggregateWhen()</code> there is no single event, and nothing is cancelled. The same as <code>gameAction(cancel(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-cancel"><code>cancel</code></a>.</p>
+    <p>Cancels the triggering event; with <code>replacementGameAction</code>, that action resolves instead, and <code>thenGameAction</code> after it. Triggered abilities only (a compile error on an action); after <code>aggregateWhen()</code> there is no single event, and nothing is cancelled. Full entry: <a href="game-actions.html#ga-cancel"><code>cancel</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2129,7 +2161,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-initiateConflict" data-name="initiateConflict">
     <h3><code>initiateConflict(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-initiateConflict">#</a></h3>
-    <p>The target player (default: the ability's player) declares a conflict. The same as <code>gameAction(initiateConflict(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-initiateConflict"><code>initiateConflict</code></a>.</p>
+    <p>The target player (default: the ability's player) declares a conflict. Full entry: <a href="game-actions.html#ga-initiateConflict"><code>initiateConflict</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2142,7 +2174,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-placeFateOnRing" data-name="placeFateOnRing">
     <h3><code>placeFateOnRing(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-placeFateOnRing">#</a></h3>
-    <p>Places fate on the target rings (default: the contested ring). The same as <code>gameAction(placeFateOnRing(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-placeFateOnRing"><code>placeFateOnRing</code></a>.</p>
+    <p>Places fate on the target rings (default: the contested ring). Full entry: <a href="game-actions.html#ga-placeFateOnRing"><code>placeFateOnRing</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2156,7 +2188,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-resolveConflictRing" data-name="resolveConflictRing">
     <h3><code>resolveConflictRing(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-resolveConflictRing">#</a></h3>
-    <p>Resolves the contested ring's effect (default: the contested ring). The same as <code>gameAction(resolveConflictRing(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-resolveConflictRing"><code>resolveConflictRing</code></a>.</p>
+    <p>The ability's player resolves the target ring (default: the contested ring) as the conflict ring; with several elements they choose which to resolve. Full entry: <a href="game-actions.html#ga-resolveConflictRing"><code>resolveConflictRing</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2169,7 +2201,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-resolveRingEffect" data-name="resolveRingEffect">
     <h3><code>resolveRingEffect(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-resolveRingEffect">#</a></h3>
-    <p>Resolves the target ring's effect (default: the contested ring). The same as <code>gameAction(resolveRingEffect(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-resolveRingEffect"><code>resolveRingEffect</code></a>.</p>
+    <p>Resolves the target ring's effect (default: the contested ring). Full entry: <a href="game-actions.html#ga-resolveRingEffect"><code>resolveRingEffect</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2182,7 +2214,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-switchConflictType" data-name="switchConflictType">
     <h3><code>switchConflictType(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-switchConflictType">#</a></h3>
-    <p>Switches the type of the current conflict. The same as <code>gameAction(switchConflictType(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-switchConflictType"><code>switchConflictType</code></a>.</p>
+    <p>Switches the type of the current conflict. Full entry: <a href="game-actions.html#ga-switchConflictType"><code>switchConflictType</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2197,10 +2229,10 @@ this.action('Steal a fate')
 
 <section class="group">
   <h3 class="group-title" id="b-group-shortcuts-lasting">Shortcuts: lasting effects</h3>
-  <p>Effects from <code>effects.ts</code> applied for a duration. The card, ring and player versions last until the end of the conflict by default, the duel version until the end of the duel.</p>
+  <p>Effects from <code>effects.ts</code> applied for a duration. The card, ring, player and conflict versions last until the end of the conflict by default, the duel version until the end of the duel. Set <code>duration</code> for "this phase" or "this round".</p>
   <div class="ref" id="b-atEndOfConflict" data-name="atEndOfConflict">
     <h3><code>atEndOfConflict(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-atEndOfConflict">#</a></h3>
-    <p>A delayed effect: at the end of the conflict, <code>gameAction</code> resolves on the target card (default: the source). The same as <code>gameAction(atEndOfConflict(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-atEndOfConflict"><code>atEndOfConflict</code></a>.</p>
+    <p>A delayed effect: at the end of the conflict, <code>gameAction</code> resolves on the target card (default: the source). Full entry: <a href="game-actions.html#ga-atEndOfConflict"><code>atEndOfConflict</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2217,7 +2249,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-cardLastingEffect" data-name="cardLastingEffect">
     <h3><code>cardLastingEffect(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-cardLastingEffect">#</a></h3>
-    <p>Applies <code>effect</code> to the target cards (default: the source) for <code>duration</code>. The same as <code>gameAction(cardLastingEffect(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-cardLastingEffect"><code>cardLastingEffect</code></a>.</p>
+    <p>Applies <code>effect</code> to the target cards (default: the source) for <code>duration</code>. Full entry: <a href="game-actions.html#ga-cardLastingEffect"><code>cardLastingEffect</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2236,7 +2268,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-conflictLastingEffect" data-name="conflictLastingEffect">
     <h3><code>conflictLastingEffect(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-conflictLastingEffect">#</a></h3>
-    <p>Applies <code>effect</code> to the current conflict. The same as <code>gameAction(conflictLastingEffect(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-conflictLastingEffect"><code>conflictLastingEffect</code></a>.</p>
+    <p>Applies <code>effect</code> to the current conflict. Full entry: <a href="game-actions.html#ga-conflictLastingEffect"><code>conflictLastingEffect</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2253,7 +2285,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-duelLastingEffect" data-name="duelLastingEffect">
     <h3><code>duelLastingEffect(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-duelLastingEffect">#</a></h3>
-    <p>Applies <code>effect</code> to the current duel. The same as <code>gameAction(duelLastingEffect(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-duelLastingEffect"><code>duelLastingEffect</code></a>.</p>
+    <p>Applies <code>effect</code> to the current duel. Full entry: <a href="game-actions.html#ga-duelLastingEffect"><code>duelLastingEffect</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2268,7 +2300,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-playerLastingEffect" data-name="playerLastingEffect">
     <h3><code>playerLastingEffect(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-playerLastingEffect">#</a></h3>
-    <p>Applies <code>effect</code> to the target player (default: the ability's player). The same as <code>gameAction(playerLastingEffect(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-playerLastingEffect"><code>playerLastingEffect</code></a>.</p>
+    <p>Applies <code>effect</code> to the target player (default: the ability's player). Full entry: <a href="game-actions.html#ga-playerLastingEffect"><code>playerLastingEffect</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2281,7 +2313,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-ringLastingEffect" data-name="ringLastingEffect">
     <h3><code>ringLastingEffect(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-ringLastingEffect">#</a></h3>
-    <p>Applies <code>effect</code> to the target rings (default: the contested ring). The same as <code>gameAction(ringLastingEffect(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-ringLastingEffect"><code>ringLastingEffect</code></a>.</p>
+    <p>Applies <code>effect</code> to the target rings (default: the contested ring). Full entry: <a href="game-actions.html#ga-ringLastingEffect"><code>ringLastingEffect</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2303,7 +2335,7 @@ this.action('Steal a fate')
   <p>Choices made after the dash, while the effect resolves (not targets): the chosen thing is handed to the inner <code>gameAction</code>.</p>
   <div class="ref" id="b-cardMenu" data-name="cardMenu">
     <h3><code>cardMenu(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-cardMenu">#</a></h3>
-    <p>One of <code>cards</code> is chosen from card buttons, and <code>gameAction</code> resolves on it. The same as <code>gameAction(cardMenu(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-cardMenu"><code>cardMenu</code></a>.</p>
+    <p>One of <code>cards</code> is chosen from card buttons, and <code>gameAction</code> resolves on it. Full entry: <a href="game-actions.html#ga-cardMenu"><code>cardMenu</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2321,7 +2353,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-chooseAction" data-name="chooseAction">
     <h3><code>chooseAction(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-chooseAction">#</a></h3>
-    <p>A labelled choice between game actions ("select one" after the dash); a choice is an action or <code>{ action, message }</code>. The same as <code>gameAction(chooseAction(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-chooseAction"><code>chooseAction</code></a>.</p>
+    <p>A labelled choice between game actions ("select one" after the dash); a choice is an action or <code>{ action, message }</code>. Full entry: <a href="game-actions.html#ga-chooseAction"><code>chooseAction</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2340,7 +2372,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-chooseAmount" data-name="chooseAmount">
     <h3><code>chooseAmount(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-chooseAmount">#</a></h3>
-    <p>A number is chosen, and <code>gameAction(amount)</code> resolves. The same as <code>gameAction(chooseAmount(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-chooseAmount"><code>chooseAmount</code></a>.</p>
+    <p>A number is chosen, and <code>gameAction(amount)</code> resolves. Full entry: <a href="game-actions.html#ga-chooseAmount"><code>chooseAmount</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2358,7 +2390,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-deckSearch" data-name="deckSearch">
     <h3><code>deckSearch(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-deckSearch">#</a></h3>
-    <p>Searches a deck: look at its top cards, choose some, and resolve <code>gameAction</code> on them. The same as <code>gameAction(deckSearch(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-deckSearch"><code>deckSearch</code></a>.</p>
+    <p>Searches a deck: look at its top cards, choose some, and resolve <code>gameAction</code> on them. Full entry: <a href="game-actions.html#ga-deckSearch"><code>deckSearch</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2377,7 +2409,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-optional" data-name="optional">
     <h3><code>optional(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-optional">#</a></h3>
-    <p>A player (default: the ability's player) is asked Yes/No whether to resolve <code>gameAction</code>. The same as <code>gameAction(optional(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-optional"><code>optional</code></a>.</p>
+    <p>A player (default: the ability's player) is asked Yes/No whether to resolve <code>gameAction</code>. Full entry: <a href="game-actions.html#ga-optional"><code>optional</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2395,7 +2427,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-selectAttackedProvince" data-name="selectAttackedProvince">
     <h3><code>selectAttackedProvince(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-selectAttackedProvince">#</a></h3>
-    <p>An attacked province is chosen, and <code>gameAction</code> resolves on it. The same as <code>gameAction(selectAttackedProvince(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-selectAttackedProvince"><code>selectAttackedProvince</code></a>.</p>
+    <p>An attacked province is chosen, and <code>gameAction</code> resolves on it. Full entry: <a href="game-actions.html#ga-selectAttackedProvince"><code>selectAttackedProvince</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2413,7 +2445,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-selectCard" data-name="selectCard">
     <h3><code>selectCard(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-selectCard">#</a></h3>
-    <p>A player (default: the ability's player) chooses a card, and <code>gameAction</code> resolves on it. The same as <code>gameAction(selectCard(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-selectCard"><code>selectCard</code></a>.</p>
+    <p>A player (default: the ability's player) chooses a card, and <code>gameAction</code> resolves on it. Full entry: <a href="game-actions.html#ga-selectCard"><code>selectCard</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2433,7 +2465,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-selectCards" data-name="selectCards">
     <h3><code>selectCards(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-selectCards">#</a></h3>
-    <p>A player chooses several cards by <code>mode</code> (required), and <code>gameAction</code> resolves on them. The same as <code>gameAction(selectCards(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-selectCards"><code>selectCards</code></a>.</p>
+    <p>A player chooses several cards by <code>mode</code> (required), and <code>gameAction</code> resolves on them. Full entry: <a href="game-actions.html#ga-selectCards"><code>selectCards</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2456,7 +2488,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-selectRing" data-name="selectRing">
     <h3><code>selectRing(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-selectRing">#</a></h3>
-    <p>A ring is chosen, and <code>gameAction</code> resolves on it. The same as <code>gameAction(selectRing(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-selectRing"><code>selectRing</code></a>.</p>
+    <p>A ring is chosen, and <code>gameAction</code> resolves on it. Full entry: <a href="game-actions.html#ga-selectRing"><code>selectRing</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2473,7 +2505,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-selectToken" data-name="selectToken">
     <h3><code>selectToken(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-selectToken">#</a></h3>
-    <p>A status token on <code>card</code> is chosen, and <code>gameAction</code> resolves on it. The same as <code>gameAction(selectToken(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-selectToken"><code>selectToken</code></a>.</p>
+    <p>A status token on <code>card</code> is chosen, and <code>gameAction</code> resolves on it. Full entry: <a href="game-actions.html#ga-selectToken"><code>selectToken</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2491,7 +2523,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-tokenFromTopCard" data-name="tokenFromTopCard">
     <h3><code>tokenFromTopCard(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-tokenFromTopCard">#</a></h3>
-    <p>The top card of a deck becomes a token card, then <code>gameAction(token)</code> resolves. The same as <code>gameAction(tokenFromTopCard(…))</code>, with the same properties as the game action; full entry: <a href="game-actions.html#ga-tokenFromTopCard"><code>tokenFromTopCard</code></a>.</p>
+    <p>The top card of a deck becomes a token card, then <code>gameAction(token)</code> resolves. Full entry: <a href="game-actions.html#ga-tokenFromTopCard"><code>tokenFromTopCard</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>

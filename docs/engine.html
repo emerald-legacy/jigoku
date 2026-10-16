@@ -28,7 +28,7 @@
 <div class="note"><p>This page is for work on the engine itself. Card code rarely needs it; the other pages describe what a card writes.</p></div>
 
 <h2 id="eng-checks">How an ability is checked</h2>
-<p>Before an ability is offered, <code>meetsRequirements(context, ignoredBlockers)</code> runs its checks in order and returns the first <code>Blocker</code> that stops it, or <code>Blocker.None</code>. The checks come from three classes; each calls the next one's checks last.</p>
+<p>Before an ability is offered, <code>meetsRequirements(context, ignoredBlockers)</code> runs its checks in order. It returns the first <code>Blocker</code> that stops the ability, or <code>Blocker.None</code>. The checks come from three classes. Each class runs its own checks, then calls the checks of its base class.</p>
 <ol>
     <li><strong>The action</strong> (<code>CardAction</code>):
         <ol>
@@ -38,12 +38,12 @@
             <li><code>WrongPlayer</code>: the card's controller, unless <code>anyPlayer()</code> or an effect lets the opponent trigger it. Not checked for events.</li>
             <li><code>ConditionNotMet</code>: the ability's <code>condition()</code>.</li>
         </ol>
-        A triggered ability (<code>TriggeredAbility</code>) checks <code>WrongPlayer</code> and <code>ConditionNotMet</code> the same way; it only listens while its card is in one of its locations, and its <code>when()</code> is checked when the event happens.
+        A triggered ability (<code>TriggeredAbility</code>) checks only <code>WrongPlayer</code> and <code>ConditionNotMet</code> at this level. Opponents can't trigger forced abilities, even with an effect that lets them trigger the card. The ability listens only while its card is in one of its locations, and its <code>when()</code> is checked when the event happens.
     </li>
     <li><strong>The card ability</strong> (<code>CardAbility</code>):
         <ol>
             <li><code>Blanked</code>: a printed ability on a blank card, or a gained one while the card loses gained abilities.</li>
-            <li><code>CannotTrigger</code>: the card can't trigger abilities (restrictions, <code>TriggeringRestricted</code> can be ignored inside this check), or an event can't be played.</li>
+            <li><code>CannotTrigger</code>: the card is facedown, a restriction stops its abilities from being triggered, or an event can't be played. <code>TriggeringRestricted</code> in <code>ignoredBlockers</code> skips the restrictions, not this blocker.</li>
             <li><code>CannotInitiate</code>: a keyword ability while keywords can't be initiated.</li>
             <li><code>LimitReached</code>, then <code>MaxReached</code>: the ability's <code>limit()</code> and <code>max()</code>.</li>
             <li><code>LimitedAlreadyPlayed</code>: a Limited card when one was played this round.</li>
@@ -76,7 +76,7 @@
         <tr><td><code>LimitReached</code>, <code>MaxReached</code></td><td>The limit and the max.</td></tr>
         <tr><td><code>CannotPayCost</code></td><td>Whether the costs can be paid; <code>resolveAbility</code> then also skips paying them.</td></tr>
         <tr><td><code>TriggeringRestricted</code></td><td>Restrictions on triggering the card's abilities.</td></tr>
-        <tr><td><code>Facedown</code></td><td>That the card is facedown, when it is played as a duplicate of a unique character.</td></tr>
+        <tr><td><code>Facedown</code></td><td>That the card is facedown. Only the play actions check it: playing a dynasty character from a province, and adding a duplicate to a unique character.</td></tr>
     </tbody>
 </table>
 <p><code>Blanked</code>, <code>CannotTrigger</code>, <code>CannotInitiate</code>, <code>LimitedAlreadyPlayed</code> and <code>NoLegalTarget</code> always apply. <code>DuplicateUnique</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities.</p>
@@ -91,7 +91,7 @@
         <ol>
             <li><code>resolveCosts()</code>, <code>payCosts()</code> (all costs in one event window), <code>checkCostsWerePaid()</code>;</li>
             <li><code>resolveTargets()</code> at <code>Stage.Target</code>, then <code>checkForCancel()</code>;</li>
-            <li><code>initiateAbilityEffects()</code>: pays the costs of targeting (effects that make choosing a card cost fate), counts the limit (not for a card in hand) and the max, writes the chat line, moves a played event to "being played", and opens a then-window with <code>onInitiateAbilityEffects</code>. Cancelling that event cancels the effects; the costs stay paid.</li>
+            <li><code>initiateAbilityEffects()</code>: pays the costs of targeting (effects that make choosing a card cost fate), counts the limit (not for a card in hand) and the max, and writes the chat line. For a card ability it then moves a played event to "being played" and opens a then-window with <code>onInitiateAbilityEffects</code>. Cancelling that event cancels the effects; the costs stay paid and the limit stays counted.</li>
             <li><code>executeHandler()</code> at <code>Stage.Effect</code>: the game actions resolve.</li>
             <li><code>moveEventCardToDiscard()</code>.</li>
         </ol>
@@ -100,11 +100,13 @@
 </ol>
 <ul>
     <li>A reaction to <code>onCardAbilityInitiated</code> fires after the early targets were chosen: a select before the dash is answered before the reaction's window opens.</li>
-    <li><code>isTriggeredAbility()</code> is true for every card ability, actions included; it is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity) and a bare <code>BaseAbility</code>. A reaction that filters on <code>event.ability.isTriggeredAbility()</code> also sees the opponent's actions. <code>isTriggeredAbilityInstance()</code> is true only for reactions and interrupts.</li>
+    <li><code>isTriggeredAbility()</code> is true for every card ability, actions included. It is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity) and for a bare <code>BaseAbility</code>. So a reaction that filters on <code>event.ability.isTriggeredAbility()</code> also reacts to actions.</li>
+    <li><code>isTriggeredAbilityInstance()</code> is true only for a <code>TriggeredAbility</code>: reactions and interrupts, forced ones and duel triggers included.</li>
 </ul>
 
 <h2 id="eng-game-actions">Running game actions from engine code</h2>
-<p>An action first collects its events (<code>action.addEventsToArray(events, context)</code>: one per legal target), and something else opens them in an event window. Open them one step later, as the entry points below do: some actions add their events only after a prompt.</p>
+<p>A game action doesn't change the game by itself. It first collects its events (<code>action.addEventsToArray(events, context)</code>: one per legal target). Then an event window resolves them. Open that window one step later, as the entry points below do: some actions add their events only after a prompt.</p>
+<p>Engine code that acts for a player, outside any card ability, uses <code>game.getFrameworkContext(player)</code> as its context. A rule that acts for no player uses <code>game.getGameContext()</code>; its <code>player</code> is missing.</p>
 <table>
     <thead><tr><th>Entry point</th><th>Use</th></tr></thead>
     <tbody>
@@ -125,20 +127,20 @@
 </ul>
 
 <h2 id="eng-registrar">Listening to events: EventRegistrar</h2>
-<p>A card that has to remember something across events (which provinces were attacked, the first action of a conflict) listens with an <code>EventRegistrar</code>. Its listeners stay for the whole game.</p>
-<pre><code>import { EventRegistrar } from '../../EventRegistrar.js';
-import { AbilityType, EventName } from '../../Constants.js';
-
-override setupCardAbilities() {
-    const registrar = new EventRegistrar(this.game);
-    // after the event happened: event name → handler, the event typed by its name
-    registrar.register({
-        [EventName.OnRoundEnded]: () =&gt; this.onRoundEnded(),
-        [EventName.OnCardBowed]: (event) =&gt; this.onCardBowed(event)
-    });
-    // in the event's would-interrupt window, before its abilities are offered
-    registrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) =&gt; this.cancelRingEffect(event));
-}</code></pre>
+<p>A card that has to remember something across events (which characters were bowed this conflict, which provinces were attacked) listens with an <code>EventRegistrar</code>. Its listeners stay for the whole game. It has two methods:</p>
+<ul>
+    <li><code>register({ [EventName.X]: handler })</code> runs the handler after the event happened. The handler gets the event, typed by its name.</li>
+    <li><code>registerTriggerWindow(eventName, abilityType, handler)</code> runs the handler in the event's trigger window of that type, before the abilities in that window are offered.</li>
+</ul>
+<pre><code>// Kakita's First Kata: Conflict Action: Choose a [clan-crane] or Duelist character you control – until the end of the conflict, that character cannot be bowed or moved by opponents' card effects. If it was bowed during this conflict, ready it.
+this.eventRegistrar = new EventRegistrar(this.game);
+this.eventRegistrar.register({
+    [EventName.OnConflictFinished]: () =&gt; this.onConflictFinished(),
+    [EventName.OnCardBowed]: (event) =&gt; this.onCardBowed(event)
+});</code></pre>
+<pre><code>// Pilgrimage: During conflicts at this province, cancel all ring effects.
+const eventRegistrar = new EventRegistrar(this.game);
+eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) =&gt; this.cancelRingEffect(event));</code></pre>
 <ul>
     <li><code>register()</code> listens to the event itself, so it also sees the events that open no window (<code>onCardMoved</code>, <code>onDeckShuffled</code>).</li>
     <li>A listener changes nothing through the ability system: no costs, limits, chat or restrictions. Effects on the game still go through game actions (<code>game.resolveActions</code>).</li>

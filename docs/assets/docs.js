@@ -5,7 +5,7 @@ const PAGES = [
     ['game-actions.html', 'Game actions'],
     ['effects.html', 'Effects'],
     ['costs.html', 'Costs and limits'],
-    ['types.html', 'Enums, events, types'],
+    ['types.html', 'Enums, events and context'],
     ['helpers.html', 'Card helpers and queries'],
     ['engine.html', 'Engine internals']
 ];
