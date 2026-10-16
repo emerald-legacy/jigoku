@@ -3,7 +3,6 @@ import { Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
-import Ring from '../../../Ring.js';
 import { msg } from '../../../GameChat.js';
 export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';
@@ -28,8 +27,7 @@ export default class BambooTattoo extends DrawCard {
                 onCardBowed: (event, context) =>
                     context.source.parentCharacter &&
                     event.card === context.source.parentCharacter &&
-                    !(event.context?.source instanceof Ring) &&
-                    event.context?.source.name !== 'Framework effect'
+                    !!event.context?.ability.isCardAbility()
             })
             .ready((context) => ({ target: context.source.parentCharacter ?? [] }))
             .if((context) => this.isSelfTrigger(context))
