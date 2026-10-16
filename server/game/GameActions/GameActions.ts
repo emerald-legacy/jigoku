@@ -192,62 +192,36 @@ export function injure<C extends AbilityContext = AbilityContext>(propertyFactor
 export function lookAt<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<LookAtProperties<C>, C> = {}): LookAtAction<C> {
     return new LookAtAction<C>(propertyFactory);
 }
-/**
- * default switch = false
- * default shuffle = false
- * default faceup = false
- */
 export function moveCard<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<MoveCardProperties, C>): MoveCardAction<C> {
     return new MoveCardAction<C>(propertyFactory);
 }
 export function moveToConflict<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<MoveToConflictProperties, C> = {}): MoveToConflictAction<C> {
     return new MoveToConflictAction<C>(propertyFactory);
 }
-/**
- * default amount = 1
- */
 export function placeFate<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PlaceFateProperties, C> = {}): PlaceFateAction<C> {
     return new PlaceFateAction<C>(propertyFactory);
 }
-/**
- * default resetOnCancel = false
- */
 export function playCard<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PlayCardProperties, C> = {}): PlayCardAction<C> {
     return new PlayCardAction<C>(propertyFactory);
 }
 export function performGloryCount<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<GloryCountProperties, C>): PerformGloryCountAction<C> {
     return new PerformGloryCountAction<C>(propertyFactory);
 }
-/**
- * default fate = 0
- * default status = ordinary
- */
 export function putIntoConflict<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PutIntoPlayProperties, C> = {}): PutIntoPlayAction<C> {
     return new PutIntoPlayAction<C>(propertyFactory);
 }
-/**
- * default fate = 0
- * default status = ordinary
- */
 export function putIntoPlay<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PutIntoPlayProperties, C> = {}): PutIntoPlayAction<C> {
     return new PutIntoPlayAction<C>(propertyFactory, false);
 }
 export function putIntoProvince<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PutInProvinceProperties, C>): PutIntoProvinceAction<C> {
     return new PutIntoProvinceAction<C>(propertyFactory);
 }
-/**
- * default fate = 0
- * default status = ordinary
- */
 export function opponentPutIntoPlay<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<OpponentPutIntoPlayProperties, C> = {}): OpponentPutIntoPlayAction<C> {
     return new OpponentPutIntoPlayAction<C>(propertyFactory, false);
 }
 export function ready<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ReadyProperties, C> = {}): ReadyAction<C> {
     return new ReadyAction<C>(propertyFactory);
 }
-/**
- * default amount = 1
- */
 export function removeFate<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<RemoveFateProperties, C> = {}): RemoveFateAction<C> {
     return new RemoveFateAction<C>(propertyFactory);
 }
@@ -260,18 +234,12 @@ export function resolveAbility<C extends AbilityContext = AbilityContext>(proper
 export function restoreProvince<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<RestoreProvinceProperties, C> = {}): RestoreProvinceAction<C> {
     return new RestoreProvinceAction<C>(propertyFactory);
 }
-/**
- * default bottom = false
- */
 export function returnToDeck<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ReturnToDeckProperties, C> = {}): ReturnToDeckAction<C> {
     return new ReturnToDeckAction<C>(propertyFactory);
 }
 export function returnToHand<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ReturnToHandProperties, C> = {}): ReturnToHandAction<C> {
     return new ReturnToHandAction<C>(propertyFactory);
 }
-/**
- * default chatMessage = false
- */
 export function reveal<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<RevealProperties, C> = {}): RevealAction<C> {
     return new RevealAction<C>(propertyFactory);
 }
@@ -299,69 +267,37 @@ export function gainStatusToken<C extends AbilityContext = AbilityContext>(prope
 export function moveConflict<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<MoveConflictProperties, C> = {}): MoveConflictAction<C> {
     return new MoveConflictAction<C>(propertyFactory);
 }
-/**
- * default hideWhenFaceup = true
- */
 export function placeCardUnderneath<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PlaceCardUnderneathProperties, C>): PlaceCardUnderneathAction<C> {
     return new PlaceCardUnderneathAction<C>(propertyFactory);
 }
 
-/**
- * default amount = 1
- */
 export function chosenDiscard<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ChosenDiscardProperties<C>, C> = {}): ChosenDiscardAction<C> {
     return new ChosenDiscardAction<C>(propertyFactory);
 }
-/**
- * default amount = 1
- */
 export function chosenReturnToDeck<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ChosenReturnToDeckProperties, C> = {}): ChosenReturnToDeckAction<C> {
     return new ChosenReturnToDeckAction<C>(propertyFactory);
 }
-/**
- * default cardsToLookAt = -1 (whole deck)
- * default reveal = true
- * default cardCondition = always true
- */
 export function deckSearch<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<DeckSearchProperties<C>, C>): DeckSearchAction<C> {
     return new DeckSearchAction<C>(propertyFactory);
 }
-/**
- * default amount = 1
- */
 export function discardAtRandom<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<RandomDiscardProperties, C> = {}): DiscardAtRandomAction<C> {
     return new DiscardAtRandomAction<C>(propertyFactory);
 }
-/**
- * default amount = -1
- */
 export function discardMatching<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<MatchingDiscardProperties<C>, C> = {}): DiscardMatchingAction<C> {
     return new DiscardMatchingAction<C>(propertyFactory);
 }
-/**
- * default amount = 1
- */
 export function draw<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<DrawProperties, C> = {}): DrawAction<C> {
     return new DrawAction<C>(propertyFactory);
 }
-/**
- * default fillTo = 1
- * default faceup = false
- */
 export function fillProvince<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<FillProvinceProperties, C>): FillProvinceAction<C> {
     return new FillProvinceAction<C>(propertyFactory);
 }
 export function gainFate<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<GainFateProperties, C> = {}): GainFateAction<C> {
     return new GainFateAction<C>(propertyFactory);
-} // amount = 1
+}
 export function gainHonor<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<GainHonorProperties, C> = {}): GainHonorAction<C> {
     return new GainHonorAction<C>(propertyFactory);
-} // amount = 1
-/**
- * default giveHonor = false
- * default players = Players.Any
- * default prohibitedBids = All bids allowed
- */
+}
 export function honorBid<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<HonorBidProperties<C>, C> = {}): HonorBidAction<C> {
     return new HonorBidAction<C>(propertyFactory);
 }
@@ -370,28 +306,28 @@ export function fateBid<C extends AbilityContext = AbilityContext>(propertyFacto
 }
 export function initiateConflict<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<InitiateConflictProperties, C> = {}): InitiateConflictAction<C> {
     return new InitiateConflictAction<C>(propertyFactory);
-} // canPass = true
+}
 export function loseFate<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<LoseFateProperties, C> = {}): LoseFateAction<C> {
     return new LoseFateAction<C>(propertyFactory);
 }
 export function loseHonor<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<LoseHonorProperties, C> = {}): LoseHonorAction<C> {
     return new LoseHonorAction<C>(propertyFactory);
-} // amount = 1
+}
 export function loseImperialFavor<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<DiscardFavorProperties, C> = {}): LoseImperialFavorAction<C> {
     return new LoseImperialFavorAction<C>(propertyFactory);
 }
 export function modifyBid<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ModifyBidProperties, C> = {}): ModifyBidAction<C> {
     return new ModifyBidAction<C>(propertyFactory);
-} // amount = 1, direction = Direction.Increase
+}
 export function playerLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PlayerLastingEffectInput<C>, C>): PlayerLastingEffectAction<C> {
     return new PlayerLastingEffectAction<C>(propertyFactory);
-} // target = the ability's player, duration = 'untilEndOfConflict', effect, condition, until
+}
 export function refillFaceup<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<RefillFaceupProperties, C>): RefillFaceupAction<C> {
     return new RefillFaceupAction<C>(propertyFactory);
-} // location
+}
 export function setHonorDial<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<SetDialProperties, C>): SetHonorDialAction<C> {
     return new SetHonorDialAction<C>(propertyFactory);
-} // value
+}
 export function shuffleDeck<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ShuffleDeckProperties, C>): ShuffleDeckAction<C> {
     return new ShuffleDeckAction<C>(propertyFactory);
 }
@@ -413,14 +349,14 @@ export function setAside<C extends AbilityContext = AbilityContext>(propertyFact
 }
 export function takeFate<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<TransferFateProperties, C> = {}): TakeFateAction<C> {
     return new TakeFateAction<C>(propertyFactory);
-} // amount = 1
+}
 export function takeHonor<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<TransferHonorProperties, C> = {}): TakeHonorAction<C> {
     return new TakeHonorAction<C>(propertyFactory);
-} // amount = 1
+}
 
 export function placeFateOnRing<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PlaceFateRingProperties, C> = {}): PlaceFateOnRingAction<C> {
     return new PlaceFateOnRingAction<C>(propertyFactory);
-} // amount = 1, origin
+}
 export function resolveConflictRing<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<RingActionProperties, C> = {}): ResolveConflictRingAction<C> {
     return new ResolveConflictRingAction<C>(propertyFactory);
 }
@@ -432,7 +368,7 @@ export function returnRing<C extends AbilityContext = AbilityContext>(propertyFa
 }
 export function ringLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<LastingEffectRingProperties<C>, C>): RingLastingEffectAction<C> {
     return new RingLastingEffectAction<C>(propertyFactory);
-} // duration = 'untilEndOfConflict', effect, condition, until
+}
 export function selectRing<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<SelectRingProperties<C>, C>): SelectRingAction<C> {
     return new SelectRingAction<C>(propertyFactory);
 }
@@ -444,7 +380,7 @@ export function switchConflictType<C extends AbilityContext = AbilityContext>(pr
 }
 export function takeFateFromRing<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<TakeFateRingProperties, C> = {}): TakeFateFromRingAction<C> {
     return new TakeFateFromRingAction<C>(propertyFactory);
-} // amount = 1
+}
 export function takeRing<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<TakeRingProperties, C> = {}): TakeRingAction<C> {
     return new TakeRingAction<C>(propertyFactory);
 }
@@ -486,18 +422,18 @@ export { noAction } from './HandlerAction.js';
 
 export function conflictLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<LastingEffectProperties<C>, C>): LastingEffectAction<C> {
     return new LastingEffectAction<C>(propertyFactory);
-} // duration = 'untilEndOfConflict', effect, targetController, condition, until
+}
 
 export function duelLastingEffect<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<LastingEffectProperties<C>, C>): DuelLastingEffectAction<C> {
     return new DuelLastingEffectAction<C>(propertyFactory);
-} // target = the current duel, duration = 'untilEndOfDuel', effect, condition, until
+}
 
 export function cardMenu<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<CardMenuProperties<C>, C>): CardMenuAction<C> {
     return new CardMenuAction<C>(propertyFactory);
 }
 export function chooseAction<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ChooseActionProperties<C>, C>): ChooseGameAction<C> {
     return new ChooseGameAction<C>(propertyFactory);
-} // options, activePromptTitle = 'Select an action:'
+}
 export function chooseAmount<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ChooseAmountProperties<C>, C>): ChooseAmountAction<C> {
     return new ChooseAmountAction<C>(propertyFactory);
 }
@@ -515,10 +451,10 @@ export function ifAble<C extends AbilityContext = AbilityContext>(propertyFactor
 }
 export function joint<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): JointGameAction<C> {
     return new JointGameAction<C>(gameActions);
-} // takes an array of gameActions, not a propertyFactory
+}
 export function multiple<C extends AbilityContext = AbilityContext>(gameActions: GameActionList<C>): MultipleGameAction<C> {
     return new MultipleGameAction<C>(gameActions);
-} // a list of actions, or (context) => list
+}
 /** The player puts the top cards of a deck (by default their own) back in the order they choose. */
 export function rearrangeDeck<C extends AbilityContext = AbilityContext>(propertyFactory: Derivable<RearrangeDeckProperties<C>, C>): RearrangeDeckAction<C> {
     return new RearrangeDeckAction<C>(propertyFactory);
@@ -563,7 +499,7 @@ export function selectToken<C extends AbilityContext = AbilityContext>(propertyF
 }
 export function sequential<C extends AbilityContext = AbilityContext>(gameActions: GameActionList<C>): SequentialAction<C> {
     return new SequentialAction<C>(gameActions);
-} // a list of actions, or (context) => list
+}
 
 /** Each builder shortcut's properties, with its callbacks typed for the context `C` of the ability being built. */
 export interface ActionProps<C extends AbilityContext> {

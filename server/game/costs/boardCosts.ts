@@ -79,8 +79,7 @@ export function returnSelfToHand(): Cost {
 }
 
 /**
- * Cost that will shuffle a selected card into the relevant deck which matches the passed
- * condition.
+ * Cost that shuffles a selected card into its owner's dynasty deck.
  */
 export function shuffleIntoDeck<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: TypedSelectCostProperties<Types, Mode, Context>): Cost<SelectCostResult<'moveCard', Types, Mode>, Context> {
     return getSelectCost(
@@ -180,7 +179,7 @@ export function removeFromGame<const Types extends CardTypes = undefined, const 
 }
 
 /**
- * Cost that requires removing a card selected by the player from the game.
+ * Cost that removes the source from the game.
  */
 export function removeSelfFromGame(properties?: { location: Array<Location> }): Cost {
     return new GameActionCost(GameActions.removeFromGame(properties));
@@ -207,7 +206,7 @@ export function taint<const Types extends CardTypes = undefined, const Mode exte
     return getSelectCost('taint', GameActions.taint(), properties, 'Select card to taint');
 }
 
-export function discardStatusToken<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: Omit<TypedSelectCostProperties<Types, Mode, Context>, 'subActionProperties'>): Cost {
+export function discardHonoredToken<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: Omit<TypedSelectCostProperties<Types, Mode, Context>, 'subActionProperties'>): Cost {
     return new MetaActionCost(
         new SelectCardAction(eraseSelectCardsProperties({
             gameAction: GameActions.discardStatusToken(),

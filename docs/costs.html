@@ -434,8 +434,8 @@ this.action('Give +3/+3 to attached character')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/SharpenTheMind.ts">Sharpen the Mind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Phoenix/EmissaryOfTheFiveRivers.ts">Emissary of the Five Rivers</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Lion/SteadfastOrator.ts">Steadfast Orator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FavoredNiece.ts">Favored Niece</a></p>
   </div>
 
-  <div class="ref" id="co-discardStatusToken" data-name="discardStatusToken">
-    <h3><code>discardStatusToken(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardStatusToken">#</a></h3>
+  <div class="ref" id="co-discardHonoredToken" data-name="discardHonoredToken">
+    <h3><code>discardHonoredToken(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardHonoredToken">#</a></h3>
     <p>"Discard an honored status token from a (friendly) character": the player chooses a character and discards its honored status token.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
@@ -451,7 +451,7 @@ this.action('Give +3/+3 to attached character')
     <pre><code>// The Spear Rushes Forth: Action: During a [conflict-military] conflict, discard an honored status token from a participating (friendly) character and choose a participating character your opponent controls - bow that character.
 this.action('Bow a participating character')
     .condition(() =&gt; this.game.isDuringConflict(ConflictType.Military))
-    .cost(costs.discardStatusToken({
+    .cost(costs.discardHonoredToken({
         cardCondition: (card) =&gt; card.isHonored &amp;&amp; card.isDrawCard() &amp;&amp; card.isParticipating()
     }))
     .target({ cardType: CardType.Character, controller: Players.Opponent, cardCondition: (card) =&gt; card.isParticipating() }, bow());</code></pre>

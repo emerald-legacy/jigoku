@@ -625,8 +625,10 @@ export class AbilityBuilder<
         return new AbilityBuilder(this.draft);
     }
 
-    /** The choice lands in `context.selects`, not in `targets`. A choice is a game action, or a condition (no game action) offered while it holds. */
-    /** The player chooses one of the labelled choices when the ability initiates; `select(choices)` without other properties. */
+    /**
+     * The player chooses one of the labelled choices when the ability initiates; `select(choices)` without other properties.
+     * The choice lands in `context.selects`, not in `targets`. A choice is a game action, or a condition (no game action) offered while it holds.
+     */
     select<const Label extends string = string>(
         choices: Record<Label, NoInfer<SelectChoiceValue<Base, Targets, Rings, Costs, Tokens, never>>>
     ): AbilityBuilder<Base & Selected<'target', Label>, Targets, Rings, Costs, Tokens, SelectNames | 'target'>;
@@ -1592,10 +1594,6 @@ function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
     checkCombinations(step);
     if(step.chatText !== undefined || step.choiceChatText !== undefined) {
         throw new Error(`${step.title}: a then step prints its message with message()`);
-    }
-    const abilityOnly = ABILITY_ONLY.filter((key) => step[key] !== undefined);
-    if(abilityOnly.length > 0) {
-        throw new Error(`${step.title}: ${abilityOnly.join(', ')} belong to the ability, before then()`);
     }
     return {
         inheritTargets: true,

@@ -21,7 +21,8 @@ function makeContext(overrides = {}) {
             name: 'player1',
             opponent: { name: 'player2', hand: [] },
             resolveRingEffects: jasmine.createSpy('resolveRingEffects'),
-            checkRestrictions: jasmine.createSpy('checkRestrictions').and.returnValue(true)
+            checkRestrictions: jasmine.createSpy('checkRestrictions').and.returnValue(true),
+            getEffects: () => []
         },
         target: {
             uuid: 'card-uuid-1',

@@ -5,7 +5,7 @@ import { SuppressEffect } from './Effects/SuppressEffect.js';
 import { EffectBuilder } from './Effects/EffectBuilder.js';
 import { attachmentMilitarySkillModifier } from './Effects/Library/attachmentMilitarySkillModifier.js';
 import { attachmentPoliticalSkillModifier } from './Effects/Library/attachmentPoliticalSkillModifier.js';
-import { canPlayFromOwn } from './Effects/Library/canPlayFromOwn.js';
+import { canPlayFromOwn, getPlayFromLocation } from './Effects/Library/canPlayFromOwn.js';
 import { cardCannot } from './Effects/Library/cardCannot.js';
 import { changePlayerGloryModifier } from './Effects/Library/changePlayerGloryModifier.js';
 import { copyCard, copyProvince } from './Effects/Library/copyCard.js';
@@ -17,7 +17,7 @@ import { mustBeDeclaredAsAttacker } from './Effects/Library/mustBeDeclaredAsAtta
 import { reduceCost } from './Effects/Library/reduceCost.js';
 import { switchAttachmentSkillModifiers } from './Effects/Library/switchAttachmentSkillModifiers.js';
 import { takeControl } from './Effects/Library/takeControl.js';
-import { EffectName, PlayType, CardType, Players, RestrictionType, RestrictionScope } from './Constants.js';
+import { EffectName, PlayType, type CardType, Players, RestrictionType, RestrictionScope } from './Constants.js';
 import type { Location } from './Constants.js';
 import type { traitLimit } from './Interfaces.js';
 import type DrawCard from './DrawCard.js';
@@ -242,36 +242,7 @@ export const additionalPlayCost = (func: EffectValueMap[EffectName.AdditionalPla
 export const alternateFatePool = (match: EffectValueMap[EffectName.AlternateFatePool]) => EffectBuilder.player.static(EffectName.AlternateFatePool, match);
 export const cannotDeclareConflictsOfType = (type: ConflictType) => EffectBuilder.player.static(EffectName.CannotDeclareConflictsOfType, type);
 export const canPlayFromOpponents = (location: Location, cards: DrawCard[], sourceOfEffect: BaseCard, playType: PlayType = PlayType.PlayFromHand) =>
-    EffectBuilder.player.detached(EffectName.CanPlayFromOpponents, {
-        apply: (p) => {
-            if(!p.opponent) {
-                return;
-            }
-            for(const card of cards.filter(
-                (card) => card.type === CardType.Event && card.location === location
-            )) {
-                for(const reaction of card.getReactions()) {
-                    reaction.registerEvents();
-                }
-            }
-            for(const card of cards) {
-                if(!card.fromOutOfPlaySource) {
-                    card.fromOutOfPlaySource = [];
-                }
-                card.fromOutOfPlaySource.push(sourceOfEffect);
-            }
-            return p.addPlayableLocation(playType, p.opponent, location, cards);
-        },
-        unapply: (player, _context, location) => {
-            if(!location) {
-                return;
-            }
-            player.removePlayableLocation(location);
-            for(const card of location.cards) {
-                card.removeOutOfPlaySource(sourceOfEffect);
-            }
-        }
-    });
+    EffectBuilder.player.detached(EffectName.CanPlayFromOpponents, getPlayFromLocation((player) => player.opponent, location, cards, sourceOfEffect, playType));
 export const limitHonorGainPerPhase = (amount: number) => EffectBuilder.player.static(EffectName.LimitHonorGainPerPhase, amount);
 export const cannotResolveRings = () => EffectBuilder.player.static(EffectName.CannotResolveRings, true);
 export const changePlayerSkillModifier = (value: FlexibleValue<number, Player>) => EffectBuilder.player.flexible(EffectName.ChangePlayerSkillModifier, value);
