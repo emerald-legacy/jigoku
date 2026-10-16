@@ -4,6 +4,7 @@ describe('Purveyor Of Rarities', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
+                    stronghold: 'shiro-shinjo',
                     inPlay: ['purveyor-of-rarities', 'doji-challenger', 'aranat'],
                     hand: ['voice-of-honor', 'way-of-the-unicorn', 'foreign-customs']
                 },
@@ -87,6 +88,51 @@ describe('Purveyor Of Rarities', function () {
             expect(this.player1.fate).toBe(fate + 1);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Purveyor of Rarities, discarding Foreign Customs to give +1military/+1political to Purveyor of Rarities and gain 1 fate');
+        });
+    });
+});
+
+describe('Purveyor Of Rarities for a non-Unicorn player', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    stronghold: 'shiro-yogo',
+                    inPlay: ['purveyor-of-rarities'],
+                    hand: ['way-of-the-scorpion', 'way-of-the-unicorn']
+                },
+                player2: {
+                    inPlay: ['togashi-mitsu']
+                }
+            });
+            this.rarities = this.player1.findCardByName('purveyor-of-rarities');
+            this.mitsu = this.player2.findCardByName('togashi-mitsu');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.rarities],
+                defenders: [this.mitsu]
+            });
+            this.player2.pass();
+        });
+
+        it('treats the player\'s own clan as in-clan', function () {
+            const fate = this.player1.fate;
+            const mil = this.rarities.militarySkill;
+            this.player1.clickCard(this.rarities);
+            this.player1.clickCard('way-of-the-scorpion');
+            expect(this.rarities.militarySkill).toBe(mil + 3);
+            expect(this.player1.fate).toBe(fate);
+        });
+
+        it('treats a Unicorn card as out-of-clan', function () {
+            const fate = this.player1.fate;
+            const mil = this.rarities.militarySkill;
+            this.player1.clickCard(this.rarities);
+            this.player1.clickCard('way-of-the-unicorn');
+            expect(this.rarities.militarySkill).toBe(mil + 1);
+            expect(this.player1.fate).toBe(fate + 1);
         });
     });
 });

@@ -1647,7 +1647,7 @@ condition: (context) =&gt; context.source.isConflictProvince(),</code></pre>
     </ul>
     <pre><code>// Border Fortress: Action: During a conflict at this province, choose a facedown province – reveal that province.
 cardCondition: (card) =&gt; card.isFacedown()</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BorderlandsFortifications.ts">Borderlands Fortifications</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/AgashaTaiko.ts">Agasha Taiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/Kakudaira.ts">Kakudaira</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/StokeInsurrection.ts">Stoke Insurrection</a> (59 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BorderlandsFortifications.ts">Borderlands Fortifications</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/AgashaTaiko.ts">Agasha Taiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/Kakudaira.ts">Kakudaira</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/StokeInsurrection.ts">Stoke Insurrection</a> (61 card files)</p>
   </div>
 
   <div class="ref" id="q-isInConflictProvince" data-name="isInConflictProvince">
@@ -1935,7 +1935,7 @@ condition: (context) =&gt; context.game.conflictRecord.filter((record) =&gt; rec
     context.game.requireConflict()
         .getConflictProvinces()
         .some((province) =&gt; declaredConflicts.wasAttackedBefore(province, context.game.currentConflict)))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SubdueTheSpirits.ts">Subdue the Spirits</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SpellScroll.ts">Spell Scroll</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/TwoHands.ts">Two Hands</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Unicorn/ShinjoIsamu.ts">Shinjo Isamu</a> (170 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SubdueTheSpirits.ts">Subdue the Spirits</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SpellScroll.ts">Spell Scroll</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/TwoHands.ts">Two Hands</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Unicorn/ShinjoIsamu.ts">Shinjo Isamu</a> (171 card files)</p>
   </div>
 
   <div class="ref" id="q-findAnyCardsInPlay" data-name="findAnyCardsInPlay">
@@ -2010,7 +2010,7 @@ target: context.game.getPlayers(),</code></pre>
 return context.game.getProvinceArray().some((location) =&gt; {
     …
 });</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AkodoGunso.ts">Akodo Gunsō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/Aranat.ts">Aranat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/SubterraneanGuile.ts">Subterranean Guile</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/CycleOfRebirth.ts">Cycle of Rebirth</a> (10 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AkodoGunso.ts">Akodo Gunsō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/Aranat.ts">Aranat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/SubterraneanGuile.ts">Subterranean Guile</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/CycleOfRebirth.ts">Cycle of Rebirth</a> (12 card files)</p>
   </div>
 
   <div class="ref" id="q-provinceCards" data-name="provinceCards">
@@ -2040,7 +2040,7 @@ return context.game.getProvinceArray().some((location) =&gt; {
     </ul>
     <pre><code>// Entrenched Position: This province gets +5 strength during [conflict-military] conflicts.
 condition: () =&gt; this.game.isDuringConflict(ConflictType.Military),</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AkodoToturi.ts">Akodo Toturi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/BonsaiGarden.ts">Bonsai Garden</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/NaturalNegotiator.ts">Natural Negotiator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/ConduitOfHeroes.ts">Conduit of Heroes</a> (197 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AkodoToturi.ts">Akodo Toturi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/BonsaiGarden.ts">Bonsai Garden</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/NaturalNegotiator.ts">Natural Negotiator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/ConduitOfHeroes.ts">Conduit of Heroes</a> (198 card files)</p>
   </div>
 
   <div class="ref" id="q-game-isTraitInPlay" data-name="isTraitInPlay">

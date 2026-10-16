@@ -10,7 +10,11 @@ export default class RespectedConnoisseur extends DrawCard {
             .condition((context) => context.source.isHonored)
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card !== context.source && card.isParticipating() === context.source.isParticipating()
+                cardCondition: (card, context) =>
+                    card !== context.source &&
+                    card.isParticipating() === context.source.isParticipating() &&
+                    // each player has their own home area
+                    (card.isParticipating() || card.controller === context.source.controller)
             }, honor());
     }
 }

@@ -37,6 +37,29 @@ describe('Unwavering Devotion', function () {
             });
         });
 
+        describe('on an opponent\'s character', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        hand: ['unwavering-devotion']
+                    },
+                    player2: {
+                        inPlay: ['moto-youth']
+                    }
+                });
+                this.moto = this.player2.findCardByName('moto-youth');
+                this.unwaveringDevotion = this.player1.findCardByName('unwavering-devotion');
+            });
+
+            it('gives attached character +1 glory', function () {
+                const initialGlory = this.moto.glory;
+                this.player1.playAttachment(this.unwaveringDevotion, this.moto);
+                expect(this.moto.attachments).toContain(this.unwaveringDevotion);
+                expect(this.moto.glory).toBe(initialGlory + 1);
+            });
+        });
+
         describe('armor effect', function () {
             beforeEach(function () {
                 this.setupTest({

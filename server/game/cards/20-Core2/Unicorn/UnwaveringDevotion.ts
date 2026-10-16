@@ -6,13 +6,11 @@ export default class UnwaveringDevotion extends DrawCard {
     static id = 'unwavering-devotion';
 
     override setupCardAbilities() {
-        this.persistentEffect({
-            match: (card, context) => card === context?.source.parentCharacter,
+        this.whileAttached({
             effect: modifyGlory(1)
         });
 
-        this.persistentEffect({
-            match: (card, context) => card === context?.source.parentCharacter,
+        this.whileAttached({
             effect: cardCannot({
                 cannot: RestrictionType.Target,
                 appliesTo: RestrictionScope.OpponentsCharacterAbilitiesWithLowerGlory

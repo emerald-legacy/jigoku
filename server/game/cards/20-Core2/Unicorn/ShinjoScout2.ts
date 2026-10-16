@@ -1,5 +1,6 @@
 import { msg } from '../../../GameChat.js';
-import { cannotTriggerAbilities } from '../../../effects.js';
+import { RestrictionScope, RestrictionType } from '../../../Constants.js';
+import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,7 +17,10 @@ export default class ShinjoScout2 extends DrawCard {
                 cardCondition: (card, context) => card === context.event.card,
                 message: (context, province) => msg`${context.player} prevents ${province} from triggering its abilities during this conflict`,
                 gameAction: cardLastingEffect({
-                    effect: cannotTriggerAbilities()
+                    effect: cardCannot({
+                        cannot: RestrictionType.TriggerAbilities,
+                        appliesTo: RestrictionScope.OpponentsCardAbilities
+                    })
                 })
             })
             .chatText('avoid the dangers of their exploration');

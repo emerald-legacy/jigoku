@@ -50,6 +50,7 @@ describe('Respected Connoisseur', function() {
             expect(this.player1).toBeAbleToSelect(this.whisperer);
             expect(this.player1).not.toBeAbleToSelect(this.gunso);
             expect(this.player1).not.toBeAbleToSelect(this.berserker);
+            expect(this.player1).not.toBeAbleToSelect(this.challenger);
             this.player1.clickCard(this.whisperer);
             expect(this.whisperer.isHonored).toBe(true);
         });

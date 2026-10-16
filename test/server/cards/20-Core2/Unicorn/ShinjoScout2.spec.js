@@ -88,3 +88,47 @@ describe('Shinjo Scout 2 when a province that isn\'t attacked is revealed', func
         });
     });
 });
+
+describe('Shinjo Scout 2 with Contested Countryside', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-scout-2'],
+                    dynastyDiscard: ['contested-countryside']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    provinces: ['floating-world']
+                }
+            });
+
+            this.shinjoScout = this.player1.findCardByName('shinjo-scout-2');
+            this.countryside = this.player1.placeCardInProvince('contested-countryside', 'province 1');
+            this.countryside.facedown = false;
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.floatingWorld = this.player2.findCardByName('floating-world', 'province 1');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.shinjoScout],
+                type: 'military',
+                province: this.floatingWorld
+            });
+            this.player1.clickCard(this.shinjoScout);
+            this.player2.clickCard(this.whisperer);
+            this.player2.clickPrompt('Done');
+        });
+
+        it('only stops the opponent from triggering the attacked province', function () {
+            this.player2.clickCard(this.floatingWorld);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.pass();
+            this.player1.clickCard(this.floatingWorld);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+        });
+    });
+});

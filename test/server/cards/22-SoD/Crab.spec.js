@@ -300,6 +300,47 @@ describe('SoD - Crab', function () {
             });
         });
 
+        describe('Dead Eyes at the end of the conflict', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['matsu-berserker'],
+                        hand: ['dead-eyes']
+                    },
+                    player2: {
+                        inPlay: ['matsu-berserker']
+                    }
+                });
+
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.deadeyes = this.player1.findCardByName('dead-eyes');
+                this.opponentBerserker = this.player2.findCardByName('matsu-berserker');
+
+                this.player1.playAttachment(this.deadeyes, this.berserker);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'fire',
+                    attackers: [this.berserker],
+                    defenders: [this.opponentBerserker]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.deadeyes);
+            });
+
+            it('sacrifices the character only after the ring effect, when it won by less than double', function () {
+                this.noMoreActions();
+                this.player1.clickPrompt('No');
+                expect(this.player1).toHavePrompt('Fire Ring');
+                expect(this.player1).toBeAbleToSelect(this.berserker);
+                this.player1.clickCard(this.berserker);
+                this.player1.clickPrompt('Honor Matsu Berserker');
+                expect(this.berserker.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(5)).toContain('Matsu Berserker is sacrificed due to the delayed effect of Dead Eyes');
+            });
+        });
+
         describe('Reckless Assault', function () {
             beforeEach(function () {
                 this.setupTest({
