@@ -348,7 +348,12 @@ export class DrawCard extends BaseCard {
 
     getCost(): number | null {
         const copyEffect = this.mostRecentEffect(EffectName.CopyCharacter);
-        return copyEffect ? copyEffect.printedCost : this.printedCost;
+        return this.getCostValue(copyEffect ? copyEffect.printedCost : this.printedCost);
+    }
+
+    // a dash cost counts as 0 for abilities (RRG Cost); holdings have no cost
+    protected getCostValue(cost: number | null): number | null {
+        return cost ?? (this.type === CardType.Holding ? null : 0);
     }
 
     override getFate(): number {
@@ -380,7 +385,7 @@ export class DrawCard extends BaseCard {
     }
 
     costLessThan(num: number): boolean {
-        const cost = this.printedCost;
+        const cost = this.getCostValue(this.printedCost);
         return !!num && cost !== null && cost < num;
     }
 

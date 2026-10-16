@@ -131,3 +131,41 @@ describe('Isawa Tsuke', function() {
         });
     });
 });
+
+describe('Isawa Tsuke with a dash cost', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['isawa-tsuke']
+                },
+                player2: {
+                    inPlay: ['eager-scout', 'illusionary-decoy', 'togashi-initiate']
+                }
+            });
+            this.isawaTsuke = this.player1.findCardByName('isawa-tsuke');
+            this.eagerScout = this.player2.findCardByName('eager-scout');
+            this.decoy = this.player2.findCardByName('illusionary-decoy');
+            this.togashiInitiate = this.player2.findCardByName('togashi-initiate');
+        });
+
+        it('counts as 0', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.isawaTsuke],
+                defenders: [this.togashiInitiate],
+                ring: 'fire'
+            });
+
+            this.player2.pass();
+            this.player1.pass();
+
+            this.player1.clickCard(this.eagerScout);
+            this.player1.clickPrompt('dishonor Eager Scout');
+            this.player1.clickCard(this.isawaTsuke);
+            expect(this.decoy.isDishonored).toBe(true);
+            expect(this.togashiInitiate.isDishonored).toBe(false);
+        });
+    });
+});

@@ -54,5 +54,35 @@ describe('Assassination', function () {
                 expect(this.player1).not.toHavePrompt('Assassination');
             });
         });
+
+        describe('a dash cost', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['togashi-initiate'],
+                        hand: ['assassination']
+                    },
+                    player2: {
+                        inPlay: ['illusionary-decoy']
+                    }
+                });
+                this.togashiInitiate = this.player1.findCardByName('togashi-initiate');
+                this.assassination = this.player1.findCardByName('assassination');
+                this.illusionaryDecoy = this.player2.findCardByName('illusionary-decoy');
+            });
+
+            it('counts as 0', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.togashiInitiate],
+                    defenders: []
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.assassination);
+                expect(this.player1).toHavePrompt('Assassination');
+                expect(this.player1).toBeAbleToSelect(this.illusionaryDecoy);
+            });
+        });
     });
 });

@@ -86,3 +86,36 @@ describe('Paths Not Taken', function () {
         });
     });
 });
+
+describe('Paths Not Taken with a dash cost', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['paths-not-taken']
+                },
+                player2: {
+                    inPlay: ['illusionary-decoy']
+                }
+            });
+            this.decoy = this.player2.findCardByName('illusionary-decoy');
+            this.paths = this.player1.findCardByName('paths-not-taken');
+        });
+
+        it('counts as 0', function () {
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.decoy],
+                defenders: []
+            });
+
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.paths);
+            expect(this.player1).toBeAbleToSelect(this.decoy);
+        });
+    });
+});

@@ -10,6 +10,11 @@ export abstract class TokenCard extends DrawCard {
         super(facedownCard.owner, cardData);
     }
 
+    // a token has no printed cost, which isn't a dash
+    protected override getCostValue(cost: number | null): number | null {
+        return cost;
+    }
+
     /** Where the facedown card goes when the token leaves play for `destination`. */
     protected facedownDestination(_destination?: string): string {
         return Location.DynastyDiscardPile;

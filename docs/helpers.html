@@ -1429,7 +1429,7 @@ cardCondition: (card) =&gt; card.isFaction('crane')</code></pre>
     <h3><code>card.costLessThan(num)</code> <span class="kind">Query</span> <a class="anchor" href="#q-costLessThan">#</a></h3>
     <p>True if the card's printed cost is lower than <code>num</code>. "printed cost 2 or lower" is <code>costLessThan(3)</code>.</p>
     <ul class="edge">
-      <li><code>false</code> for a card without a printed cost, and always <code>false</code> for <code>num</code> 0.</li>
+      <li>A dash cost counts as 0 (RRG Cost). <code>false</code> for a holding or a token (no cost), and always <code>false</code> for <code>num</code> 0.</li>
       <li>Reads the printed cost, not the cost of a copied character; <code>getCost()</code> follows copies.</li>
     </ul>
     <pre><code>// Assassination: Conflict Action: Lose 3 honor. Choose a character with printed cost 2 or lower – discard that character. …
@@ -1439,7 +1439,7 @@ cardCondition: (card) =&gt; card.costLessThan(3)</code></pre>
 
   <div class="ref" id="q-getCost" data-name="getCost">
     <h3><code>card.getCost()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getCost">#</a></h3>
-    <p>The card's printed cost, or the printed cost of the character it copies. <code>number | null</code>; <code>null</code> for cards without a cost.</p>
+    <p>The card's printed cost, or the printed cost of the character it copies. <code>number | null</code>: a dash cost counts as 0 (RRG Cost), <code>null</code> only for a holding or a token (Soldier, Unleashed Hound, …), which print no cost. The field <code>printedCost</code> stays <code>null</code> for a dash (it marks the card as unplayable), so read it with <code>?? 0</code>.</p>
     <pre><code>// Audience Chamber: Reaction: After you play a character with printed cost 4 or higher - place 1 fate on it.
 (event.card.getCost() ?? 0) &gt;= 4</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/ElegantTessen.ts">Elegant Tessen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a> (23 card files)</p>
