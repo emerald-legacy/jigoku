@@ -636,7 +636,6 @@ export class Player extends GameObject {
         const [deckLocation, discardLocation] = deck === DeckType.Dynasty
             ? [Location.DynastyDeck, Location.DynastyDiscardPile]
             : [Location.ConflictDeck, Location.ConflictDiscardPile];
-        const discardPile = this.getSourceList(discardLocation);
         const action = loseHonor({ amount: this.game.rules.deckoutHonorLoss });
         if(action.canAffect(this, this.game.getFrameworkContext(this))) {
             this.game.addMessage(msg`${this}'s ${deck} has run out of cards, so they lose ${this.game.rules.deckoutHonorLoss} honor`);
@@ -645,7 +644,7 @@ export class Player extends GameObject {
         }
         action.resolve(this, this.game.getFrameworkContext(this));
         this.game.queueSimpleStep(() => {
-            discardPile.forEach((card: BaseCard) => this.moveCard(card, deckLocation));
+            this.getSourceList(discardLocation).forEach((card: BaseCard) => this.moveCard(card, deckLocation));
             this.shuffleDeck(deckLocation);
         });
     }
