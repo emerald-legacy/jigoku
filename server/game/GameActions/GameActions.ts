@@ -501,7 +501,7 @@ export function sequential<Context extends AbilityContext = AbilityContext>(game
     return new SequentialAction<Context>(gameActions);
 }
 
-/** Each builder shortcut's properties, with its callbacks typed for the context `C` of the ability being built. */
+/** Each builder shortcut's properties, with its callbacks typed for the context `Context` of the ability being built. */
 export interface ActionProps<Context extends AbilityContext> {
     addToken: AddTokenProperties;
     atEndOfConflict: AtEndOfConflictProperties<Context>;

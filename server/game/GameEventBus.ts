@@ -3,7 +3,7 @@ import type { OwnContextCallback } from './Interfaces.js';
 /** A listener; method syntax, so one taking a narrower argument (a game event's typed payload) fits. */
 export type EventHandler<Args extends unknown[] = unknown[]> = OwnContextCallback<Args, void>;
 
-/** Listeners by key, each called with the arguments `A` of its bus. */
+/** Listeners by key, each called with the arguments `Args` of its bus. */
 export class GameEventBus<Args extends unknown[] = unknown[]> {
     private handlers = new Map<string, Set<EventHandler<Args>>>();
     private onceWrappers = new Map<string, Map<EventHandler<Args>, EventHandler<Args>>>();

@@ -25,8 +25,8 @@ function fireWhen<EventType extends EventName>(when: WhenType, name: EventType, 
     return condition && event.is(name) && condition(event, context);
 }
 
-// Author-facing shape: `WhenType<S>` narrows each handler's event payload by event name and types
-// `context.source` as `S`. The runtime fields below erase that back to base `Event`/`BaseCard`.
+// Author-facing shape: `WhenType<Source>` narrows each handler's event payload by event name and types
+// `context.source` as `Source`. The runtime fields below erase that back to base `Event`/`BaseCard`.
 export interface TriggeredAbilityProperties<Source extends BaseCard = BaseCard> extends CardAbilityProperties<TriggeredAbilityContext<Source>> {
     when?: WhenType<Source>;
     aggregateWhen?: OwnContextCallback<[events: Event[], context: AggregateContext<Source>], boolean>;

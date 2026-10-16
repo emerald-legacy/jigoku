@@ -7,7 +7,7 @@ import type { TriggeredAbility } from './TriggeredAbility.js';
 
 // An event whose specific name is not statically known here: the framework Event
 // surface plus every payload field as optional. (Precise per-event typing is
-// GameEvent<N>, produced by the typed event factory at known-name call sites.)
+// GameEvent<Name>, produced by the typed event factory at known-name call sites.)
 export type AnyEvent = Event & Omit<EventUnion, 'context' | 'name' | 'cancelled' | 'resolved'>;
 
 /**

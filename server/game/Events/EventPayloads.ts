@@ -359,7 +359,7 @@ type AllPayloadKeys = EventPayloadMap[keyof EventPayloadMap] extends infer Prope
     ? Properties extends object ? keyof Properties : never
     : never;
 
-// The union of every value `K` can take across all payloads, for `EventUnion`.
+// The union of every value `Key` can take across all payloads, for `EventUnion`.
 type PayloadValueAt<Key extends PropertyKey> = EventPayloadMap[keyof EventPayloadMap] extends infer Properties
     ? Properties extends object ? (Key extends keyof Properties ? Properties[Key] : never) : never
     : never;

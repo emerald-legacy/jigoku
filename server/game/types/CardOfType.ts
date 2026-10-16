@@ -20,7 +20,7 @@ export type CardOfType<Types> = [Types] extends [never] ? BaseCard : Types exten
 
 export const isCardTypeList = (cardType: CardTypes): cardType is readonly CardType[] => Array.isArray(cardType);
 
-/** Whether a card is of one of the types `cardType: K` declares, and so of the class `CardOfType<K>`. */
+/** Whether a card is of one of the types `cardType: Types` declares, and so of the class `CardOfType<Types>`. */
 export function isCardOfType<Types extends CardTypes>(cardType: Types | undefined): (card: BaseCard) => card is CardOfType<Types> {
     const types: readonly CardType[] | undefined = cardType === undefined ? undefined : isCardTypeList(cardType) ? cardType : [cardType];
     return (card: BaseCard): card is CardOfType<Types> => {

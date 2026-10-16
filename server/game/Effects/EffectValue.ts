@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 
-/** What a static effect holds: resolves to `V` and hooks into apply/unapply on targets of type `T`. */
+/** What a static effect holds: resolves to `Value` and hooks into apply/unapply on targets of type `Target`. */
 export abstract class EffectValueBase<Value, Target = unknown> {
     // set by the effect before it applies; a holder applied on its own has none
     context?: AbilityContext;

@@ -65,7 +65,7 @@ const baseDefaults = { cannotBeCancelled: false, optional: false };
 
 const hasTarget = (properties: object | undefined) => !!properties && 'target' in properties;
 
-/** `D` names the properties `defaultProperties` supplies, which `getProperties` returns as non-optional. */
+/** `Defaulted` names the properties `defaultProperties` supplies, which `getProperties` returns as non-optional. */
 export class GameAction<
     Properties extends GameActionProperties = GameActionProperties,
     EventType extends EventName = EventName,

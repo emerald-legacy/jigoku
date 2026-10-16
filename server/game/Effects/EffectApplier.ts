@@ -53,8 +53,8 @@ const hasDash: Partial<Record<EffectName, (card: DrawCard, effect: EffectApplier
 };
 
 /**
- * What an `ActiveEffect` applies to its targets. `N` is the effect's name, which decides its value
- * type; `T` is the kind of object the effect's builder targets.
+ * What an `ActiveEffect` applies to its targets. `EffectType` is the effect's name, which decides its value
+ * type; `Target` is the kind of object the effect's builder targets.
  */
 export abstract class EffectApplier<EffectType extends EffectName = EffectName, Target extends GameObject = GameObject, Value = EffectValueMap[EffectType]> {
     type: EffectType;

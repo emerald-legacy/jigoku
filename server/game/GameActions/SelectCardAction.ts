@@ -13,7 +13,7 @@ import type { GameAction } from './GameAction.js';
 import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from './targetingCosts.js';
 
-/** `K` is the declared `cardType`, which fixes the class of card the callbacks receive. */
+/** `Types` is the declared `cardType`, which fixes the class of card the callbacks receive. */
 interface SelectCardBase<Context extends AbilityContext, Types extends CardTypes> extends CardActionProperties {
     activePromptTitle?: string;
     player?: Chooser;

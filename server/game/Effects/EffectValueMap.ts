@@ -50,7 +50,7 @@ interface DelayedEffectCallbacks<EventType extends EventName, Source extends Bas
     message(context: AbilityContext<Source>, targets: GameObject[]): MessageArgs;
 }
 
-/** `S` is the card whose effect it is, like a trigger's `WhenType<S>`. */
+/** `Source` is the card whose effect it is, like a trigger's `WhenType<Source>`. */
 export type DelayedEffectWhen<Source extends BaseCard = BaseCard> = { [EventType in EventName]?: DelayedEffectCallbacks<EventType, Source>['trigger'] };
 
 export type DelayedEffectValue<Source extends BaseCard = BaseCard> = {
