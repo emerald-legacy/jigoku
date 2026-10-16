@@ -1056,7 +1056,7 @@ this.action('Shuffle cards back into your deck')
       </tbody>
     </table>
     <ul class="edge">
-      <li>A card can only be chosen when one of the game actions has a legal target (if there are game actions). That check runs with all of the card's status tokens at once, not with each token on its own.</li>
+      <li>A card can only be chosen when one of the game actions has a legal target (if there are game actions). Each token is checked on its own: the card qualifies when one of its tokens leaves a legal choice for the game actions and a depending target.</li>
       <li>Choosing the card is not targeting it: restrictions on being targeted don't apply.</li>
     </ul>
     <pre><code>// Bayushi Dairu: Action: During a conflict in which this character is participating, choose a status token on another character in play - move that token to this character.
@@ -1211,7 +1211,7 @@ this.action('Initiate a Military duel')
     <li>A step is declared with the same methods as the ability, minus the ability's own settings.</li>
     <li>Its context is new, but it starts with the targets, selects, rings, tokens and costs chosen so far. <code>context.previousEvents</code> holds the events of the step before.</li>
     <li>A step has at most one next step: a second <code>then()</code>, <code>afterwards()</code>, <code>mayResolveAgain()</code> … throws <code>"a step has one next step"</code>.</li>
-    <li>A step is resolved like a new ability. It raises <code>onCardAbilityInitiated</code> again, so a reaction to that event (Kamayari) can trigger on the step too. When one of the step's targets has no legal choice, the chat prints "{player} attempted to use {card}, but there are insufficient legal targets" and the step stops.</li>
+    <li>A step is resolved by its own resolver, but it is not a new use of the card: it raises no <code>onCardAbilityInitiated</code> (Kamayari reacts once per ability). When one of the step's targets has no legal choice, the step doesn't resolve, without a chat line (RRG Target).</li>
   </ul>
   <div class="note">
     <p><strong>"Then" or "if you do"?</strong> <code>then()</code> follows only when the step before resolved in full; <code>afterwards()</code> follows regardless. Card text "if you do" is <code>then()</code>. A plain "Then" only sets the order, so it is <code>afterwards()</code>. The RRG has a success rule only for "to" (quoted below), and its errata turn conditional "Then"s into "If you do". The same holds for <code>thenIf()</code> and <code>afterwardsIf()</code>.</p>
@@ -1335,7 +1335,7 @@ this.action('Take control of an attachment')
       <li>It takes the step's next-step slot: not with <code>then()</code> or <code>afterwards()</code> on the same step. Like <code>then()</code>, it is offered only when the ability resolved in full.</li>
       <li>The ability resolves again only when the payment's event resolved and wasn't cancelled (an effect that changes the payment still counts).</li>
       <li>The second resolution doesn't count toward the ability's <code>max</code>. With a cost it offers "{label} for no effect" instead of asking again; without a cost it doesn't ask again.</li>
-      <li>Without a cost, Yes and No are offered only when the ability can resolve again. When it can't, the chat prints the "insufficient legal targets" line instead of the question (see <a href="#b-group-flow">Flow</a>).</li>
+      <li>Without a cost, Yes and No are offered only when the ability can resolve again. When it can't, nothing is asked.</li>
     </ul>
     <pre><code>// Banzai!: Action: During a conflict, choose a participating character – that character gets +2[conflict-military] until the end of the conflict. You may lose 1 honor to resolve this ability twice. (Max 1 per conflict.)
 this.action('Increase a character\'s military skill')
@@ -1361,7 +1361,7 @@ this.action('Increase a character\'s military skill')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The question is asked only when the ability can resolve again. When it can't, the chat prints the "insufficient legal targets" line instead (see <a href="#b-group-flow">Flow</a>). In a solo game the player is asked.</li>
+      <li>The question is asked only when the ability can resolve again. In a solo game the player is asked.</li>
       <li>It takes the step's next-step slot, like <a href="#b-mayResolveAgain"><code>mayResolveAgain()</code></a>.</li>
     </ul>
     <pre><code>// Hand to Hand: Action: During a [conflict-military] conflict, choose an attachment on a participating character - discard that attachment.  Then, your opponent may resolve this ability.
@@ -1399,7 +1399,7 @@ this.action('Move this character to the conflict or home from the conflict')
     <ul class="edge">
       <li>If this step raised no events (nothing it could do), the step doesn't follow.</li>
       <li>The step resolves after this step's events, before reactions to them. Its targets are chosen then.</li>
-      <li>In the step, <code>chatText()</code> throws <code>"a then step prints its message with message()"</code>, and the ability's own settings throw <code>"… belongs to the ability, before then()"</code>. A step prints only its <a href="#b-message"><code>message()</code></a>, and the "insufficient legal targets" line when its targets have no legal choice (see <a href="#b-group-flow">Flow</a>).</li>
+      <li>In the step, <code>chatText()</code> throws <code>"a then step prints its message with message()"</code>, and the ability's own settings throw <code>"… belongs to the ability, before then()"</code>. A step prints only its <a href="#b-message"><code>message()</code></a>.</li>
       <li>For a plain "Then" use <a href="#b-afterwards"><code>afterwards()</code></a> (see the note above).</li>
     </ul>
     <pre><code>// Ujiaki's Offer: Action: During a [conflict-political] conflict, choose a participating character … - place 1 fate on the chosen character. If you do, bow it, move it home, and dishonor it.
@@ -1437,7 +1437,7 @@ this.action('Place a fate on a participating character, bow it, move it home, an
 
 <section class="group">
   <h3 class="group-title" id="b-group-chat">Chat</h3>
-  <p>When an ability is used, the chat prints "{player} uses {card}, {costs} to {chatText}" ("plays" for an event). A step prints only its <code>message()</code> (and the "insufficient legal targets" line when its targets have no legal choice).</p>
+  <p>When an ability is used, the chat prints "{player} uses {card}, {costs} to {chatText}" ("plays" for an event). A step prints only its <code>message()</code>.</p>
 
   <div class="ref" id="b-chatMessage" data-name="chatMessage">
     <h3><code>chatMessage(message)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-chatMessage">#</a></h3>

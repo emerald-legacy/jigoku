@@ -403,7 +403,10 @@ export class GameServer implements GameRouter, LobbyHandlers {
         }
 
         game.failedConnect(username);
-        this.userGameMap.delete(username);
+        // a player of a started game stays in it, marked disconnected, and may still reconnect
+        if(!game.playersAndSpectators[username]) {
+            this.userGameMap.delete(username);
+        }
 
         if(game.isEmpty()) {
             this.closeGame(game);
@@ -465,72 +468,87 @@ export class GameServer implements GameRouter, LobbyHandlers {
             return;
         }
 
-        player.id = socket.id;
-        if(player.disconnected) {
-            logger.info('user \'%s\' reconnected to game', socket.user.username);
-            game.reconnect(socket, player.name);
-
-            if(!game.isSpectator(player) && this.abandonTimers.has(game.id)) {
-                this.cancelAbandonTimer(game.id);
-                game.addAlert('info', msg`A player has reconnected. Auto-close cancelled.`);
-            }
-        }
-
-        socket.joinChannel(game.id);
-
-        player.socket = socket;
-
-        if(!game.isSpectator(player)) {
-            game.addMessage(msg`${player} has connected to the game server`);
-        }
-
-        this.sendGameState(game);
-
         socket.registerEvent('game', this.onGameMessage.bind(this));
         socket.on('disconnect', this.onSocketDisconnected.bind(this));
+
+        // socket.io calls this outside any command handler: an error here must not end the process
+        this.catchErrors(game, () => {
+            player.id = socket.id;
+            if(player.disconnected) {
+                logger.info('user \'%s\' reconnected to game', player.name);
+                game.reconnect(socket, player.name);
+
+                if(!game.isSpectator(player) && this.abandonTimers.has(game.id)) {
+                    this.cancelAbandonTimer(game.id);
+                    game.addAlert('info', msg`A player has reconnected. Auto-close cancelled.`);
+                }
+            }
+
+            socket.joinChannel(game.id);
+
+            player.socket = socket;
+
+            if(!game.isSpectator(player)) {
+                game.addMessage(msg`${player} has connected to the game server`);
+            }
+
+            this.sendGameState(game);
+        });
+    }
+
+    /** Like runAndCatchErrors, without sending the state again: sending it may be what failed. */
+    private catchErrors(game: Game, func: () => void): void {
+        try {
+            func();
+        } catch(e) {
+            this.handleError(game, e instanceof Error ? e : new Error(String(e)));
+        }
     }
 
     onSocketDisconnected(socket: Socket, reason: string) {
         if(!socket.user) {
             return;
         }
-        const game = this.findGameForUser(socket.user.username);
+        const username = socket.user.username;
+        const game = this.findGameForUser(username);
         if(!game) {
             return;
         }
 
-        logger.info('user \'%s\' disconnected from a game: %s', socket.user.username, reason);
+        this.catchErrors(game, () => {
+            logger.info('user \'%s\' disconnected from a game: %s', username, reason);
 
-        this.lastSentMessageCount.delete(socket.id);
+            this.lastSentMessageCount.delete(socket.id);
 
-        const player = game.playersAndSpectators[socket.user.username];
-        if(player?.socket && player.socket !== socket) {
-            // the player has reconnected with another socket: this one only timed out late
-            return;
-        }
+            const player = game.playersAndSpectators[username];
+            if(player?.socket && player.socket !== socket) {
+                // the player has reconnected with another socket: this one only timed out late
+                return;
+            }
 
-        const isSpectator = game.isSpectator(player);
+            const isSpectator = game.isSpectator(player);
 
-        game.disconnect(socket.user.username);
-        if(isSpectator) {
-            // disconnect removes the spectator, so closeGame wouldn't find it any more
-            this.userGameMap.delete(socket.user.username);
-        }
+            game.disconnect(username);
+            if(isSpectator) {
+                // disconnect removes the spectator, so closeGame wouldn't find it any more
+                this.userGameMap.delete(username);
+            }
 
-        if(game.isEmpty()) {
-            this.closeGame(game);
-        } else if(!isSpectator && game.allPlayersGone()) {
-            this.startAbandonTimer(game);
-        } else if(isSpectator) {
-            this.wsSocket.send('PLAYERLEFT', {
-                gameId: game.id,
-                game: game.getSaveState(),
-                player: socket.user.username,
-                spectator: true
-            });
-        }
+            if(game.isEmpty()) {
+                this.closeGame(game);
+            } else if(!isSpectator && game.allPlayersGone()) {
+                this.startAbandonTimer(game);
+            } else if(isSpectator) {
+                this.wsSocket.send('PLAYERLEFT', {
+                    gameId: game.id,
+                    game: game.getSaveState(),
+                    player: username,
+                    spectator: true
+                });
+            }
 
-        this.sendGameState(game);
+            this.sendGameState(game);
+        });
     }
 
     onLeaveGame(socket: Socket) {

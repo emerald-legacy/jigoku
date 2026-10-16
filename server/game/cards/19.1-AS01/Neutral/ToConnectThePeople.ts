@@ -1,7 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { gainPlayAction } from '../../../effects.js';
-import { cardLastingEffect, discardCard, playCard, selectCard, sequential } from '../../../GameActions/GameActions.js';
+import { discardCard, playCard, selectCard, sequential } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode, Blocker, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
@@ -29,15 +28,11 @@ export default class ToConnectThePeople extends DrawCard {
                     targets: true,
                     cardCondition: (card, context) => !card.isUnique() && card.glory <= this.maxMerchantGlory(context),
                     mode: TargetMode.Single,
-                    gameAction: sequential([
-                        cardLastingEffect({
-                            effect: [
-                                gainPlayAction(PlayCharacterAsIfFromHand),
-                                gainPlayAction(PlayDisguisedCharacterAsIfFromHand)
-                            ]
-                        }),
-                        playCard({ ignoredBlockers: [Blocker.WrongLocation] })
-                    ])
+                    subActionProperties: (card) => ({
+                        target: card,
+                        playAction: [new PlayCharacterAsIfFromHand(card), new PlayDisguisedCharacterAsIfFromHand(card)]
+                    }),
+                    gameAction: playCard({ ignoredBlockers: [Blocker.WrongLocation] })
                 })
             ]))
             .chatText((context) => msg`discard ${this.topThreeCards(context)} from the top of ${context.player.opponent}'s dynasty deck`)

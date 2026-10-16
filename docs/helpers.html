@@ -567,7 +567,7 @@ this.persistentEffect({
     </table>
     <ul class="edge">
       <li>The top card is fixed when the function runs. The effect also ends when that card leaves the conflict deck or the player's conflict deck is shuffled; a new top card is not playable.</li>
-      <li>Rearranging the deck (Truthseeker) doesn't end it. The deck's current top card is shown to both players, which may then not be the card that can be played.</li>
+      <li>It only applies while the revealed card is the top card: after a rearrange (Truthseeker) buries it, nothing is shown and it can't be played, until it is on top again.</li>
       <li>Check <code>context.player.conflictDeck.length &gt; 0</code> in the ability's condition: with an empty deck there is no card to reveal.</li>
     </ul>
     <pre><code>// Artisan Academy: Action: During the conflict phase – reveal the top card of your conflict deck.

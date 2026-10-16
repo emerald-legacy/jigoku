@@ -579,6 +579,14 @@ describe('GameServer.onFailedConnect', () => {
         expect(failedConnectSpy).toHaveBeenCalledWith('alice');
         expect(ctx.userGameMap.has('alice')).toBe(false);
     });
+
+    it('keeps the userGameMap entry of a player who stays in the game, so they can reconnect', () => {
+        const game = makeGame({ id: 'g1', players: { alice: { name: 'alice' } } });
+        game.failedConnect = jasmine.createSpy();
+        const ctx = makeCtx({ userGameMap: new Map([['alice', game]]) });
+        call('onFailedConnect', ctx, 'g1', 'alice');
+        expect(ctx.userGameMap.get('alice')).toBe(game);
+    });
 });
 
 describe('GameServer.onGameMessage', () => {
@@ -641,5 +649,19 @@ describe('GameServer.onSocketDisconnected for spectators', () => {
         call('onSocketDisconnected', ctx, socket, 'transport close');
 
         expect(ctx.userGameMap.has('watcher')).toBe(false);
+    });
+});
+
+describe('GameServer.onSocketDisconnected errors', () => {
+    it('reports an error from the game instead of throwing it out of the socket handler', () => {
+        const socket = { id: 's1', user: { username: 'alice' } };
+        const game = makeGame({ players: { alice: { socket } } });
+        game.disconnect.and.throwError('boom');
+        const ctx = makeCtx({ userGameMap: new Map([['alice', game]]) });
+        const handleError = jasmine.createSpy('handleError');
+        Object.assign(ctx, { handleError });
+
+        expect(() => call('onSocketDisconnected', ctx, socket, 'transport close')).not.toThrow();
+        expect(handleError).toHaveBeenCalledWith(game, jasmine.any(Error));
     });
 });

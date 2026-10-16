@@ -3,8 +3,7 @@ import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { gainPlayAction } from '../../../effects.js';
-import { cardLastingEffect, playCard, sequential, turnFacedown } from '../../../GameActions/GameActions.js';
+import { playCard, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ToSowTheEarth extends DrawCard {
@@ -17,18 +16,12 @@ export default class ToSowTheEarth extends DrawCard {
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 cardCondition: (card) => card.hasTrait(Trait.Peasant)
-            }, sequential([
-                cardLastingEffect((context) => ({
-                    target: context.target,
-                    effect: [
-                        gainPlayAction(PlayCharacterAsIfFromHand),
-                        gainPlayAction(PlayDisguisedCharacterAsIfFromHand)
-                    ]
-                })),
-                playCard((context) => ({
-                    target: context.target
-                }))
-            ]))
+            }, playCard((context) => ({
+                target: context.target,
+                playAction: context.target
+                    ? [new PlayCharacterAsIfFromHand(context.target), new PlayDisguisedCharacterAsIfFromHand(context.target)]
+                    : undefined
+            })))
             .chatText('play {0} from their discard pile');
 
         this.action('Place a province facedown')

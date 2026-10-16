@@ -11,18 +11,18 @@ export default class CourteousGreeting extends ProvinceCard {
         this.action('Bow a character from each side')
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
             .target({
-                name: 'myCharacter',
+                name: 'defendingCharacter',
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card) => card.isParticipating()
+                controller: Players.Any,
+                cardCondition: (card) => card.isDefending()
             }, bow())
             .target({
-                name: 'oppCharacter',
+                name: 'attackingCharacter',
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                controller: Players.Any,
+                cardCondition: (card) => card.isAttacking()
             }, bow())
-            .chatText((context) => msg`bow ${context.targets.myCharacter} and ${context.targets.oppCharacter}`);
+            .chatText((context) => msg`bow ${context.targets.defendingCharacter} and ${context.targets.attackingCharacter}`);
     }
 
     override getPrintedElementSymbols() {

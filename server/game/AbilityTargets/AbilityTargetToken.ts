@@ -30,34 +30,30 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
 
     getSelector(properties: AbilityTargetTokenProperties): CardSelectorInstance {
         const cardCondition = (card: BaseCard, context: AbilityContext) => {
-            const tokens: StatusToken[] = [...card.statusTokens];
-            if(tokens.length === 0) {
+            if(properties.cardCondition && !properties.cardCondition(card, context)) {
                 return false;
             }
-            const contextCopy = context.copy({});
-            contextCopy.tokens[this.name] = tokens;
-            if(this.name === 'target') {
-                contextCopy.token = tokens;
-            }
-            if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
-                return false;
-            }
-
-            let tokensValid = true;
-            const tokenCondition = properties.tokenCondition;
-            if(tokenCondition) {
-                tokensValid = tokensValid && tokens.some((a: StatusToken) => tokenCondition(a, context));
-            }
-            let cardValid = true;
-            if(properties.cardCondition) {
-                cardValid = cardValid && properties.cardCondition(card, context);
-            }
-
-            return (tokensValid && cardValid) && (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
-                    (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy, this.actionOverrides(contextCopy))));
+            return card.statusTokens.some((token) => this.isTokenLegal(token, context));
         };
         const cardType = properties.cardType || [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Province, CardType.Role, CardType.Stronghold];
         return CardSelector.for(Object.assign({}, properties, { cardType: cardType, cardCondition: cardCondition, targets: false }));
+    }
+
+    /** Whether choosing this one token leaves a legal choice for the dependent target and the game actions. */
+    private isTokenLegal(token: StatusToken, context: AbilityContext): boolean {
+        if(this.properties.tokenCondition && !this.properties.tokenCondition(token, context)) {
+            return false;
+        }
+        const contextCopy = context.copy({});
+        contextCopy.tokens[this.name] = [token];
+        if(this.name === 'target') {
+            contextCopy.token = [token];
+        }
+        if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
+            return false;
+        }
+        return (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
+            (this.properties.gameAction.length === 0 || this.properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy, this.actionOverrides(contextCopy))));
     }
 
     hasLegalTarget(context: AbilityContext): boolean {
@@ -91,7 +87,7 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
                 }
 
                 const selectedCard = Array.isArray(card) ? card[0] : card;
-                const validTokens: StatusToken[] = selectedCard.statusTokens.filter((token: StatusToken) => (!this.properties.tokenCondition || this.properties.tokenCondition(token, context)) && (this.properties.gameAction.length === 0 || this.properties.gameAction.some((action) => action.canAffect(token, context, this.actionOverrides(context)))));
+                const validTokens: StatusToken[] = selectedCard.statusTokens.filter((token: StatusToken) => this.isTokenLegal(token, context));
                 if(validTokens.length > 1) {
                     context.game.promptWithHandlerMenu(player, {
                         activePromptTitle: 'Which token do you wish to select?',

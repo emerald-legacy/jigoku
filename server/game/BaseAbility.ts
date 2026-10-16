@@ -315,6 +315,11 @@ export class BaseAbility {
         return false;
     }
 
+    /** A step after then()/afterwards(): part of an ability already initiated, not a new one. */
+    isStep(): boolean {
+        return false;
+    }
+
     isTriggeredAbility(): boolean {
         return false;
     }

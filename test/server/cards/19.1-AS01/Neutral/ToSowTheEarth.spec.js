@@ -43,6 +43,17 @@ describe('To Sow the Earth', function () {
                 expect(this.getChatLogs(3)).toContain('player1 plays To Sow the Earth to play Ashigaru Levy from their discard pile');
             });
 
+            it('does not leave the character playable when the play is cancelled', function () {
+                this.player1.clickCard(this.toSowTheEarth);
+                this.player1.clickCard(this.ashigaruLevy);
+                this.player1.clickPrompt('Cancel');
+                expect(this.ashigaruLevy.location).toBe('dynasty discard pile');
+                this.player2.pass();
+                this.player1.clickCard(this.ashigaruLevy);
+                expect(this.ashigaruLevy.location).toBe('dynasty discard pile');
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+
             it('should let you bow a peasant to put a province facedown', function () {
                 this.shameful.facedown = false;
 

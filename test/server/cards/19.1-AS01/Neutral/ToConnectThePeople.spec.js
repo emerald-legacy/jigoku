@@ -62,6 +62,16 @@ describe('To Connect the People', function () {
                 );
             });
 
+            it('does not leave the character playable when the play is cancelled', function () {
+                this.player1.clickCard(this.toConnectThePeople);
+                this.player1.clickCard(this.opponentDynastyDiscardAkodoMotivator);
+                this.player1.clickPrompt('Cancel');
+                expect(this.opponentDynastyDiscardAkodoMotivator.location).toBe('dynasty discard pile');
+                this.player2.clickCard(this.opponentDynastyDiscardAkodoMotivator);
+                expect(this.opponentDynastyDiscardAkodoMotivator.location).toBe('dynasty discard pile');
+                expect(this.player2).toHavePrompt('Action Window');
+            });
+
             it('should allow you to purchase any character from your opponent discard piles that has glory equal or lower than a merchant you control', function () {
                 this.player1.clickCard(this.toConnectThePeople);
 

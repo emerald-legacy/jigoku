@@ -125,5 +125,9 @@ export class ThenAbility extends BaseCardAbility {
     override isCardAbility(): boolean {
         return true;
     }
+
+    override isStep(): boolean {
+        return true;
+    }
 }
 

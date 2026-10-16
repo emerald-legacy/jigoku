@@ -87,7 +87,7 @@
     <li><code>createSnapshot()</code>: a draw card's state goes into <code>context.cardStateWhenInitiated</code>.</li>
     <li><code>resolveEarlyTargets()</code>: at <code>Stage.PreTarget</code>, the targets are offered before the costs (with "Pay costs first"), unless <code>cannotTargetFirst()</code>.</li>
     <li><code>checkForCancel()</code>.</li>
-    <li><code>openInitiateAbilityEventWindow()</code>: one event window with <code>onCardAbilityInitiated</code> (<code>onAbilityResolverInitiated</code> when <code>isCardAbility()</code> is false), plus <code>onCardPlayed</code> for a played card and <code>onCardAbilityTriggered</code> for a card ability with <code>isTriggeredAbility()</code>, actions included. The initiate event's handler queues:
+    <li><code>openInitiateAbilityEventWindow()</code>: one event window with <code>onCardAbilityInitiated</code> (<code>onAbilityResolverInitiated</code> when <code>isCardAbility()</code> is false or <code>isStep()</code> is true), plus <code>onCardPlayed</code> for a played card and <code>onCardAbilityTriggered</code> for a card ability with <code>isTriggeredAbility()</code>, actions included. The initiate event's handler queues:
         <ol>
             <li><code>resolveCosts()</code>, <code>payCosts()</code> (all costs in one event window), <code>checkCostsWerePaid()</code>;</li>
             <li><code>resolveTargets()</code> at <code>Stage.Target</code>, then <code>checkForCancel()</code>;</li>
@@ -102,7 +102,7 @@
     <li>A reaction to <code>onCardAbilityInitiated</code> fires after the early targets were chosen: a select before the dash is answered before the reaction's window opens.</li>
     <li><code>isTriggeredAbility()</code> is true for every card ability, actions included. It is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), for steps and for a bare <code>BaseAbility</code>. So a reaction that filters on <code>event.ability.isTriggeredAbility()</code> also reacts to actions.</li>
     <li><code>isTriggeredAbilityInstance()</code> is true only for a <code>TriggeredAbility</code>: reactions and interrupts, forced ones and duel triggers included. The keyword abilities built on it (Pride, Rally, Tutored, Thriving, Courtesy, Sincerity) are instances too; Covert is not.</li>
-    <li><code>isCardAbility()</code> is true for every <code>ThenAbility</code> (card abilities, keyword abilities and steps) and for Covert. A step after <code>then()</code> or <code>afterwards()</code> runs through its own <code>AbilityResolver</code>. So it raises <code>onCardAbilityInitiated</code> again, and a reaction to that event can trigger a second time. When the step's targets have no legal choice, the chat says "… attempted to use …, but there are insufficient legal targets".</li>
+    <li><code>isCardAbility()</code> is true for every <code>ThenAbility</code> (card abilities, keyword abilities and steps) and for Covert. A step after <code>then()</code> or <code>afterwards()</code> runs through its own <code>AbilityResolver</code>; <code>isStep()</code> tells it apart. A step raises <code>onAbilityResolverInitiated</code>, not <code>onCardAbilityInitiated</code>, and a step without a legal target ends without the "insufficient legal targets" line.</li>
 </ul>
 
 <h2 id="eng-game-actions">Running game actions from engine code</h2>

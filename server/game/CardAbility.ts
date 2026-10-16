@@ -309,6 +309,10 @@ export class CardAbility extends ThenAbility {
         return !this.isKeywordAbility() && this.card.getType() === CardType.Event;
     }
 
+    override isStep(): boolean {
+        return false;
+    }
+
     override isTriggeredAbility(): boolean {
         return true;
     }

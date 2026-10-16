@@ -79,7 +79,7 @@ export class AbilityResolver extends BaseStepWithPipeline {
             return;
         }
         const initiate = () => this.queueInitiateAbilitySteps();
-        const initiateEvent: Event = this.context.ability.isCardAbility()
+        const initiateEvent: Event = this.context.ability.isCardAbility() && !this.context.ability.isStep()
             ? this.game.getEvent(EventName.OnCardAbilityInitiated, {
                 card: this.context.source,
                 ability: this.context.ability,
@@ -180,8 +180,10 @@ export class AbilityResolver extends BaseStepWithPipeline {
         this.context.stage = Stage.Target;
 
         if(!this.context.ability.hasLegalTargets(this.context)) {
-            // Ability cannot resolve, so display a message and cancel it
-            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but there are insufficient legal targets`);
+            // a step without a legal target just doesn't resolve (RRG Target); only a use of the card is reported
+            if(!this.context.ability.isStep()) {
+                this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but there are insufficient legal targets`);
+            }
             this.cancelled = true;
         } else if(this.targetResults.delayTargeting) {
             // Targeting was delayed due to an opponent needing to choose targets (which shouldn't happen until costs have been paid), so continue

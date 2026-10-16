@@ -1156,7 +1156,7 @@ this.wouldInterrupt('Keep the first player token')
 </div>
 <div class="ref" id="ev-onAbilityResolverInitiated" data-name="onAbilityResolverInitiated OnAbilityResolverInitiated">
   <h3><code>onAbilityResolverInitiated</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onAbilityResolverInitiated">#</a></h3>
-  <p>Raised by <code>AbilityResolver</code> when an ability that is not a card ability starts resolving: a play action (playing a character, attachment or dynasty card) or a ring effect. It is the only event of the initiate window. Its handler queues the costs, the remaining targets and the effect. Play actions raise their <code>onCardPlayed</code> later, after costs.</p>
+  <p>Raised by <code>AbilityResolver</code> when an ability that is not a card ability starts resolving: a play action (playing a character, attachment or dynasty card), a ring effect, or a step after <code>then()</code> or <code>afterwards()</code>. It is the only event of the initiate window. Its handler queues the costs, the remaining targets and the effect. Play actions raise their <code>onCardPlayed</code> later, after costs.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
@@ -1196,7 +1196,7 @@ this.interrupt('Reduce cost of next attachment')
   <ul class="edge">
     <li>Interrupts come before costs are paid. Cancelling it stops the whole ability, costs included.</li>
     <li>Reactions are offered after the ability has resolved.</li>
-    <li>Then-steps (<code>ThenAbility</code>) count as card abilities, so it fires for each step as well, and a <code>when</code> on it matches again for each step.</li>
+    <li>It fires once per use of a card's ability: steps after <code>then()</code> or <code>afterwards()</code> raise no new one.</li>
   </ul>
   <pre><code>// Kamayari: … Reaction: After a character triggers an ability during a conflict in which attached character is participating – bow that character.
 this.reaction('Bow character who triggered ability')
