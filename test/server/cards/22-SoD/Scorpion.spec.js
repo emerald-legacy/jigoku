@@ -318,6 +318,12 @@ describe('SoD - Scorpion', function () {
                 expect(this.challenger.isHonored).toBe(true);
             });
 
+            it('names the chosen character\'s controller in the chat', function () {
+                this.player1.clickCard(this.lineage);
+                this.player1.clickCard(this.rumormonger);
+                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Bayushi Rumormonger\'s printed faction and prevent player1 from honoring characters while Bayushi Rumormonger is participating in a conflict');
+            });
+
             it('should prevent honoring if participating', function () {
                 const hand = this.player1.hand.length;
 
