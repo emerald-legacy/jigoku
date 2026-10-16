@@ -51,15 +51,9 @@ export class SelectTokenAction<Context extends AbilityContext = AbilityContext> 
         return ['choose a status token for {0}', []];
     }
 
-    private resolveProperties(context: Context, additionalProperties: ActionOverrides = {}) {
-        const properties = super.getProperties(context, additionalProperties);
-        const { card } = properties;
-        return card ? Object.assign(properties, { card }) : null;
-    }
-
     override canAffect(token: StatusToken, context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        const properties = this.resolveProperties(context, additionalProperties);
-        if(!properties) {
+        const properties = this.getProperties(context, additionalProperties);
+        if(!properties.card) {
             return false;
         }
         if(!resolveChoosingPlayer(context, properties.player, properties.targets)) {
@@ -76,27 +70,25 @@ export class SelectTokenAction<Context extends AbilityContext = AbilityContext> 
     }
 
     override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        const properties = this.resolveProperties(context, additionalProperties);
-        if(!properties) {
-            return false;
-        }
-        return properties.card.statusTokens.some((token) => this.canAffect(token, context, additionalProperties));
+        const { card } = this.getProperties(context, additionalProperties);
+        return !!card && card.statusTokens.some((token) => this.canAffect(token, context, additionalProperties));
     }
 
     override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
-        const properties = this.resolveProperties(context, additionalProperties);
-        if(!properties) {
+        const properties = this.getProperties(context, additionalProperties);
+        const { card } = properties;
+        if(!card) {
             return;
         }
         const player = resolveChoosingPlayer(context, properties.player, properties.targets);
         if(!player) {
             return;
-        } else if(!properties.card.statusTokens.some((token) => properties.tokenCondition(token, context))) {
+        } else if(!card.statusTokens.some((token) => properties.tokenCondition(token, context))) {
             return;
         } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
         }
-        const validTokens = properties.card.statusTokens.filter((token) =>
+        const validTokens = card.statusTokens.filter((token) =>
             properties.gameAction.canAffect(token, context)
         );
         if(properties.singleToken && validTokens.length > 1) {
@@ -134,7 +126,7 @@ export class SelectTokenAction<Context extends AbilityContext = AbilityContext> 
     }
 
     override hasTargetsChosenByInitiatingPlayer(context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        const properties = super.getProperties(context, additionalProperties);
+        const properties = this.getProperties(context, additionalProperties);
         return !!properties.targets && isChosenByAbilityPlayer(context, properties.player);
     }
 }
