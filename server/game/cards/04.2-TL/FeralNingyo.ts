@@ -18,7 +18,6 @@ class FeralNingyo extends DrawCard {
                 })),
                 atEndOfConflict((context) => ({
                     target: context.source,
-                    location: [Location.Hand, Location.PlayArea],
                     message: (context) => msg`${context.source} returns to the deck and shuffles due to its delayed effect`,
                     gameAction: returnToDeck({ shuffle: true })
                 }))

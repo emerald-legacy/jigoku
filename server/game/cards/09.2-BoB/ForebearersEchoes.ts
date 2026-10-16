@@ -20,7 +20,6 @@ class ForebearersEchoes extends DrawCard {
                 })),
                 atEndOfConflict((context) => ({
                     target: context.target,
-                    location: [Location.DynastyDiscardPile, Location.PlayArea],
                     message: () => msg`${context.target} returns to the bottom of the dynasty deck due to the delayed effect of ${context.source}`,
                     gameAction: returnToDeck({ bottom: true })
                 }))

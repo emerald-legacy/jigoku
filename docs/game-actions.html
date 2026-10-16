@@ -1479,6 +1479,7 @@ this.action('Resurrect a character')
         <tr><td><code>canChangeZoneNTimes</code></td><td><code>number</code></td><td><code>0</code></td><td>It survives this many changes of zone.</td></tr>
         <tr><td><code>targetLocation</code></td><td><code>TargetLocation</code></td><td>none</td><td>Passed to the effect. The effect matches the target card itself, so this doesn't change which card it reaches.</td></tr>
         <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>the resolving ability</td><td>The ability the effect belongs to.</td></tr>
+        <tr><td><code>endingMessage</code></td><td><code>string</code></td><td>none</td><td>With <code>Duration.Custom</code>: a chat line when the effect ends (Into the Storm).</td></tr>
         <tr><td><code>chatText</code></td><td><code>(context) =&gt; MessageArgs</code></td><td>"apply a lasting effect to <em>card</em>"</td><td>The action's text in the ability's chat line.</td></tr>
       </tbody>
     </table>
@@ -3186,6 +3187,7 @@ this.action('Give a character a +1/+1 attachment')
         <tr><td><code>until</code></td><td><code>EffectUntil</code></td><td>none</td><td>With <code>Duration.Custom</code>: the events that end it.</td></tr>
         <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>always</td><td>The effect applies only while this is true.</td></tr>
         <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>the resolving ability</td><td>The ability the effect is reported as coming from.</td></tr>
+        <tr><td><code>endingMessage</code></td><td><code>string</code></td><td>none</td><td>With <code>Duration.Custom</code>: a chat line when the effect ends (Into the Storm).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -3214,6 +3216,8 @@ this.action('Prevent your events from being cancelled')
         <tr><td><code>until</code></td><td><code>EffectUntil</code></td><td>none</td><td>With <code>Duration.Custom</code>: the events that end it.</td></tr>
         <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>always</td><td>The effect applies only while this is true.</td></tr>
         <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>the resolving ability</td><td>The ability the effect is reported as coming from.</td></tr>
+        <tr><td><code>targetController</code></td><td><code>Players | Player</code></td><td><code>Players.Self</code></td><td>Which players a player effect in <code>effect</code> applies to, relative to the ability's player; <code>Players.Any</code> for both (Expert Interpreter).</td></tr>
+        <tr><td><code>endingMessage</code></td><td><code>string</code></td><td>none</td><td>With <code>Duration.Custom</code>: a chat line when the effect ends (Into the Storm).</td></tr>
       </tbody>
     </table>
     <ul class="edge">

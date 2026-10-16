@@ -34,7 +34,6 @@ export default class SecondWind extends DrawCard {
                     gameAction: multiple([
                         putIntoConflict(),
                         atEndOfConflict(() => ({
-                            location: [Location.PlayArea],
                             gameAction: returnToDeck({ bottom: true })
                         }))
                     ]),
