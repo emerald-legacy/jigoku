@@ -1,4 +1,5 @@
 import { msg } from '../GameChat.js';
+import * as AbilityLimit from '../AbilityLimit.js';
 import { AbilityType, type EventName, Location, Phase } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -15,6 +16,7 @@ export class ThrivingAbility extends TriggeredAbility<DrawCard> {
                     context.player.getDynastyCardsInProvince(context.source.location).length === 1
             },
             location: Location.Provinces,
+            limit: AbilityLimit.unlimited(),
             title: `${card.name}'s Thriving`,
             printedAbility: false,
             message: (context: TriggeredAbilityContext<DrawCard>) => {

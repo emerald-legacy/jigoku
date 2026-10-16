@@ -1335,7 +1335,7 @@ this.action('Give a character +3/+1/+1')
 <ul>
     <li>An ability can have both: Assassination's "(Max 1 per round.)" is <code>.max(perRound(1))</code> and keeps the default limit of once per round per copy.</li>
     <li>Each can be called once; a second call throws. A <code>then()</code> step can't have them (setup throws); put them on the ability.</li>
-    <li>Keyword abilities set their own: Rally has no limit, Pride is once per conflict.</li>
+    <li>Keyword abilities set their own: Pride is once per conflict; Covert, Rally, Tutored, Thriving, Courtesy and Sincerity have no limit.</li>
     <li>Pass one limit object to several abilities to share it: The Empty City's "You can only trigger one of this card's abilities per round" creates <code>perRound(1)</code> once and gives it to both actions.</li>
 </ul>
 

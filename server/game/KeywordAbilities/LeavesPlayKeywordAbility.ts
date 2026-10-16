@@ -1,4 +1,5 @@
 import { msg } from '../GameChat.js';
+import * as AbilityLimit from '../AbilityLimit.js';
 import { AbilityType, type EventName } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
@@ -22,6 +23,7 @@ export class LeavesPlayKeywordAbility extends TriggeredAbility<DrawCard> {
                 onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context: TriggeredAbilityContext<DrawCard>) =>
                     event.card === context.source && keyword.hasKeyword(context.source)
             },
+            limit: AbilityLimit.unlimited(),
             title: card.name + '\'s ' + keyword.name,
             printedAbility: false,
             message: (context: TriggeredAbilityContext) => msg`${context.player} ${keyword.gain} due to ${context.source}'s ${keyword.name}`,
