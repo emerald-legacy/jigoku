@@ -7,7 +7,7 @@ export default class ThereAreNoSecrets extends DrawCard {
     override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
-        this.wouldInterrupt('Gain 1 fate')
+        this.interrupt('Gain 1 fate')
             .when({
                 onMoveFate: (event, context) =>
                     context.source.parentCharacter && event.origin === context.source.parentCharacter && (event.fate ?? 0) > 0
