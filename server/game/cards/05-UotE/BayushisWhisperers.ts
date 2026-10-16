@@ -11,7 +11,7 @@ class BayushisWhisperers extends DrawCard {
         this.action('Look at opponent\'s hand and name a card')
             .condition((context) => !!(context.player.opponent && this.game.isDuringConflict()))
             .gameAction(sequential([
-                lookAt((context) => ({ target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)), chatMessage: true })),
+                lookAt((context) => ({ target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)) })),
                 nameCard((context) => ({
                     message: (_context, cardName, player) => msg`${player} names ${cardName} - ${player.opponent} cannot play copies of this card this phase`,
                     gameAction: (cardName) => playerLastingEffect({

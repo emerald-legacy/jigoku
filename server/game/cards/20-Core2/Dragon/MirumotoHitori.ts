@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { Location, Duration, Phase } from '../../../Constants.js';
+import { Duration, Phase } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { delayedEffect } from '../../../effects.js';
 import { cardLastingEffect, putIntoPlay, removeFromGame, sequential } from '../../../GameActions/GameActions.js';
@@ -33,7 +33,6 @@ export default class MirumotoHitori extends DrawCard {
                             },
                             message: () => msg`${context.source} is put into play due to ${context.source}'s effect`,
                             gameAction: putIntoPlay((context) => ({
-                                location: Location.Any,
                                 target: context.source
                             }))
                         })

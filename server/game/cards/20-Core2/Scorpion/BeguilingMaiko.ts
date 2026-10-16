@@ -27,8 +27,7 @@ export default class BeguilingMaiko extends DrawCard {
                 if(favor === FavorType.Military || favor === FavorType.Both) {
                     gameActions.push(
                         lookAt((context) => ({
-                            target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
-                            chatMessage: true
+                            target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name))
                         }))
                     );
                 }

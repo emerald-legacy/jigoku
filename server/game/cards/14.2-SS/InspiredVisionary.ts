@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phase, CardType, Location } from '../../Constants.js';
+import { Phase, CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { draw, returnToDeck, sequential } from '../../GameActions/GameActions.js';
 
@@ -17,7 +17,6 @@ class InspiredVisionary extends DrawCard {
             }, sequential([
                 returnToDeck((context) => ({
                     target: context.target,
-                    destination: Location.ConflictDeck,
                     shuffle: true
                 })),
                 draw((context) => ({

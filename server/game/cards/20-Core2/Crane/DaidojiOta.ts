@@ -40,7 +40,6 @@ export default class DaidojiOta extends DrawCard {
                 'Reveal your hand': {
                     action: lookAt((context) => ({
                         target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
-                        chatMessage: true,
                         message: (context, cards) => msg`${context.player.opponent} reveals their hand: ${cards}`
                     })),
                     chatText: (context) => msg`make ${context.player.opponent} reveal their hand`
