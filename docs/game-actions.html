@@ -34,6 +34,16 @@ bow({ target: context.player.cardsInPlay })                // fixed properties
 bow((context) =&gt; ({ target: context.targets.character }))  // computed when the ability resolves</code></pre>
 <p>The function form is the usual one: it runs when the action is checked and resolved, so it sees the chosen targets and the current game state. Its <code>context</code> is typed with the ability's context, also inside composites such as <code>sequential([…])</code>.</p>
 
+<h3 id="ga-base-properties">Properties every action takes</h3>
+<table>
+    <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+    <tbody>
+        <tr><td><code>target</code></td><td>depends on the action</td><td>see <a href="#ga-defaults">defaults</a></td><td>What the action affects.</td></tr>
+        <tr><td><code>cannotBeCancelled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The event can't be cancelled, and while the effect resolves the target's restrictions don't stop it. Disguise discards the replaced character this way.</td></tr>
+        <tr><td><code>optional</code></td><td><code>boolean</code></td><td><code>false</code></td><td>For a <code>then()</code> step: if all its actions are optional and none can resolve, the step may still be used when the step after it can.</td></tr>
+    </tbody>
+</table>
+
 <h3 id="ga-where">Where an action goes</h3>
 <ul>
     <li><strong>A builder shortcut</strong> where one exists: <code>.bow(…)</code> is <code>.gameAction(bow(…))</code>. The entries below say when there is one.</li>
@@ -384,7 +394,8 @@ this.forcedReaction('After the conflict phase begins')
       <li>Builder shortcut: <code>.discardCard(…)</code>.</li>
     </ul>
     <pre><code>// Sabotage: Action: During a [conflict-military] conflict, choose a card in an opponent's province – discard that card.
-this.conflictAction('Discard a card in a province', { conflictType: ConflictType.Military })
+this.action('Discard a card in a province')
+    .condition((context) =&gt; context.game.isDuringConflict(ConflictType.Military))
     .target({
         location: Location.Provinces,
         controller: Players.Opponent,
@@ -605,7 +616,7 @@ this.reaction('Name a card')
     .when({ … })
     .cost(costs.nameCard())
     .gameAction(multiple((context) =&gt; {
-        const cards = shuffle(context.player.opponent?.hand ?? []).slice(0, 4).sort((a, b) =&gt; a.name.localeCompare(b.name));
+        const cards = randomHandCards(context.player.opponent, 4);
         return [
             lookAt(() =&gt; ({ target: cards })),
             discardMatching((context) =&gt; ({
@@ -974,7 +985,7 @@ this.reaction('Declare a new conflict')
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>amount</code> must be positive. An origin must have fate and must not be restricted from spending fate (<code>RestrictionType.SpendFate</code>). At most the origin's fate moves.</li>
+      <li><code>amount</code> must be positive. An origin must have fate and must not be restricted from spending fate (<code>RestrictionType.SpendFate</code>). A ring origin also needs the ability's player to be allowed to take fate from rings (<code>RestrictionType.TakeFateFromRings</code>, The Stone of Sorrows). At most the origin's fate moves.</li>
       <li>Checks <code>RestrictionType.PlaceFate</code> on the ring. Raises <code>onMoveFate</code>.</li>
     </ul>
     <pre><code>// Starless Nights: Reaction: After the conflict phase begins - place 1 fate on each unclaimed ring. (Max 1 per round.)
@@ -1490,8 +1501,8 @@ this.action('Resurrect a character')
       <li>Builder shortcut: <code>.cardLastingEffect(…)</code>.</li>
     </ul>
     <pre><code>// Arrows from the Woods: [conflict-military] Conflict Action: Each participating character your opponent controls gets -X[conflict-military] until the end of the conflict. X is equal to 1 if you control a participating Bushi character, or 2 if you also control a participating Shinobi or Scout character. (Max 1 per conflict.)
-this.action('Reduce opponent\'s characters mil')
-    .condition((context) =&gt; …)
+this.conflictAction('Reduce opponent\'s characters mil', { conflictType: ConflictType.Military })
+    .condition((context) =&gt; controlsParticipating(context.player, Trait.Bushi))
     .cardLastingEffect((context) =&gt; ({
         target: context.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
         effect: modifyMilitarySkill(this.penaltyValue(context))
@@ -1519,7 +1530,8 @@ this.action('Reduce opponent\'s characters mil')
       <li>Builder shortcut: <code>.conflictLastingEffect(…)</code>.</li>
     </ul>
     <pre><code>// Exemplary Etiquette: Action: During a conflict - abilities on characters cannot be triggered this conflict.
-this.conflictAction('Stop characters from triggering abilities')
+this.action('Stop characters from triggering abilities')
+    .condition((context) =&gt; context.game.isDuringConflict())
     .conflictLastingEffect({
         effect: charactersCannot({
             cannot: RestrictionType.TriggerAbilities
@@ -1772,7 +1784,7 @@ this.action('Remove a ring from the unclaimed ring pool')
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>trait</code></td><td><code>string</code></td><td>required</td><td>The trait, such as <code>'earth'</code> or <code>'shadow'</code>.</td></tr>
+        <tr><td><code>trait</code></td><td><code>Trait</code></td><td>required</td><td>The trait, such as <code>Trait.Earth</code> or <code>Trait.Shadow</code>.</td></tr>
         <tr><td><code>gameAction</code></td><td><code>GameAction</code></td><td>required</td><td>What happens with the affinity.</td></tr>
         <tr><td><code>noAffinityGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>What happens without it.</td></tr>
         <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>none</td><td>Ask the player Yes/No before using the affinity ("you may …").</td></tr>
@@ -1863,12 +1875,11 @@ this.action('Move fate on rings')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-prompts">Prompts and choices</h3>
-<p>Actions that ask a player to choose while the ability resolves. The chooser is given as <code>player</code>: <code>Players.Self</code> (the default, the ability's player), <code>Players.Opponent</code>, or a <code>Player</code>. With <code>Players.Opponent</code> and no opponent, nothing is chosen and nothing happens.</p>
 <p>Actions that let a player choose while the ability resolves (after the dash), then resolve a nested <code>gameAction</code> on the choice. Unlike a target, the choice is made at resolution and is not a target unless <code>targets: true</code>.</p>
   <ul>
     <li><strong>What the nested action gets:</strong> <code>subActionProperties(choice)</code>, by default <code>{ target: choice }</code>, on top of whatever the select itself was passed. Return other properties to aim the nested action elsewhere, for example <code>{ destination: card.location }</code>. The nested action's own properties still win.</li>
     <li><strong>What can be chosen:</strong> only cards, rings or tokens for which the nested action, with those properties, is legal. With none, the select is illegal and does nothing.</li>
-    <li><strong>Who chooses:</strong> <code>player</code> is <code>Players.Self</code> (the default), <code>Players.Opponent</code>, or a <code>Player</code>. With <code>Players.Opponent</code> in a solo game nobody chooses and nothing happens.</li>
+    <li><strong>Who chooses:</strong> <code>player</code> is <code>Players.Self</code> (the default, the ability's player), <code>Players.Opponent</code>, or a <code>Player</code>. With <code>Players.Opponent</code> and no opponent, nobody chooses and nothing happens.</li>
   </ul>
 <div class="ref" id="ga-assignRoles" data-name="assignRoles">
     <h3><code>assignRoles(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-assignRoles">#</a></h3>
@@ -1877,12 +1888,12 @@ this.action('Move fate on rings')
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>target</code></td><td><code>BaseCard | BaseCard[]</code></td><td>the ability's source</td><td>The cards; exactly two unless <code>pickOrder</code> is used.</td></tr>
-        <tr><td><code>roles</code></td><td><code>Record&lt;R, GameAction&gt;</code></td><td>required</td><td>Each role's label and action, e.g. <code>{ Honor: honor(), Dishonor: dishonor() }</code>.</td></tr>
+        <tr><td><code>roles</code></td><td><code>Record&lt;Result, GameAction&gt;</code></td><td>required</td><td>Each role's label and action, e.g. <code>{ Honor: honor(), Dishonor: dishonor() }</code>.</td></tr>
         <tr><td><code>player</code></td><td><code>Players.Self | Players.Opponent | Player</code></td><td><code>Players.Self</code></td><td>Who gives the roles.</td></tr>
         <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>"Choose a character to:"</td><td>The title of the role menu.</td></tr>
-        <tr><td><code>pick</code></td><td><code>R</code></td><td>none</td><td>The chooser picks this role's card from card buttons; the other card gets the other role.</td></tr>
-        <tr><td><code>pickOrder</code></td><td><code>R[]</code></td><td>none</td><td>Any number of cards: one card is picked per listed role, in this order ("Select a card to <em>role</em>"), and each pick resolves at once; the cards left take the one role not listed. While fewer cards than roles are left, a role may be skipped ("None").</td></tr>
-        <tr><td><code>messages</code></td><td><code>Partial&lt;Record&lt;R, (context, card, chooser) =&gt; MessageArgs&gt;&gt;</code></td><td>none</td><td>With <code>pickOrder</code>: a chat line when a role is given.</td></tr>
+        <tr><td><code>pick</code></td><td><code>Result</code></td><td>none</td><td>The chooser picks this role's card from card buttons; the other card gets the other role.</td></tr>
+        <tr><td><code>pickOrder</code></td><td><code>Result[]</code></td><td>none</td><td>Any number of cards: one card is picked per listed role, in this order ("Select a card to <em>role</em>"), and each pick resolves at once; the cards left take the one role not listed. While fewer cards than roles are left, a role may be skipped ("None").</td></tr>
+        <tr><td><code>messages</code></td><td><code>Partial&lt;Record&lt;Result, (context, card, chooser) =&gt; MessageArgs&gt;&gt;</code></td><td>none</td><td>With <code>pickOrder</code>: a chat line when a role is given.</td></tr>
         <tr><td><code>message</code></td><td><code>(context, assigned, chooser) =&gt; MessageArgs</code></td><td>none</td><td>Without <code>pickOrder</code>: a chat line once both cards have a role; <code>assigned</code> maps role to card.</td></tr>
       </tbody>
     </table>
@@ -2598,7 +2609,8 @@ this.action('Play an attachment')
       <li>Raises <code>onCharacterEntersPlay</code> (with <code>fate</code>, <code>status</code>, <code>intoConflict</code>, <code>originalLocation</code>, <code>side</code>).</li>
     </ul>
     <pre><code>// Charge!: Action: During a [conflict-military] conflict, choose a character in one of your provinces – put that character into play in the conflict.
-this.conflictAction('Put a character into play from a province', { conflictType: ConflictType.Military })
+this.action('Put a character into play from a province')
+    .condition((context) =&gt; context.game.isDuringConflict(ConflictType.Military))
     .target({
         cardType: CardType.Character,
         location: Location.Provinces,
@@ -2787,7 +2799,7 @@ this.reaction('Take a fate from your opponent')
       <li>Checks <code>RestrictionType.TakeHonor</code>. Raises <code>onTransferHonor</code>.</li>
     </ul>
     <pre><code>// Kakita Asami: Action: While this character is participating in a [conflict-political] conflict, if you count more current [conflict-political] skill in the conflict than your opponent – take 1 honor from that opponent.
-this.conflictAction('Take one honor from your opponent', { conflictType: ConflictType.Political })
+this.action('Take one honor from your opponent')
     .condition((context) =&gt; { … })
     .takeHonor();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KakitaAsami.ts">Kakita Asami</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BlackmailArtist.ts">Blackmail Artist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CityOfTheOpenHand.ts">City of the Open Hand</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Levy.ts">Levy</a></p>

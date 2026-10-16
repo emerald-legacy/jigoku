@@ -98,6 +98,10 @@ this.conflictAction('Discard a character')
         <tr><td><code>payEvent(context)</code> / <code>pay(context)</code></td><td>The event(s) that pay it, or a plain function run inside a <code>PayCost</code> event.</td></tr>
         <tr><td><code>getActionName(context)</code>, <code>getCostMessage(context)</code></td><td>The <code>context.costs</code> key shown as <code>{0}</code>, and the cost text <code>[format, args]</code>.</td></tr>
         <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something; the action window skips its one-click confirmation for such costs.</td></tr>
+        <tr><td><code>dependsOn</code></td><td>The name of a target the cost depends on: while that target is offered first, a candidate is legal only if the cost can be paid for it (<code>targetDependentFate</code>).</td></tr>
+        <tr><td><code>hasTargetsChosenByInitiatingPlayer(context)</code></td><td>Whether paying makes the ability's player choose cards. It counts toward the ability's <code>hasTargetsChosenByInitiatingPlayer</code> (Hantei XXXVIII).</td></tr>
+        <tr><td><code>isPrintedFateCost</code>, <code>isPlayCost</code>, <code>getReducedCost(context)</code></td><td>Engine-only, set by the fate and play costs: <code>playCard</code> with <code>ignoreFateCost</code> skips the first, a play without play costs skips the second, and the ability's fate cost after reductions comes from the third.</td></tr>
+        <tr><td><code>action</code>, <code>activePromptTitle</code></td><td>Fields of some built-in costs. The engine does not read them through <code>Cost</code>.</td></tr>
     </tbody>
 </table>
 <pre><code>// cards/captureCost.ts: a free cost that records a value before later costs change it (Niten records its parent before returning to hand)
@@ -338,7 +342,10 @@ this.action('Move and give -2/-2')
     .target({
         cardType: CardType.Character,
         cardCondition: (card, context) =&gt; card !== context.source &amp;&amp; card.isParticipating()
-    }, cardLastingEffect({ effect: modifyBothSkills(-2) }));</code></pre>
+    }, cardLastingEffect({
+        effect: modifyBothSkills(-2)
+    }))
+    .chatText((context) =&gt; msg`give ${context.chatTarget()} -2${'military'}/-2${'political'}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/ShinjoArcher.ts">Shinjo Archer</a></p>
   </div>
 </section>
@@ -430,7 +437,11 @@ this.reaction('Break the attacked province')
 this.action('Give +3/+3 to attached character')
     .condition((context) =&gt; context.game.isDuringConflict())
     .cost(costs.discardCard({ location: Location.Hand }))
-    .cardLastingEffect((context) =&gt; ({ target: context.source.parentCharacter ?? [], effect: modifyBothSkills(3) }));</code></pre>
+    .cardLastingEffect((context) =&gt; ({
+        target: context.source.parentCharacter ?? [],
+        effect: modifyBothSkills(3)
+    }))
+    .chatText((context) =&gt; msg`give +3${'military'}/+3${'political'} to ${context.source.parentCharacter}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/SharpenTheMind.ts">Sharpen the Mind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Phoenix/EmissaryOfTheFiveRivers.ts">Emissary of the Five Rivers</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Lion/SteadfastOrator.ts">Steadfast Orator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FavoredNiece.ts">Favored Niece</a></p>
   </div>
 
@@ -528,8 +539,7 @@ this.reaction('Sacrifice a character to dishonor characters')
       <li>Prompt: "Select card to move to the conflict". Records <code>moveToConflict</code>, <code>moveToConflictStateWhenChosen</code>. Chat: <code>moving {0} into the conflict</code>.</li>
     </ul>
     <pre><code>// Marvelous Beings: [conflict-political] Conflict Action: Move a Creature or Spirit character you control to the conflict - add the printed cost of that character to your skill during this conflict's resolution (to a maximum of 3). (Max 1 per conflict.)
-this.action('Move character to conflict and gain skill bonus')
-    .condition((context) =&gt; context.game.isDuringConflict(ConflictType.Political))
+this.conflictAction('Move character to conflict and gain skill bonus', { conflictType: ConflictType.Political })
     .cost(costs.moveToConflict({
         cardType: CardType.Character,
         cardCondition: (card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Spirit) || card.hasTrait(Trait.Creature))
@@ -556,10 +566,12 @@ this.action('Move character to conflict and gain skill bonus')
 this.action('Ready a character')
     .cost(costs.removeFate({
         cardType: CardType.Character,
+        // the effect must be able to ready it, or the ability can't change the game state
         cardCondition: (card, context) =&gt; card.isFaction('unicorn') &amp;&amp; ready().canAffect(card, context)
     }))
     .handler((context) =&gt; ready().resolve(context.costs.removeFate, context))
-    .chatText((context) =&gt; msg`ready ${context.costs.removeFate}`);</code></pre>
+    .chatText((context) =&gt; msg`ready ${context.costs.removeFate}`)
+    .cannotBeMirrored();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IAmReady.ts">I Am Ready</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/StolenSecrets.ts">Stolen Secrets</a></p>
   </div>
 
@@ -698,12 +710,19 @@ this.reaction('Return all fate from a character then discard them')
 this.action('Put a holding into play from your discard')
     .cost(costs.shuffleIntoDeck({
         location: Location.Provinces,
-        cardCondition: (card) =&gt; !!card.controller.getProvinceCardInProvince(card.location) &amp;&amp; …
+        cardCondition: (card) =&gt; !!card.controller.getProvinceCardInProvince(card.location) &amp;&amp; !card.controller.getProvinceCardInProvince(card.location)?.isBroken
     }))
-    .target({ cardType: CardType.Holding, location: Location.DynastyDiscardPile, controller: Players.Self }, moveCard((context) =&gt; ({
+    .target({
+        activePromptTitle: 'Choose a holding to put into the province',
+        cardType: CardType.Holding,
+        location: Location.DynastyDiscardPile,
+        controller: Players.Self
+    }, moveCard((context) =&gt; ({
         destination: context.costs.moveCardStateWhenChosen instanceof DrawCard ? context.costs.moveCardStateWhenChosen.location : Location.ProvinceOne
     })))
-    .cannotTargetFirst();</code></pre>
+    .chatText('replace it with {0}')
+    .cannotTargetFirst()
+    .cannotBeMirrored();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Rebuild.ts">Rebuild</a></p>
   </div>
 
@@ -750,9 +769,14 @@ this.action('Force opponent to discard cards to match your hand size')
     </ul>
     <pre><code>// War Dog Master: Reaction: After this character is declared as an attacker, discard the top card of your dynasty deck – this character gets +X[conflict-military] until the end of the conflict. X is the printed cost of the discarded card.
 this.reaction('Gain a +X/+0 bonus')
-    .when({ onConflictDeclared: (event, context) =&gt; (event.attackers ?? []).includes(context.source) })
+    .when({
+        onConflictDeclared: (event, context) =&gt; (event.attackers ?? []).includes(context.source)
+    })
     .cost(costs.discardCardsOf((context) =&gt; context.player.dynastyDeck[0]))
-    .cardLastingEffect((context) =&gt; ({ effect: modifyMilitarySkill(discardedCost(context.costs.discardCard)) }));</code></pre>
+    .cardLastingEffect((context) =&gt; ({
+        effect: modifyMilitarySkill(discardedCost(context.costs.discardCard))
+    }))
+    .chatText((context) =&gt; msg`give ${context.chatTarget()} +${discardedCost(context.costs.discardCard)}${'military'}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/WarDogMaster.ts">War Dog Master</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/YoungBeastmaster.ts">Young Beastmaster</a></p>
   </div>
 
@@ -812,10 +836,12 @@ this.reaction('put a character from your discard pile into play')
     </ul>
     <pre><code>// Test of Skill: Action: Name a card type. Reveal the top 3 cards of your conflict deck (top 4 cards instead if you control a Duelist character) – add up to 2 revealed cards of that type to your hand and discard the rest.
 this.action('Reveal cards and take ones matching named type')
-    .condition((context) =&gt; context.player.conflictDeck.length &gt;= revealCount(context, 'duelist'))
-    .cost(costs.revealCardsOf((context) =&gt; context.player.conflictDeck.slice(0, revealCount(context, 'duelist'))))
+    .condition((context) =&gt; context.player.conflictDeck.length &gt;= revealCount(context, Trait.Duelist))
+    .cost(costs.revealCardsOf((context) =&gt; context.player.conflictDeck.slice(0, revealCount(context, Trait.Duelist))))
     .cost(nameCardType())
-    .deckSearch((context) =&gt; takeUpToTwoOfNamedType(context, 'duelist'));</code></pre>
+    .deckSearch((context) =&gt; takeUpToTwoOfNamedType(context, Trait.Duelist))
+    .chatText('take cards into their hand')
+    .cannotBeMirrored();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/TestOfSkill.ts">Test of Skill</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/ShrineMaiden.ts">Shrine Maiden</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DaimyosGunbai.ts">Daimyō's Gunbai</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/WorkInProgress.ts">Work in Progress</a></p>
   </div>
 </section>
@@ -1030,7 +1056,10 @@ super(card, [payTargetDependentFateCost('target', ignoreType)], { … });</code>
 this.action('Discard cards to cause opponent to discard')
     .condition((context) =&gt; context.player.anyCardsInPlay((card) =&gt; card.isDishonored))
     .cost(costs.discardCardsUpToVariableX(() =&gt; 2))
-    .discardAtRandom((context) =&gt; ({ amount: context.costs.discardCardsUpToVariableX?.length || 1 }));</code></pre>
+    .discardAtRandom((context) =&gt; ({
+        amount: context.costs.discardCardsUpToVariableX?.length || 1
+    }))
+    .chatText((context) =&gt; msg`discard ${context.costs.discardCardsUpToVariableX} to make ${context.player.opponent} discard ${(context.costs.discardCardsUpToVariableX ?? []).length} card${(context.costs.discardCardsUpToVariableX ?? []).length &gt; 1 ? 's' : ''} at random`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.2-BoB/DishonorableAssault.ts">Dishonorable Assault</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crane/ExemplaryNegotiator.ts">Exemplary Negotiator</a></p>
   </div>
 
@@ -1077,11 +1106,16 @@ this.action('Draw a card')
     </ul>
     <pre><code>// Roadside Inn: Reaction: After the fate phase begins, choose a character. Each opponent may give you 1 honor and choose a character - each player who chose a character in this way moves 1 fate from their fate pool to their chosen character, if able.
 this.reaction('Place a fate on a character')
-    .when({ onPhaseStarted: (event) =&gt; event.phase === Phase.Fate })
+    .when({
+        onPhaseStarted: (event) =&gt; event.phase === Phase.Fate
+    })
     .cost(costs.optionalTakeHonorFromOpponent((context) =&gt; {
         return (context.player.opponent?.fate ?? 0) &gt; 0;
     }))
-    .target({ name: 'myCharacter', cardType: CardType.Character }, placeFate((context) =&gt; ({ origin: context.player })))
+    .target({
+        name: 'myCharacter',
+        cardType: CardType.Character
+    }, placeFate((context) =&gt; ({ origin: context.player })))
     .target({
         name: 'oppCharacter',
         player: Players.Opponent,
@@ -1089,7 +1123,8 @@ this.reaction('Place a fate on a character')
         optional: true,
         hideIfNoLegalTargets: true,
         cardCondition: (_card, context) =&gt; Boolean(context.costs.honorTakenFromOpponent)
-    }, placeFate((context) =&gt; ({ origin: context.player.opponent })));</code></pre>
+    }, placeFate((context) =&gt; ({ origin: context.player.opponent })))
+    .chatText((context) =&gt; msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) =&gt; 'place a fate from their pool on ' + name)}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/RoadsideInn.ts">Roadside Inn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ExpertInterpreter.ts">Expert Interpreter</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/AgashaProdigy.ts">Agasha Prodigy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a></p>
   </div>
 
@@ -1215,8 +1250,14 @@ this.action('Draw 3 cards')
     .condition((context) =&gt; context.source.isParticipating())
     .cost(costs.discardImperialFavor())
     .draw(3)
-    .playerLastingEffect({ effect: reduceCost({ amount: 2, match: (card) =&gt; card.type === CardType.Event }) });</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/KakitaYoshi.ts">Kakita Yoshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/IkomaUjiaki.ts">Ikoma Ujiaki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/Fair Accord.ts">Fair Accord</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/ItinerantPhilosopher.ts">Itinerant Philosopher</a></p>
+    .playerLastingEffect({
+        effect: reduceCost({
+            amount: 2,
+            match: (card) =&gt; card.type === CardType.Event
+        })
+    })
+    .chatText('draw 3 cards, and reduce the cost of events this conflict');</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/KakitaYoshi.ts">Kakita Yoshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/IkomaUjiaki.ts">Ikoma Ujiaki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/FairAccord.ts">Fair Accord</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/ItinerantPhilosopher.ts">Itinerant Philosopher</a></p>
   </div>
 
   <div class="ref" id="co-nameCard" data-name="nameCard">
@@ -1257,7 +1298,7 @@ this.action('Name a card that your opponent cannot play for the phase')
       <li>Chat: the chosen cost's text.</li>
     </ul>
     <pre><code>// Eyes of the Serpent: Conflict Action: Spend 1 honor or 1 fate and choose a participating dishonored character - taint it. With Air affinity, gain 1 honor.
-this.action('Taint a character')
+this.conflictAction('Taint a character')
     .playOnlyIf((context) =&gt; controlsShugenja(context.player))
     .cost(costs.chooseOne({
         'Spend 1 honor': costs.payHonor(1),

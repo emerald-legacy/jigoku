@@ -24,6 +24,7 @@
 <header class="hero">
     <h1>Implementing cards in Jigoku</h1>
     <p>How a card file is built, how card text becomes builder calls, and the rules the code follows: timing, chat text, testing and common mistakes.</p>
+    <p>On the reference pages, "Used by" names up to four cards that use an entry. The number in brackets counts the card files in <code>server/game/cards/&lt;set&gt;/</code>: for a member of a card, player, game, conflict or ring, the files that reference that member; otherwise the files whose code (imports and comments aside) names it.</p>
 </header>
 <h2 id="start-order">From card text to code</h2>
 <p>A card's abilities are written with a builder: a method that names the ability, followed by one call for each part of the card text. Read the card from left to right and write the calls in the same order. Hover a line to see which part of the text it implements.</p>
@@ -133,6 +134,7 @@ export default class Assassination extends DrawCard {
 
 <h2 id="start-timing">Timing: costs, targets, effects</h2>
 <p>An ability resolves in a fixed order: the player pays its costs, then chooses its targets, then the effects resolve. The builder follows the Rules Reference Guide here, and so should a card's code.</p>
+<p>In the game the player sees the targets first and can click "Pay costs first"; the targets are checked again after the costs. Use <a href="builder.html#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a> when a target depends on a cost.</p>
 <div class="rule"><blockquote>If the additional cost cannot be paid, the game action cannot be initiated. All costs are paid simultaneously, including additional ones.</blockquote><cite>Costs</cite></div>
 <div class="rule"><blockquote>The word "choose" indicates that one or more targets must be chosen in order to resolve an ability.</blockquote><cite>Choose</cite></div>
 <p>So "choose a character" is a <code>target()</code>, chosen when the ability initiates, and the ability can't be used without a legal one. A choice made while the effect resolves ("…, then choose") is a game action such as <code>selectCard</code> or <code>chooseAction</code>.</p>
@@ -184,7 +186,8 @@ export default class Assassination extends DrawCard {
 <pre><code>// Action: During a [political] conflict, choose a participating character with printed cost equal to or lower
 // than that of another participating character you control - place 1 fate on the chosen character.
 // If you do, bow it, move it home, and dishonor it.
-this.conflictAction('Place a fate on a participating character, bow it, move it home, and dishonor it', { conflictType: ConflictType.Political })
+this.action('Place a fate on a participating character, bow it, move it home, and dishonor it')
+    .condition((context) =&gt; context.game.isDuringConflict(ConflictType.Political))
     .target({
         cardType: CardType.Character,
         cardCondition: (card, context) =&gt; card.isParticipating() &amp;&amp; context.player.cardsInPlay.some((myCard) =&gt; (

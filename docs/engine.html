@@ -100,7 +100,7 @@
 </ol>
 <ul>
     <li>A reaction to <code>onCardAbilityInitiated</code> fires after the early targets were chosen: a select before the dash is answered before the reaction's window opens.</li>
-    <li><code>isTriggeredAbility()</code> is true for every card ability, actions included; only a bare <code>BaseAbility</code> returns false. A reaction that filters on <code>event.ability.isTriggeredAbility()</code> also sees the opponent's actions. <code>isTriggeredAbilityInstance()</code> is true only for reactions and interrupts.</li>
+    <li><code>isTriggeredAbility()</code> is true for every card ability, actions included; it is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity) and a bare <code>BaseAbility</code>. A reaction that filters on <code>event.ability.isTriggeredAbility()</code> also sees the opponent's actions. <code>isTriggeredAbilityInstance()</code> is true only for reactions and interrupts.</li>
 </ul>
 
 <h2 id="eng-game-actions">Running game actions from engine code</h2>

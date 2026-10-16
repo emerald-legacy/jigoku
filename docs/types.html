@@ -248,7 +248,7 @@ chosenReturnToDeck((context) =&gt; ({
           <tr><td><code>ForcedInterrupt</code></td><td><code>'forcedInterrupt'</code></td><td><code>this.forcedInterrupt()</code>. Resolves without asking, after the would-interrupts.</td></tr>
           <tr><td><code>Interrupt</code></td><td><code>'interrupt'</code></td><td><code>this.interrupt()</code>.</td></tr>
           <tr><td><code>KeywordInterrupt</code></td><td><code>'keywordInterrupt'</code></td><td>Keyword abilities that interrupt: Courtesy, Sincerity, Thriving.</td></tr>
-          <tr><td><code>KeywordReaction</code></td><td><code>'keywordReaction'</code></td><td>Keyword abilities that react: Pride, Rally, Covert. Right after the event resolves.</td></tr>
+          <tr><td><code>KeywordReaction</code></td><td><code>'keywordReaction'</code></td><td>Keyword abilities that react: Pride, Rally, Covert, Tutored. Right after the event resolves.</td></tr>
           <tr><td><code>ForcedReaction</code></td><td><code>'forcedReaction'</code></td><td><code>this.forcedReaction()</code>.</td></tr>
           <tr><td><code>DuelReaction</code></td><td><code>'duelReaction'</code></td><td><code>this.duelChallenge()</code>, <code>this.duelFocus()</code>, <code>this.duelStrike()</code>. A window after forced reactions and before reactions; the code reserves it for duel challenge, focus and strike.</td></tr>
           <tr><td><code>Reaction</code></td><td><code>'reaction'</code></td><td><code>this.reaction()</code>. The last window.</td></tr>
@@ -801,7 +801,7 @@ onEffectApplied: (event, context) =&gt; {
         </tbody>
       </table>
   <ul class="edge">
-    <li><code>OpponentsTriggeredAbilities</code> also matches action abilities: <code>isTriggeredAbility()</code> is true for every card ability, actions included.</li>
+    <li><code>OpponentsTriggeredAbilities</code> also matches action abilities: <code>isTriggeredAbility()</code> is true for every card ability, actions included. It does not match keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity).</li>
   </ul>
   <pre><code>// Master of the Blade: Duel Strike: For this conflict, this character cannot be bowed by opponents' card effects and does not bow as a result of conflict resolution.
 cardCannot({
@@ -954,7 +954,7 @@ ringLastingEffect((context) =&gt; ({
     <li>Cancelling it skips the whole phase: the handler that queues the phase's steps never runs (Trading on the Sand Road).</li>
   </ul>
   <pre><code>// Trading on the Sand Road: Interrupt: When the draw phase would begin - skip the draw phase. Each player removes the top 4 cards of his or her conflict deck from the game. …
-this.interrupt('Take top 4 cards from both players\' decks')
+this.wouldInterrupt('Take top 4 cards from both players\' decks')
     .when({
         onPhaseCreated: (event) =&gt; event.phase === Phase.Draw
     })
@@ -1000,7 +1000,8 @@ this.reaction('Draw a card')
   <pre><code>// Shiba Tsukune: Interrupt: When the conflict phase ends – resolve the ring effects of up to 2 unclaimed rings as if you were the attacking player.
 this.interrupt('Resolve 2 rings')
     .when({
-        onPhaseEnded: (event) =&gt; event.phase === Phase.Conflict
+        onPhaseEnded: (event, context) =&gt;
+            event.phase === Phase.Conflict &amp;&amp; Object.values(context.game.rings).some((ring) =&gt; ring.isUnclaimed())
     })</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShibaTsukune.ts">Shiba Tsukune</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/JurojinsCurse.ts">Jurōjin's Curse</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/WardenOfTheDamned.ts">Warden of the Damned</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/ChampionsOfYomi.ts">Champions of Yomi</a></p>
 </div>
@@ -2954,18 +2955,18 @@ this.interrupt('Ready for Glory Count')
   <h3 class="group-title" id="ctx-group-object">The context object</h3>
 <div class="ref" id="ctx-AbilityContext" data-name="AbilityContext">
   <h3><code>AbilityContext&lt;Source, Target&gt;</code> <span class="kind">Class</span> <a class="anchor" href="#ctx-AbilityContext">#</a></h3>
-  <p>The object every callback of an ability receives as <code>context</code>: conditions, <code>cardCondition</code>, property factories (<code>(context) =&gt; ({ … })</code>), <code>chatText</code>, <code>handler</code>, <code>then</code> factories. One is created each time an ability is used (for a trigger, one per player while checking). <code>S</code> is the source's type, <code>T</code> the type of <code>context.target</code>. Defined in <code>server/game/AbilityContext.ts</code>.</p>
+  <p>The object every callback of an ability receives as <code>context</code>: conditions, <code>cardCondition</code>, property factories (<code>(context) =&gt; ({ … })</code>), <code>chatText</code>, <code>handler</code>, <code>then</code> factories. One is created each time an ability is used (for a trigger, one per player while checking). <code>Source</code> is the source's type, <code>Target</code> the type of <code>context.target</code>. Defined in <code>server/game/AbilityContext.ts</code>.</p>
   <p>The table lists every field and method and when it is set. The fields cards use are described below.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Set</th></tr></thead>
         <tbody>
           <tr><td><code>game</code></td><td><code>Game</code></td><td>Always.</td></tr>
-          <tr><td><code>source</code></td><td><code>S</code></td><td>Always; see <a href="#ctx-source">source</a>.</td></tr>
+          <tr><td><code>source</code></td><td><code>Source</code></td><td>Always; see <a href="#ctx-source">source</a>.</td></tr>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>Always, except the game context (<code>game.getGameContext()</code>).</td></tr>
           <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>Always; a blank <code>BaseAbility</code> for framework contexts.</td></tr>
           <tr><td><code>stage</code></td><td><code>Stage</code></td><td><code>PreTarget</code> when created for an ability, then <code>Cost</code>, <code>Target</code>, <code>Effect</code>.</td></tr>
           <tr><td><code>targets</code></td><td><code>Record&lt;string, BaseCard | BaseCard[]&gt;</code></td><td>When each card target is chosen.</td></tr>
-          <tr><td><code>target</code></td><td><code>T | undefined</code></td><td>When a target named <code>target</code> gets one card.</td></tr>
+          <tr><td><code>target</code></td><td><code>Target | undefined</code></td><td>When a target named <code>target</code> gets one card.</td></tr>
           <tr><td><code>rings</code>, <code>ring</code></td><td><code>Record&lt;string, Ring | Ring[]&gt;</code>, <code>Ring | undefined</code></td><td>When a ring target is chosen.</td></tr>
           <tr><td><code>selects</code>, <code>select</code></td><td><code>Record&lt;string, SelectChoice&gt;</code>, <code>string | undefined</code></td><td>When a select choice is made.</td></tr>
           <tr><td><code>tokens</code>, <code>token</code></td><td><code>Record&lt;string, StatusToken[]&gt;</code>, <code>StatusToken[] | undefined</code></td><td>When a token target is chosen.</td></tr>
@@ -2978,6 +2979,9 @@ this.interrupt('Ready for Glory Count')
           <tr><td><code>deckSearchSelected</code></td><td><code>DrawCard[]</code></td><td>When a <code>deckSearch</code> of this context takes cards.</td></tr>
           <tr><td><code>playType</code></td><td><code>PlayType | undefined</code></td><td>On creation, from where the source is playable; changed by "as if from hand" play actions.</td></tr>
           <tr><td><code>chooseFate</code></td><td><code>number</code></td><td>Extra fate chosen when playing a character.</td></tr>
+          <tr><td><code>disguisedCharacter</code></td><td><code>DrawCard | undefined</code></td><td>When a character played with Disguise has chosen the character it replaces (its play cost).</td></tr>
+          <tr><td><code>targetingCostPaid</code></td><td><code>BaseCard[]</code></td><td>When the fate for "an additional cost to choose … as a target" is paid: the cards paid for. A then-step that inherits targets keeps it, so the same card is not paid for twice.</td></tr>
+          <tr><td><code>ignoreFateCost</code>, <code>payFateCostToOpponent</code>, <code>onPlayCardSource</code></td><td><code>boolean | undefined</code>, <code>boolean | undefined</code>, <code>BaseCard | undefined</code></td><td>When the <a href="game-actions.html#ga-playCard"><code>playCard</code></a> action plays the card: its <code>ignoreFateCost</code>, <code>payFateToOpponent</code> and <code>source</code>. <code>onCardPlayed</code> reports the last as <code>onPlayCardSource</code>.</td></tr>
           <tr><td><code>chosenCardTargets</code></td><td><code>BaseCard[]</code></td><td>Every card chosen as a target across this triggering.</td></tr>
           <tr><td><code>originatingContext</code>, <code>triggeringContext</code></td><td><code>AbilityContext | undefined</code>, <code>AbilityContext</code></td><td>In a sub-resolution or then-step: the context it continues.</td></tr>
           <tr><td><code>subResolution</code></td><td><code>boolean</code></td><td><code>true</code> when resolved again by <code>resolveAbility</code> with <code>subResolution</code>.</td></tr>
@@ -2998,7 +3002,7 @@ this.interrupt('Ready for Glory Count')
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>event</code></td><td><code>E</code> (default <code>AnyEvent</code>)</td><td>The event that triggered the ability; see <a href="#ctx-event">event</a>.</td></tr>
+          <tr><td><code>event</code></td><td><code>Trigger</code> (default <code>AnyEvent</code>)</td><td>The event that triggered the ability; see <a href="#ctx-event">event</a>.</td></tr>
           <tr><td><code>ability</code></td><td><code>TriggeredAbility</code></td><td>The triggered ability.</td></tr>
           <tr><td><code>cancel()</code></td><td><code>() =&gt; void</code></td><td>Cancels <code>event</code>; does nothing for an aggregate trigger or a trigger without an event.</td></tr>
         </tbody>
@@ -3017,7 +3021,7 @@ this.interrupt('Ready for Glory Count')
   <p>The ability being resolved. Useful members: <code>title</code>, <code>abilityType</code> (<code>AbilityType</code>), <code>isCardPlayed()</code> (an event card, or a play action), <code>isCardAbility()</code>, <code>isTriggeredAbility()</code>, <code>isKeywordAbility()</code>, <code>cannotBeMirrored</code>, <code>getReducedCost(context)</code> on play abilities.</p>
   <ul class="edge">
     <li>In an action's context the builder types it as <code>CardAction</code> (<code>ActionContext</code>); in a trigger's, as <code>TriggeredAbility</code>.</li>
-    <li><code>isTriggeredAbility()</code> is true for actions too: every <code>CardAbility</code> counts as triggered. Compare <code>abilityType</code> with <code>AbilityType.Action</code> to tell actions apart.</li>
+    <li><code>isTriggeredAbility()</code> is true for actions too: every <code>CardAbility</code> counts as triggered, except keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity). Compare <code>abilityType</code> with <code>AbilityType.Action</code> to tell actions apart.</li>
   </ul>
   <pre><code>// Hida Kisada: While you have not lost a conflict this phase, cancel the effects of the first action ability your opponent triggers from a card during each conflict.
 if(

@@ -194,7 +194,7 @@ this.action('Choose a character to copy')
         player: Players.Self,
         cardType: CardType.Character,
         controller: Players.Opponent,
-        cardCondition: (card) =&gt; !card.isUnique()
+        cardCondition: (card, context) =&gt; !card.isUnique() &amp;&amp; card.name !== context.source.name
     }, cardLastingEffect((context) =&gt; ({
         target: context.source,
         effect: context.target ? copyCard(context.target) : []
@@ -501,7 +501,7 @@ this.attachmentConditions({
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>factions</code></td><td><code>Faction[]</code></td><td>required</td><td>The parent must have at least one (<code>isFaction</code>).</td></tr>
-        <tr><td><code>traits</code></td><td><code>string[]</code></td><td>required</td><td>The parent must have at least one (<code>hasTrait</code>, lower case).</td></tr>
+        <tr><td><code>traits</code></td><td><code>Trait[]</code></td><td>required</td><td>The parent must have at least one (<code>hasTrait</code>).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -745,7 +745,8 @@ this.whileAttached({
       <li>Use it with <code>conflictLastingEffect</code>, or a <code>persistentEffect</code> with a condition.</li>
     </ul>
     <pre><code>// Exemplary Etiquette: Action: During a conflict - abilities on characters cannot be triggered this conflict.
-this.conflictAction('Stop characters from triggering abilities')
+this.action('Stop characters from triggering abilities')
+    .condition((context) =&gt; context.game.isDuringConflict())
     .conflictLastingEffect({
         effect: charactersCannot({
             cannot: RestrictionType.TriggerAbilities
@@ -871,7 +872,8 @@ this.action('Prevent an opponent contesting a ring')
       <li>For "all ring effects", target both players: <code>playerLastingEffect({ target: Players.Any, … })</code>.</li>
     </ul>
     <pre><code>// Mountaintop Vigil: Void role only. Action: During a conflict - cancel all ring effects until the end of the conflict.
-this.conflictAction('cancel all ring effects')
+this.action('cancel all ring effects')
+    .condition((context) =&gt; context.game.isDuringConflict())
     .playerLastingEffect({
         target: Players.Any,
         effect: cannotResolveRings()
@@ -1626,14 +1628,21 @@ this.persistentEffect({
 // event in your opponent's discard pile as if it were in your hand. … You cannot play more than 3 cards per round this way.
 this.persistentEffect({
     condition: (context) =&gt;
-        context.game.isDuringConflict(ConflictType.Political) &amp;&amp; context.source.isParticipating() &amp;&amp; plays.available,
+        context.game.isDuringConflict(ConflictType.Political) &amp;&amp;
+        context.source.isParticipating() &amp;&amp;
+        plays.available,
     location: Location.PlayArea,
     targetLocation: Location.ConflictDiscardPile,
     targetController: Players.Opponent,
     match: (card, context) =&gt;
-        card.type === CardType.Event &amp;&amp; card.location === Location.ConflictDiscardPile &amp;&amp; card.owner === context?.player.opponent,
+        card.type === CardType.Event &amp;&amp;
+        card.location === Location.ConflictDiscardPile &amp;&amp;
+        card.owner === context?.player.opponent,
     effect: [
-        canPlayFromOutOfPlay((player, card) =&gt; player !== card.owner, PlayType.PlayFromHand),
+        canPlayFromOutOfPlay(
+            (player, card) =&gt; player !== card.owner,
+            PlayType.PlayFromHand
+        ),
         registerToPlayFromOutOfPlay()
     ]
 });</code></pre>
@@ -1760,7 +1769,7 @@ this.action('Prevent your events from being cancelled')
     </ul>
     <pre><code>// Wait Until It Sings: Conflict Action: If you control a participating Commander character - before this conflict
 // resolves, take an action. (Max 1 per conflict.)
-this.action('Take an action during conflict resolution')
+this.conflictAction('Take an action during conflict resolution')
     .condition((context) =&gt; context.game.currentConflict?.getParticipants().some((p) =&gt; p.controller === context.player &amp;&amp; p.hasTrait(Trait.Commander)) ?? false)
     .playerLastingEffect({
         effect: additionalActionAfterWindowCompleted(1)
@@ -2229,7 +2238,8 @@ this.persistentEffect({
       <li>Two copies of ×2 give ×4.</li>
     </ul>
     <pre><code>// Way of the Lion: Action: During a conflict, choose a [clan-lion] character – double that character's base [conflict-military] skill until the end of the conflict.
-this.conflictAction('Double the base mil of a character')
+this.action('Double the base mil of a character')
+    .condition((context) =&gt; context.game.isDuringConflict())
     .target({
         cardType: CardType.Character,
         cardCondition: (card) =&gt; card.isFaction('lion') &amp;&amp; card.getBaseMilitarySkill() &gt; 0
@@ -2275,7 +2285,7 @@ this.persistentEffect({
     </ul>
     <pre><code>// Katana of Fire: Attached character gets +1[conflict-military] for each Fire card you control. Attached character gets +2[conflict-military] while the [element-fire] ring is in your claimed ring pool.
 this.whileAttached({
-    effect: modifyMilitarySkill(() =&gt; this.totalKatanaModifier())
+    effect: modifyMilitarySkill(() =&gt; this.getTotalKatanaModifier())
 });</code></pre>
     <pre><code>// Cunning Confidant: While participating in a conflict against a player with more claimed rings than you, this character gets +2[conflict-political].
 this.persistentEffect({
@@ -2343,7 +2353,8 @@ export function copyBaseSkillEffects(card: DrawCard, { base = false, skills = [S
       <li>Can't be applied as a lasting effect to a character with a dash in that skill.</li>
     </ul>
     <pre><code>// Impossible Kōan: Action: During a conflict - set each character's base [conflict-military] and base [conflict-political] skills to 1 until the end of the conflict.
-this.conflictAction('Make all participating characters have base skills of 1/1')
+this.action('Make all participating characters have base skills of 1/1')
+    .condition((context) =&gt; context.game.isDuringConflict())
     .cardLastingEffect((context) =&gt; ({
         target: context.game.findAnyCardsInPlay((card) =&gt; card.type === CardType.Character),
         effect: [
@@ -3206,13 +3217,17 @@ this.persistentEffect({
     </ul>
     <pre><code>// Castle of the Forgotten: Reaction:  After you break a province, bow this stronghold - each conflict declared this round is [conflict-military] instead of its normal type.
 this.reaction('Make all conflicts military')
-    .when({ onBreakProvince: (event, context) =&gt; event.card.controller !== context.player })
+    .when({
+        // RRG: a province broken outside conflict resolution is broken by its controller's opponent
+        onBreakProvince: (event, context) =&gt; event.card.controller !== context.player
+    })
     .cost(costs.bowSelf())
     .playerLastingEffect({
         target: Players.Any,
         effect: setConflictDeclarationType(ConflictType.Military),
         duration: Duration.UntilEndOfPhase
-    })</code></pre>
+    })
+    .chatText(() =&gt; msg`make all future conflicts ${'military'} for this phase`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/CastleOfTheForgotten.ts">Castle of the Forgotten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/KhansOrdu.ts">Khan's Ordu</a></p>
   </div>
 <div class="ref" id="ef-setMaxConflicts" data-name="setMaxConflicts">
@@ -3302,7 +3317,8 @@ this.persistentEffect({
       <li>Read from the player who lost the conflict; the chat names the effect's source.</li>
     </ul>
     <pre><code>// Castle of Air: Conflict Action: Bow a Shugenja character - the attacked province gets +4 strength this conflict. With Air affinity, you do not lose honor from this conflict being unopposed.
-.if((context) =&gt; context.player.hasAffinity(Trait.Air, context))
+.afterwards()
+.onAffinity(Trait.Air, { chatText: () =&gt; msg`prevent unopposed honor loss` })
 .playerLastingEffect({
     target: Players.Self,
     duration: Duration.UntilEndOfConflict,
@@ -3466,9 +3482,13 @@ this.persistentEffect({
     targetController: Players.Any,
     condition: (context) =&gt; context.source.isAttacking(),
     effect: [
-        suppressEffects((effect) =&gt; effect.isProvinceStrengthModifier() &amp;&amp; (effect.getValue() ?? 0) &gt; 0),
+        suppressEffects((effect) =&gt;
+            effect.isProvinceStrengthModifier() &amp;&amp; (effect.getValue() ?? 0) &gt; 0
+        ),
         provinceCannotHaveSkillIncreased(),
-        cannotApplyLastingEffects((effect) =&gt; effect.isProvinceStrengthModifier() &amp;&amp; (effect.getValue() ?? 0) &gt; 0)
+        cannotApplyLastingEffects((effect) =&gt;
+            effect.isProvinceStrengthModifier() &amp;&amp; (effect.getValue() ?? 0) &gt; 0
+        )
     ]
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SeasonedPatroller.ts">Seasoned Patroller</a></p>
@@ -3657,12 +3677,12 @@ playerLastingEffect((context) =&gt; ({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>traits</code></td><td><code>string | string[]</code></td><td>required</td><td>Traits in lower case, e.g. <code>['air', 'water']</code>.</td></tr>
+        <tr><td><code>traits</code></td><td><code>Trait | Trait[]</code></td><td>required</td><td>For example <code>[Trait.Air, Trait.Water]</code>.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>A <code>playerCannot(RestrictionType.HaveAffinity)</code> wins over it.</li>
-      <li>A single string is matched with <code>String.includes</code>, i.e. as a substring; pass an array to match whole traits.</li>
+      <li>A single trait is matched with <code>String.includes</code>, i.e. as a substring; pass an array to match whole traits.</li>
     </ul>
     <pre><code>this.persistentEffect({
     effect: satisfyAffinity([Trait.Air])
@@ -3723,7 +3743,7 @@ card.lastingEffect({
     match: card,
     effect: [hideWhenFaceUp()]
 });</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/KaiuShihobu.ts">Kaiu Shihobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/ThirdWhiskerWarrens.ts">Third Whisker Warrens</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/DaidojiUji2.ts">Daidoji Uji</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/KaiuShihobu.ts">Kaiu Shihobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/ThirdWhiskerWarrens.ts">Third Whisker Warrens</a></p>
   </div>
 <div class="ref" id="ef-modifyRestrictedAttachmentAmount" data-name="modifyRestrictedAttachmentAmount">
     <h3><code>modifyRestrictedAttachmentAmount(value)</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-modifyRestrictedAttachmentAmount">#</a></h3>
@@ -3782,7 +3802,8 @@ this.persistentEffect({
       <li>Uniqueness and other legality checks are up to the card (Blackmail checks <code>anotherUniqueInPlay</code>).</li>
     </ul>
     <pre><code>// Blackmail: Play only if you are less honorable than your opponent. Action: During a conflict, choose a character with printed cost 2 or lower controlled by your opponent – take control of that character until the end of the conflict.
-this.conflictAction('Take control of a character')
+this.action('Take control of a character')
+    .condition((context) =&gt; context.game.isDuringConflict())
     .playOnlyIf((context) =&gt; !!context.player.opponent &amp;&amp; context.player.isLessHonorable())
     .target({
         cardType: CardType.Character,

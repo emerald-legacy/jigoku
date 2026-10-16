@@ -270,16 +270,16 @@ this.duelStrike('Place a fate on a character', (duel, context) =&gt; duel.winner
         <tr><td><code>myControl</code></td><td><code>boolean</code></td><td><code>false</code></td><td>"Attach to a character you control": the attachment's controller must control the character.</td></tr>
         <tr><td><code>opponentControlOnly</code></td><td><code>boolean</code></td><td><code>false</code></td><td>"Attach to a character an opponent controls".</td></tr>
         <tr><td><code>unique</code></td><td><code>boolean</code></td><td><code>false</code></td><td>"Attach to a unique character": the character must be unique.</td></tr>
-        <tr><td><code>trait</code></td><td><code>string | string[]</code></td><td>none</td><td>The character must have one of these traits.</td></tr>
+        <tr><td><code>trait</code></td><td><code>Trait | Trait[]</code></td><td>none</td><td>The character must have one of these traits.</td></tr>
         <tr><td><code>faction</code></td><td><code>Faction | Faction[]</code></td><td>none</td><td>The character must belong to one of these clans.</td></tr>
         <tr><td><code>cardCondition</code></td><td><code>(card: DrawCard) =&gt; boolean</code></td><td>none</td><td>Any other check on the character.</td></tr>
         <tr><td><code>limit</code></td><td><code>number</code></td><td>none</td><td>At most this many copies (same card id) on one character; the oldest surplus copies become illegal and are discarded.</td></tr>
-        <tr><td><code>limitTrait</code></td><td><code>Record&lt;string, number&gt; | Record&lt;string, number&gt;[]</code></td><td>none</td><td>At most this many attachments with the trait on one character (<code>{ weapon: 1 }</code>).</td></tr>
+        <tr><td><code>limitTrait</code></td><td><code>Partial&lt;Record&lt;Trait, number&gt;&gt; | Partial&lt;Record&lt;Trait, number&gt;&gt;[]</code></td><td>none</td><td>At most this many attachments with the trait on one character (<code>{ weapon: 1 }</code>).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Nothing is declared when every property is unset.</li>
-      <li><code>unique</code> checks the character, not the attachment. (<code>docs/ability_dsl.md</code> describes it differently; the code wins.)</li>
+      <li><code>unique</code> checks the character, not the attachment.</li>
     </ul>
     <pre><code>// Born in War: Cavalry character only.
 this.attachmentConditions({
@@ -465,23 +465,17 @@ this.declareAbilities(() =&gt; {
 
 <section class="group">
   <h3 class="group-title" id="b-group-order">The order of the calls</h3>
-  <p>The rule, from <code>docs/ability_dsl.md</code>:</p>
-  <div class="rule">
-    <blockquote>
-      <p>A chain follows the order of the card text ("During a conflict, bow this character – choose a character – bow it. (Max 1 per conflict.)"):</p>
-      <ol>
-        <li><code>when()</code> / <code>aggregateWhen()</code> (triggered abilities)</li>
-        <li>When and where the ability can be used: <code>phase()</code>, <code>location()</code>, <code>condition()</code>, <code>playOnlyIf()</code>, <code>anyPlayer()</code>, <code>collectiveTrigger()</code>, <code>evenDuringDynasty()</code>, <code>canTriggerOutsideConflict()</code>, <code>conflictProvinceCondition()</code></li>
-        <li><code>cost()</code></li>
-        <li>Targets</li>
-        <li>Effects: game actions, <code>if()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>message()</code>, <code>onResolve()</code></li>
-        <li><code>chatText()</code></li>
-        <li><code>limit()</code> / <code>max()</code>, <code>cannotTargetFirst()</code>, <code>cannotBeMirrored()</code>, <code>notPrinted()</code></li>
-        <li><code>then()</code> and the other next steps; a following step uses the same order, without the ability's settings</li>
-      </ol>
-    </blockquote>
-    <cite>docs/ability_dsl.md, "this.action(title)"</cite>
-  </div>
+  <p>A chain follows the order of the card text ("During a conflict, bow this character – choose a character – bow it. (Max 1 per conflict.)"):</p>
+  <ol>
+    <li><code>when()</code> / <code>aggregateWhen()</code> (triggered abilities)</li>
+    <li>When and where the ability can be used: <code>phase()</code>, <code>location()</code>, <code>condition()</code>, <code>playOnlyIf()</code>, <code>anyPlayer()</code>, <code>collectiveTrigger()</code>, <code>evenDuringDynasty()</code>, <code>canTriggerOutsideConflict()</code>, <code>conflictProvinceCondition()</code></li>
+    <li><code>cost()</code></li>
+    <li>Targets</li>
+    <li>Effects: game actions, <code>if()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>message()</code>, <code>onResolve()</code></li>
+    <li><code>chatText()</code></li>
+    <li><code>limit()</code> / <code>max()</code>, <code>cannotTargetFirst()</code>, <code>cannotBeMirrored()</code>, <code>notPrinted()</code></li>
+    <li><code>then()</code> and the other next steps; a following step uses the same order, without the ability's settings</li>
+  </ol>
   <p>Most of this order is a convention for readability. The code enforces some of it:</p>
   <ul>
     <li>Types flow left to right: a callback only sees the targets, selects and costs declared before it, so targets and costs come before the game actions, <code>handler()</code>, <code>chatText()</code> and steps that read them.</li>
@@ -698,7 +692,7 @@ this.action('Sacrifice to discard an attachment')
     .phase(Phase.Conflict)
     .cost(costs.sacrificeSelf())
     …</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/MiyaMystic.ts">Miya Mystic</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ArtisanAcademy.ts">Artisan Academy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/Fair%20Accord.ts">Fair Accord</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/SoshiShadowshaper.ts">Soshi Shadowshaper</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/MiyaMystic.ts">Miya Mystic</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ArtisanAcademy.ts">Artisan Academy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/FairAccord.ts">Fair Accord</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/SoshiShadowshaper.ts">Soshi Shadowshaper</a></p>
   </div>
 
   <div class="ref" id="b-playOnlyIf" data-name="playOnlyIf">
@@ -840,7 +834,8 @@ this.action('Bow this stronghold')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Every ring is a candidate, claimed or not; <code>ringCondition</code> filters them. A ring can only be chosen when one of the game actions can affect it (if there are any) and a target depending on this one has a choice.</li>
+      <li>Every ring is a candidate, claimed or not. Only <code>ringCondition</code> filters the rings the player can click.</li>
+      <li>The game actions and a target depending on this one only decide whether the ability can be used: it needs a ring that one of the game actions can affect (if there are any) and for which the depending target has a choice.</li>
     </ul>
     <pre><code>// Way of the Phoenix: Action: Choose a ring and an opponent – that player cannot declare conflicts of that ring's element this phase. (Max 1 per phase.)
 this.action('Prevent an opponent contesting a ring')
@@ -969,7 +964,7 @@ this.action('Select a player to lose an honor and draw a card')
       <li><a href="#b-if"><code>if()</code></a> or <code>otherwise()</code> right after a card target puts their game actions on that target; see there.</li>
     </ul>
     <pre><code>// Palm Strike: Conflict Action: Choose a participating Monk character with no Weapon attachments you control, and choose a participating character with no Weapon attachments controlled by the opponent - bow that opponent's character. …
-this.action('Bow a character')
+this.conflictAction('Bow a character')
     .target({
         name: TARGET_MONK,
         activePromptTitle: 'Choose a bare-handed monk',
@@ -1148,7 +1143,7 @@ this.action('Initiate a Military duel')
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>trait</code></td><td><code>string</code></td><td>required</td><td>Usually an element (<code>'water'</code>), but any trait works (<code>'shadow'</code>).</td></tr>
+        <tr><td><code>trait</code></td><td><code>Trait</code></td><td>required</td><td>Usually an element (<code>Trait.Water</code>), but any trait works (<code>Trait.Shadow</code>).</td></tr>
         <tr><td><code>options.activePromptTitle</code></td><td><code>string</code></td><td>none</td><td>"You may": the player is asked Yes/No with this title before the actions resolve.</td></tr>
         <tr><td><code>options.chatText</code></td><td><code>(context) =&gt; msg…</code></td><td>the actions' own text</td><td>Completes the chat line "{player} channels their {trait} affinity to …".</td></tr>
       </tbody>
@@ -1191,7 +1186,7 @@ this.action('Initiate a Military duel')
   <h3 class="group-title" id="b-group-flow">Flow</h3>
   <p>Branches inside a step (<code>if()</code>, <code>ifAble()</code>, <code>otherwise()</code>) and the next step (<code>then()</code>, <code>afterwards()</code> and their conditional forms). A step has at most one next step: a second <code>then()</code>, <code>afterwards()</code>, <code>mayResolveAgain()</code> … throws <code>"a step has one next step"</code>. A step is declared with the same methods as the ability, minus the ability's own settings; its context is new but starts with the targets, selects, rings, tokens and costs chosen so far, and <code>context.previousEvents</code> holds the events of the step before.</p>
   <div class="note">
-    <p><strong>"Then" or "if you do"?</strong> <code>then()</code> follows only when the step before resolved in full ("if you do"); <code>afterwards()</code> follows regardless. Ruling (EL RRG, 2026-10-11, <code>docs/decisions.md</code>): card text "if you do" is <code>then()</code>; a plain "Then" only sets the order, so it is <code>afterwards()</code>. The RRG has a success rule for "To" only, and its errata turn conditional "Then"s into "If you do". The same holds for <code>thenIf()</code> and <code>afterwardsIf()</code>.</p>
+    <p><strong>"Then" or "if you do"?</strong> <code>then()</code> follows only when the step before resolved in full ("if you do"); <code>afterwards()</code> follows regardless. The rule: card text "if you do" is <code>then()</code>; a plain "Then" only sets the order, so it is <code>afterwards()</code>. The RRG has a success rule for "To" only, and its errata turn conditional "Then"s into "If you do". The same holds for <code>thenIf()</code> and <code>afterwardsIf()</code>.</p>
   </div>
 
   <div class="ref" id="b-afterwards" data-name="afterwards">
@@ -1335,7 +1330,8 @@ this.action('Increase a character\'s military skill')
       <li>It takes the step's next-step slot, like <a href="#b-mayResolveAgain"><code>mayResolveAgain()</code></a>.</li>
     </ul>
     <pre><code>// Hand to Hand: Action: During a [conflict-military] conflict, choose an attachment on a participating character - discard that attachment.  Then, your opponent may resolve this ability.
-this.conflictAction('Discard an attachment', { conflictType: ConflictType.Military })
+this.action('Discard an attachment')
+    .condition((context) =&gt; context.game.isDuringConflict(ConflictType.Military))
     .target({
         cardType: CardType.Attachment,
         cardCondition: (card) =&gt; Boolean(card.parentCharacter?.isParticipating())
@@ -1354,7 +1350,7 @@ this.conflictAction('Discard an attachment', { conflictType: ConflictType.Milita
     </ul>
     <pre><code>// Moto Juro: Action: Select one – move this character into a conflict or move this character home from a conflict. (Limit twice per round.)
 this.action('Move this character to the conflict or home from the conflict')
-    .if((context) =&gt; context.source.isDrawCard() &amp;&amp; context.source.isParticipating())
+    .if((context) =&gt; context.source.isParticipating())
         .sendHome()
     .otherwise()
         .moveToConflict()
@@ -1372,7 +1368,8 @@ this.action('Move this character to the conflict or home from the conflict')
       <li>For a plain "Then" use <a href="#b-afterwards"><code>afterwards()</code></a> (see the note above).</li>
     </ul>
     <pre><code>// Ujiaki's Offer: Action: During a [conflict-political] conflict, choose a participating character … - place 1 fate on the chosen character. If you do, bow it, move it home, and dishonor it.
-this.conflictAction('Place a fate on a participating character, bow it, move it home, and dishonor it', { conflictType: ConflictType.Political })
+this.action('Place a fate on a participating character, bow it, move it home, and dishonor it')
+    .condition((context) =&gt; context.game.isDuringConflict(ConflictType.Political))
     .target({ … }, placeFate())
     .chatText('place a fate on {0} then bow, dishonor, and move them home')
     .then()
@@ -1892,7 +1889,7 @@ this.action('Steal a fate')
     target: context.costs.captureParentCost ?? [],
     attachment: context.target
 }))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/Logistics.ts">Logistics</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/JakIthith.ts">Jak'ithith</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/CallingInFavors.ts">Calling in Favors</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/Logistics.ts">Logistics</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/CallingInFavors.ts">Calling in Favors</a></p>
   </div>
   <div class="ref" id="b-discardCard" data-name="discardCard">
     <h3><code>discardCard(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-discardCard">#</a></h3>
@@ -2432,7 +2429,7 @@ this.action('Steal a fate')
     message: (context, card) =&gt; msg`${context.player} puts ${card} into play with ${context.source}'s ability`,
     gameAction: putIntoPlay()
 })</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ikoma%20Eiji.ts">Ikoma Eiji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IuchiWayfinder.ts">Iuchi Wayfinder</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WayOfTheCrab.ts">Way of the Crab</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KaradaDistrict.ts">Karada District</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IkomaEiji.ts">Ikoma Eiji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IuchiWayfinder.ts">Iuchi Wayfinder</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WayOfTheCrab.ts">Way of the Crab</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KaradaDistrict.ts">Karada District</a></p>
   </div>
   <div class="ref" id="b-selectCards" data-name="selectCards">
     <h3><code>selectCards(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-selectCards">#</a></h3>
