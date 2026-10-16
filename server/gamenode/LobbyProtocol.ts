@@ -174,7 +174,6 @@ export interface PlayerSummary {
     emailHash?: string;
     faction?: string;
     id: string;
-    lobbyId?: string | null;
     left?: boolean;
     name: string;
     owner: boolean;
@@ -193,7 +192,7 @@ export interface GameSummary {
     started: boolean;
     startedAt?: Date | string;
     gameMode?: string;
-    spectators: Array<{ id: string; lobbyId?: string; name: string }>;
+    spectators: Array<{ id: string; name: string }>;
     password?: string;
 }
 

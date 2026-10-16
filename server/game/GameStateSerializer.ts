@@ -231,7 +231,6 @@ export class GameStateSerializer {
                 emailHash: player.emailHash,
                 faction: player.faction.value,
                 id: player.id,
-                lobbyId: player.lobbyId,
                 left: player.left,
                 name: player.name,
                 owner: player.owner
@@ -254,7 +253,6 @@ export class GameStateSerializer {
             spectators: game.getSpectators().map((spectator) => {
                 return {
                     id: spectator.id,
-                    lobbyId: spectator.lobbyId,
                     name: spectator.name
                 };
             })

@@ -5,7 +5,6 @@ import type { UserIdentity } from '../gamenode/LobbyProtocol.js';
 export class Spectator extends SpectatorBase {
     name: string;
     emailHash: string;
-    lobbyId?: string;
     left: boolean = false;
     disconnected: boolean = false;
     socket: Socket | null | undefined;

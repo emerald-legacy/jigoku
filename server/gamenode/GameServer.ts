@@ -465,7 +465,6 @@ export class GameServer implements GameRouter, LobbyHandlers {
             return;
         }
 
-        player.lobbyId = player.id;
         player.id = socket.id;
         if(player.disconnected) {
             logger.info('user \'%s\' reconnected to game', socket.user.username);

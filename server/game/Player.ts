@@ -144,7 +144,6 @@ export class Player extends GameObject {
     socket: Socket | null | undefined;
     disconnected: boolean;
     left: boolean;
-    lobbyId: string | null;
 
     readonly zones: PlayerZones = new PlayerZones();
 
@@ -197,7 +196,6 @@ export class Player extends GameObject {
         this.socket = null;
         this.disconnected = false;
         this.left = false;
-        this.lobbyId = null;
 
         this.faction = {};
         this.stronghold = null;
