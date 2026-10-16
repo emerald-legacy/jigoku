@@ -7,37 +7,37 @@ import { CompositeGameAction } from './CompositeGameAction.js';
 import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { GameAction, type GameActionProperties, type GameActionTarget } from './GameAction.js';
 
-export interface ChooseActionProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
+export interface ChooseActionProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties {
     activePromptTitle?: string;
     waitingPromptTitle?: string;
     player?: Chooser;
     /** One button per label: its game action, or the action with a chat line. Like `select`'s choices, but chosen while resolving. */
-    choices: { [label: string]: GameAction | ChooseActionOption<C> };
+    choices: { [label: string]: GameAction | ChooseActionOption<Context> };
 }
 
-export interface ChooseActionOption<C extends AbilityContext = AbilityContext> {
+export interface ChooseActionOption<Context extends AbilityContext = AbilityContext> {
     action: GameAction;
     /** The chat line when this option is chosen; `target` is the action's target. */
-    message?: (context: C, target: GameActionTarget | GameActionTarget[] | undefined, chooser: Player) => MessageArgs;
+    message?: (context: Context, target: GameActionTarget | GameActionTarget[] | undefined, chooser: Player) => MessageArgs;
 }
 
 /** Each choice with its label, a bare game action as an option without a chat line. */
-function options<C extends AbilityContext>(choices: ChooseActionProperties<C>['choices']): [string, ChooseActionOption<C>][] {
+function options<Context extends AbilityContext>(choices: ChooseActionProperties<Context>['choices']): [string, ChooseActionOption<Context>][] {
     return Object.entries(choices).map(([label, choice]) => [label, choice instanceof GameAction ? { action: choice } : choice]);
 }
 
-export class ChooseGameAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<ChooseActionProperties<C>, C, 'activePromptTitle' | 'choices'> {
+export class ChooseGameAction<Context extends AbilityContext = AbilityContext> extends CompositeGameAction<ChooseActionProperties<Context>, Context, 'activePromptTitle' | 'choices'> {
     override effect = 'choose between different actions';
     override defaultProperties = {
         activePromptTitle: 'Select an action:',
         choices: {}
     };
 
-    protected children(properties: ChooseActionProperties<C>) {
+    protected children(properties: ChooseActionProperties<Context>) {
         return options(properties.choices).map(([_, option]) => option.action);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         const legalChoices = options(properties.choices).filter(([_, option]) =>
             option.action.hasLegalTarget(context, overrides)

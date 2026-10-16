@@ -9,19 +9,19 @@ import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { queuePostBidSteps } from './FateBidAction.js';
 import { SetHonorDialAction } from './SetHonorDialAction.js';
 
-export interface HonorBidProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
+export interface HonorBidProperties<Context extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     giveHonor?: boolean;
     prohibitedBids?: Array<number>;
     players?: Players;
     postBidAction?: GameAction;
     /** The chat line after the bids; without it, the post-bid action's own text. */
-    message?(context: C): MessageArgs;
+    message?(context: Context): MessageArgs;
 }
 
 /** An honor bid event this action created: `addPropertiesToEvent` always sets its prohibited bids. */
-type HonorBidEvent<C extends AbilityContext> = ActionEvent<EventName.OnHonorBid, C> & { prohibitedBids: number[] };
+type HonorBidEvent<Context extends AbilityContext> = ActionEvent<EventName.OnHonorBid, Context> & { prohibitedBids: number[] };
 
-export class HonorBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<HonorBidProperties, EventName.OnHonorBid, C, 'giveHonor' | 'prohibitedBids' | 'players'> {
+export class HonorBidAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<HonorBidProperties, EventName.OnHonorBid, Context, 'giveHonor' | 'prohibitedBids' | 'players'> {
     override name = 'honorBid';
     override eventName = EventName.OnHonorBid;
     override defaultProperties = {
@@ -31,14 +31,14 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
     };
 
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         return this.getProperties(context, additionalProperties).giveHonor
             ? ['bid honor', []]
             : ['have {0} select a value on their honor dial', []];
     }
 
     /** The bidding players; none when giving honor, whose message names nobody. */
-    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.giveHonor) {
             return undefined;
@@ -60,7 +60,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         return players;
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { giveHonor, prohibitedBids, players, postBidAction, message } = this.getProperties(
             context,
             additionalProperties
@@ -73,7 +73,7 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
         event.message = message;
     }
 
-    override eventHandler(event: HonorBidEvent<C>): void {
+    override eventHandler(event: HonorBidEvent<Context>): void {
         const context = event.context;
 
         if(event.players === Players.Any) {

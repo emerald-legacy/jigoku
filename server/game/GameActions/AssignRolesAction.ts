@@ -10,49 +10,49 @@ import type Player from '../Player.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { targetList, type GameAction } from './GameAction.js';
 
-export interface AssignRolesProperties<R extends string = string, C extends AbilityContext = AbilityContext> extends CardActionProperties {
+export interface AssignRolesProperties<Result extends string = string, Context extends AbilityContext = AbilityContext> extends CardActionProperties {
     /** Each role's action, resolved on the card given that role: two roles for two cards. */
-    roles: Record<R, GameAction>;
+    roles: Record<Result, GameAction>;
     /** Who gives the roles. */
     player?: Chooser;
     /** The chooser picks this role's card from card buttons, and the other card gets the other role. */
-    pick?: NoInfer<R>;
+    pick?: NoInfer<Result>;
     /**
      * Any number of cards: the chooser picks one card for each of these roles from card buttons, in this order
      * ("Select a card to <role>"), and each pick resolves at once; the cards left take the one role not listed.
      * While there are fewer cards than roles left, a role may be skipped ("None").
      */
-    pickOrder?: NoInfer<R>[];
+    pickOrder?: NoInfer<Result>[];
     /** With `pickOrder`: a chat line when a role is given. */
-    messages?: Partial<Record<NoInfer<R>, (context: AbilityContext, card: BaseCard, chooser: Player) => MessageArgs>>;
+    messages?: Partial<Record<NoInfer<Result>, (context: AbilityContext, card: BaseCard, chooser: Player) => MessageArgs>>;
     activePromptTitle?: string;
     /** Printed once each card has its role. Method syntax, so a card's narrower role names fit. */
-    message?(context: C, assigned: Record<NoInfer<R>, BaseCard>, chooser: Player): MessageArgs;
+    message?(context: Context, assigned: Record<NoInfer<Result>, BaseCard>, chooser: Player): MessageArgs;
 }
 
 /**
  * "Honor one of those characters and dishonor the other": the chooser gives each role to one of
  * two cards while the action resolves. The roles' actions resolve together, in this action's window.
  */
-export class AssignRolesAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AssignRolesProperties, EventName.Unnamed, C, 'player'> {
+export class AssignRolesAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<AssignRolesProperties, EventName.Unnamed, Context, 'player'> {
     override name = 'assignRoles';
     override defaultProperties: { player: Chooser } = { player: Players.Self };
 
-    #canTake(role: string, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    #canTake(role: string, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const action = this.getProperties(context, additionalProperties).roles[role];
         return !!action && action.canAffect(card, context, { target: card });
     }
 
-    override canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(target: GameObject, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { roles } = this.getProperties(context, additionalProperties);
         return target.isCard() && Object.keys(roles).some((role) => this.#canTake(role, target, context, additionalProperties));
     }
 
-    #chooser(context: C, additionalProperties: ActionOverrides = {}): Player | undefined {
+    #chooser(context: Context, additionalProperties: ActionOverrides = {}): Player | undefined {
         return resolveChoosingPlayer(context, this.getProperties(context, additionalProperties).player);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const cards = targetList(properties.target).filter((target) => target.isCard());
         const [first, second] = Object.keys(properties.roles);
@@ -92,7 +92,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
         this.#chooseRole(cards, [first, second], chooser, assign, context, additionalProperties);
     }
 
-    #pickInOrder(cards: BaseCard[], [role, ...later]: string[], last: string | undefined, chooser: Player, context: C, additionalProperties: ActionOverrides): void {
+    #pickInOrder(cards: BaseCard[], [role, ...later]: string[], last: string | undefined, chooser: Player, context: Context, additionalProperties: ActionOverrides): void {
         const properties = this.getProperties(context, additionalProperties);
         const give = (role: string, card: BaseCard) => {
             const message = properties.messages?.[role];
@@ -128,7 +128,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
         });
     }
 
-    #chooseRole(cards: BaseCard[], roles: string[], chooser: Player, assign: (role: string, card: BaseCard) => void, context: C, additionalProperties: ActionOverrides): void {
+    #chooseRole(cards: BaseCard[], roles: string[], chooser: Player, assign: (role: string, card: BaseCard) => void, context: Context, additionalProperties: ActionOverrides): void {
         const possible = roles.filter((role) => cards.some((card) => this.#canTake(role, card, context, additionalProperties)));
         if(possible.length === 1) {
             this.#chooseCard(possible[0], cards, roles, chooser, assign, false, context, additionalProperties);
@@ -151,7 +151,7 @@ export class AssignRolesAction<C extends AbilityContext = AbilityContext> extend
         chooser: Player,
         assign: (role: string, card: BaseCard) => void,
         canGoBack: boolean,
-        context: C,
+        context: Context,
         additionalProperties: ActionOverrides
     ): void {
         context.game.promptForSelect(chooser, {

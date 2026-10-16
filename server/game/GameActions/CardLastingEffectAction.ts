@@ -8,18 +8,18 @@ import type { ActionEvent } from './GameAction.js';
 import { toEffectList, type LastingEffectFields } from './LastingEffectAction.js';
 import type { TargetLocation } from '../Interfaces.js';
 
-export interface LastingEffectCardProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties, LastingEffectFields<C> {
+export interface LastingEffectCardProperties<Context extends AbilityContext = AbilityContext> extends CardActionProperties, LastingEffectFields<Context> {
     targetLocation?: TargetLocation;
     canChangeZoneOnce?: boolean;
     canChangeZoneNTimes?: number;
     /** The ability's chat text for this effect, after "to"; without it, "apply a lasting effect to <target>". */
-    chatText?(context: C): MessageArgs;
+    chatText?(context: Context): MessageArgs;
 }
 
-export class CardLastingEffectAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+export class CardLastingEffectAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<
     LastingEffectCardProperties,
     EventName.OnEffectApplied,
-    C,
+    Context,
     'duration' | 'canChangeZoneOnce' | 'canChangeZoneNTimes'
 > {
     override name = 'cardLastingEffect';
@@ -31,17 +31,17 @@ export class CardLastingEffectAction<C extends AbilityContext = AbilityContext> 
         canChangeZoneNTimes: 0
     };
 
-    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { chatText } = this.getProperties(context, additionalProperties);
         return chatText ? chatText(context) : super.getEffectMessage(context, additionalProperties);
     }
 
-    override getProperties(context: C, additionalProperties: ActionOverrides = {}) {
+    override getProperties(context: Context, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }
 
-    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const effects = properties.effect.map((factory) => factory(context.game, context.source, properties));
         const lastingEffectRestrictions = card.getEffects(EffectName.CannotApplyLastingEffects);
@@ -55,7 +55,7 @@ export class CardLastingEffectAction<C extends AbilityContext = AbilityContext> 
         );
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnEffectApplied, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnEffectApplied, Context>, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         const { effect, ...otherProperties } = this.getProperties(context, additionalProperties);
         const eventContext = event.context;
@@ -68,7 +68,7 @@ export class CardLastingEffectAction<C extends AbilityContext = AbilityContext> 
         event.matches = effects.map((eff) => eff.match);
     }
 
-    override eventHandler(event: CardEvent<EventName.OnEffectApplied, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: CardEvent<EventName.OnEffectApplied, Context>, additionalProperties: ActionOverrides = {}): void {
         const eventContext = event.context;
         const properties = this.getProperties(eventContext, additionalProperties);
         if(!properties.ability) {

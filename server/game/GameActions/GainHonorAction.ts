@@ -12,7 +12,7 @@ export interface GainHonorProperties extends PlayerActionProperties {
     dueToStatusToken?: boolean;
 }
 
-export class GainHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainHonorProperties, EventName.OnModifyHonor, C, 'amount' | 'dueToStatusToken'> {
+export class GainHonorAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<GainHonorProperties, EventName.OnModifyHonor, Context, 'amount' | 'dueToStatusToken'> {
     override defaultProperties = { amount: 1, dueToStatusToken: false };
 
     override name = 'gainHonor';
@@ -20,7 +20,7 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     override restriction = RestrictionType.GainHonor;
     override eventName = EventName.OnModifyHonor;
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         const players = targetList(properties.target);
         // capped by the honor limit of the player who gains it
@@ -33,12 +33,12 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
         return [onlyThePlayer(players, context) ? `gain ${amountToTransfer} honor` : `make {0} gain ${amountToTransfer} honor`, []];
     }
 
-    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {
         const players = targetList(this.getProperties(context, additionalProperties).target);
         return onlyThePlayer(players, context) ? undefined : players;
     }
 
-    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const wouldGainAnyHonor = properties.amount !== 0;
 
@@ -61,14 +61,14 @@ export class GainHonorAction<C extends AbilityContext = AbilityContext> extends 
     }
 
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { amount, dueToStatusToken } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.dueToStatusToken = dueToStatusToken;
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnModifyHonor, Context>): void {
         const context = event.context;
         const player = event.player;
         const [, amountToTransfer] = calculateHonorLimit(

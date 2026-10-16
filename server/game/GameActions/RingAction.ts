@@ -6,25 +6,25 @@ import type { EventName } from '../Constants.js';
 
 export type RingActionProperties = GameActionProperties;
 
-export type RingEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { ring: Ring };
+export type RingEvent<EventType extends EventName, Context extends AbilityContext> = ActionEvent<EventType, Context> & { ring: Ring };
 
 export class RingAction<
-    P extends RingActionProperties = RingActionProperties,
-    N extends EventName = EventName,
-    C extends AbilityContext = AbilityContext,
-    D extends keyof P = never
-> extends GameAction<P, N, C, D> {
+    Properties extends RingActionProperties = RingActionProperties,
+    EventType extends EventName = EventName,
+    Context extends AbilityContext = AbilityContext,
+    Defaulted extends keyof Properties = never
+> extends GameAction<Properties, EventType, Context, Defaulted> {
     override targetType = ['ring'];
 
-    override defaultTargets(context: C): Ring[] {
+    override defaultTargets(context: Context): Ring[] {
         return context.game.currentConflict && context.game.currentConflict.ring ? [context.game.currentConflict.ring] : [];
     }
 
-    override checkEventCondition(event: RingEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
+    override checkEventCondition(event: RingEvent<EventType, Context>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.ring, event.context, additionalProperties);
     }
 
-    override addPropertiesToEvent(event: RingEvent<N, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: RingEvent<EventType, Context>, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.ring = ring;
     }

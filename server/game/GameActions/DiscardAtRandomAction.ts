@@ -12,12 +12,12 @@ export interface RandomDiscardProperties extends PlayerActionProperties {
 }
 
 /** A discard event this action created: `addPropertiesToEvent` always sets its amount. */
-type RandomDiscardEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardsDiscardedFromHand, C> & { amount: number };
+type RandomDiscardEvent<Context extends AbilityContext> = ActionEvent<EventName.OnCardsDiscardedFromHand, Context> & { amount: number };
 
-export class DiscardAtRandomAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount'> {
+export class DiscardAtRandomAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName.OnCardsDiscardedFromHand, Context, 'amount'> {
     override defaultProperties = { amount: 1 };
 
-    override defaultTargets(context: C): Player[] {
+    override defaultTargets(context: Context): Player[] {
         return this.opponentTargets(context);
     }
 
@@ -25,24 +25,24 @@ export class DiscardAtRandomAction<C extends AbilityContext = AbilityContext> ex
 
     override restriction = RestrictionType.Discard;
     override eventName = EventName.OnCardsDiscardedFromHand;
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { amount } = this.getProperties(context, additionalProperties);
         return ['make {0} discard {1} {2} at random', [amount, amount > 1 ? 'cards' : 'card']];
     }
 
-    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.amount > 0 && player.hand.length > 0 && super.canAffect(player, context);
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.discardedAtRandom = true;
     }
 
-    override eventHandler(event: RandomDiscardEvent<C>): void {
+    override eventHandler(event: RandomDiscardEvent<Context>): void {
         const player = event.player;
         const amount = Math.min(event.amount, player.hand.length);
         if(amount === 0) {

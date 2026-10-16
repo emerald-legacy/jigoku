@@ -10,24 +10,24 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 
-export interface CardMenuProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
+export interface CardMenuProperties<Context extends AbilityContext = AbilityContext> extends CardActionProperties {
     activePromptTitle?: string;
     player?: Chooser;
     cards: DrawCard[];
-    cardCondition?(card: DrawCard, context: C): boolean;
+    cardCondition?(card: DrawCard, context: Context): boolean;
     options?: HandlerMenuOption[];
     targets?: boolean;
     /** The chat line once a card is chosen. */
-    message?(context: C, card: DrawCard, chooser: Player): MessageArgs;
+    message?(context: Context, card: DrawCard, chooser: Player): MessageArgs;
     subActionProperties?: (card: DrawCard) => Record<string, unknown>;
     gameAction: GameAction;
-    gameActionHasLegalTarget?(context: C): boolean;
+    gameActionHasLegalTarget?(context: Context): boolean;
 }
 
-export class CardMenuAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
-    CardMenuProperties<C>,
+export class CardMenuAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<
+    CardMenuProperties<Context>,
     EventName,
-    C,
+    Context,
     'activePromptTitle' | 'targets' | 'cards' | 'subActionProperties' | 'cardCondition'
 > {
     override effect = 'choose a target for {0}';
@@ -39,7 +39,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         cardCondition: () => true
     };
 
-    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.cards.some((c) =>
             properties.gameAction.canAffect(
@@ -50,7 +50,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.options) {
             return true;
@@ -66,9 +66,9 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        const cardCondition = (card: DrawCard, context: C) =>
+        const cardCondition = (card: DrawCard, context: Context) =>
             properties.gameAction.hasLegalTarget(
                 context,
                 Object.assign({}, additionalProperties, properties.subActionProperties(card))
@@ -103,7 +103,7 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         });
     }
 
-    override hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasTargetsChosenByInitiatingPlayer(context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             properties.targets ||

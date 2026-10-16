@@ -6,11 +6,11 @@ import type { ActionEvent } from './GameAction.js';
 
 export type RemoveRingFromPlayProperties = RingActionProperties;
 
-export class RemoveRingFromPlayAction<C extends AbilityContext = AbilityContext> extends RingAction<RemoveRingFromPlayProperties, EventName.OnRemoveRingFromPlay, C> {
+export class RemoveRingFromPlayAction<Context extends AbilityContext = AbilityContext> extends RingAction<RemoveRingFromPlayProperties, EventName.OnRemoveRingFromPlay, Context> {
     override name = 'removeRingFromPlay';
     override eventName = EventName.OnRemoveRingFromPlay;
     override effect = 'remove the {0} from play';
-    override canAffect(ring: Ring, context: C): boolean {
+    override canAffect(ring: Ring, context: Context): boolean {
         if(ring.removedFromGame) {
             return false;
         }
@@ -18,7 +18,7 @@ export class RemoveRingFromPlayAction<C extends AbilityContext = AbilityContext>
         return super.canAffect(ring, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnRemoveRingFromPlay, C>, _additionalProperties: Record<string, unknown> = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnRemoveRingFromPlay, Context>, _additionalProperties: Record<string, unknown> = {}): void {
         const ring = event.ring;
         const context = event.context;
 

@@ -10,9 +10,9 @@ import type { Event } from '../Events/Event.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
 /** The lasting-effect fields, shared by the player, card and ring variants. */
-export interface LastingEffectFields<C extends AbilityContext = AbilityContext> {
+export interface LastingEffectFields<Context extends AbilityContext = AbilityContext> {
     duration?: Duration;
-    condition?(context: C): boolean;
+    condition?(context: Context): boolean;
     until?: EffectUntil;
     effect?: EffectFactory | EffectFactory[];
     ability?: BaseAbility;
@@ -22,7 +22,7 @@ export interface LastingEffectFields<C extends AbilityContext = AbilityContext> 
     endingMessage?: string;
 }
 
-export interface LastingEffectGeneralProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties, LastingEffectFields<C> {}
+export interface LastingEffectGeneralProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties, LastingEffectFields<Context> {}
 
 /** A single effect factory becomes a one-element list; a missing one becomes an empty list. */
 export function toEffectList(effect: EffectFactory | EffectFactory[] | undefined): EffectFactory[] {
@@ -32,14 +32,14 @@ export function toEffectList(effect: EffectFactory | EffectFactory[] | undefined
     return Array.isArray(effect) ? effect : [effect];
 }
 
-export type LastingEffectProperties<C extends AbilityContext = AbilityContext> = LastingEffectGeneralProperties<C>;
+export type LastingEffectProperties<Context extends AbilityContext = AbilityContext> = LastingEffectGeneralProperties<Context>;
 
-export interface PlayerLastingEffectProperties<C extends AbilityContext = AbilityContext> extends LastingEffectGeneralProperties<C> {
+export interface PlayerLastingEffectProperties<Context extends AbilityContext = AbilityContext> extends LastingEffectGeneralProperties<Context> {
     target?: Player | Player[];
 }
 
 /** As written on cards: `target` may also be relative to the ability's player (`Players.Any` for both). */
-export type PlayerLastingEffectInput<C extends AbilityContext = AbilityContext> = Omit<PlayerLastingEffectProperties<C>, 'target'> & { target?: Players | Player | Player[] };
+export type PlayerLastingEffectInput<Context extends AbilityContext = AbilityContext> = Omit<PlayerLastingEffectProperties<Context>, 'target'> & { target?: Players | Player | Player[] };
 
 function playersFor(target: Players | Player | Player[], context: AbilityContext): Player | Player[] {
     switch(target) {
@@ -55,7 +55,7 @@ function playersFor(target: Players | Player | Player[], context: AbilityContext
     }
 }
 
-export class LastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName.OnEffectApplied, C, 'duration'> {
+export class LastingEffectAction<Context extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName.OnEffectApplied, Context, 'duration'> {
     override name = 'applyLastingEffect';
     override eventName = EventName.OnEffectApplied;
     override effect = 'apply a lasting effect';
@@ -63,23 +63,23 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
         duration: Duration.UntilEndOfConflict
     };
 
-    override getProperties(context: C, additionalProperties: ActionOverrides = {}) {
+    override getProperties(context: Context, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }
 
-    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return properties.effect.length > 0;
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown>): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: Record<string, unknown>): void {
         if(this.hasLegalTarget(context, additionalProperties)) {
             events.push(this.getEvent(null, context, additionalProperties));
         }
     }
 
-    override eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: Record<string, unknown>): void {
         const properties = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;
@@ -89,20 +89,20 @@ export class LastingEffectAction<C extends AbilityContext = AbilityContext> exte
 }
 
 /** A lasting effect on a duel: by default the current duel, until it ends. */
-export class DuelLastingEffectAction<C extends AbilityContext = AbilityContext> extends LastingEffectAction<C> {
+export class DuelLastingEffectAction<Context extends AbilityContext = AbilityContext> extends LastingEffectAction<Context> {
     override defaultProperties = {
         duration: Duration.UntilEndOfDuel
     };
 
-    override defaultTargets(context: C): GameObject[] {
+    override defaultTargets(context: Context): GameObject[] {
         return context.game.currentDuel ? [context.game.currentDuel] : [];
     }
 }
 
 /** A lasting effect on players: by default the ability's player. */
-export class PlayerLastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<PlayerLastingEffectProperties, EventName.OnEffectApplied, C, 'duration'> {
-    constructor(propertyFactory: PlayerLastingEffectInput<C> | ((context: C) => PlayerLastingEffectInput<C>)) {
-        super((context: C) => {
+export class PlayerLastingEffectAction<Context extends AbilityContext = AbilityContext> extends GameAction<PlayerLastingEffectProperties, EventName.OnEffectApplied, Context, 'duration'> {
+    constructor(propertyFactory: PlayerLastingEffectInput<Context> | ((context: Context) => PlayerLastingEffectInput<Context>)) {
+        super((context: Context) => {
             const { target, ...properties } = typeof propertyFactory === 'function' ? propertyFactory(context) : propertyFactory;
             // without a target the default (the ability's player) applies
             return target === undefined ? properties : { ...properties, target: playersFor(target, context) };
@@ -116,26 +116,26 @@ export class PlayerLastingEffectAction<C extends AbilityContext = AbilityContext
         duration: Duration.UntilEndOfConflict
     };
 
-    override defaultTargets(context: C): Player[] {
+    override defaultTargets(context: Context): Player[] {
         return context.player ? [context.player] : [];
     }
 
-    override getProperties(context: C, additionalProperties: ActionOverrides = {}) {
+    override getProperties(context: Context, additionalProperties: ActionOverrides = {}) {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }
 
-    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
         return this.getProperties(context, additionalProperties).effect.length > 0;
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown>): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: Record<string, unknown>): void {
         if(this.hasLegalTarget(context, additionalProperties)) {
             events.push(this.getEvent(null, context, additionalProperties));
         }
     }
 
-    override eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: Record<string, unknown>): void {
         const { target, ...properties } = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;

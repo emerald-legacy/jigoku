@@ -15,12 +15,12 @@ export interface ResolveElementProperties extends RingActionProperties {
     enforceOrderedResolution?: boolean;
 }
 
-export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> extends RingAction<ResolveElementProperties, EventName.OnResolveRingElement, C> {
+export class ResolveRingEffectAction<Context extends AbilityContext = AbilityContext> extends RingAction<ResolveElementProperties, EventName.OnResolveRingElement, Context> {
     override name = 'resolveRingEffect';
     override eventName = EventName.OnResolveRingElement;
     override effect = 'resolve {0} effect';
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const rings = targetList(properties.target).flatMap((element) => {
             if(typeof element === 'string') {
@@ -57,7 +57,7 @@ export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> 
         }
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnResolveRingElement, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnResolveRingElement, Context>, ring: Ring, context: Context, additionalProperties: Record<string, unknown>): void {
         const { physicalRing, optional, player } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.player = player || context.player;
@@ -66,7 +66,7 @@ export class ResolveRingEffectAction<C extends AbilityContext = AbilityContext> 
         event.effectResolved = false;
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnResolveRingElement, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnResolveRingElement, Context>): void {
         const context = event.context;
         const cannotResolveRingEffects = context.player.getEffects(EffectName.CannotResolveRings);
 

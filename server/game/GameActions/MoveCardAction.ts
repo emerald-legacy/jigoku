@@ -18,10 +18,10 @@ export interface MoveCardProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class MoveCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+export class MoveCardAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<
     MoveCardProperties,
     EventName.Unnamed,
-    C,
+    Context,
     'switch' | 'shuffle' | 'faceup' | 'bottom' | 'changePlayer' | 'discardDestinationCards'
 > {
     override name = 'moveCard';
@@ -36,12 +36,12 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         discardDestinationCards: false
     };
 
-    override getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: Context): MessageArgs {
         const properties = this.getProperties(context);
         return ['shuffling {0} into their deck', [properties.target]];
     }
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         const [target] = targetList(properties.target);
         const destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
@@ -54,7 +54,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         ];
     }
 
-    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { changePlayer, destination } = this.getProperties(context, additionalProperties);
         return (
             (!changePlayer ||
@@ -67,7 +67,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
         );
     }
 
-    override eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: CardEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
         if(card.isDrawCard()) {

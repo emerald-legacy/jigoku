@@ -9,7 +9,7 @@ import { ResolveRingEffectAction } from './ResolveRingEffectAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 
-export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName.OnResolveConflictRing, C> {
+export class ResolveConflictRingAction<Context extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName.OnResolveConflictRing, Context> {
     override name = 'resolveConflictRing';
     override eventName = EventName.OnResolveConflictRing;
 
@@ -17,7 +17,7 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
         return ['resolve {0}', []];
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnResolveConflictRing, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnResolveConflictRing, Context>, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         const conflict = context.game.currentConflict;
 
@@ -25,7 +25,7 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
         event.player = context.player;
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnResolveConflictRing, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnResolveConflictRing, Context>): void {
         if(event.name !== this.eventName) {
             return;
         }

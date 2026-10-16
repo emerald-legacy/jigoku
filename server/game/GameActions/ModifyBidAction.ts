@@ -18,7 +18,7 @@ export interface ModifyBidProperties extends PlayerActionProperties {
     direction?: Direction;
 }
 
-export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ModifyBidProperties, EventName.OnModifyBid, C, 'amount' | 'direction'> {
+export class ModifyBidAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<ModifyBidProperties, EventName.OnModifyBid, Context, 'amount' | 'direction'> {
     override name = 'modifyBid';
     override eventName = EventName.OnModifyBid;
     override defaultProperties = {
@@ -27,7 +27,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     };
 
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.direction === Direction.Prompt) {
             return ['modify their honor bid by {0}', []];
@@ -36,12 +36,12 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     /** The direction, or the amount when the player picks the direction. */
-    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {
         const properties = this.getProperties(context, additionalProperties);
         return properties.direction === Direction.Prompt ? properties.amount : properties.direction;
     }
 
-    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.amount === 0 || (properties.direction === Direction.Decrease && player.honorBid === 0)) {
             return false;
@@ -49,7 +49,7 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
         return super.canAffect(player, context);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.direction !== Direction.Prompt) {
             return super.addEventsToArray(events, context);
@@ -80,14 +80,14 @@ export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends 
         }
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnModifyBid, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnModifyBid, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { amount, direction } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.direction = direction;
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnModifyBid, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnModifyBid, Context>): void {
         const player = event.player;
         const amount = event.amount;
         if(event.direction === Direction.Increase) {

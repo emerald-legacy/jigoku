@@ -15,10 +15,10 @@ export interface CreateTokenProperties extends CardActionProperties {
     canEnterConflict: (type: ConflictType) => boolean;
 }
 
-export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+export class CreateTokenAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<
     CreateTokenProperties,
     EventName.OnCreateTokenCharacter,
-    C,
+    Context,
     'leavingPlayMessage' | 'canEnterConflict'
 > {
     override name = 'createToken';
@@ -30,7 +30,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
         canEnterConflict: () => true
     };
 
-    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { canEnterConflict } = this.getProperties(context, additionalProperties);
 
         if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince) {
@@ -43,7 +43,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
         return super.canAffect(card, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, Context>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const { token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
         const card = event.card;

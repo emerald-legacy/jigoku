@@ -53,18 +53,18 @@ export function canResolveAbility(properties: AbilityToResolve, context: Ability
     return ability.meetsRequirements(abilityContext(properties, context), ignored) === Blocker.None;
 }
 
-export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TriggerAbilityProperties, EventName.Unnamed, C, 'ignoredBlockers' | 'subResolution'> {
+export class TriggerAbilityAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<TriggerAbilityProperties, EventName.Unnamed, Context, 'ignoredBlockers' | 'subResolution'> {
     override name = 'triggerAbility';
     override defaultProperties = {
         ignoredBlockers: [],
         subResolution: false
     };
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['resolve {0}\'s {1} ability', [this.getProperties(context, additionalProperties).ability.title]];
     }
 
-    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             super.canAffect(card, context) &&
@@ -72,13 +72,13 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         );
     }
 
-    override eventHandler(event: ActionEvent<EventName, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
         const newContext = getResolutionContext(properties, event.context);
         event.context.game.queueStep(new AbilityResolver(event.context.game, newContext));
     }
 
-    override hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}) {
+    override hasTargetsChosenByInitiatingPlayer(context: Context, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
         return (
             properties.ability &&

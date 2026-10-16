@@ -7,14 +7,14 @@ import { RevealAction } from './RevealAction.js';
 
 export type MoveConflictProperties = CardActionProperties;
 
-export class MoveConflictAction<C extends AbilityContext = AbilityContext> extends CardGameAction<MoveConflictProperties, EventName.OnConflictMoved, C> {
+export class MoveConflictAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<MoveConflictProperties, EventName.OnConflictMoved, Context> {
     override name = 'moveConflict';
     override eventName = EventName.OnConflictMoved;
     override targetType = [CardType.Province];
     override effect = 'move the conflict to {0}';
     override cost = 'moves the conflict to {0}';
 
-    override canAffect(card: ProvinceCard, context: C): boolean {
+    override canAffect(card: ProvinceCard, context: Context): boolean {
         if(
             !context.game.isDuringConflict() ||
             card.type !== CardType.Province ||
@@ -27,7 +27,7 @@ export class MoveConflictAction<C extends AbilityContext = AbilityContext> exten
         return super.canAffect(card, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnConflictMoved, C>, _additionalProperties: Record<string, unknown> = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnConflictMoved, Context>, _additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context;
         const newProvince = event.card;
         const conflict = context.game.currentConflict;

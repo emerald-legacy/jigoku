@@ -6,27 +6,27 @@ import type Player from '../Player.js';
 import { GameAction, type ActionOverrides, type GameActionProperties } from './GameAction.js';
 import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 
-export interface NameCardProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
+export interface NameCardProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties {
     /** Who names the card: the ability's player (default) or their opponent. */
     player?: Chooser;
     activePromptTitle?: string;
     gameAction: (cardName: string) => GameAction;
-    message?(context: C, cardName: string, chooser: Player): MessageArgs;
+    message?(context: Context, cardName: string, chooser: Player): MessageArgs;
 }
 
-export class NameCardAction<C extends AbilityContext = AbilityContext> extends GameAction<NameCardProperties, EventName.Unnamed, C> {
+export class NameCardAction<Context extends AbilityContext = AbilityContext> extends GameAction<NameCardProperties, EventName.Unnamed, Context> {
     override name = 'nameCard';
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const chooser = resolveChoosingPlayer(context, this.getProperties(context, additionalProperties).player);
         return chooser && chooser !== context.player ? ['have {1} name a card', [chooser]] : ['name a card', []];
     }
 
-    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
         return !!resolveChoosingPlayer(context, this.getProperties(context, additionalProperties).player);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const chooser = resolveChoosingPlayer(context, properties.player);
         if(!chooser) {

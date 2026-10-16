@@ -7,7 +7,7 @@ import { targetList, type ActionEvent, type ActionOverrides } from './GameAction
 
 export type FlipDynastyProperties = CardActionProperties;
 
-export class FlipDynastyAction<C extends AbilityContext = AbilityContext> extends CardGameAction<FlipDynastyProperties, EventName.OnCardRevealed, C> {
+export class FlipDynastyAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<FlipDynastyProperties, EventName.OnCardRevealed, Context> {
     override name = 'flipDynasty';
     override eventName = EventName.OnCardRevealed;
     override targetType = [CardType.Character, CardType.Holding, CardType.Event];
@@ -16,16 +16,16 @@ export class FlipDynastyAction<C extends AbilityContext = AbilityContext> extend
         return ['reveal the facedown card in {0}', []];
     }
 
-    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {
         const [target] = targetList(this.getProperties(context, additionalProperties).target);
         return target ? target.location : '';
     }
 
-    override canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: Context): boolean {
         return card.isInProvince() && card.isDynasty && card.isFacedown() && super.canAffect(card, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnCardRevealed, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardRevealed, Context>): void {
         event.card.facedown = false;
     }
 }

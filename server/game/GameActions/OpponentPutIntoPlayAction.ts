@@ -6,7 +6,7 @@ import type { Defaults } from './GameAction.js';
 
 export type OpponentPutIntoPlayProperties = PutIntoPlayProperties;
 
-export class OpponentPutIntoPlayAction<C extends AbilityContext = AbilityContext> extends PutIntoPlayAction<C> {
+export class OpponentPutIntoPlayAction<Context extends AbilityContext = AbilityContext> extends PutIntoPlayAction<Context> {
     override defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
         status: 'ordinary',

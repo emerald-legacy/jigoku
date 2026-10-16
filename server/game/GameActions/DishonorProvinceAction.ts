@@ -7,7 +7,7 @@ import { targetList, type ActionEvent, type ActionOverrides } from './GameAction
 
 export type DishonorProvinceProperties = CardActionProperties;
 
-export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProvinceProperties, EventName.OnCardDishonored, C> {
+export class DishonorProvinceAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProvinceProperties, EventName.OnCardDishonored, Context> {
     override name = 'dishonorProvince';
     override restriction = RestrictionType.Dishonor;
     override eventName = EventName.OnCardDishonored;
@@ -20,11 +20,11 @@ export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> e
     }
 
     /** A facedown province is named by its location. */
-    protected override effectMessageTarget(context: C, additionalProperties: ActionOverrides = {}): MsgArg {
+    protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {
         return targetList(this.getProperties(context, additionalProperties).target).map((target) => target.isFacedown() ? target.location : target);
     }
 
-    override canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: Context): boolean {
         if(card.type !== CardType.Province || card.isDishonored) {
             return false;
         } else if(!card.isHonored && !card.checkRestrictions(RestrictionType.ReceiveDishonorToken, context)) {
@@ -33,7 +33,7 @@ export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> e
         return super.canAffect(card, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnCardDishonored, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardDishonored, Context>): void {
         event.card.dishonor();
     }
 }

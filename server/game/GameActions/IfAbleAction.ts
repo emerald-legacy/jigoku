@@ -10,19 +10,19 @@ export interface IfAbleProperties extends GameActionProperties {
     otherwiseGameAction: GameAction;
 }
 
-export class IfAbleAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<IfAbleProperties, C> {
+export class IfAbleAction<Context extends AbilityContext = AbilityContext> extends CompositeGameAction<IfAbleProperties, Context> {
     protected children(properties: IfAbleProperties) {
         return [properties.ifAbleGameAction, properties.otherwiseGameAction];
     }
 
-    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { properties: { ifAbleGameAction, otherwiseGameAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
         return ifAbleGameAction.hasLegalTarget(context, overrides)
             ? ifAbleGameAction.getEffectMessage(context, overrides)
             : otherwiseGameAction.getEffectMessage(context, overrides);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}) {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}) {
         const { properties: { ifAbleGameAction, otherwiseGameAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
         const gameAction = ifAbleGameAction.hasLegalTarget(context, overrides) ? ifAbleGameAction : otherwiseGameAction;
         gameAction.addEventsToArray(events, context, overrides);

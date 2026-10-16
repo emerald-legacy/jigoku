@@ -7,27 +7,27 @@ import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
 
-export interface MatchingDiscardProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
+export interface MatchingDiscardProperties<Context extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     amount?: number;
     reveal?: boolean;
     cards?: BaseCard[];
-    match?(context: C, card: BaseCard): boolean;
+    match?(context: Context, card: BaseCard): boolean;
 }
 
 /** A discard event this action created: `addPropertiesToEvent` always sets its amount and match. */
-type MatchingDiscardEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardsDiscardedFromHand, C> & {
+type MatchingDiscardEvent<Context extends AbilityContext> = ActionEvent<EventName.OnCardsDiscardedFromHand, Context> & {
     amount: number;
     match: (context: AbilityContext, card: BaseCard) => boolean;
 };
 
-export class DiscardMatchingAction<C extends AbilityContext = AbilityContext> extends PlayerAction<MatchingDiscardProperties, EventName.OnCardsDiscardedFromHand, C, 'amount' | 'reveal' | 'match'> {
+export class DiscardMatchingAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<MatchingDiscardProperties, EventName.OnCardsDiscardedFromHand, Context, 'amount' | 'reveal' | 'match'> {
     override defaultProperties = {
         amount: -1,
         reveal: false,
         match: () => true
     };
 
-    override defaultTargets(context: C): Player[] {
+    override defaultTargets(context: Context): Player[] {
         return this.opponentTargets(context);
     }
 
@@ -40,11 +40,11 @@ export class DiscardMatchingAction<C extends AbilityContext = AbilityContext> ex
         return ['make {0} discard all cards that match a condition', []];
     }
 
-    override canAffect(player: Player, context: C, _additionalProperties = {}): boolean {
+    override canAffect(player: Player, context: Context, _additionalProperties = {}): boolean {
         return player.hand.length > 0 && super.canAffect(player, context);
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(
             context,
             additionalProperties
@@ -56,7 +56,7 @@ export class DiscardMatchingAction<C extends AbilityContext = AbilityContext> ex
         event.match = properties.match;
     }
 
-    override eventHandler(event: MatchingDiscardEvent<C>): void {
+    override eventHandler(event: MatchingDiscardEvent<Context>): void {
         const context = event.context;
         const player = event.player;
         let amount = Math.min(event.amount, player.hand.length);

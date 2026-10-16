@@ -7,7 +7,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type TurnCardFacedownProperties = CardActionProperties;
 
-export class TurnFacedownAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TurnCardFacedownProperties, EventName.OnCardTurnedFacedown, C> {
+export class TurnFacedownAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<TurnCardFacedownProperties, EventName.OnCardTurnedFacedown, Context> {
     override name = 'turnFacedown';
     override restriction = RestrictionType.TurnFacedown;
     override eventName = EventName.OnCardTurnedFacedown;
@@ -15,11 +15,11 @@ export class TurnFacedownAction<C extends AbilityContext = AbilityContext> exten
     override effect = 'turn {0} facedown';
     override targetType = [CardType.Character, CardType.Holding, CardType.Province, CardType.Event];
 
-    override canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: Context): boolean {
         return card.isFaceup() && super.canAffect(card, context) && card.isInProvince();
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnCardTurnedFacedown, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardTurnedFacedown, Context>): void {
         const context = event.context;
         const card = event.card;
         if(card.controller !== card.owner) {

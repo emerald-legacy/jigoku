@@ -7,7 +7,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type BreakProperties = CardActionProperties;
 
-export class BreakProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<BreakProperties, EventName.OnBreakProvince, C> {
+export class BreakProvinceAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<BreakProperties, EventName.OnBreakProvince, Context> {
     override name = 'breakProvince';
     override restriction = RestrictionType.Break;
     override eventName = EventName.OnBreakProvince;
@@ -15,19 +15,19 @@ export class BreakProvinceAction<C extends AbilityContext = AbilityContext> exte
     override cost = 'breaking {0}';
     override effect = 'break {0}';
 
-    override canAffect(card: ProvinceCard, context: C): boolean {
+    override canAffect(card: ProvinceCard, context: Context): boolean {
         if(!card.isProvince || card.isBroken) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnBreakProvince, C>, card: ProvinceCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnBreakProvince, Context>, card: ProvinceCard, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.conflict = context.game.currentConflict;
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnBreakProvince, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnBreakProvince, Context>): void {
         event.card.breakProvince();
         event.conflict?.brokenProvinces.push(event.card);
     }

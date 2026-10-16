@@ -9,25 +9,25 @@ import { GameAction, type ActionOverrides, type GameActionProperties, type GameA
 
 type Target = GameActionTarget | GameActionTarget[] | undefined;
 
-export interface ChooseAmountProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
+export interface ChooseAmountProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties {
     activePromptTitle: string;
     player?: Chooser;
     min?: number;
     /** A function of this action's target, e.g. the card a `cardMenu` chose. */
     max: number | ((target: Target) => number);
     gameAction: (amount: number, target: Target) => GameAction;
-    message?: (context: C, amount: number, chooser: Player, target: Target) => MessageArgs;
+    message?: (context: Context, amount: number, chooser: Player, target: Target) => MessageArgs;
 }
 
 /** A number from `min` (default 1) to `max` is chosen while the ability resolves, without a prompt when only one is possible; then `gameAction(amount)` resolves. */
-export class ChooseAmountAction<C extends AbilityContext = AbilityContext> extends GameAction<ChooseAmountProperties<C>, EventName, C, 'min'> {
+export class ChooseAmountAction<Context extends AbilityContext = AbilityContext> extends GameAction<ChooseAmountProperties<Context>, EventName, Context, 'min'> {
     override defaultProperties = { min: 1 };
 
     protected override effectMessage(): MessageArgs {
         return ['make a choice for {0}', []];
     }
 
-    #actions(context: C, additionalProperties: ActionOverrides) {
+    #actions(context: Context, additionalProperties: ActionOverrides) {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         const { min, max, gameAction, target } = properties;
         const highest = typeof max === 'function' ? max(target) : max;
@@ -35,17 +35,17 @@ export class ChooseAmountAction<C extends AbilityContext = AbilityContext> exten
         return { properties, overrides, actions };
     }
 
-    override canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(target: GameObject, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { overrides, actions } = this.#actions(context, additionalProperties);
         return actions.some(([, action]) => action.canAffect(target, context, overrides));
     }
 
-    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { overrides, actions } = this.#actions(context, additionalProperties);
         return actions.some(([, action]) => action.hasLegalTarget(context, overrides));
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides, actions } = this.#actions(context, additionalProperties);
         const legal = actions.filter(([, action]) => action.hasLegalTarget(context, overrides));
         const player = resolveChoosingPlayer(context, properties.player);
@@ -75,7 +75,7 @@ export class ChooseAmountAction<C extends AbilityContext = AbilityContext> exten
         });
     }
 
-    override hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasTargetsChosenByInitiatingPlayer(context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { overrides, actions } = this.#actions(context, additionalProperties);
         return actions.some(([, action]) => action.hasTargetsChosenByInitiatingPlayer(context, overrides));
     }

@@ -12,7 +12,7 @@ export interface PlaceInProvinceProperties extends CardActionProperties {
     faceup?: boolean;
 }
 
-export class PlaceInProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceInProvinceProperties, EventName.Unnamed, C, 'faceup'> {
+export class PlaceInProvinceAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<PlaceInProvinceProperties, EventName.Unnamed, Context, 'faceup'> {
     override name = 'placeInProvince';
     override effect = 'put {0} into a province';
     override targetType = [CardType.Character, CardType.Holding, CardType.Event];
@@ -20,13 +20,13 @@ export class PlaceInProvinceAction<C extends AbilityContext = AbilityContext> ex
         faceup: true
     };
 
-    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { destination } = this.getProperties(context, additionalProperties);
         return !!destination && card.isDynasty && card.location !== destination &&
             context.game.getProvinceArray().includes(destination) && super.canAffect(card, context, additionalProperties);
     }
 
-    override eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: CardEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
         const card = event.card;
         const { destination, discard, faceup } = this.getProperties(event.context, additionalProperties);
         if(!card.isDrawCard() || !destination) {

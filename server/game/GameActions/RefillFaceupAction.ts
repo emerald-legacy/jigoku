@@ -8,12 +8,12 @@ export interface RefillFaceupProperties extends PlayerActionProperties {
     location: Location | Location[];
 }
 
-export class RefillFaceupAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RefillFaceupProperties, EventName.Unnamed, C> {
+export class RefillFaceupAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<RefillFaceupProperties, EventName.Unnamed, Context> {
     override name = 'refillFaceup';
     override effect = 'refill its province faceup';
 
 
-    override eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: PlayerEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         let { location } = this.getProperties(context, additionalProperties);
         if(!Array.isArray(location)) {

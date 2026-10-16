@@ -11,14 +11,14 @@ export interface RemoveFromGameProperties extends CardActionProperties {
     location?: Location | Location[];
 }
 
-export class RemoveFromGameAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<RemoveFromGameProperties, C> {
+export class RemoveFromGameAction<Context extends AbilityContext = AbilityContext> extends LeavesPlayAction<RemoveFromGameProperties, Context> {
     override name = 'removeFromGame';
     override restriction = RestrictionType.RemoveFromGame;
     override cost = 'removing {0} from the game';
     override targetType = [CardType.Character, CardType.Attachment, CardType.Holding, CardType.Event];
     override effect = 'remove {0} from the game';
 
-    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const propValidLocations = Array.isArray(properties.location)
             ? properties.location
@@ -46,7 +46,7 @@ export class RemoveFromGameAction<C extends AbilityContext = AbilityContext> ext
         return super.canAffect(card, context);
     }
 
-    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
+    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, card: DrawCard, context: Context, additionalProperties: Record<string, unknown>): void {
         super.updateEvent(event, card, context, { ...additionalProperties, destination: Location.RemovedFromGame });
     }
 }

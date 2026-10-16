@@ -13,17 +13,17 @@ import { type CardActionProperties, type CardEvent, CardGameAction } from './Car
 import { targetList, type ActionOverrides } from './GameAction.js';
 import { HandlerAction } from './HandlerAction.js';
 
-export interface SetAsideProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
+export interface SetAsideProperties<Context extends AbilityContext = AbilityContext> extends CardActionProperties {
     /** Facedown to the other players while set aside. */
     hidden?: boolean;
     /** Back to the owner's hand when the conflict ends. */
     returnAtEndOfConflict?: boolean;
     /** Controls the cards and may play them as if they were in their hand while they are set aside. */
     playableBy?: Player;
-    message?(context: C, cards: DrawCard[]): MessageArgs;
+    message?(context: Context, cards: DrawCard[]): MessageArgs;
 }
 
-export class SetAsideAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SetAsideProperties, EventName.Unnamed, C, 'hidden' | 'returnAtEndOfConflict'> {
+export class SetAsideAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<SetAsideProperties, EventName.Unnamed, Context, 'hidden' | 'returnAtEndOfConflict'> {
     override name = 'setAside';
     override effect = 'set aside {0}';
     override targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
@@ -32,11 +32,11 @@ export class SetAsideAction<C extends AbilityContext = AbilityContext> extends C
         returnAtEndOfConflict: false
     };
 
-    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         return card.location !== Location.RemovedFromGame && super.canAffect(card, context, additionalProperties);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const cards = targetList(properties.target).filter((card): card is DrawCard => card.isDrawCard() && this.canAffect(card, context, additionalProperties));
         if(cards.length === 0) {
@@ -52,7 +52,7 @@ export class SetAsideAction<C extends AbilityContext = AbilityContext> extends C
         }
     }
 
-    override eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: CardEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
         if(!card.isDrawCard()) {
@@ -82,7 +82,7 @@ export class SetAsideAction<C extends AbilityContext = AbilityContext> extends C
         }
     }
 
-    #returnAtEndOfConflict(context: C, cards: DrawCard[]): void {
+    #returnAtEndOfConflict(context: Context, cards: DrawCard[]): void {
         for(const owner of new Set(cards.map((card) => card.owner))) {
             const own = cards.filter((card) => card.owner === owner);
             context.source.applyDurationEffect(Duration.UntilEndOfRound, {

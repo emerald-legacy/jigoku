@@ -11,7 +11,7 @@ export interface DuelAddParticipantProperties extends CardActionProperties {
     duel: Duel;
 }
 
-export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DuelAddParticipantProperties, EventName.OnAddDuelParticipant, C> {
+export class DuelAddParticipantAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<DuelAddParticipantProperties, EventName.OnAddDuelParticipant, Context> {
     override name = 'duelAddParticipant';
     override eventName = EventName.OnAddDuelParticipant;
 
@@ -19,7 +19,7 @@ export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext>
         return ['extend the duel challenge to {0}', []];
     }
 
-    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
 
         if(card.type !== CardType.Character) {
@@ -36,13 +36,13 @@ export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext>
         return properties.duel.canAddToDuel(card, context);
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnAddDuelParticipant, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnAddDuelParticipant, Context>, card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { duel } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.duel = duel;
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnAddDuelParticipant, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnAddDuelParticipant, Context>): void {
         event.duel.addTargetToDuel(event.card);
     }
 }

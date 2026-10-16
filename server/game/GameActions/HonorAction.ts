@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type HonorProperties = CardActionProperties;
 
-export class HonorAction<C extends AbilityContext = AbilityContext> extends CardGameAction<HonorProperties, EventName.OnCardHonored, C> {
+export class HonorAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<HonorProperties, EventName.OnCardHonored, Context> {
     override name = 'honor';
     override restriction = RestrictionType.Honor;
     override eventName = EventName.OnCardHonored;
@@ -14,7 +14,7 @@ export class HonorAction<C extends AbilityContext = AbilityContext> extends Card
     override cost = 'honoring {0}';
     override effect = 'honor {0}';
 
-    override canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: Context): boolean {
         if(card.location !== Location.PlayArea || card.type !== CardType.Character || card.isHonored) {
             return false;
         } else if(!card.isDishonored && !card.checkRestrictions(RestrictionType.ReceiveHonorToken, context)) {
@@ -26,7 +26,7 @@ export class HonorAction<C extends AbilityContext = AbilityContext> extends Card
         return super.canAffect(card, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnCardHonored, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardHonored, Context>): void {
         event.card.honor();
         if(event.card.isHonored) {
             event.card.game.raiseEvent(EventName.OnStatusTokenGained, {

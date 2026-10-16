@@ -8,29 +8,29 @@ export interface TokenActionProperties extends GameActionProperties {
     target?: StatusToken | StatusToken[];
 }
 
-export type TokenEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { token: StatusToken };
+export type TokenEvent<EventType extends EventName, Context extends AbilityContext> = ActionEvent<EventType, Context> & { token: StatusToken };
 
 export class TokenAction<
-    P extends TokenActionProperties = TokenActionProperties,
-    N extends EventName = EventName,
-    C extends AbilityContext = AbilityContext,
-    D extends keyof P = never
-> extends GameAction<P, N, C, D> {
+    Properties extends TokenActionProperties = TokenActionProperties,
+    EventType extends EventName = EventName,
+    Context extends AbilityContext = AbilityContext,
+    Defaulted extends keyof Properties = never
+> extends GameAction<Properties, EventType, Context, Defaulted> {
     override targetType = ['token'];
 
-    override defaultTargets(context: C): StatusToken[] {
+    override defaultTargets(context: Context): StatusToken[] {
         return context.source.statusTokens ? [...context.source.statusTokens] : [];
     }
 
-    override canAffect(target: StatusToken, _context: C, _additionalProperties = {}): boolean {
+    override canAffect(target: StatusToken, _context: Context, _additionalProperties = {}): boolean {
         return target.type === 'token';
     }
 
-    override checkEventCondition(event: TokenEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
+    override checkEventCondition(event: TokenEvent<EventType, Context>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.token, event.context, additionalProperties);
     }
 
-    override addPropertiesToEvent(event: TokenEvent<N, C>, token: StatusToken, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: TokenEvent<EventType, Context>, token: StatusToken, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.token = token;
     }

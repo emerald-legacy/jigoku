@@ -12,24 +12,24 @@ export interface InjureProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
 
-export class InjureAction<C extends AbilityContext = AbilityContext> extends GameAction<InjureProperties, EventName, C> {
+export class InjureAction<Context extends AbilityContext = AbilityContext> extends GameAction<InjureProperties, EventName, Context> {
     override name = 'injure';
     override targetType = [CardType.Character];
     override effect = 'injure {0}';
     removeFateGameAction: GameAction;
     discardGameAction: GameAction;
 
-    constructor(propertyFactory: InjureProperties | ((context: C) => InjureProperties)) {
+    constructor(propertyFactory: InjureProperties | ((context: Context) => InjureProperties)) {
         super(propertyFactory);
         this.removeFateGameAction = new RemoveFateAction({ amount: 1 });
         this.discardGameAction = new DiscardFromPlayAction({});
     }
 
-    override defaultTargets(context: C): GameObject[] {
+    override defaultTargets(context: Context): GameObject[] {
         return [context.source];
     }
 
-    override canAffect(target: GameObject, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(target: GameObject, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         if(!target.isCard() || !target.isDrawCard()) {
             return false;
         }
@@ -45,7 +45,7 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
         return this.removeFateGameAction.canAffect(target, context, overrides);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const overrides = { ...additionalProperties, target: properties.target };
         for(const target of targetList(properties.target)) {

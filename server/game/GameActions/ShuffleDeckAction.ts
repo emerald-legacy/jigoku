@@ -9,15 +9,15 @@ export interface ShuffleDeckProperties extends PlayerActionProperties {
     deck: Location;
 }
 
-export class ShuffleDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ShuffleDeckProperties, EventName.Unnamed, C> {
+export class ShuffleDeckAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<ShuffleDeckProperties, EventName.Unnamed, Context> {
     override name = 'shuffleDeck';
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['shuffle {0}\'s {1}', [this.getProperties(context, additionalProperties).deck]];
     }
 
 
-    override eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: PlayerEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
         const { deck } = this.getProperties(event.context, additionalProperties);
         const player = event.player;
         player.shuffleDeck(deck);

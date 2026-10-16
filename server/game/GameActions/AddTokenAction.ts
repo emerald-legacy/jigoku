@@ -11,20 +11,20 @@ export interface AddTokenProperties extends CardActionProperties {
 }
 
 /** An add-token event this action created: `addPropertiesToEvent` always sets its token type. */
-type AddTokenEvent<C extends AbilityContext> = ActionEvent<EventName.OnAddTokenToCard, C> & { tokenType: TokenType };
+type AddTokenEvent<Context extends AbilityContext> = ActionEvent<EventName.OnAddTokenToCard, Context> & { tokenType: TokenType };
 
-export class AddTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AddTokenProperties, EventName.OnAddTokenToCard, C, 'tokenType'> {
+export class AddTokenAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<AddTokenProperties, EventName.OnAddTokenToCard, Context, 'tokenType'> {
     override name = 'addToken';
     override eventName = EventName.OnAddTokenToCard;
     override defaultProperties = {
         tokenType: TokenType.Honor
     };
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['add an {1} token to {0}', [this.getProperties(context, additionalProperties).tokenType]];
     }
 
-    override canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: Context): boolean {
         if(!card.isFaceup()) {
             return false;
         }
@@ -38,13 +38,13 @@ export class AddTokenAction<C extends AbilityContext = AbilityContext> extends C
         return super.canAffect(card, context);
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnAddTokenToCard, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnAddTokenToCard, Context>, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { tokenType } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.tokenType = tokenType;
     }
 
-    override eventHandler(event: AddTokenEvent<C>): void {
+    override eventHandler(event: AddTokenEvent<Context>): void {
         event.card.addToken(event.tokenType);
     }
 }

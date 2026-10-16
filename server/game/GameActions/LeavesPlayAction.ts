@@ -11,17 +11,17 @@ import type { ActionEvent } from './GameAction.js';
 import { RemoveFateAction } from './RemoveFateAction.js';
 
 /** A leaves-play event this action created: `updateEvent` always sets its destination. */
-export type LeavesPlayEvent<C extends AbilityContext> = ActionEvent<EventName.OnCardLeavesPlay, C> & { destination: Location };
+export type LeavesPlayEvent<Context extends AbilityContext> = ActionEvent<EventName.OnCardLeavesPlay, Context> & { destination: Location };
 
 export class LeavesPlayAction<
-    P extends CardActionProperties = CardActionProperties,
-    C extends AbilityContext = AbilityContext,
-    D extends keyof P = never
-> extends CardGameAction<P, EventName.OnCardLeavesPlay, C, D> {
+    Properties extends CardActionProperties = CardActionProperties,
+    Context extends AbilityContext = AbilityContext,
+    Defaulted extends keyof Properties = never
+> extends CardGameAction<Properties, EventName.OnCardLeavesPlay, Context, Defaulted> {
     override eventName = EventName.OnCardLeavesPlay;
     isSacrifice = false;
 
-    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
+    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, card: DrawCard, context: Context, additionalProperties: Record<string, unknown>): void {
         super.updateEvent(event, card, context, additionalProperties);
         const destination = additionalProperties.destination;
         event.isSacrifice = this.isSacrifice;
@@ -74,7 +74,7 @@ export class LeavesPlayAction<
         };
     }
 
-    override eventHandler(event: LeavesPlayEvent<C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: LeavesPlayEvent<Context>, additionalProperties: ActionOverrides = {}): void {
         const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination)) {
@@ -88,13 +88,13 @@ export class LeavesPlayAction<
 // next to LeavesPlayAction, which discards attachments with it: in a module of its own, each would import the other
 export type DiscardFromPlayProperties = CardActionProperties;
 
-export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> extends LeavesPlayAction<DiscardFromPlayProperties, C> {
+export class DiscardFromPlayAction<Context extends AbilityContext = AbilityContext> extends LeavesPlayAction<DiscardFromPlayProperties, Context> {
     override name = 'discardFromPlay';
     override restriction = RestrictionType.DiscardFromPlay;
     override cost = 'sacrificing {0}';
     override targetType = [CardType.Character, CardType.Attachment, CardType.Holding];
 
-    constructor(propertyFactory: DiscardFromPlayProperties | ((context: C) => DiscardFromPlayProperties), isSacrifice = false) {
+    constructor(propertyFactory: DiscardFromPlayProperties | ((context: Context) => DiscardFromPlayProperties), isSacrifice = false) {
         super(propertyFactory);
         if(isSacrifice) {
             this.name = 'sacrifice';
@@ -107,7 +107,7 @@ export class DiscardFromPlayAction<C extends AbilityContext = AbilityContext> ex
         return [this.isSacrifice ? 'sacrifice {0}' : 'discard {0}', []];
     }
 
-    override canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: Context): boolean {
         if(card.type === CardType.Holding) {
             if(this.isSacrifice && card.facedown) {
                 return false;

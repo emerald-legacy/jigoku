@@ -125,7 +125,7 @@ interface PlayableAbility {
     createContext(player: Player): AbilityContext;
 }
 
-export class PlayCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlayCardProperties, EventName.Unnamed, C, PlayCardDefaults> {
+export class PlayCardAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<PlayCardProperties, EventName.Unnamed, Context, PlayCardDefaults> {
     override name = 'playCard';
     override effect = 'play {0} as if it were in their hand';
     override defaultProperties = {
@@ -139,7 +139,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         ignoredBlockers: []
     };
 
-    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         if(!super.canAffect(card, context)) {
             return false;
         }
@@ -147,7 +147,7 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         return this.getLegalAbilities(card, context, properties).length > 0;
     }
 
-    getLegalAbilities(card: DrawCard, context: C, properties: ResolvedPlayCardProperties): PlayableAbility[] {
+    getLegalAbilities(card: DrawCard, context: Context, properties: ResolvedPlayCardProperties): PlayableAbility[] {
         const playable = this.getLegalActions(card, context, properties).concat(this.getLegalReactions(card, context, properties));
         return playable.filter(({ ability, createContext }) => {
             const ignoredBlockers = [Blocker.WrongLocation, Blocker.WrongPlayer, ...properties.ignoredBlockers];
@@ -162,12 +162,12 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         });
     }
 
-    getLegalActions(card: DrawCard, _context: C, properties: PlayCardProperties): PlayableAbility[] {
+    getLegalActions(card: DrawCard, _context: Context, properties: PlayCardProperties): PlayableAbility[] {
         const actions: BaseCardAbility[] = properties.playAction ? [properties.playAction].flat() : card.getPlayActions();
         return actions.map((ability) => ({ ability, createContext: (player) => ability.createContext(player) }));
     }
 
-    getLegalReactions(card: DrawCard, _context: C, properties: PlayCardProperties): PlayableAbility[] {
+    getLegalReactions(card: DrawCard, _context: Context, properties: PlayCardProperties): PlayableAbility[] {
         if(!properties.allowReactions) {
             return [];
         }
@@ -181,13 +181,13 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         context.playType = playType;
     }
 
-    cancelAction(context: C, properties: PlayCardProperties): void {
+    cancelAction(context: Context, properties: PlayCardProperties): void {
         if(properties.parentAction) {
             properties.parentAction.resolve(undefined, context);
         }
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const [card] = targetList(properties.target);
         if(!card || !card.isDrawCard()) {
@@ -213,14 +213,14 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         });
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.Unnamed, C>, card: DrawCard, context: C): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.Unnamed, Context>, card: DrawCard, context: Context): void {
         super.addPropertiesToEvent(event, card, context);
         event.onPlayCardSource = context.source;
     }
 
     getPlayCardEvent(
         card: DrawCard,
-        context: C,
+        context: Context,
         actionContext: AbilityContext,
         additionalProperties: ActionOverrides = {}
     ): Event {

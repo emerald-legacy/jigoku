@@ -7,28 +7,28 @@ import type Player from '../Player.js';
 import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import type { GameAction, GameActionProperties } from './GameAction.js';
 
-export interface OptionalProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
+export interface OptionalProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties {
     gameAction: GameAction;
     activePromptTitle: string;
     player?: Chooser;
     /** Resolves without asking, when declining isn't allowed (the rest of the ability did nothing). */
     required?: boolean;
-    acceptMessage?(context: C, chooser: Player): MessageArgs;
-    declineMessage?(context: C, chooser: Player): MessageArgs;
+    acceptMessage?(context: Context, chooser: Player): MessageArgs;
+    declineMessage?(context: Context, chooser: Player): MessageArgs;
 }
 
 /** A player may resolve its game action; a `then()` step after it runs only if they did and it resolved. */
-export class OptionalAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<OptionalProperties, C> {
+export class OptionalAction<Context extends AbilityContext = AbilityContext> extends CompositeGameAction<OptionalProperties, Context> {
     protected children(properties: OptionalProperties) {
         return [properties.gameAction];
     }
 
-    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         return properties.gameAction.getEffectMessage(context, overrides);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         const chooser = resolveChoosingPlayer(context, properties.player);
         if(!chooser) {

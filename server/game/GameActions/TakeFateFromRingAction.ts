@@ -12,16 +12,16 @@ export interface TakeFateRingProperties extends RingActionProperties {
     removeOnly?: boolean;
 }
 
-export class TakeFateFromRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName.OnMoveFate, C, 'amount' | 'removeOnly'> {
+export class TakeFateFromRingAction<Context extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName.OnMoveFate, Context, 'amount' | 'removeOnly'> {
     override name = 'takeFateFromRing';
     override eventName = EventName.OnMoveFate;
     override defaultProperties = { amount: 1, removeOnly: false };
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         return ['{2} {1} fate from {0}', [properties.amount, properties.removeOnly ? 'remove' : 'take']];
     }
 
-    override canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         return (
             context.player.checkRestrictions(RestrictionType.TakeFateFromRings, context) &&
@@ -31,7 +31,7 @@ export class TakeFateFromRingAction<C extends AbilityContext = AbilityContext> e
         );
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, Context>, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         event.fate = properties.amount;
         event.origin = ring;
@@ -39,11 +39,11 @@ export class TakeFateFromRingAction<C extends AbilityContext = AbilityContext> e
         event.recipient = properties.removeOnly ? undefined : context.player;
     }
 
-    override checkEventCondition(event: ActionEvent<EventName.OnMoveFate, C>): boolean {
+    override checkEventCondition(event: ActionEvent<EventName.OnMoveFate, Context>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    override isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override isEventFullyResolved(event: AnyEvent, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { amount } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
@@ -54,7 +54,7 @@ export class TakeFateFromRingAction<C extends AbilityContext = AbilityContext> e
         );
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnMoveFate, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnMoveFate, Context>): void {
         this.moveFateEventHandler(event);
     }
 }

@@ -5,9 +5,9 @@ import { Duration, EventName } from '../Constants.js';
 import type { LastingEffectGeneralProperties } from './LastingEffectAction.js';
 import type { ActionEvent } from './GameAction.js';
 
-export type LastingEffectRingProperties<C extends AbilityContext = AbilityContext> = LastingEffectGeneralProperties<C>;
+export type LastingEffectRingProperties<Context extends AbilityContext = AbilityContext> = LastingEffectGeneralProperties<Context>;
 
-export class RingLastingEffectAction<C extends AbilityContext = AbilityContext> extends RingAction<LastingEffectRingProperties, EventName.OnEffectApplied, C, 'duration' | 'effect'> {
+export class RingLastingEffectAction<Context extends AbilityContext = AbilityContext> extends RingAction<LastingEffectRingProperties, EventName.OnEffectApplied, Context, 'duration' | 'effect'> {
     override name = 'ringLastingEffect';
     override eventName = EventName.OnEffectApplied;
     override effect = 'apply a lasting effect';
@@ -16,7 +16,7 @@ export class RingLastingEffectAction<C extends AbilityContext = AbilityContext> 
         effect: []
     };
 
-    override eventHandler(event: ActionEvent<EventName.OnEffectApplied, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnEffectApplied, Context>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;

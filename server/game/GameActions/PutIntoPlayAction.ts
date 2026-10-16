@@ -18,10 +18,10 @@ export interface PutIntoPlayProperties extends CardActionProperties {
 
 export type PutIntoPlayDefaults = 'fate' | 'status' | 'controller';
 
-export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extends CardGameAction<
+export class PutIntoPlayAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<
     PutIntoPlayProperties,
     EventName.OnCharacterEntersPlay,
-    C,
+    Context,
     PutIntoPlayDefaults
 > {
     override name = 'putIntoPlay';
@@ -36,7 +36,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         controller: Players.Self
     };
     constructor(
-        properties: ((context: C) => PutIntoPlayProperties) | PutIntoPlayProperties,
+        properties: ((context: Context) => PutIntoPlayProperties) | PutIntoPlayProperties,
         intoConflict = true
     ) {
         super(properties);
@@ -55,7 +55,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), []];
     }
 
-    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const contextCopy = context.copy({ source: card });
         const player = this.getPutIntoPlayPlayer(contextCopy);
@@ -95,7 +95,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         return true;
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, Context>, card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
@@ -109,7 +109,7 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         event.side = side || this.getDefaultSide(context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, Context>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const player = this.getPutIntoPlayPlayer(context);
         const card = event.card;

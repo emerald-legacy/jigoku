@@ -10,19 +10,19 @@ export interface GloryCountProperties extends GameActionProperties {
     gameAction: ((gloryCountWinner: Player | null, context: AbilityContext) => GameAction | null) | GameAction;
 }
 
-export class PerformGloryCountAction<C extends AbilityContext = AbilityContext> extends GameAction<GloryCountProperties, EventName.OnGloryCount, C> {
+export class PerformGloryCountAction<Context extends AbilityContext = AbilityContext> extends GameAction<GloryCountProperties, EventName.OnGloryCount, Context> {
     override name = 'performGloryCount';
     override eventName = EventName.OnGloryCount;
 
-    override hasLegalTarget(_context: C): boolean {
+    override hasLegalTarget(_context: Context): boolean {
         return true;
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnGloryCount, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnGloryCount, Context>, additionalProperties: ActionOverrides = {}): void {
         const game = event.context.game;
         const properties = this.getProperties(event.context, additionalProperties);
 

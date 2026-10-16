@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type BowProperties = CardActionProperties;
 
-export class BowAction<C extends AbilityContext = AbilityContext> extends CardGameAction<BowProperties, EventName.OnCardBowed, C> {
+export class BowAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<BowProperties, EventName.OnCardBowed, Context> {
     override name = 'bow';
     override restriction = RestrictionType.Bow;
     override eventName = EventName.OnCardBowed;
@@ -14,14 +14,14 @@ export class BowAction<C extends AbilityContext = AbilityContext> extends CardGa
     override effect = 'bow {0}';
     override targetType = [CardType.Character, CardType.Attachment, CardType.Stronghold];
 
-    override canAffect(card: BaseCard, context: C): boolean {
+    override canAffect(card: BaseCard, context: Context): boolean {
         if((card.location !== Location.PlayArea && card.type !== CardType.Stronghold) || card.bowed) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnCardBowed, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardBowed, Context>): void {
         event.card.bow();
     }
 }

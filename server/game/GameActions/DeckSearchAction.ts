@@ -13,31 +13,31 @@ import type { GameEvent } from '../Events/EventPayloads.js';
 import { derive, type Derivable } from '../utils/helpers.js';
 import { RearrangeDeckAction } from './RearrangeDeckAction.js';
 
-export interface DeckSearchProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
+export interface DeckSearchProperties<Context extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     mode?: TargetMode;
     activePromptTitle?: string;
-    cardsToLookAt?: Derivable<number, C>;
-    numCards?: Derivable<number, C>;
+    cardsToLookAt?: Derivable<number, Context>;
+    numCards?: Derivable<number, Context>;
     reveal?: boolean;
     deck?: DeckType;
     /** What happens to the looked-at cards not taken, once the taken ones are dealt with; `remainingCardsHandler` replaces it. */
-    remainingCards?: Derivable<RemainingCards, C>;
+    remainingCards?: Derivable<RemainingCards, Context>;
     gameAction?: GameAction;
     /** The chat line once cards are taken; without it, "<chooser> takes <cards>". */
-    message?(context: C, cards: DrawCard[], chooser: Player): MessageArgs;
+    message?(context: Context, cards: DrawCard[], chooser: Player): MessageArgs;
     uniqueNames?: boolean;
     /** Who chooses the cards; by default the player whose deck is searched. */
     player?: Chooser;
-    selectedCardsHandler?(context: C, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
-    remainingCardsHandler?(context: C, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
-    cardCondition?(card: DrawCard, context: C): boolean;
+    selectedCardsHandler?(context: Context, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
+    remainingCardsHandler?(context: Context, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
+    cardCondition?(card: DrawCard, context: Context): boolean;
     takesNothingGameAction?: GameAction;
     /** The button that ends the choice; by default "Take nothing", or "Done" once a card is taken. */
     doneButtonText?: string;
     /** No prompt while none of the looked-at cards can be taken. */
     hideIfNoLegalTargets?: boolean;
     /** Replaces "<chooser> takes nothing"; `undefined` for no chat line. */
-    takesNothingMessage?(context: C, chooser: Player): MessageArgs | undefined;
+    takesNothingMessage?(context: Context, chooser: Player): MessageArgs | undefined;
 }
 
 type DeckSearchDefaults =
@@ -50,9 +50,9 @@ type DeckSearchDefaults =
     | 'uniqueNames'
     | 'cardCondition';
 
-type ResolvedDeckSearchProperties<C extends AbilityContext> = WithDefaults<DeckSearchProperties<C>, DeckSearchDefaults>;
+type ResolvedDeckSearchProperties<Context extends AbilityContext> = WithDefaults<DeckSearchProperties<Context>, DeckSearchDefaults>;
 
-export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DeckSearchProperties<C>, EventName.OnDeckSearch, C, DeckSearchDefaults> {
+export class DeckSearchAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<DeckSearchProperties<Context>, EventName.OnDeckSearch, Context, DeckSearchDefaults> {
     override name = 'deckSearch';
     override eventName = EventName.OnDeckSearch;
 
@@ -67,7 +67,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         cardCondition: () => true
     };
 
-    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(derive(properties.cardsToLookAt, context) === 0) {
             return false;
@@ -76,7 +76,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         return this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const properties = this.getProperties(context, additionalProperties);
         const { cardsToLookAt } = properties;
         const player = this.#searched(properties, context);
@@ -90,20 +90,20 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         return undefined;
     }
 
-    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const amount = derive(properties.cardsToLookAt, context);
         return amount !== 0 && this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { cardsToLookAt } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = derive(cardsToLookAt, context);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const player = this.#searched(properties, context);
         const event = this.getEvent(player, context, additionalProperties);
@@ -116,15 +116,15 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         this.#selectCard(event, additionalProperties, cards, new Set());
     }
 
-    #searched(properties: ResolvedDeckSearchProperties<C>, context: C): Player {
+    #searched(properties: ResolvedDeckSearchProperties<Context>, context: Context): Player {
         return targetList(properties.target)[0] ?? context.player;
     }
 
-    #chooser(properties: ResolvedDeckSearchProperties<C>, event: GameEvent<EventName.OnDeckSearch>): Player {
+    #chooser(properties: ResolvedDeckSearchProperties<Context>, event: GameEvent<EventName.OnDeckSearch>): Player {
         return (properties.player && resolveChoosingPlayer(event.context, properties.player)) || event.player;
     }
 
-    #getDeck(player: Player, properties: ResolvedDeckSearchProperties<C>): DrawCard[] {
+    #getDeck(player: Player, properties: ResolvedDeckSearchProperties<Context>): DrawCard[] {
         switch(properties.deck) {
             case DeckType.Dynasty:
                 return player.dynastyDeck.slice();
@@ -135,7 +135,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         }
     }
 
-    #selectCard(event: ActionEvent<EventName.OnDeckSearch, C>, additionalProperties: ActionOverrides = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
+    #selectCard(event: ActionEvent<EventName.OnDeckSearch, Context>, additionalProperties: ActionOverrides = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         const canCancel = properties.mode !== TargetMode.Exactly;
@@ -201,8 +201,8 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     #handleDone(
-        properties: ResolvedDeckSearchProperties<C>,
-        context: C,
+        properties: ResolvedDeckSearchProperties<Context>,
+        context: Context,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>,
         allCards: DrawCard[]
@@ -227,8 +227,8 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     #handleRemaining(
-        properties: ResolvedDeckSearchProperties<C>,
-        context: C,
+        properties: ResolvedDeckSearchProperties<Context>,
+        context: Context,
         event: GameEvent<EventName.OnDeckSearch>,
         remaining: DrawCard[]
     ): void {
@@ -264,8 +264,8 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     #defaultHandleDone(
-        properties: ResolvedDeckSearchProperties<C>,
-        context: C,
+        properties: ResolvedDeckSearchProperties<Context>,
+        context: Context,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>
     ): void {
@@ -284,8 +284,8 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
     }
 
     #doneMessage(
-        properties: ResolvedDeckSearchProperties<C>,
-        context: C,
+        properties: ResolvedDeckSearchProperties<Context>,
+        context: Context,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>
     ): void {
@@ -305,7 +305,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         context.game.addMessage(msg`${choosingPlayer} takes ${selectedCards.size} ${selectedCards.size > 1 ? 'cards' : 'card'}`);
     }
 
-    #takesNothing(properties: ResolvedDeckSearchProperties<C>, context: C, event: GameEvent<EventName.OnDeckSearch>): void {
+    #takesNothing(properties: ResolvedDeckSearchProperties<Context>, context: Context, event: GameEvent<EventName.OnDeckSearch>): void {
         const choosingPlayer = this.#chooser(properties, event);
         const message = properties.takesNothingMessage ? properties.takesNothingMessage(context, choosingPlayer) : msg`${choosingPlayer} takes nothing`;
         if(message) {

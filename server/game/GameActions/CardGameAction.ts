@@ -11,14 +11,14 @@ export interface CardActionProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
 
-export type CardEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { card: BaseCard };
+export type CardEvent<EventType extends EventName, Context extends AbilityContext> = ActionEvent<EventType, Context> & { card: BaseCard };
 
 export class CardGameAction<
-    P extends CardActionProperties = CardActionProperties,
-    N extends EventName = EventName,
-    C extends AbilityContext = AbilityContext,
-    D extends keyof P = never
-> extends GameAction<P, N, C, D> {
+    Properties extends CardActionProperties = CardActionProperties,
+    EventType extends EventName = EventName,
+    Context extends AbilityContext = AbilityContext,
+    Defaulted extends keyof Properties = never
+> extends GameAction<Properties, EventType, Context, Defaulted> {
     override targetType = [
         CardType.Character,
         CardType.Attachment,
@@ -30,15 +30,15 @@ export class CardGameAction<
         'ring'
     ];
 
-    override defaultTargets(context: C): BaseCard[] {
+    override defaultTargets(context: Context): BaseCard[] {
         return [context.source];
     }
 
-    override checkEventCondition(event: ActionEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
+    override checkEventCondition(event: ActionEvent<EventType, Context>, additionalProperties: ActionOverrides = {}): boolean {
         return !!event.card && this.canAffect(event.card, event.context, additionalProperties);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
         for(const card of targetList(target)) {
             let allCostsPaid = true;
@@ -66,16 +66,16 @@ export class CardGameAction<
         }
     }
 
-    override addPropertiesToEvent(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventType, Context>, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.card = card;
     }
 
-    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): boolean {
+    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: Context, additionalProperties: Record<string, unknown>): boolean {
         return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
-    checkForRefillProvince(card: BaseCard, event: { context: C }, additionalProperties: ActionOverrides = {}): void {
+    checkForRefillProvince(card: BaseCard, event: { context: Context }, additionalProperties: ActionOverrides = {}): void {
         if(!card.isInProvince() || card.location === Location.StrongholdProvince) {
             return;
         }

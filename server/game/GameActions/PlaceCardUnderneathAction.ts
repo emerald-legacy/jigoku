@@ -12,28 +12,28 @@ export interface PlaceCardUnderneathProperties extends CardActionProperties {
     hideWhenFaceup?: boolean;
 }
 
-export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceCardUnderneathProperties, EventName.Unnamed, C, 'hideWhenFaceup'> {
+export class PlaceCardUnderneathAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<PlaceCardUnderneathProperties, EventName.Unnamed, Context, 'hideWhenFaceup'> {
     override name = 'placeCardUnderneath';
     override targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     override defaultProperties = {
         hideWhenFaceup: true
     };
 
-    override getCostMessage(context: C): MessageArgs {
+    override getCostMessage(context: Context): MessageArgs {
         const properties = this.getProperties(context);
         return ['placing {0} underneath {1}', [properties.target, properties.destination]];
     }
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['place {0} underneath {1}', [this.getProperties(context, additionalProperties).destination]];
     }
 
-    override canAffect(card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { destination } = this.getProperties(context, additionalProperties);
         return !!(destination && destination.uuid) && super.canAffect(card, context);
     }
 
-    override eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: CardEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const card = event.card;
         if(card.isDrawCard()) {

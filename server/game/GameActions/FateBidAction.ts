@@ -9,10 +9,10 @@ import { FateBidPrompt } from '../gamesteps/FateBidPrompt.js';
 import { LoseFateAction } from './LoseFateAction.js';
 import { JointGameAction } from './JointGameAction.js';
 
-export interface FateBidProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
+export interface FateBidProperties<Context extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     postBidAction?: GameAction;
     /** The chat line after the bids; without it, the post-bid action's own text. */
-    message?(context: C): MessageArgs;
+    message?(context: Context): MessageArgs;
 }
 
 type PostBid = Pick<FateBidProperties, 'postBidAction' | 'message'>;
@@ -30,7 +30,7 @@ export function queuePostBidSteps(event: PostBid, context: AbilityContext): void
     );
 }
 
-export class FateBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FateBidProperties, EventName.Unnamed, C> {
+export class FateBidAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<FateBidProperties, EventName.Unnamed, Context> {
     override name = 'fateBid';
     override eventName = EventName.Unnamed;
 
@@ -39,11 +39,11 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
         return ['have {0} select an amount of fate from their pool', []];
     }
 
-    protected override effectMessageTarget(context: C): MsgArg {
+    protected override effectMessageTarget(context: Context): MsgArg {
         return [context.player, context.player.opponent];
     }
 
-    override addPropertiesToEvent(event: PlayerEvent<EventName.Unnamed, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: PlayerEvent<EventName.Unnamed, Context>, player: Player, context: Context, additionalProperties: Record<string, unknown>): void {
         const { postBidAction, message } = this.getProperties(
             context,
             additionalProperties
@@ -53,7 +53,7 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
         event.message = message;
     }
 
-    override eventHandler(event: ActionEvent<EventName.Unnamed, C>): void {
+    override eventHandler(event: ActionEvent<EventName.Unnamed, Context>): void {
         const context = event.context;
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {

@@ -10,12 +10,12 @@ export interface SequentialProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class SequentialAction<C extends AbilityContext = AbilityContext> extends CompositeGameAction<SequentialProperties, C> {
-    constructor(gameActions: GameActionList<C>) {
-        super(typeof gameActions === 'function' ? (context: C) => ({ gameActions: gameActions(context) }) : { gameActions });
+export class SequentialAction<Context extends AbilityContext = AbilityContext> extends CompositeGameAction<SequentialProperties, Context> {
+    constructor(gameActions: GameActionList<Context>) {
+        super(typeof gameActions === 'function' ? (context: Context) => ({ gameActions: gameActions(context) }) : { gameActions });
     }
 
-    override getEffectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    override getEffectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         return properties.gameActions[0].getEffectMessage(context, overrides);
     }
@@ -24,7 +24,7 @@ export class SequentialAction<C extends AbilityContext = AbilityContext> extends
         return properties.gameActions;
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {

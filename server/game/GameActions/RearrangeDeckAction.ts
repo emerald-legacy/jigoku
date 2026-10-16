@@ -11,7 +11,7 @@ import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './P
 
 const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth'];
 
-export interface RearrangeDeckProperties<C extends AbilityContext = AbilityContext> extends PlayerActionProperties {
+export interface RearrangeDeckProperties<Context extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     /** How many cards from the top of the deck. */
     amount?: Derivable<number, AbilityContext>;
     /** Instead of the top `amount`: these cards of the deck, which then go on top in the chosen order. */
@@ -20,11 +20,11 @@ export interface RearrangeDeckProperties<C extends AbilityContext = AbilityConte
     /** The title of the first prompt; the later ones ask for the second, third… card. */
     activePromptTitle?: string;
     /** Printed once the cards are back, with the cards top card first. Method syntax, so a narrower context fits. */
-    message?(context: C, cards: DrawCard[]): MessageArgs;
+    message?(context: Context, cards: DrawCard[]): MessageArgs;
 }
 
 /** The player of the ability puts the top cards of the target player's deck back in the order they choose. */
-export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RearrangeDeckProperties, EventName.Unnamed, C, 'deck' | 'activePromptTitle'> {
+export class RearrangeDeckAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<RearrangeDeckProperties, EventName.Unnamed, Context, 'deck' | 'activePromptTitle'> {
     override name = 'rearrangeDeck';
     override defaultProperties = {
         deck: DeckType.Conflict,
@@ -32,7 +32,7 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
     };
 
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { amount, cards, deck } = this.getProperties(context, additionalProperties);
         return ['rearrange the top {1} cards of {0}\'s {2}', [cards?.length ?? derive(amount ?? 0, context), deck]];
     }
@@ -41,12 +41,12 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         return deck === DeckType.Dynasty ? player.dynastyDeck : player.conflictDeck;
     }
 
-    override canAffect(player: Player, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { deck } = this.getProperties(context, additionalProperties);
         return this.#deck(player, deck).length > 0 && super.canAffect(player, context);
     }
 
-    override addEventsToArray(events: Event[], context: C, additionalProperties: ActionOverrides = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         for(const player of targetList(properties.target)) {
             if(!this.canAffect(player, context, additionalProperties)) {
@@ -61,7 +61,7 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         }
     }
 
-    #chooseNext(context: C, remaining: DrawCard[], ordered: DrawCard[], title: string, done: (ordered: DrawCard[]) => void): void {
+    #chooseNext(context: Context, remaining: DrawCard[], ordered: DrawCard[], title: string, done: (ordered: DrawCard[]) => void): void {
         context.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: title,
             context,
@@ -78,7 +78,7 @@ export class RearrangeDeckAction<C extends AbilityContext = AbilityContext> exte
         });
     }
 
-    #putBack(event: PlayerEvent<EventName.Unnamed, C>, ordered: DrawCard[], additionalProperties: ActionOverrides = {}): void {
+    #putBack(event: PlayerEvent<EventName.Unnamed, Context>, ordered: DrawCard[], additionalProperties: ActionOverrides = {}): void {
         const { deck, message } = this.getProperties(event.context, additionalProperties);
         const cards = this.#deck(event.player, deck);
         const stillInDeck = ordered.filter((card) => cards.includes(card));

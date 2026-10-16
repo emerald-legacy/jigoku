@@ -9,20 +9,20 @@ export interface ClaimFavorProperties extends PlayerActionProperties {
     side?: FavorType;
 }
 
-export class ClaimImperialFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ClaimFavorProperties, EventName.OnClaimFavor, C> {
+export class ClaimImperialFavorAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<ClaimFavorProperties, EventName.OnClaimFavor, Context> {
     override name = 'claimImperialFavor';
     override eventName = EventName.OnClaimFavor;
     override effect = 'claim the Emperor\'s favor';
 
-    override hasLegalTarget(context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
         return targetList(this.getProperties(context, additionalProperties).target).length > 0;
     }
 
-    override canAffect(player: Player, context: C, _additionalProperties = {}): boolean {
+    override canAffect(player: Player, context: Context, _additionalProperties = {}): boolean {
         return super.canAffect(player, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnClaimFavor, C>, additionalProperties: ActionOverrides = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnClaimFavor, Context>, additionalProperties: ActionOverrides = {}): void {
         const { side } = this.getProperties(event.context, additionalProperties);
         event.player.claimImperialFavor(side);
     }

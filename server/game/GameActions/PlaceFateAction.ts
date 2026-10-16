@@ -15,17 +15,17 @@ export interface PlaceFateProperties extends CardActionProperties {
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName.OnMoveFate, C, 'amount'> {
+export class PlaceFateAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName.OnMoveFate, Context, 'amount'> {
     override name = 'placeFate';
     override restriction = RestrictionType.PlaceFate;
     override eventName = EventName.OnMoveFate;
     override targetType = [CardType.Character];
     override defaultProperties = { amount: 1 };
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['place {1} fate on {0}', [this.getProperties(context, additionalProperties).amount]];
     }
 
-    override canAffect(card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         if(amount === 0 || card.location !== Location.PlayArea) {
             return false;
@@ -38,7 +38,7 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         return super.canAffect(card, context) && this.checkOrigin(context, origin) && card !== origin;
     }
 
-    checkOrigin(context: C, origin?: Player | Ring | DrawCard): boolean {
+    checkOrigin(context: Context, origin?: Player | Ring | DrawCard): boolean {
         if(!origin) {
             return true;
         }
@@ -49,7 +49,7 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         );
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: DrawCard, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, Context>, card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         event.fate = amount;
         event.origin = origin;
@@ -57,11 +57,11 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         event.recipient = card;
     }
 
-    override checkEventCondition(event: ActionEvent<EventName.OnMoveFate, C>): boolean {
+    override checkEventCondition(event: ActionEvent<EventName.OnMoveFate, Context>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
@@ -72,7 +72,7 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         );
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnMoveFate, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnMoveFate, Context>): void {
         this.moveFateEventHandler(event);
     }
 }

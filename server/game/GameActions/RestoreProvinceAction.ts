@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type RestoreProvinceProperties = CardActionProperties;
 
-export class RestoreProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<CardActionProperties, EventName.OnRestoreProvince, C> {
+export class RestoreProvinceAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<CardActionProperties, EventName.OnRestoreProvince, Context> {
     override name = 'restoreProvince';
     override restriction = RestrictionType.RestoreProvince;
     override eventName = EventName.OnRestoreProvince;
@@ -14,7 +14,7 @@ export class RestoreProvinceAction<C extends AbilityContext = AbilityContext> ex
     override cost = 'restoring {0}';
     override effect = 'restore {0}';
 
-    override canAffect(card: ProvinceCard, context: C): boolean {
+    override canAffect(card: ProvinceCard, context: Context): boolean {
         if(!card.isProvince) {
             return false;
         }
@@ -24,7 +24,7 @@ export class RestoreProvinceAction<C extends AbilityContext = AbilityContext> ex
         return super.canAffect(card, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnRestoreProvince, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnRestoreProvince, Context>): void {
         event.card.restoreProvince();
     }
 }

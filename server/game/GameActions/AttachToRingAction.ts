@@ -13,16 +13,16 @@ export interface AttachToRingProperties extends CardActionProperties {
     attachment?: DrawCard;
 }
 
-export class AttachToRingAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AttachToRingProperties, EventName.OnCardAttached, C> {
+export class AttachToRingAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<AttachToRingProperties, EventName.OnCardAttached, Context> {
     override name = 'attachToRing';
     override eventName = EventName.OnCardAttached;
     override targetType = ['ring'];
 
-    protected override effectMessage(context: C, additionalProperties: ActionOverrides = {}): MessageArgs {
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['attach {1} to {0}', [this.getProperties(context, additionalProperties).attachment]];
     }
 
-    override canAffect(ring: Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override canAffect(ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         if(!context.player) {
             return false;
@@ -36,17 +36,17 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
         return super.canAffect(ring, context);
     }
 
-    override checkEventCondition(event: ActionEvent<EventName.OnCardAttached, C>, additionalProperties: ActionOverrides = {}): boolean {
+    override checkEventCondition(event: ActionEvent<EventName.OnCardAttached, Context>, additionalProperties: ActionOverrides = {}): boolean {
         const parent = event.parent;
         return parent instanceof Ring && this.canAffect(parent, event.context, additionalProperties);
     }
 
-    override isEventFullyResolved(event: AnyEvent, card: BaseCard | Ring, context: C, additionalProperties: ActionOverrides = {}): boolean {
+    override isEventFullyResolved(event: AnyEvent, card: BaseCard | Ring, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardAttached, C>, ring: BaseCard | Ring, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardAttached, Context>, ring: BaseCard | Ring, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { attachment } = this.getProperties(context, additionalProperties);
         event.parent = ring;
         if(attachment) {
@@ -55,7 +55,7 @@ export class AttachToRingAction<C extends AbilityContext = AbilityContext> exten
         event.context = context;
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnCardAttached, C>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardAttached, Context>): void {
         const card = event.card;
         if(card.location === Location.PlayArea && card.parent) {
             card.parent.removeAttachment(card);

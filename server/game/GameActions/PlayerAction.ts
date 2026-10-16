@@ -8,30 +8,30 @@ export interface PlayerActionProperties extends GameActionProperties {
     target?: Player | Player[];
 }
 
-export type PlayerEvent<N extends EventName, C extends AbilityContext> = ActionEvent<N, C> & { player: Player };
+export type PlayerEvent<EventType extends EventName, Context extends AbilityContext> = ActionEvent<EventType, Context> & { player: Player };
 
 export class PlayerAction<
-    P extends PlayerActionProperties = PlayerActionProperties,
-    N extends EventName = EventName,
-    C extends AbilityContext = AbilityContext,
-    D extends keyof P = never
-> extends GameAction<P, N, C, D> {
+    Properties extends PlayerActionProperties = PlayerActionProperties,
+    EventType extends EventName = EventName,
+    Context extends AbilityContext = AbilityContext,
+    Defaulted extends keyof Properties = never
+> extends GameAction<Properties, EventType, Context, Defaulted> {
     override targetType = ['player'];
 
     /** The ability's player; actions aimed at the opponent return `opponentTargets(context)`. */
-    override defaultTargets(context: C): Player[] {
+    override defaultTargets(context: Context): Player[] {
         return context.player ? [context.player] : [];
     }
 
-    protected opponentTargets(context: C): Player[] {
+    protected opponentTargets(context: Context): Player[] {
         return context.player?.opponent ? [context.player.opponent] : [];
     }
 
-    override checkEventCondition(event: PlayerEvent<N, C>, additionalProperties: ActionOverrides = {}): boolean {
+    override checkEventCondition(event: PlayerEvent<EventType, Context>, additionalProperties: ActionOverrides = {}): boolean {
         return this.canAffect(event.player, event.context, additionalProperties);
     }
 
-    override addPropertiesToEvent(event: PlayerEvent<N, C>, player: Player, context: C, additionalProperties: ActionOverrides = {}): void {
+    override addPropertiesToEvent(event: PlayerEvent<EventType, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.player = player;
     }
