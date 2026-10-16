@@ -29,18 +29,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.ability.isTriggeredAbility() &&
         context.ability.abilityType !== AbilityType.ForcedReaction &&
         context.ability.abilityType !== AbilityType.ForcedInterrupt,
-    [RestrictionScope.CardEffects]: (context) =>
-        (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
-        context.stage !== Stage.Cost &&
-        [
-            CardType.Event,
-            CardType.Character,
-            CardType.Holding,
-            CardType.Attachment,
-            CardType.Stronghold,
-            CardType.Province,
-            CardType.Role
-        ].includes(context.source.type),
+    [RestrictionScope.CardEffects]: (context) => isCardEffect(context),
     [RestrictionScope.CardEffectsExceptOwn]: (context, effect) =>
         checkRestrictions[RestrictionScope.CardEffects](context, effect) && context.source !== effect.context?.source,
     [RestrictionScope.RingEffects]: (context) => context.source.isRing(),
@@ -120,8 +109,10 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         !!context.source && context.source.hasTrait(Trait.Spell) && !context.source.hasTrait(Trait.Meishodo)
 };
 
+// costs are not effects (RRG "Card effect")
 const isCardEffect = (context: AbilityContext) =>
     (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
+    context.stage !== Stage.Cost &&
     [
         CardType.Event,
         CardType.Character,

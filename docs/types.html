@@ -377,7 +377,7 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
       </table>
   <ul class="edge">
     <li>A game action with <code>cannotBeCancelled: true</code> ignores restrictions only at <code>Stage.Effect</code>.</li>
-    <li>The <code>CardEffects</code> restriction scope ignores attempts at <code>Stage.Cost</code>; the <code>LoseHonorAsCost</code> scope applies only at <code>Stage.Cost</code>.</li>
+    <li>The <code>CardEffects</code>, <code>OpponentsCardEffects</code> and <code>OwnCardEffects</code> restriction scopes ignore attempts at <code>Stage.Cost</code> (costs are not effects); the <code>LoseHonorAsCost</code> scope applies only at <code>Stage.Cost</code>.</li>
   </ul>
   <pre><code>// Sententious Poet: Reaction: After your opponent spends fate to play a card during a conflict in which this character is participating - gain 1 fate.
 onSpendFate: (event, context) =&gt;
@@ -785,7 +785,7 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>OpponentsAttachments</code></td><td><code>'opponentsAttachments'</code></td><td>Attachments used by the applying player's opponent.</td></tr>
           <tr><td><code>OpponentsCardAbilities</code></td><td><code>'opponentsCardAbilities'</code></td><td>Card abilities of the opponent.</td></tr>
           <tr><td><code>OpponentsCardAndRingEffects</code></td><td><code>'opponentsCardAndRingEffects'</code></td><td><code>OpponentsCardEffects</code> or <code>OpponentsRingEffects</code>.</td></tr>
-          <tr><td><code>OpponentsCardEffects</code></td><td><code>'opponentsCardEffects'</code></td><td>Attempts by the opponent whose source is a card and that are not playing a card (any stage).</td></tr>
+          <tr><td><code>OpponentsCardEffects</code></td><td><code>'opponentsCardEffects'</code></td><td><code>CardEffects</code> attempts by the opponent.</td></tr>
           <tr><td><code>OpponentsCharacterAbilitiesWithLowerGlory</code></td><td><code>'opponentsCharacterAbilitiesWithLowerGlory'</code></td><td>Opponent's characters with lower glory than the effect source's parent character.</td></tr>
           <tr><td><code>OpponentsCharacters</code></td><td><code>'opponentsCharacters'</code></td><td>Characters the opponent controls.</td></tr>
           <tr><td><code>OpponentsEvents</code></td><td><code>'opponentsEvents'</code></td><td>Events played by the opponent.</td></tr>
