@@ -6,7 +6,7 @@ import { attach, discardCard, discardFromPlay, ifAble, sequential } from '../../
 import { Players, CardType, EventName } from '../../Constants.js';
 import { honorTransferMessage } from '../honorTransferMessage.js';
 
-class AgashaProdigys extends DrawCard {
+class AgashaProdigy extends DrawCard {
     static id = 'agasha-prodigy';
 
     override setupCardAbilities() {
@@ -60,4 +60,4 @@ class AgashaProdigys extends DrawCard {
 }
 
 
-export default AgashaProdigys;
+export default AgashaProdigy;
