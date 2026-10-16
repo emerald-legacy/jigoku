@@ -32,7 +32,7 @@ class DanceOfChikushoDo extends DrawCard {
 
     getUnbrokenProvinces(player: Player): Location[] {
         const unbrokenLocations: Location[] = [];
-        const baseLocations = this.game.rules.setupNonStrongholdProvinces;
+        const baseLocations = this.game.getProvinceArray(false);
         baseLocations.forEach((p) => {
             const province = player.getProvinceCardInProvince(p);
             if(province && !province.isBroken) {

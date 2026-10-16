@@ -32,7 +32,7 @@ export default class LuckyCoin extends DrawCard {
                         player.moveCard(card, Location.DynastyDeck, { bottom: true });
                     }
 
-                    for(const location of game.rules.setupNonStrongholdProvinces) {
+                    for(const location of game.getProvinceArray(false)) {
                         player.putTopDynastyCardInProvince(location, false);
                     }
 
