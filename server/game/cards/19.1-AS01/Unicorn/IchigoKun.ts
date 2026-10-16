@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyGlory, modifyMilitarySkill, setBaseMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect, moveToConflict, multiple, sequential } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, chooseAction, multiple } from '../../../GameActions/GameActions.js';
 import { CardType, Element, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -27,16 +27,23 @@ export default class IchigoKun extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             })
-            .selectFrom({
-                name: 'select',
-                dependsOn: 'otherCharacter'
-            }, (context) => ({
-                [MORE_MIL_LESS_GLORY]: this.actionSequence(context, { military: +2, glory: -2 }),
-                [LESS_MIL_MORE_GLORY]: this.actionSequence(context, { military: -2, glory: +2 })
-            }))
-            .chatText((context) => context.selects.select.choice === MORE_MIL_LESS_GLORY
-                ? msg`give ${context.chatTarget()} +2 ${'military'} and ${context.targets.otherCharacter} -2 glory - ${context.chatTarget()} is wild today`
-                : msg`give ${context.chatTarget()} -2 ${'military'} and ${context.targets.otherCharacter} +2 glory - ${context.chatTarget()} is well-behaved. Impressive`);
+            .moveToConflict()
+            .chatText((context) => msg`move ${context.source} to the conflict`)
+            .afterwards()
+            .gameAction(chooseAction((context) => ({
+                choices: {
+                    [MORE_MIL_LESS_GLORY]: {
+                        action: this.getModifiers(context, { military: +2, glory: -2 }),
+                        message: (_context, _target, player) =>
+                            msg`${player} chooses to give ${context.source} +2 ${'military'} and ${context.targets.otherCharacter} -2 glory - ${context.source} is wild today`
+                    },
+                    [LESS_MIL_MORE_GLORY]: {
+                        action: this.getModifiers(context, { military: -2, glory: +2 }),
+                        message: (_context, _target, player) =>
+                            msg`${player} chooses to give ${context.source} -2 ${'military'} and ${context.targets.otherCharacter} +2 glory - ${context.source} is well-behaved. Impressive`
+                    }
+                }
+            })));
     }
 
     public override getPrintedElementSymbols() {
@@ -45,19 +52,16 @@ export default class IchigoKun extends DrawCard {
         return symbols;
     }
 
-    private actionSequence(context: AbilityContext, modifiers: { military: number; glory: number }) {
-        return sequential([
-            moveToConflict({ target: context.source }),
-            multiple([
-                cardLastingEffect({
-                    target: context.source,
-                    effect: modifyMilitarySkill(modifiers.military)
-                }),
-                cardLastingEffect({
-                    target: context.targets.otherCharacter,
-                    effect: modifyGlory(modifiers.glory)
-                })
-            ])
+    private getModifiers(context: AbilityContext, modifiers: { military: number; glory: number }) {
+        return multiple([
+            cardLastingEffect({
+                target: context.source,
+                effect: modifyMilitarySkill(modifiers.military)
+            }),
+            cardLastingEffect({
+                target: context.targets.otherCharacter,
+                effect: modifyGlory(modifiers.glory)
+            })
         ]);
     }
 }

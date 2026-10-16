@@ -1,16 +1,11 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
-import {
-    chooseAction,
-    dishonor,
-    sacrifice,
-    selectCard,
-    sendHome,
-    sequential
-} from '../../../GameActions/GameActions.js';
+import { dishonor, optional, sacrifice, selectCard, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { GameAction } from '../../../GameActions/GameAction.js';
+
+const DISHONOR = 'Dishonor it';
+const MOVE_HOME = 'Move it home';
 
 export default class ChroniclerOfCalamities extends DrawCard {
     static id = 'chronicler-of-calamities';
@@ -25,40 +20,40 @@ export default class ChroniclerOfCalamities extends DrawCard {
                     card.controller !== context.player &&
                     (context.game.currentConflict?.getCharacters(context.player) ?? [])
                         .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))
-            }, chooseAction((context) => ({
-                activePromptTitle: 'Select one',
-                choices: {
-                    'Dishonor it': {
-                        action: dishonor({ target: context.target }),
-                        message: (_context, target, player) => msg`${player} chooses to dishonor ${target}`
-                    },
-                    'Move it home': {
-                        action: sendHome({ target: context.target }),
-                        message: (_context, target, player) => msg`${player} chooses to send ${target} home`
-                    },
-                    'Sacrifice a character to perform both': {
-                        action: sequential((context) => {
-                            const gameActions: GameAction[] = [];
-                            gameActions.push(
-                                selectCard({
-                                    activePromptTitle: 'Select a character to sacrifice',
-                                    cardType: CardType.Character,
-                                    controller: Players.Self,
-                                    message: (context, card) => msg`${context.player} chooses to sacrifice ${card}`,
-                                    subActionProperties: (card) => ({ target: card, cannotBeCancelled: true }),
-                                    gameAction: sacrifice()
-                                })
-                            );
-                            gameActions.push(dishonor({ target: context.target }));
-                            gameActions.push(sendHome({ target: context.target }));
-
-                            return gameActions;
-                        }),
-                        message: (_context, target, player) => msg`${player} chooses to sacrifice a character to both dishonor and send ${target} home`
-                    }
+            })
+            .select({
+                name: 'select',
+                dependsOn: 'target'
+            }, {
+                [DISHONOR]: {
+                    action: dishonor((context) => ({ target: context.target })),
+                    chatText: 'dishonor {0}'
+                },
+                [MOVE_HOME]: {
+                    action: sendHome((context) => ({ target: context.target })),
+                    chatText: 'send {0} home'
                 }
-            })))
-            .chatText('dishonor or send home {0}')
+            })
+            .gameAction(optional((context) => {
+                const dishonorChosen = context.selects.select?.choice === DISHONOR;
+                return {
+                    activePromptTitle: dishonorChosen ? 'Sacrifice a character to also move it home?' : 'Sacrifice a character to also dishonor it?',
+                    gameAction: sequential([
+                        selectCard({
+                            activePromptTitle: 'Select a character to sacrifice',
+                            cardType: CardType.Character,
+                            controller: Players.Self,
+                            message: (context, card) => msg`${context.player} chooses to sacrifice ${card}`,
+                            subActionProperties: (card) => ({ target: card, cannotBeCancelled: true }),
+                            gameAction: sacrifice()
+                        }),
+                        dishonorChosen ? sendHome({ target: context.target }) : dishonor({ target: context.target })
+                    ]),
+                    acceptMessage: (context, chooser) => dishonorChosen
+                        ? msg`${chooser} chooses to sacrifice a character to also send ${context.target} home`
+                        : msg`${chooser} chooses to sacrifice a character to also dishonor ${context.target}`
+                };
+            }))
             .max(perConflict(1));
     }
 }
