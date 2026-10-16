@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Phase, Players } from '../../../Constants.js';
 import { bow, injure } from '../../../GameActions/GameActions.js';
-import Ring from '../../../Ring.js';
+import { isOpponentsRingOrCardEffect } from '../../effectSource.js';
 
 export default class AkodoTadakatsu extends DrawCard {
     static id = 'akodo-tadakatsu';
@@ -13,9 +13,7 @@ export default class AkodoTadakatsu extends DrawCard {
                     if(context.game.currentPhase === Phase.Fate || event.origin !== context.source || (event.fate ?? 0) <= 0) {
                         return false;
                     }
-                    const cause = event.context;
-                    return !!cause && !!context.player.opponent && cause.player === context.player.opponent &&
-                        (cause.source instanceof Ring || cause.ability.isCardAbility());
+                    return isOpponentsRingOrCardEffect(context.player, event.context);
                 }
             })
             .target({

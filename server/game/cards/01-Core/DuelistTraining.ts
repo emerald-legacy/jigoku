@@ -30,27 +30,27 @@ class DuelistTraining extends DrawCard {
     }
 
     private costHandler(context: AbilityContext, prompt: HonorBidPrompt) {
-        let lowBidder = this.game.getFirstPlayer();
-        if(!lowBidder || !lowBidder.opponent) {
+        let higherBidder = this.game.getFirstPlayer();
+        if(!higherBidder || !higherBidder.opponent) {
             return;
         }
-        let difference = lowBidder.honorBid - lowBidder.opponent.honorBid;
+        let difference = higherBidder.honorBid - higherBidder.opponent.honorBid;
         if(difference < 0) {
-            lowBidder = lowBidder.opponent;
+            higherBidder = higherBidder.opponent;
             difference = -difference;
         } else if(difference === 0) {
             return;
         }
-        if(lowBidder.hand.length < difference) {
+        if(higherBidder.hand.length < difference) {
             prompt.transferHonorAfterBid(context);
             return;
         }
-        this.game.promptWithHandlerMenu(lowBidder, {
+        this.game.promptWithHandlerMenu(higherBidder, {
             activePromptTitle: 'Difference in bids: ' + difference.toString(),
             source: this,
             options: [
                 { text: 'Pay with honor', handler: () => prompt.transferHonorAfterBid(context) },
-                { text: 'Pay with cards', handler: () => GameActions.chosenDiscard({ amount: difference }).resolve(lowBidder, context) }
+                { text: 'Pay with cards', handler: () => GameActions.chosenDiscard({ amount: difference }).resolve(higherBidder, context) }
             ]
         });
     }

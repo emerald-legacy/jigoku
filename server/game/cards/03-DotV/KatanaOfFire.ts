@@ -13,21 +13,13 @@ class KatanaOfFire extends DrawCard {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
         this.whileAttached({
-            effect: modifyMilitarySkill(() => this.totalKatanaModifier())
+            effect: modifyMilitarySkill(() => this.getTotalKatanaModifier())
         });
     }
 
-    // Helper methods for clarity - TODO: needs fixing to not use this.controller
-    controllerHasFireRing() {
-        return hasClaimedRing(this, elementSymbol.key, this.controller);
-    }
-    numberOfFireCards() {
-        return this.controller.getNumberOfCardsInPlay((card) => card.hasTrait(Trait.Fire));
-    }
-    totalKatanaModifier() {
-        let skillModifier = this.controllerHasFireRing() ? 2 : 0;
-        skillModifier += this.numberOfFireCards();
-        return skillModifier;
+    getTotalKatanaModifier() {
+        const fireRingBonus = hasClaimedRing(this, elementSymbol.key, this.controller) ? 2 : 0;
+        return fireRingBonus + this.controller.getNumberOfCardsInPlay((card) => card.hasTrait(Trait.Fire));
     }
 
     override getPrintedElementSymbols() {
