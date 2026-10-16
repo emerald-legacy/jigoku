@@ -311,6 +311,10 @@ export class GameInputHandler {
     }
 
     toggleManualMode(playerName: string): void {
-        this.game.chatCommands.manual(this.game.getPlayerByName(playerName));
+        const player = this.game.getPlayerByName(playerName);
+        if(!player) {
+            return;
+        }
+        this.game.chatCommands.manual(player);
     }
 }

@@ -512,13 +512,16 @@ export class GameServer implements GameRouter, LobbyHandlers {
         const isSpectator = game.isSpectator(player);
 
         game.disconnect(socket.user.username);
+        if(isSpectator) {
+            // disconnect removes the spectator, so closeGame wouldn't find it any more
+            this.userGameMap.delete(socket.user.username);
+        }
 
         if(game.isEmpty()) {
             this.closeGame(game);
         } else if(!isSpectator && game.allPlayersGone()) {
             this.startAbandonTimer(game);
         } else if(isSpectator) {
-            this.userGameMap.delete(socket.user.username);
             this.wsSocket.send('PLAYERLEFT', {
                 gameId: game.id,
                 game: game.getSaveState(),

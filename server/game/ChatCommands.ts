@@ -393,8 +393,7 @@ export class ChatCommands {
         player.socket?.disconnect();
     }
 
-    /** Spectators reach this through the client's manual mode toggle, without a player. */
-    manual(player: Player | undefined): void {
+    manual(player: Player): void {
         if(this.game.manualMode) {
             this.game.manualMode = false;
             this.game.addMessage(msg`${player} switches manual mode off`);

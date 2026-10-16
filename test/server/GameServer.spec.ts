@@ -628,3 +628,18 @@ describe('GameServer.onCardData', () => {
         expect(ctx.shortCardData).toEqual([{ id: 'a', name: 'A' }, { id: 'c', name: 'C', type: undefined }]);
     });
 });
+
+describe('GameServer.onSocketDisconnected for spectators', () => {
+    it('forgets a spectator who disconnects last, so the closed game is not kept', () => {
+        const socket = { id: 's1', user: { username: 'watcher' } };
+        const game = makeGame({ players: { watcher: { socket } } });
+        game.isSpectator.and.returnValue(true);
+        game.isEmpty.and.returnValue(true);
+        const ctx = makeCtx({ userGameMap: new Map([['watcher', game]]) });
+        Object.assign(ctx, { closeGame: jasmine.createSpy('closeGame'), sendGameState: jasmine.createSpy('sendGameState') });
+
+        call('onSocketDisconnected', ctx, socket, 'transport close');
+
+        expect(ctx.userGameMap.has('watcher')).toBe(false);
+    });
+});
