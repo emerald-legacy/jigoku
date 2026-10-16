@@ -1,3 +1,5 @@
+import * as costs from '../../../../build/server/game/costs/index.js';
+
 describe('Divine Ancestry', function() {
     integration(function() {
         describe('Divine Ancestry\'s ability - draw phase', function() {
@@ -75,7 +77,14 @@ describe('Divine Ancestry - Reactions', function() {
                 this.player2.player.promptedActionWindows.draw = true;
 
                 this.city = this.player2.findCardByName('city-of-the-open-hand');
-                this.city.loadOriginalAction();
+                // the FFG version of the stronghold: "Steal an honor"
+                this.city.abilities.actions = [];
+                this.city.declareAbilities(() => {
+                    this.city.action('Steal an honor')
+                        .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
+                        .cost(costs.bowSelf())
+                        .takeHonor();
+                });
 
                 this.shrineMaiden = this.player2.findCardByName('shrine-maiden');
                 this.sac = this.player2.findCardByName('noble-sacrifice');

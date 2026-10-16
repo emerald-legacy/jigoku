@@ -1,3 +1,5 @@
+import * as costs from '../../../../build/server/game/costs/index.js';
+
 describe('Silent Ones Monastery', function() {
     integration(function() {
         describe('functionality from an opponent standpoint', function () {
@@ -31,7 +33,14 @@ describe('Silent Ones Monastery', function() {
                 this.silentOnesMonastery = this.player2.findCardByName('silent-ones-monastery', 'province 1');
                 this.dispatch = this.player2.placeCardInProvince('dispatch-to-nowhere', 'province 4');
                 this.city = this.player2.findCardByName('city-of-the-open-hand');
-                this.city.loadOriginalAction();
+                // the FFG version of the stronghold: "Steal an honor"
+                this.city.abilities.actions = [];
+                this.city.declareAbilities(() => {
+                    this.city.action('Steal an honor')
+                        .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
+                        .cost(costs.bowSelf())
+                        .takeHonor();
+                });
             });
 
             it('should limit the phate gained by the opponent in one phase to 2', function() {

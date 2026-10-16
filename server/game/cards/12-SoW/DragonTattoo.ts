@@ -1,14 +1,15 @@
 import { msg } from '../../GameChat.js';
 import { addTrait } from '../../effects.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardType, Location, PlayType, Trait } from '../../Constants.js';
+import { CardType, type EventName, Location, PlayType, Trait } from '../../Constants.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { playCard } from '../../GameActions/GameActions.js';
+import type { PlayCardProperties } from '../../GameActions/PlayCardAction.js';
 import DrawCard from '../../DrawCard.js';
 import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 export default class DragonTattoo extends DrawCard {
     static id = 'dragon-tattoo';
-
-    private cardPlayed = true;
 
     public override setupCardAbilities() {
         this.attachmentConditions({ myControl: true });
@@ -27,29 +28,29 @@ export default class DragonTattoo extends DrawCard {
                         this.isValidTargetForTattoo(card, context))
             })
             .ifAble()
-            .playCard((context) => {
-                this.cardPlayed = true;
-                const played = context.event.context;
-                return {
-                    source: this,
-                    target: context.event.card,
-                    resetOnCancel: true,
-                    playType: PlayType.Other,
-                    destination: Location.RemovedFromGame,
-                    payCosts: true,
-                    allowReactions: true,
-                    event: played instanceof TriggeredAbilityContext ? played.event : undefined
-                };
-            })
+            .playCard((context) => this.getPlayAgainProperties(context.event))
             .otherwise()
-            .moveCard((context) => {
-                this.cardPlayed = false;
-                return {
-                    target: context.event.card,
-                    destination: Location.RemovedFromGame
-                };
-            })
-            .chatText((context) => msg`${this.cardPlayed ? 'play ' : 'remove '}${context.event.card.name}${this.cardPlayed ? '' : ' from the game'}`);
+            .moveCard((context) => ({
+                target: context.event.card,
+                destination: Location.RemovedFromGame
+            }))
+            .chatText((context) => playCard(this.getPlayAgainProperties(context.event)).hasLegalTarget(context)
+                ? msg`play ${context.event.card.name}`
+                : msg`remove ${context.event.card.name} from the game`);
+    }
+
+    private getPlayAgainProperties(event: EventPayload<EventName.OnCardPlayed>): PlayCardProperties {
+        const played = event.context;
+        return {
+            source: this,
+            target: event.card,
+            resetOnCancel: true,
+            playType: PlayType.Other,
+            destination: Location.RemovedFromGame,
+            payCosts: true,
+            allowReactions: true,
+            event: played instanceof TriggeredAbilityContext ? played.event : undefined
+        };
     }
 
     private isValidTargetForTattoo(card: BaseCard, context: TriggeredAbilityContext) {
