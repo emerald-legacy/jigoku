@@ -46,6 +46,10 @@ export class CardGameAction<
                 .filter((properties) => properties.actionName === this.name);
 
             if(additionalCosts.length > 0) {
+                // no payment for an action that can't affect the card
+                if(!this.canAffect(card, context, additionalProperties)) {
+                    continue;
+                }
                 for(const properties of additionalCosts) {
                     context.game.queueSimpleStep(() => {
                         const cost = typeof properties.cost === 'function' ? properties.cost(card) : properties.cost;

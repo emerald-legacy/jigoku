@@ -30,6 +30,8 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                     selectedCardsHandler: (context, event, cards) => {
                         if(cards.length === 0) {
                             context.game.addMessage(msg`${event.player} finds no copies of ${opt.siblingName}`);
+                            // RRG Search: a searched deck is shuffled
+                            event.player.shuffleDynastyDeck();
                             return;
                         }
 

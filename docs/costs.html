@@ -507,7 +507,7 @@ this.action('Discard attachments')
       </tbody>
     </table>
     <ul class="edge">
-      <li>A card qualifies when it can be dishonored <em>or</em> sacrificed; each part is paid only if it is legal for the card. An already dishonored character is still offered, and is only sacrificed.</li>
+      <li>A card qualifies only when it can be both dishonored and sacrificed: a cost is paid in full or not at all. An already dishonored character isn't offered.</li>
       <li>The card leaves play: read its traits from <code>dishonorAndSacrificeStateWhenChosen</code>.</li>
       <li>Prompt: "Choose a card to dishonor and sacrifice". Records <code>dishonorAndSacrifice</code>, <code>dishonorAndSacrificeStateWhenChosen</code>. Chat: <code>dishonoring and sacrificing {1}</code>, with the card as <code>{1}</code>.</li>
     </ul>

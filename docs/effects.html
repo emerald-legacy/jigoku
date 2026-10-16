@@ -1573,7 +1573,7 @@ playerLastingEffect({
     <ul class="edge">
       <li>Checked when a card game action builds its events, so it also catches framework steps (readying in the fate phase).</li>
       <li>The cost is paid automatically, without a prompt: "&lt;player&gt; … in order to &lt;action&gt;". If it has no legal target, the chat says "&lt;player&gt; cannot pay the additional cost required to …" and the action doesn't affect this card.</li>
-      <li>The cost is paid before the action checks whether it can affect the card. A <code>ready</code> whose target is set directly (not chosen as a target) on a character that is already ready still makes its controller pay.</li>
+      <li>It is only paid when the action can affect the card: a <code>ready</code> on a character that is already ready asks for nothing.</li>
     </ul>
     <pre><code>// Softskin: Attached character cannot ready unless its controller discards the top 3 cards of his or her conflict deck.
 this.whileAttached({

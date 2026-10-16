@@ -105,3 +105,41 @@ describe('Softskin', function() {
         });
     });
 });
+
+describe('Softskin on a character that is already ready', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['softskin']
+                },
+                player2: {
+                    inPlay: ['ide-ryoma', 'adept-of-the-waves']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.ryoma = this.player2.findCardByName('ide-ryoma');
+            this.adept = this.player2.findCardByName('adept-of-the-waves');
+            this.softskin = this.player1.playAttachment('softskin', this.adept);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [this.ryoma, this.adept]
+            });
+        });
+
+        it('does not make its controller discard for a ready that does nothing', function() {
+            const deckSize = this.player2.conflictDeck.length;
+            this.player2.clickCard(this.ryoma);
+            this.player2.clickCard(this.ryoma);
+            this.player2.clickCard(this.adept);
+            this.player2.clickCard(this.ryoma);
+            expect(this.ryoma.bowed).toBe(true);
+            expect(this.adept.bowed).toBe(false);
+            expect(this.player2.conflictDeck.length).toBe(deckSize);
+        });
+    });
+});

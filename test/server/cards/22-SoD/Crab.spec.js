@@ -52,6 +52,20 @@ describe('SoD - Crab', function () {
                 expect(this.getChatLogs(5)).toContain('player1 draws a card');
             });
 
+            it('cannot pay its cost with a character that is already dishonored', function () {
+                this.swordsmith.dishonor();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.skirmisher, this.swordsmith],
+                    defenders: [this.yokuni, this.challenger]
+                });
+                this.player2.pass();
+                this.player1.pass();
+                this.player1.clickCard(this.badDeath);
+                expect(this.player1).toBeAbleToSelect(this.skirmisher);
+                expect(this.player1).not.toBeAbleToSelect(this.swordsmith);
+            });
+
             it('sacrificing berserker', function () {
                 this.noMoreActions();
                 this.initiateConflict({

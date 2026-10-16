@@ -303,7 +303,8 @@ export function switchLocation(): Cost<{ switchLocation: DrawCard }> {
 export function dishonorAndSacrifice<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(
     properties: TypedSelectCostProperties<Types, Mode, Context>
 ): Cost<SelectCostResult<'dishonorAndSacrifice', Types, Mode>, Context> {
-    const gameAction = GameActions.multiple([
+    // a cost is paid in full or not at all, so the character must be able to take both
+    const gameAction = GameActions.joint([
         GameActions.dishonor(),
         GameActions.sacrifice()
     ]);

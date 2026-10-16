@@ -66,9 +66,9 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
 <h3 id="ga-legality">Legality</h3>
 <ul>
     <li>An action only affects targets it can affect: a bowed character can't be bowed, a character with no fate loses none, restrictions such as "cannot be dishonored" apply. An action with no legal target does nothing.</li>
-    <li><strong>Illegal targets in a list:</strong> player, ring and token actions skip a target they can't affect. Most card actions create an event for every target, and the event window cancels the event of each card the action can't affect. That cancelled event counts as not resolved, so a <code>then()</code> step after the action doesn't run. <code>discardCard</code>, <code>lookAt</code>, <code>setAside</code> and <code>duel</code> skip illegal cards first. Two more consequences:
+    <li><strong>Illegal targets in a list:</strong> player, ring and token actions skip a target they can't affect. Most card actions create an event for every target, and the event window cancels the event of each card the action can't affect. That cancelled event counts as not resolved, so a <code>then()</code> step after the action doesn't run. <code>discardCard</code>, <code>lookAt</code>, <code>setAside</code> and <code>duel</code> skip illegal cards first. Also:
         <ul>
-            <li>An "unless" cost on a card (<a href="effects.html#ef-unlessActionCost"><code>unlessActionCost</code></a>, Softskin) is asked for before that check, even when the action can't affect the card.</li>
+            <li>An "unless" cost on a card (<a href="effects.html#ef-unlessActionCost"><code>unlessActionCost</code></a>, Softskin) is only asked for when the action can affect the card.</li>
             <li><code>moveCard</code>, <code>placeCardUnderneath</code> and <code>placeInProvince</code> raise unnamed events, which the window doesn't check. They also move a card they can't affect.</li>
         </ul>
         This matters only for a <code>target</code> list you compute: a card target already offers only cards the action can affect.</li>
