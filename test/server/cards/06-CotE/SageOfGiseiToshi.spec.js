@@ -1,7 +1,3 @@
-import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
-import { cardLastingEffect } from '../../../../build/server/game/GameActions/GameActions.js';
-import { cardCannot } from '../../../../build/server/game/effects.js';
-
 describe('Sage of Gisei Toshi', function() {
     integration(function() {
         describe('Sage of Gisei Toshi\'s ability', function() {
@@ -87,13 +83,13 @@ describe('Sage of Gisei Toshi', function() {
     });
 });
 
-describe('Sage of Gisei Toshi when it cannot go home', function() {
+describe('Sage of Gisei Toshi at home', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['sage-of-gisei-toshi'],
+                    inPlay: ['sage-of-gisei-toshi', 'doji-challenger'],
                     honor: 11
                 },
                 player2: {
@@ -102,25 +98,23 @@ describe('Sage of Gisei Toshi when it cannot go home', function() {
                 }
             });
             this.sage = this.player1.findCardByName('sage-of-gisei-toshi');
+            this.challenger = this.player1.findCardByName('doji-challenger');
             this.whisperer = this.player2.findCardByName('doji-whisperer');
 
             this.noMoreActions();
             this.initiateConflict({
-                attackers: [this.sage],
+                attackers: [this.challenger],
                 defenders: [this.whisperer]
             });
-            const context = new ThenAbility(this.whisperer, {}).createContext(this.player2.player);
-            this.game.queueSimpleStep(() => cardLastingEffect({ effect: cardCannot('sendHome') }).resolve(this.sage, context));
-            this.game.continue();
             this.player2.pass();
         });
 
-        it('still moves the chosen character home ("Then" does not depend on the first part)', function() {
+        it('does not move the chosen character home ("If you do" needs Sage to move home)', function() {
             this.player1.clickCard(this.sage);
             this.player1.clickCard(this.whisperer);
-            expect(this.sage.isParticipating()).toBe(true);
-            expect(this.whisperer.isParticipating()).toBe(false);
+            expect(this.sage.isParticipating()).toBe(false);
+            expect(this.challenger.isParticipating()).toBe(true);
+            expect(this.whisperer.isParticipating()).toBe(true);
         });
     });
 });
-

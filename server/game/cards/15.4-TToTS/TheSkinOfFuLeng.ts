@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 import { canBeTriggeredByOpponent, playerCannot } from '../../effects.js';
 
 class TheSkinOfFuLeng extends DrawCard {
@@ -20,7 +20,7 @@ class TheSkinOfFuLeng extends DrawCard {
         });
 
         this.persistentEffect({
-            match: (card) => card.getFate() === 0,
+            match: (card) => card.type === CardType.Character && card.getFate() === 0,
             targetController: Players.Opponent,
             effect: canBeTriggeredByOpponent()
         });

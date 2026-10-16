@@ -1,5 +1,5 @@
 import { CardType, Players, Trait } from '../../../Constants.js';
-import { cannotReceiveTaintedToken, immunity } from '../../../effects.js';
+import { cannotReceiveDishonorToken, cannotReceiveHonorToken, cannotReceiveTaintedToken, immunity } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { attach } from '../../../GameActions/GameActions.js';
 import { msg } from '../../../GameChat.js';
@@ -14,6 +14,8 @@ export default class JakIthith extends DrawCard {
             effect: [
                 immunity({ appliesTo: { trait: Trait.Maho } }),
                 immunity({ appliesTo: { trait: Trait.Shadowlands } }),
+                cannotReceiveHonorToken(),
+                cannotReceiveDishonorToken(),
                 cannotReceiveTaintedToken()
             ]
         });

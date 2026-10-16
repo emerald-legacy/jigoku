@@ -14,7 +14,7 @@ class SageOfGiseiToshi extends DrawCard {
                 cardCondition: (card, context) => card.isParticipating() && sendHome().canAffect(card, context)
             })
             .sendHome()
-            .afterwards()
+            .then()
             .sendHome((context) => ({ target: context.target }));
     }
 }

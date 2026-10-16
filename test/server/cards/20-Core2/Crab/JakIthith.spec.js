@@ -261,3 +261,44 @@ describe('Jak\'ithith with an eligible and an ineligible character', function() 
         });
     });
 });
+
+describe('Jak\'ithith status tokens', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-initiate'],
+                    hand: ['tarnished-reputation', 'burnished-reputation']
+                },
+                player2: {
+                    inPlay: ['jak-ithith', 'borderlands-defender']
+                }
+            });
+
+            this.initiate = this.player1.findCardByName('togashi-initiate');
+            this.jakithith = this.player2.findCardByName('jak-ithith');
+            this.borderlands = this.player2.findCardByName('borderlands-defender');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.initiate],
+                defenders: [this.jakithith, this.borderlands],
+                type: 'military'
+            });
+            this.player2.pass();
+        });
+
+        it('cannot be dishonored', function() {
+            this.player1.clickCard('tarnished-reputation');
+            expect(this.player1).toBeAbleToSelect(this.borderlands);
+            expect(this.player1).not.toBeAbleToSelect(this.jakithith);
+        });
+
+        it('cannot be honored', function() {
+            this.player1.clickCard('burnished-reputation');
+            expect(this.player1).toBeAbleToSelect(this.borderlands);
+            expect(this.player1).not.toBeAbleToSelect(this.jakithith);
+        });
+    });
+});

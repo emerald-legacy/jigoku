@@ -1830,5 +1830,34 @@ describe('The Skin of Fu Leng', function () {
                 });
             });
         });
+
+        describe('Opponent\'s attachments', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kakita-toshimoko'],
+                        hand: ['the-skin-of-fu-leng']
+                    },
+                    player2: {
+                        inPlay: [{ card: 'doji-whisperer', attachments: ['court-mask'] }]
+                    }
+                });
+
+                this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+                this.skin = this.player1.findCardByName('the-skin-of-fu-leng');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+                this.courtMask = this.player2.findCardByName('court-mask');
+                this.player1.playAttachment(this.skin, this.toshimoko);
+                this.player2.pass();
+            });
+
+            it('should not let you trigger abilities on the opponent\'s attachments', function () {
+                this.player1.clickCard(this.courtMask);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.courtMask.location).toBe('play area');
+                expect(this.whisperer.isDishonored).toBe(false);
+            });
+        });
     });
 });
