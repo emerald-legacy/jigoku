@@ -35,7 +35,7 @@ class ImbuedWithShadows extends DrawCard {
     }
 
     private getNumberOfLegalTargets(context: AbilityContext) {
-        return countTargetable(context.game.findAnyCardsInPlay((card) => card.isHonored || card.isDishonored), context);
+        return countTargetable(context.game.findAnyCardsInPlay((card) => card.hasStatusTokens), context);
     }
 }
 

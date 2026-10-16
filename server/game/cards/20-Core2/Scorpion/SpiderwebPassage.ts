@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players, SkillType, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
-import { chooseAction, conditional, discardAtRandom, discardFromPlay } from '../../../GameActions/GameActions.js';
+import { chatMessage, discardAtRandom, discardFromPlay, joint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 function shinobiCount(context: AbilityContext): number {
@@ -28,33 +28,27 @@ export default class SpiderwebPassage extends DrawCard {
                     ((!card.hasDash(SkillType.Political) && card.politicalSkill === 0) ||
                         (!card.hasDash(SkillType.Military) && card.militarySkill === 0))
             })
-            .gameAction(conditional((context) => {
-                const discardCount = shinobiCount(context);
-                const discardFromHandAction = discardAtRandom({
-                    amount: discardCount,
-                    target: context.player.opponent
-                });
-                const killAction = discardFromPlay({ target: context.target });
-
-                return {
-                    // a smaller hand can still be discarded: the option changes the game state (RRG Select)
-                    condition: () => !!context.player.opponent && discardFromHandAction.canAffect(context.player.opponent, context),
-                    falseGameAction: killAction,
-                    trueGameAction: chooseAction((context) => ({
-                        player: Players.Opponent,
-                        activePromptTitle: 'Select one',
-                        choices: {
-                            [`Discard ${discardCount} random cards from hand`]: {
-                                action: discardFromHandAction,
-                                message: (_context, _target, player) => msg`${player} distracts the Shinobi`
-                            },
-                            [`Discard ${context.target?.name}`]: {
-                                action: killAction,
-                                message: (context, _target, player) => msg`${player} refuses to discard ${discardCount} cards. ${context.target} is discarded`
-                            }
-                        }
-                    }))
-                };
+            // "Its controller selects one" is before the dash: made with the target (RRG Select)
+            .selectFrom({
+                name: 'select',
+                dependsOn: 'target',
+                player: Players.Opponent
+            }, (context) => ({
+                // a smaller hand can still be discarded: the option changes the game state (RRG Select)
+                [`Discard ${shinobiCount(context)} random cards from hand`]: joint([
+                    discardAtRandom({
+                        amount: shinobiCount(context),
+                        target: context.player.opponent
+                    }),
+                    chatMessage(() => msg`${context.player.opponent} distracts the Shinobi`)
+                ]),
+                [`Discard ${context.target?.name}`]: joint([
+                    discardFromPlay({ target: context.target }),
+                    // with an empty hand there was nothing to refuse
+                    chatMessage(() => (context.player.opponent?.hand.length ?? 0) > 0
+                        ? msg`${context.player.opponent} refuses to discard ${shinobiCount(context)} cards. ${context.target} is discarded`
+                        : undefined)
+                ])
             }))
             .chatText((context) => msg`ambush ${context.target}`);
     }

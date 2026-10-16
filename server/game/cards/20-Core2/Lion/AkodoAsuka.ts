@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
-import { Location } from '../../../Constants.js';
+import { Location, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 function charactersOnYourSide(context: AbilityContext) {
@@ -21,6 +21,8 @@ export default class AkodoAsuka extends DrawCard {
             })
             .deckSearch({
                 cardsToLookAt: (context) => charactersOnYourSide(context),
+                mode: TargetMode.Exactly,
+                numCards: 1,
                 activePromptTitle: 'Choose a card to put in your hand',
                 gameAction: moveCard({
                     destination: Location.Hand

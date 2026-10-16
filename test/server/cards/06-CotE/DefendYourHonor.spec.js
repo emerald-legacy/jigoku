@@ -119,3 +119,42 @@ describe('Defend Your Honor', function() {
         });
     });
 });
+
+describe('Defend Your Honor and The Mirror\'s Gaze', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['border-rider'],
+                    hand: ['defend-your-honor']
+                },
+                player2: {
+                    inPlay: ['doji-challenger', { card: 'asahina-storyteller', attachments: ['the-mirror-s-gaze'] }],
+                    hand: ['way-of-the-crane']
+                }
+            });
+            this.borderRider = this.player1.findCardByName('border-rider');
+            this.dojiChallenger = this.player2.findCardByName('doji-challenger');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderRider],
+                defenders: [this.dojiChallenger],
+                type: 'political'
+            });
+            this.player2.clickCard('way-of-the-crane');
+            this.player2.clickCard(this.dojiChallenger);
+            this.player1.clickCard('defend-your-honor');
+            this.player1.clickCard(this.borderRider);
+            this.player2.clickCard(this.dojiChallenger);
+            this.player1.clickPrompt('5');
+            this.player2.clickPrompt('1');
+        });
+
+        it('cannot be copied, as it cancels a card effect', function() {
+            expect(this.getChatLogs(3)).toContain('Duel Effect: cancel the effects of Way of the Crane');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

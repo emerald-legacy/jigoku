@@ -294,3 +294,32 @@ describe('Imbued with Shadows', function() {
         // });
     });
 });
+
+describe('Imbued with Shadows with only a tainted character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer']
+                },
+                player2: {
+                    hand: ['imbued-with-shadows']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.whisperer.taint();
+            this.game.checkGameState(true);
+            this.player1.pass();
+        });
+
+        it('can discard a tainted token', function() {
+            const honor = this.player2.honor;
+            this.player2.clickCard('imbued-with-shadows');
+            this.player2.clickPrompt('1');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.isTainted).toBe(false);
+            expect(this.player2.honor).toBe(honor - 1);
+        });
+    });
+});

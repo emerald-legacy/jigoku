@@ -75,7 +75,7 @@ describe('Spiderweb Passage', function () {
             expect(this.player1).not.toBeAbleToSelect(this.adept);
 
             this.player1.clickCard(this.tensai);
-            expect(this.getChatLogs(5)).toContain(
+            expect(this.getChatLogs(5)).not.toContain(
                 'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
             );
             expect(this.player2).toHavePrompt('Select one');
@@ -83,6 +83,9 @@ describe('Spiderweb Passage', function () {
             expect(this.player2).toHavePromptButton('Discard Fire Tensai Initiate');
 
             this.player2.clickPrompt('Discard 2 random cards from hand');
+            expect(this.getChatLogs(5)).toContain(
+                'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
+            );
             expect(this.getChatLogs(5)).toContain('player2 distracts the Shinobi');
             expect(this.fan.location).toBe('conflict discard pile');
             expect(this.katana.location).toBe('conflict discard pile');
@@ -105,7 +108,7 @@ describe('Spiderweb Passage', function () {
             expect(this.player1).not.toBeAbleToSelect(this.adept);
 
             this.player1.clickCard(this.tensai);
-            expect(this.getChatLogs(5)).toContain(
+            expect(this.getChatLogs(5)).not.toContain(
                 'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
             );
             expect(this.player2).toHavePrompt('Select one');
@@ -113,6 +116,9 @@ describe('Spiderweb Passage', function () {
             expect(this.player2).toHavePromptButton('Discard Fire Tensai Initiate');
 
             this.player2.clickPrompt('Discard Fire Tensai Initiate');
+            expect(this.getChatLogs(5)).toContain(
+                'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
+            );
             expect(this.getChatLogs(5)).toContain(
                 'player2 refuses to discard 2 cards. Fire Tensai Initiate is discarded'
             );
@@ -160,6 +166,7 @@ describe('Spiderweb Passage', function () {
                 'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
             );
             expect(this.tensai.location).toBe('dynasty discard pile');
+            expect(this.getChatLogs(5).filter((line) => line.includes('refuses'))).toEqual([]);
         });
     });
 });

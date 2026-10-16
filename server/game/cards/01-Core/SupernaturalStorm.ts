@@ -9,7 +9,7 @@ class SupernaturalStorm extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Increase the skill of one character')
-            .condition(() => controlsShugenja(this.controller))
+            .condition((context) => controlsShugenja(context.player))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

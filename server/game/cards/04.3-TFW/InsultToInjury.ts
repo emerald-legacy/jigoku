@@ -28,6 +28,7 @@ export default class InsultToInjury extends DrawCard {
                 return (loser?.length ?? 0) > 1
                     ? msg`choose to dishonor a loser of the duel`
                     : msg`dishonor ${loser ?? []}`;
-            });
+            })
+            .cannotBeMirrored();
     }
 }

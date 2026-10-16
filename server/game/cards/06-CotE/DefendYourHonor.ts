@@ -16,7 +16,8 @@ class DefendYourHonor extends DrawCard {
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 gameAction: (duel) => duel.winningPlayer === context.player ? cancel() : noAction()
-            }));
+            }))
+            .cannotBeMirrored();
     }
 }
 

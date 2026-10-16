@@ -1,5 +1,5 @@
 import { moveCard } from '../../../GameActions/GameActions.js';
-import { Location, Trait } from '../../../Constants.js';
+import { Location, TargetMode, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SenseisHeirloom extends DrawCard {
@@ -15,6 +15,8 @@ export default class SenseisHeirloom extends DrawCard {
             .deckSearch((context) => ({
                 reveal: false,
                 cardsToLookAt: 2 * (context.source.parentCharacter?.printedGlory ?? 0),
+                mode: TargetMode.Exactly,
+                numCards: 1,
                 gameAction: moveCard({ destination: Location.Hand })
             }));
     }

@@ -118,43 +118,19 @@ describe('Under Siege', function() {
             expect(this.dragon.location).toBe('play area');
         });
 
-        it('should not draw cards if the defending player is empty', function() {
+        it('cannot be played if the defending player has no cards in hand', function() {
             this.player2.moveCard(this.fan, 'conflict discard pile');
 
             this.initiateConflict({
                 attackers: [this.wanderer]
             });
-            this.player1.clickCard(this.siege);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.siege.location).toBe('hand');
             this.player2.clickPrompt('Done');
 
             expect(this.fan.location).toBe('conflict discard pile');
             expect(this.bhc.location).toBe('conflict deck');
             expect(this.dragon.location).toBe('conflict deck');
-            expect(this.courtGames.location).toBe('conflict deck');
-            expect(this.assassination.location).toBe('conflict deck');
-            expect(this.crane.location).toBe('conflict deck');
-            expect(this.shame.location).toBe('conflict deck');
-        });
-
-        it('should still discard the hand at the end of the conflict even if you didn\'t draw any cards', function() {
-            this.player2.moveCard(this.fan, 'conflict discard pile');
-
-            this.initiateConflict({
-                attackers: [this.wanderer]
-            });
-            this.player1.clickCard(this.siege);
-            this.player2.clickPrompt('Done');
-
-            this.player2.moveCard(this.bhc, 'hand');
-            this.player2.moveCard(this.dragon, 'hand');
-
-            this.noMoreActions();
-            this.player1.clickPrompt('Don\'t Resolve');
-            expect(this.player1).toHavePrompt('Action Window');
-
-            expect(this.fan.location).toBe('conflict discard pile');
-            expect(this.bhc.location).toBe('conflict discard pile');
-            expect(this.dragon.location).toBe('conflict discard pile');
             expect(this.courtGames.location).toBe('conflict deck');
             expect(this.assassination.location).toBe('conflict deck');
             expect(this.crane.location).toBe('conflict deck');

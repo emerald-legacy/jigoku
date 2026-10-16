@@ -18,6 +18,13 @@ describe('Daimyo\'s Favor', function () {
                 this.fate = this.player1.fate;
             });
 
+            it('keeps the reduction for the character after the Favor leaves play', function () {
+                this.player1.moveCard(this.daimyosFavor, 'conflict discard pile');
+                this.ancestralDaisho = this.player1.playAttachment('ancestral-daisho', this.doomedShugenja);
+                expect(this.doomedShugenja.attachments).toContain(this.ancestralDaisho);
+                expect(this.player1.fate).toBe(this.fate);
+            });
+
             it('should reduce the cost of attachments played on the attached character', function () {
                 expect(this.daimyosFavor.bowed).toBe(true);
                 this.ancestralDaisho = this.player1.playAttachment('ancestral-daisho', this.doomedShugenja);

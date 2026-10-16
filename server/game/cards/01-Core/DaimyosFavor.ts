@@ -15,15 +15,19 @@ class DaimyosFavor extends DrawCard {
 
         this.action('Bow to reduce attachment cost')
             .cost(costs.bowSelf())
-            .playerLastingEffect((context) => ({
-                duration: Duration.UntilEndOfPhase,
-                effect: reduceCost({
-                    amount: 1,
-                    cardType: CardType.Attachment,
-                    targetCondition: (target) => target === context.source.parentCharacter,
-                    limit: fixed(1)
-                })
-            }))
+            .playerLastingEffect((context) => {
+                // "this character" is the one the Favor is on now, even if the Favor leaves play later
+                const character = context.source.parentCharacter;
+                return {
+                    duration: Duration.UntilEndOfPhase,
+                    effect: reduceCost({
+                        amount: 1,
+                        cardType: CardType.Attachment,
+                        targetCondition: (target) => !!character && target === character,
+                        limit: fixed(1)
+                    })
+                };
+            })
             .chatText((context) => msg`reduce the cost of the next attachment they play on ${context.source.parentCharacter} by 1`);
     }
 }
