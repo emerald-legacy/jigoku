@@ -82,7 +82,7 @@ describe('Void Acolyte', function() {
                 attackers: ['seeker-of-knowledge'],
                 defenders: []
             });
-            this.acolyte.untilEndOfRound({
+            this.acolyte.applyDurationEffect('untilEndOfRound', {
                 match: this.game.rings.fire,
                 effect: addElement('void')
             });

@@ -20,17 +20,10 @@ export class AttachmentManager {
             this.attachments.some((other) => other !== attachment && isCopy(other, attachment) && other.controller === controller);
     }
 
-    allowAttachment(attachment: DrawCard): boolean {
-        if(this.host.allowedAttachmentTraits.some((trait) => attachment.getTraits().has(trait))) {
-            return true;
-        }
-        return this.host.isBlank() || this.host.allowedAttachmentTraits.length === 0;
-    }
-
     checkForIllegalAttachments(): boolean {
         const host = this.host;
         const game = host.game;
-        const context = (game.getFrameworkContext)(host.controller);
+        const context = game.getFrameworkContext(host.controller);
         const illegalAttachments = new Set<DrawCard>(
             this.attachments.filter((attachment) => !host.allowAttachment(attachment) || !attachment.canAttach(host))
         );

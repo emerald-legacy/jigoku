@@ -67,52 +67,6 @@ export class EffectSource extends GameObject {
     }
 
     /**
-     * Applies an immediate effect which lasts until the end of the current
-     * duel.
-     */
-    untilEndOfDuel(properties: EffectSourceProperties): void {
-        this.applyDurationEffect(Duration.UntilEndOfDuel, properties);
-    }
-
-    /**
-     * Applies an immediate effect which lasts until the end of the current
-     * conflict.
-     */
-    untilEndOfConflict(properties: EffectSourceProperties): void {
-        this.applyDurationEffect(Duration.UntilEndOfConflict, properties);
-    }
-
-    /**
-     * Applies an immediate effect which lasts until the end of the phase.
-     */
-    untilEndOfPhase(properties: EffectSourceProperties): void {
-        this.applyDurationEffect(Duration.UntilEndOfPhase, properties);
-    }
-
-    /**
-     * Applies an immediate effect which lasts until the end of the round.
-     */
-    untilEndOfRound(properties: EffectSourceProperties): void {
-        this.applyDurationEffect(Duration.UntilEndOfRound, properties);
-    }
-
-    untilPassPriority(properties: EffectSourceProperties): void {
-        this.applyDurationEffect(Duration.UntilPassPriority, properties);
-    }
-
-    untilOpponentPassPriority(properties: EffectSourceProperties): void {
-        this.applyDurationEffect(Duration.UntilOpponentPassPriority, properties);
-    }
-
-    untilNextPassPriority(properties: EffectSourceProperties): void {
-        this.applyDurationEffect(Duration.UntilNextPassPriority, properties);
-    }
-
-    untilSelfPassPriority(properties: EffectSourceProperties): void {
-        this.applyDurationEffect(Duration.UntilSelfPassPriority, properties);
-    }
-
-    /**
      * Applies a lasting effect which lasts until an event contained in the
      * `until` property for the effect has occurred.
      */

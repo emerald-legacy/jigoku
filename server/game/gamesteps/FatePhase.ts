@@ -19,9 +19,8 @@ function characterShouldBeDiscarded(character: DrawCard) {
  * 4.3 Remove fate from characters.
  * 4.4 Place fate on unclaimed rings.
  * ◊ ACTION WINDOW
- * Proceed to Dynasty Phase.
- * 4.6 Discard from provinces.
  * 4.5 Ready cards.
+ * 4.6 Discard from provinces.
  * 4.7 Return rings.
  * 4.8 Pass first player token.
  * 4.9 Fate phase ends

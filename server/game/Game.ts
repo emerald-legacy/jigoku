@@ -786,10 +786,6 @@ export class Game {
         this.events.on(eventName, handler);
     }
 
-    once<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
-        this.events.once(eventName, handler);
-    }
-
     off<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
         this.events.off(eventName, handler);
     }

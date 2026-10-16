@@ -827,10 +827,6 @@ export class DrawCard extends BaseCard {
         );
     }
 
-    play(): void {
-        //empty function so playcardaction doesn't crash the game
-    }
-
     getEffectMarkers(): Array<{ source: string; kind: 'delayed' | 'modifier' }> {
         const engine = this.game?.effectEngine;
         if(!engine || !Array.isArray(engine.effects)) {

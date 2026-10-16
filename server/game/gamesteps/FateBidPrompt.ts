@@ -7,7 +7,6 @@ import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 export type Result = {
     bids: Map<Player, number>;
     highest: { amount: number; players: Set<Player> };
-    lowest: { amount: number; players: Set<Player> };
 };
 
 export class FateBidPrompt extends AllPlayerPrompt {
@@ -39,8 +38,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
 
         const result: Result = {
             bids: this.bids,
-            highest: { amount: 0, players: new Set() },
-            lowest: { amount: 0, players: new Set() }
+            highest: { amount: 0, players: new Set() }
         };
         for(const [player, amount] of this.bids) {
             if(amount > result.highest.amount) {
@@ -48,12 +46,6 @@ export class FateBidPrompt extends AllPlayerPrompt {
                 result.highest.players = new Set([player]);
             } else if(amount === result.highest.amount) {
                 result.highest.players.add(player);
-            }
-            if(amount < result.lowest.amount) {
-                result.lowest.amount = amount;
-                result.lowest.players = new Set([player]);
-            } else if(amount === result.lowest.amount) {
-                result.lowest.players.add(player);
             }
         }
 

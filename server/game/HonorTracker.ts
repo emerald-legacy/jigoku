@@ -28,9 +28,4 @@ export class HonorTracker {
     getTotalHonor(): number {
         return this.honor;
     }
-
-    reset(): void {
-        this.honor = 0;
-        this.honorEvents = [];
-    }
 }

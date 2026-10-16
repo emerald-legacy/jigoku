@@ -50,8 +50,4 @@ export class ConflictTracker {
             record.typeSwitched = conflict.conflictTypeSwitched;
         }
     }
-
-    reset(): void {
-        this.records = [];
-    }
 }

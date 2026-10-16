@@ -15,7 +15,6 @@ import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from '../Game
 type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
 
 interface AbilityResolverTargetResults {
-    canIgnoreAllCosts?: boolean;
     cancelled?: boolean;
     payCostsFirst?: boolean;
     delayTargeting?: AbilityResolverTarget | null;

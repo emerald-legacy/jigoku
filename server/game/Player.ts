@@ -462,7 +462,7 @@ export class Player extends GameObject {
                 card.controller === this &&
                 card.hasTrait(trait) &&
                 card.isFaceup() &&
-                (card.location === Location.PlayArea || (card.isProvinceCard() && !card.isBroken))
+                card.location === Location.PlayArea
             );
         });
     }

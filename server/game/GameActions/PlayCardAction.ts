@@ -33,7 +33,6 @@ class PlayCardResolver extends AbilityResolver {
         if(this.gameActionProperties.playCardTarget) {
             this.context.stage = Stage.PreTarget;
             this.targetResults = {
-                canIgnoreAllCosts: false,
                 cancelled: false,
                 payCostsFirst: false,
                 delayTargeting: null

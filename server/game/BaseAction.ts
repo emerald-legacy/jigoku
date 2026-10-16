@@ -31,9 +31,5 @@ export class BaseAction extends BaseCardAbility {
     override getReducedCost(context: AbilityContext): number {
         return this.reducedFateCost(context);
     }
-
-    override isAction(): boolean {
-        return true;
-    }
 }
 

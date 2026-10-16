@@ -196,7 +196,7 @@ describe('Mangrove Safehouse', function () {
 
                     describe('if a character that gained the Mantis Clan trait is selected', function () {
                         beforeEach(function () {
-                            this.adeptOfTheWaves.untilEndOfRound({
+                            this.adeptOfTheWaves.applyDurationEffect('untilEndOfRound', {
                                 match: this.adeptOfTheWaves,
                                 effect: addTrait('mantis-clan')
                             });
@@ -212,7 +212,7 @@ describe('Mangrove Safehouse', function () {
 
                     describe('if a Mantis character that lost the Mantis Clan trait is selected', function () {
                         beforeEach(function () {
-                            this.kudaka.untilEndOfRound({
+                            this.kudaka.applyDurationEffect('untilEndOfRound', {
                                 match: this.kudaka,
                                 effect: loseTrait('mantis-clan')
                             });

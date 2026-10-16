@@ -1,4 +1,5 @@
 import { EffectSource } from '../../server/game/EffectSource.js';
+import { Duration } from '../../server/game/Constants.js';
 import type { EffectEngine } from '../../server/game/EffectEngine.js';
 import { createTestGame } from '../helpers/fixtures.js';
 
@@ -13,10 +14,10 @@ describe('EffectSource', function() {
         source = new EffectSource(game);
     });
 
-    describe('untilEndOfConflict()', function() {
+    describe('applyDurationEffect()', function() {
         it('should add the effect to the effect engine', function() {
             const builtEffect = jasmine.createSpy('builtEffect');
-            source.untilEndOfConflict({ effect: builtEffect });
+            source.applyDurationEffect(Duration.UntilEndOfConflict, { effect: builtEffect });
             expect(effectEngine.add).toHaveBeenCalled();
             expect(builtEffect).toHaveBeenCalled();
         });

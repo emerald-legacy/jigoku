@@ -67,7 +67,6 @@ export interface BaseAbilityProperties {
 }
 
 export interface TargetResults {
-    canIgnoreAllCosts?: boolean;
     cancelled?: boolean;
     payCostsFirst?: boolean;
     delayTargeting?: AbilityTarget | null;
@@ -253,8 +252,6 @@ export class BaseAbility {
      */
     resolveTargets(context: AbilityContext): TargetResults {
         const targetResults: TargetResults = {
-            canIgnoreAllCosts:
-                context.stage === Stage.PreTarget && this.cost.length === 0,
             cancelled: false,
             payCostsFirst: false,
             delayTargeting: null
@@ -309,10 +306,6 @@ export class BaseAbility {
      * does nothing.
      */
     executeHandler(_context: AbilityContext): void {}
-
-    isAction(): boolean {
-        return false;
-    }
 
     isCardPlayed(): boolean {
         return false;

@@ -92,10 +92,6 @@ export class CardAction extends CardAbility {
         );
     }
 
-    override isAction() {
-        return true;
-    }
-
     override isCardAction(): this is CardAction {
         return true;
     }
