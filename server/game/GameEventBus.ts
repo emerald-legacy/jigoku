@@ -1,10 +1,14 @@
-export type EventHandler = (...args: unknown[]) => void;
+import type { OwnContextCallback } from './Interfaces.js';
 
-export class GameEventBus {
-    private handlers = new Map<string, Set<EventHandler>>();
-    private onceWrappers = new Map<string, Map<EventHandler, EventHandler>>();
+/** A listener; method syntax, so one taking a narrower argument (a game event's typed payload) fits. */
+export type EventHandler<Args extends unknown[] = unknown[]> = OwnContextCallback<Args, void>;
 
-    on(eventName: string, handler: EventHandler): void {
+/** Listeners by key, each called with the arguments `Args` of its bus. */
+export class GameEventBus<Args extends unknown[] = unknown[]> {
+    private handlers = new Map<string, Set<EventHandler<Args>>>();
+    private onceWrappers = new Map<string, Map<EventHandler<Args>, EventHandler<Args>>>();
+
+    on(eventName: string, handler: EventHandler<Args>): void {
         let bucket = this.handlers.get(eventName);
         if(!bucket) {
             bucket = new Set();
@@ -13,7 +17,7 @@ export class GameEventBus {
         bucket.add(handler);
     }
 
-    off(eventName: string, handler: EventHandler): void {
+    off(eventName: string, handler: EventHandler<Args>): void {
         // A `once` registration stores its wrapper keyed by the caller's original
         // handler, so off(name, originalHandler) can cancel a still-pending once.
         const onceForEvent = this.onceWrappers.get(eventName);
@@ -34,8 +38,8 @@ export class GameEventBus {
         }
     }
 
-    once(eventName: string, handler: EventHandler): void {
-        const wrapper: EventHandler = (...args) => {
+    once(eventName: string, handler: EventHandler<Args>): void {
+        const wrapper: EventHandler<Args> = (...args) => {
             this.off(eventName, handler);
             handler(...args);
         };
@@ -48,7 +52,7 @@ export class GameEventBus {
         this.on(eventName, wrapper);
     }
 
-    emit(eventName: string, ...args: unknown[]): void {
+    emit(eventName: string, ...args: Args): void {
         const bucket = this.handlers.get(eventName);
         if(!bucket) {
             return;
@@ -58,13 +62,4 @@ export class GameEventBus {
         }
     }
 
-    removeAllListeners(eventName?: string): void {
-        if(eventName === undefined) {
-            this.handlers.clear();
-            this.onceWrappers.clear();
-            return;
-        }
-        this.handlers.delete(eventName);
-        this.onceWrappers.delete(eventName);
-    }
 }

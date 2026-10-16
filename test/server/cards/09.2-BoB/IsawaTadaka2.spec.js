@@ -75,13 +75,13 @@ describe('Isawa Tadaka 2', function() {
                 this.player1.clickCard(this.solemnScholar);
                 this.player1.clickPrompt('Done');
                 expect(this.player1).toHavePrompt('Select a card:');
-                let matchingButtons = this.player1.currentPrompt().buttons.filter(button =>
+                const matchingButtons = this.player1.currentPrompt().buttons.filter(button =>
                     ['Ornate Fan', 'Fine Katana', 'Banzai!'].includes(button.text)
                 );
                 expect(matchingButtons.length).toBe(2);
                 expect(this.player1.currentPrompt().buttons.length).toBe(2);
-                let conflictDiscardPileSize = this.player2.player.conflictDiscardPile.length;
-                let hand = this.player2.player.hand.length;
+                const conflictDiscardPileSize = this.player2.player.conflictDiscardPile.length;
+                const hand = this.player2.player.hand.length;
                 this.player1.clickPrompt(matchingButtons[0].text);
                 expect(this.player2.player.conflictDiscardPile.length).toBe(conflictDiscardPileSize + 1);
                 expect(this.player2.player.hand.length).toBe(hand - 1);

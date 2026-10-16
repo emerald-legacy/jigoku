@@ -1,11 +1,11 @@
-import ChatCommands from '../../../build/server/game/ChatCommands.js';
+import { ChatCommands } from '../../../build/server/game/ChatCommands.js';
 
 describe('ChatCommands', function() {
     beforeEach(function() {
         this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'promptForSelect', 'getFrameworkContext', 'queueStep','queueSimpleStep', 'openEventWindow']);
         this.gameSpy.getFrameworkContext.and.returnValue({ game: this.gameSpy, player: this.playerSpy });
 
-        this.playerSpy = jasmine.createSpyObj('player', ['drawCardsToHand', 'discardAtRandom', 'discardFromDraw']);
+        this.playerSpy = jasmine.createSpyObj('player', ['drawCardsToHand', 'discardAtRandom', 'discardFromDraw', 'claimImperialFavor', 'loseImperialFavor']);
         this.chatCommands = new ChatCommands(this.gameSpy);
     });
 
@@ -38,7 +38,7 @@ describe('ChatCommands', function() {
     describe('executeCommand()', function() {
         describe('with a non-existent command', function() {
             it('should return false', function() {
-                let result = this.chatCommands.executeCommand(this.playerSpy, '/foo', ['/foo', 'bar']);
+                const result = this.chatCommands.executeCommand(this.playerSpy, '/foo', ['/foo', 'bar']);
 
                 expect(result).toBe(false);
             });
@@ -46,7 +46,7 @@ describe('ChatCommands', function() {
 
         describe('with a valid command', function() {
             it('should return true', function() {
-                let result = this.chatCommands.executeCommand(this.playerSpy, '/dishonor', ['/dishonor']);
+                const result = this.chatCommands.executeCommand(this.playerSpy, '/dishonor', ['/dishonor']);
 
                 expect(result).toBe(true);
             });
@@ -83,6 +83,40 @@ describe('ChatCommands', function() {
 
                     expect(this.playerSpy.drawCardsToHand).toHaveBeenCalledWith(4);
                 });
+            });
+        });
+
+        describe('with a /roll command', function() {
+            it('should roll a die with the passed number of sides', function () {
+                this.chatCommands.executeCommand(this.playerSpy, '/roll', ['/roll', '6']);
+
+                expect(this.gameSpy.addMessage).toHaveBeenCalledTimes(1);
+            });
+
+            it('should not roll a die with more than 1000 sides', function () {
+                expect(() => this.chatCommands.executeCommand(this.playerSpy, '/roll', ['/roll', '99999999999999999999'])).not.toThrow();
+
+                expect(this.gameSpy.addMessage).not.toHaveBeenCalled();
+            });
+        });
+
+        describe('with a /claim-favor command', function() {
+            it('should claim the military favor with no argument', function () {
+                this.chatCommands.executeCommand(this.playerSpy, '/claim-favor', ['/claim-favor']);
+
+                expect(this.playerSpy.claimImperialFavor).toHaveBeenCalledWith('military');
+            });
+
+            it('should claim the favor that was named', function () {
+                this.chatCommands.executeCommand(this.playerSpy, '/claim-favor', ['/claim-favor', 'political']);
+
+                expect(this.playerSpy.claimImperialFavor).toHaveBeenCalledWith('political');
+            });
+
+            it('should claim the military favor when the argument is not a favor', function () {
+                this.chatCommands.executeCommand(this.playerSpy, '/claim-favor', ['/claim-favor', 'sideways']);
+
+                expect(this.playerSpy.claimImperialFavor).toHaveBeenCalledWith('military');
             });
         });
     });

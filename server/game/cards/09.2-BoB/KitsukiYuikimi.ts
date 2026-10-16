@@ -1,30 +1,28 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 export default class KitsukiYuikimi extends DrawCard {
     static id = 'kitsuki-yuikimi';
 
-    public setupCardAbilities() {
-        this.reaction({
-            title: 'Cannot be targeted by opponent\'s triggered abilities',
-            when: {
+    public override setupCardAbilities() {
+        this.reaction('Cannot be targeted by opponent\'s triggered abilities')
+            .when({
                 onMoveFate: (event, context) =>
                     context.source.isParticipating() &&
                     event.origin &&
                     event.origin.type === 'ring' &&
                     event.recipient === context.player &&
                     context.player.opponent !== undefined
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.cardCannot({
-                    cannot: 'target',
-                    restricts: 'opponentsTriggeredAbilities',
+            })
+            .cardLastingEffect((context) => ({
+                effect: cardCannot({
+                    cannot: RestrictionType.Target,
+                    appliesTo: RestrictionScope.OpponentsTriggeredAbilities,
                     applyingPlayer: context.player
                 })
-            })),
-            effect: 'prevent {0} from being chosen as the target of {1}\'s triggered abilities until the end of the conflict',
-            effectArgs: (context) => [context.player.opponent as Player]
-        });
+            }))
+            .chatText((context) => msg`prevent ${context.chatTarget()} from being chosen as the target of ${context.player.opponent}'s triggered abilities until the end of the conflict`);
     }
 }

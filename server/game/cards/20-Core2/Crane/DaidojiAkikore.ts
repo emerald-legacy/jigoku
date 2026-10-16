@@ -1,45 +1,34 @@
-import { DuelType, Duration } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { DuelType, ConflictType } from '../../../Constants.js';
+import { changePlayerSkillModifier, modifyDuelTotal } from '../../../effects.js';
+import { conditional, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class DaidojiAkikore extends DrawCard {
     static id = 'daidoji-akikore';
 
-    setupCardAbilities() {
-        this.duelFocus({
-            title: 'Add +1 to your duel total',
-            duelCondition: (duel, context) =>
-                context.game.isDuringConflict('political') && duel.participants.includes(context.source),
-            gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as TriggeredAbilityContext).event.duel,
-                effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),
-                duration: Duration.UntilEndOfDuel
-            } as LastingEffectProperties)),
-            effect: 'add 1 to their duel total'
-        });
+    override setupCardAbilities() {
+        this.duelFocus('Add +1 to your duel total', (duel, context) =>
+            context.game.isDuringConflict(ConflictType.Political) && duel.participants.includes(context.source))
+            .duelLastingEffect((context) => ({
+                effect: modifyDuelTotal({ amount: 1, player: context.player })
+            }))
+            .chatText('add 1 to their duel total');
 
-        this.action({
-            title: 'Military duel to add skill',
-            initiateDuel: (context) => ({
+        this.conflictAction('Military duel to add skill')
+            .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                message: '{0}{1}{2}',
-                messageArgs: (duel) =>
-                    duel.winningPlayer === context.player
-                        ? ['add 3 to ', context.player, '\'s side for this conflict']
-                        : ['no effect', '', ''],
+                chatText: (_context, duel) =>
+                    duel.winningPlayer === context.player ? msg`add 3 to ${context.player}'s side for this conflict` : msg`no effect`,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.conditional({
+                    conditional({
                         condition: duel.winningPlayer === context.player,
-                        trueGameAction: AbilityDsl.actions.playerLastingEffect((_context) => ({
-                            targetController: duel.winningPlayer,
-                            effect: AbilityDsl.effects.changePlayerSkillModifier(3)
-                        })),
-                        falseGameAction: AbilityDsl.actions.noAction()
+                        trueGameAction: playerLastingEffect({
+                            target: duel.winningPlayer,
+                            effect: changePlayerSkillModifier(3)
+                        })
                     })
-            })
-        });
+            }));
     }
 }

@@ -33,3 +33,30 @@ describe('Shinjo Saddle', function() {
         });
     });
 });
+
+describe('Shinjo Saddle on an opponent\'s character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic'],
+                    hand: ['shinjo-saddle']
+                },
+                player2: {
+                    inPlay: ['border-rider']
+                }
+            });
+            this.miyaMystic = this.player1.findCardByName('miya-mystic');
+            this.borderRider = this.player2.findCardByName('border-rider');
+        });
+
+        it('can be played on an opponent\'s Cavalry character', function() {
+            this.player1.clickCard('shinjo-saddle');
+            expect(this.player1).toBeAbleToSelect(this.borderRider);
+            expect(this.player1).not.toBeAbleToSelect(this.miyaMystic);
+            this.player1.clickCard(this.borderRider);
+            expect(this.borderRider.attachments).toContain(this.player1.findCardByName('shinjo-saddle'));
+        });
+    });
+});

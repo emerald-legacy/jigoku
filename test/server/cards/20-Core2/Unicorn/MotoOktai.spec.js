@@ -26,8 +26,8 @@ describe('Moto Oktai', function () {
         });
 
         it('gains MIL when opponent leaves play', function () {
-            const initialOktaiMil = this.motoOktai.getMilitarySkill();
-            const keeperMil = this.keeperInitiate.getMilitarySkill();
+            const initialOktaiMil = this.motoOktai.militarySkill;
+            const keeperMil = this.keeperInitiate.militarySkill;
             this.initiateConflict({
                 attackers: [this.motoOktai],
                 defenders: []
@@ -39,15 +39,15 @@ describe('Moto Oktai', function () {
             expect(this.player1).toHavePrompt('Triggered Abilities');
 
             this.player1.clickCard(this.motoOktai);
-            expect(this.motoOktai.getMilitarySkill()).toBe(initialOktaiMil + keeperMil);
+            expect(this.motoOktai.militarySkill).toBe(initialOktaiMil + keeperMil);
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Moto Oktai to get +3 military for this phase - he is emboldened by justice, but unburdened by mercy!'
+                'player1 uses Moto Oktai to get +3 military for this phase - he is emboldened by justice, but unburdened by mercy'
             );
         });
 
         it('gains MIL when own character leaves play, and can kill own character', function () {
-            const initialOktaiMil = this.motoOktai.getMilitarySkill();
-            const raitsuguMil = this.mirumotoRaitsugu.getMilitarySkill();
+            const initialOktaiMil = this.motoOktai.militarySkill;
+            const raitsuguMil = this.mirumotoRaitsugu.militarySkill;
             this.initiateConflict({
                 attackers: [this.motoOktai],
                 defenders: []
@@ -62,15 +62,46 @@ describe('Moto Oktai', function () {
 
             this.player1.clickCard(this.mirumotoRaitsugu);
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Moto Oktai to discard Mirumoto Raitsugu - purge the weak!'
+                'player1 uses Moto Oktai to discard Mirumoto Raitsugu - purge the weak'
             );
             expect(this.player1).toHavePrompt('Triggered Abilities');
 
             this.player1.clickCard(this.motoOktai);
-            expect(this.motoOktai.getMilitarySkill()).toBe(initialOktaiMil + raitsuguMil);
+            expect(this.motoOktai.militarySkill).toBe(initialOktaiMil + raitsuguMil);
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Moto Oktai to get +4 military for this phase - he is emboldened by justice, but unburdened by mercy!'
+                'player1 uses Moto Oktai to get +4 military for this phase - he is emboldened by justice, but unburdened by mercy'
             );
+        });
+
+    });
+});
+
+describe('Moto Oktai timing', function () {
+    integration(function () {
+        describe('outside the conflict phase', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['moto-oktai']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer']
+                    }
+                });
+                this.motoOktai = this.player1.findCardByName('moto-oktai');
+                this.motoOktai.fate = 1;
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+            });
+
+            it('does not react to characters discarded in the fate phase', function () {
+                this.nextPhase();
+                this.player2.clickPrompt('Done');
+
+                expect(this.game.currentPhase).toBe('fate');
+                expect(this.whisperer.location).toBe('dynasty discard pile');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            });
         });
     });
 });

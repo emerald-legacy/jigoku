@@ -70,8 +70,8 @@ describe('Ashen Flame Plateau', function() {
                 attackers: [this.envoy],
                 province: this.wasteland
             });
-            let cards = this.player1.hand.length;
-            let fate = this.player1.fate;
+            const cards = this.player1.hand.length;
+            const fate = this.player1.fate;
 
             this.player2.clickCard(this.wasteland);
             this.player2.clickCard(this.sotorii);
@@ -91,8 +91,8 @@ describe('Ashen Flame Plateau', function() {
                 attackers: [this.ujina],
                 province: this.wasteland
             });
-            let cards = this.player1.hand.length;
-            let fate = this.player1.fate;
+            const cards = this.player1.hand.length;
+            const fate = this.player1.fate;
 
             this.player2.clickCard(this.wasteland);
             this.player2.clickCard(this.sotorii);
@@ -171,7 +171,7 @@ describe('Ashen Flame Plateau', function() {
             this.player2.clickCard(this.wasteland);
             this.player2.clickCard(this.sotorii);
             this.player2.clickPrompt('Done');
-            let glory = this.sotorii.glory;
+            const glory = this.sotorii.glory;
             this.player2.clickCard(this.sotorii);
             expect(this.player2).toHavePrompt('Hantei Sotorii');
             this.player2.clickCard(this.sotorii);

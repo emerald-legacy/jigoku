@@ -1,28 +1,25 @@
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 export default class KyudenIkoma extends StrongholdCard {
     static id = 'kyuden-ikoma';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Bow a non-champion',
-            cost: AbilityDsl.costs.bowSelf(),
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Bow a non-champion')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.loser === context.player &&
                     event.conflict.defendingPlayer !== context.player &&
-                    event.conflict.getAttackers() &&
                     event.conflict.getAttackers().length !== 0
-            },
-            target: {
+            })
+            .cost(costs.bowSelf())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => !card.hasTrait('champion'),
-                activePromptTitle: 'Bow a non-champion',
-                gameAction: AbilityDsl.actions.bow()
-            },
-            effect: 'bow {0}.'
-        });
+                cardCondition: (card) => !card.hasTrait(Trait.Champion),
+                activePromptTitle: 'Bow a non-champion'
+            }, bow())
+            .chatText('bow {0}');
     }
 }

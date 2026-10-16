@@ -1,32 +1,30 @@
-import type { AbilityContext } from '../../AbilityContext.js';
-import type AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import * as costs from '../../costs/index.js';
+import { fixed } from '../../AbilityLimit.js';
+import { reduceCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
 
 class DaimyosFavor extends DrawCard {
     static id = 'daimyo-s-favor';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
-        this.action({
-            title: 'Bow to reduce attachment cost',
-            cost: ability.costs.bowSelf(),
-            effect: 'reduce the cost of the next attachment they play on {1} by 1',
-            effectArgs: context => context.source.parentCharacter,
-            gameAction: ability.actions.playerLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
-                targetController: context.player,
+        this.action('Bow to reduce attachment cost')
+            .cost(costs.bowSelf())
+            .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                effect: ability.effects.reduceCost({
+                effect: reduceCost({
                     amount: 1,
                     cardType: CardType.Attachment,
-                    targetCondition: target => target === context.source.parentCharacter,
-                    limit: ability.limit.fixed(1)
+                    targetCondition: (target) => target === context.source.parentCharacter,
+                    limit: fixed(1)
                 })
             }))
-        });
+            .chatText((context) => msg`reduce the cost of the next attachment they play on ${context.source.parentCharacter} by 1`);
     }
 }
 

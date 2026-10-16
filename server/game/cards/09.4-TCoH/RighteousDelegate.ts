@@ -1,55 +1,49 @@
+import { Trait } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Duration } from '../../Constants.js';
+import { modifyBothSkills } from '../../effects.js';
 
 class RighteousDelegate extends DrawCard {
     static id = 'righteous-delegate';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Weaken bushi, empower non-bushi',
-            condition: (context) => context.source.isParticipating(),
-            effect: 'give all participating bushi characters -1{1} / -1{2} and give all participating non-bushi characters +1{1} / +1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect((context) => {
-                    const conflict = this.game.currentConflict;
-                    if(!conflict) {
-                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(1), duration: Duration.UntilEndOfConflict };
-                    }
-                    return {
-                        target: conflict
-                            .getCharacters(context.player)
-                            .filter((card) => !card.hasTrait('bushi'))
-                            .concat(
-                                conflict
-                                    .getCharacters(context.player.opponent)
-                                    .filter((card) => !card.hasTrait('bushi'))
-                            ),
-                        effect: AbilityDsl.effects.modifyBothSkills(1),
-                        duration: Duration.UntilEndOfConflict
-                    };
-                }),
-                AbilityDsl.actions.cardLastingEffect((context) => {
-                    const conflict = this.game.currentConflict;
-                    if(!conflict) {
-                        return { target: [], effect: AbilityDsl.effects.modifyBothSkills(-1), duration: Duration.UntilEndOfConflict };
-                    }
-                    return {
-                        target: conflict
-                            .getCharacters(context.player)
-                            .filter((card) => card.hasTrait('bushi'))
-                            .concat(
-                                conflict
-                                    .getCharacters(context.player.opponent)
-                                    .filter((card) => card.hasTrait('bushi'))
-                            ),
-                        effect: AbilityDsl.effects.modifyBothSkills(-1),
-                        duration: Duration.UntilEndOfConflict
-                    };
-                })
-            ])
-        });
+    override setupCardAbilities() {
+        this.action('Weaken bushi, empower non-bushi')
+            .condition((context) => context.source.isParticipating())
+            .cardLastingEffect((context) => {
+                const conflict = this.game.currentConflict;
+                if(!conflict) {
+                    return { target: [], effect: modifyBothSkills(1) };
+                }
+                return {
+                    target: conflict
+                        .getCharacters(context.player)
+                        .filter((card) => !card.hasTrait(Trait.Bushi))
+                        .concat(
+                            conflict
+                                .getCharacters(context.player.opponent)
+                                .filter((card) => !card.hasTrait(Trait.Bushi))
+                        ),
+                    effect: modifyBothSkills(1)
+                };
+            })
+            .cardLastingEffect((context) => {
+                const conflict = this.game.currentConflict;
+                if(!conflict) {
+                    return { target: [], effect: modifyBothSkills(-1) };
+                }
+                return {
+                    target: conflict
+                        .getCharacters(context.player)
+                        .filter((card) => card.hasTrait(Trait.Bushi))
+                        .concat(
+                            conflict
+                                .getCharacters(context.player.opponent)
+                                .filter((card) => card.hasTrait(Trait.Bushi))
+                        ),
+                    effect: modifyBothSkills(-1)
+                };
+            })
+            .chatText(() => msg`give all participating bushi characters -1${'military'} / -1${'political'} and give all participating non-bushi characters +1${'military'} / +1${'political'}`);
     }
 }
 

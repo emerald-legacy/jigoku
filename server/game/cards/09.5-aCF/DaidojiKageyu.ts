@@ -1,11 +1,12 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import type Player from '../../Player.js';
+import { ConflictType } from '../../Constants.js';
 
 class DaidojiKageyu extends DrawCard {
     static id = 'daidoji-kageyu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const cardsPlayed = (opponent: Player | undefined): number => {
             const conflict = this.game.currentConflict;
             if(!conflict || !opponent) {
@@ -14,18 +15,12 @@ class DaidojiKageyu extends DrawCard {
             return conflict.getNumberOfCardsPlayed(opponent);
         };
 
-        this.action({
-            title: 'Draw cards',
-            condition: (context) => this.game.isDuringConflict('political') &&
+        this.action('Draw cards')
+            .condition((context) => this.game.isDuringConflict(ConflictType.Political) &&
                 context.source.isParticipating() &&
-                cardsPlayed(context.player.opponent) > 0,
-            gameAction: AbilityDsl.actions.draw((context) => ({ amount: cardsPlayed(context.player.opponent) })),
-            effect: 'draw {1} card{2}',
-            effectArgs: (context) => [
-                cardsPlayed(context.player.opponent),
-                cardsPlayed(context.player.opponent) > 1 ? 's' : ''
-            ]
-        });
+                cardsPlayed(context.player.opponent) > 0)
+            .draw((context) => ({ amount: cardsPlayed(context.player.opponent) }))
+            .chatText((context) => msg`draw ${cardsPlayed(context.player.opponent)} card${cardsPlayed(context.player.opponent) > 1 ? 's' : ''}`);
     }
 }
 

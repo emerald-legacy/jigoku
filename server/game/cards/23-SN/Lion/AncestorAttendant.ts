@@ -1,36 +1,25 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { discardCard, dishonor, multiple } from '../../../GameActions/GameActions.js';
 
 export default class AncestorAttendant extends DrawCard {
     static id = 'ancestor-attendant';
 
-    setupCardAbilities() {
-        this.conflictAction<DrawCard>({
-            title: 'Dishonor a character',
-            target: {
-                // Printed cost 0 discards nothing, so "if you do" is never satisfied and
-                // the ability cannot change the game state at all.
+    override setupCardAbilities() {
+        this.conflictAction('Dishonor a character')
+            .target({
                 cardCondition: (card, context) => !!context.player.opponent &&
                     card.isParticipatingFor(context.player.opponent) &&
                     (card.printedCost ?? 0) > 0 &&
                     context.player.dynastyDeck.length >= (card.printedCost ?? 0),
-                cardType: CardType.Character,
-                // Not joint: the discard is what "if you do" refers to, so a character
-                // that cannot be dishonored is still a legal choice and still costs the
-                // cards. Discard first, as printed.
-                gameAction: AbilityDsl.actions.multipleContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    gameActions: [
-                        AbilityDsl.actions.discardCard((discardContext) => ({
-                            target: discardContext.player.dynastyDeck.slice(0, context.target.printedCost || 0)
-                        })),
-                        AbilityDsl.actions.dishonor()
-                    ]
-                }))
-            },
-            effect: 'dishonor {0} and discard the top {1} cards of their dynasty deck',
-            effectArgs: (context) => [context.target?.printedCost]
-        });
+                cardType: CardType.Character
+            }, multiple((context) => [
+                discardCard((discardContext) => ({
+                    target: discardContext.player.dynastyDeck.slice(0, context.target.printedCost || 0)
+                })),
+                dishonor()
+            ]))
+            .chatText((context) => msg`dishonor ${context.chatTarget()} and discard the top ${context.target.printedCost} cards of their dynasty deck`);
     }
 }

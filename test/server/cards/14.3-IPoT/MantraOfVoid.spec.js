@@ -76,7 +76,7 @@ describe('Mantra of Void', function () {
                 ring: 'void',
                 attackers: ['solemn-scholar']
             });
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.mantra);
             this.player2.clickCard(this.mantra);
@@ -134,7 +134,7 @@ describe('Mantra of Void', function () {
         });
 
         it('cost reduction should stack', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.player2.moveCard(this.mantra2, 'hand');
             this.noMoreActions();
             this.initiateConflict({

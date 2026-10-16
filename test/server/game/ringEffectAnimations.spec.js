@@ -1,21 +1,17 @@
-import { WaterRingEffect } from '../../../build/server/game/Rings/WaterRingEffect.js';
-import { FireRingEffect } from '../../../build/server/game/Rings/FireRingEffect.js';
-import { VoidRingEffect } from '../../../build/server/game/Rings/VoidRingEffect.js';
-import { EarthRingEffect } from '../../../build/server/game/Rings/EarthRingEffect.js';
-import { AirRingEffect } from '../../../build/server/game/Rings/AirRingEffect.js';
-import { GameModes } from '../../../build/server/GameModes.js';
+import { WaterRingAbility } from '../../../build/server/game/Rings/WaterRingAbility.js';
+import { FireRingAbility } from '../../../build/server/game/Rings/FireRingAbility.js';
+import { VoidRingAbility } from '../../../build/server/game/Rings/VoidRingAbility.js';
+import { EarthRingAbility } from '../../../build/server/game/Rings/EarthRingAbility.js';
+import { AirRingAbility } from '../../../build/server/game/Rings/AirRingAbility.js';
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 
 function makeContext(overrides = {}) {
     return Object.assign({
         game: {
             addAnimation: jasmine.createSpy('addAnimation'),
             addMessage: jasmine.createSpy('addMessage'),
-            applyGameAction: jasmine.createSpy('applyGameAction'),
-            actions: {
-                gainHonor: jasmine.createSpy('gainHonor').and.returnValue({ resolve: jasmine.createSpy('resolve') }),
-                takeHonor: jasmine.createSpy('takeHonor').and.returnValue({ resolve: jasmine.createSpy('resolve') }),
-                discardAtRandom: jasmine.createSpy('discardAtRandom').and.returnValue({ resolve: jasmine.createSpy('resolve') })
-            },
+            resolveActions: jasmine.createSpy('resolveActions'),
+            queueSimpleStep: jasmine.createSpy('queueSimpleStep'),
             promptWithHandlerMenu: jasmine.createSpy('promptWithHandlerMenu'),
             roundNumber: 1,
             currentPhase: 'conflict',
@@ -23,9 +19,10 @@ function makeContext(overrides = {}) {
         },
         player: {
             name: 'player1',
-            opponent: { name: 'player2' },
+            opponent: { name: 'player2', hand: [] },
             resolveRingEffects: jasmine.createSpy('resolveRingEffects'),
-            checkRestrictions: jasmine.createSpy('checkRestrictions').and.returnValue(true)
+            checkRestrictions: jasmine.createSpy('checkRestrictions').and.returnValue(true),
+            getEffects: () => []
         },
         target: {
             uuid: 'card-uuid-1',
@@ -38,9 +35,9 @@ function makeContext(overrides = {}) {
 }
 
 describe('Ring effect animations', function() {
-    describe('WaterRingEffect', function() {
+    describe('WaterRingAbility', function() {
         beforeEach(function() {
-            this.effect = new WaterRingEffect(true, GameModes.Normal);
+            this.effect = new WaterRingAbility(true, rulesFor('stronghold'));
         });
 
         it('adds a ready animation when target is bowed', function() {
@@ -62,9 +59,9 @@ describe('Ring effect animations', function() {
         });
     });
 
-    describe('FireRingEffect', function() {
+    describe('FireRingAbility', function() {
         beforeEach(function() {
-            this.effect = new FireRingEffect(true);
+            this.effect = new FireRingAbility(true);
         });
 
         it('adds an honor animation when honor handler is invoked', function() {
@@ -72,7 +69,7 @@ describe('Ring effect animations', function() {
             context.target.allowGameAction = (action) => action === 'honor';
             this.effect.executeHandler(context);
             const call = context.game.promptWithHandlerMenu.calls.mostRecent();
-            call.args[1].handlers[0]();
+            call.args[1].options[0].handler();
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'fire', targetUuid: 'card-uuid-1', effect: 'honor' });
         });
 
@@ -81,7 +78,7 @@ describe('Ring effect animations', function() {
             context.target.allowGameAction = (action) => action === 'dishonor';
             this.effect.executeHandler(context);
             const call = context.game.promptWithHandlerMenu.calls.mostRecent();
-            call.args[1].handlers[0]();
+            call.args[1].options[0].handler();
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'fire', targetUuid: 'card-uuid-1', effect: 'dishonor' });
         });
 
@@ -92,9 +89,9 @@ describe('Ring effect animations', function() {
         });
     });
 
-    describe('VoidRingEffect', function() {
+    describe('VoidRingAbility', function() {
         beforeEach(function() {
-            this.effect = new VoidRingEffect(true);
+            this.effect = new VoidRingAbility(true);
         });
 
         it('adds a remove-fate animation when effect resolves', function() {
@@ -110,16 +107,16 @@ describe('Ring effect animations', function() {
         });
     });
 
-    describe('EarthRingEffect', function() {
+    describe('EarthRingAbility', function() {
         it('adds a draw-discard animation for DRAW_AND_FORCE_DISCARD', function() {
-            const effect = new EarthRingEffect(false, GameModes.Normal);
+            const effect = new EarthRingAbility(false, rulesFor('stronghold'));
             const context = makeContext({ select: 'Draw a card and opponent discards' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'earth', playerName: 'player1', effect: 'draw-discard' });
         });
 
         it('adds a draw animation for DRAW (skirmish, no opponent)', function() {
-            const effect = new EarthRingEffect(false, GameModes.Skirmish);
+            const effect = new EarthRingAbility(false, rulesFor('skirmish'));
             const context = makeContext({ select: 'Draw a card' });
             context.player.opponent = null;
             effect.executeHandler(context);
@@ -127,23 +124,23 @@ describe('Ring effect animations', function() {
         });
 
         it('adds a force-discard animation for FORCE_DISCARD', function() {
-            const effect = new EarthRingEffect(false, GameModes.Skirmish);
+            const effect = new EarthRingAbility(false, rulesFor('skirmish'));
             const context = makeContext({ select: 'Opponent discards a card' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'earth', playerName: 'player1', effect: 'force-discard' });
         });
 
         it('does not add an animation when player skips', function() {
-            const effect = new EarthRingEffect(true, GameModes.Normal);
+            const effect = new EarthRingAbility(true, rulesFor('stronghold'));
             const context = makeContext({ select: 'Don\'t resolve' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).not.toHaveBeenCalled();
         });
     });
 
-    describe('AirRingEffect', function() {
+    describe('AirRingAbility', function() {
         it('adds a gain-honor animation for GAIN_2', function() {
-            const effect = new AirRingEffect(false, GameModes.Normal);
+            const effect = new AirRingAbility(false, rulesFor('stronghold'));
             const context = makeContext({ select: 'Gain 2 Honor' });
             context.game.roundNumber = 1;
             context.game.currentPhase = 'conflict';
@@ -153,14 +150,14 @@ describe('Ring effect animations', function() {
         });
 
         it('adds a take-honor animation for TAKE_1', function() {
-            const effect = new AirRingEffect(false, GameModes.Normal);
+            const effect = new AirRingAbility(false, rulesFor('stronghold'));
             const context = makeContext({ select: 'Take 1 Honor from opponent' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).toHaveBeenCalledWith({ type: 'air', playerName: 'player1', effect: 'take-honor' });
         });
 
         it('does not add an animation when player skips', function() {
-            const effect = new AirRingEffect(true, GameModes.Normal);
+            const effect = new AirRingAbility(true, rulesFor('stronghold'));
             const context = makeContext({ select: 'Don\'t resolve' });
             effect.executeHandler(context);
             expect(context.game.addAnimation).not.toHaveBeenCalled();

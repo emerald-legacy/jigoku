@@ -1,15 +1,15 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotParticipateAsAttacker } from '../../effects.js';
 
 class SeppunGuardsman extends DrawCard {
     static id = 'seppun-guardsman';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            condition: context => !!context.player.opponent && context.player.opponent.imperialFavor !== '',
-            effect: ability.effects.cannotParticipateAsAttacker()
+            condition: (context) => !!context.player.opponent && context.player.opponent.imperialFavor !== '',
+            effect: cannotParticipateAsAttacker()
         });
     }
 }

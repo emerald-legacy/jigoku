@@ -53,7 +53,20 @@ describe('Gossip', function() {
                 this.player2.clickCard(this.solemnScholar);
                 expect(this.player2).toHavePrompt('Action Window');
             });
+
+            it('should name the card when played and log the effect', function() {
+                this.player1.clickCard('gossip');
+                expect(this.player1).toHavePrompt('Name a card');
+                this.player1.chooseCardInPrompt(this.againstTheWaves.name, 'card-name');
+                expect(this.getChatLogs(3)).toContain('player1 plays Gossip, naming Against the Waves to prevent player2 from playing cards named Against the Waves from their hand this phase');
+            });
+
+            it('should still let your opponent play other cards', function() {
+                this.player1.clickCard('gossip');
+                this.player1.chooseCardInPrompt(this.againstTheWaves.name, 'card-name');
+                this.player2.clickCard(this.fineKatana);
+                expect(this.player2).toHavePrompt('Fine Katana');
+            });
         });
     });
 });
-

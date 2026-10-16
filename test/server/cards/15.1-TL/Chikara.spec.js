@@ -1,3 +1,6 @@
+import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { takeControl } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Chikara', function() {
     integration(function() {
         describe('Chikara attachment', function() {
@@ -28,24 +31,24 @@ describe('Chikara', function() {
                 this.netsu = this.player2.findCardByName('daidoji-netsu');
             });
 
-            it('should only be able to attach to unique crab characters you control', function() {
+            it('should only be able to attach to unique crab characters', function() {
                 this.player1.clickCard(this.chikara);
                 expect(this.player1).toBeAbleToSelect(this.kisadaP1);
-                expect(this.player1).not.toBeAbleToSelect(this.kisadaP2);
+                expect(this.player1).toBeAbleToSelect(this.kisadaP2);
                 expect(this.player1).not.toBeAbleToSelect(this.brashSamurai);
                 expect(this.player1).toBeAbleToSelect(this.oushi);
                 expect(this.player1).not.toBeAbleToSelect(this.yoritomo);
             });
 
             it('should grant the ability to a character that is a champion when attached', function() {
-                let actionCount = this.kisadaP1.getReactions().length;
+                const actionCount = this.kisadaP1.getReactions().length;
                 this.player1.playAttachment(this.chikara, this.kisadaP1);
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.kisadaP1.getReactions().length).toBe(actionCount + 1);
             });
 
             it('should not grant an ability to a character that is not a champion when attached', function() {
-                let actionCount = this.oushi.getReactions().length;
+                const actionCount = this.oushi.getReactions().length;
                 this.player1.playAttachment(this.chikara, this.oushi);
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.oushi.getReactions().length).toBe(actionCount);
@@ -63,7 +66,7 @@ describe('Chikara', function() {
                 });
 
                 it('should grant the ability if the character is a champion', function() {
-                    let actionCount = this.yoritomo.getReactions().length;
+                    const actionCount = this.yoritomo.getReactions().length;
                     this.player1.playAttachment(this.chikara, this.yoritomo);
                     expect(this.yoritomo.getReactions().length).toBe(actionCount + 1);
                 });
@@ -132,9 +135,9 @@ describe('Chikara', function() {
                         defenders: [this.kisadaP2]
                     });
 
-                    let p1Fate = this.player1.fate;
-                    let p2Fate = this.player2.fate;
-                    let targetFate = this.kisadaP2.fate;
+                    const p1Fate = this.player1.fate;
+                    const p2Fate = this.player2.fate;
+                    const targetFate = this.kisadaP2.fate;
 
                     this.noMoreActions();
                     this.player1.clickCard(this.kisadaP1);
@@ -153,9 +156,9 @@ describe('Chikara', function() {
                         defenders: [this.kisadaP2]
                     });
 
-                    let p1Fate = this.player1.fate;
-                    let p2Fate = this.player2.fate;
-                    let targetFate = this.kisadaP1.fate;
+                    const p1Fate = this.player1.fate;
+                    const p2Fate = this.player2.fate;
+                    const targetFate = this.kisadaP1.fate;
 
                     this.noMoreActions();
                     this.player1.clickCard(this.kisadaP1);
@@ -175,9 +178,9 @@ describe('Chikara', function() {
                         defenders: [this.kisadaP2]
                     });
 
-                    let p1Fate = this.player1.fate;
-                    let p2Fate = this.player2.fate;
-                    let targetFate = this.kisadaP1.fate;
+                    const p1Fate = this.player1.fate;
+                    const p2Fate = this.player2.fate;
+                    const targetFate = this.kisadaP1.fate;
 
                     this.noMoreActions();
                     this.player1.clickCard(this.kisadaP1);
@@ -196,9 +199,9 @@ describe('Chikara', function() {
                         defenders: [this.kisadaP2]
                     });
 
-                    let p1Fate = this.player1.fate;
-                    let p2Fate = this.player2.fate;
-                    let targetFate = this.yoritomo.fate;
+                    const p1Fate = this.player1.fate;
+                    const p2Fate = this.player2.fate;
+                    const targetFate = this.yoritomo.fate;
 
                     this.noMoreActions();
                     this.player1.clickCard(this.kisadaP1);
@@ -225,6 +228,55 @@ describe('Chikara', function() {
                     expect(this.player1).not.toBeAbleToSelect(this.yoritomo);
                 });
             });
+        });
+    });
+});
+
+describe('Chikara on a character its owner does not control', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 3,
+                    inPlay: ['hida-kisada', 'hida-o-ushi'],
+                    hand: ['chikara']
+                },
+                player2: {
+                    inPlay: ['hida-kisada', 'doji-challenger']
+                }
+            });
+            this.kisadaP1 = this.player1.findCardByName('hida-kisada');
+            this.oushi = this.player1.findCardByName('hida-o-ushi');
+            this.chikara = this.player1.findCardByName('chikara');
+            this.kisadaP2 = this.player2.findCardByName('hida-kisada');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+
+            const context = new ThenAbility(this.kisadaP1, {}).createContext(this.player1.player);
+            this.game.queueSimpleStep(() => takeControl().resolve(this.challenger, context));
+            this.game.continue();
+
+            this.player1.playAttachment(this.chikara, this.kisadaP1);
+            this.noMoreActions();
+            this.challenger.fate = 3;
+        });
+
+        it('returns the fate to the character\'s controller', function() {
+            expect(this.challenger.controller).toBe(this.player1.player);
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kisadaP1, this.oushi, this.challenger],
+                defenders: [this.kisadaP2]
+            });
+
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
+            this.noMoreActions();
+            this.player1.clickCard(this.kisadaP1);
+            this.player1.clickCard(this.challenger);
+
+            expect(this.player1.fate).toBe(p1Fate + 3);
+            expect(this.player2.fate).toBe(p2Fate);
         });
     });
 });

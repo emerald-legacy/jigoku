@@ -1,11 +1,13 @@
+import { msg } from '../../../GameChat.js';
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 function bonusBase(context: AbilityContext) {
     const elementalTraits = new Set();
-    context.player.cardsInPlay.forEach((character: DrawCard) => {
+    context.player.cardsInPlay.forEach((character) => {
         for(const trait of character.getTraits()) {
             switch(trait) {
                 case 'air':
@@ -23,28 +25,23 @@ function bonusBase(context: AbilityContext) {
 export default class AgashaJianyu extends DrawCard {
     static id = 'agasha-jianyu';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Empower a character with the combined strength of the elements',
-
-            target: {
+    public override setupCardAbilities() {
+        this.conflictAction('Empower a character with the combined strength of the elements', { evenFromHome: true })
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => {
-                    const bonus = bonusBase(context);
-                    return {
-                        effect: [
-                            AbilityDsl.effects.modifyMilitarySkill(2 * bonus),
-                            AbilityDsl.effects.modifyPoliticalSkill(1 * bonus)
-                        ]
-                    };
-                })
-            },
-            effect: 'give {0} +{1}{2}/+{3}{4}',
-            effectArgs: (context) => {
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect((context) => {
                 const bonus = bonusBase(context);
-                return [2 * bonus, 'military', 1 * bonus, 'political'];
-            }
-        });
+                return {
+                    effect: [
+                        modifyMilitarySkill(2 * bonus),
+                        modifyPoliticalSkill(1 * bonus)
+                    ]
+                };
+            }))
+            .chatText((context) => {
+                const bonus = bonusBase(context);
+                return msg`give ${context.chatTarget()} +${2 * bonus}${'military'}/+${bonus}${'political'}`;
+            });
     }
 }

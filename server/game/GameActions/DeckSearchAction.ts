@@ -1,157 +1,157 @@
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import { msg, type MessageArgs, type MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { Decks, EventName, Location, TargetMode } from '../Constants.js';
-import { shuffle } from '../utils/shuffle.js';
+import { DeckType, EventName, Location, RemainingCards, TargetMode } from '../Constants.js';
+import { shuffle } from '../utils/random.js';
 import type DrawCard from '../DrawCard.js';
-import type { GameAction } from './GameAction.js';
+import { targetList, type GameAction, type ActionEvent, type WithDefaults } from './GameAction.js';
+import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type Player from '../Player.js';
-
 import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
-type Derivable<T> = T | ((context: AbilityContext) => T);
+import { derive, type Derivable } from '../utils/helpers.js';
+import { RearrangeDeckAction } from './RearrangeDeckAction.js';
 
-export interface DeckSearchProperties extends PlayerActionProperties {
-    targetMode?: TargetMode;
+export interface DeckSearchProperties<Context extends AbilityContext = AbilityContext> extends PlayerActionProperties {
+    mode?: TargetMode;
     activePromptTitle?: string;
-    amount?: number | ((context: AbilityContext) => number);
-    numCards?: number | ((context: AbilityContext) => number);
+    cardsToLookAt?: Derivable<number, Context>;
+    numCards?: Derivable<number, Context>;
     reveal?: boolean;
-    deck?: Decks;
-    shuffle?: boolean | ((context: AbilityContext) => boolean);
-    title?: string;
+    deck?: DeckType;
+    /** What happens to the looked-at cards not taken, once the taken ones are dealt with; `remainingCardsHandler` replaces it. */
+    remainingCards?: Derivable<RemainingCards, Context>;
     gameAction?: GameAction;
-    message?: string;
+    /** The chat line once cards are taken; without it, "<chooser> takes <cards>". */
+    message?(context: Context, cards: DrawCard[], chooser: Player): MessageArgs;
     uniqueNames?: boolean;
-    player?: Player;
-    choosingPlayer?: Player;
-    placeOnBottomInRandomOrder?: boolean;
-    messageArgs?: (context: AbilityContext, cards: DrawCard[]) => unknown[];
-    selectedCardsHandler?: (context: AbilityContext, event: Event, cards: DrawCard[]) => void;
-    remainingCardsHandler?: (context: AbilityContext, event: Event, cards: DrawCard[]) => void;
-    cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
+    /** Who chooses the cards; by default the player whose deck is searched. */
+    player?: Chooser;
+    selectedCardsHandler?(context: Context, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
+    remainingCardsHandler?(context: Context, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
+    cardCondition?(card: DrawCard, context: Context): boolean;
     takesNothingGameAction?: GameAction;
+    /** The button that ends the choice; by default "Take nothing", or "Done" once a card is taken. */
+    doneButtonText?: string;
+    /** No prompt while none of the looked-at cards can be taken. */
+    hideIfNoLegalTargets?: boolean;
+    /** Replaces "<chooser> takes nothing"; `undefined` for no chat line. */
+    takesNothingMessage?(context: Context, chooser: Player): MessageArgs | undefined;
 }
 
-export class DeckSearchAction extends PlayerAction<DeckSearchProperties, EventName.OnDeckSearch> {
-    name = 'deckSearch';
-    eventName = EventName.OnDeckSearch;
+type DeckSearchDefaults =
+    | 'cardsToLookAt'
+    | 'numCards'
+    | 'mode'
+    | 'deck'
+    | 'remainingCards'
+    | 'reveal'
+    | 'uniqueNames'
+    | 'cardCondition';
 
-    defaultProperties: DeckSearchProperties = {
-        amount: -1,
+type ResolvedDeckSearchProperties<Context extends AbilityContext> = WithDefaults<DeckSearchProperties<Context>, DeckSearchDefaults>;
+
+export class DeckSearchAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<DeckSearchProperties<Context>, EventName.OnDeckSearch, Context, DeckSearchDefaults> {
+    override name = 'deckSearch';
+    override eventName = EventName.OnDeckSearch;
+
+    override defaultProperties = {
+        cardsToLookAt: -1,
         numCards: 1,
-        targetMode: TargetMode.Single,
-        deck: Decks.ConflictDeck,
-        selectedCardsHandler: undefined,
-        remainingCardsHandler: undefined,
-        takesNothingGameAction: undefined,
-        shuffle: true,
+        mode: TargetMode.Single,
+        deck: DeckType.Conflict,
+        remainingCards: RemainingCards.Shuffle,
         reveal: true,
         uniqueNames: false,
-        placeOnBottomInRandomOrder: false,
         cardCondition: () => true
     };
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
-        if(this.#getAmount(properties.amount ?? -1, context) === 0) {
+    override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
+        if(derive(properties.cardsToLookAt, context) === 0) {
             return false;
         }
-        const player = properties.player || context.player;
+        const player = this.#searched(properties, context);
         return this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): DeckSearchProperties {
-        const properties = super.getProperties(context, additionalProperties) as DeckSearchProperties;
-        if(properties.reveal === undefined) {
-            properties.reveal = properties.cardCondition !== undefined;
-        }
-        properties.cardCondition = properties.cardCondition || (() => true);
-        return properties;
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
+        const { cardsToLookAt } = properties;
+        const player = this.#searched(properties, context);
+        const amount = derive(cardsToLookAt, context);
+        const deck = player !== context.player ? '{1}\'s deck' : 'their deck';
+        const message = amount > 0 ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of ${deck}` : `search ${deck}`;
+        return [message, player !== context.player ? [player] : []];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        const properties = this.getProperties(context);
-        const amount = this.#getAmount(properties.amount ?? -1, context);
-        const message =
-            amount > 0
-                ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of their deck`
-                : 'search their deck';
-        return [message, []];
+    protected override effectMessageTarget(): MsgArg {
+        return undefined;
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
-        const amount = this.#getAmount(properties.amount ?? -1, context);
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
+        const amount = derive(properties.cardsToLookAt, context);
         return amount !== 0 && this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
-    defaultTargets(context: AbilityContext): Player[] {
-        return [context.player];
-    }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnDeckSearch>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        const { amount } = this.getProperties(context, additionalProperties) as DeckSearchProperties;
-        const fAmount = this.#getAmount(amount ?? -1, context);
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnDeckSearch, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
+        const { cardsToLookAt } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = fAmount;
+        event.amount = derive(cardsToLookAt, context);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
-        const player = properties.player || context.player;
-        const event = this.getEvent(player, context);
-        const evAmount = event.amount ?? -1;
-        const amount = evAmount > -1 ? evAmount : this.#getDeck(player, properties).length;
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
+        const player = this.#searched(properties, context);
+        const event = this.getEvent(player, context, additionalProperties);
+        const amount = event.amount > -1 ? event.amount : this.#getDeck(player, properties).length;
         let cards = this.#getDeck(player, properties).slice(0, amount);
-        const cardCondition = properties.cardCondition ?? (() => true);
-        if(evAmount === -1) {
-            cards = cards.filter((card) => cardCondition(card, context));
+        if(event.amount === -1) {
+            cards = cards.filter((card) => properties.cardCondition(card, context));
         }
         events.push(event);
         this.#selectCard(event, additionalProperties, cards, new Set());
     }
 
-    #getNumCards(numCards: Derivable<number>, context: AbilityContext): number {
-        return typeof numCards === 'function' ? numCards(context) : numCards;
+    #searched(properties: ResolvedDeckSearchProperties<Context>, context: Context): Player {
+        return targetList(properties.target)[0] ?? context.player;
     }
 
-    #getAmount(amount: Derivable<number>, context: AbilityContext): number {
-        return typeof amount === 'function' ? amount(context) : amount;
+    #chooser(properties: ResolvedDeckSearchProperties<Context>, event: GameEvent<EventName.OnDeckSearch>): Player {
+        return (properties.player && resolveChoosingPlayer(event.context, properties.player)) || event.player;
     }
 
-    #shouldShuffle(shuffle: Derivable<boolean>, context: AbilityContext): boolean {
-        return typeof shuffle === 'function' ? shuffle(context) : shuffle;
-    }
-
-    #getDeck(player: Player, properties: DeckSearchProperties): DrawCard[] {
+    #getDeck(player: Player, properties: ResolvedDeckSearchProperties<Context>): DrawCard[] {
         switch(properties.deck) {
-            case Decks.DynastyDeck:
+            case DeckType.Dynasty:
                 return player.dynastyDeck.slice();
-            case Decks.ConflictDeck:
+            case DeckType.Conflict:
                 return player.conflictDeck.slice();
             default:
                 return [];
         }
     }
 
-    #selectCard(event: GameEvent<EventName.OnDeckSearch>, additionalProperties: Record<string, unknown> = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
-        const context: AbilityContext = (event.context as AbilityContext);
-        const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
-        const canCancel = properties.targetMode !== TargetMode.Exactly;
+    #selectCard(event: ActionEvent<EventName.OnDeckSearch, Context>, additionalProperties: ActionOverrides = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
+        const context = event.context;
+        const properties = this.getProperties(context, additionalProperties);
+        const canCancel = properties.mode !== TargetMode.Exactly;
         let selectAmount = 1;
-        const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
+        const choosingPlayer = this.#chooser(properties, event);
 
-        if(properties.targetMode === TargetMode.UpTo || properties.targetMode === TargetMode.UpToVariable) {
-            selectAmount = this.#getNumCards(properties.numCards ?? 1, context);
+        if(properties.mode === TargetMode.UpTo || properties.mode === TargetMode.UpToVariable) {
+            selectAmount = derive(properties.numCards, context);
         }
-        if(properties.targetMode === TargetMode.Single) {
+        if(properties.mode === TargetMode.Single) {
             selectAmount = 1;
         }
-        if(properties.targetMode === TargetMode.Exactly || properties.targetMode === TargetMode.ExactlyVariable) {
-            selectAmount = this.#getNumCards(properties.numCards ?? 1, context);
+        if(properties.mode === TargetMode.Exactly || properties.mode === TargetMode.ExactlyVariable) {
+            selectAmount = derive(properties.numCards, context);
         }
-        if(properties.targetMode === TargetMode.Unlimited) {
+        if(properties.mode === TargetMode.Unlimited) {
             selectAmount = -1;
         }
 
@@ -165,20 +165,25 @@ export class DeckSearchAction extends PlayerAction<DeckSearchProperties, EventNa
             }
         }
 
-        if(properties.shuffle) {
+        if(derive(properties.remainingCards, context) === RemainingCards.Shuffle) {
             cards.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        const cardCondition = (card: DrawCard) =>
+            properties.cardCondition(card, context) &&
+            (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
+            (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties));
+        if((properties.hideIfNoLegalTargets || !canCancel) && !cards.some(cardCondition)) {
+            this.#handleDone(properties, context, event, selectedCards, cards);
+            return;
         }
 
         context.game.promptWithHandlerMenu(choosingPlayer, {
             activePromptTitle: title,
             context: context,
             cards: cards,
-            cardCondition: (card: DrawCard, context: AbilityContext) =>
-                (properties.cardCondition ?? (() => true))(card, context) &&
-                (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
-                (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties)),
-            choices: canCancel ? (selectedCards.size > 0 ? ['Done'] : ['Take nothing']) : [],
-            handlers: [() => this.#handleDone(properties, context, event, selectedCards, cards)],
+            cardCondition,
+            options: canCancel ? [{ text: properties.doneButtonText ?? (selectedCards.size > 0 ? 'Done' : 'Take nothing'), handler: () => this.#handleDone(properties, context, event, selectedCards, cards) }] : [],
             cardHandler: (card: DrawCard) => {
                 const newSelectedCards = new Set(selectedCards);
                 newSelectedCards.add(card);
@@ -196,69 +201,71 @@ export class DeckSearchAction extends PlayerAction<DeckSearchProperties, EventNa
     }
 
     #handleDone(
-        properties: DeckSearchProperties,
-        context: AbilityContext,
+        properties: ResolvedDeckSearchProperties<Context>,
+        context: Context,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>,
         allCards: DrawCard[]
     ): void {
         event.selectedCards = Array.from(selectedCards);
         context.deckSearchSelected = Array.from(selectedCards);
+        const remaining = allCards.filter((card) => !selectedCards.has(card));
+        const handleRemaining = () => properties.remainingCardsHandler
+            ? properties.remainingCardsHandler(context, event, remaining)
+            : this.#handleRemaining(properties, context, event, remaining);
         if(!properties.selectedCardsHandler) {
             this.#defaultHandleDone(properties, context, event, selectedCards);
-        } else {
-            properties.selectedCardsHandler(context, event, Array.from(selectedCards));
+            handleRemaining();
+            return;
         }
-
-        if(typeof properties.remainingCardsHandler === 'function') {
-            const cardsToMove = allCards.filter((card) => !selectedCards.has(card));
-            properties.remainingCardsHandler(context, event, cardsToMove);
-        } else {
-            this.#defaultRemainingCardsHandler(properties, context, event, selectedCards, allCards);
-        }
+        properties.selectedCardsHandler(context, event, Array.from(selectedCards));
+        // after any prompt the handler opened to place the taken cards
+        context.game.queueSimpleStep(() => {
+            handleRemaining();
+            return true;
+        });
     }
 
-    #defaultRemainingCardsHandler(
-        properties: DeckSearchProperties,
-        context: AbilityContext,
+    #handleRemaining(
+        properties: ResolvedDeckSearchProperties<Context>,
+        context: Context,
         event: GameEvent<EventName.OnDeckSearch>,
-        selectedCards: Set<DrawCard>,
-        allCards: DrawCard[]
+        remaining: DrawCard[]
     ): void {
-        const player = event.player as Player;
-        if(this.#shouldShuffle(properties.shuffle ?? false, context)) {
-            switch(properties.deck) {
-                case Decks.ConflictDeck:
-                    return player.shuffleConflictDeck();
-                case Decks.DynastyDeck:
-                    return player.shuffleDynastyDeck();
-                default:
-                    return;
-            }
-        }
-
-        if(properties.placeOnBottomInRandomOrder) {
-            const cardsToMove = allCards.filter((card) => !selectedCards.has(card));
-            if(cardsToMove.length > 0) {
-                const isDynasty = properties.deck === Decks.DynastyDeck;
-                const deckLocation = isDynasty ? Location.DynastyDeck : Location.ConflictDeck;
-                for(const card of shuffle(cardsToMove)) {
-                    player.moveCard(card, deckLocation, { bottom: true });
+        const player = event.player;
+        const isDynasty = properties.deck === DeckType.Dynasty;
+        switch(derive(properties.remainingCards, context)) {
+            case RemainingCards.Shuffle:
+                return isDynasty ? player.shuffleDynastyDeck() : player.shuffleConflictDeck();
+            case RemainingCards.Discard:
+                if(remaining.length > 0) {
+                    context.game.addMessage(msg`${player} discards ${remaining}`);
+                    for(const card of remaining) {
+                        player.moveCard(card, isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+                    }
                 }
-                context.game.addMessage(
-                    '{0} puts {1} card{2} on the bottom of their {3} deck',
-                    player,
-                    cardsToMove.length,
-                    cardsToMove.length > 1 ? 's' : '',
-                    isDynasty ? 'dynasty' : 'conflict'
-                );
-            }
+                return;
+            case RemainingCards.TopAnyOrder:
+                if(remaining.length > 1) {
+                    new RearrangeDeckAction({ cards: remaining, deck: properties.deck }).resolve(player, context);
+                }
+                return;
+            case RemainingCards.BottomRandom:
+                if(remaining.length > 0) {
+                    for(const card of shuffle(remaining)) {
+                        player.moveCard(card, isDynasty ? Location.DynastyDeck : Location.ConflictDeck, { bottom: true });
+                    }
+                    context.game.addMessage(msg`${player} puts ${remaining.length} card${remaining.length > 1 ? 's' : ''} on the bottom of their ${isDynasty ? 'dynasty' : 'conflict'} deck`);
+                }
+                return;
+            case RemainingCards.Top:
+                return;
         }
     }
 
     #defaultHandleDone(
-        properties: DeckSearchProperties,
-        context: AbilityContext,
+        properties: ResolvedDeckSearchProperties<Context>,
+        context: Context,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>
     ): void {
@@ -267,10 +274,9 @@ export class DeckSearchAction extends PlayerAction<DeckSearchProperties, EventNa
         const gameAction = this.getProperties(context).gameAction;
         if(gameAction) {
             const selectedArray = Array.from(selectedCards);
-            gameAction.setDefaultTarget(() => selectedArray);
             context.game.queueSimpleStep(() => {
-                if(gameAction.hasLegalTarget(context)) {
-                    gameAction.resolve(undefined, context);
+                if(gameAction.hasLegalTarget(context, { target: selectedArray })) {
+                    gameAction.resolve(selectedArray, context);
                 }
                 return true;
             });
@@ -278,15 +284,14 @@ export class DeckSearchAction extends PlayerAction<DeckSearchProperties, EventNa
     }
 
     #doneMessage(
-        properties: DeckSearchProperties,
-        context: AbilityContext,
+        properties: ResolvedDeckSearchProperties<Context>,
+        context: Context,
         event: GameEvent<EventName.OnDeckSearch>,
         selectedCards: Set<DrawCard>
     ): void {
-        const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
+        const choosingPlayer = this.#chooser(properties, event);
         if(selectedCards.size > 0 && properties.message) {
-            const args = properties.messageArgs ? properties.messageArgs(context, Array.from(selectedCards)) : [];
-            return context.game.addMessage(properties.message, ...(args as MsgArg[]));
+            return context.game.addMessage(properties.message(context, Array.from(selectedCards), choosingPlayer));
         }
 
         if(selectedCards.size === 0) {
@@ -294,20 +299,18 @@ export class DeckSearchAction extends PlayerAction<DeckSearchProperties, EventNa
         }
 
         if(properties.reveal) {
-            return context.game.addMessage('{0} takes {1}', choosingPlayer, Array.from(selectedCards));
+            return context.game.addMessage(msg`${choosingPlayer} takes ${Array.from(selectedCards)}`);
         }
 
-        context.game.addMessage(
-            '{0} takes {1} {2}',
-            choosingPlayer,
-            selectedCards.size,
-            selectedCards.size > 1 ? 'cards' : 'card'
-        );
+        context.game.addMessage(msg`${choosingPlayer} takes ${selectedCards.size} ${selectedCards.size > 1 ? 'cards' : 'card'}`);
     }
 
-    #takesNothing(properties: DeckSearchProperties, context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>): void {
-        const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
-        context.game.addMessage('{0} takes nothing', choosingPlayer);
+    #takesNothing(properties: ResolvedDeckSearchProperties<Context>, context: Context, event: GameEvent<EventName.OnDeckSearch>): void {
+        const choosingPlayer = this.#chooser(properties, event);
+        const message = properties.takesNothingMessage ? properties.takesNothingMessage(context, choosingPlayer) : msg`${choosingPlayer} takes nothing`;
+        if(message) {
+            context.game.addMessage(message);
+        }
         if(properties.takesNothingGameAction) {
             const action = properties.takesNothingGameAction;
             context.game.queueSimpleStep(() => {

@@ -29,6 +29,14 @@ describe('Rally to the Cause', function() {
                 expect(this.matsuBerserker.bowed).toBe(true);
                 expect(this.matsuBerserker.inConflict).toBe(false);
             });
+
+            it('should switch the conflict type through a switch conflict type event', function() {
+                const switched = jasmine.createSpy('onSwitchConflictType');
+                this.game.on('onSwitchConflictType', switched);
+                this.player2.clickCard('rally-to-the-cause');
+                expect(switched).toHaveBeenCalledTimes(1);
+                expect(this.getChatLogs(5)).toContain('player2 uses Rally to the Cause to switch the conflict type');
+            });
         });
     });
 });

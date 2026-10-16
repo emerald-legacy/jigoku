@@ -1,17 +1,18 @@
+import { msg } from './GameChat.js';
 import * as MenuCommands from './MenuCommands.js';
 import type { MenuItem } from './MenuCommands.js';
-import { Phases } from './Constants.js';
+import { Phase } from './Constants.js';
 import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
-import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
+import type { MenuArg } from './gamesteps/Step.js';
 
 const CHANGEABLE_STATS = ['fate', 'honor'] as const;
 type ChangeableStat = (typeof CHANGEABLE_STATS)[number];
 
 function isChangeableStat(stat: string): stat is ChangeableStat {
-    return (CHANGEABLE_STATS as readonly string[]).includes(stat);
+    return CHANGEABLE_STATS.some((changeable) => changeable === stat);
 }
 
 const TOGGLE_WINDOWS = new Set([
@@ -71,7 +72,7 @@ export class GameInputHandler {
     }
 
     ringClicked(sourcePlayer: string, ringindex: string): void {
-        const ring = this.game.rings[ringindex];
+        const ring = this.game.ringFor(ringindex);
         const player = this.game.getPlayerByName(sourcePlayer);
 
         if(!player || !ring) {
@@ -84,7 +85,7 @@ export class GameInputHandler {
         }
 
         // If it's not the conflict phase and the ring hasn't been claimed, flip it
-        if(this.game.currentPhase !== Phases.Conflict && !ring.claimed) {
+        if(this.game.currentPhase !== Phase.Conflict && !ring.claimed) {
             ring.flipConflictType();
         }
     }
@@ -111,7 +112,7 @@ export class GameInputHandler {
 
     ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: MenuItem): void {
         const player = this.game.getPlayerByName(sourcePlayer);
-        const ring = this.game.rings[sourceRing.element];
+        const ring = this.game.ringFor(sourceRing.element);
         if(!player || !ring) {
             return;
         }
@@ -134,11 +135,11 @@ export class GameInputHandler {
         if(!player.showConflict) {
             player.showConflictDeck();
 
-            this.game.addMessage('{0} is looking at their conflict deck', player);
+            this.game.addMessage(msg`${player} is looking at their conflict deck`);
         } else {
             player.showConflict = false;
 
-            this.game.addMessage('{0} stops looking at their conflict deck', player);
+            this.game.addMessage(msg`${player} stops looking at their conflict deck`);
         }
     }
 
@@ -152,11 +153,11 @@ export class GameInputHandler {
         if(!player.showDynasty) {
             player.showDynastyDeck();
 
-            this.game.addMessage('{0} is looking at their dynasty deck', player);
+            this.game.addMessage(msg`${player} is looking at their dynasty deck`);
         } else {
             player.showDynasty = false;
 
-            this.game.addMessage('{0} stops looking at their dynasty deck', player);
+            this.game.addMessage(msg`${player} stops looking at their dynasty deck`);
         }
     }
 
@@ -187,7 +188,7 @@ export class GameInputHandler {
         if(player[stat] < 0) {
             player[stat] = 0;
         } else {
-            this.game.addMessage('{0} sets {1} to {2} ({3})', player, stat, player[stat], (value > 0 ? '+' : '') + value);
+            this.game.addMessage(msg`${player} sets ${stat} to ${player[stat]} (${(value > 0 ? '+' : '') + value})`);
         }
     }
 
@@ -200,26 +201,26 @@ export class GameInputHandler {
         }
 
         if(!this.game.isSpectator(player)) {
-            if(this.game.chatCommands.executeCommand(player as Player, args[0], args)) {
+            if(this.game.chatCommands.executeCommand(player, args[0], args)) {
                 this.game.checkGameState(true);
                 return;
             }
 
             const card = Object.values(this.game.shortCardData).find((c: { name: string; id: string }) => {
                 return c.name.toLowerCase() === message.toLowerCase() || c.id.toLowerCase() === message.toLowerCase();
-            }) as { id: string; name: string; type: string } | undefined;
+            });
 
             if(card) {
                 const packId = resolvePackId(undefined, card, this.game.gameMode);
                 const cardFragment = { id: card.id, name: card.name, type: card.type, packId };
-                this.game.gameChat.addChatMessage(player as Player, { message: this.game.gameChat.formatMessage('{0}', [cardFragment]) });
+                this.game.gameChat.addChatMessage(player, { message: this.game.gameChat.formatMessage('{0}', [cardFragment]) });
 
                 return;
             }
         }
 
         if(!this.game.isSpectator(player) || !this.game.spectatorSquelch) {
-            this.game.gameChat.addChatMessage(player as Player, message);
+            this.game.gameChat.addChatMessage(player, message);
         }
     }
 
@@ -230,7 +231,7 @@ export class GameInputHandler {
             return;
         }
 
-        this.game.addMessage('{0} concedes', player);
+        this.game.addMessage(msg`${player} concedes`);
 
         const otherPlayer = this.game.getOtherPlayer(player);
 
@@ -239,13 +240,13 @@ export class GameInputHandler {
         }
     }
 
-    selectDeck(playerName: string, deck: unknown): void {
+    selectDeck(playerName: string, deck: DeckDTO): void {
         if(this.game.playStarted) {
             return;
         }
         const player = this.game.getPlayerByName(playerName);
         if(player) {
-            player.selectDeck(deck as DeckDTO);
+            player.selectDeck(deck);
         }
     }
 
@@ -263,7 +264,7 @@ export class GameInputHandler {
         }
     }
 
-    menuButton(playerName: string, arg: string, uuid: string, method: string): boolean {
+    menuButton(playerName: string, arg: MenuArg, uuid: string, method?: string | null): boolean {
         const player = this.game.getPlayerByName(playerName);
         if(!player) {
             return false;
@@ -310,6 +311,10 @@ export class GameInputHandler {
     }
 
     toggleManualMode(playerName: string): void {
-        this.game.chatCommands.manual(this.game.getPlayerByName(playerName) as Player);
+        const player = this.game.getPlayerByName(playerName);
+        if(!player) {
+            return;
+        }
+        this.game.chatCommands.manual(player);
     }
 }

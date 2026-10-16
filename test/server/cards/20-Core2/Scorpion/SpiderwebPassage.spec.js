@@ -119,7 +119,27 @@ describe('Spiderweb Passage', function () {
             expect(this.tensai.location).toBe('dynasty discard pile');
         });
 
-        it('direct to discard when opponent does not have enough cards in hand', function () {
+        it('offers discarding the hand when it has fewer cards than there are Shinobi', function () {
+            this.initiateConflict({
+                attackers: [this.sadako, this.aramoro, this.actress],
+                defenders: [this.tensai],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.spiderwebPassage);
+            this.player1.clickCard(this.tensai);
+            expect(this.player2).toHavePrompt('Select one');
+            this.player2.clickPrompt('Discard 3 random cards from hand');
+            expect(this.player2.hand.length).toBe(0);
+            expect(this.katana.location).toBe('conflict discard pile');
+            expect(this.fan.location).toBe('conflict discard pile');
+            expect(this.tensai.location).toBe('play area');
+        });
+
+        it('direct to discard when opponent has no cards in hand', function () {
+            this.player2.moveCard(this.katana, 'conflict deck');
+            this.player2.moveCard(this.fan, 'conflict deck');
             this.initiateConflict({
                 attackers: [this.sadako, this.aramoro, this.actress],
                 defenders: [this.tensai],
@@ -139,6 +159,7 @@ describe('Spiderweb Passage', function () {
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
             );
+            expect(this.tensai.location).toBe('dynasty discard pile');
         });
     });
 });

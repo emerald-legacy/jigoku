@@ -15,7 +15,8 @@ describe('Lucky Coin', function () {
                         'imperial-storehouse',
                         'miya-library',
                         'doji-kuwanan',
-                        'doji-kuwanan'
+                        'doji-kuwanan',
+                        'dispatch-to-nowhere'
                     ],
                     provinces: {
                         'province 1': { dynastyCards: ['adept-of-the-waves'] },
@@ -123,7 +124,7 @@ describe('Lucky Coin', function () {
 
                     this.player1.clickCard(this.coin);
                     expect(this.getChatLogs(3)).toContain(
-                        'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
+                        'player1 uses Lucky Coin, removing Lucky Coin from the game to replace all cards in their provinces'
                     );
                 });
 
@@ -150,7 +151,7 @@ describe('Lucky Coin', function () {
 
                     this.player1.clickCard(this.coin);
                     expect(this.getChatLogs(3)).toContain(
-                        'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
+                        'player1 uses Lucky Coin, removing Lucky Coin from the game to replace all cards in their provinces'
                     );
                 });
 
@@ -162,6 +163,32 @@ describe('Lucky Coin', function () {
                         expect(card.facedown).toBe(false);
                     }
                 });
+            });
+        });
+
+        describe('with a dynasty event among the flipped cards', function () {
+            beforeEach(function () {
+                // characters cost 5 in total; the event's cost does not count
+                this.dispatch = this.player1.findCardByName('dispatch-to-nowhere');
+                this.player1.placeCardInProvince(this.mine, 'province 1');
+                this.mine.facedown = true;
+                this.player1.placeCardInProvince(this.library, 'province 2');
+                this.library.facedown = true;
+                this.player1.placeCardInProvince(this.kuwanansInDiscard[0], 'province 3');
+                this.kuwanansInDiscard[0].facedown = true;
+                this.player1.placeCardInProvince(this.dispatch, 'province 4');
+                this.dispatch.facedown = true;
+                this.player1.moveCard(this.coin, 'hand');
+
+                this.noMoreActions();
+                this.player2.clickPrompt('Done');
+                this.player2.clickPrompt('End Round');
+                this.player1.clickPrompt('End Round');
+            });
+
+            it('counts only the characters', function () {
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.coin);
             });
         });
 
@@ -193,7 +220,7 @@ describe('Lucky Coin', function () {
 
                     this.player1.clickCard(this.coin);
                     expect(this.getChatLogs(3)).toContain(
-                        'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
+                        'player1 uses Lucky Coin, removing Lucky Coin from the game to replace all cards in their provinces'
                     );
                 });
             });
@@ -211,7 +238,7 @@ describe('Lucky Coin', function () {
 
                     this.player1.clickCard(this.coin);
                     expect(this.getChatLogs(3)).toContain(
-                        'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
+                        'player1 uses Lucky Coin, removing Lucky Coin from the game to replace all cards in their provinces'
                     );
                 });
             });

@@ -1,63 +1,57 @@
-import { CardType, Location, Phases, PlayType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { CardType, Location, Phase, PlayType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type DrawCard from '../../DrawCard.js';
+import * as costs from '../../costs/index.js';
+import { cardMenu, moveCard, multiple, playCard, sequential } from '../../GameActions/GameActions.js';
 
 export default class KyudenHida extends StrongholdCard {
     static id = 'kyuden-hida';
 
-    kyudenHidaCards: DrawCard[] = [];
-
-    setupCardAbilities() {
-        this.action({
-            title: 'Play a Character',
-            condition: (context) => context.player.dynastyDeck.length > 0,
-            phase: Phases.Dynasty,
-            cost: [AbilityDsl.costs.bowSelf()],
-            effect: 'look at the top three cards of their dynasty deck',
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.handler({
-                    handler: (context) => (this.kyudenHidaCards = context.player.dynastyDeck.slice(0, 3))
-                }),
-                AbilityDsl.actions.cardMenu((context) => ({
+    override setupCardAbilities() {
+        this.action('Play a Character')
+            .condition((context) => context.player.dynastyDeck.length > 0)
+            .phase(Phase.Dynasty)
+            .cost(costs.bowSelf())
+            .gameAction(sequential((context) => {
+                const topCards = context.player.dynastyDeck.slice(0, 3);
+                return [cardMenu({
                     activePromptTitle: 'Choose a character',
-                    cards: this.kyudenHidaCards,
+                    cards: topCards,
                     cardCondition: (card) => card.type === CardType.Character,
-                    choices: ['Take nothing'],
-                    handlers: [
-                        () => {
-                            const cards = this.kyudenHidaCards;
-                            cards.forEach((card) => {
-                                context.player.moveCard(card, Location.DynastyDiscardPile);
-                            });
-                            this.game.addMessage('{0} chooses not to play a character', context.player);
-                            this.game.addMessage('{0} discards {1}', context.player, cards);
-                            return true;
+                    options: [
+                        {
+                            text: 'Take nothing',
+                            handler: () => {
+                                moveCard({ target: topCards, destination: Location.DynastyDiscardPile }).resolve(context.player, context);
+                                this.game.addMessage(msg`${context.player} chooses not to play a character`);
+                                this.game.addMessage(msg`${context.player} discards ${topCards}`);
+                                return true;
+                            }
                         }
                     ],
-                    gameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.playCard({
+                    gameAction: multiple([
+                        playCard({
                             source: this,
                             resetOnCancel: false,
                             playType: PlayType.PlayFromProvince,
                             postHandler: (hidaContext) => {
                                 const card = hidaContext.source;
-                                let discardedCards = this.kyudenHidaCards;
+                                let discardedCards = topCards;
                                 if(card.location !== Location.PlayArea) {
-                                    this.game.addMessage('{0} chooses not to play a character', context.player);
+                                    this.game.addMessage(msg`${context.player} chooses not to play a character`);
                                 } else {
-                                    discardedCards = this.kyudenHidaCards.filter((a) => a !== card);
+                                    discardedCards = topCards.filter((a) => a !== card);
                                 }
-                                this.game.addMessage('{0} discards {1}', context.player, discardedCards);
+                                this.game.addMessage(msg`${context.player} discards ${discardedCards}`);
                             }
                         }),
-                        AbilityDsl.actions.moveCard((context) => ({
-                            target: this.kyudenHidaCards.filter((a) => a !== context.target),
+                        moveCard((context) => ({
+                            target: topCards.filter((a) => a !== context.target),
                             destination: Location.DynastyDiscardPile
                         }))
                     ])
-                }))
-            ])
-        });
+                })];
+            }))
+            .chatText('look at the top three cards of their dynasty deck');
     }
 }

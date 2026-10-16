@@ -21,8 +21,8 @@ describe('Chronicles of Valor', function () {
         });
 
         it('takes 1 honor when winning a conflict with total skill >= 25', function () {
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',
@@ -38,8 +38,8 @@ describe('Chronicles of Valor', function () {
 
         it('takes 2 honor when controller has a Storyteller character', function () {
             this.player1.player.moveCard(this.ikomaKiyono, 'play area');
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',

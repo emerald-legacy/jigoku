@@ -1,38 +1,36 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Location, PlayType, TargetMode, CardType, Players } from '../../Constants.js';
+import { canPlayFromOwn } from '../../effects.js';
+import { ready } from '../../GameActions/GameActions.js';
+import { Location, PlayType, TargetMode, CardType, Players, Trait } from '../../Constants.js';
 
 class RightHandOfTheEmperor extends DrawCard {
     static id = 'right-hand-of-the-emperor';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.player.opponent !== undefined && context.player.isMoreHonorable(),
             location: Location.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
+            effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
-        this.action({
-            title: 'Ready characters',
-            target: {
+        this.action('Ready characters')
+            .targetCards({
                 mode: TargetMode.MaxStat,
                 activePromptTitle: 'Choose characters',
-                cardStat: (card: DrawCard) => card.getCost() ?? 0,
+                cardStat: (card) => card.getCost() ?? 0,
                 maxStat: () => 6,
                 numCards: 0,
                 optional: true,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('bushi'),
-                gameAction: AbilityDsl.actions.ready()
-            },
-            gameAction: AbilityDsl.actions.moveCard((context) => ({
+                cardCondition: (card) => card.hasTrait(Trait.Bushi)
+            }, ready())
+            .moveCard((context) => ({
                 target: context.source,
                 destination: Location.ConflictDeck,
                 bottom: true
-            })),
-            effect: 'ready {0}{1}.  {2} is placed on the bottom of {3}\'s conflict deck',
-            effectArgs: (context) => [(context.targets.target as DrawCard[]).length > 0 ? '' : 'no one', context.source, context.source.owner]
-        });
+            }))
+            .chatText((context) => msg`ready ${context.chatTarget()}${context.targets.target.length > 0 ? '' : 'no one'}. ${context.source} is placed on the bottom of ${context.source.owner}'s conflict deck`);
     }
 }
 

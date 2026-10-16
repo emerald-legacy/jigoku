@@ -56,7 +56,7 @@ describe('Kami of Ancient Wisdom', function() {
             this.player1.clickCard(this.kami);
             this.player1.clickCard(this.challenger);
 
-            let fate = this.challenger.fate;
+            const fate = this.challenger.fate;
 
             expect(this.player1).toHavePromptButton('Place 1 Fate');
             expect(this.player1).toHavePromptButton('Remove 1 Fate');
@@ -72,7 +72,7 @@ describe('Kami of Ancient Wisdom', function() {
             this.player1.clickCard(this.kami);
             this.player1.clickCard(this.challenger);
 
-            let fate = this.challenger.fate;
+            const fate = this.challenger.fate;
 
             expect(this.player1).toHavePromptButton('Place 1 Fate');
             expect(this.player1).toHavePromptButton('Remove 1 Fate');
@@ -83,7 +83,7 @@ describe('Kami of Ancient Wisdom', function() {
         });
 
         it('should not give you a choice if character has no fate', function() {
-            let fate = this.kami.fate;
+            const fate = this.kami.fate;
 
             this.player1.clickCard(this.invocation);
             this.player1.clickCard(this.challenger);

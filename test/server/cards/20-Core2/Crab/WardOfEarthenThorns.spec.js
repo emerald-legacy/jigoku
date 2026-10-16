@@ -150,5 +150,29 @@ describe('Ward of Earthen Thorns', function () {
                 );
             });
         });
+
+        describe('without a shugenja', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['bayushi-yunako']
+                    },
+                    player2: {
+                        inPlay: ['hida-guardian'],
+                        hand: ['ward-of-earthen-thorns'],
+                        provinces: ['manicured-garden']
+                    }
+                });
+
+                this.wardOfEarthenThorns = this.player2.findCardByName('ward-of-earthen-thorns');
+            });
+
+            it('should not be playable', function () {
+                this.player1.pass();
+                this.player2.clickCard(this.wardOfEarthenThorns);
+                expect(this.player2).toHavePrompt('Action Window');
+            });
+        });
     });
 });

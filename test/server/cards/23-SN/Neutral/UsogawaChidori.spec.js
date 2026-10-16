@@ -26,8 +26,8 @@ describe('Usogawa Chidori', function () {
                 defenders: [this.henshinDisciple]
             });
 
-            let fate = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.chidori);
@@ -44,8 +44,8 @@ describe('Usogawa Chidori', function () {
         });
 
         it('should work outside of a conflict conflict.', function () {
-            let fate = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player1.clickCard(this.chidori);
             expect(this.player1).not.toBeAbleToSelect(this.chidori);

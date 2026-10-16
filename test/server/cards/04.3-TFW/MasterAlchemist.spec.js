@@ -27,7 +27,7 @@ describe('Master Alchemist', function() {
 
             it('should cost 1 fate', function() {
                 this.player2.pass();
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard('master-alchemist');
                 this.player1.clickPrompt('Pay costs first');
                 this.player1.clickRing('fire');
@@ -39,7 +39,7 @@ describe('Master Alchemist', function() {
 
             it('should place 1 fate on Fire ring', function() {
                 this.player2.pass();
-                let fate = this.game.rings.fire.fate;
+                const fate = this.game.rings.fire.fate;
                 this.player1.clickCard('master-alchemist');
                 this.player1.clickPrompt('Pay costs first');
                 this.player1.clickRing('fire');
@@ -53,7 +53,7 @@ describe('Master Alchemist', function() {
                 this.player2.clickPrompt('Switch the contested ring');
                 this.player2.clickRing('fire');
                 expect(this.game.currentConflict.ring).toBe(this.game.rings.fire);
-                let fate = this.game.rings.fire.fate;
+                const fate = this.game.rings.fire.fate;
                 this.player1.clickCard('master-alchemist');
                 this.player1.clickPrompt('Pay costs first');
                 this.player1.clickRing('fire');
@@ -67,7 +67,7 @@ describe('Master Alchemist', function() {
                 this.player2.clickRing('earth');
                 this.player2.clickRing('fire');
                 expect(this.game.rings.fire.claimedBy).toBe(this.player2.player.name);
-                let fate = this.game.rings.fire.fate;
+                const fate = this.game.rings.fire.fate;
                 this.player1.clickCard('master-alchemist');
                 this.player1.clickPrompt('Pay costs first');
                 this.player1.clickRing('fire');
@@ -89,7 +89,7 @@ describe('Master Alchemist', function() {
 
             it('should be able to dishonor chosen character', function() {
                 this.player2.pass();
-                let sereneWarrior = this.player1.findCardByName('serene-warrior');
+                const sereneWarrior = this.player1.findCardByName('serene-warrior');
                 expect(sereneWarrior.isDishonored).toBe(false);
                 this.player1.clickCard('master-alchemist');
                 this.player1.clickPrompt('Pay costs first');

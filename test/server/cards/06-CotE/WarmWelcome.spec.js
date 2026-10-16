@@ -98,3 +98,45 @@ describe('Warm Welcome', function() {
         });
     });
 });
+
+describe('Warm Welcome resolved again by The Mirror\'s Gaze', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['niten-master'],
+                    hand: ['warm-welcome'],
+                    conflictDiscard: ['tattooed-wanderer']
+                },
+                player2: {
+                    inPlay: [{ card: 'adept-of-the-waves', attachments: ['the-mirror-s-gaze'] }],
+                    conflictDiscard: ['tattooed-wanderer']
+                }
+            });
+            this.warmWelcome = this.player1.findCardByName('warm-welcome');
+            this.nitenMaster = this.player1.findCardByName('niten-master');
+            this.tattooedWanderer = this.player1.findCardByName('tattooed-wanderer');
+            this.mirrorsGaze = this.player2.findCardByName('the-mirror-s-gaze');
+            this.player1.player.showBid = 4;
+            this.player2.player.showBid = 5;
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.nitenMaster],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('should not be mirrored by a player whose bid is not lower', function() {
+            this.player1.clickCard(this.warmWelcome);
+            this.player1.clickCard(this.tattooedWanderer);
+            this.player1.clickPrompt('Play this character');
+            this.player1.clickPrompt('0');
+            this.player1.clickPrompt('Conflict');
+            expect(this.tattooedWanderer.inConflict).toBe(true);
+            expect(this.player2).not.toBeAbleToSelect(this.mirrorsGaze);
+        });
+    });
+});
+

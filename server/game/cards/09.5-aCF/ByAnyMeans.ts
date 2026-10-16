@@ -1,45 +1,34 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players, CardType, SkillType, Trait } from '../../Constants.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 
 class ByAnyMeans extends DrawCard {
     static id = 'by-any-means';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Change base skill to match another character\'s',
-            condition: context => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
-            targets: {
-                myCharacter: {
-                    activePromptTitle: 'Choose a bushi character',
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
-                },
-                oppCharacter: {
-                    dependsOn: 'myCharacter',
-                    activePromptTitle: 'Choose an opponent\'s character',
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    cardCondition: (card) => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.cardLastingEffect(context => {
-                        let effects = [];
-                        let oppCharacter = context.targets.oppCharacter;
-                        if(oppCharacter.hasDash('military')) {
-                            effects.push(AbilityDsl.effects.setBaseDash('military'));
-                        } else {
-                            effects.push(AbilityDsl.effects.setBaseMilitarySkill(oppCharacter.militarySkill));
-                        }
-                        return {
-                            target: context.targets.myCharacter,
-                            effect: effects
-                        };
-                    })
-                }
-            },
-            effect: 'set {1}\'s base military skill to equal {2}\'s current military skill',
-            effectArgs: context => [context.targets.myCharacter, context.targets.oppCharacter]
-        });
+    override setupCardAbilities() {
+        this.action('Change base skill to match another character\'s')
+            .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
+            .target({
+                name: 'myCharacter',
+                activePromptTitle: 'Choose a bushi character',
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Bushi)
+            })
+            .target({
+                name: 'oppCharacter',
+                dependsOn: 'myCharacter',
+                activePromptTitle: 'Choose an opponent\'s character',
+                cardType: CardType.Character,
+                controller: Players.Opponent,
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect((context) => ({
+                target: context.targets.myCharacter,
+                effect: copyBaseSkillEffects(context.targets.oppCharacter, { skills: [SkillType.Military] })
+            })))
+            .chatText((context) => msg`set ${context.targets.myCharacter}'s base military skill to equal ${context.targets.oppCharacter}'s current military skill`);
     }
 }
 

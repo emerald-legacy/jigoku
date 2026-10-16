@@ -144,7 +144,7 @@ describe('From the Shadows', function() {
                             expect(this.shosuroSadako.inConflict).toBe(true);
                             expect(this.game.currentConflict.defenders).toContain(this.shosuroSadako);
                             expect(this.shosuroSadako.isDishonored).toBe(true);
-                            expect(this.shosuroSadako.getMilitarySkill()).toBe(4);
+                            expect(this.shosuroSadako.militarySkill).toBe(4);
                         });
                     });
                 });

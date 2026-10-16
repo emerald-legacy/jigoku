@@ -6,7 +6,8 @@ describe('Spirit of Valor', function () {
                 player1: {
                     inPlay: ['akodo-kaede', 'wandering-ronin'],
                     hand: ['spirit-of-valor'],
-                    dynastyDiscard: ['bushido-adherent', 'doji-whisperer']
+                    dynastyDiscard: ['bushido-adherent', 'doji-whisperer', 'staging-ground'],
+                    conflictDiscard: ['way-of-the-lion']
                 }
             });
 
@@ -36,6 +37,16 @@ describe('Spirit of Valor', function () {
             });
         });
 
+        describe('outside a conflict', function () {
+            it('cannot be used', function () {
+                this.player1.playAttachment(this.spiritOfValor, this.kaede);
+                this.player2.pass();
+                this.player1.clickCard(this.spiritOfValor);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.spiritOfValor.location).toBe('play area');
+            });
+        });
+
         describe('action ability', function () {
             beforeEach(function () {
                 this.player1.playAttachment(this.spiritOfValor, this.kaede);
@@ -52,6 +63,8 @@ describe('Spirit of Valor', function () {
                 expect(this.player1).toHavePrompt('Choose a character from a discard pile');
                 expect(this.player1).toBeAbleToSelect(this.bushidoAdherent);
                 expect(this.player1).not.toBeAbleToSelect(this.dojiWhisperer);
+                expect(this.player1).not.toBeAbleToSelect('staging-ground');
+                expect(this.player1).not.toBeAbleToSelect('way-of-the-lion');
 
                 this.player1.clickCard(this.bushidoAdherent);
                 expect(this.getChatLogs(3)).toContain(

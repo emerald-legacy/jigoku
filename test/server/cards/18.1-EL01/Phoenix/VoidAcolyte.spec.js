@@ -1,3 +1,5 @@
+import { addElement } from '../../../../../build/server/game/effects.js';
+
 describe('Void Acolyte', function() {
     integration(function() {
         beforeEach(function() {
@@ -67,6 +69,26 @@ describe('Void Acolyte', function() {
             expect(this.player1).toHavePrompt('Resolve Ring Effect');
             this.player1.clickPrompt('Don\'t Resolve the Conflict Ring');
             // this.player1.clickPrompt('Resolve All Elements');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.acolyte);
+            this.player1.clickCard(this.acolyte);
+            expect(this.acolyte.fate).toBe(1);
+        });
+
+        it('should trigger when the player claims another ring that gained the void element', function() {
+            this.initiateConflict({
+                type: 'political',
+                ring: 'air',
+                attackers: ['seeker-of-knowledge'],
+                defenders: []
+            });
+            this.acolyte.applyDurationEffect('untilEndOfRound', {
+                match: this.game.rings.fire,
+                effect: addElement('void')
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.commune);
+            this.player1.clickRing('fire');
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.acolyte);
             this.player1.clickCard(this.acolyte);

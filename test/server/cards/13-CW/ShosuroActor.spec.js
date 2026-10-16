@@ -185,3 +185,38 @@ describe('Shosuro Actor - Copying Business', function() {
         });
     });
 });
+
+describe('Shosuro Actor and a character with the same title', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor']
+                },
+                player2: {
+                    inPlay: ['shosuro-actor', 'doji-whisperer']
+                }
+            });
+
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.opponentsActor = this.player2.findCardByName('shosuro-actor');
+            this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+        });
+
+        it('should not choose a character with the same title', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.actor],
+                defenders: [this.dojiWhisperer],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.dojiWhisperer);
+            expect(this.player1).not.toBeAbleToSelect(this.opponentsActor);
+        });
+    });
+});

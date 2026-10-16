@@ -81,7 +81,7 @@ describe('Captivating Story', function() {
         it('should give you pol equal to the amount of faceup provinces you have', function() {
             this.noMoreActions();
             this.p1.facedown = false;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.politicalSkill;
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -92,7 +92,27 @@ describe('Captivating Story', function() {
             this.player1.clickCard(this.story);
             expect(this.player1).toBeAbleToSelect(this.yoshi);
             this.player1.clickCard(this.yoshi);
-            expect(this.yoshi.getPoliticalSkill()).toBe(pol + 1);
+            expect(this.yoshi.politicalSkill).toBe(pol + 1);
+        });
+
+        it('should let you remove a fate from an honored character', function() {
+            this.yoshi.fate = 1;
+            this.yoshi.honor();
+            this.noMoreActions();
+            this.p1.facedown = false;
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [],
+                type: 'political'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.story);
+            this.player1.clickCard(this.yoshi);
+            expect(this.player1).toHavePrompt('Remove 1 fate from Kakita Yoshi to honor them?');
+            this.player1.clickPrompt('Yes');
+            expect(this.yoshi.fate).toBe(0);
+            expect(this.yoshi.isHonored).toBe(true);
         });
 
         it('should not give you the option to remove a fate if you cannot do it', function() {
@@ -117,7 +137,7 @@ describe('Captivating Story', function() {
             this.p2.facedown = false;
             this.p3.facedown = false;
             this.yoshi.fate = 1;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.politicalSkill;
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -127,7 +147,7 @@ describe('Captivating Story', function() {
             this.player2.pass();
             this.player1.clickCard(this.story);
             this.player1.clickCard(this.yoshi);
-            expect(this.yoshi.getPoliticalSkill()).toBe(pol + 3);
+            expect(this.yoshi.politicalSkill).toBe(pol + 3);
             expect(this.player1).toHavePrompt('Remove 1 fate from Kakita Yoshi to honor them?');
         });
 
@@ -137,7 +157,7 @@ describe('Captivating Story', function() {
             this.p2.facedown = false;
             this.p3.facedown = false;
             this.yoshi.fate = 1;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.politicalSkill;
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -147,7 +167,7 @@ describe('Captivating Story', function() {
             this.player2.pass();
             this.player1.clickCard(this.story);
             this.player1.clickCard(this.yoshi);
-            expect(this.yoshi.getPoliticalSkill()).toBe(pol + 3);
+            expect(this.yoshi.politicalSkill).toBe(pol + 3);
             expect(this.player1).toHavePrompt('Remove 1 fate from Kakita Yoshi to honor them?');
             this.player1.clickPrompt('Yes');
             expect(this.yoshi.fate).toBe(0);
@@ -163,7 +183,7 @@ describe('Captivating Story', function() {
             this.p2.facedown = false;
             this.p3.facedown = false;
             this.yoshi.fate = 1;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.politicalSkill;
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -173,7 +193,7 @@ describe('Captivating Story', function() {
             this.player2.pass();
             this.player1.clickCard(this.story);
             this.player1.clickCard(this.yoshi);
-            expect(this.yoshi.getPoliticalSkill()).toBe(pol + 3);
+            expect(this.yoshi.politicalSkill).toBe(pol + 3);
             expect(this.player1).toHavePrompt('Remove 1 fate from Kakita Yoshi to honor them?');
             this.player1.clickPrompt('No');
             expect(this.yoshi.fate).toBe(1);
@@ -189,7 +209,7 @@ describe('Captivating Story', function() {
             this.p2.isBroken = true;
             this.p3.facedown = false;
             this.p3.isBroken = true;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.politicalSkill;
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -199,7 +219,7 @@ describe('Captivating Story', function() {
             this.player2.pass();
             this.player1.clickCard(this.story);
             this.player1.clickCard(this.yoshi);
-            expect(this.yoshi.getPoliticalSkill()).toBe(pol + 3);
+            expect(this.yoshi.politicalSkill).toBe(pol + 3);
         });
 
         it('should count the stronghold', function() {
@@ -211,7 +231,7 @@ describe('Captivating Story', function() {
             this.p3.isBroken = true;
             this.p4.facedown = false;
             this.pStronghold.facedown = false;
-            let pol = this.yoshi.getPoliticalSkill();
+            const pol = this.yoshi.politicalSkill;
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [],
@@ -221,7 +241,7 @@ describe('Captivating Story', function() {
             this.player2.pass();
             this.player1.clickCard(this.story);
             this.player1.clickCard(this.yoshi);
-            expect(this.yoshi.getPoliticalSkill()).toBe(pol + 5);
+            expect(this.yoshi.politicalSkill).toBe(pol + 5);
         });
 
         it('should force you to honor if you have no faceup provinces', function() {

@@ -1,7 +1,8 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import Player from '../../Player.js';
+import type Player from '../../Player.js';
 
 function participatingCharacters(player: Player): number {
     return player.filterCardsInPlay((card) => card.isParticipating()).length;
@@ -10,21 +11,19 @@ function participatingCharacters(player: Player): number {
 export default class ChallengeOnTheFields extends DrawCard {
     static id = 'challenge-on-the-fields';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel',
-            initiateDuel: (context) => ({
+    override setupCardAbilities() {
+        this.action('Initiate a military duel')
+            .initiateDuel((context) => ({
                 type: DuelType.Military,
                 statistic: (card, duelRules) =>
                     duelRules === 'printedSkill'
                         ? card.printedMilitarySkill + participatingCharacters(card.controller) - 1
-                        : card.getMilitarySkill(),
-                challengerEffect: AbilityDsl.effects.modifyMilitarySkill(participatingCharacters(context.player) - 1),
-                targetEffect: AbilityDsl.effects.modifyMilitarySkill(
+                        : card.militarySkill,
+                challengerEffect: modifyMilitarySkill(participatingCharacters(context.player) - 1),
+                targetEffect: modifyMilitarySkill(
                     context.player.opponent ? participatingCharacters(context.player.opponent) - 1 : 0
                 ),
-                gameAction: (duel) => AbilityDsl.actions.sendHome({ target: duel.loser })
-            })
-        });
+                gameAction: (duel) => sendHome({ target: duel.loser })
+            }));
     }
 }

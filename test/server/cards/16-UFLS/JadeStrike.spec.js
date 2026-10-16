@@ -32,6 +32,13 @@ describe('Jade Strike', function() {
             });
         });
 
+        it('should not be playable without a shugenja', function() {
+            this.player1.moveCard(this.adept, 'dynasty discard pile');
+            this.player2.pass();
+            this.player1.clickCard(this.strike);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+
         it('should let you choose a character with a status token', function() {
             this.player2.pass();
             this.player1.clickCard(this.strike);
@@ -45,15 +52,15 @@ describe('Jade Strike', function() {
             this.player2.pass();
             this.player1.clickCard(this.strike);
             this.player1.clickCard(this.raitsugu);
-            expect(this.raitsugu.getMilitarySkill()).toBe(this.raitsugu.glory);
-            expect(this.raitsugu.getPoliticalSkill()).toBe(this.raitsugu.glory);
+            expect(this.raitsugu.militarySkill).toBe(this.raitsugu.glory);
+            expect(this.raitsugu.politicalSkill).toBe(this.raitsugu.glory);
             expect(this.raitsugu.getBaseMilitarySkill()).toBe(0);
             expect(this.raitsugu.getBasePoliticalSkill()).toBe(0);
             expect(this.getChatLogs(5)).toContain('player1 plays Jade Strike to set the base skills of Mirumoto Raitsugu to 0military/0political');
         });
 
         it('should also remove a fate if the chosen character is tainted', function() {
-            let fate = this.whisperer.fate;
+            const fate = this.whisperer.fate;
             this.player2.pass();
             this.player1.clickCard(this.strike);
             this.player1.clickCard(this.whisperer);

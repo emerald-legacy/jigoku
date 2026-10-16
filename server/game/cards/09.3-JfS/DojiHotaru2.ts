@@ -1,33 +1,32 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
+import { delayedEffect } from '../../effects.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class DojiHotaru2 extends DrawCard {
     static id = 'doji-hotaru-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext) => context.player && !!context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan'),
-                message: '{1} is discarded from play as its controller controls {0}',
-                messageArgs: (context: AbilityContext) => [context.source, context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')],
-                gameAction: AbilityDsl.actions.discardFromPlay((context: AbilityContext) => ({
+            effect: delayedEffect({
+                condition: (context) => !!context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan'),
+                message: (context) => msg`${context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')} is discarded from play as its controller controls ${context.source}`,
+                gameAction: discardFromPlay((context) => ({
                     target: context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')
                 }))
             })
         });
-        this.reaction({
-            title: 'Gain 1 honor',
-            when: {
+        this.reaction('Gain 1 honor')
+            .when({
                 onCardPlayed: (event, context) => {
                     return context.source.isParticipating() &&
                         event.player === context.player.opponent;
                 }
-            },
-            gameAction: AbilityDsl.actions.gainHonor(),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            effect: 'gain 1 honor'
-        });
+            })
+            .gainHonor()
+            .chatText('gain 1 honor')
+            .limit(unlimited());
     }
 }
 

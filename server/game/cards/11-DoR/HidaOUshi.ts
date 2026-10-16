@@ -1,23 +1,21 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Duration } from '../../Constants.js';
+import { perPhase } from '../../AbilityLimit.js';
+import { additionalConflict } from '../../effects.js';
+import { Duration, ConflictType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class HidaOUshi extends DrawCard {
     static id = 'hida-o-ushi';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Gain additional military conflict',
-            effect: 'allow {1} to declare an additional military conflict this phase',
-            effectArgs: context => [context.player],
-            when: { afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player },
-            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
-                targetController: context.player,
+    override setupCardAbilities() {
+        this.reaction('Gain additional military conflict')
+            .when({ afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player })
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict('military')
-            })),
-            max: AbilityDsl.limit.perPhase(1)
-        });
+                effect: additionalConflict(ConflictType.Military)
+            })
+            .chatText((context) => msg`allow ${context.player} to declare an additional military conflict this phase`)
+            .max(perPhase(1));
     }
 }
 

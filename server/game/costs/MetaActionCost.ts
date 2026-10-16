@@ -1,60 +1,68 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type { MsgArg } from '../GameChat.js';
 import { Location, Players } from '../Constants.js';
-import type { Cost, Result } from './Cost.js';
+import type { Cost, CostMessage, Result } from './Cost.js';
 import type { Event } from '../Events/Event.js';
-import type { GameAction } from '../GameActions/GameAction.js';
-import type { SelectCardProperties } from '../GameActions/SelectCardAction.js';
-import { randomItem } from '../utils/helpers.js';
+import { actionFor, type SelectCardAction } from '../GameActions/SelectCardAction.js';
+import type { SelectRingAction } from '../GameActions/SelectRingActions.js';
+import Ring from '../Ring.js';
+import { randomItem } from '../utils/random.js';
 import { GameActionCost } from './GameActionCost.js';
 
+/**
+ * A cost paid by choosing a card or a ring, then resolving the select's game action on it.
+ * What was chosen is stored in `context.costs` under the action's name, or under `resultKey`.
+ */
 export class MetaActionCost extends GameActionCost implements Cost {
     constructor(
-        action: GameAction,
-        public activePromptTitle: string
+        public override action: SelectCardAction | SelectRingAction,
+        public activePromptTitle: string,
+        private resultKey?: string
     ) {
         super(action);
     }
 
-    getActionName(context: AbilityContext): string {
-        const { gameAction } = this.action.getProperties(context) as SelectCardProperties;
-        return gameAction.name;
+    override getActionName(context: AbilityContext): string {
+        return this.resultKey ?? this.action.getProperties(context).gameAction.name;
     }
 
-    canPay(context: AbilityContext): boolean {
-        const properties = this.action.getProperties(context) as SelectCardProperties;
-        let additionalProps = {
+    override canPay(context: AbilityContext): boolean {
+        const properties = this.action.getProperties(context);
+        const additionalProps = {
             controller: Players.Self,
-            location: properties.location || Location.Any
+            location: ('location' in properties ? properties.location : undefined) || Location.Any
         };
         return this.action.hasLegalTarget(context, additionalProps);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, result: Result): void {
-        const properties = this.action.getProperties(context) as SelectCardProperties;
-        if(properties.targets && context.choosingPlayerOverride && properties.selector) {
-            context.costs[properties.gameAction.name] = randomItem(
-                properties.selector.getAllLegalTargets(context, context.player)
-            );
-            context.costs[properties.gameAction.name + 'StateWhenChosen'] =
-                (context.costs[properties.gameAction.name] as BaseCard).createSnapshot();
-            return properties.gameAction.addEventsToArray(events, context, {
-                target: context.costs[properties.gameAction.name]
+    override addEventsToArray(events: Event[], context: AbilityContext, result: Result): void {
+        const properties = this.action.getProperties(context);
+        const name = this.getActionName(context);
+        const chosen = properties.targets && context.choosingPlayerOverride && 'selector' in properties && properties.selector
+            ? randomItem(properties.selector.getAllLegalTargets(context, context.player))
+            : undefined;
+        if(chosen) {
+            context.costs[name] = chosen;
+            context.costs[name + 'StateWhenChosen'] = chosen.createSnapshot();
+            return actionFor(properties.gameAction, chosen).addEventsToArray(events, context, {
+                target: chosen
             });
         }
 
         const additionalProps = {
             activePromptTitle: this.activePromptTitle,
-            location: properties.location || Location.Any,
+            location: ('location' in properties ? properties.location : undefined) || Location.Any,
             controller: Players.Self,
             cancelHandler: !result.canCancel ? null : () => (result.cancelled = true),
-            subActionProperties: (target: BaseCard) => {
-                context.costs[properties.gameAction.name] = target;
-                if(target.createSnapshot) {
-                    context.costs[properties.gameAction.name + 'StateWhenChosen'] = target.createSnapshot();
+            subActionProperties: (target: BaseCard | BaseCard[] | Ring) => {
+                context.costs[name] = target;
+                if(!Array.isArray(target) && target.isCard()) {
+                    context.costs[name + 'StateWhenChosen'] = target.createSnapshot();
                 }
-                return properties.subActionProperties ? properties.subActionProperties(target) : {};
+                if('ringCondition' in properties) {
+                    return target instanceof Ring ? properties.subActionProperties(target) : {};
+                }
+                return target instanceof Ring ? {} : properties.subActionProperties(target);
             }
         };
         this.action.addEventsToArray(events, context, additionalProps);
@@ -64,8 +72,8 @@ export class MetaActionCost extends GameActionCost implements Cost {
         return this.action.hasTargetsChosenByInitiatingPlayer(context);
     }
 
-    getCostMessage(context: AbilityContext): MsgArg[] {
-        const properties = this.action.getProperties(context) as SelectCardProperties;
-        return properties.gameAction.getCostMessage(context) ?? [];
+    override getCostMessage(context: AbilityContext): CostMessage {
+        const properties = this.action.getProperties(context);
+        return typeof properties.gameAction === 'function' ? [] : properties.gameAction.getCostMessage(context) ?? [];
     }
 }

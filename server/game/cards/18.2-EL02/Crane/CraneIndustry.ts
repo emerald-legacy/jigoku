@@ -1,4 +1,5 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { reduceCost } from '../../../effects.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -8,27 +9,25 @@ import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class CraneIndustry extends DrawCard {
     static id = 'crane-industry';
 
-    private eventRegistrar?: EventRegistrar;
     private eventsPlayedThisConflictByThisPlayer = new Set<string>();
 
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onConflictFinished', 'onCardPlayed']);
-        this.reaction({
-            when: {
-                onConflictStarted: () => true
-            },
-            max: AbilityDsl.limit.perConflict(1),
-            title: 'Reduce the cost to play events',
-            effect: 'reduce the cost of the first copy of each event they play this conflict by 1',
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
-                targetController: context.player,
-                effect: AbilityDsl.effects.reduceCost({
-                    amount: 1,
-                    match: (card: BaseCard) => !this.hasEventBeenPlayedByThisPlayer(card)
-                })
-            }))
+    public override setupCardAbilities() {
+        new EventRegistrar(this.game).register({
+            [EventName.OnConflictFinished]: () => this.onConflictFinished(),
+            [EventName.OnCardPlayed]: (event) => this.onCardPlayed(event)
         });
+        this.reaction('Reduce the cost to play events')
+            .when({
+                onConflictStarted: () => true
+            })
+            .playerLastingEffect({
+                effect: reduceCost({
+                    amount: 1,
+                    match: (card) => card.type === CardType.Event && !this.hasEventBeenPlayedByThisPlayer(card)
+                })
+            })
+            .chatText('reduce the cost of the first copy of each event they play this conflict by 1')
+            .max(perConflict(1));
     }
 
     public onConflictFinished() {
@@ -36,7 +35,7 @@ export default class CraneIndustry extends DrawCard {
     }
 
     public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {
-        if(event.card.type === CardType.Event && event.context?.player === this.controller) {
+        if(event.card.type === CardType.Event && event.context?.player === this.controller && this.game.isDuringConflict()) {
             this.eventsPlayedThisConflictByThisPlayer.add(event.card.name);
         }
     }

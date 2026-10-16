@@ -95,7 +95,7 @@ describe('Cloud Hands', function () {
                 this.player1.clickCard(this.am);
                 this.player1.clickCard(this.toturi);
                 expect(this.am.getBaseMilitarySkill()).toBe(this.toturi.getBaseMilitarySkill());
-                expect(this.am.getMilitarySkill()).toBe(this.am.getBaseMilitarySkill() + 2 + 4);
+                expect(this.am.militarySkill).toBe(this.am.getBaseMilitarySkill() + 2 + 4);
             });
 
             it('should copy effects that change base skill', function () {
@@ -105,7 +105,7 @@ describe('Cloud Hands', function () {
                 this.player1.clickCard(this.am);
                 this.player1.clickCard(this.toturi);
 
-                expect(this.am.getBaseMilitarySkill()).toBe(this.toturi.getMilitarySkill());
+                expect(this.am.getBaseMilitarySkill()).toBe(this.toturi.militarySkill);
             });
         });
     });

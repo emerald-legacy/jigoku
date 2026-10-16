@@ -1,32 +1,24 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
-import { CardType, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, ConflictType, Trait } from '../../../Constants.js';
+import { bow, onAffinity, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
+import { msg } from '../../../GameChat.js';
 
 export default class EarthsExamination extends DrawCard {
     static id = 'earth-s-examination';
 
-    setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Taint a character',
-            condition: (context) =>
-                context.game.isDuringConflict(ConflictType.Political) && context.player.isTraitInPlay('shugenja'),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Taint a character', { conflictType: ConflictType.Political })
+            .condition((context) => controlsShugenja(context.player))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.taint(),
-                    AbilityDsl.actions.onAffinity((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        trait: 'earth',
-                        promptTitleForConfirmingAffinity: context.target.isTainted ? undefined : 'Bow that character?',
-                        gameAction: AbilityDsl.actions.bow(),
-                        effect: 'bow {0}',
-                        effectArgs: (context) => [context.target]
-                    }))
-                ])
-            },
-            effect: 'reveal {1}\'s corruption',
-            effectArgs: (context) => [context.target ?? '']
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, taint(), onAffinity({
+                trait: Trait.Earth,
+                activePromptTitle: 'Bow that character?',
+                gameAction: bow(),
+                chatText: (context) => msg`bow ${context.target}`
+            }))
+            .chatText((context) => msg`reveal ${context.target ?? ''}'s corruption`);
     }
 }

@@ -28,6 +28,13 @@ describe('All Distances Are One', function () {
                 });
             });
 
+            it('can\'t be played when the attacked province is broken', function () {
+                this.forum.isBroken = true;
+                this.player2.clickCard(this.distances);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.distances.location).toBe('hand');
+            });
+
             it('should move the conflict to a new province', function () {
                 this.player2.clickCard(this.distances);
                 expect(this.player2).not.toBeAbleToSelect(this.garden);

@@ -1,62 +1,45 @@
-import { AbilityContext } from './AbilityContext.js';
-import { PlayType } from './Constants.js';
-import { PlayDisguisedCharacterAction, PlayDisguisedCharacterIntoLocation } from './PlayDisguisedCharacterAction.js';
-import DrawCard from './DrawCard.js';
-import Player from './Player.js';
+import type { AbilityContext } from './AbilityContext.js';
+import { PlayType, Blocker } from './Constants.js';
+import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
+import { PlayIntoLocation } from './PlayCharacterAction.js';
+import type DrawCard from './DrawCard.js';
+import type Player from './Player.js';
 
 export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAction {
-    constructor(card: DrawCard) {
-        super(card);
+    constructor(card: DrawCard, intoLocation = PlayIntoLocation.Any) {
+        super(card, intoLocation);
     }
 
-    createContext(player: Player = this.card.controller) {
+    override createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
         context.playType = PlayType.PlayFromHand;
         return context;
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+    override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
+        const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation)
+            ? ignoredBlockers
+            : ignoredBlockers.concat(Blocker.WrongLocation);
+        return super.meetsRequirements(context, newIgnoredBlockers);
     }
 }
 
-export class PlayDisguisedCharacterAsIfFromHandIntoConflict extends PlayDisguisedCharacterAction {
+export class PlayDisguisedCharacterAsIfFromHandIntoConflict extends PlayDisguisedCharacterAsIfFromHand {
     constructor(card: DrawCard) {
-        super(card, PlayDisguisedCharacterIntoLocation.Conflict);
-    }
-
-    createContext(player: Player = this.card.controller) {
-        const context = super.createContext(player);
-        context.playType = PlayType.PlayFromHand;
-        return context;
-    }
-
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+        super(card, PlayIntoLocation.Conflict);
     }
 }
 
-export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedCharacterAction {
+export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedCharacterAsIfFromHand {
     constructor(card: DrawCard) {
-        super(card, PlayDisguisedCharacterIntoLocation.Home);
+        super(card, PlayIntoLocation.Home);
     }
+}
 
-    createContext(player: Player = this.card.controller) {
-        const context = super.createContext(player);
-        context.playType = PlayType.PlayFromHand;
-        return context;
-    }
-
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+// Like PlayFacedownCharacterAsIfFromHand: putIntoPlay refuses a facedown card.
+export class PlayFacedownDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAsIfFromHand {
+    override executeHandler(context: AbilityContext<DrawCard>) {
+        context.source.facedown = false;
+        super.executeHandler(context);
     }
 }

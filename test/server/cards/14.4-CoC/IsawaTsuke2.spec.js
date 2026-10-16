@@ -187,7 +187,7 @@ describe('Isawa Tsuke 2', function() {
             });
 
             it('Should remove the honor and the fate from the chosen characters', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -196,9 +196,9 @@ describe('Isawa Tsuke 2', function() {
                     defenders: [this.liar, this.tsuke]
                 });
 
-                let fate1 = this.student.fate;
-                let fate2 = this.whisperer.fate;
-                let fate3 = this.tsuke.fate;
+                const fate1 = this.student.fate;
+                const fate2 = this.whisperer.fate;
+                const fate3 = this.tsuke.fate;
 
                 this.player2.clickCard(this.tsuke);
                 this.player2.clickPrompt('3');
@@ -224,7 +224,7 @@ describe('Isawa Tsuke 2', function() {
             });
 
             it('Should not let you choose more characters than you chose to lose honor', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -233,9 +233,9 @@ describe('Isawa Tsuke 2', function() {
                     defenders: [this.liar, this.tsuke]
                 });
 
-                let fate1 = this.student.fate;
-                let fate2 = this.whisperer.fate;
-                let fate3 = this.tsuke.fate;
+                const fate1 = this.student.fate;
+                const fate2 = this.whisperer.fate;
+                const fate3 = this.tsuke.fate;
 
                 this.player2.clickCard(this.tsuke);
                 this.player2.clickPrompt('2');
@@ -255,7 +255,7 @@ describe('Isawa Tsuke 2', function() {
             });
 
             it('should allow cancelling', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -264,9 +264,9 @@ describe('Isawa Tsuke 2', function() {
                     defenders: [this.liar, this.tsuke]
                 });
 
-                let fate1 = this.student.fate;
-                let fate2 = this.whisperer.fate;
-                let fate3 = this.tsuke.fate;
+                const fate1 = this.student.fate;
+                const fate2 = this.whisperer.fate;
+                const fate3 = this.tsuke.fate;
 
                 this.player2.clickCard(this.tsuke);
                 this.player2.clickPrompt('3');

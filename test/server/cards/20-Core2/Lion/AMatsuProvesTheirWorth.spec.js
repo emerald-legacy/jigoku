@@ -36,7 +36,7 @@ describe('A Matsu Proves Their Worth', function () {
             this.noMoreActions();
 
             expect(this.getChatLogs(5)).toContain(
-                'Matsu Berserker is discarded from play due to failing at A Matsu Proves Their Worth!'
+                'Matsu Berserker is discarded from play due to failing at A Matsu Proves Their Worth'
             );
         });
 
@@ -59,7 +59,24 @@ describe('A Matsu Proves Their Worth', function () {
             expect(this.player1.hand.length).toBe(1);
 
             expect(this.getChatLogs(5)).toContain(
-                'Matsu Berserker is honored and receives 1 fate, and player1 gains 1 honor and draw 1 card due to Matsu Berserker succeeding at A Matsu Proves Their Worth!'
+                'Matsu Berserker is honored and receives 1 fate, and player1 gains 1 honor and draws 1 card due to Matsu Berserker succeeding at A Matsu Proves Their Worth'
+            );
+        });
+
+        it('discards the bushi when it is at home at the end of the conflict', function () {
+            this.player1.clickRing('water');
+            this.player1.clickCard(this.shameful);
+            this.player1.clickCard(this.berserker);
+            this.player1.clickPrompt('Initiate Conflict');
+            this.player1.clickCard(this.comingOfAge);
+            this.player2.clickPrompt('Done');
+
+            this.game.currentConflict.removeFromConflict(this.berserker);
+            this.noMoreActions();
+
+            expect(this.berserker.location).toBe('dynasty discard pile');
+            expect(this.getChatLogs(5)).toContain(
+                'Matsu Berserker is discarded from play due to failing at A Matsu Proves Their Worth'
             );
         });
 

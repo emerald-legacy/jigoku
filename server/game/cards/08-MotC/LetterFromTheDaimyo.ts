@@ -1,24 +1,23 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { ConflictType } from '../../Constants.js';
 
 class LetterFromTheDaimyo extends DrawCard {
     static id = 'letter-from-the-daimyo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
-        this.reaction({
-            title: 'Make opponent discard 2 cards',
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            when: {
+        this.reaction('Make opponent discard 2 cards')
+            .when({
                 afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
-                                                   event.conflict.conflictType === 'political'
-            },
-            gameAction: AbilityDsl.actions.chosenDiscard({ amount: 2 })
-        });
+                                                   event.conflict.conflictType === ConflictType.Political
+            })
+            .cost(costs.sacrificeSelf())
+            .chosenDiscard({ amount: 2 });
     }
 }
 

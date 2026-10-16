@@ -81,9 +81,9 @@ describe('Spell Scroll', function () {
                 ring: 'earth'
             });
 
-            expect(this.tadaka.getPoliticalSkill()).toBe(this.tadaka.printedPoliticalSkill + 3);
-            expect(this.atsuko.getPoliticalSkill()).toBe(this.atsuko.printedPoliticalSkill);
-            expect(this.scholar.getPoliticalSkill()).toBe(this.scholar.printedPoliticalSkill);
+            expect(this.tadaka.politicalSkill).toBe(this.tadaka.printedPoliticalSkill + 3);
+            expect(this.atsuko.politicalSkill).toBe(this.atsuko.printedPoliticalSkill);
+            expect(this.scholar.politicalSkill).toBe(this.scholar.printedPoliticalSkill);
         });
     });
 });

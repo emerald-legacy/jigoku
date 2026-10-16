@@ -1,33 +1,33 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
-export type DetachActionProperties = CardActionProperties;
+export type DetachProperties = CardActionProperties;
 
-export class DetachAction extends CardGameAction<DetachActionProperties, EventName.OnCardDetached> {
-    name = 'detach';
-    eventName = EventName.OnCardDetached;
-    targetType = [CardType.Attachment];
+export class DetachAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<DetachProperties, EventName.OnCardDetached, Context> {
+    override name = 'detach';
+    override eventName = EventName.OnCardDetached;
+    override targetType = [CardType.Attachment];
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let target = this.getProperties(context).target as DrawCard;
-        return ['detach {1} from {0}', [target, target.parent]];
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const [target] = targetList(this.getProperties(context, additionalProperties).target);
+        return ['detach {0} from {1}', [target.parent]];
     }
 
-    canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         return !!(
-            card &&
             card.location === Location.PlayArea &&
             card.parent &&
             super.canAffect(card, context, additionalProperties)
         );
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardDetached>): void {
-        const card = event.card as DrawCard;
+    override eventHandler(event: ActionEvent<EventName.OnCardDetached, Context>): void {
+        const card = event.card;
         card.parent?.removeAttachment(card);
         card.controller.cardsInPlay.push(card);
     }

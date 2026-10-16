@@ -1,28 +1,29 @@
-import Player from '../Player.js';
-import { Clock, Mode } from './Clock.js';
+import { msg } from '../GameChat.js';
+import type Player from '../Player.js';
+import { Clock, type Mode } from './Clock.js';
 import type { ClockInterface } from './types.js';
 
 export class ChessClock extends Clock implements ClockInterface {
-    mode: Mode = 'stop';
-    name = 'Chess Clock';
+    override mode: Mode = 'stop';
+    override name = 'Chess Clock';
 
     constructor(player: Player, time: number) {
         super(player, time, 5);
     }
 
-    protected pause() {
+    protected override pause() {
         this.stop();
     }
 
-    protected restart() {
+    protected override restart() {
         this.start();
     }
 
-    public reset() {
+    public override reset() {
         this.stop();
     }
 
-    public start() {
+    public override start() {
         if(!this.manuallyPaused) {
             if(this.mode !== 'down') {
                 this.mode = 'down';
@@ -31,21 +32,21 @@ export class ChessClock extends Clock implements ClockInterface {
         }
     }
 
-    public stop() {
+    public override stop() {
         super.stop();
         this.mode = 'stop';
     }
 
-    public opponentStart() {}
+    public override opponentStart() {}
 
-    protected timeRanOut() {
-        this.player.game.addMessage('{0}\'s clock has run out', this.player);
+    protected override timeRanOut() {
+        this.player.game.addMessage(msg`${this.player}'s clock has run out`);
         if(this.player.opponent && this.player.opponent.clock.timeLeft > 0) {
             this.player.game.recordWinner(this.player.opponent, 'clock');
         }
     }
 
-    protected updateTimeLeft(secs: number) {
+    protected override updateTimeLeft(secs: number) {
         if(this.timeLeft === 0 || secs < 0) {
             return;
         }

@@ -42,7 +42,7 @@ describe('Called to War', function() {
             expect(this.player2).toBeAbleToSelect(this.shibaTsukune);
             expect(this.player2).not.toBeAbleToSelect(this.solemnScholar);
             this.player2.clickCard(this.shibaTsukune);
-            expect(this.getChatLogs(1)).toContain('player1 plays Called to War to place a fate on Matsu Berserker.  player2 gives player1 1 honor to place a fate on Shiba Tsukune');
+            expect(this.getChatLogs(1)).toContain('player1 plays Called to War to place a fate on Matsu Berserker. player2 gives player1 1 honor to place a fate on Shiba Tsukune');
 
             expect(this.matsuBerserker.fate).toBe(1);
             expect(this.shibaTsukune.fate).toBe(1);
@@ -132,7 +132,7 @@ describe('Called to War', function() {
             expect(this.player2).toHavePrompt('Choose a character');
             expect(this.player2).toBeAbleToSelect(this.shibaTsukune);
             this.player2.clickCard(this.shibaTsukune);
-            expect(this.getChatLogs(1)).toContain('player1 plays Called to War to place a fate on Shiba Tsukune.  player2 gives player1 1 honor to place a fate on Shiba Tsukune');
+            expect(this.getChatLogs(1)).toContain('player1 plays Called to War to place a fate on Shiba Tsukune. player2 gives player1 1 honor to place a fate on Shiba Tsukune');
             expect(this.shibaTsukune.fate).toBe(2);
         });
     });

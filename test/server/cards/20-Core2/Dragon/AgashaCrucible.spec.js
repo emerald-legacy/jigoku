@@ -39,7 +39,7 @@ describe('Agasha Crucible', function () {
             expect(this.player1).toHavePromptButton('Water');
             this.player1.clickPrompt('Water');
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Agasha Crucible to give Doomed Shugenja another Elemental Trait, and take another action!'
+                'player1 uses Agasha Crucible to give Doomed Shugenja another Elemental Trait, and take another action'
             );
             expect(this.getChatLogs(5)).toContain('Doomed Shugenja gains the Water Trait');
 

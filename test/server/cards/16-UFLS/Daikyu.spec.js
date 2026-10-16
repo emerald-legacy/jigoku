@@ -29,8 +29,8 @@ describe('Daikyu', function() {
         });
 
         it('should give +2 mil when first player', function() {
-            expect(this.hotaru.getMilitarySkill()).toBe(3 + 2);
-            expect(this.toturi.getMilitarySkill()).toBe(6 + 0);
+            expect(this.hotaru.militarySkill).toBe(3 + 2);
+            expect(this.toturi.militarySkill).toBe(6 + 0);
         });
 
         it('should react when attackers are assigned', function() {

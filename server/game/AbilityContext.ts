@@ -1,10 +1,10 @@
 import type { SelectChoice } from './AbilityTargets/SelectChoice.js';
-import BaseAbility from './BaseAbility.js';
+import { BaseAbility } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
-import type CardAbility from './CardAbility.js';
+import type { CardAbility } from './CardAbility.js';
 import type DrawCard from './DrawCard.js';
-import { Location, PlayType, Stage } from './Constants.js';
-import EffectSource from './EffectSource.js';
+import { type Location, type PlayType, Stage } from './Constants.js';
+import { EffectSource } from './EffectSource.js';
 import type { ElementSymbol } from './ElementSymbol.js';
 import type { Event } from './Events/Event.js';
 import type Game from './Game.js';
@@ -15,18 +15,17 @@ import type { StatusToken } from './StatusToken.js';
 
 export interface AbilityContextProperties {
     game: Game;
-    source?: BaseCard | Ring | EffectSource;
+    source?: EffectSource;
     player?: Player;
     ability?: BaseAbility;
     costs?: Record<string, unknown>;
     targets?: Record<string, BaseCard | BaseCard[]>;
     rings?: Record<string, Ring | Ring[]>;
     selects?: Record<string, SelectChoice>;
-    tokens?: Record<string, StatusToken | StatusToken[]>;
+    tokens?: Record<string, StatusToken[]>;
     elements?: Record<string, ElementSymbol>;
-    events?: Event[];
     stage?: Stage;
-    targetAbility?: CardAbility | null;
+    targetAbility?: CardAbility;
 }
 
 /**
@@ -36,20 +35,20 @@ export interface AbilityContextProperties {
  * an ability with no card target legitimately leaves it undefined.
  *
  * Two preconditions, neither machine-checked: the target must not be `optional`
- * (it would go unset), and must not be a multi-card mode (`target` then holds a
- * `BaseCard[]` — see the note on `AbilityContext.target`). Today no card combines
- * either with a `context.target` read from a property factory.
+ * and must not be a multi-card mode; either leaves `target` unset. Today no card
+ * combines either with a `context.target` read from a property factory.
  *
- * Annotate a property factory with this ONLY from inside such an ability:
- *   target: { cardType: ..., gameAction: AbilityDsl.actions.x(
+ * Builder abilities type their targets themselves. Annotate a property factory with this
+ * ONLY from inside such an ability in object form (a gained ability):
+ *   target: { cardType: ..., gameAction: injure(
  *       (context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({ ... })) }
  */
-export type ResolvedAbilityContext<S = BaseCard, T extends BaseCard = BaseCard> =
-    AbilityContext<S, T> & { target: T };
+export type ResolvedAbilityContext<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> =
+    AbilityContext<Source, Target> & { target: Target };
 
-export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
+export class AbilityContext<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> {
     game: Game;
-    source: S;
+    source: Source;
     player: Player;
     ability: BaseAbility;
     // Bags are dynamically keyed by per-ability target/cost names; values typed to
@@ -59,41 +58,58 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
     targets: Record<string, BaseCard | BaseCard[]>;
     rings: Record<string, Ring | Ring[]>;
     selects: Record<string, SelectChoice>;
-    tokens: Record<string, StatusToken | StatusToken[]>;
+    tokens: Record<string, StatusToken[]>;
     elements: Record<string, ElementSymbol>;
     deckSearchSelected: DrawCard[] = [];
     events: Event[] = [];
+    /** In a `then` step that inherits targets: the events of the step before. */
+    previousEvents: Event[] = [];
     stage: Stage;
-    targetAbility: CardAbility | null = null;
-    /**
-     * Set by `AbilityTargetCard` when the target name is `'target'`. In
-     * multi-card selector modes (`Exactly`/`Unlimited` with numCards > 1) it
-     * is assigned a `BaseCard[]`; the few cards that use multi-card targets
-     * read from `context.targets.target` instead and cast.
-     */
-    target: T | undefined;
-    select: string = '';
+    targetAbility: CardAbility | undefined;
+    /** Set by `AbilityTargetCard` when one card is chosen for a target named `'target'`; several cards stay in `targets.target`. */
+    target: Target | undefined;
+    select: string | undefined;
     ring: Ring | undefined;
-    token: StatusToken | StatusToken[] | undefined;
-    element: ElementSymbol | null = null;
+    token: StatusToken[] | undefined;
+    element: ElementSymbol | undefined;
     elementCard: BaseCard | undefined;
     provincesToRefill: { player: Player; location: Location }[] = [];
     subResolution = false;
     /** Set when this context continues an earlier one: a sub-resolution (`resolveAbility`/`triggerAbility`) or a `then` clause. */
-    originatingContext?: AbilityContext;
+    originatingContext?: AbilityContext<EffectSource>;
     /** Every card chosen as a target across this triggering, continuations included. */
     chosenCardTargets: BaseCard[] = [];
     choosingPlayerOverride: Player | null = null;
     gameActionsResolutionChain: GameAction[] = [];
     playType: PlayType | undefined;
     cardStateWhenInitiated: BaseCard | null = null;
+    /** Extra fate to place on a character being played, chosen by the `chooseFate` cost. */
+    chooseFate = 0;
+    /** The character a character played with Disguise replaces, once its play cost has chosen it. */
+    disguisedCharacter: DrawCard | undefined;
+    /** The cards already paid for as "an additional cost to choose … as a target". A following step keeps them. */
+    targetingCostPaid: BaseCard[] = [];
     ignoreFateCost?: boolean;
     payFateCostToOpponent?: boolean;
     onPlayCardSource?: BaseCard;
 
+
+    /** What the ability targets, for messages and prompt arrows: the cards chosen for a target named `target`, else `target`. */
+    messageTarget(): Target | BaseCard[] | undefined {
+        const chosen = this.targets.target;
+        return Array.isArray(chosen) ? chosen : this.target;
+    }
+
+    /** What a chat text string's `{0}` names: the target, else the ring, else the source. */
+    chatTarget(): Target | BaseCard[] | Ring | Source {
+        return this.messageTarget() || this.ring || this.source;
+    }
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
-        this.source = (properties.source || new EffectSource(this.game)) as S;
+        // a framework context's source is a plain EffectSource and its player may be missing
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
+        this.source = (properties.source || new EffectSource(this.game)) as Source;
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
         this.player = properties.player as Player;
         this.ability = properties.ability || new BaseAbility({});
         this.costs = properties.costs || {};
@@ -103,19 +119,21 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
         this.tokens = properties.tokens || {};
         this.elements = properties.elements || {};
         this.stage = properties.stage || Stage.Effect;
-        this.targetAbility = properties.targetAbility ?? null;
-        // const location = this.player && this.player.playableLocations.find(location => location.contains(this.source));
-        this.playType = this.player && this.player.findPlayType(this.source as BaseCard); //location && location.playingType;
+        this.targetAbility = properties.targetAbility;
+        const source: EffectSource = this.source;
+        this.playType = this.player && source.isCard() ? this.player.findPlayType(source) : undefined;
     }
 
     /** The context representing the triggering this one belongs to. */
-    get triggeringContext(): AbilityContext {
-        // S is unconstrained, so `this` is not assignable to the default instantiation.
-        return this.originatingContext ?? (this as unknown as AbilityContext);
+    get triggeringContext(): AbilityContext<EffectSource> {
+        return this.originatingContext ?? this;
     }
 
-    copy(newProps: Partial<AbilityContextProperties>): this {
-        let copy = this.createCopy(newProps);
+    copy(newProps: Partial<AbilityContextProperties>): AbilityContext<Source, Target> {
+        return this.copyStateTo(this.createCopy(newProps));
+    }
+
+    protected copyStateTo<Context extends AbilityContext<Source, Target>>(copy: Context): Context {
         copy.target = this.target;
         copy.token = this.token;
         copy.element = this.element;
@@ -129,28 +147,24 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
         copy.choosingPlayerOverride = this.choosingPlayerOverride;
         copy.gameActionsResolutionChain = this.gameActionsResolutionChain;
         copy.playType = this.playType;
+        copy.ignoreFateCost = this.ignoreFateCost;
+        copy.previousEvents = this.previousEvents;
+        copy.disguisedCharacter = this.disguisedCharacter;
+        copy.targetingCostPaid = this.targetingCostPaid;
         return copy;
     }
 
-    createCopy(newProps: Partial<AbilityContextProperties>): this {
-        return new AbilityContext<S, T>(Object.assign(this.getProps(), newProps)) as this;
+    createCopy(newProps: Partial<AbilityContextProperties>): AbilityContext<Source, Target> {
+        return new AbilityContext<Source, Target>(Object.assign(this.getProps(), newProps));
     }
 
     refillProvince(player: Player, location: Location): void {
         this.provincesToRefill.push({ player, location });
     }
 
-    getCards<U extends BaseCard = BaseCard>(name: string = 'target'): U[] {
-        const slot = this.targets[name];
-        if(!slot) {
-            return [];
-        }
-        return (Array.isArray(slot) ? slot : [slot]) as U[];
-    }
-
     refill(): void {
-        for(let player of this.game.getPlayersInFirstPlayerOrder()) {
-            for(let refill of this.provincesToRefill.filter((refill) => refill.player === player)) {
+        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
+            for(const refill of this.provincesToRefill.filter((refill) => refill.player === player)) {
                 this.game.queueSimpleStep(() => {
                     player.replaceDynastyCard(refill.location);
                     return true;
@@ -165,7 +179,7 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
     getProps(): AbilityContextProperties {
         return {
             game: this.game,
-            source: this.source as BaseCard | Ring | EffectSource,
+            source: this.source,
             player: this.player,
             ability: this.ability,
             costs: Object.assign({}, this.costs),
@@ -174,7 +188,6 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
             selects: Object.assign({}, this.selects),
             tokens: Object.assign({}, this.tokens),
             elements: Object.assign({}, this.elements),
-            events: this.events,
             stage: this.stage,
             targetAbility: this.targetAbility
         };

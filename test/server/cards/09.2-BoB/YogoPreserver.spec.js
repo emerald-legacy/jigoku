@@ -41,7 +41,7 @@ describe('Yogo Preserver', function() {
             });
 
             it('should make the player draw 1 card when dishonored characters leave play', function() {
-                let P1hand = this.player1.hand.length;
+                const P1hand = this.player1.hand.length;
                 this.dojiWhisperer.honor();
                 this.player2.clickCard('noble-sacrifice');
                 this.player2.clickCard(this.bayushiManipulator);

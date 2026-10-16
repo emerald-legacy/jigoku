@@ -1,34 +1,31 @@
 import { CardType, Location } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { discardFromPlay, moveCard, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class FortifiedLumberCamp extends DrawCard {
     static id = 'fortified-lumber-camp';
 
-    setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Discard all cards in and attached to a province ',
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Discard all cards in and attached to a province')
+            .cost(costs.sacrificeSelf())
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province
-            },
-            gameAction: AbilityDsl.actions.multipleContext<ProvinceCard>((context) => ({
-                gameActions: context.target ? [
-                    AbilityDsl.actions.moveCard({
-                        destination: Location.DynastyDiscardPile,
-                        target: this.#cardsInProvince(context.target)
-                    }),
-                    AbilityDsl.actions.discardFromPlay({ target: context.target.attachments })
-                ] : []
-            })),
-            effect: 'discard {1}',
-            effectArgs: (context) => [context.target ? this.#cardsInProvince(context.target).concat(context.target.attachments) : []]
-        });
+            })
+            .gameAction(multiple((context) => [
+                moveCard({
+                    destination: Location.DynastyDiscardPile,
+                    target: this.cardsInProvince(context.target)
+                }),
+                discardFromPlay({ target: context.target.attachments })
+            ]))
+            .chatText((context) => msg`discard ${this.cardsInProvince(context.target).concat(context.target.attachments)}`);
     }
 
-    #cardsInProvince(targetProvince: ProvinceCard) {
+    private cardsInProvince(targetProvince: ProvinceCard) {
         return targetProvince.controller.getDynastyCardsInProvince(targetProvince.location);
     }
 }

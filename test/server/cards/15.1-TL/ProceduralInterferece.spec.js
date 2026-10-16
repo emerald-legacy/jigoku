@@ -69,6 +69,7 @@ describe('Procedural Interference', function() {
 
             expect(this.player1.player.honor).toBe(12);
             expect(this.player2.player.honor).toBe(10);
+            expect(this.getChatLogs(5)).toContain('player1 plays Procedural Interference to gain 2 honor');
         });
 
         it('should not let you gain 4 honor when Silent Ones is present', function() {

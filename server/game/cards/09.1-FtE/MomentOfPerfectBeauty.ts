@@ -1,28 +1,23 @@
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Duration } from '../../Constants.js';
+import { resolveConflictEarly } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class MomentOfPerfectBeauty extends DrawCard {
     static id = 'moment-of-perfect-beauty';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'One more action and then end the conflict',
-            condition: context => {
+    override setupCardAbilities() {
+        this.action('One more action and then end the conflict')
+            .condition((context) => {
                 const conflict = this.game.currentConflict;
-                return !!conflict && this.game.isDuringConflict() &&
+                return !!conflict &&
                     conflict.getNumberOfParticipantsFor(context.player, (card) => card.isHonored) >
                     conflict.getNumberOfParticipantsFor(context.player.opponent, (card) => card.isHonored);
-            },
-            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
-                duration: Duration.UntilEndOfConflict,
-                targetController: context.player.opponent,
-                effect: AbilityDsl.effects.resolveConflictEarly()
-            })),
-            effect: 'resolve the conflict after {1}\'s next action',
-            effectArgs: context => [context.player.opponent as Player]
-        });
+            })
+            .playerLastingEffect((context) => ({
+                target: context.player.opponent,
+                effect: resolveConflictEarly()
+            }))
+            .chatText((context) => msg`resolve the conflict after ${context.player.opponent}'s next action`);
     }
 }
 

@@ -1,29 +1,26 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Duration } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { switchBaseSkills } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class NaturalNegotiator extends DrawCard {
     static id = 'natural-negotiator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'courtier',
+            trait: Trait.Courtier,
             myControl: true
         });
 
-        this.action({
-            title: 'Switch attached characters base skills',
-            effect: 'switch {1}\'s base {2} and {3} skill',
-            effectArgs: (context: AbilityContext<this>) => [context.source.parentCharacter, 'military', 'political'],
-            cost: AbilityDsl.costs.giveHonorToOpponent(),
-            condition: (context) => context.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                duration: Duration.UntilEndOfConflict,
-                target: context.source.parentCharacter,
-                effect: AbilityDsl.effects.switchBaseSkills()
+        this.action('Switch attached characters base skills')
+            .condition((context) => context.game.isDuringConflict())
+            .cost(costs.giveHonorToOpponent())
+            .cardLastingEffect((context) => ({
+                target: context.source.parentCharacter ?? [],
+                effect: switchBaseSkills()
             }))
-        });
+            .chatText((context) => msg`switch ${context.source.parentCharacter}'s base ${'military'} and ${'political'} skill`);
     }
 }
 

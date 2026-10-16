@@ -32,7 +32,7 @@ describe('Utaku Prodigy', function () {
                 attackers: [this.prodigy],
                 defenders: [this.mitsu]
             });
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player2.clickCard(this.assassination);
             this.player2.clickCard(this.brash);
 

@@ -1,35 +1,26 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Element, EventName } from '../../Constants.js';
+import { honor } from '../../GameActions/GameActions.js';
+import { CardType, Element, Trait } from '../../Constants.js';
+import { claimedRingSymbols, claimsRingOf } from '../claimedRings.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-const elementKey = 'asako-tsuki-water';
+const elementSymbol = { key: 'asako-tsuki-water', element: Element.Water };
 
 class AsakoTsuki extends DrawCard {
     static id = 'asako-tsuki';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Honor a scholar character',
-            when: {
-                onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => (event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(elementKey) as Element)) || event.ring.hasElement(this.getCurrentElementSymbol(elementKey) as Element)
-            },
-            target: {
+    override setupCardAbilities() {
+        this.reaction('Honor a scholar character')
+            .when({
+                onClaimRing: (event) => claimsRingOf(this, elementSymbol.key, event)
+            })
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('scholar'),
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+                cardCondition: (card) => card.hasTrait(Trait.Scholar)
+            }, honor());
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Water
-        });
-        return symbols;
+    override getPrintedElementSymbols() {
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

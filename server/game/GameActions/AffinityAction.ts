@@ -1,92 +1,68 @@
-import type { MessageArgs, MsgArg } from '../GameChat.js';
+import { CompositeGameAction } from './CompositeGameAction.js';
+import { msg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import type { MessageArgs } from '../GameChat.js';
+import type { Trait } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameObject } from '../GameObject.js';
-import { Derivable, derive } from '../utils/helpers.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { GameAction, GameActionProperties } from './GameAction.js';
 
-export interface AffinityActionProperties extends GameActionProperties {
+export interface AffinityProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties {
     gameAction: GameAction;
-    effect?: string;
-    effectArgs?: Derivable<Array<unknown>, AbilityContext>;
-    trait: string;
+    chatText?(context: Context): MessageArgs;
+    trait: Trait;
     noAffinityGameAction?: GameAction;
-    promptTitleForConfirmingAffinity?: string;
+    activePromptTitle?: string;
 }
 
-export class AffinityAction extends GameAction<AffinityActionProperties> {
-    getProperties(context: AbilityContext, additionalProperties = {}): AffinityActionProperties {
-        let properties = super.getProperties(context, additionalProperties);
-        properties.gameAction.setDefaultTarget(() => properties.target);
-        properties.noAffinityGameAction?.setDefaultTarget(() => properties.target);
-        return properties;
+export class AffinityAction<Context extends AbilityContext = AbilityContext> extends CompositeGameAction<AffinityProperties, Context> {
+    protected children(properties: AffinityProperties) {
+        return [properties.gameAction, properties.noAffinityGameAction];
     }
 
-    getEffectMessage(context: AbilityContext, additionalProperties = {}): MessageArgs {
-        let properties = this.getProperties(context, additionalProperties);
+    /** With the affinity its game action, without it the other one (if any). */
+    protected override resolving(context: Context, properties: AffinityProperties): GameAction[] {
+        const action = context.player.hasAffinity(properties.trait, context) ? properties.gameAction : properties.noAffinityGameAction;
+        return action ? [action] : [];
+    }
+
+    override getEffectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         if(context.player.hasAffinity(properties.trait, context)) {
-            return properties.gameAction.getEffectMessage(context);
+            return properties.gameAction.getEffectMessage(context, overrides);
         }
 
-        return properties.noAffinityGameAction?.getEffectMessage(context) ?? ['', []];
+        return properties.noAffinityGameAction?.getEffectMessage(context, overrides) ?? ['', []];
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}) {
-        let properties = this.getProperties(context, additionalProperties);
-        if(context.player.hasAffinity(properties.trait, context)) {
-            return properties.gameAction.hasLegalTarget(context, additionalProperties);
-        }
-
-        return properties.noAffinityGameAction?.hasLegalTarget(context, additionalProperties) ?? false;
-    }
-
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}) {
-        let properties = this.getProperties(context, additionalProperties);
-        if(context.player.hasAffinity(properties.trait, context)) {
-            return properties.gameAction.canAffect(target, context, additionalProperties);
-        }
-
-        return properties.noAffinityGameAction?.canAffect(target, context, additionalProperties) ?? false;
-    }
-
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         if(!context.player.hasAffinity(properties.trait, context)) {
-            return properties.noAffinityGameAction?.addEventsToArray(events, context, additionalProperties);
+            return properties.noAffinityGameAction?.addEventsToArray(events, context, overrides);
         }
 
-        if(!properties.promptTitleForConfirmingAffinity) {
-            return this.#resolveAffinity(properties, events, context, additionalProperties);
+        if(!properties.activePromptTitle) {
+            return this.#resolveAffinity(properties, events, context, overrides);
         }
 
         context.player.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: properties.promptTitleForConfirmingAffinity,
+            activePromptTitle: properties.activePromptTitle,
             source: context.source,
-            choices: ['Yes', 'No'],
-            handlers: [() => this.#resolveAffinity(properties, events, context, additionalProperties), () => {}]
+            options: [
+                { text: 'Yes', handler: () => this.#resolveAffinity(properties, events, context, overrides) },
+                { text: 'No', handler: () => {} }
+            ]
         });
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}) {
-        let properties = this.getProperties(context, additionalProperties);
-        if(context.player.hasAffinity(properties.trait, context)) {
-            return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties);
-        }
-        return (
-            properties.noAffinityGameAction?.hasTargetsChosenByInitiatingPlayer(context, additionalProperties) ?? false
-        );
-    }
-
     #resolveAffinity(
-        properties: AffinityActionProperties,
+        properties: AffinityProperties,
         events: Event[],
-        context: AbilityContext,
-        additionalProperties = {}
+        context: Context,
+        overrides: ActionOverrides
     ) {
-        properties.gameAction.addEventsToArray(events, context, additionalProperties);
-        const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
-        const nextArg = args.length;
-        const affinityMsg = `{${nextArg}} channels their ${properties.trait} affinity to ${properties.effect ?? ''}`;
-        context.game.addMessage(affinityMsg, ...(args as MsgArg[]), context.player);
+        properties.gameAction.addEventsToArray(events, context, overrides);
+        const chatText = properties.chatText ? properties.chatText(context) : properties.gameAction.getEffectMessage(context, overrides);
+        context.game.addMessage(msg`${context.player} channels their ${properties.trait} affinity to ${context.game.gameChat.nested(chatText)}`);
     }
 }

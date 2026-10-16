@@ -1,33 +1,33 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
-import { CardType } from '../../../Constants.js';
+import { cardCannot, delayedEffect } from '../../../effects.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
+import { CardType, RestrictionType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ServitorOfStone extends DrawCard {
     static id = 'servitor-of-stone';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => this.controllerHasShugenjaAtSameLocation(context),
-            effect: AbilityDsl.effects.cardCannot({ cannot: 'leavePlay' })
+            effect: cardCannot({ cannot: RestrictionType.LeavePlay })
         });
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext) => !this.controllerHasShugenjaAtSameLocation(context),
-                message: '{0} is discarded from play because {1} controls no Shugenja at their location',
-                messageArgs: (context: AbilityContext) => [context.source, context.player],
-                gameAction: AbilityDsl.actions.discardFromPlay()
+            effect: delayedEffect({
+                condition: (context) => !this.controllerHasShugenjaAtSameLocation(context),
+                message: (context) => msg`${context.source} is discarded from play because ${context.player} controls no Shugenja at their location`,
+                gameAction: discardFromPlay()
             })
         });
     }
 
     private controllerHasShugenjaAtSameLocation(context: AbilityContext) {
         return context.player.anyCardsInPlay(
-            (otherCard: BaseCard) =>
+            (otherCard) =>
                 otherCard.type === CardType.Character &&
-                otherCard.hasTrait('shugenja') &&
+                otherCard.hasTrait(Trait.Shugenja) &&
                 context.source.isInConflict() === otherCard.isInConflict()
         );
     }

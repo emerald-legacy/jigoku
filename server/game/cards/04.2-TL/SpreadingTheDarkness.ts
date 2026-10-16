@@ -1,33 +1,31 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import * as costs from '../../costs/index.js';
+import { cardCannot, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
+import { Players, CardType, RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class SpreadingTheDarkness extends DrawCard {
     static id = 'spreading-the-darkness';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Give a character +4/+0',
-
-            cost: AbilityDsl.costs.payHonor(2),
-            target: {
+    override setupCardAbilities() {
+        this.action('Give a character +4/+0')
+            .cost(costs.payHonor(2))
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: [
-                        AbilityDsl.effects.modifyMilitarySkill(4),
-                        AbilityDsl.effects.cardCannot({
-                            cannot: 'target',
-                            restricts: 'opponentsCardEffects',
-                            applyingPlayer: context.player
-                        })
-                    ]
-                }))
-            },
-            effect: 'give {0} +4{1} and prevent them from being targeted by opponent\'s abilities',
-            effectArgs: () => 'military'
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect((context) => ({
+                effect: [
+                    modifyMilitarySkill(4),
+                    cardCannot({
+                        cannot: RestrictionType.Target,
+                        appliesTo: RestrictionScope.OpponentsCardEffects,
+                        applyingPlayer: context.player
+                    })
+                ]
+            })))
+            .chatText((context) => msg`give ${context.chatTarget()} +4${'military'} and prevent them from being targeted by opponent's abilities`);
     }
 }
 

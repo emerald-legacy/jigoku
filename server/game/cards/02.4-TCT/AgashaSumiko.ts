@@ -1,16 +1,16 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 
 class AgashaSumiko extends DrawCard {
     static id = 'agasha-sumiko';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => (
+            condition: (context) => (
                 context.player.imperialFavor !== '' &&
                 context.source.isAttacking()
             ),
-            effect: ability.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 }

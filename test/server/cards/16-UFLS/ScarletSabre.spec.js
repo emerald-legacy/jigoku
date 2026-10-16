@@ -25,7 +25,7 @@ describe('Scarlet Sabre', function () {
 
         it('should make opponent lose a fate when parent wins a conflict as first player', function () {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 type: 'political',

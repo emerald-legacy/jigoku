@@ -1,36 +1,35 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Location, Trait } from '../../Constants.js';
+import { immunity } from '../../effects.js';
+import { moveCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class ThirdWhiskerSneak extends DrawCard {
     static id = 'third-whisker-sneak';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.immunity({
-                    restricts: 'maho'
+                immunity({
+                    appliesTo: { trait: Trait.Maho }
                 }),
-                AbilityDsl.effects.immunity({
-                    restricts: 'shadowlands'
+                immunity({
+                    appliesTo: { trait: Trait.Shadowlands }
                 })]
         });
 
-        this.reaction({
-            title: 'Add a card to your hand',
-            when: {
+        this.reaction('Add a card to your hand')
+            .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && event.conflict.conflictUnopposed && context.source.isParticipating()
-            },
-            effect: 'look at the top {1} cards of their conflict deck',
-            effectArgs: context => [context.player.getProvinces(a => !a.isBroken).length],
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: (context) => context.player.getProvinces(a => !a.isBroken).length,
+            })
+            .deckSearch({
+                cardsToLookAt: (context) => context.player.getProvinces((a) => !a.isBroken).length,
                 reveal: false,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             })
-        });
+            .chatText((context) => msg`look at the top ${context.player.getProvinces((a) => !a.isBroken).length} cards of their conflict deck`);
     }
 }
 

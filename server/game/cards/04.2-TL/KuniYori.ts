@@ -1,37 +1,33 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, TargetMode, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Element } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { modifyBothSkills } from '../../effects.js';
+import { discardAtRandom } from '../../GameActions/GameActions.js';
+import { playerChoices } from '../playerChoices.js';
 
 const elementKey = 'kuni-yori-earth';
 
 class KuniYori extends DrawCard {
     static id = 'kuni-yori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            match: card => card.getType() === CardType.Character,
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            match: (card) => card.type === CardType.Character,
+            effect: modifyBothSkills(1)
         });
 
-        this.action({
-            title: 'Select a player to discard a card at random',
-            condition: () => this.game.isDuringConflict(),
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
-                mode: TargetMode.Select,
-                activePromptTitle:'Select a player to discard a random card from his/her hand',
-                targets: true,
-                choices: {
-                    [this.owner.name]: AbilityDsl.actions.discardAtRandom({ target: this.owner }),
-                    [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.discardAtRandom({ target: this.owner.opponent })
-                }
-            }
-        });
+        this.action('Select a player to discard a card at random')
+            .condition(() => this.game.isDuringConflict())
+            .cost(costs.payHonor(1))
+            .selectFrom({
+                activePromptTitle: 'Select a player to discard a random card from his/her hand',
+                targets: true
+            }, (context) => playerChoices(context.player, (player) => discardAtRandom({ target: player })));
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+    override getPrintedElementSymbols() {
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',

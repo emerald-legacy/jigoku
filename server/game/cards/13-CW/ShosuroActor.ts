@@ -1,26 +1,24 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { copyCard } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class ShosuroActor extends DrawCard {
     static id = 'shosuro-actor';
 
-    setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Choose a character to copy',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Choose a character to copy')
+            .condition((context) => context.source.isParticipating())
+            .target({
                 player: Players.Self,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => !card.isUnique(),
-                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
-                    target: context.source,
-                    effect: AbilityDsl.effects.copyCard(context.target)
-                }))
-            },
-            effect: 'become a copy of {1}',
-            effectArgs: (context) => [context.target ?? '']
-        });
+                cardCondition: (card, context) => !card.isUnique() && card.name !== context.source.name
+            }, cardLastingEffect((context) => ({
+                target: context.source,
+                effect: context.target ? copyCard(context.target) : []
+            })))
+            .chatText((context) => msg`become a copy of ${context.target}`);
     }
 }

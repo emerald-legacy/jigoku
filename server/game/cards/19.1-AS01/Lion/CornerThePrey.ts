@@ -1,46 +1,41 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, ConflictType, TargetMode } from '../../../Constants.js';
+import { CardType, ConflictType, TargetMode, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CornerThePrey extends DrawCard {
     static id = 'corner-the-prey';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Sacrifice followers to kill',
-            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
-            cost: AbilityDsl.costs.sacrifice({
+    public override setupCardAbilities() {
+        this.conflictAction('Sacrifice followers to kill', { conflictType: ConflictType.Military })
+            .cost(costs.sacrifice({
                 cardType: [CardType.Character, CardType.Attachment],
                 mode: TargetMode.Unlimited,
                 // A follower can be attached to a province, which does not participate.
                 cardCondition: (card) =>
-                    card.hasTrait('follower') &&
+                    card.hasTrait(Trait.Follower) &&
                     (card.isParticipating() || !!card.parentCharacter?.isParticipating())
-            }),
-            target: {
+            }))
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && (card.printedCost ?? 0) <= this.getFollowerCount(context),
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            },
-            cannotTargetFirst: true
-        });
+                    card.isParticipating() && (card.printedCost ?? 0) <= this.getFollowerCount(context, context.costs.sacrifice)
+            }, discardFromPlay())
+            .cannotTargetFirst();
     }
 
-    private getFollowerCount(context: AbilityContext): number {
-        if(context.costs.sacrifice) {
-            return (context.costs.sacrifice as BaseCard[]).length;
+    private getFollowerCount(context: AbilityContext, sacrificed: BaseCard | BaseCard[] | undefined): number {
+        if(sacrificed) {
+            return Array.isArray(sacrificed) ? sacrificed.length : 1;
         }
-        const myFollowers = (context.game.allCards as BaseCard[]).filter(
-            (card) => card.controller === context.player && card.hasTrait('follower')
+        const myFollowers = context.game.allCards.filter(
+            (card) => card.controller === context.player && card.hasTrait(Trait.Follower)
         );
-        const myParticipatingFollowers = myFollowers.filter(
+        return myFollowers.filter(
             (card) => card instanceof DrawCard &&
                 (card.isParticipating() || !!card.parentCharacter?.isParticipating())
-        );
-        const amount = myParticipatingFollowers.length;
-        return amount;
+        ).length;
     }
 }

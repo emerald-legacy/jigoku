@@ -1,25 +1,23 @@
 import DrawCard from '../../DrawCard.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotApplyLastingEffects, provinceCannotHaveSkillIncreased, suppressEffects } from '../../effects.js';
 import { Players, Location } from '../../Constants.js';
-import type StaticEffect from '../../Effects/StaticEffect.js';
 
 class SeasonedPatroller extends DrawCard {
     static id = 'seasoned-patroller';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            match: (card: ProvinceCard) => card.isConflictProvince(),
+            match: (card) => card.isConflictProvince(),
             targetLocation: Location.Provinces,
             targetController: Players.Any,
-            condition: context => context.source.isAttacking(),
+            condition: (context) => context.source.isAttacking(),
             effect: [
-                AbilityDsl.effects.suppressEffects((effect: unknown) =>
-                    (effect as StaticEffect).isProvinceStrengthModifier() && (effect as StaticEffect).getValue<number>() > 0
+                suppressEffects((effect) =>
+                    effect.isProvinceStrengthModifier() && (effect.getValue() ?? 0) > 0
                 ),
-                AbilityDsl.effects.provinceCannotHaveSkillIncreased(),
-                AbilityDsl.effects.cannotApplyLastingEffects((effect: StaticEffect) =>
-                    effect.isProvinceStrengthModifier() && effect.getValue<number>() > 0
+                provinceCannotHaveSkillIncreased(),
+                cannotApplyLastingEffects((effect) =>
+                    effect.isProvinceStrengthModifier() && (effect.getValue() ?? 0) > 0
                 )
             ]
         });

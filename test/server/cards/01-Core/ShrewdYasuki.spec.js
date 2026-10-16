@@ -72,6 +72,7 @@ describe('Shrewd Yasuki', function() {
                 this.player2.clickPrompt('Pass');
                 this.player1.clickCard('shrewd-yasuki');
                 expect(this.player1).toHavePrompt('Shrewd Yasuki');
+                expect(this.player1).not.toHavePromptButton('Take nothing');
             });
         });
 

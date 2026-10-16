@@ -1,25 +1,22 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import { DuelType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class ArrogantKakita extends DrawCard {
     static id = 'arrogant-kakita';
 
-    setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Initiate a political duel',
-            when: {
-                onDefendersDeclared: (event, context) => context.source.isParticipating()
-            },
-            initiateDuel: {
+    override setupCardAbilities() {
+        this.forcedReaction('Initiate a military duel')
+            .when({
+                onDefendersDeclared: (_event, context) => context.source.isParticipating()
+            })
+            .initiateDuel((context) => ({
                 type: DuelType.Military,
-                gameAction: (duel) =>
-                    AbilityDsl.actions.sendHome((context: AbilityContext<DrawCard, DrawCard>) => ({
-                        target: duel.loser?.includes(context.source) ? context.source : []
-                    }))
-            },
-            limit: AbilityDsl.limit.perRound(Infinity)
-        });
+                gameAction: (duel) => sendHome({
+                    target: duel.loser?.includes(context.source) ? context.source : []
+                })
+            }))
+            .limit(unlimited());
     }
 }

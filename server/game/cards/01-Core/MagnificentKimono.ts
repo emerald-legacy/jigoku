@@ -1,12 +1,12 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 
 class MagnificentKimono extends DrawCard {
     static id = 'magnificent-kimono';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.whileAttached({
-            effect: ability.effects.addKeyword('pride')
+            effect: addKeyword('pride')
         });
     }
 }

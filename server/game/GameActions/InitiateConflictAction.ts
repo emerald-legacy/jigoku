@@ -1,39 +1,36 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { ConflictType, EventName } from '../Constants.js';
+import { type ConflictType, EventName } from '../Constants.js';
 import type Player from '../Player.js';
-import { ProvinceCard } from '../ProvinceCard.js';
+import type { ProvinceCard } from '../ProvinceCard.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import type { ActionEvent, ActionOverrides } from './GameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface InitiateConflictProperties extends PlayerActionProperties {
     canPass?: boolean;
     forcedDeclaredType?: ConflictType;
     forceProvinceTarget?: ProvinceCard;
 }
 
-export class InitiateConflictAction extends PlayerAction<InitiateConflictProperties> {
-    name = 'initiateConflict';
-    eventName = EventName.OnConflictInitiated;
-    effect = 'declare a new conflict';
-    defaultProperties: InitiateConflictProperties = {
+export class InitiateConflictAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<InitiateConflictProperties, EventName.OnConflictInitiated, Context, 'canPass'> {
+    override name = 'initiateConflict';
+    override eventName = EventName.OnConflictInitiated;
+    override effect = 'declare a new conflict';
+    override defaultProperties = {
         canPass: true
     };
 
-    canAffect(player: Player, context: AbilityContext): boolean {
-        const { forcedDeclaredType } = this.getProperties(context);
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const { forcedDeclaredType } = this.getProperties(context, additionalProperties);
         return super.canAffect(player, context) && player.hasLegalConflictDeclaration({ forcedDeclaredType });
     }
 
-    defaultTargets(context: AbilityContext): Player[] {
-        return [context.player];
-    }
 
-    eventHandler(event: GameEvent<EventName.OnConflictInitiated>, additionalProperties: Record<string, unknown>): void {
-        const context = event.context as AbilityContext;
+    override eventHandler(event: ActionEvent<EventName.OnConflictInitiated, Context>, additionalProperties: Record<string, unknown>): void {
+        const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         context.game.initiateConflict(
             event.player,
-            properties.canPass ?? true,
+            properties.canPass,
             properties.forcedDeclaredType,
             properties.forceProvinceTarget
         );

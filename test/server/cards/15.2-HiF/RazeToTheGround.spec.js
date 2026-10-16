@@ -194,8 +194,8 @@ describe('Raze to the Ground', function() {
             this.player1.clickCard(this.challenger);
             this.player1.clickCard(this.throne);
 
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.entrenched.isBroken).toBe(false);
             expect(this.player1).toBeAbleToSelect(this.throne);
@@ -228,7 +228,7 @@ describe('Raze to the Ground', function() {
             expect(this.getChatLogs(10)).toContain('player2 uses Public Forum to add an honor token to Public Forum instead of breaking it');
         });
 
-        it('should work on defense not react if you lose', function() {
+        it('does not work on defense', function() {
             this.player1.passConflict();
             this.noMoreActions();
 
@@ -240,27 +240,7 @@ describe('Raze to the Ground', function() {
             });
 
             this.noMoreActions();
-            expect(this.player1).toHavePrompt('Triggered Abilities');
-            expect(this.player1).toBeAbleToSelect(this.raze);
-        });
-
-        it('should allow you to break the attacked province as a cost', function() {
-            this.player1.passConflict();
-            this.noMoreActions();
-
-            this.initiateConflict({
-                attackers: [this.mirumotoRaitsugu],
-                defenders: [this.akodoToturi, this.challenger],
-                province: this.garden,
-                type: 'military'
-            });
-
-            this.noMoreActions();
-            this.player1.clickCard(this.raze);
-            this.player1.clickCard(this.akodoToturi);
-            this.player1.clickCard(this.garden);
-            this.player2.clickPrompt('No');
-            expect(this.getChatLogs(10)).toContain('player1 plays Raze to the Ground, dishonoring Akodo Toturi and breaking Manicured Garden to break an attacked province');
+            expect(this.player1).not.toBeAbleToSelect(this.raze);
         });
     });
 });

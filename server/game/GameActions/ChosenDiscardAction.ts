@@ -1,39 +1,40 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { EventName, Location, Players, TargetMode } from '../Constants.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import { EventName, Location, Players, TargetMode, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
-export interface ChosenDiscardProperties extends PlayerActionProperties {
+export interface ChosenDiscardProperties<Context extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     amount?: number;
     targets?: boolean;
-    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
+    cardCondition?(card: BaseCard, context: Context): boolean;
 }
 
-type ResolvedChosenDiscardProperties = ChosenDiscardProperties & {
-    amount: NonNullable<ChosenDiscardProperties['amount']>;
-    cardCondition: NonNullable<ChosenDiscardProperties['cardCondition']>;
-};
-
-export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand> {
-    defaultProperties: ChosenDiscardProperties = {
+export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand, Context, 'amount' | 'targets' | 'cardCondition'> {
+    override defaultProperties = {
         amount: 1,
         targets: true,
         cardCondition: () => true
     };
-    name = 'discard';
-    eventName = EventName.OnCardsDiscardedFromHand;
+    override name = 'chosenDiscard';
+    override restriction = RestrictionType.Discard;
+    override eventName = EventName.OnCardsDiscardedFromHand;
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context);
-        return ['make {0} discard {1} cards', [properties.target, properties.amount]];
+    override defaultTargets(context: Context): Player[] {
+        return this.opponentTargets(context);
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as ResolvedChosenDiscardProperties;
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { amount } = this.getProperties(context, additionalProperties);
+        return [amount === 1 ? 'make {0} discard {1} card' : 'make {0} discard {1} cards', [amount]];
+    }
+
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
 
         if(availableHand.length === 0 || properties.amount === 0) {
@@ -42,24 +43,24 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
         return super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties) as ResolvedChosenDiscardProperties;
-        for(let player of properties.target as Player[]) {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
+        for(const player of targetList(properties.target)) {
             const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
-            let amount = Math.min(availableHand.length, properties.amount);
+            const amount = Math.min(availableHand.length, properties.amount);
             if(amount > 0) {
                 if(amount >= availableHand.length) {
-                    let event = this.getEvent(player, context);
+                    const event = this.getEvent(player, context, additionalProperties);
                     event.cards = availableHand;
                     events.push(event);
-                    return;
+                    continue;
                 }
 
                 if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
-                    let event = this.getEvent(player, context);
+                    const event = this.getEvent(player, context, additionalProperties);
                     event.cards = availableHand.slice(0, amount);
                     events.push(event);
-                    return;
+                    continue;
                 }
                 context.game.promptForSelect(player, {
                     activePromptTitle: 'Choose ' + (amount === 1 ? 'a card' : amount + ' cards') + ' to discard',
@@ -70,7 +71,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
                     controller: player === context.player ? Players.Self : Players.Opponent,
                     cardCondition: (card: BaseCard) => properties.cardCondition(card, context),
                     onSelect: (player: Player, cards: BaseCard[]) => {
-                        let event = this.getEvent(player, context);
+                        const event = this.getEvent(player, context, additionalProperties);
                         event.cards = cards;
                         events.push(event);
                         return true;
@@ -80,20 +81,20 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnCardsDiscardedFromHand>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
-        let { amount } = this.getProperties(context, additionalProperties);
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, Context>, player: Player, context: Context, additionalProperties: Record<string, unknown>): void {
+        const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.cards = [];
         event.discardedAtRandom = false;
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardsDiscardedFromHand>): void {
-        const context = event.context as AbilityContext;
-        context.game.addMessage('{0} discards {1}', event.player, event.cards);
+    override eventHandler(event: ActionEvent<EventName.OnCardsDiscardedFromHand, Context>): void {
+        const context = event.context;
+        context.game.addMessage(msg`${event.player} discards ${event.cards}`);
         event.discardedCards = event.cards;
-        for(let card of event.cards as BaseCard[]) {
-            (event.player as Player).moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+        for(const card of event.cards ?? []) {
+            event.player.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
         }
     }
 }

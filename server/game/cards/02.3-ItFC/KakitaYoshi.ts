@@ -1,28 +1,23 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import * as costs from '../../costs/index.js';
+import { reduceCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 
 class KakitaYoshi extends DrawCard {
     static id = 'kakita-yoshi';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Draw 3 cards',
-            condition: context => context.source.isParticipating(),
-            cost: ability.costs.discardImperialFavor(),
-            effect: 'draw 3 cards, and reduce the cost of events this conflict',
-            gameAction: [
-                ability.actions.draw({ amount: 3 }),
-                ability.actions.playerLastingEffect((context: AbilityContext) => ({
-                    targetController: context.player,
-                    effect: ability.effects.reduceCost({
-                        amount: 2,
-                        match: (card: DrawCard) => card.type === CardType.Event
-                    })
-                }))
-            ]
-        });
+    override setupCardAbilities() {
+        this.action('Draw 3 cards')
+            .condition((context) => context.source.isParticipating())
+            .cost(costs.discardImperialFavor())
+            .draw(3)
+            .playerLastingEffect({
+                effect: reduceCost({
+                    amount: 2,
+                    match: (card) => card.type === CardType.Event
+                })
+            })
+            .chatText('draw 3 cards, and reduce the cost of events this conflict');
     }
 }
 

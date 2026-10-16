@@ -1,24 +1,20 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class FingerOfJade extends DrawCard {
     static id = 'finger-of-jade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
-        this.wouldInterrupt({
-            title: 'Cancel an ability',
-            when: {
-                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) => (event.cardTargets ?? []).some(card => card === context.source.parentCharacter)
-            },
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            gameAction: AbilityDsl.actions.cancel()
-        });
+        this.wouldInterrupt('Cancel an ability')
+            .when({
+                onInitiateAbilityEffects: (event, context) => event.cardTargets.some((card) => card === context.source.parentCharacter)
+            })
+            .cost(costs.sacrificeSelf())
+            .cancel();
     }
 }
 

@@ -1,19 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 
 class AsakoTakahiro extends DrawCard {
     static id = 'asako-takahiro';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             effect: [
-                AbilityDsl.effects.modifyMilitarySkill((card, context) => (2 *
+                modifyMilitarySkill((_card, context) => (2 *
                     (context.game.currentConflict
-                        ?.getNumberOfParticipants((card: DrawCard) => card.isDishonored && card !== context.source) ?? 0))),
-                AbilityDsl.effects.modifyPoliticalSkill((card, context) => (2 *
+                        ?.getNumberOfParticipants((card) => card.isDishonored && card !== context.source) ?? 0))),
+                modifyPoliticalSkill((_card, context) => (2 *
                     (context.game.currentConflict
-                        ?.getNumberOfParticipants((card: DrawCard) => card.isHonored && card !== context.source) ?? 0)))
+                        ?.getNumberOfParticipants((card) => card.isHonored && card !== context.source) ?? 0)))
             ]
         });
     }

@@ -145,21 +145,21 @@ describe('SelectTokenAction', function() {
                 card: this.card, singleToken: true, gameAction: this.gameAction, subActionProperties
             });
             action.addEventsToArray(events, this.context);
-            lastPromptArgs(this.game.promptWithHandlerMenu).handlers[0]();
+            lastPromptArgs(this.game.promptWithHandlerMenu).options[0].handler();
             expect(this.gameAction.addEventsToArray).toHaveBeenCalledWith(events, this.context, jasmine.objectContaining({ name: 'token-a' }));
-            expect(this.context.tokens.selectToken).toBe(this.tokenA);
+            expect(this.context.tokens.selectToken).toEqual([this.tokenA]);
         });
 
-        it('should add a message via messageArgs when a single-token handler fires and message is configured', function() {
-            const messageArgs = jasmine.createSpy('messageArgs').and.returnValue(['arg']);
+        it('should add the message when a single-token handler fires and message is configured', function() {
+            const message = jasmine.createSpy('message').and.returnValue(['picked', ['arg']]);
             const action = new SelectTokenAction({
                 card: this.card, singleToken: true, gameAction: this.gameAction,
-                message: 'picked', messageArgs
+                message
             });
             action.addEventsToArray([], this.context);
-            lastPromptArgs(this.game.promptWithHandlerMenu).handlers[0]();
-            expect(messageArgs).toHaveBeenCalledWith(this.tokenA, this.player);
-            expect(this.game.addMessage).toHaveBeenCalledWith('picked', 'arg');
+            lastPromptArgs(this.game.promptWithHandlerMenu).options[0].handler();
+            expect(message).toHaveBeenCalledWith(this.context, this.tokenA, this.player);
+            expect(this.game.addMessage).toHaveBeenCalledWith(['picked', ['arg']]);
         });
     });
 
@@ -176,13 +176,13 @@ describe('SelectTokenAction', function() {
             expect(action.getEffectMessage(this.context)).toEqual(['choose a status token for {0}', [['tgt']]]);
         });
 
-        it('should return the custom effect with effectArgs when configured', function() {
-            const effectArgs = jasmine.createSpy('effectArgs').and.returnValue(['x', 'y']);
+        it('should return the custom chat text when configured', function() {
+            const chatText = jasmine.createSpy('chatText').and.returnValue(['custom effect {0}', ['x']]);
             const action = new SelectTokenAction({
-                target: 'tgt', card: this.card, gameAction: this.gameAction,
-                effect: 'custom effect', effectArgs
+                target: 'tgt', card: this.card, gameAction: this.gameAction, chatText
             });
-            expect(action.getEffectMessage(this.context)).toEqual(['custom effect', ['x', 'y']]);
+            expect(action.getEffectMessage(this.context)).toEqual(['custom effect {0}', ['x']]);
+            expect(chatText).toHaveBeenCalledWith(this.context);
         });
     });
 });

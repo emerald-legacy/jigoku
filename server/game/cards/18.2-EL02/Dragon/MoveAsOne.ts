@@ -1,29 +1,27 @@
 import DrawCard from '../../../DrawCard.js';
-import { Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { Location, RemainingCards, Trait } from '../../../Constants.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 
 class MoveAsOne extends DrawCard {
     static id = 'move-as-one';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Search for kihos',
-            max: AbilityDsl.limit.perConflict(1),
-            when: {
-                onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && (event.attackers ?? []).some(card => card.hasTrait('monk')),
-                onDefendersDeclared: (event, context) => event.conflict.defendingPlayer === context.player && (event.defenders ?? []).some(card => card.hasTrait('monk'))
-            },
-            effect: 'look at the top eight cards of their deck for a kiho',
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: 8,
-                shuffle: false,
-                placeOnBottomInRandomOrder: true,
-                cardCondition: card => card.hasTrait('kiho'),
-                gameAction: AbilityDsl.actions.moveCard({
+    override setupCardAbilities() {
+        this.reaction('Search for kihos')
+            .when({
+                onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && (event.attackers ?? []).some((card) => card.hasTrait(Trait.Monk)),
+                onDefendersDeclared: (event, context) => event.conflict.defendingPlayer === context.player && event.defenders.some((card) => card.hasTrait(Trait.Monk))
+            })
+            .deckSearch({
+                cardsToLookAt: 8,
+                remainingCards: RemainingCards.BottomRandom,
+                cardCondition: (card) => card.hasTrait(Trait.Kiho),
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             })
-        });
+            .chatText('look at the top eight cards of their deck for a kiho')
+            .max(perConflict(1));
     }
 }
 

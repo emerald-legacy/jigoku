@@ -1,45 +1,39 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perGame } from '../../../AbilityLimit.js';
+import { sacrifice, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class OurDuty extends DrawCard {
     static id = 'our-duty-';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Make your opponent sacrifice a character',
-            condition: (context) => context.game.roundNumber > 1 && Boolean(context.player.opponent),
-            cost: AbilityDsl.costs.sacrifice({
+    public override setupCardAbilities() {
+        this.action('Make your opponent sacrifice a character')
+            .condition((context) => context.game.roundNumber > 1 && Boolean(context.player.opponent))
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard) => card.isFaction('crab')
-            }),
-            effect: 'force {1} to sacrifice a character',
-            effectArgs: (context) => context.player.opponent as Player,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+                cardCondition: (card) => card.isFaction('crab')
+            }))
+            .selectCard({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                message: '{0} sacrifices {1} to {2}',
-                messageArgs: (card) => [context.player.opponent, card, context.source],
-                gameAction: AbilityDsl.actions.sacrifice()
-            })),
-            max: AbilityDsl.limit.perGame(1)
-        });
+                message: (context, card) => msg`${context.player.opponent} sacrifices ${card} to ${context.source}`,
+                gameAction: sacrifice()
+            })
+            .chatText((context) => msg`force ${context.player.opponent} to sacrifice a character`)
+            .max(perGame(1));
 
-        this.action({
-            title: 'Move an attacker home',
-            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
-            cost: AbilityDsl.costs.sacrifice({
+        this.conflictAction('Move an attacker home', { conflictType: ConflictType.Military })
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
-            }),
-            target: {
+            }))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, sendHome());
     }
 }

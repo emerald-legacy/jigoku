@@ -1,10 +1,10 @@
-import { EventName, Location, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { Location, Players } from '../../../Constants.js';
+import { discardCard, refillFaceup, sequential, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 const DISCARD = 'Discard all cards from your provinces';
 const FLIP = 'Flip all cards in your provinces facedown';
 
@@ -19,41 +19,36 @@ function defender(context: AbilityContext): Player {
 export default class BayushisSaboteurs extends DrawCard {
     static id = 'bayushi-s-saboteurs';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Discard or flip facedown cards in the defender\'s provinces',
-            when: {
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => event.attackers?.includes(context.source),
-                onDefendersDeclared: (event: EventPayload<EventName.OnDefendersDeclared>, context) => event.defenders?.includes(context.source),
-                onMoveToConflict: (event: EventPayload<EventName.OnMoveToConflict>, context) => event.card === context.source
-            },
-            target: {
-                mode: TargetMode.Select,
+    override setupCardAbilities() {
+        this.reaction('Discard or flip facedown cards in the defender\'s provinces')
+            .when({
+                onConflictDeclared: (event, context) => event.attackers?.includes(context.source),
+                onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
+                onMoveToConflict: (event, context) => event.card === context.source
+            })
+            .select({
                 player: (context) =>
-                    context.player !== context.game.currentConflict?.defendingPlayer ? Players.Opponent : Players.Self,
-                choices: {
-                    [DISCARD]: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.discardCard((context) => ({
-                            target: defender(context).getDynastyCardsInProvince(Location.Provinces)
-                        })),
-                        AbilityDsl.actions.refillFaceup((context) => ({
-                            target: defender(context),
-                            location: [
-                                Location.StrongholdProvince,
-                                Location.ProvinceOne,
-                                Location.ProvinceTwo,
-                                Location.ProvinceThree,
-                                Location.ProvinceFour
-                            ]
-                        }))
-                    ]),
-                    [FLIP]: AbilityDsl.actions.turnFacedown((context) => ({
+                    context.player !== context.game.currentConflict?.defendingPlayer ? Players.Opponent : Players.Self
+            }, {
+                [DISCARD]: sequential([
+                    discardCard((context) => ({
                         target: defender(context).getDynastyCardsInProvince(Location.Provinces)
+                    })),
+                    refillFaceup((context) => ({
+                        target: defender(context),
+                        location: [
+                            Location.StrongholdProvince,
+                            Location.ProvinceOne,
+                            Location.ProvinceTwo,
+                            Location.ProvinceThree,
+                            Location.ProvinceFour
+                        ]
                     }))
-                }
-            },
-            effect: '{1} all of {2}\'s dynasty cards',
-            effectArgs: (context) => [context.select === DISCARD ? 'discard' : 'flip facedown', defender(context)]
-        });
+                ]),
+                [FLIP]: turnFacedown((context) => ({
+                    target: defender(context).getDynastyCardsInProvince(Location.Provinces)
+                }))
+            })
+            .chatText((context) => msg`${context.select === DISCARD ? 'discard' : 'flip facedown'} all of ${defender(context)}'s dynasty cards`);
     }
 }

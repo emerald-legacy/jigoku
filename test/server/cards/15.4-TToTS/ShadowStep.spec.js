@@ -60,7 +60,7 @@ describe('Shadow Step', function() {
         });
 
         it('should discard status tokens', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.kudaka.honor();
             this.game.checkGameState(true);
             this.player1.clickCard(this.shadowStep);
@@ -101,7 +101,7 @@ describe('Shadow Step', function() {
         });
 
         it('should trigger entering play triggers', function() {
-            let cards = this.player1.hand.length;
+            const cards = this.player1.hand.length;
             this.player1.clickCard(this.shadowStep);
             this.player1.clickCard(this.khanbulak);
             expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -112,8 +112,8 @@ describe('Shadow Step', function() {
         });
 
         it('should allow re-triggering actions', function() {
-            let cards = this.player1.hand.length;
-            let cards2 = this.player2.hand.length;
+            const cards = this.player1.hand.length;
+            const cards2 = this.player2.hand.length;
             this.player1.clickCard(this.advisor);
             this.player2.pass();
             this.player1.clickCard(this.shadowStep);

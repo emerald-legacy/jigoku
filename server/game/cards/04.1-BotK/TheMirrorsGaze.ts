@@ -1,33 +1,30 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { resolveAbility } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type CardAbility from '../../CardAbility.js';
+import { CardType, Blocker, Stage, Trait } from '../../Constants.js';
+import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class TheMirrorsGaze extends DrawCard {
     static id = 'the-mirror-s-gaze';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
-            trait: 'shugenja'
+            trait: Trait.Shugenja
         });
 
-        this.reaction({
-            title: 'Mirror an opponent\'s event',
-            when: {
-                onCardAbilityTriggered: (event: EventPayload<EventName.OnCardAbilityTriggered>, context: TriggeredAbilityContext) => event.card.type === CardType.Event && !(event.context.ability as CardAbility).cannotBeMirrored &&
-                    event.context.player === context.player.opponent && !event.cancelled
-            },
-            gameAction: ability.actions.resolveAbility((context: AbilityContext) => ({
-                target: (context as TriggeredAbilityContext).event.card as DrawCard,
-                ability: ((context as TriggeredAbilityContext).event.context as AbilityContext).ability as CardAbility,
-                ignoredRequirements: ['cost', 'condition', 'limit'],
-                event: ((context as TriggeredAbilityContext).event.context as TriggeredAbilityContext).event
-            }))
-        });
+        this.reaction('Mirror an opponent\'s event')
+            .when({
+                onCardAbilityTriggered: (event, context) => event.card.type === CardType.Event && !event.ability.cannotBeMirrored &&
+                    event.context.player === context.player.opponent && !event.cancelled &&
+                    // a cancelled event's effects never initiate, so they never resolve
+                    event.context.stage === Stage.Effect
+            })
+            .gameAction(resolveAbility((context) => ({
+                target: context.event.card,
+                ability: context.event.ability,
+                ignoredBlockers: [Blocker.CannotPayCost, Blocker.ConditionNotMet, Blocker.LimitReached],
+                event: context.event.context instanceof TriggeredAbilityContext ? context.event.context.event : undefined
+            })));
     }
 }
 

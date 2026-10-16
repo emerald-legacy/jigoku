@@ -34,6 +34,7 @@ describe('Negotiation Table', function() {
         it('should prompt opponent to make a choice', function() {
             this.player1.clickCard(this.table1);
             expect(this.player2).toHavePrompt('Negotiation Table');
+            expect(this.player2).toHavePrompt('Choose an action');
             expect(this.player2).toHavePromptButton('Draw 1 card');
             expect(this.player2).toHavePromptButton('Choose and ready a character');
             expect(this.player2).toHavePromptButton('Gain 1 fate');
@@ -51,10 +52,10 @@ describe('Negotiation Table', function() {
         });
 
         it('should do choice - drawing cards', function() {
-            let p1hand = this.player1.hand.length;
-            let p2hand = this.player2.hand.length;
-            let p1fate = this.player1.fate;
-            let p2fate = this.player2.fate;
+            const p1hand = this.player1.hand.length;
+            const p2hand = this.player2.hand.length;
+            const p1fate = this.player1.fate;
+            const p2fate = this.player2.fate;
             this.player1.clickCard(this.table1);
             expect(this.getChatLogs(1)).toContain('player1 uses Negotiation Table');
             this.player2.clickPrompt('Draw 1 card');
@@ -66,10 +67,10 @@ describe('Negotiation Table', function() {
         });
 
         it('should do choice - gaining fate', function() {
-            let p1hand = this.player1.hand.length;
-            let p2hand = this.player2.hand.length;
-            let p1fate = this.player1.fate;
-            let p2fate = this.player2.fate;
+            const p1hand = this.player1.hand.length;
+            const p2hand = this.player2.hand.length;
+            const p1fate = this.player1.fate;
+            const p2fate = this.player2.fate;
             this.player1.clickCard(this.table1);
             expect(this.getChatLogs(1)).toContain('player1 uses Negotiation Table');
             this.player2.clickPrompt('Gain 1 fate');
@@ -108,10 +109,10 @@ describe('Negotiation Table', function() {
         });
 
         it('should do choice - done', function() {
-            let p1hand = this.player1.hand.length;
-            let p2hand = this.player2.hand.length;
-            let p1fate = this.player1.fate;
-            let p2fate = this.player2.fate;
+            const p1hand = this.player1.hand.length;
+            const p2hand = this.player2.hand.length;
+            const p1fate = this.player1.fate;
+            const p2fate = this.player2.fate;
             this.player1.clickCard(this.table1);
             expect(this.getChatLogs(1)).toContain('player1 uses Negotiation Table');
             this.player2.clickPrompt('Done');

@@ -150,5 +150,18 @@ describe('Akodo Cho', function () {
             expect(this.getChatLogs(5)).toContain('player1 uses Akodo Cho to discard an attachment on Akodo Cho');
             expect(this.getChatLogs(5)).toContain('player1 discards A New Name');
         });
+
+        it('can choose a bowed character with attachments', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.cho],
+                defenders: [this.dojiWhisperer, this.challenger],
+                type: 'military'
+            });
+            this.challenger.bowed = true;
+            this.player2.pass();
+            this.player1.clickCard(this.cho);
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+        });
     });
 });

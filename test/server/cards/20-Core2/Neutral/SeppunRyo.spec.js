@@ -114,5 +114,44 @@ describe('Swordguy', function () {
                 expect(this.getChatLogs(10)).toContain('Duel Effect: bow Kakita Yoshi');
             });
         });
+
+        describe('Unlimited duel focus', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kakita-yoshi']
+                    },
+                    player2: {
+                        inPlay: ['seppun-ryo'],
+                        hand: ['policy-debate']
+                    }
+                });
+                this.yoshi = this.player1.findCardByName('kakita-yoshi');
+                this.ryo = this.player2.findCardByName('seppun-ryo');
+                this.player2.player.imperialFavor = 'military';
+            });
+
+            it('can be used in each duel', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.yoshi],
+                    defenders: [this.ryo]
+                });
+                this.player2.clickCard(this.ryo);
+                this.player2.clickCard(this.yoshi);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                this.player2.clickCard(this.ryo);
+                this.player1.pass();
+
+                this.player2.clickCard('policy-debate');
+                this.player2.clickCard(this.ryo);
+                this.player2.clickCard(this.yoshi);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                expect(this.player2).toBeAbleToSelect(this.ryo);
+            });
+        });
     });
 });

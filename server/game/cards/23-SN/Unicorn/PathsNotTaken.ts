@@ -1,43 +1,41 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType } from '../../../Constants.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import { Players, CardType, Trait } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class PathsNotTaken extends DrawCard {
     static id = 'paths-not-taken';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Send home a character',
-            max: AbilityDsl.limit.perConflict(1),
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Send home a character')
+            .when({
                 onConflictStarted: (event, context) => event.conflict.defendingPlayer === context.player
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !!context.player.opponent &&
                     card.isParticipatingFor(context.player.opponent) &&
-                    card.printedCost !== null && card.printedCost < this.getSkillThreshold(context),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                    card.printedCost !== null && card.printedCost < this.getSkillThreshold(context)
+            }, sendHome())
+            .max(perConflict(1));
     }
 
-    getSkillThreshold(context: AbilityContext) {
+    private getSkillThreshold(context: AbilityContext) {
         if(!context.game.currentConflict) {
             return 0;
         }
 
         const attackedProvinces = context.game.currentConflict.getConflictProvinces();
-        const hasScout = context.game.currentConflict.getDefenders(card => card.hasTrait('scout')).length > 0;
+        const hasScout = context.game.currentConflict.getDefenders((card) => card.hasTrait(Trait.Scout)).length > 0;
 
         if(hasScout) {
-            const strengths = attackedProvinces.map(a => a.getStrength());
+            const strengths = attackedProvinces.map((a) => a.getStrength());
             return Math.max(...strengths);
         }
 
-        const strengths = attackedProvinces.map(a => a.getBaseStrength());
+        const strengths = attackedProvinces.map((a) => a.getBaseStrength());
         return Math.max(...strengths);
     }
 }

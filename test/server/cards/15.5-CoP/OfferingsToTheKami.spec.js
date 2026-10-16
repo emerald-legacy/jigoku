@@ -46,8 +46,8 @@ describe('Offerings To The Kami', function() {
         });
 
         it('should claim the ring and get fate from it', function () {
-            let fate = this.player2.fate;
-            let voidFate = this.game.rings.void.fate;
+            const fate = this.player2.fate;
+            const voidFate = this.game.rings.void.fate;
             expect(voidFate).not.toBe(0);
             this.player2.clickCard(this.kami);
             this.player2.clickRing('void');

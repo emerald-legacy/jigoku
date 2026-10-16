@@ -19,7 +19,7 @@ describe('Icon of Favor', function() {
             });
 
             it('should give attached character +1 glory when you have Imperial Favor', function() {
-                let glory = this.moto.glory;
+                const glory = this.moto.glory;
                 this.player1.player.imperialFavor = 'political';
                 this.game.checkGameState(true);
                 expect(this.moto.glory).toBe(glory + 1);
@@ -58,7 +58,7 @@ describe('Icon of Favor', function() {
                 );
             }
 
-            for(let conflictType of ['air', 'earth', 'water', 'void']) {
+            for(const conflictType of ['air', 'earth', 'water', 'void']) {
                 testNonFireConflicts(conflictType);
             }
         });

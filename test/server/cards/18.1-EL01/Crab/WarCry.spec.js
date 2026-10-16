@@ -28,7 +28,7 @@ describe('War Cry', function () {
 
         it('should break a province after you win a military conflict with berserkers', function () {
             this.noMoreActions();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.initiateConflict({
                 attackers: [this.skirmisher],
                 defenders: [],

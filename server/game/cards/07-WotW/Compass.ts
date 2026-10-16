@@ -1,88 +1,56 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName } from '../../Constants.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import { CardType, DeckType, Location, TargetMode } from '../../Constants.js';
+import { deckSearch, moveCard, rearrangeDeck } from '../../GameActions/GameActions.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class Compass extends DrawCard {
     static id = 'compass';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Look at top 3 cards of a deck',
-            when: {
-                onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext<this>) =>
-                    event.card && event.card.type === CardType.Province && event.card.controller === context.player.opponent &&
-                    context.source && context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
+    override setupCardAbilities() {
+        this.reaction('Look at top 3 cards of a deck')
+            .when({
+                onCardRevealed: (event, context) =>
+                    event.card.type === CardType.Province && event.card.controller === context.player.opponent &&
+                    context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                     (context.player.dynastyDeck.length > 0 || context.player.conflictDeck.length > 0)
-            },
-            effect: 'look at the top 3 cards of one of their decks',
-            handler: (context: TriggeredAbilityContext) => {
-                let cards: DrawCard[] = [];
-                let choices: string[] = [];
-                let handlers: (() => void)[] = [];
-                if(context.player.dynastyDeck.length > 0) {
-                    choices.push('Dynasty Deck');
-                    handlers.push(() => {
-                        this.game.addMessage('{0} chooses to look at the top 3 cards of their dynasty deck', context.player);
-                        cards = context.player.dynastyDeck.slice(0, 3);
-                        this.moveToBottomHandler(context, cards, 'dynasty deck');
-                    });
+            })
+            .chooseAction({
+                activePromptTitle: 'Choose a deck',
+                choices: {
+                    'Dynasty Deck': this.lookAtTopThree(DeckType.Dynasty, Location.DynastyDeck),
+                    'Conflict Deck': this.lookAtTopThree(DeckType.Conflict, Location.ConflictDeck)
                 }
-                if(context.player.conflictDeck.length > 0) {
-                    choices.push('Conflict Deck');
-                    handlers.push(() => {
-                        this.game.addMessage('{0} chooses to look at the top 3 cards of their conflict deck', context.player);
-                        cards = context.player.conflictDeck.slice(0, 3);
-                        this.moveToBottomHandler(context, cards, 'conflict deck');
-                    });
-                }
-
-                this.game.promptWithHandlerMenu(context.player, {
-                    activePromptTite: 'Choose a deck',
-                    choices: choices,
-                    handlers: handlers
-                });
-            }
-        });
+            })
+            .chatText('look at the top 3 cards of one of their decks');
     }
 
-    moveToBottomHandler(context: TriggeredAbilityContext, cards: DrawCard[], deck: string) {
-        let bottomOfDeck = deck + ' bottom';
-        if(cards.length > 0) {
-            this.game.promptWithHandlerMenu(context.player, {
+    private lookAtTopThree(deck: DeckType, location: Location.DynastyDeck | Location.ConflictDeck) {
+        return {
+            action: deckSearch({
                 activePromptTitle: 'Choose a card to place on the bottom of your deck',
-                context: context,
-                cards: cards,
-                choices: ['Done'],
-                handlers: [() => this.moveToTopHandler(context, cards, deck)],
-                cardHandler: (card: DrawCard) => {
-                    this.game.addMessage('{0} places a card on the bottom of their {1}', context.player, deck);
-                    context.player.moveCard(card, bottomOfDeck);
-                    cards = cards.filter((c) => c !== card);
-                    this.moveToBottomHandler(context, cards, deck);
-                }
-            });
-        } else {
-            this.moveToTopHandler(context, cards, deck);
-        }
+                cardsToLookAt: 3,
+                deck,
+                mode: TargetMode.Unlimited,
+                doneButtonText: 'Done',
+                gameAction: moveCard({ destination: location, bottom: true }),
+                message: (context, cards) => msg`${context.player} places ${cards.length} card${cards.length > 1 ? 's' : ''} on the bottom of their ${location}`,
+                takesNothingMessage: () => undefined,
+                remainingCardsHandler: (context, _event, cards) => this.placeOnTop(context, cards, deck, location)
+            }),
+            message: (context: AbilityContext) => msg`${context.player} chooses to look at the top 3 cards of their ${location}`
+        };
     }
 
-    moveToTopHandler(context: TriggeredAbilityContext, cards: DrawCard[], deck: string) {
-        if(cards.length > 1) {
-            this.game.promptWithHandlerMenu(context.player, {
-                activePromptTitle: 'Choose a card to place on the top of your deck',
-                context: context,
-                cards: cards,
-                cardHandler: (card: DrawCard) => {
-                    this.game.addMessage('{0} places a card on the top of their {1}', context.player, deck);
-                    context.player.moveCard(card, deck);
-                    cards = cards.filter((c) => c !== card);
-                    this.moveToTopHandler(context, cards, deck);
-                }
-            });
-        } else if(cards.length === 1) {
-            context.player.moveCard(cards[0], deck);
+    private placeOnTop(context: AbilityContext, cards: DrawCard[], deck: DeckType, location: Location): void {
+        if(cards.length < 2) {
+            return;
         }
+        rearrangeDeck({
+            cards,
+            deck,
+            message: (context, ordered) => msg`${context.player} places ${ordered.length} cards on top of their ${location}`
+        }).resolve(context.player, context);
     }
 }
 

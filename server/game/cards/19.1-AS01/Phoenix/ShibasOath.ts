@@ -1,60 +1,52 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
-import { AbilityType, CardType, EventName, Location } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
+import { gainAbility } from '../../../effects.js';
+import { CardType, Location, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class ShibasOath extends DrawCard {
     static id = 'shiba-s-oath';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { title: 1 },
-            cardCondition: (card) => card.hasTrait('bushi')
+            cardCondition: (card) => card.hasTrait(Trait.Bushi)
         });
 
-        this.reaction({
-            title: 'Honor attached character',
-            when: {
-                onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) =>
+        this.reaction('Honor attached character')
+            .when({
+                onCardAttached: (event, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
-            },
-            gameAction: AbilityDsl.actions.honor((context) => ({
-                target: context.source.parentCharacter
-            })),
-            effect: 'honor {1}',
-            effectArgs: (context) => context.source.parentCharacter
-        });
+            })
+            .honor((context) => ({
+                target: context.source.parentCharacter ?? []
+            }))
+            .chatText((context) => msg`honor ${context.source.parentCharacter}`);
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.WouldInterrupt, {
-                title: 'Cancel an ability',
-                when: {
+            effect: gainAbility.wouldInterrupt('Cancel an ability', (ability) => ability
+                .when({
                     onInitiateAbilityEffects: (event, context) =>
-                        (event.cardTargets as Array<BaseCard>).some(
+                        event.context.player === context.player.opponent &&
+                        event.cardTargets.some(
                             (card) =>
                                 // In play
                                 card.location === Location.PlayArea &&
                                 // Character
-                                card.getType() === CardType.Character &&
+                                card.type === CardType.Character &&
                                 // Friendly
                                 card.controller === context.player &&
                                 // Not a Bushi
-                                !card.hasTrait('bushi')
+                                !card.hasTrait(Trait.Bushi)
                         )
-                },
-                cost: AbilityDsl.costs.sacrificeSelf(),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cancel(),
-                    AbilityDsl.actions.moveCard({
-                        target: this,
-                        destination: Location.Hand
-                    })
-                ]),
-                effect: 'cancel the effects of {1} and return {2} to their hand',
-                effectArgs: (context) => [context.event.card, this]
-            } as TriggeredAbilityProps)
+                })
+                .cost(costs.sacrificeSelf())
+                .cancel()
+                .moveCard({
+                    target: this,
+                    destination: Location.Hand
+                })
+                .chatText((context) => msg`cancel the effects of ${context.event.card} and return ${this} to their hand`))
         });
     }
 }

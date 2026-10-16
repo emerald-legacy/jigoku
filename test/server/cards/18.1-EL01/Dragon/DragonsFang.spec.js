@@ -26,7 +26,7 @@ describe('Dragon\'s Fang', function() {
         });
 
         it('should have sincerity', function() {
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
             this.player1.clickCard(this.letGo);
             this.player1.clickCard(this.fang);
 

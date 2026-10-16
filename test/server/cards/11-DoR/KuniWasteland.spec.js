@@ -47,8 +47,8 @@ describe('Kuni Wasteland', function() {
                     defenders: [],
                     province: this.wasteland
                 });
-                let cards = this.player1.hand.length;
-                let fate = this.player1.fate;
+                const cards = this.player1.hand.length;
+                const fate = this.player1.fate;
 
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.envoy);
@@ -66,7 +66,7 @@ describe('Kuni Wasteland', function() {
                     defenders: [],
                     province: this.wasteland
                 });
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.envoy);

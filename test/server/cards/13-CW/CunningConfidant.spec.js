@@ -16,7 +16,7 @@ describe('Cunning Confidant', function() {
 
         it('should not work outside of conflicts', function() {
             this.player2.claimRing('void');
-            expect(this.confidant.getPoliticalSkill()).toBe(this.confidant.getBasePoliticalSkill());
+            expect(this.confidant.politicalSkill).toBe(this.confidant.getBasePoliticalSkill());
         });
 
         it('should give +2 pol when participating when opponent has more rings', function() {
@@ -28,7 +28,7 @@ describe('Cunning Confidant', function() {
                 type: 'military'
             });
 
-            expect(this.confidant.getPoliticalSkill()).toBe(this.confidant.getBasePoliticalSkill() + 2);
+            expect(this.confidant.politicalSkill).toBe(this.confidant.getBasePoliticalSkill() + 2);
         });
 
         it('should not give +2 pol when participating when opponent has equal rings', function() {
@@ -39,7 +39,7 @@ describe('Cunning Confidant', function() {
                 type: 'military'
             });
 
-            expect(this.confidant.getPoliticalSkill()).toBe(this.confidant.getBasePoliticalSkill());
+            expect(this.confidant.politicalSkill).toBe(this.confidant.getBasePoliticalSkill());
         });
 
         it('should not give +2 pol when participating when you have more rings', function() {
@@ -51,7 +51,7 @@ describe('Cunning Confidant', function() {
                 type: 'military'
             });
 
-            expect(this.confidant.getPoliticalSkill()).toBe(this.confidant.getBasePoliticalSkill());
+            expect(this.confidant.politicalSkill).toBe(this.confidant.getBasePoliticalSkill());
         });
 
         it('should give +2 pol when not participating', function() {
@@ -63,7 +63,7 @@ describe('Cunning Confidant', function() {
                 type: 'military'
             });
 
-            expect(this.confidant.getPoliticalSkill()).toBe(this.confidant.getBasePoliticalSkill());
+            expect(this.confidant.politicalSkill).toBe(this.confidant.getBasePoliticalSkill());
         });
     });
 });

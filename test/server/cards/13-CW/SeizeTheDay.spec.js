@@ -32,13 +32,29 @@ describe('Seize The Day', function() {
             expect(this.player1).toHavePrompt('Action Window');
         });
 
+        it('should give the new first player the first action in the fate phase', function() {
+            this.player1.player.promptedActionWindows.fate = true;
+            this.player2.player.promptedActionWindows.fate = true;
+            this.player2.moveCard(this.seizeP2, 'hand');
+            this.noMoreActions();
+            this.player2.clickCard(this.seizeP2);
+            // without characters every conflict opportunity passes by itself; pass one window at a time
+            while(this.game.currentPhase === 'conflict') {
+                const active = [this.player1, this.player2].find((player) => player.hasPrompt('Initiate an action'));
+                active.clickPrompt('Pass');
+            }
+            expect(this.game.currentPhase).toBe('fate');
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
+        });
+
         it('should make you the first player', function() {
             this.player2.moveCard(this.seizeP2, 'hand');
             this.noMoreActions();
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.seizeP2);
             this.player2.clickCard(this.seizeP2);
-            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player!');
+            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player');
             expect(this.player2).toHavePrompt('Action Window');
             expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
         });
@@ -50,7 +66,7 @@ describe('Seize The Day', function() {
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.seizeP2);
             this.player2.clickCard(this.seizeP2);
-            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player!');
+            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player');
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.unicorn);
             this.player1.clickCard(this.unicorn);
@@ -66,11 +82,11 @@ describe('Seize The Day', function() {
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.seizeP2);
             this.player2.clickCard(this.seizeP2);
-            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player!');
+            expect(this.getChatLogs(1)).toContain('player2 plays Seize the Day to become first player');
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.seizeP1);
             this.player1.clickCard(this.seizeP1);
-            expect(this.getChatLogs(1)).toContain('player1 plays Seize the Day to become first player!');
+            expect(this.getChatLogs(1)).toContain('player1 plays Seize the Day to become first player');
             expect(this.player1).toHavePrompt('Action Window');
             expect(this.player2).toHavePrompt('Waiting for opponent to take an action or pass');
         });

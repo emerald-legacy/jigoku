@@ -1,24 +1,31 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
 export type RingActionProperties = GameActionProperties;
 
-export class RingAction<P extends RingActionProperties = RingActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
-    targetType = ['ring'];
+export type RingEvent<EventType extends EventName, Context extends AbilityContext> = ActionEvent<EventType, Context> & { ring: Ring };
 
-    defaultTargets(context: AbilityContext): Ring[] {
+export class RingAction<
+    Properties extends RingActionProperties = RingActionProperties,
+    EventType extends EventName = EventName,
+    Context extends AbilityContext = AbilityContext,
+    Defaulted extends keyof Properties = never
+> extends GameAction<Properties, EventType, Context, Defaulted> {
+    override targetType = ['ring'];
+
+    override defaultTargets(context: Context): Ring[] {
         return context.game.currentConflict && context.game.currentConflict.ring ? [context.game.currentConflict.ring] : [];
     }
 
-    checkEventCondition(event: GameEvent<N>, additionalProperties = {}): boolean {
-        return this.canAffect((event as { ring: Ring }).ring, (event.context as AbilityContext), additionalProperties);
+    override checkEventCondition(event: RingEvent<EventType, Context>, additionalProperties: ActionOverrides = {}): boolean {
+        return this.canAffect(event.ring, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: GameEvent<N>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    override addPropertiesToEvent(event: RingEvent<EventType, Context>, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
-        (event as { ring: Ring }).ring = ring;
+        event.ring = ring;
     }
 }

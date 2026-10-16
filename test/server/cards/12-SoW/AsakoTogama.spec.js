@@ -28,8 +28,8 @@ describe('Asako Togama', function() {
                 ring: 'water'
             });
 
-            let fate = this.player1.fate;
-            let ringFate = this.game.rings.void.fate;
+            const fate = this.player1.fate;
+            const ringFate = this.game.rings.void.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.togama);

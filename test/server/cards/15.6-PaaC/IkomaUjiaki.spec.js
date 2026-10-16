@@ -23,7 +23,7 @@ describe('Ikoma Ujiaki 2', function() {
                 attackers: [this.ujiaki],
                 defenders: []
             });
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player2.pass();
             this.player1.clickCard(this.ujiaki);
             expect(this.game.currentConflict.conflictType).toBe('political');

@@ -39,7 +39,7 @@ describe('The Sun Will Rise Again', function () {
             this.player1.clickCard(this.sun);
 
             expect(this.getChatLogs(10)).toContain(
-                'player1 plays The Sun Will Rise Again to gain an additional military conflict this round. They will not forget this defeat.'
+                'player1 plays The Sun Will Rise Again to gain an additional military conflict this round. They will not forget this defeat'
             );
 
             expect(this.player1.player.getConflictOpportunities()).toBe(2);
@@ -68,7 +68,7 @@ describe('The Sun Will Rise Again', function () {
             this.player1.clickCard(this.sun);
 
             expect(this.getChatLogs(10)).toContain(
-                'player1 plays The Sun Will Rise Again to gain an additional political conflict this round. They will not forget this defeat.'
+                'player1 plays The Sun Will Rise Again to gain an additional political conflict this round. They will not forget this defeat'
             );
 
             expect(this.player1.player.getConflictOpportunities()).toBe(2);

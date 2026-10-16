@@ -1,41 +1,26 @@
-import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import { PlayType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { playerCannot } from '../../effects.js';
+import { Duration, PlayType, Players, RestrictionScope } from '../../Constants.js';
 
 class Gossip extends DrawCard {
     static id = 'gossip';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Name a card that your opponent cannot play for the phase',
-            handler: context => {
-                this.game.promptWithMenu(context.player, this, {
-                    context: context,
-                    activePrompt: {
-                        menuTitle: 'Name a card',
-                        controls: [
-                            { type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name' }
-                        ]
-                    }
-                });
-            }
-        });
-    }
-
-    selectCardName(player: Player, cardName: string, context: AbilityContext) {
-        this.game.addMessage('{0} names {1} - {2} cannot play copies of this card this phase', player, cardName, player.opponent);
-        context.source.untilEndOfPhase((ability) => ({
-            targetController: context.player.opponent,
-            effect: ability.effects.playerCannot({
-                cannot: PlayType.PlayFromHand,
-                restricts: 'copiesOfX',
-                params: cardName
-            })
-        }));
-        return true;
+    override setupCardAbilities() {
+        this.action('Name a card that your opponent cannot play for the phase')
+            .cost(costs.nameCard())
+            .playerLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                target: Players.Opponent,
+                effect: playerCannot({
+                    cannot: PlayType.PlayFromHand,
+                    appliesTo: RestrictionScope.CopiesOfX,
+                    params: context.costs.namedCard
+                })
+            }))
+            .chatText((context) => msg`prevent ${context.player.opponent} from playing cards named ${context.costs.namedCard} from their hand this phase`);
     }
 }
 
 export default Gossip;
-

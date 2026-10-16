@@ -1,42 +1,30 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { placeFate } from '../../GameActions/GameActions.js';
+import { Players, CardType, Trait } from '../../Constants.js';
+import { honorTransferMessage } from '../honorTransferMessage.js';
 
 class CalledToWar extends DrawCard {
     static id = 'called-to-war';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Place a fate on a bushi',
-            cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(),
-            targets: {
-                myCharacter: {
-                    cardType: CardType.Character,
-                    cardCondition: card => card.hasTrait('bushi'),
-                    gameAction: AbilityDsl.actions.placeFate()
-                },
-                oppCharacter: {
-                    player: Players.Opponent,
-                    cardType: CardType.Character,
-                    optional: true,
-                    hideIfNoLegalTargets: true,
-                    cardCondition: (card, context) => Boolean(card.hasTrait('bushi') && context.costs.optionalHonorTransferFromOpponentCostPaid),
-                    gameAction: AbilityDsl.actions.placeFate()
-                }
-            },
-            effect: 'place a fate on {1}{2}',
-            effectArgs: context => [context.targets.myCharacter, this.buildString(context)]
-        });
-    }
-
-    buildString(context: AbilityContext) {
-        if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
-            let target = context.targets.oppCharacter;
-            return '.  ' + (context.player.opponent as Player).name + ' gives ' + context.player.name + ' 1 honor to place a fate on ' + target.name;
-        }
-        return '';
+    override setupCardAbilities() {
+        this.action('Place a fate on a bushi')
+            .cost(costs.optionalTakeHonorFromOpponent())
+            .target({
+                name: 'myCharacter',
+                cardType: CardType.Character,
+                cardCondition: (card) => card.hasTrait(Trait.Bushi)
+            }, placeFate())
+            .target({
+                name: 'oppCharacter',
+                player: Players.Opponent,
+                cardType: CardType.Character,
+                optional: true,
+                hideIfNoLegalTargets: true,
+                cardCondition: (card, context) => Boolean(card.hasTrait(Trait.Bushi) && context.costs.honorTakenFromOpponent)
+            }, placeFate())
+            .chatText((context) => msg`place a fate on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) => msg`place a fate on ${card}`)}`);
     }
 }
 

@@ -45,7 +45,7 @@ describe('Proving Ground', function() {
             });
 
             it('should draw a card', function() {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player2.pass();
                 this.player1.clickCard(this.sadane);
                 this.player1.clickCard(this.dojiChallenger);
@@ -59,7 +59,7 @@ describe('Proving Ground', function() {
             });
 
             it('should work twice a round', function() {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player2.pass();
                 this.player1.clickCard(this.sadane);
                 this.player1.clickCard(this.dojiChallenger);

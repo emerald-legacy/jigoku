@@ -1,28 +1,21 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Location, Players, Trait } from '../../../Constants.js';
+import { putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DevotionInAction extends DrawCard {
     static id = 'devotion-in-action';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Put a character into play',
-            condition: (context) =>
-                !!(context.game.isDuringConflict() &&
-        context.player.opponent &&
-        context.game.currentConflict?.hasMoreParticipants(context.player.opponent, () => true)),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Put a character into play')
+            .condition((context) =>
+                !!context.game.currentConflict?.hasMoreParticipants(context.player.opponent))
+            .target({
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
-                cardCondition: (card) => card instanceof DrawCard && card.hasTrait('bushi') && (card.printedCost ?? 0) <= 3,
-                gameAction: AbilityDsl.actions.putIntoConflict((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    target: context.target,
-                    status: context.target.hasTrait('yojimbo') ? 'honored' : 'ordinary'
-                }))
-            }
-        });
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && (card.printedCost ?? 0) <= 3
+            }, putIntoConflict((context) => ({
+                status: context.target.hasTrait(Trait.Yojimbo) ? 'honored' : 'ordinary'
+            })));
     }
 }

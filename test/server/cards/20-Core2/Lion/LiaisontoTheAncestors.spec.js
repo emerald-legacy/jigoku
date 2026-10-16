@@ -106,3 +106,36 @@ describe('Liaison to the Ancestors', function () {
         });
     });
 });
+
+describe('Liaison to the Ancestors discard piles', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['liaison-to-the-ancestors', 'doji-whisperer'],
+                    conflictDiscard: ['cunning-magistrate']
+                },
+                player2: {
+                    hand: ['way-of-the-scorpion']
+                }
+            });
+            this.liaison = this.player1.findCardByName('liaison-to-the-ancestors');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: []
+            });
+        });
+
+        it('counts characters in the conflict discard pile', function () {
+            this.player2.clickCard('way-of-the-scorpion');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.liaison);
+            expect(this.whisperer.isDishonored).toBe(false);
+        });
+    });
+});

@@ -1,16 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { EffectTarget } from '../../Effects/EffectBuilder.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotContribute } from '../../effects.js';
 
 class SwiftMagistrate extends DrawCard {
     static id = 'swift-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext<this>) => context.source.isAttacking(),
-            effect: AbilityDsl.effects.cannotContribute((_conflict: EffectTarget, context: AbilityContext) => {
-                return (card: DrawCard) => card.getFate() > 0 && card !== context.source;
+            condition: (context) => context.source.isAttacking(),
+            effect: cannotContribute((_conflict, context) => {
+                return (card) => card.getFate() > 0 && card !== context.source;
             })
         });
     }

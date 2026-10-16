@@ -1,15 +1,14 @@
-import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
+import { msg } from '../GameChat.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
-import { TransferHonorAction } from '../GameActions/TransferHonorAction.js';
-import { EventName, EffectName } from '../Constants.js';
-import { GameModes } from '../../GameModes.js';
+import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type { Duel } from '../Duel.js';
+import { setHonorDial, takeHonor } from '../GameActions/GameActions.js';
 
 type HonorBidCostHandler = (prompt: HonorBidPrompt) => void;
 
-class HonorBidPrompt extends AllPlayerPrompt {
+export class HonorBidPrompt extends AllPlayerPrompt {
     menuTitle: string;
     costHandler?: HonorBidCostHandler;
     prohibitedBids: Record<string, string[]>;
@@ -27,30 +26,34 @@ class HonorBidPrompt extends AllPlayerPrompt {
         this.raiseEvent = raiseEvent;
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return !this.bid[player.uuid];
     }
 
-    completionCondition(player: Player): boolean {
+    override completionCondition(player: Player): boolean {
         return this.bid[player.uuid] > 0;
     }
 
-    continue(): boolean {
-        let completed = super.continue();
+    override continue(): boolean {
+        const completed = super.continue();
 
         if(completed) {
-            const eventName = this.raiseEvent ? EventName.OnHonorDialsRevealed : EventName.Unnamed;
-            const eventProps = { duel: this.duel, isHonorBid: typeof this.costHandler !== 'function' };
-            this.game.raiseEvent(eventName, eventProps, () => {
-                for(const player of this.game.getPlayers()) {
+            // every duel transfers honor (or a substitute); only reveals like Mischievous Tanuki's don't
+            const isHonorBid = !!this.duel || typeof this.costHandler !== 'function';
+            const revealDials = () => {
+                for(const player of this.game.getPlayersInFirstPlayerOrder()) {
                     player.honorBidModifier = 0;
-                    this.game.actions
-                        .setHonorDial({ value: this.bid[player.uuid] })
-                        .resolve(player, this.game.getFrameworkContext());
+                    setHonorDial({ value: this.bid[player.uuid] })
+                        .resolve(player, this.game.getFrameworkContext(player));
                 }
-            });
+            };
+            if(this.raiseEvent) {
+                this.game.raiseEvent(EventName.OnHonorDialsRevealed, { duel: this.duel, isHonorBid }, revealDials);
+            } else {
+                this.game.raiseEvent(EventName.Unnamed, { duel: this.duel, isHonorBid }, revealDials);
+            }
             if(this.duel) {
-                this.game.raiseEvent(EventName.OnDuelFocus, eventProps);
+                this.game.raiseEvent(EventName.OnDuelFocus, { duel: this.duel, isHonorBid });
             }
             if(this.costHandler) {
                 const costHandler = this.costHandler;
@@ -63,53 +66,37 @@ class HonorBidPrompt extends AllPlayerPrompt {
         return completed;
     }
 
-    transferHonorAfterBid(context = this.game.getFrameworkContext()) {
-        let firstPlayer = this.game.getFirstPlayer();
+    transferHonorAfterBid(context = this.game.getGameContext()) {
+        const firstPlayer = this.game.getFirstPlayer();
         if(!firstPlayer || !firstPlayer.opponent) {
             return;
         }
-        let difference = firstPlayer.honorBid - firstPlayer.opponent.honorBid;
+        const difference = firstPlayer.honorBid - firstPlayer.opponent.honorBid;
         if(difference === 0) {
             return;
         }
-        let amount = Math.abs(difference);
-        let givingPlayer: Player = difference > 0 ? firstPlayer : firstPlayer.opponent;
-        let receivingPlayer = givingPlayer.opponent;
-        if(!receivingPlayer) {
-            return;
-        }
-
-        const modifyGivenAmount = givingPlayer.getEffects(EffectName.ModifyHonorTransferGiven).reduce((a: number, b: number) => a + b, 0);
-        const modifyReceivedAmount = receivingPlayer.getEffects(EffectName.ModifyHonorTransferReceived).reduce((a: number, b: number) => a + b, 0);
-        amount = amount + modifyGivenAmount + modifyReceivedAmount;
-
-        var [, amountToTransfer] = CalculateHonorLimit(receivingPlayer, context.game.roundNumber, context.game.currentPhase, amount);
-        this.game.addMessage('{0} gives {1} {2} honor', givingPlayer, receivingPlayer, amountToTransfer);
-        const gameAction = new TransferHonorAction({ amount: Math.abs(difference), afterBid: true });
-        gameAction.resolve(givingPlayer, context);
+        const givingPlayer: Player = difference > 0 ? firstPlayer : firstPlayer.opponent;
+        takeHonor({ amount: Math.abs(difference), afterBid: true }).resolve(givingPlayer, context);
     }
 
-    activePrompt(player: Player) {
-        let buttons = ['1', '2', '3', '4', '5'];
-        if(this.game.gameMode === GameModes.Skirmish) {
-            buttons = ['1', '2', '3'];
-        }
+    override activePrompt(player: Player) {
+        let buttons = [...this.game.rules.honorBidValues];
 
-        let prohibitedBids = this.prohibitedBids[player.uuid] || [];
-        buttons = buttons.filter(num => !prohibitedBids.includes(num));
+        const prohibitedBids = this.prohibitedBids[player.uuid] || [];
+        buttons = buttons.filter((num) => !prohibitedBids.includes(num));
         return {
             promptTitle: 'Honor Bid',
             menuTitle: this.menuTitle,
-            buttons: buttons.map(num => ({ text: num, arg: num }))
+            buttons: buttons.map((num) => ({ text: num, arg: num }))
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to choose a bid.' };
     }
 
-    menuCommand(player: Player, bid: string): boolean {
-        this.game.addMessage('{0} has chosen a bid.', player);
+    override menuCommand(player: Player, bid: string): boolean {
+        this.game.addMessage(msg`${player} has chosen a bid.`);
 
         this.bid[player.uuid] = parseInt(bid);
 
@@ -117,4 +104,3 @@ class HonorBidPrompt extends AllPlayerPrompt {
     }
 }
 
-export default HonorBidPrompt;

@@ -1,39 +1,33 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, ConflictType, EventName, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, ConflictType, Players, Trait } from '../../Constants.js';
+import { delayedEffect, modifyMilitarySkill } from '../../effects.js';
+import { cardLastingEffect, honor } from '../../GameActions/GameActions.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class APerfectCut extends DrawCard {
     static id = 'a-perfect-cut';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Increase a character\'s military skill',
-            condition: () => this.game.isDuringConflict(ConflictType.Military),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: card => card.isParticipating() && card.hasTrait('bushi'),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    effect: [
-                        AbilityDsl.effects.modifyMilitarySkill(2),
-                        AbilityDsl.effects.delayedEffect({
-                            when: {
-                                afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
-                                    context.target.isParticipating() &&
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Bushi)
+            }, cardLastingEffect((context) => ({
+                effect: [
+                    modifyMilitarySkill(2),
+                    delayedEffect({
+                        when: {
+                            afterConflict: (event) =>
+                                context.target.isParticipating() &&
                                     context.target.controller === event.conflict.winner
-                            },
-                            gameAction: AbilityDsl.actions.honor(),
-                            message: '{0} is honored due to the delayed effect of {1}',
-                            messageArgs: [context.target, context.source]
-                        })
-                    ]
-                }))
-            },
-            effect: 'grant +2{1} to {0} and honor them, if they win the current conflict',
-            effectArgs: ['military']
-        });
+                        },
+                        gameAction: honor(),
+                        message: () => msg`${context.target} is honored due to the delayed effect of ${context.source}`
+                    })
+                ]
+            })))
+            .chatText((context) => msg`grant +2${'military'} to ${context.chatTarget()} and honor them, if they win the current conflict`);
     }
 }
 

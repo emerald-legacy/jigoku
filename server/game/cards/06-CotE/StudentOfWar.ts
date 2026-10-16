@@ -1,13 +1,14 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { RestrictionType } from '../../Constants.js';
 class StudentOfWar extends DrawCard {
     static id = 'student-of-war';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.composure({
             effect: [
-                ability.effects.cardCannot('removeFate'),
-                ability.effects.cardCannot('discardFromPlay')
+                cardCannot(RestrictionType.RemoveFate),
+                cardCannot(RestrictionType.DiscardFromPlay)
             ]
         });
     }

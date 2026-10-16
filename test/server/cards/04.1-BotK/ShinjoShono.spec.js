@@ -29,8 +29,8 @@ describe('Shinjo Shono', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.shinjoShono);
-                expect(this.shinjoShono.getMilitarySkill()).toBe(4);
-                expect(this.shinjoShono.getPoliticalSkill()).toBe(3);
+                expect(this.shinjoShono.militarySkill).toBe(4);
+                expect(this.shinjoShono.politicalSkill).toBe(3);
             });
 
             it('should only pump friendly cavalry', function() {
@@ -45,15 +45,15 @@ describe('Shinjo Shono', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.shinjoShono);
                 //Shinjo should pump himself, and the mystic (since Seal gives the mystic Cavalry)
-                expect(this.shinjoShono.getMilitarySkill()).toBe(5);
-                expect(this.shinjoShono.getPoliticalSkill()).toBe(4);
-                expect(this.miyaMystic.getMilitarySkill()).toBe(3);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(2);
+                expect(this.shinjoShono.militarySkill).toBe(5);
+                expect(this.shinjoShono.politicalSkill).toBe(4);
+                expect(this.miyaMystic.militarySkill).toBe(3);
+                expect(this.miyaMystic.politicalSkill).toBe(2);
                 //Shinjo should not pump the guardsman as it is not a cavalry,
                 //nor the border rider as she is not friendly
-                expect(this.seppunGuardsman.getMilitarySkill()).toBe(2);
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.borderRider.getPoliticalSkill()).toBe(1);
+                expect(this.seppunGuardsman.militarySkill).toBe(2);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.borderRider.politicalSkill).toBe(1);
 
             });
         });

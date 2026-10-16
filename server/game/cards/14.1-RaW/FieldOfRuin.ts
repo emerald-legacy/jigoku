@@ -1,40 +1,35 @@
-import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
-import { CardType, Location, Phases, Players } from '../../Constants.js';
+import { reduceCost } from '../../effects.js';
+import { Location, Phase, Players } from '../../Constants.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
 export default class FieldOfRuin extends BattlefieldAttachment {
     static id = 'field-of-ruin';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
 
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: 1,
-                targetCondition: (target: BaseCard) => target.type === CardType.Province && (target as ProvinceCard).isBroken,
-                match: (card: BaseCard, source: BaseCard) => card === source
+                targetCondition: (target) => target.isProvinceCard() && target.isBroken,
+                match: (card, source) => card === source
             })
         });
 
-        this.reaction({
-            title: 'discard each card in attached province',
-            when: {
-                onPhaseStarted: (event) => event.phase === Phases.Conflict
-            },
-            gameAction: AbilityDsl.actions.discardCard((context) => ({
+        this.reaction('discard each card in attached province')
+            .when({
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
+            })
+            .discardCard((context) => ({
                 target:
-                    context.source.parent &&
-                    context.source.parent.controller.getDynastyCardsInProvince(context.source.parent.location)
-            })),
-            effect: 'discard each card in the attached province'
-        });
+                    context.source.parentProvince?.controller.getDynastyCardsInProvince(context.source.parentProvince.location) ?? []
+            }))
+            .chatText('discard each card in the attached province');
     }
 
-    protected unbrokenOnly() {
+    protected override unbrokenOnly() {
         return false;
     }
 }

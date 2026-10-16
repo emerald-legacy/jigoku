@@ -28,7 +28,7 @@ describe('Purifier Apprentice', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 expect(this.player2).toBeAbleToSelect(this.purifier);
                 this.player2.clickCard(this.purifier);
                 expect(this.player1.honor).toBe(honor - 1);
@@ -48,7 +48,7 @@ describe('Purifier Apprentice', function() {
                 this.player1.pass();
                 this.player2.pass();
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 expect(this.player2).not.toBeAbleToSelect(this.purifier);
                 this.player2.clickCard(this.purifier);
                 expect(this.player1.honor).toBe(honor);
@@ -65,7 +65,7 @@ describe('Purifier Apprentice', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 expect(this.player2).not.toBeAbleToSelect(this.purifier);
                 this.player2.clickCard(this.purifier);
                 expect(this.player1.honor).toBe(honor);

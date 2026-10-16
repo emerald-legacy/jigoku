@@ -112,6 +112,13 @@ describe('A Season of War', function() {
                 expect(this.acolyte.facedown).toBe(false);
             });
 
+            it('should forget the honor gained earlier in the dynasty phase', function() {
+                this.player1.player.modifyHonor(2);
+                expect(this.player1.player.honorGained(this.game.roundNumber, 'dynasty')).toBe(2);
+                this.player1.clickCard(this.season);
+                expect(this.player1.player.honorGained(this.game.roundNumber, 'dynasty')).toBe(0);
+            });
+
             it('should start a new dynasty phase - testing with on phase started reactions', function() {
                 this.player1.player.imperialFavor = 'military';
                 this.player1.clickCard(this.season);
@@ -132,7 +139,7 @@ describe('A Season of War', function() {
                 this.player1.pass();
 
                 expect(this.acolyte.location).toBe('province 4');
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.player2.clickCard(this.acolyte);
                 this.player2.clickPrompt('0');
                 expect(this.player2.fate).toBe(fate - 3); //no discount
@@ -155,8 +162,8 @@ describe('A Season of War', function() {
             });
 
             it('players should not collect fate', function() {
-                let p1Fate = this.player1.fate;
-                let p2Fate = this.player2.fate;
+                const p1Fate = this.player1.fate;
+                const p2Fate = this.player2.fate;
                 this.player1.clickCard(this.season);
                 expect(this.player1.fate).toBe(p1Fate - 1); //-1 from Season of War
                 expect(this.player2.fate).toBe(p2Fate);

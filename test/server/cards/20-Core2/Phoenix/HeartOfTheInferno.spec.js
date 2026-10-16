@@ -123,6 +123,7 @@ describe('Heart of the Inferno', function () {
             this.player1.clickCard(this.katana);
             expect(this.katana.location).toBe('conflict discard pile');
             expect(this.getChatLogs(5)).toContain('player1 plays Heart of the Inferno to discard Fine Katana');
+            expect(this.getChatLogs(5)).toContain('player1 channels their fire affinity to discard Fine Katana');
         });
     });
 });

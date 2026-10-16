@@ -1,16 +1,15 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
+import { modifyBothSkills } from '../../../effects.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class NamelessBrother extends DrawCard {
     static id = 'nameless-brother';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
-            match: (card: DrawCard, context) => card.controller === context?.player && card.type === CardType.Character,
-            effect: AbilityDsl.effects.modifyBothSkills((character: BaseCard, context) =>
-                (context.player.cardsInPlay as BaseCard[]).reduce(
+            match: (card, context) => card.controller === context?.player && card.type === CardType.Character,
+            effect: modifyBothSkills((character, context) =>
+                context.player.cardsInPlay.reduce(
                     (skillBonus, otherCard) =>
                         otherCard.type === CardType.Character &&
                         otherCard.name === character.name &&

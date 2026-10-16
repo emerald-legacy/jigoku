@@ -1,50 +1,58 @@
-import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
+import { cannotReceiveDishonorToken, cannotReceiveHonorToken, cannotReceiveTaintedToken, immunity } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { attach } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
 const ATTACHMENT = 'attachment';
-const RECEIVER = 'receiver';
 
 export default class JakIthith extends DrawCard {
     static id = 'jak-ithith';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.immunity({ restricts: 'maho' }),
-                AbilityDsl.effects.immunity({ restricts: 'shadowlands' }),
-                AbilityDsl.effects.cannotReceiveTaintedToken()
+                immunity({ appliesTo: { trait: Trait.Maho } }),
+                immunity({ appliesTo: { trait: Trait.Shadowlands } }),
+                cannotReceiveHonorToken(),
+                cannotReceiveDishonorToken(),
+                cannotReceiveTaintedToken()
             ]
         });
 
-        this.reaction({
-            title: 'Take control of an attachment',
-            when: {
+        this.reaction('Take control of an attachment')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            targets: {
-                [ATTACHMENT]: {
-                    cardType: CardType.Attachment,
-                    controller: Players.Opponent,
-                    cardCondition: (card) =>
-                        Boolean(card.parentCharacter?.isParticipating())
-                },
-                [RECEIVER]: {
-                    dependsOn: ATTACHMENT,
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (card) => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.ifAble((context) => ({
-                        ifAbleAction: AbilityDsl.actions.attach({
-                            attachment: context.targets[ATTACHMENT],
-                            target: context.targets[RECEIVER],
-                            takeControl: true
-                        }),
-                        otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.targets[ATTACHMENT] })
-                    }))
-                }
-            }
-        });
+            })
+            .target({
+                name: ATTACHMENT,
+                cardType: CardType.Attachment,
+                controller: Players.Any,
+                cardCondition: (card, context) =>
+                    !!card.parentCharacter?.isParticipating() && card.parentCharacter.controller !== context.player
+            })
+            // "to an eligible character you control, if able": only eligible characters can be chosen
+            .ifAble()
+            .selectCard((context) => ({
+                activePromptTitle: 'Choose a character',
+                cardType: CardType.Character,
+                controller: Players.Self,
+                gameAction: attach({
+                    attachment: context.targets[ATTACHMENT],
+                    takeControl: true
+                }),
+                message: (context, card, player) => msg`${player} chooses to attach ${context.targets[ATTACHMENT]} to ${card}`
+            }))
+            .otherwise()
+            .discardFromPlay((context) => ({ target: context.targets[ATTACHMENT] }))
+            .chatText((context) => {
+                const attachment = context.targets[ATTACHMENT];
+                const canAttach = context.player.cardsInPlay.some((card) =>
+                    attach({ attachment, takeControl: true }).canAffect(card, context));
+                return canAttach
+                    ? msg`take control of ${attachment.parentCharacter}'s ${attachment}`
+                    : msg`discard ${attachment}`;
+            });
     }
 }

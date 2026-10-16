@@ -35,7 +35,7 @@ describe('Assassination', function () {
             });
 
             it('should cost 3 honor discard the target', function () {
-                let honor = this.player1.player.honor;
+                const honor = this.player1.player.honor;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.togashiInitiate],

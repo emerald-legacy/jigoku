@@ -1,45 +1,33 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class SoshiDiviner extends DrawCard {
     static id = 'soshi-diviner';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move a card in a province',
-            condition: (context) => context.game.isDuringConflict(),
-            targets: {
-                cardInProvince: {
-                    location: [Location.Provinces, Location.PlayArea],
-                    cardCondition: card => (card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold)
-                },
-                province: {
-                    targets: false,
-                    dependsOn: 'cardInProvince',
-                    location: [Location.Provinces],
-                    cardType: CardType.Province,
-                    cardCondition: (card, context) =>
-                        card.location !== Location.StrongholdProvince &&
-                        ( //same controller check
-                            (card.controller === (context.targets.cardInProvince as DrawCard).controller)
-                        ) &&
-                        ( //different location check
-                            (card.location !== (context.targets.cardInProvince as DrawCard).location)
-                        ),
-                    gameAction: AbilityDsl.actions.moveCard(context => ({
-                        target: context.targets.cardInProvince,
-                        destination: context.targets.province.location
-                    }))
-                }
-            },
-            effect: 'move {1} to {2}',
-            effectArgs: context => [
-                (context.targets.cardInProvince as DrawCard).isFacedown() ? 'a facedown card' : context.targets.cardInProvince as DrawCard,
-                (context.targets.province as ProvinceCard).isFacedown() ? (context.targets.province as ProvinceCard).location : context.targets.province as ProvinceCard
-            ]
-        });
+    override setupCardAbilities() {
+        this.action('Move a card in a province')
+            .condition((context) => context.game.isDuringConflict())
+            .target({
+                name: 'cardInProvince',
+                location: [Location.Provinces, Location.PlayArea],
+                cardCondition: (card) => card.isInProvince() && card.location !== Location.StrongholdProvince && card.type !== CardType.Province && card.type !== CardType.Stronghold
+            })
+            .target({
+                name: 'province',
+                dependsOn: 'cardInProvince',
+                location: [Location.Provinces],
+                cardType: CardType.Province,
+                cardCondition: (card, context) =>
+                    card.location !== Location.StrongholdProvince &&
+                    card.controller === context.targets.cardInProvince.controller &&
+                    card.location !== context.targets.cardInProvince.location
+            }, moveCard((context) => ({
+                target: context.targets.cardInProvince,
+                destination: context.targets.province.location
+            })))
+            .chatText((context) => msg`move ${context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince} to ${context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province}`);
     }
 }
 

@@ -31,7 +31,7 @@ describe('Rising Stars Kata', function() {
 
                 this.player1.clickCard(this.risingStarsKata);
                 this.player1.clickCard(this.mirumotoHitomi);
-                expect(this.mirumotoHitomi.getMilitarySkill()).toBe(7);
+                expect(this.mirumotoHitomi.militarySkill).toBe(7);
                 expect(this.getChatLogs(6)).toContain('player1 plays Rising Stars Kata to give Mirumoto Hitomi +3 military skill until the end of the conflict');
             });
 
@@ -51,7 +51,7 @@ describe('Rising Stars Kata', function() {
                 this.player1.clickCard(this.risingStarsKata);
                 this.player1.clickCard(this.mirumotoHitomi);
 
-                expect(this.mirumotoHitomi.getMilitarySkill()).toBe(9);
+                expect(this.mirumotoHitomi.militarySkill).toBe(9);
                 expect(this.getChatLogs(6)).toContain('player1 plays Rising Stars Kata to give Mirumoto Hitomi +5 military skill until the end of the conflict');
             });
 
@@ -60,7 +60,7 @@ describe('Rising Stars Kata', function() {
 
                 this.player1.clickCard(this.risingStarsKata);
                 this.player1.clickCard(this.mirumotoHitomi);
-                expect(this.mirumotoHitomi.getMilitarySkill()).toBe(7);
+                expect(this.mirumotoHitomi.militarySkill).toBe(7);
                 expect(this.getChatLogs(6)).toContain('player1 plays Rising Stars Kata to give Mirumoto Hitomi +3 military skill until the end of the conflict');
 
                 this.player2.pass();

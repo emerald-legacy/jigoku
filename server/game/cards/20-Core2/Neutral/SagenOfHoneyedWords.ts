@@ -1,32 +1,28 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 function skillBonus(companion: DrawCard): number {
-    return companion.getGlory();
+    return companion.glory;
 }
 
 export default class SagenOfHoneyedWords extends DrawCard {
     static id = 'sagen-of-honeyed-words';
 
-    public setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Gain a skill bonus based on your company',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+    public override setupCardAbilities() {
+        this.conflictAction('Gain a skill bonus based on your company')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
-                target: context.source,
-                effect: AbilityDsl.effects.modifyBothSkills(context.target ? skillBonus(context.target) : 0)
-            })),
-            effect: 'get +{1}{2} and +{3}{4}',
-            effectArgs: (context) => {
-                const bonus = context.target ? skillBonus(context.target) : 0;
-                return [bonus, 'military', bonus, 'political'];
-            }
-        });
+            })
+            .cardLastingEffect((context) => ({
+                effect: modifyBothSkills(skillBonus(context.target))
+            }))
+            .chatText((context) => {
+                const bonus = skillBonus(context.target);
+                return msg`get +${bonus}${'military'} and +${bonus}${'political'}`;
+            });
     }
 }

@@ -1,32 +1,28 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { unlimited } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DarkSecret extends DrawCard {
     static id = 'dark-secret';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Make the controller of attached character lose 1 honor',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Make the controller of attached character lose 1 honor')
+            .when({
                 onMoveFate: (event, context) =>
-                    context.source.parentCharacter && context.source.parentCharacter === event.origin && event.fate > 0
-            },
-            gameAction: AbilityDsl.actions.loseHonor((context: AbilityContext<DrawCard, DrawCard>) => ({
-                amount: 1,
-                target: this.#targetPlayer(context.source.parentCharacter)
-            })),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            effect: 'make {1} lose 1 honor - {2}',
-            effectArgs: (context) => [this.#targetPlayer(context.source.parentCharacter), this.#quote(context.source.parentCharacter)]
-        });
+                    context.source.parentCharacter && context.source.parentCharacter === event.origin && (event.fate ?? 0) > 0
+            })
+            .loseHonor((context) => ({
+                target: this.targetPlayer(context.source.parentCharacter)
+            }))
+            .chatText((context) => msg`make ${this.targetPlayer(context.source.parentCharacter)} lose 1 honor - ${this.quote(context.source.parentCharacter)}`)
+            .limit(unlimited());
     }
 
-    #targetPlayer(character: DrawCard | null) {
+    private targetPlayer(character: DrawCard | null) {
         return character?.controller ?? [];
     }
 
-    #quote(character: DrawCard | null | undefined): string {
+    private quote(character: DrawCard | null | undefined): string {
         if(!character) {
             return '';
         }

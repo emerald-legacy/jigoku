@@ -37,8 +37,8 @@ describe('Smuggling Deal', function () {
             });
 
             it('should give 1 honor to your opponent as a cost', function () {
-                let player1honor = this.player1.player.honor;
-                let player2honor = this.player2.player.honor;
+                const player1honor = this.player1.player.honor;
+                const player2honor = this.player2.player.honor;
                 this.player1.clickCard(this.smugglingDeal);
                 this.player1.clickCard(this.kudaka);
                 expect(this.player1.player.honor).toBe(player1honor - 1);

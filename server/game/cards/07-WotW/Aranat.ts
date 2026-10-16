@@ -1,21 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, EventName, Players, TargetMode } from '../../Constants.js';
+import { reveal } from '../../GameActions/GameActions.js';
+import { CardType, Players, TargetMode } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class Aranat extends DrawCard {
     static id = 'aranat';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Place additional fate',
-            when: {
-                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context) => context.player.opponent && event.card === context.source
-            },
-            effect: 'give {1} the opportunity to reveal provinces',
-            effectArgs: (context: AbilityContext) => context.player.opponent ?? '',
-            gameAction: AbilityDsl.actions.selectCard({
+    override setupCardAbilities() {
+        this.reaction('Place additional fate')
+            .when({
+                onCardPlayed: (event, context) => context.player.opponent && event.card === context.source
+            })
+            .selectCards({
                 cardType: CardType.Province,
                 location: this.game.getProvinceArray(false),
                 controller: Players.Opponent,
@@ -23,20 +19,16 @@ class Aranat extends DrawCard {
                 optional: true,
                 mode: TargetMode.Unlimited,
                 cardCondition: (card) => card.isFacedown(),
-                message: '{0} chooses to reveal {1}',
-                messageArgs: (card, player) => [player, card],
-                gameAction: AbilityDsl.actions.reveal()
-            }),
-            then: {
-                message: '{3} has {4} facedown provinces so {4} fate is placed on {1}',
-                messageArgs: (context: AbilityContext) => [context.player.opponent, context.player.getNumberOfOpponentsFacedownProvinces()],
-                thenCondition: () => true,
-                gameAction: AbilityDsl.actions.placeFate((context: AbilityContext) => ({
-                    target: context.source,
-                    amount: context.player.getNumberOfOpponentsFacedownProvinces()
-                }))
-            }
-        });
+                message: (_context, card, player) => msg`${player} chooses to reveal ${card}`,
+                gameAction: reveal()
+            })
+            .chatText((context) => msg`give ${context.player.opponent ?? ''} the opportunity to reveal provinces`)
+            .afterwards()
+            .placeFate((context) => ({ amount: context.player.getNumberOfOpponentsFacedownProvinces() }))
+            .message((context) => {
+                const facedown = context.player.getNumberOfOpponentsFacedownProvinces();
+                return msg`${context.player.opponent} has ${facedown} facedown provinces so ${facedown} fate is placed on ${context.source}`;
+            });
     }
 }
 

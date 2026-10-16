@@ -16,8 +16,8 @@ describe('Iwasaki Pupil', function() {
             });
 
             it('during draw bids if the bids are 1 to 5, four honor is trade and only 3 cards are drawn', function() {
-                let playerOneHandSize = this.player1.player.hand.length;
-                let playerTwoHandSize = this.player2.player.hand.length;
+                const playerOneHandSize = this.player1.player.hand.length;
+                const playerTwoHandSize = this.player2.player.hand.length;
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('5');
                 expect(this.player1).toHavePrompt('Action Window');
@@ -28,8 +28,8 @@ describe('Iwasaki Pupil', function() {
             });
 
             it('should make biding 2 or 3 only draw you one card', function() {
-                let playerOneHandSize = this.player1.player.hand.length;
-                let playerTwoHandSize = this.player2.player.hand.length;
+                const playerOneHandSize = this.player1.player.hand.length;
+                const playerTwoHandSize = this.player2.player.hand.length;
                 this.player1.clickPrompt('3');
                 this.player2.clickPrompt('2');
                 expect(this.player1).toHavePrompt('Action Window');
@@ -54,8 +54,8 @@ describe('Iwasaki Pupil', function() {
             });
 
             it('during draw bids if the bids are 1 to 5, four honor is traded and only 1 card is drawn', function() {
-                let playerOneHandSize = this.player1.player.hand.length;
-                let playerTwoHandSize = this.player2.player.hand.length;
+                const playerOneHandSize = this.player1.player.hand.length;
+                const playerTwoHandSize = this.player2.player.hand.length;
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('5');
                 expect(this.player1).toHavePrompt('Action Window');

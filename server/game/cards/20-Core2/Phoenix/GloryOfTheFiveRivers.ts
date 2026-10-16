@@ -1,33 +1,31 @@
-import { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Players } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { dishonor, handler, honor, loseFate, selectCard } from '../../../GameActions/GameActions.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { FateBidPrompt, Result } from '../../../gamesteps/FateBidPrompt.js';
+import { FateBidPrompt, type Result } from '../../../gamesteps/FateBidPrompt.js';
 import { SimpleStep } from '../../../gamesteps/SimpleStep.js';
-import Player from '../../../Player.js';
+import type Player from '../../../Player.js';
 
 function resolveActionOnSelection(context: AbilityContext, player: Player, action: 'honor' | 'dishonor') {
     const playerEnum = player === context.player ? Players.Self : Players.Opponent;
-    AbilityDsl.actions
-        .selectCard({
-            player: playerEnum,
-            controller: Players.Any,
-            cardType: CardType.Character,
-            gameAction: action === 'honor' ? AbilityDsl.actions.honor() : AbilityDsl.actions.dishonor(),
-            message: `{0} ${action}s {1}`,
-            messageArgs: (card, player) => [player, card]
-        })
+    selectCard({
+        player: playerEnum,
+        controller: Players.Any,
+        cardType: CardType.Character,
+        gameAction: action === 'honor' ? honor() : dishonor(),
+        message: (_context, card, chooser) => msg`${chooser} ${action}s ${card}`
+    })
         .resolve(player, context);
 }
 
 export default class GloryOfTheFiveRivers extends DrawCard {
     static id = 'glory-of-the-five-rivers';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Honor a character and dishonor a character',
-            condition: (context) => context.player.isTraitInPlay('courtier'),
-            gameAction: AbilityDsl.actions.handler({
+    public override setupCardAbilities() {
+        this.action('Honor a character and dishonor a character')
+            .condition((context) => context.player.isTraitInPlay(Trait.Courtier))
+            .gameAction(handler({
                 handler: (context) => {
                     let bidResult: Result;
 
@@ -35,8 +33,8 @@ export default class GloryOfTheFiveRivers extends DrawCard {
                         new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {
                             bidResult = result;
                             for(const [player, amount] of result.bids) {
-                                context.game.addMessage('{0} spends {1} fate', player, amount);
-                                AbilityDsl.actions.loseFate({ amount, target: player }).resolve(player, context);
+                                context.game.addMessage(msg`${player} spends ${amount} fate`);
+                                loseFate({ amount }).resolve(player, context);
                             }
                         })
                     );
@@ -52,8 +50,7 @@ export default class GloryOfTheFiveRivers extends DrawCard {
                         })
                     );
                 }
-            }),
-            effect: 'collect offerings'
-        });
+            }))
+            .chatText('collect offerings');
     }
 }

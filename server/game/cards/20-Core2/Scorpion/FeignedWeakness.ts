@@ -1,5 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
@@ -7,24 +7,21 @@ import type Player from '../../../Player.js';
 export default class FeignedWeakness extends DrawCard {
     static id = 'feigned-weakness';
 
-    setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
+    override setupCardAbilities() {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Event &&
-                    context.game.isDuringConflict() &&
-                    !!this.game.currentConflict && this.#hasEqualOrLessSkill(this.game.currentConflict, context.player)
-            },
-            cost: AbilityDsl.costs.discardCard({
+                    !!context.game.currentConflict && this.hasEqualOrLessSkill(context.game.currentConflict, context.player)
+            })
+            .cost(costs.discardCard({
                 location: Location.Hand,
                 cardCondition: (card, context) => card !== context.source
-            }),
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            }))
+            .cancel();
     }
 
-    #hasEqualOrLessSkill(conflict: Conflict, player: Player): boolean {
+    private hasEqualOrLessSkill(conflict: Conflict, player: Player): boolean {
         return conflict.defendingPlayer === player
             ? conflict.defenderSkill <= conflict.attackerSkill
             : conflict.attackerSkill <= conflict.defenderSkill;

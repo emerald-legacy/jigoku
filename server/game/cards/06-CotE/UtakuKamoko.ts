@@ -1,33 +1,28 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { EventName, Location } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { statusTokensDoNotDecreaseSkill } from '../../effects.js';
+import { Location } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class UtakuKamoko extends DrawCard {
     static id = 'utaku-kamoko';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext) => context.source.isDishonored,
-            effect: AbilityDsl.effects.honorStatusDoesNotModifySkill()
+            condition: (context) => context.source.isDishonored,
+            effect: statusTokensDoNotDecreaseSkill()
         });
-        this.reaction({
-            title: 'Ready and honor',
-            when: {
-                onBreakProvince: (event: EventPayload<EventName.OnBreakProvince>, context: TriggeredAbilityContext) => context.player.opponent && event.conflict && event.conflict.attackingPlayer === context.player.opponent
-            },
-            cost: AbilityDsl.costs.discardCard({
+        this.reaction('Ready and honor')
+            .when({
+                // RRG: a province broken outside conflict resolution is broken by its controller's opponent
+                onBreakProvince: (event, context) => event.card.controller === context.player
+            })
+            .cost(costs.discardCard({
                 location: Location.Hand,
                 targets: true
-            }),
-            gameAction: [
-                AbilityDsl.actions.ready(),
-                AbilityDsl.actions.honor()
-            ],
-            effect: 'ready and honor {0}'
-        });
+            }))
+            .ready()
+            .honor()
+            .chatText('ready and honor {0}');
     }
 }
 

@@ -1,35 +1,31 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TillTheLastOneFalls extends DrawCard {
     static id = 'till-the-last-one-falls-';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Give a character a skill bonus',
-            condition: (context) =>
-                !!(context.game.isDuringConflict() &&
-                context.player.opponent &&
-                context.game.currentConflict?.hasMoreParticipants(context.player.opponent, () => true)),
-            target: {
+    public override setupCardAbilities() {
+        this.conflictAction('Give a character a skill bonus')
+            .condition((context) =>
+                !!context.game.currentConflict?.hasMoreParticipants(context.player.opponent))
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.modifyBothSkills(this.#bonus(context))
-                }))
-            },
-            effect: 'give {0} +{1}{2}/+{1}{3}',
-            effectArgs: (context) => [this.#bonus(context), 'military', 'political'],
-            max: AbilityDsl.limit.perConflict(1)
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect((context) => ({
+                effect: modifyBothSkills(this.bonus(context))
+            })))
+            .chatText((context) => msg`give ${context.chatTarget()} +${this.bonus(context)}${'military'}/+${this.bonus(context)}${'political'}`)
+            .max(perConflict(1));
     }
 
-    #bonus(context: AbilityContext): number {
-        const conflict = context.game.currentConflict as Conflict;
+    private bonus(context: AbilityContext): number {
+        const conflict = context.game.requireConflict();
         const opponentCount = conflict.getNumberOfParticipantsFor(context.player.opponent);
         return 2 * opponentCount;
     }

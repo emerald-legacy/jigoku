@@ -1,17 +1,14 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 
 export default class MeditationsOnTheTao extends ProvinceCard {
     static id = 'meditations-on-the-tao';
-    setupCardAbilities() {
-        this.action({
-            title: 'Remove a fate from a character',
-            target: {
+    override setupCardAbilities() {
+        this.action('Remove a fate from a character')
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.removeFate()
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, removeFate());
     }
 }

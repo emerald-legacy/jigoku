@@ -25,7 +25,7 @@ describe('Shiotome Heroine', function() {
             it('should trigger when your opponent gains 1 or more fate through a card effect (via Shiotome Heroine\'s controller card effect)', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player1.clickCard(this.windsweptYurt);
                 this.player1.clickPrompt('Each player gains 2 honor');
                 expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -37,7 +37,7 @@ describe('Shiotome Heroine', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 this.player1.pass();
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player2.clickCard(this.tranquilPhilosopher);
                 this.player2.clickRing('air');
                 this.player2.clickRing('earth');
@@ -47,7 +47,7 @@ describe('Shiotome Heroine', function() {
             });
 
             it('should not trigger when your opponent gains 1 or more fate through a framework effect', function() {
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('1');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
@@ -59,7 +59,7 @@ describe('Shiotome Heroine', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 this.player1.pass();
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player2.clickCard(this.adeptOfShadows);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player1).toHavePrompt('Action Window');
@@ -74,6 +74,42 @@ describe('Shiotome Heroine', function() {
                 this.player1.clickCard(this.shiotomeHeroine);
                 expect(this.shiotomeHeroine.bowed).toBe(false);
             });
+        });
+    });
+});
+
+describe('Shiotome Heroine when honor is taken', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shiotome-heroine']
+                },
+                player2: {
+                    inPlay: ['kakita-asami']
+                }
+            });
+            this.shiotomeHeroine = this.player1.findCardByName('shiotome-heroine');
+            this.asami = this.player2.findCardByName('kakita-asami');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.asami],
+                defenders: []
+            });
+            this.shiotomeHeroine.bowed = true;
+        });
+
+        it('should trigger when the opponent takes honor from you through a card effect', function() {
+            const honor = this.player2.player.honor;
+            this.player1.pass();
+            this.player2.clickCard(this.asami);
+            expect(this.player2.player.honor).toBe(honor + 1);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.shiotomeHeroine);
         });
     });
 });

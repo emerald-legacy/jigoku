@@ -83,7 +83,7 @@ describe('Illusionary Decoy', function () {
                 'player2 uses Illusionary Decoy to put Illusionary Decoy into play in the conflict'
             );
             expect(this.getChatLogs(3)).not.toContain(
-                'player2 moves home Doji Challenger - they were an Illusionary Decoy!'
+                'player2 moves home Doji Challenger - they were an Illusionary Decoy'
             );
         });
 
@@ -117,7 +117,7 @@ describe('Illusionary Decoy', function () {
                 'player2 uses Illusionary Decoy to put Illusionary Decoy into play in the conflict'
             );
             expect(this.getChatLogs(5)).toContain(
-                'player2 moves home Doji Challenger - they were an Illusionary Decoy!'
+                'player2 moves home Doji Challenger - they were an Illusionary Decoy'
             );
         });
 
@@ -194,6 +194,48 @@ describe('Illusionary Decoy', function () {
             expect(this.getChatLogs(3)).toContain(
                 'player2 uses Illusionary Decoy to return Illusionary Decoy to their hand'
             );
+        });
+    });
+});
+
+describe('Illusionary Decoy with only an attached Shugenja', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger']
+                },
+                player2: {
+                    fate: 5,
+                    inPlay: ['doji-whisperer'],
+                    hand: ['illusionary-decoy', 'togashi-kazue']
+                }
+            });
+
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.decoy = this.player2.findCardByName('illusionary-decoy');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.kazue = this.player2.findCardByName('togashi-kazue');
+            this.kazue.traits = [...this.kazue.traits, 'shugenja'];
+
+            this.player1.pass();
+            this.player2.clickCard(this.kazue);
+            this.player2.clickPrompt('Play Togashi Kazue as an attachment');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.attachments).toContain(this.kazue);
+        });
+
+        it('should not trigger when a conflict begins', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.whisperer],
+                type: 'military'
+            });
+
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.decoy.location).toBe('hand');
         });
     });
 });

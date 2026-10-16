@@ -1,44 +1,36 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { shuffle } from '../../utils/shuffle.js';
+import { Location } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { draw, moveCard, sequential } from '../../GameActions/GameActions.js';
+import { shuffle } from '../../utils/random.js';
 import type Player from '../../Player.js';
+import { playerChoices } from '../playerChoices.js';
 
 class AnOceanInADrop extends DrawCard {
     static id = 'an-ocean-in-a-drop';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Place hand on bottom of deck and draw cards',
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()),
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            target: {
-                mode: TargetMode.Select,
-                targets: true,
-                choices:  {
-                    [this.owner.name]: AbilityDsl.actions.sequential(this.getGameActions(this.owner)),
-                    [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.sequential(this.getGameActions(this.owner.opponent))
-                }
-            },
-            effect: 'place {1}\'s hand on the bottom of their deck and have them draw {2} cards',
-            effectArgs: (context) => (context.select === this.owner.name || !this.owner.opponent) ?
-                [this.owner.name, context.player.hand.length] :
-                [this.owner.opponent.name, context.player.opponent?.hand.length ?? 0]
-        });
+    override setupCardAbilities() {
+        this.action('Place hand on bottom of deck and draw cards')
+            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
+            .cost(costs.sacrificeSelf())
+            .selectFrom({
+                targets: true
+            }, (context) => playerChoices(context.player, (player) => sequential(this.getGameActions(player))))
+            .chatText((context) => (context.select === context.player.name || !context.player.opponent)
+                ? msg`place ${context.player.name}'s hand on the bottom of their deck and have them draw ${context.player.hand.length} cards`
+                : msg`place ${context.player.opponent.name}'s hand on the bottom of their deck and have them draw ${context.player.opponent.hand.length} cards`);
     }
 
-    getGameActions(player: Player | undefined) {
-        if(!player) {
-            return [];
-        }
+    getGameActions(player: Player) {
         return [
-            AbilityDsl.actions.moveCard(() => ({
+            moveCard(() => ({
                 shuffle: false,
                 bottom: true,
                 destination: Location.ConflictDeck,
                 target: shuffle(player.hand)
             })),
-            AbilityDsl.actions.draw((context) => ({ target: player, amount: context.events.length }))
+            draw((context) => ({ target: player, amount: context.events.length }))
         ];
     }
 }

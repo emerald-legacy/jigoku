@@ -43,7 +43,7 @@ describe('Menacing Iron Warrior', function() {
                         attackers: [this.asahinaArtisan, this.dojiChallenger, this.kakitaYoshi],
                         defenders: [this.menacingIronWarrior, this.kakitaKaezin]
                     });
-                    originalDojiChallenderPolSkill = this.dojiChallenger.getPoliticalSkill();
+                    originalDojiChallenderPolSkill = this.dojiChallenger.politicalSkill;
                 });
 
                 it('should not be available to activate', function() {
@@ -54,7 +54,7 @@ describe('Menacing Iron Warrior', function() {
                     expect(this.player1).toHavePrompt('Asahina Artisan');
                     expect(this.player1).toBeAbleToSelect(this.dojiChallenger);
                     this.player1.clickCard(this.dojiChallenger);
-                    expect(this.dojiChallenger.getPoliticalSkill()).toBe(originalDojiChallenderPolSkill + 3);
+                    expect(this.dojiChallenger.politicalSkill).toBe(originalDojiChallenderPolSkill + 3);
                 });
             });
 

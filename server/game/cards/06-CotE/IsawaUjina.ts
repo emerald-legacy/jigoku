@@ -1,39 +1,28 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Element, EventName } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Element } from '../../Constants.js';
+import { unlimited } from '../../AbilityLimit.js';
+import { removeFromGame } from '../../GameActions/GameActions.js';
+import { claimedRingSymbols, claimsRingOf } from '../claimedRings.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-const elementKey = 'isawa-ujina-void';
+const elementSymbol = { key: 'isawa-ujina-void', element: Element.Void };
 
 class IsawaUjina extends DrawCard {
     static id = 'isawa-ujina';
 
-    setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Remove a character from the game',
-            when: {
-                onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => {
-                    const element = this.getCurrentElementSymbol(elementKey) || Element.Void;
-                    return (event.conflict && event.conflict.ring && event.conflict.ring.hasElement(element)) || event.ring.hasElement(element);
-                }
-            },
-            target: {
+    override setupCardAbilities() {
+        this.forcedReaction('Remove a character from the game')
+            .when({
+                onClaimRing: (event) => claimsRingOf(this, elementSymbol.key, event)
+            })
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.getFate() === 0,
-                gameAction: AbilityDsl.actions.removeFromGame()
-            },
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+                cardCondition: (card) => card.getFate() === 0
+            }, removeFromGame())
+            .limit(unlimited());
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Void
-        });
-        return symbols;
+    override getPrintedElementSymbols() {
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

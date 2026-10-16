@@ -28,6 +28,11 @@ describe('Yogo Hiroue', function() {
                 this.seppunGuardsman = this.player2.findCardByName('seppun-guardsman');
             });
 
+            it('cannot choose a participating character', function() {
+                expect(this.player1).not.toBeAbleToSelect(this.yogoHiroue);
+                expect(this.player1).toBeAbleToSelect('yogo-outcast');
+            });
+
             it('should move an friendly character into the conflict', function() {
                 this.yogoOutcast = this.player1.clickCard('yogo-outcast');
                 expect(this.yogoOutcast.inConflict).toBe(true);

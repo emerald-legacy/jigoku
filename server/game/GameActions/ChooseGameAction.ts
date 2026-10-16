@@ -1,53 +1,56 @@
-import type { MsgArg } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import type { MessageArgs } from '../GameChat.js';
+import type Player from '../Player.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameObject } from '../GameObject.js';
-import { Players } from '../Constants.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { CompositeGameAction } from './CompositeGameAction.js';
+import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
+import { GameAction, type GameActionProperties, type GameActionTarget } from './GameAction.js';
 
-export interface ChooseActionProperties extends GameActionProperties {
+export interface ChooseActionProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties {
     activePromptTitle?: string;
-    messageArgs?: unknown[];
-    player?: Players.Self | Players.Opponent;
-    options: { [label: string]: { action: GameAction; message?: string } };
+    waitingPromptTitle?: string;
+    player?: Chooser;
+    /** One button per label: its game action, or the action with a chat line. Like `select`'s choices, but chosen while resolving. */
+    choices: { [label: string]: GameAction | ChooseActionOption<Context> };
 }
 
-export class ChooseGameAction extends GameAction {
-    effect = 'choose between different actions';
-    defaultProperties: ChooseActionProperties = {
+export interface ChooseActionOption<Context extends AbilityContext = AbilityContext> {
+    action: GameAction;
+    /** The chat line when this option is chosen; `target` is the action's target. */
+    message?: (context: Context, target: GameActionTarget | GameActionTarget[] | undefined, chooser: Player) => MessageArgs;
+}
+
+/** Each choice with its label, a bare game action as an option without a chat line. */
+function options<Context extends AbilityContext>(choices: ChooseActionProperties<Context>['choices']): [string, ChooseActionOption<Context>][] {
+    return Object.entries(choices).map(([label, choice]) => [label, choice instanceof GameAction ? { action: choice } : choice]);
+}
+
+export class ChooseGameAction<Context extends AbilityContext = AbilityContext> extends CompositeGameAction<ChooseActionProperties<Context>, Context, 'activePromptTitle' | 'choices'> {
+    override effect = 'choose between different actions';
+    override defaultProperties = {
         activePromptTitle: 'Select an action:',
-        options: {},
-        messageArgs: []
+        choices: {}
     };
-    constructor(properties: ChooseActionProperties | ((context: AbilityContext) => ChooseActionProperties)) {
-        super(properties);
+
+    protected children(properties: ChooseActionProperties<Context>) {
+        return options(properties.choices).map(([_, option]) => option.action);
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): ChooseActionProperties {
-        const properties = super.getProperties(context, additionalProperties) as ChooseActionProperties;
-        for(const opt of Object.values(properties.options)) {
-            opt.action.setDefaultTarget(() => properties.target);
-        }
-        return properties;
-    }
-
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
-        const { options } = this.getProperties(context, additionalProperties);
-        return Object.values(options).some(({ action }) => action.hasLegalTarget(context));
-    }
-
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        const properties = this.getProperties(context, additionalProperties);
-        const legalChoices = Object.entries(properties.options).filter(([_, option]) =>
-            option.action.hasLegalTarget(context)
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
+        const legalChoices = options(properties.choices).filter(([_, option]) =>
+            option.action.hasLegalTarget(context, overrides)
         );
         if(legalChoices.length === 0) {
             return;
         }
 
-        const { activePromptTitle, target } = properties;
-        const opponent = context.player.opponent;
-        const player = properties.player === Players.Opponent && opponent ? opponent : context.player;
+        const { activePromptTitle, waitingPromptTitle, target } = properties;
+        const player = resolveChoosingPlayer(context, properties.player);
+        if(!player) {
+            return;
+        }
         const choiceLabels = legalChoices.map(([label, _]) => label);
         const choiceHandler = (choiceLabel: string): void => {
             const choice = legalChoices.find(([label, _]) => label === choiceLabel)?.[1];
@@ -55,26 +58,17 @@ export class ChooseGameAction extends GameAction {
                 return;
             }
             if(choice.message) {
-                context.game.addMessage(choice.message, player, properties.target, ...((properties.messageArgs ?? []) as MsgArg[]));
+                context.game.addMessage(choice.message(context, properties.target, player));
             }
-            context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context));
+            context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context, overrides));
         };
         context.game.promptWithHandlerMenu(player, {
             activePromptTitle,
+            waitingPromptTitle,
             context,
             choices: choiceLabels,
             choiceHandler,
             target
         });
-    }
-
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
-        const { options } = this.getProperties(context, additionalProperties);
-        return Object.values(options).some(({ action }) => action.canAffect(target, context));
-    }
-
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext) {
-        const { options } = this.getProperties(context);
-        return Object.values(options).some(({ action }) => action.hasTargetsChosenByInitiatingPlayer(context));
     }
 }

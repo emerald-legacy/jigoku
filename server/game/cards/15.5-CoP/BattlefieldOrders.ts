@@ -1,42 +1,36 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players, TargetMode, Location, AbilityType } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type CardAbility from '../../CardAbility.js';
-import type Player from '../../Player.js';
+import { reduceCost } from '../../effects.js';
+import { resolveAbility } from '../../GameActions/GameActions.js';
+import { CardType, Players, Location, AbilityType, ConflictType, Blocker } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class BattlefieldOrders extends DrawCard {
     static id = 'battlefield-orders';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            match: (player: Player) => !!player.opponent && player.honor >= player.opponent.honor + 5,
-            effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
+            match: (player) => !!player.opponent && player.honor >= player.opponent.honor + 5,
+            effect: reduceCost({ match: (card, source) => card === source })
         });
 
-        this.action({
-            title: 'Resolve an ability',
-            condition: context => context.game.isDuringConflict('military'),
-            target: {
+        this.action('Resolve an ability')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .abilityTarget({
                 activePromptTitle: 'Select an ability to resolve',
-                mode: TargetMode.Ability,
-                abilityCondition: ability => ability.abilityType === AbilityType.Action,
+                abilityCondition: (ability) => ability.abilityType === AbilityType.Action,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.resolveAbility((context: AbilityContext) => ({
-                    target: (context.targetAbility as CardAbility).card,
-                    ability: context.targetAbility as CardAbility,
-                    player: (context.targetAbility as CardAbility).card.controller,
-                    ignoredRequirements: ['player'],
-                    choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
-                }))
-            },
-            effect: 'trigger {1}\'s \'{2}\' ability',
-            effectArgs: (context: AbilityContext) => [(context.targetAbility as CardAbility).card, (context.targetAbility as CardAbility).title as string]
-        });
+                cardCondition: (card) => card.isParticipating(),
+                controller: Players.Any
+            }, resolveAbility((context) => ({
+                target: context.targetAbility.card,
+                ability: context.targetAbility,
+                player: context.targetAbility.card.controller,
+                ignoredBlockers: [Blocker.WrongPlayer],
+                choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
+            })))
+            .chatText((context) => msg`trigger ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
     }
 }
 

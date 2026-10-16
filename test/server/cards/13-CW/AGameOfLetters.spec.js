@@ -151,3 +151,41 @@ describe('A Game of Letters', function() {
         });
     });
 });
+
+describe('A Game of Letters on a character with several tokens', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['a-game-of-letters']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.yoshi.taint();
+            this.yoshi.honor();
+            this.whisperer.dishonor();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.yoshi],
+                defenders: [this.whisperer]
+            });
+        });
+
+        it('can choose its honored token to honor a dishonored character', function() {
+            this.player2.clickCard('a-game-of-letters');
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+            this.player2.clickCard(this.yoshi);
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(false);
+            expect(this.whisperer.isHonored).toBe(false);
+        });
+    });
+});

@@ -1,25 +1,24 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addTrait } from '../../effects.js';
 
 class WaterfallTattoo extends DrawCard {
     static id = 'waterfall-tattoo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.addTrait('tattooed')
+            effect: addTrait(Trait.Tattooed)
         });
 
-        this.reaction({
-            title: 'Ready attached character',
-            when: {
+        this.reaction('Ready attached character')
+            .when({
                 onCardRevealed: (event, context) => context.source.parentCharacter && event.card.isProvince && event.card.controller === context.source.parentCharacter.controller
-            },
-            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source.parentCharacter }))
-        });
+            })
+            .ready((context) => ({ target: context.source.parentCharacter ?? [] }));
     }
 }
 

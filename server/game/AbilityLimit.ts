@@ -1,11 +1,9 @@
 import { EventName } from './Constants.js';
-import Player from './Player.js';
-import type CardAbility from './CardAbility.js';
-import type { EventHandler } from './GameEventBus.js';
-
-export interface EventBusLike {
-    on(eventName: string, handler: EventHandler): void;
-    removeListener(eventName: string, handler: EventHandler): void;
+import type Player from './Player.js';
+import type { CardAbility } from './CardAbility.js';
+interface EventBusLike {
+    on(eventName: EventName, handler: () => void): void;
+    off(eventName: EventName, handler: () => void): void;
 }
 
 export interface AbilityLimit {
@@ -26,8 +24,6 @@ class UnlimitedAbilityLimit {
     public ability?: CardAbility;
     public currentUser: null | string = null;
     #useCount = new Map<string, number>();
-
-    constructor() {}
 
     public clone() {
         return new UnlimitedAbilityLimit();
@@ -115,6 +111,8 @@ class FixedAbilityLimit {
 }
 
 class RepeatableAbilityLimit extends FixedAbilityLimit {
+    private readonly onReset = () => this.reset();
+
     constructor(
         max: number,
         private eventName: Set<EventName>
@@ -122,23 +120,23 @@ class RepeatableAbilityLimit extends FixedAbilityLimit {
         super(max);
     }
 
-    public clone() {
+    public override clone() {
         return new RepeatableAbilityLimit(this.max, this.eventName);
     }
 
-    public isRepeatable(): boolean {
+    public override isRepeatable(): boolean {
         return true;
     }
 
-    public registerEvents(eventEmitter: EventBusLike): void {
+    public override registerEvents(eventEmitter: EventBusLike): void {
         for(const eventN of this.eventName) {
-            eventEmitter.on(eventN, () => this.reset());
+            eventEmitter.on(eventN, this.onReset);
         }
     }
 
-    public unregisterEvents(eventEmitter: EventBusLike): void {
+    public override unregisterEvents(eventEmitter: EventBusLike): void {
         for(const eventN of this.eventName) {
-            eventEmitter.removeListener(eventN, () => this.reset());
+            eventEmitter.off(eventN, this.onReset);
         }
     }
 }
@@ -169,14 +167,6 @@ export function perRound(max: number) {
 
 export function perGame(max: number) {
     return new RepeatableAbilityLimit(max, new Set());
-}
-
-export function perDuel(max: number) {
-    return new RepeatableAbilityLimit(max, new Set([EventName.OnDuelFinished]));
-}
-
-export function unlimitedPerConflict() {
-    return new RepeatableAbilityLimit(Infinity, new Set([EventName.OnConflictFinished]));
 }
 
 export function unlimited() {

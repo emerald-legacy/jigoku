@@ -1,25 +1,22 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perPhase } from '../../../AbilityLimit.js';
+import { cancel, gainHonor, sequential } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-import { EventName } from '../../../Constants.js';
 
 export default class AsahinaPurifier extends DrawCard {
     static id = 'asahina-purifier';
 
-    setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Gain honor instead of losing honor',
-            when: {
-                onModifyHonor: (event: EventPayload<EventName.OnModifyHonor>) => event.dueToStatusToken && (event.amount ?? 0) < 0
-            },
-            limit: AbilityDsl.limit.perPhase(1),
-            effect: 'gain 1 honor rather than having {1} lose 1 honor from a status token',
-            effectArgs: context => [context.event.player],
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.gainHonor(context => ({ target: context.player }))
-            ])
-        });
+    override setupCardAbilities() {
+        this.wouldInterrupt('Gain honor instead of losing honor')
+            .when({
+                onModifyHonor: (event) => event.dueToStatusToken && event.amount < 0
+            })
+            .gameAction(sequential([
+                cancel(),
+                gainHonor((context) => ({ target: context.player }))
+            ]))
+            .chatText((context) => msg`gain 1 honor rather than having ${context.event.player} lose 1 honor from a status token`)
+            .limit(perPhase(1));
     }
 }

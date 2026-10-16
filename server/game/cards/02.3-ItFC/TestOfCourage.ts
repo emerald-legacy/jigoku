@@ -1,25 +1,22 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor, moveToConflict, sequential } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class TestOfCourage extends DrawCard {
     static id = 'test-of-courage';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move a character into conflict',
-            condition: context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid),
-            target: {
+    override setupCardAbilities() {
+        this.action('Move a character into conflict')
+            .condition((context) => context.game.isDuringConflict() && !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid))
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isFaction('lion'),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.moveToConflict(),
-                    AbilityDsl.actions.honor()
-                ])
-            },
-            effect: 'move {0} to the conflict and honor it'
-        });
+                cardCondition: (card) => card.isFaction('lion')
+            }, sequential([
+                moveToConflict(),
+                honor()
+            ]))
+            .chatText('move {0} to the conflict and honor it');
     }
 }
 

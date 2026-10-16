@@ -31,7 +31,7 @@ describe('Shosuro Hametsu', function() {
             });
 
             it('should put the card in the player\'s hand', function() {
-                let handsize = this.player1.player.hand.length;
+                const handsize = this.player1.player.hand.length;
                 this.player1.clickCard(this.shosuroHametsu);
                 this.player1.clickPrompt('Fiery Madness');
                 expect(this.player1.player.hand.length).toBe(handsize + 1);

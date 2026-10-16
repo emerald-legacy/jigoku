@@ -29,7 +29,7 @@ describe('Prayers to Ebisu', function() {
             });
 
             it('should draw 1 card', function() {
-                let handCount = this.player1.player.hand.length;
+                const handCount = this.player1.player.hand.length;
                 this.player1.clickCard(this.prayersToEbisu);
                 expect(this.prayersToEbisu.location).toBe('conflict discard pile');
                 expect(this.player1.player.hand.length).toBe(handCount);

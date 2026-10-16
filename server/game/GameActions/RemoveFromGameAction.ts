@@ -1,22 +1,25 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Location } from '../Constants.js';
-import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type DrawCard from '../DrawCard.js';
+import { CardType, type EventName, Location, RestrictionType } from '../Constants.js';
+import type { CardActionProperties } from './CardGameAction.js';
+import { LeavesPlayAction } from './LeavesPlayAction.js';
+import type { ActionEvent } from './GameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface RemoveFromGameProperties extends CardActionProperties {
     location?: Location | Location[];
 }
 
-export class RemoveFromGameAction extends CardGameAction {
-    name = 'removeFromGame';
-    eventName = EventName.OnCardLeavesPlay;
-    cost = 'removing {0} from the game';
-    targetType = [CardType.Character, CardType.Attachment, CardType.Holding, CardType.Event];
-    effect = 'remove {0} from the game';
+export class RemoveFromGameAction<Context extends AbilityContext = AbilityContext> extends LeavesPlayAction<RemoveFromGameProperties, Context> {
+    override name = 'removeFromGame';
+    override restriction = RestrictionType.RemoveFromGame;
+    override cost = 'removing {0} from the game';
+    override targetType = [CardType.Character, CardType.Attachment, CardType.Holding, CardType.Event];
+    override effect = 'remove {0} from the game';
 
-    canAffect(card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties) as RemoveFromGameProperties;
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         const propValidLocations = Array.isArray(properties.location)
             ? properties.location
             : properties.location
@@ -33,7 +36,7 @@ export class RemoveFromGameAction extends CardGameAction {
         }
 
         if(card.type === CardType.Holding) {
-            if(!card.location.includes('province')) {
+            if(!card.isInProvince()) {
                 return false;
             }
         } else if(card.location !== Location.PlayArea) {
@@ -43,12 +46,7 @@ export class RemoveFromGameAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    updateEvent(event: GameEvent<EventName.OnCardLeavesPlay>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
-        additionalProperties.destination = Location.RemovedFromGame;
-        this.updateLeavesPlayEvent(event, card, context, additionalProperties);
-    }
-
-    eventHandler(event: GameEvent<EventName.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
-        this.leavesPlayEventHandler(event, additionalProperties);
+    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, card: DrawCard, context: Context, additionalProperties: Record<string, unknown>): void {
+        super.updateEvent(event, card, context, { ...additionalProperties, destination: Location.RemovedFromGame });
     }
 }

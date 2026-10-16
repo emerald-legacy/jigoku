@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Skirmish Provinces', function() {
     integration(function() {
@@ -13,7 +13,7 @@ describe('Skirmish Provinces', function() {
                     inPlay: ['garanto-guardian'],
                     hand: ['mirumoto-s-fury']
                 },
-                gameMode: GameModes.Skirmish
+                gameMode: GameMode.Skirmish
             });
 
             this.whisperer = this.player1.findCardByName('doji-whisperer');
@@ -115,7 +115,7 @@ describe('Skirmish Province - should not be able to move cards to stronghold pro
                     dynastyDiscard:['shiotome-encampment'],
                     hand: []
                 },
-                gameMode: GameModes.Skirmish
+                gameMode: GameMode.Skirmish
             });
 
             this.ba = this.player1.placeCardInProvince('bustling-academy','province 1');

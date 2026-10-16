@@ -4,24 +4,25 @@ import type Player from './Player.js';
 import type { PlayerState } from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type { CardSummary } from './BaseCard.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 export class PlayerStateBuilder {
     constructor(private readonly player: Player, private readonly game: Game) {}
 
-    getSummaryForHand(list: BaseCard[], activePlayer: Player, hideWhenFaceup: boolean): CardSummary[] {
+    getSummaryForHand(list: BaseCard[], activePlayer: StateViewer, hideWhenFaceup: boolean): CardSummary[] {
         if(this.player.optionSettings.sortHandByName) {
             return this.getSortedSummaryForCardList(list, activePlayer, hideWhenFaceup);
         }
         return this.getSummaryForCardList(list, activePlayer, hideWhenFaceup);
     }
 
-    getSummaryForCardList(list: BaseCard[], activePlayer: Player, hideWhenFaceup?: boolean): CardSummary[] {
+    getSummaryForCardList(list: BaseCard[], activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary[] {
         return list.map((card: BaseCard) => {
             return card.getSummary(activePlayer, hideWhenFaceup ?? false);
         });
     }
 
-    getSortedSummaryForCardList(list: BaseCard[], activePlayer: Player, hideWhenFaceup?: boolean): CardSummary[] {
+    getSortedSummaryForCardList(list: BaseCard[], activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary[] {
         const cards = list.slice();
         cards.sort((a: BaseCard, b: BaseCard) => a.printedName.localeCompare(b.printedName));
 
@@ -41,7 +42,7 @@ export class PlayerStateBuilder {
         };
     }
 
-    getState(activePlayer: Player): PlayerState {
+    getState(activePlayer: StateViewer): PlayerState {
         const player = this.player;
         const isActivePlayer = activePlayer === player;
         const promptState = isActivePlayer ? player.promptState.getState() : {};

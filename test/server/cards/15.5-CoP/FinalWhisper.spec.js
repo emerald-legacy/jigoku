@@ -1,3 +1,5 @@
+import { taint } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Final Whisper', function() {
     integration(function() {
         beforeEach(function() {
@@ -182,6 +184,20 @@ describe('Final Whisper', function() {
             expect(this.player1).not.toBeAbleToSelect(this.brash);
 
             this.player1.clickCard(this.harrier);
+        });
+
+        it('should not let the chosen character be one that is already tainted', function() {
+            this.harrier.taint();
+            this.game.queueSimpleStep(() => taint().resolve(this.initiate, this.game.getFrameworkContext(this.player2.player)));
+            this.game.continue();
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.whisper);
+
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).not.toBeAbleToSelect(this.initiate);
+            expect(this.player1).not.toBeAbleToSelect(this.harrier);
+            expect(this.player1).toBeAbleToSelect(this.yokuni);
+            expect(this.player1).toBeAbleToSelect(this.toshimoko);
         });
     });
 });

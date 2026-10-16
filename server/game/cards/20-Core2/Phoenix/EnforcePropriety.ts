@@ -1,12 +1,12 @@
-import { CardType, Players } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
+import { cancel, takeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
 function countReadyShugenja(player: Player): number {
     return player.cardsInPlay.reduce(
-        (sum: number, card: DrawCard) => (!card.bowed && card.hasTrait('shugenja') ? sum + 1 : sum),
+        (sum, card) => (!card.bowed && card.hasTrait(Trait.Shugenja) ? sum + 1 : sum),
         0
     );
 }
@@ -14,32 +14,31 @@ function countReadyShugenja(player: Player): number {
 export default class EnforcePropriety extends DrawCard {
     static id = 'enforce-propriety';
 
-    setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
+    override setupCardAbilities() {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Event &&
                     context.player.opponent &&
                     countReadyShugenja(context.player) > countReadyShugenja(context.player.opponent)
-            },
-
-            gameAction: AbilityDsl.actions.chooseAction((context) => ({
-                player: Players.Opponent,
-                activePromptTitle: 'Select one',
-                options: {
-                    [`Give 1 fate to ${context.player.name}`]: {
-                        action: AbilityDsl.actions.takeFate({ amount: 1, target: context.player.opponent }),
-                        message: '{0} gives 1 fate to {2} - the fortunes will be appeased, order is maintained'
-                    },
-                    'Let the effects be canceled': {
-                        action: AbilityDsl.actions.cancel(),
-                        message: '{0} refuses to appease the fortunes - the effects of {3} are canceled'
+            })
+            .if((context) => context.event.context.player !== context.player)
+                .chooseAction((context) => ({
+                    player: Players.Opponent,
+                    activePromptTitle: 'Select one',
+                    choices: {
+                        [`Give 1 fate to ${context.player.name}`]: {
+                            action: takeFate({ target: context.player.opponent }),
+                            message: (context, _target, player) => msg`${player} gives 1 fate to ${context.player} - the fortunes will be appeased, order is maintained`
+                        },
+                        'Let the effects be canceled': {
+                            action: cancel(),
+                            message: (context, _target, player) => msg`${player} refuses to appease the fortunes - the effects of ${context.event.card} are canceled`
+                        }
                     }
-                },
-                messageArgs: [context.player, (context as TriggeredAbilityContext).event.card]
-            })),
-            effect: 'enforce the proper protocol'
-        });
+                }))
+            .otherwise()
+                .cancel()
+            .chatText('enforce the proper protocol');
     }
 }

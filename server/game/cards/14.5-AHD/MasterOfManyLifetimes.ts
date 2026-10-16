@@ -1,15 +1,14 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { multiple, putIntoProvince, returnToHand } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location } from '../../Constants.js';
 
 class MasterOfManyLifetimes extends DrawCard {
     static id = 'master-of-many-lifetimes';
 
-    setupCardAbilities() {
-        this.wouldInterrupt<DrawCard>({
-            title: 'Return a character and attachments',
-            when: {
+    override setupCardAbilities() {
+        this.wouldInterrupt('Return a character and attachments')
+            .when({
                 onCardLeavesPlay: (event, context) => {
                     return (
                         event.card.controller === context.player &&
@@ -17,28 +16,25 @@ class MasterOfManyLifetimes extends DrawCard {
                         event.card.location === Location.PlayArea
                     );
                 }
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
                 cardCondition: (card) => card.facedown
-            },
-            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                replacementGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.returnToHand((context) => ({
-                        target: context.event.card.attachments
-                    })),
-                    AbilityDsl.actions.putIntoProvince({
+            })
+            .cancel((context) => ({
+                replacementGameAction: multiple([
+                    returnToHand({
+                        target: context.event.card?.attachments ?? []
+                    }),
+                    putIntoProvince({
                         target: context.event.card,
-                        canBeStronghold: true,
                         destination: context.target?.location
                     })
                 ])
-            })),
-            effect: 'prevent {1} from leaving play, putting it into {2} instead',
-            effectArgs: (context) => [context.event.card ?? '', context.target?.location ?? '']
-        });
+            }))
+            .chatText((context) => msg`prevent ${context.event.card ?? ''} from leaving play, putting it into ${context.target?.location ?? ''} instead`);
     }
 }
 

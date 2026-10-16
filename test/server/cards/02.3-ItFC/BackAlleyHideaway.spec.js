@@ -16,8 +16,8 @@ describe('Back-Alley Hideaway', function() {
                     if(flow.game.currentPhase === 'dynasty') {
                         break;
                     }
-                    let menuTitle = p.currentPrompt().menuTitle;
-                    let buttons = p.currentButtons;
+                    const menuTitle = p.currentPrompt().menuTitle;
+                    const buttons = p.currentButtons;
                     if(menuTitle === 'Choose an effect to resolve') {
                         p.clickPrompt('Don\'t resolve');
                         acted = true;
@@ -166,6 +166,27 @@ describe('Back-Alley Hideaway', function() {
                 expect(this.manipulator.abilities.playActions.some(
                     (action) => action.title === 'Play this character from Back-Alley Hideaway'
                 )).toBe(false);
+            });
+        });
+
+        describe('when a character returns to hand', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['adept-of-shadows'],
+                        dynastyDiscard: ['back-alley-hideaway']
+                    }
+                });
+                this.adept = this.player1.findCardByName('adept-of-shadows');
+                this.backAlley = this.player1.placeCardInProvince('back-alley-hideaway', 'province 1');
+            });
+
+            it('isn\'t offered, as the character doesn\'t go to the discard pile', function() {
+                this.player1.clickCard(this.adept);
+                expect(this.player1).not.toHavePrompt('Any interrupts to Adept of Shadows leaving play?');
+                expect(this.adept.location).toBe('hand');
+                expect(this.backAlley.attachments.length).toBe(0);
             });
         });
     });

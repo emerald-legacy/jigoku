@@ -39,8 +39,8 @@
 
             expect(this.getChatLogs(5)).toContain('player1 uses Bashful Confidante to force player2 to pay 1 honor to player1 in order to trigger Doji Kuwanan\'s abilities');
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.clickCard(this.kuwanan);
             this.player2.clickCard(this.bashful);
@@ -65,8 +65,8 @@
 
             expect(this.getChatLogs(5)).toContain('player1 uses Bashful Confidante to force player2 to pay 1 honor to player1 in order to trigger Doji Kuwanan\'s abilities');
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.clickCard(this.diviner);
             this.player2.clickCard(this.kuwanan);
@@ -86,8 +86,8 @@
             this.player1.clickCard(this.bashful2);
             this.player1.clickCard(this.kuwanan);
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.clickCard(this.kuwanan);
             this.player2.clickCard(this.bashful);

@@ -1,3 +1,6 @@
+import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { sacrifice } from '../../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Obstinate Witch Hunter', function () {
     integration(function () {
         beforeEach(function () {
@@ -36,6 +39,37 @@ describe('Obstinate Witch Hunter', function () {
             this.player2.clickPrompt('Done');
             expect(this.hunter1.fate).toBe(0);
             expect(this.hunter2.location).toBe('play area');
+        });
+    });
+});
+
+describe('Obstinate Witch Hunter and sacrifices', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['obstinate-witch-hunter']
+                },
+                player2: {
+                    inPlay: ['isawa-tadaka']
+                }
+            });
+
+            this.hunter = this.player1.findCardByName('obstinate-witch-hunter');
+            this.tadaka = this.player2.findCardByName('isawa-tadaka');
+            this.hunter.fate = 1;
+        });
+
+        it('cannot be sacrificed this phase', function () {
+            this.tadaka.taint();
+            this.advancePhases('fate');
+            this.player2.clickPrompt('Done');
+
+            const context = new ThenAbility(this.tadaka, {}).createContext(this.player2.player);
+            this.game.queueSimpleStep(() => sacrifice().resolve(this.hunter, context));
+            this.game.continue();
+            expect(this.hunter.location).toBe('play area');
         });
     });
 });

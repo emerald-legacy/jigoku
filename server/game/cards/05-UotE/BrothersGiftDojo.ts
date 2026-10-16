@@ -1,22 +1,21 @@
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perRound } from '../../AbilityLimit.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 export default class BrothersGiftDojo extends ProvinceCard {
     static id = 'brother-s-gift-dojo';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move a character home',
-            limit: AbilityDsl.limit.perRound(2),
-            conflictProvinceCondition: () => true,
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
+    override setupCardAbilities() {
+        this.action('Move a character home')
+            .conflictProvinceCondition(() => true)
+            .cost(costs.payHonor(1))
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, sendHome())
+            .limit(perRound(2));
     }
 }

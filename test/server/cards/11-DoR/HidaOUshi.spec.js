@@ -34,8 +34,8 @@ describe('Hida O-Ushi', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let conflicts = this.player2.player.getConflictOpportunities();
-                let milConflicts = this.player2.player.getRemainingConflictOpportunitiesForType('military');
+                const conflicts = this.player2.player.getConflictOpportunities();
+                const milConflicts = this.player2.player.getRemainingConflictOpportunitiesForType('military');
                 expect(this.player2).toBeAbleToSelect(this.oushi);
                 this.player2.clickCard(this.oushi);
                 expect(this.player2.player.getConflictOpportunities()).toBe(conflicts + 1);
@@ -55,8 +55,8 @@ describe('Hida O-Ushi', function() {
                 this.player1.pass();
                 this.player2.pass();
 
-                let conflicts = this.player2.player.getConflictOpportunities();
-                let milConflicts = this.player2.player.getRemainingConflictOpportunitiesForType('military');
+                const conflicts = this.player2.player.getConflictOpportunities();
+                const milConflicts = this.player2.player.getRemainingConflictOpportunitiesForType('military');
                 expect(this.player2).not.toBeAbleToSelect(this.oushi);
                 this.player2.clickCard(this.oushi);
                 expect(this.player2.player.getConflictOpportunities()).toBe(conflicts);
@@ -74,8 +74,8 @@ describe('Hida O-Ushi', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let conflicts = this.player2.player.getConflictOpportunities();
-                let milConflicts = this.player2.player.getRemainingConflictOpportunitiesForType('military');
+                const conflicts = this.player2.player.getConflictOpportunities();
+                const milConflicts = this.player2.player.getRemainingConflictOpportunitiesForType('military');
                 expect(this.player2).not.toBeAbleToSelect(this.oushi);
                 this.player2.clickCard(this.oushi);
                 expect(this.player2.player.getConflictOpportunities()).toBe(conflicts);

@@ -55,7 +55,7 @@ describe('In Service to My Lord', function() {
                 this.player1.clickCard(this.brashSamurai);
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.daidojiUji.bowed).toBe(false);
-                expect(this.getChatLogs(1)).toContain('player1 plays In Service to My Lord, bowing Brash Samurai to ready Daidoji Uji.  In Service to My Lord is placed on the bottom of player1\'s conflict deck');
+                expect(this.getChatLogs(1)).toContain('player1 plays In Service to My Lord, bowing Brash Samurai to ready Daidoji Uji. In Service to My Lord is placed on the bottom of player1\'s conflict deck');
                 expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
             });
 
@@ -69,7 +69,7 @@ describe('In Service to My Lord', function() {
                 this.player1.clickCard(this.brashSamurai);
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.kakitaToshimoko.bowed).toBe(false);
-                expect(this.getChatLogs(1)).toContain('player1 plays In Service to My Lord, bowing Brash Samurai to ready Kakita Toshimoko.  In Service to My Lord is placed on the bottom of player1\'s conflict deck');
+                expect(this.getChatLogs(1)).toContain('player1 plays In Service to My Lord, bowing Brash Samurai to ready Kakita Toshimoko. In Service to My Lord is placed on the bottom of player1\'s conflict deck');
                 expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
             });
 
@@ -245,7 +245,7 @@ describe('In Service to My Lord', function() {
                 expect(this.dojiKuwanan.bowed).toBe(false);
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
-                expect(this.getChatLogs(3)).toContain('player2 plays In Service to My Lord, bowing Brash Samurai to ready Doji Kuwanan.  In Service to My Lord is placed on the bottom of player1\'s conflict deck');
+                expect(this.getChatLogs(3)).toContain('player2 plays In Service to My Lord, bowing Brash Samurai to ready Doji Kuwanan. In Service to My Lord is placed on the bottom of player1\'s conflict deck');
             });
 
             it('should go to the owners discard if played by non-owner and cancelled', function() {

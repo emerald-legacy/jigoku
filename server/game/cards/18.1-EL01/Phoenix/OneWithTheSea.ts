@@ -1,31 +1,26 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Players } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
+import { CardType, Players, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OneWithTheSea extends DrawCard {
     static id = 'one-with-the-sea';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move a character you control to the conflict',
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Move a character you control to the conflict')
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                controller: Players.Self
+            }, moveToConflict());
 
-        this.action({
-            title: 'Move any character to the conflict',
-            cost: AbilityDsl.costs.payFate(1),
-            max: AbilityDsl.limit.perRound(1),
-            condition: (context) =>
-                context.game.isDuringConflict() && context.game.rings['water'].isConsideredClaimed(context.player),
-            target: {
+        this.conflictAction('Move any character to the conflict')
+            .condition((context) => context.game.rings[Element.Water].isConsideredClaimed(context.player))
+            .cost(costs.payFate(1))
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                controller: Players.Any
+            }, moveToConflict())
+            .max(perRound(1));
     }
 }

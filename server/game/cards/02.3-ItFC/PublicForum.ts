@@ -1,24 +1,21 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addToken } from '../../GameActions/GameActions.js';
 
 export default class PublicForum extends ProvinceCard {
     static id = 'public-forum';
 
-    setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Prevent break and add Honor token',
-            when: {
+    override setupCardAbilities() {
+        this.wouldInterrupt('Prevent break and add Honor token')
+            .when({
                 onBreakProvince: (event, context) => event.card === context.source && !event.card.hasToken('honor')
-            },
-            effect: 'add an honor token to {0} instead of breaking it',
-            gameAction: AbilityDsl.actions.cancel((context) => ({
-                target: context.event,
-                replacementGameAction: AbilityDsl.actions.addToken({ target: context.source })
+            })
+            .cancel((context) => ({
+                replacementGameAction: addToken({ target: context.source })
             }))
-        });
+            .chatText('add an honor token to {0} instead of breaking it');
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

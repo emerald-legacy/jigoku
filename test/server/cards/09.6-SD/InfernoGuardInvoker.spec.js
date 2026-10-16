@@ -170,6 +170,29 @@ describe('Inferno Guard Invoker', function() {
                 expect(this.infernoGuardInvoker.location).toBe('dynasty discard pile');
                 expect(this.player1).toHavePrompt('Action Window');
             });
+
+            it('should still be able to choose an honored character and sacrifice it if the province breaks', function() {
+                this.sereneWarrior.honor();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.sereneWarrior],
+                    defenders: [this.solemnScholar]
+                });
+
+                this.player2.pass();
+
+                this.player1.clickCard(this.infernoGuardInvoker);
+                expect(this.player1).toBeAbleToSelect(this.sereneWarrior);
+                this.player1.clickCard(this.sereneWarrior);
+                expect(this.sereneWarrior.isHonored).toBe(true);
+
+                this.player2.pass();
+                this.player1.pass();
+
+                this.player1.clickPrompt('No');
+                this.player1.clickPrompt('Don\'t resolve');
+                expect(this.sereneWarrior.location).toBe('dynasty discard pile');
+            });
         });
     });
 });

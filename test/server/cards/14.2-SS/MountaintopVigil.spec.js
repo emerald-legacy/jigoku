@@ -36,7 +36,7 @@ describe('Mountaintop Vigil', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.tsukune);
                 expect(this.player1).toHavePrompt('Action Window');
-                expect(this.getChatLogs(5)).toContain('player1\'s ring effect is cancelled.');
+                expect(this.getChatLogs(5)).toContain('player1\'s ring effect is cancelled');
                 expect(this.game.rings.fire.isConsideredClaimed(this.player1)).toBe(true);
                 expect(this.tsukune.isHonored).toBe(false);
             });
@@ -57,7 +57,7 @@ describe('Mountaintop Vigil', function() {
                 this.player2.clickCard(this.guardian);
                 this.player2.clickRing('air');
                 expect(this.player1).toHavePrompt('Action Window');
-                expect(this.getChatLogs(5)).toContain('player2\'s ring effect is cancelled.');
+                expect(this.getChatLogs(5)).toContain('player2\'s ring effect is cancelled');
                 expect(this.game.rings.fire.isConsideredClaimed(this.player2)).toBe(true);
             });
 
@@ -73,7 +73,7 @@ describe('Mountaintop Vigil', function() {
                 this.player1.clickCard(this.kami);
                 this.player2.clickRing('fire');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.getChatLogs(5)).toContain('player1\'s ring effect is cancelled.');
+                expect(this.getChatLogs(5)).toContain('player1\'s ring effect is cancelled');
                 expect(this.kami.location).toBe('conflict discard pile');
             });
         });

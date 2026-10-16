@@ -47,12 +47,12 @@ describe('The Lions Shadow', function () {
             });
 
             it('should make it so glory isn\'t affecting when dishonored', function () {
-                expect(this.messageRunner.getPoliticalSkill()).toBe(0);
+                expect(this.messageRunner.politicalSkill).toBe(0);
 
                 this.player1.clickCard(this.lionsShadow);
                 this.player1.clickCard(this.messageRunner);
 
-                expect(this.messageRunner.getPoliticalSkill()).toBe(1);
+                expect(this.messageRunner.politicalSkill).toBe(1);
             });
         });
 
@@ -140,6 +140,28 @@ describe('The Lions Shadow', function () {
                 expect(this.sotorii.isParticipating()).toBe(true);
                 expect(this.yoshi.isParticipating()).toBe(true);
             });
+        });
+    });
+});
+
+describe('The Lion\'s Shadow and status tokens that increase skills', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'ikoma-message-runner', attachments: ['the-lion-s-shadow'] }]
+                }
+            });
+            this.runner = this.player1.findCardByName('ikoma-message-runner');
+        });
+
+        it('keeps the tainted bonus of a dishonored character', function () {
+            this.runner.dishonor();
+            this.runner.taint();
+            this.game.checkGameState(true);
+            expect(this.runner.militarySkill).toBe(this.runner.getBaseMilitarySkill() + 2);
+            expect(this.runner.politicalSkill).toBe(this.runner.getBasePoliticalSkill() + 2);
         });
     });
 });

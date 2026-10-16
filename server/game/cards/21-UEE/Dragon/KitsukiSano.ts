@@ -1,44 +1,28 @@
-import { Duration } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyDuelTotal } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
-import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class KitsukiSano extends DrawCard {
     static id = 'kitsuki-sano';
 
-    public setupCardAbilities() {
-        this.duelChallenge({
-            title: 'Punish the injust',
-            duelCondition: (duel, context) =>
-                duel.participants.includes(context.source) &&
+    public override setupCardAbilities() {
+        this.duelChallenge('Punish the injust', (duel, context) =>
+            duel.participants.includes(context.source) &&
                 duel.participants.some(
                     (participant) => participant.controller === context.player.opponent && participant.isDishonored
-                ),
-            gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as TriggeredAbilityContext).event.duel,
-                effect: AbilityDsl.effects.modifyDuelSkill({
+                ))
+            .duelLastingEffect((context) => ({
+                effect: modifyDuelTotal({
                     amount: 2,
                     player: context.player
-                }),
-                duration: Duration.UntilEndOfDuel
-            } as LastingEffectProperties)),
-            effect: 'add 2 to their duel total'
-        });
+                })
+            }))
+            .chatText('add 2 to their duel total');
 
-        this.action({
-            title: 'Draw 2 cards, discard 2 cards',
-            condition: (context) =>
-                context.source.isAttacking() && (context.game.currentConflict as Conflict).defenders.length === 0,
-            gameAction: AbilityDsl.actions.draw((context) => ({ target: context.player, amount: 2 })),
-            then: {
-                gameAction: AbilityDsl.actions.chosenDiscard((context) => ({
-                    targets: false,
-                    target: context.player,
-                    amount: 2
-                }))
-            }
-        });
+        this.conflictAction('Draw 2 cards, discard 2 cards')
+            .condition((context) =>
+                context.source.isAttacking() && context.game.requireConflict().defenders.length === 0)
+            .draw(2)
+            .afterwards()
+            .chosenDiscard((context) => ({ targets: false, target: context.player, amount: 2 }));
     }
 }

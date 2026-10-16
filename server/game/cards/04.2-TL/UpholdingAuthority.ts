@@ -1,70 +1,58 @@
+import { Trait } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type DrawCard from '../../DrawCard.js';
-import type { MenuPromptProperties } from '../../GameActions/MenuPromptAction.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { cardMenu, chooseAmount, discardCard, lookAt, sequential } from '../../GameActions/GameActions.js';
+import { targetList, type GameActionTarget } from '../../GameActions/GameAction.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class UpholdingAuthority extends ProvinceCard {
     static id = 'upholding-authority';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => !!(context.player.role && context.player.role.hasTrait('earth')),
-            effect: AbilityDsl.effects.modifyProvinceStrength(2)
+            condition: (context) => !!(context.player.role && context.player.role.hasTrait(Trait.Earth)),
+            effect: modifyProvinceStrength(2)
         });
 
-        let gameAction = AbilityDsl.actions.menuPrompt((context) => ({
+        const gameAction = chooseAmount((context) => ({
             activePromptTitle: 'Choose how many cards to discard',
-            choices: (properties: MenuPromptProperties) =>
-                (context.game.currentConflict?.attackingPlayer.hand as DrawCard[])
-                    .filter((card) => card.name === (properties.target as DrawCard[])[0].name)
-                    .map((_, idx) => (idx + 1).toString()),
-            gameAction: AbilityDsl.actions.discardCard(),
-            choiceHandler: (choice, displayMessage, properties: MenuPromptProperties) => {
-                let chosenCard = (properties.target as DrawCard[])[0];
-                if(displayMessage) {
-                    this.game.addMessage(
-                        '{0} chooses to discard {1} cop{2} of {3}',
-                        context.player,
-                        choice,
-                        choice === '1' ? 'y' : 'ies',
-                        chosenCard
-                    );
-                }
-                return {
-                    target: context.game.currentConflict?.attackingPlayer.hand
-                        .filter((card: DrawCard) => card.name === chosenCard.name)
-                        .slice(0, parseInt(choice))
-                };
-            }
+            max: (target) => this.copiesInHand(context, target).length,
+            gameAction: (amount, target) => discardCard({ target: this.copiesInHand(context, target).slice(0, amount) }),
+            message: (context, amount, _chooser, target) =>
+                msg`${context.player} chooses to discard ${amount} cop${amount === 1 ? 'y' : 'ies'} of ${targetList(target)[0]}`
         }));
 
-        this.interrupt({
-            title: 'Look at the attacking player\'s hand and discard all copies of a card',
-            when: {
+        this.interrupt('Look at the attacking player\'s hand and discard all copies of a card')
+            .when({
                 onBreakProvince: (event, context) =>
                     event.card === context.source &&
                     context.game.currentConflict &&
-                    context.game.currentConflict.attackingPlayer &&
                     context.game.currentConflict.attackingPlayer.hand.length > 0
-            },
-            effect: 'look at the attacking player\'s hand and choose a card to be discarded',
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.lookAt((context) => ({
-                    target: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
-                    message: '{0} reveals their hand: {1}',
-                    messageArgs: (cards) => [context.game.currentConflict?.attackingPlayer, cards]
+            })
+            .gameAction(sequential([
+                lookAt((context) => ({
+                    target: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
+                    message: (context, cards) => msg`${context.game.currentConflict?.attackingPlayer} reveals their hand: ${cards}`
                 })),
-                AbilityDsl.actions.cardMenu((context) => ({
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to discard',
-                    cards: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
+                    cards: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a, b) => a.name.localeCompare(b.name)) ?? [],
                     targets: true,
                     gameAction: gameAction,
-                    choices: context.choosingPlayerOverride ? [] : ['Don\'t discard anything'],
-                    handlers: context.choosingPlayerOverride
+                    options: context.choosingPlayerOverride
                         ? []
-                        : [() => context.game.addMessage('{0} chooses not to discard anything', context.player)]
+                        : [{ text: 'Don\'t discard anything', handler: () => context.game.addMessage(msg`${context.player} chooses not to discard anything`) }]
                 }))
-            ])
-        });
+            ]))
+            .chatText('look at the attacking player\'s hand and choose a card to be discarded');
+    }
+
+    private copiesInHand(context: AbilityContext, target: GameActionTarget | GameActionTarget[] | undefined): DrawCard[] {
+        const card = targetList(target)[0];
+        return card instanceof DrawCard
+            ? context.game.currentConflict?.attackingPlayer.hand.filter((copy) => copy.name === card.name) ?? []
+            : [];
     }
 }

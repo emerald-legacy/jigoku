@@ -362,3 +362,41 @@ describe('The Mirror\'s Gaze', function () {
         });
     });
 });
+
+describe('The Mirror\'s Gaze after a cancelled event', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asahina-storyteller', 'doji-whisperer'],
+                    hand: ['the-mirror-s-gaze', 'forged-edict']
+                },
+                player2: {
+                    inPlay: ['seppun-guardsman'],
+                    hand: ['banzai']
+                }
+            });
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.guardsman = this.player2.findCardByName('seppun-guardsman');
+            this.mirrorGaze = this.player1.playAttachment('the-mirror-s-gaze', this.storyteller);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.storyteller],
+                defenders: [this.guardsman]
+            });
+        });
+
+        it('is not offered, as the event\'s effects never resolved', function () {
+            this.player2.clickCard('banzai');
+            this.player2.clickCard(this.guardsman);
+            expect(this.player1).toBeAbleToSelect('forged-edict');
+            this.player1.clickCard('forged-edict');
+            expect(this.player1).toHavePrompt('Forged Edict');
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+            expect(this.player1).not.toBeAbleToSelect(this.mirrorGaze);
+        });
+    });
+});

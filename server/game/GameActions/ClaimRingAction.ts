@@ -1,45 +1,38 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { ConflictType, EventName } from '../Constants.js';
+import { ConflictType, EventName, RestrictionType } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
+import type { ActionEvent } from './GameAction.js';
+import { takeFateFromRing } from './Shared/RingFate.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface ClaimRingProperties extends RingActionProperties {
     takeFate?: boolean;
-    type?: string;
+    type?: ConflictType;
 }
 
-export class ClaimRingAction extends RingAction<ClaimRingProperties, EventName.OnClaimRing> {
-    name = 'claimRing';
-    eventName = EventName.OnClaimRing;
-    effect = 'claim {0}';
-    defaultProperties: ClaimRingProperties = { takeFate: true, type: ConflictType.Military };
+export class ClaimRingAction<Context extends AbilityContext = AbilityContext> extends RingAction<ClaimRingProperties, EventName.OnClaimRing, Context, 'takeFate' | 'type'> {
+    override name = 'claimRing';
+    override eventName = EventName.OnClaimRing;
+    override effect = 'claim {0}';
+    override defaultProperties = { takeFate: true, type: ConflictType.Military };
 
-    canAffect(ring: Ring, context: AbilityContext): boolean {
-        if(!context.player.checkRestrictions('claimRings', context)) {
+    override canAffect(ring: Ring, context: Context): boolean {
+        if(!context.player.checkRestrictions(RestrictionType.ClaimRings, context)) {
             return false;
         }
 
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnClaimRing>, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context as AbilityContext;
-        let { takeFate, type } = this.getProperties(context, additionalProperties) as ClaimRingProperties;
-        let ring = event.ring as Ring;
+    override eventHandler(event: ActionEvent<EventName.OnClaimRing, Context>, additionalProperties: ActionOverrides = {}): void {
+        const context = event.context;
+        const { takeFate, type } = this.getProperties(context, additionalProperties);
+        const ring = event.ring;
         ring.contested = false;
-        ring.conflictType = type as ConflictType;
-        if(takeFate && ring.fate > 0 && context.player.checkRestrictions('takeFateFromRings', context)) {
-            context.game.addMessage('{0} takes {1} fate from {2}', context.player, ring.fate, ring);
-            let fate = ring.fate;
-            context.player.modifyFate(ring.fate);
-            ring.removeFate();
-            context.game.raiseEvent(EventName.OnMoveFate, {
-                fate: fate,
-                origin: ring,
-                context: context,
-                recipient: context.player
-            });
+        ring.conflictType = type;
+        if(takeFate) {
+            takeFateFromRing(ring, context);
         }
         event.player = context.player;
         event.conflict = context.game.currentConflict ?? undefined;

@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Covert - Emerald', function() {
     integration(function() {
@@ -12,7 +12,7 @@ describe('Covert - Emerald', function() {
                     inPlay: ['hantei-sotorii', 'master-alchemist', 'doji-challenger', 'doji-whisperer'],
                     hand: ['vine-tattoo', 'finger-of-jade']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.shameful = this.player2.findCardByName('shameful-display', 'province 1');
@@ -205,7 +205,7 @@ describe('Covert - Emerald Bug Checking', function() {
                     provinces: ['retire-to-the-brotherhood'],
                     role: ['seeker-of-void']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.shameful = this.player2.findCardByName('shameful-display', 'province 4');

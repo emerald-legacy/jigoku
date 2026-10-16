@@ -1,17 +1,18 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { Trait } from '../../../Constants.js';
+import { doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class WrathstormDancer extends DrawCard {
     static id = 'wrathstorm-dancer';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
                 context.source.isParticipating() &&
-                (context.player.cardsInPlay as DrawCard[]).some(
-                    (card) => card.hasTrait('berserker') && card !== context.source && card.isParticipating()
+                context.player.cardsInPlay.some(
+                    (card) => card.hasTrait(Trait.Berserker) && card !== context.source && card.isParticipating()
                 ),
-            effect: AbilityDsl.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 }

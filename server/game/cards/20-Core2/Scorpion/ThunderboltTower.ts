@@ -1,24 +1,23 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Duration } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 
 export default class ThunderboltTower extends StrongholdCard {
     static id = 'thunderbolt-tower';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Give a character -2/-2',
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Give a character -2/-2')
+            .cost(costs.bowSelf())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => !card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.modifyBothSkills(-2)
-                })
-            },
-            effect: 'give {0} -2{1}/-2{2} for the phase',
-            effectArgs: () => ['military', 'political']
-        });
+                cardCondition: (card) => !card.isParticipating()
+            }, cardLastingEffect({
+                duration: Duration.UntilEndOfPhase,
+                effect: modifyBothSkills(-2)
+            }))
+            .chatText((context) => msg`give ${context.chatTarget()} -2${'military'}/-2${'political'} for the phase`);
     }
 }

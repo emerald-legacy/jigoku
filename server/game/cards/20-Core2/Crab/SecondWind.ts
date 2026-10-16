@@ -1,7 +1,16 @@
-import { CardType, Duration, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Location, Players } from '../../../Constants.js';
+import {
+    atEndOfConflict,
+    discardCard,
+    multiple,
+    putIntoConflict,
+    returnToDeck,
+    selectCard,
+    sequential
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
+import { msg } from '../../../GameChat.js';
 
 function cardsToDiscard(context: AbilityContext) {
     return context.player.dynastyDeck.slice(0, 4);
@@ -10,40 +19,28 @@ function cardsToDiscard(context: AbilityContext) {
 export default class SecondWind extends DrawCard {
     static id = 'second-wind';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'put a character from your discard pile into play',
-            cannotTargetFirst: true,
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.discardCard((context) => ({
+    public override setupCardAbilities() {
+        this.conflictAction('put a character from your discard pile into play')
+            .gameAction(sequential([
+                discardCard((context) => ({
                     target: cardsToDiscard(context)
                 })),
-                AbilityDsl.actions.selectCard((context) => ({
+                selectCard({
                     location: Location.DynastyDiscardPile,
                     cardType: CardType.Character,
                     cardCondition: (card) => !card.isUnique(),
                     controller: Players.Self,
                     targets: true,
-                    gameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.putIntoConflict(),
-                        AbilityDsl.actions.cardLastingEffect(() => ({
-                            duration: Duration.UntilEndOfPhase,
-                            location: [Location.PlayArea],
-                            effect: AbilityDsl.effects.delayedEffect({
-                                when: {
-                                    onConflictFinished: () => true
-                                },
-                                gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
-                            })
+                    gameAction: multiple([
+                        putIntoConflict(),
+                        atEndOfConflict(() => ({
+                            gameAction: returnToDeck({ bottom: true })
                         }))
                     ]),
-                    message:
-                        '{0} puts {1} into play. {1} will be put on the bottom of the deck if it\'s still in play by the end of the conflict',
-                    messageArgs: (card) => [context.player, card, context.source]
-                }))
-            ]),
-            effect: 'find a character to put into play. {1} discards {2}',
-            effectArgs: (context) => [context.player, cardsToDiscard(context)]
-        });
+                    message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the conflict`
+                })
+            ]))
+            .chatText((context) => msg`find a character to put into play. ${context.player} discards ${cardsToDiscard(context)}`)
+            .cannotTargetFirst();
     }
 }

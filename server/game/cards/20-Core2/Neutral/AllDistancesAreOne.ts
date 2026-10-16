@@ -1,61 +1,33 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location } from '../../../Constants.js';
-import type { Cost } from '../../../costs/Cost.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Location, Trait } from '../../../Constants.js';
+import { moveConflict, turnFacedown } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-
-const CAPTURED_ORIGINAL_PROVINCE = Symbol('Capture Province');
-
-type WithCapturedOriginalProvince<T> = T & { [CAPTURED_ORIGINAL_PROVINCE]: ProvinceCard };
-
-function captureOriginalProvince(): Cost {
-    return {
-        canPay() {
-            return true;
-        },
-        resolve(context: AbilityContext) {
-            (context as WithCapturedOriginalProvince<AbilityContext>)[CAPTURED_ORIGINAL_PROVINCE] = (context.game.currentConflict as Conflict).conflictProvince as ProvinceCard;
-        },
-        pay() { }
-    };
-}
+import { captureCost } from '../../captureCost.js';
+import { controlsParticipating } from '../../controlsParticipating.js';
 
 export default class AllDistancesAreOne extends DrawCard {
     static id = 'all-distances-are-one';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move conflict to a different province',
-            condition: (context) =>
-                !!((context.game.currentConflict as Conflict | undefined)
+    override setupCardAbilities() {
+        this.conflictAction('Move conflict to a different province')
+            .condition((context) =>
+                !!(context.game.currentConflict
                     ?.getConflictProvinces()
-                    .every((province) => province.location !== Location.StrongholdProvince) &&
-                context.player.cardsInPlay.some(
-                    (card: DrawCard) => card.isParticipating() && card.hasTrait('shugenja')
-                )),
-            cost: captureOriginalProvince(),
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+                    .every((province) => province.location !== Location.StrongholdProvince && !province.isBroken) &&
+                controlsParticipating(context.player, Trait.Shugenja)))
+            .cost(captureCost('originalProvince', (context) => context.game.requireConflict().conflictProvince ?? undefined))
+            .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                gameAction: AbilityDsl.actions.moveConflict(),
-                message: '{0} moves the conflict to {1}',
-                messageArgs: (card) => [context.player, card]
-            })),
-            effect: 'move the conflict to another eligible province',
-            then: (context: WithCapturedOriginalProvince<AbilityContext>) => ({
-                thenCondition: () => !(context[CAPTURED_ORIGINAL_PROVINCE] as ProvinceCard).isBroken,
-                gameAction: AbilityDsl.actions.onAffinity({
-                    trait: 'water',
-                    promptTitleForConfirmingAffinity: 'Flip the original province facedown?',
-                    effect: 'flip {0} facedown',
-                    effectArgs: () => [context[CAPTURED_ORIGINAL_PROVINCE]],
-                    gameAction: AbilityDsl.actions.turnFacedown({
-                        target: context[CAPTURED_ORIGINAL_PROVINCE] as ProvinceCard
-                    })
-                })
+                gameAction: moveConflict(),
+                message: (context, card) => msg`${context.player} moves the conflict to ${card}`
             })
-        });
+            .chatText('move the conflict to another eligible province')
+            .afterwardsIf((context) => !context.costs.originalProvince?.isBroken)
+            .onAffinity(Trait.Water, {
+                activePromptTitle: 'Flip the original province facedown?',
+                chatText: (context) => msg`flip ${context.costs.originalProvince} facedown`
+            })
+            .gameAction(turnFacedown((context) => ({ target: context.costs.originalProvince })));
     }
 }

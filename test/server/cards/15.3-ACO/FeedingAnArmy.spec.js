@@ -66,8 +66,8 @@ describe('Feeding an Army', function() {
                 this.player1.clickCard(this.feeding);
                 this.player1.clickCard(this.throne);
 
-                let p1Honor = this.player1.honor;
-                let p2Honor = this.player2.honor;
+                const p1Honor = this.player1.honor;
+                const p2Honor = this.player2.honor;
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.throne);
                 this.player1.clickCard(this.throne);

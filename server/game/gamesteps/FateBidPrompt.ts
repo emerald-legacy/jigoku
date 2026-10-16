@@ -1,14 +1,12 @@
+import { msg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Game from '../Game.js';
-import { JointGameAction } from '../GameActions/JointGameAction.js';
-import { LoseFateAction } from '../GameActions/LoseFateAction.js';
 import type Player from '../Player.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 
 export type Result = {
     bids: Map<Player, number>;
     highest: { amount: number; players: Set<Player> };
-    lowest: { amount: number; players: Set<Player> };
 };
 
 export class FateBidPrompt extends AllPlayerPrompt {
@@ -25,23 +23,22 @@ export class FateBidPrompt extends AllPlayerPrompt {
         this.menuTitle = menuTitle || 'Choose a bid';
     }
 
-    activeCondition(player: Player) {
+    override activeCondition(player: Player) {
         return !this.bids.has(player);
     }
 
-    completionCondition(player: Player) {
+    override completionCondition(player: Player) {
         return this.bids.has(player);
     }
 
-    continue() {
+    override continue() {
         if(!super.continue()) {
             return false;
         }
 
         const result: Result = {
             bids: this.bids,
-            highest: { amount: 0, players: new Set() },
-            lowest: { amount: 0, players: new Set() }
+            highest: { amount: 0, players: new Set() }
         };
         for(const [player, amount] of this.bids) {
             if(amount > result.highest.amount) {
@@ -50,34 +47,16 @@ export class FateBidPrompt extends AllPlayerPrompt {
             } else if(amount === result.highest.amount) {
                 result.highest.players.add(player);
             }
-            if(amount < result.lowest.amount) {
-                result.lowest.amount = amount;
-                result.lowest.players = new Set([player]);
-            } else if(amount === result.lowest.amount) {
-                result.lowest.players.add(player);
-            }
         }
 
-        const context = this.game.getFrameworkContext();
-        // @ts-expect-error -- fateBidResult is dynamically added to context for downstream bid resolution
-        context.fateBidResult = result;
+        const context = this.game.getGameContext();
 
         this.game.queueSimpleStep(() => this.bidHandler(result, context));
 
         return true;
     }
 
-    spendFateAfterBid() {
-        const actions: Array<LoseFateAction> = [];
-        const context = this.game.getFrameworkContext();
-        for(const [player, amount] of this.bids) {
-            this.game.addMessage('{0} spends {1} fate', player, amount);
-            actions.push(new LoseFateAction({ amount, target: player }));
-        }
-        new JointGameAction(actions).resolve(undefined, context);
-    }
-
-    activePrompt(player: Player) {
+    override activePrompt(player: Player) {
         const prohibitedBids = this.prohibitedBids[player.uuid] || [];
         const buttons: Array<{ text: string; arg: string }> = [];
         for(let i = 0, max = player.fate; i <= max; i++) {
@@ -94,15 +73,15 @@ export class FateBidPrompt extends AllPlayerPrompt {
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to decide how much fate to spend.' };
     }
 
-    menuCommand(player: Player, bid: string) {
+    override menuCommand(player: Player, bid: string) {
         const parsed = parseInt(bid, 10);
         const amount = isNaN(parsed) ? 0 : parsed;
 
-        this.game.addMessage('{0} has decided how much fate to spend.', player);
+        this.game.addMessage(msg`${player} has decided how much fate to spend.`);
         this.bids.set(player, amount);
         return true;
     }

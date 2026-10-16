@@ -1,33 +1,28 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaShaHeiden extends DrawCard {
     static id = 'shiba-sha-heiden';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         /**
          * The card is a single action, but implementing the cost was too much work
          * Should be fixed later when choice costs are implemented
          */
 
-        const sharedLimit = AbilityDsl.limit.perRound(1);
-        this.action({
-            title: 'Pay 1 fate to draw a card',
-            cost: AbilityDsl.costs.payFate(1),
-            gameAction: AbilityDsl.actions.draw(),
-            limit: sharedLimit
-        });
-        this.action({
-            title: 'Discard a card to gain 1 fate',
-            cost: AbilityDsl.costs.discardCard(),
-            gameAction: AbilityDsl.actions.gainFate(),
-            limit: sharedLimit
-        });
-        this.action({
-            title: 'Discard a card to draw a card',
-            cost: AbilityDsl.costs.discardCard(),
-            gameAction: AbilityDsl.actions.draw(),
-            limit: sharedLimit
-        });
+        const sharedLimit = perRound(1);
+        this.action('Pay 1 fate to draw a card')
+            .cost(costs.payFate(1))
+            .draw()
+            .limit(sharedLimit);
+        this.action('Discard a card to gain 1 fate')
+            .cost(costs.discardCard())
+            .gainFate()
+            .limit(sharedLimit);
+        this.action('Discard a card to draw a card')
+            .cost(costs.discardCard())
+            .draw()
+            .limit(sharedLimit);
     }
 }

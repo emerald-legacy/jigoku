@@ -20,6 +20,14 @@ describe('Ide Nobutada', function () {
             this.player2.pass();
         });
 
+        it('shuffles the dynasty deck when it takes nothing', function () {
+            this.player1.clickCard(this.ideNobutada);
+            this.player1.clickPrompt('Take nothing');
+            expect(this.ideNobutada.location).toBe('play area');
+            expect(this.getChatLogs(5)).toContain('player1 finds no copies of Shinjo Takame');
+            expect(this.getChatLogs(5)).toContain('player1 is shuffling their dynasty deck');
+        });
+
         it('replaces itself with Shinjo Takame', function () {
             this.player1.clickCard(this.ideNobutada);
             expect(this.player1).toHavePrompt('Find a copy of Shinjo Takame');

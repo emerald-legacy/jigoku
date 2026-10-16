@@ -1,51 +1,36 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'stride-the-waves-water';
+const elementSymbol = { key: 'stride-the-waves-water', element: Element.Water };
 
 class StrideTheWaves extends DrawCard {
     static id = 'stride-the-waves';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
-        this.action({
-            title: 'Move attached character in or out of the conflict',
-            limit: AbilityDsl.limit.perRound(2),
-            condition: context => context.game.isDuringConflict() &&
-                context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player),
-            gameAction: AbilityDsl.actions.conditional({
-                condition: context => !!(context.source as DrawCard).parentCharacter?.inConflict,
-                trueGameAction: AbilityDsl.actions.sendHome(context => ({
-                    target: context.source.parentCharacter
-                })),
-                falseGameAction: AbilityDsl.actions.moveToConflict(context => ({
-                    target: context.source.parentCharacter
-                }))
-            }),
-            effect: '{3} {1} {2}',
-            effectArgs: context => {
+        this.action('Move attached character in or out of the conflict')
+            .condition((context) => context.game.isDuringConflict() && hasClaimedRing(this, elementSymbol.key, context.player))
+            .if((context) => !!context.source.parentCharacter?.inConflict)
+                .sendHome((context) => ({ target: context.source.parentCharacter ?? [] }))
+            .otherwise()
+                .moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] }))
+            .chatText((context) => {
                 const parent = context.source.parentCharacter;
-                return [
-                    parent ?? '',
-                    parent && parent.inConflict ? 'home' : 'into the conflict',
-                    parent && parent.inConflict ? 'send' : 'move'
-                ];
-            }
-        });
+                return parent && parent.inConflict
+                    ? msg`send ${parent} home`
+                    : msg`move ${parent} into the conflict`;
+            })
+            .limit(perRound(2));
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Water
-        });
-        return symbols;
+    override getPrintedElementSymbols() {
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

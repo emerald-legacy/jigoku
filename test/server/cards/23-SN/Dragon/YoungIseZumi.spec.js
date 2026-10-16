@@ -39,7 +39,7 @@ describe('Young Ise Zumi', function () {
             expect(this.player1).toBeAbleToSelectRing('water');
             expect(this.player1).toBeAbleToSelectRing('void');
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickRing('fire');
             expect(this.player1.fate).toBe(fate - 1);
             expect(this.game.rings.fire.fate).toBe(1);

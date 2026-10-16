@@ -1,54 +1,47 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Players, CharacterStatus } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import {
+    discardFromPlay,
+    discardStatusToken,
+    gainHonor,
+    multiple,
+    removeFate,
+    sequential
+} from '../../../GameActions/GameActions.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { StatusToken } from '../../../StatusToken.js';
 
 export default class ForcedRetirement extends DrawCard {
     static id = 'forced-retirement';
 
-    public setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Remove negative status tokens from a character, and discard it from play',
-            effect: 'expiate {0}\'s misdeeds by retiring them to the nearest monatery{1} Let them contemplate their sins.',
-            effectArgs: (context) => {
-                const target = context.target;
-                return [
-                    target && target.fate > 0 ? ', recovering their ' + target.fate + ' fate.' : '.'
-                ];
-            },
-            target: {
+    public override setupCardAbilities() {
+        this.action('Remove negative status tokens from a character, and discard it from play')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => (card.isDishonored || card.isTainted) && !card.isParticipating()
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                gameActions: [
-                    AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.discardStatusToken({
-                            target: context.target.statusTokens.filter(
-                                (t: StatusToken) =>
-                                    t.grantedStatus === CharacterStatus.Dishonored ||
-                                    t.grantedStatus === CharacterStatus.Tainted
-                            )
-                        }),
-                        AbilityDsl.actions.removeFate({
-                            target: context.target,
-                            amount: context.target.getFate(),
-                            recipient: context.target.owner
-                        })
-                    ]),
-                    AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.discardFromPlay({
-                            target: context.target
-                        }),
-                        AbilityDsl.actions.gainHonor({
-                            target: context.player,
-                            amount: 1
-                        })
-                    ])
-                ]
-            }))
-        });
+            })
+            .gameAction(sequential((context) => [
+                multiple([
+                    discardStatusToken({
+                        target: context.target.statusTokens
+                    }),
+                    removeFate({
+                        target: context.target,
+                        amount: context.target.getFate(),
+                        recipient: context.target.owner
+                    })
+                ]),
+                multiple([
+                    discardFromPlay({
+                        target: context.target
+                    }),
+                    gainHonor({
+                        target: context.player
+                    })
+                ])
+            ]))
+            .chatText((context) => context.target.fate > 0
+                ? msg`expiate ${context.chatTarget()}'s misdeeds by retiring them to the nearest monastery, recovering their ${context.target.fate} fate. Let them contemplate their sins`
+                : msg`expiate ${context.chatTarget()}'s misdeeds by retiring them to the nearest monastery. Let them contemplate their sins`);
     }
 }

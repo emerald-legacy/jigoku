@@ -24,7 +24,7 @@ describe('Kotobuki\'s Blessing', function () {
         });
 
         it('should put a fate on a character you control and prompt to discard attachment (discard)', function () {
-            let fate = this.brash.fate;
+            const fate = this.brash.fate;
 
             this.player1.playAttachment(this.katana, this.brash);
             this.player2.pass();
@@ -54,7 +54,7 @@ describe('Kotobuki\'s Blessing', function () {
         });
 
         it('should put a fate and prompt to discard attachment (no discard)', function () {
-            let fate = this.brash.fate;
+            const fate = this.brash.fate;
 
             this.player1.playAttachment(this.katana, this.brash);
             this.player2.pass();
@@ -78,7 +78,7 @@ describe('Kotobuki\'s Blessing', function () {
         });
 
         it('target has no attachments', function () {
-            let fate = this.brash.fate;
+            const fate = this.brash.fate;
 
             this.player1.clickCard(this.blessing);
             this.player1.clickCard(this.brash);

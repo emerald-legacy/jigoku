@@ -1,13 +1,13 @@
 export enum AbilityType {
     Action = 'action',
-    WouldInterrupt = 'cancelinterrupt',
-    ForcedInterrupt = 'forcedinterrupt',
-    KeywordInterrupt = 'keywordinterrupt',
+    WouldInterrupt = 'wouldInterrupt',
+    ForcedInterrupt = 'forcedInterrupt',
+    KeywordInterrupt = 'keywordInterrupt',
     Interrupt = 'interrupt',
-    KeywordReaction = 'keywordreaction',
-    ForcedReaction = 'forcedreaction',
+    KeywordReaction = 'keywordReaction',
+    ForcedReaction = 'forcedReaction',
     Reaction = 'reaction',
-    DuelReaction = 'duelreaction', // ONLY USE FOR DUEL CHALLENGE, FOCUS, AND STRIKE
+    DuelReaction = 'duelReaction', // ONLY USE FOR DUEL CHALLENGE, FOCUS, AND STRIKE
     Persistent = 'persistent',
-    OtherEffects = 'OtherEffects'
+    OtherEffects = 'otherEffects'
 }

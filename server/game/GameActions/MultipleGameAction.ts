@@ -1,67 +1,41 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameObject } from '../GameObject.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { CompositeGameAction } from './CompositeGameAction.js';
+import type { EventName } from '../Constants.js';
+import { type GameAction, joinEffectMessages, type GameActionProperties } from './GameAction.js';
 
-export interface MultipleActionProperties extends GameActionProperties {
+export interface MultipleProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class MultipleGameAction extends GameAction {
-    declare defaultProperties: MultipleActionProperties;
+/** The actions it holds: a list, or a function of the context returning one. */
+export type GameActionList<Context extends AbilityContext> = GameAction<GameActionProperties, EventName, Context>[] | ((context: Context) => GameAction[]);
 
-    constructor(gameActions: GameAction[]) {
-        super({ gameActions: gameActions } as GameActionProperties);
+export class MultipleGameAction<Context extends AbilityContext = AbilityContext> extends CompositeGameAction<MultipleProperties, Context> {
+    constructor(gameActions: GameActionList<Context>) {
+        super(typeof gameActions === 'function' ? (context: Context) => ({ gameActions: gameActions(context) }) : { gameActions });
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let { gameActions } = this.getProperties(context);
-        let legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));
-        let message = '{0}';
-        for(var i = 1; i < legalGameActions.length; i++) {
-            message += i === legalGameActions.length - 1 ? ' and ' : ', ';
-            message += '{' + i + '}';
-        }
-        return [message, legalGameActions.map((action) => action.getEffectMessage(context))];
+    override getEffectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { properties: { gameActions }, overrides } = this.getCompositeProperties(context, additionalProperties);
+        const legal = gameActions.filter((action) => action.hasLegalTarget(context, overrides));
+        return joinEffectMessages(context, legal.map((action) => ({ action, overrides })));
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): MultipleActionProperties {
-        let properties = super.getProperties(context, additionalProperties) as MultipleActionProperties;
-        for(const gameAction of properties.gameActions) {
-            gameAction.setDefaultTarget(() => properties.target);
-        }
-        return properties;
+    protected children(properties: MultipleProperties) {
+        return properties.gameActions;
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.some((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
-    }
-
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.some((gameAction) => gameAction.canAffect(target, context, additionalProperties));
-    }
-
-    allTargetsLegal(context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.some((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
-    }
-
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
+        const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
-                if(gameAction.hasLegalTarget(context, additionalProperties)) {
-                    gameAction.addEventsToArray(events, context, additionalProperties);
+                if(gameAction.hasLegalTarget(context, overrides)) {
+                    gameAction.addEventsToArray(events, context, overrides);
                 }
             });
         }
-    }
-
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext) {
-        let properties = this.getProperties(context);
-        return properties.gameActions.some((gameAction) => gameAction.hasTargetsChosenByInitiatingPlayer(context));
     }
 }

@@ -14,7 +14,7 @@ describe('Shiro Shinjo', function() {
 
                 this.shiroShinjo = this.player1.findCardByName('shiro-shinjo');
 
-                let provinces = this.player2.provinces;
+                const provinces = this.player2.provinces;
                 provinces['province 1'].provinceCard.facedown = false;
                 provinces['province 2'].provinceCard.facedown = false;
                 provinces['province 3'].provinceCard.facedown = false;
@@ -35,7 +35,7 @@ describe('Shiro Shinjo', function() {
             });
 
             it('should give the player fate equal to the number of faceup provinces your opponent controls', function() {
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 this.flow.keepDynasty();
                 this.flow.keepConflict();
                 this.player1.clickCard(this.shiroShinjo);

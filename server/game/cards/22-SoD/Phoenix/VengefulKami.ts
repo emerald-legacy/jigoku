@@ -1,108 +1,36 @@
-import { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { Conflict } from '../../../Conflict.js';
-import { EventName, TargetMode, AbilityType } from '../../../Constants.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { cardCannot } from '../../../effects.js';
+import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { EventRegistrar } from '../../../EventRegistrar.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
-import Ring from '../../../Ring.js';
+import { ConflictsDeclaredThisRound } from '../../ConflictsDeclaredThisRound.js';
+import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class VengefulKami extends DrawCard {
     static id = 'vengeful-kami';
 
-    private eventRegistrar?: EventRegistrar;
-    private declaredProvinces: string[] = [];
+    public override setupCardAbilities() {
+        const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
 
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([{
-            [EventName.OnConflictDeclared + ':' + AbilityType.Reaction]: 'onConflictDeclaredReaction'
-        }]);
-        this.eventRegistrar.register([EventName.OnRoundEnded]);
-
-        this.action({
-            title: 'Resolve Ring Effect',
-            condition: context => context.game.isDuringConflict() &&
-                context.player.isDefendingPlayer() &&
-                (context.game.currentConflict as Conflict)
+        this.conflictAction('Resolve Ring Effect', { evenFromHome: true })
+            .condition((context) => context.player.isDefendingPlayer() &&
+                context.game.requireConflict()
                     .getConflictProvinces()
-                    .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province)),
-            target: {
-                mode: TargetMode.Ring,
+                    .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict)))
+            .ringTarget({
                 activePromptTitle: 'Choose a ring',
-                ringCondition: (ring: Ring, context?: AbilityContext) =>
-                    !!context && (context.game.currentConflict as Conflict)
+                ringCondition: (ring, context) =>
+                    context.game.requireConflict()
                         .getConflictProvinces()
-                        .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province) && province.getElement().includes(ring.element)),
-                gameAction: AbilityDsl.actions.resolveRingEffect()
-            },
-            effect: 'resolve the {0} effect',
-            max: AbilityDsl.limit.perConflict(1)
-        });
+                        .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict) && province.getElement().includes(ring.element))
+            }, resolveRingEffect())
+            .chatText('resolve the {0} effect')
+            .max(perConflict(1));
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({
-                cannot: 'applyCovert',
-                restricts: 'opponentsCardEffects'
+            effect: cardCannot({
+                cannot: RestrictionType.ApplyCovert,
+                appliesTo: RestrictionScope.OpponentsCardEffects
             })
         });
-    }
-
-    public onRoundEnded() {
-        this.declaredProvinces = [];
-    }
-
-    public onConflictDeclaredReaction(event: EventPayload<typeof EventName.OnConflictDeclared>) {
-        if(!this.declaredProvinces) {
-            this.declaredProvinces = [];
-        }
-        const conflictString = this.getConflictString(event?.conflict);
-
-        if(conflictString) {
-            if(!this.declaredProvinces.includes(conflictString)) {
-                this.declaredProvinces.push(conflictString);
-            }
-        }
-    }
-
-    private getConflictString(conflict?: Conflict): string | undefined {
-        if(!conflict) {
-            return undefined;
-        }
-
-        const provinceString = this.getProvinceIdString(conflict.declaredProvince ?? undefined);
-        if(!provinceString) {
-            return undefined;
-        }
-        return `${provinceString}-${conflict.uuid}`;
-    }
-
-    private getProvinceIdString(province?: ProvinceCard): string | undefined {
-        if(!province) {
-            return undefined;
-        }
-
-        const { uuid, id, location } = province;
-        return `${uuid}-${id}-${location}`;
-    }
-
-    private wasProvinceAttacked(conflict: Conflict | null, province: ProvinceCard) {
-        if(!this.declaredProvinces) {
-            return false;
-        }
-        const conflictString = this.getConflictString(conflict ?? undefined);
-        const provinceString = this.getProvinceIdString(province);
-        if(!provinceString) {
-            return false;
-        }
-
-        for(let i = 0; i < this.declaredProvinces.length; i++) {
-            const a = this.declaredProvinces[i];
-            if(a.indexOf(provinceString) >= 0 && a !== conflictString) {
-                return true;
-            }
-        }
-        return false;
     }
 }

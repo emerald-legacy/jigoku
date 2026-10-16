@@ -176,7 +176,7 @@ describe('Jealous Ancestor', function () {
                 });
 
                 it('does not block draw from opponent events', function () {
-                    let initialHand = this.player1.hand.length;
+                    const initialHand = this.player1.hand.length;
                     this.player2.clickCard(this.bhc);
                     this.player2.clickPrompt('player1');
                     expect(this.getChatLogs(5)).toContain(
@@ -257,7 +257,7 @@ describe('Jealous Ancestor', function () {
                 });
 
                 it('does not block draw from opponent events', function () {
-                    let initialHand = this.player1.hand.length;
+                    const initialHand = this.player1.hand.length;
                     this.player2.clickCard(this.bhc);
                     this.player2.clickPrompt('player1');
                     expect(this.getChatLogs(5)).toContain(
@@ -336,7 +336,7 @@ describe('Jealous Ancestor', function () {
                 });
 
                 it('does not block draw from opponent events', function () {
-                    let initialHand = this.player1.hand.length;
+                    const initialHand = this.player1.hand.length;
                     this.player2.clickCard(this.bhc);
                     this.player2.clickPrompt('player1');
                     expect(this.getChatLogs(5)).toContain(
@@ -363,6 +363,54 @@ describe('Jealous Ancestor', function () {
                     expect(this.ingenuity.location).toBe('hand');
                 });
             });
+        });
+    });
+});
+
+describe('Jealous Ancestor attached to its controller\'s own character', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['gifted-tactician'],
+                    hand: ['jealous-ancestor', 'backhanded-compliment']
+                },
+                player2: {
+                    inPlay: ['master-whisperer'],
+                    hand: ['backhanded-compliment']
+                }
+            });
+
+            this.giftedTactician = this.player1.findCardByName('gifted-tactician');
+            this.jealousAncestor = this.player1.findCardByName('jealous-ancestor');
+            this.bhc1 = this.player1.findCardByName('backhanded-compliment');
+            this.whisperer = this.player2.findCardByName('master-whisperer');
+            this.bhc2 = this.player2.findCardByName('backhanded-compliment');
+
+            this.player1.clickCard(this.jealousAncestor);
+            this.player1.clickPrompt('Play Jealous Ancestor as an attachment');
+            this.player1.clickCard(this.giftedTactician);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.giftedTactician],
+                defenders: [this.whisperer]
+            });
+        });
+
+        it('blocks its controller\'s draw effects', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.bhc1);
+            this.player1.clickPrompt('player1');
+            expect(this.player1.hand.length).toBe(0);
+        });
+
+        it('does not block the opponent\'s draw effects', function () {
+            this.player2.clickCard(this.bhc2);
+            this.player2.clickPrompt('player2');
+            expect(this.player2.hand.length).toBe(1);
         });
     });
 });

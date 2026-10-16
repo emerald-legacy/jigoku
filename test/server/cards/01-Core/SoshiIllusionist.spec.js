@@ -28,7 +28,7 @@ describe('Soshi Illusionst', function() {
         });
 
         it('Should cost a fate and discard the token', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.illusionist);
             this.player1.clickCard(this.shibaPeacemaker);
             expect(this.shibaPeacemaker.isHonored).toBe(false);

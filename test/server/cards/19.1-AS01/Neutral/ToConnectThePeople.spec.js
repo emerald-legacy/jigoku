@@ -49,16 +49,27 @@ describe('To Connect the People', function () {
             });
 
             it('discards a few cards from the opponents dynasty deck', function () {
-                let initialDiscardPile = this.player2.player.dynastyDiscardPile.length;
+                const initialDiscardPile = this.player2.player.dynastyDiscardPile.length;
+                const topCards = this.player2.player.dynastyDeck.slice(0, 3);
+                const discarded = jasmine.createSpy('onCardsDiscarded');
+                this.game.on('onCardsDiscarded', discarded);
 
                 this.player1.clickCard(this.toConnectThePeople);
                 expect(this.player2.player.dynastyDiscardPile.length).toBe(initialDiscardPile + 3);
+                expect(discarded).toHaveBeenCalledWith(jasmine.objectContaining({ cards: topCards }));
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays To Connect the People to discard the top 3 cards of player2\'s dynasty deck'
+                    'player1 plays To Connect the People to discard Adept of the Waves, Adept of the Waves and Adept of the Waves from the top of player2\'s dynasty deck'
                 );
-                expect(this.getChatLogs(5)).toContain(
-                    'To Connect the People discards Adept of the Waves, Adept of the Waves and Adept of the Waves'
-                );
+            });
+
+            it('does not leave the character playable when the play is cancelled', function () {
+                this.player1.clickCard(this.toConnectThePeople);
+                this.player1.clickCard(this.opponentDynastyDiscardAkodoMotivator);
+                this.player1.clickPrompt('Cancel');
+                expect(this.opponentDynastyDiscardAkodoMotivator.location).toBe('dynasty discard pile');
+                this.player2.clickCard(this.opponentDynastyDiscardAkodoMotivator);
+                expect(this.opponentDynastyDiscardAkodoMotivator.location).toBe('dynasty discard pile');
+                expect(this.player2).toHavePrompt('Action Window');
             });
 
             it('should allow you to purchase any character from your opponent discard piles that has glory equal or lower than a merchant you control', function () {

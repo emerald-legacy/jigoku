@@ -1,40 +1,29 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
-import { Phases, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase, CardType, Location } from '../../Constants.js';
+import { moveCard, multiple, restoreProvince } from '../../GameActions/GameActions.js';
 
 class EtherealAlignment extends DrawCard {
     static id = 'ethereal-alignment';
 
-    setupCardAbilities() {
-        this.interrupt({
-            title: 'Restore a province',
-            when : {
-                onPhaseEnded: event => event.phase === Phases.Conflict
-            },
-            target: {
+    override setupCardAbilities() {
+        this.interrupt('Restore a province')
+            .when({
+                onPhaseEnded: (event) => event.phase === Phase.Conflict
+            })
+            .target({
                 location: Location.Provinces,
                 cardType: CardType.Province,
-                cardCondition: (card: BaseCard, context) => {
-                    const province = card as ProvinceCard;
-                    return province.isBroken && province.element.some((element: string) => {
-                        if(element === 'all') {
-                            return true;
-                        }
-                        return this.game.rings[element].isConsideredClaimed(context.player);
-                    });
-                },
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.restoreProvince(),
-                    AbilityDsl.actions.moveCard(context => ({
-                        target: context.source,
-                        destination: Location.RemovedFromGame
-                    }))
-                ])
-            },
-            effect: 'restore {0}'
-        });
+                cardCondition: (card, context) => {
+                    return card.isBroken && card.element.some((element) => this.game.ringFor(element)?.isConsideredClaimed(context.player) ?? false);
+                }
+            }, multiple([
+                restoreProvince(),
+                moveCard((context) => ({
+                    target: context.source,
+                    destination: Location.RemovedFromGame
+                }))
+            ]))
+            .chatText('restore {0}');
     }
 }
 

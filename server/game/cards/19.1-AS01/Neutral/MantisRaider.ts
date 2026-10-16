@@ -1,34 +1,29 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
+import { msg } from '../../../GameChat.js';
 
 export default class MantisRaider extends DrawCard {
     static id = 'mantis-raider';
 
-    public setupCardAbilities() {
-        this.reaction({
-            title: 'Steal a fate',
-            when: {
+    public override setupCardAbilities() {
+        this.reaction('Steal a fate')
+            .when({
                 onConflictStarted: (event, context) =>
                     context.source.isAttacking() && event.conflict.defenders.length === 0
-            },
-            effect: 'take a fate from {1} and place it on {0}.',
-            effectArgs: (context) => context.player.opponent as Player,
-            gameAction: AbilityDsl.actions.placeFate((context) => ({
+            })
+            .placeFate((context) => ({
                 origin: context.player.opponent
             }))
-        });
+            .chatText((context) => msg`take a fate from ${context.player.opponent} and place it on ${context.chatTarget()}`);
 
-        this.action({
-            title: 'Give this character +1 military',
-            condition: (context) => context.source.isParticipating(),
-            cost: AbilityDsl.costs.removeFateFromSelf(),
-            effect: 'give himself +1{1}',
-            effectArgs: () => ['military'],
-            gameAction: AbilityDsl.actions.cardLastingEffect({
-                effect: AbilityDsl.effects.modifyMilitarySkill(1)
-            }),
-            limit: AbilityDsl.limit.perConflict(2)
-        });
+        this.conflictAction('Give this character +1 military')
+            .cost(costs.removeFateFromSelf())
+            .cardLastingEffect({
+                effect: modifyMilitarySkill(1)
+            })
+            .chatText(() => msg`give himself +1${'military'}`)
+            .limit(perConflict(2));
     }
 }

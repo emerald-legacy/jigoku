@@ -1,10 +1,6 @@
-import { EventName, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
+import type { EventName } from '../../../Constants.js';
+import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type Ring from '../../../Ring.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
-import type { ProvinceCard } from '../../../ProvinceCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
@@ -19,23 +15,19 @@ function isamuWentHome(event: SendOrReturnHomeEvent, context: TriggeredAbilityCo
 export default class ShinjoIsamu extends DrawCard {
     static id = 'shinjo-isamu';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Resolve a ring effect',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Resolve a ring effect')
+            .when({
                 onSendHome: isamuWentHome,
                 onReturnHome: isamuWentHome
-            },
-            target: {
-                mode: TargetMode.Ring,
+            })
+            .ringTarget({
                 activePromptTitle: 'Choose a ring',
-                ringCondition: (ring: Ring, context?: AbilityContext) =>
-                    (context?.game.currentConflict as Conflict)
+                ringCondition: (ring, context) =>
+                    context.game.requireConflict()
                         .getConflictProvinces()
-                        .some((province: ProvinceCard) => province.getElement().includes(ring.element)),
-                gameAction: AbilityDsl.actions.resolveRingEffect()
-            },
-            effect: 'resolve the {0} effect'
-        });
+                        .some((province) => province.getElement().includes(ring.element))
+            }, resolveRingEffect())
+            .chatText('resolve the {0} effect');
     }
 }

@@ -34,7 +34,7 @@ describe('Academy of Etiquette', () => {
             });
 
             it('should react to fate phase beginning and give Courtesy to up to two characters', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.nextPhase(); // fate phase
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.academy);

@@ -44,8 +44,8 @@ describe('Inspired Visionary', function() {
             this.player1.pass();
             this.player2.playAttachment(this.pacifism, this.kuwanan);
 
-            let hand1 = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand1 = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.noMoreActions();
             this.player1.clickPrompt('military');
@@ -78,8 +78,8 @@ describe('Inspired Visionary', function() {
             this.player2.clickCard(this.katana);
             this.player2.clickCard(this.toshimoko);
 
-            let hand1 = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand1 = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.noMoreActions();
             this.player1.clickPrompt('military');

@@ -1,13 +1,13 @@
 import type BaseCard from '../../BaseCard.js';
 import type { StoredPersistentEffect } from '../../BaseCard.js';
 import type { CardAction } from '../../CardAction.js';
-import type TriggeredAbility from '../../TriggeredAbility.js';
+import type { TriggeredAbility } from '../../TriggeredAbility.js';
 import { AbilityType, EffectName, Location } from '../../Constants.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
-import GainAbility from '../GainAbility.js';
+import { GainAbility } from '../GainAbility.js';
 
-export class GainAllAbilities extends EffectValue<BaseCard> {
+export class GainAllAbilities extends EffectValue<BaseCard, BaseCard> {
     actions: Array<GainAbility>;
     reactions: Array<GainAbility>;
     persistentEffects: StoredPersistentEffect[];
@@ -31,25 +31,25 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
         this.abilitiesForTargets = {};
     }
 
-    apply(target: BaseCard) {
+    override apply(target: BaseCard) {
         this.abilitiesForTargets[target.uuid] = {
-            actions: this.actions.map((value) => {
+            actions: this.actions.flatMap((value) => {
                 value.apply(target);
-                return value.getValue() as CardAction;
+                return value.grantedAction ?? [];
             }),
-            reactions: this.reactions.map((value) => {
+            reactions: this.reactions.flatMap((value) => {
                 value.apply(target);
-                return value.getValue() as TriggeredAbility;
+                return value.grantedTriggered ?? [];
             })
         };
         for(const effect of this.persistentEffects) {
             if(effect.location === Location.PlayArea || effect.location === Location.Any) {
-                effect.ref = target.addEffectToEngine({ ...effect, location: effect.location });
+                effect.ref = target.addEffectToEngine(effect);
             }
         }
     }
 
-    unapply(target: BaseCard) {
+    override unapply(target: BaseCard) {
         const entry = this.abilitiesForTargets[target.uuid];
         if(entry) {
             for(const value of entry.reactions) {

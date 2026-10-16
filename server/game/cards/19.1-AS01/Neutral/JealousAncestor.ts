@@ -1,54 +1,45 @@
-import { CardType, Element, Players } from '../../../Constants.js';
+import { Element, Players, RestrictionType, RestrictionScope, Trait } from '../../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 import type { EffectFactory } from '../../../Effects/EffectBuilder.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addTrait, immunity, playerCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { claimedRingSymbols, hasClaimedRing } from '../../claimedRings.js';
 
-const ELEMENT_KEY = 'jealous-ancestor-void';
+const elementSymbol = { key: 'jealous-ancestor-void', element: Element.Void };
 
 export default class JealousAncestor extends DrawCard {
     static id = 'jealous-ancestor';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
 
-        this.whileAttached({ effect: AbilityDsl.effects.addTrait('shadowlands') });
+        this.whileAttached({ effect: addTrait(Trait.Shadowlands) });
         this.persistentEffect({
             condition: (context) => !!context.source.parentCharacter,
-            effect: AbilityDsl.effects.immunity({ restricts: 'events' })
+            effect: immunity({ appliesTo: RestrictionScope.Events })
         });
 
-        this.addAttachedEffectOnOpponent(
-            AbilityDsl.effects.playerCannot({ cannot: 'draw', restricts: 'opponentsCardEffects' })
-        );
-        this.addAttachedEffectOnOpponent(AbilityDsl.effects.playerCannot({ cannot: 'move', restricts: 'toHand' }));
-        this.addAttachedEffectOnOpponent(AbilityDsl.effects.playerCannot({ cannot: 'returnToHand' }));
+        for(const targetController of [Players.Self, Players.Opponent] as const) {
+            const theirCardEffects = targetController === Players.Self ? RestrictionScope.OwnCardEffects : RestrictionScope.OpponentsCardEffects;
+            this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.Draw, appliesTo: theirCardEffects }));
+            this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.MoveToHand }));
+            this.restrictParentController(targetController, playerCannot({ cannot: RestrictionType.ReturnToHand }));
+        }
     }
 
-    public leavesPlay() {
-        this.printedType = CardType.Character;
-        super.leavesPlay();
+    public override getPrintedElementSymbols() {
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 
-    public getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: ELEMENT_KEY,
-            prettyName: 'Claimed Ring',
-            element: Element.Void
-        });
-        return symbols;
-    }
-
-    private addAttachedEffectOnOpponent(effect: EffectFactory) {
+    private restrictParentController(targetController: Players.Self | Players.Opponent, effect: EffectFactory) {
         this.persistentEffect({
-            condition: (context) =>
-                !!(context.source.parentCharacter &&
-                context.source.parentCharacter.isParticipating() &&
-                !this.game.rings[this.getCurrentElementSymbol(ELEMENT_KEY)].isConsideredClaimed(
-                    context.source.parentCharacter.controller
-                )),
-            targetController: Players.Opponent,
+            condition: (context) => {
+                const parent = context.source.parentCharacter;
+                return !!parent && parent.isParticipating() &&
+                    (parent.controller === context.player) === (targetController === Players.Self) &&
+                    !hasClaimedRing(this, elementSymbol.key, parent.controller);
+            },
+            targetController,
             effect: effect
         });
     }

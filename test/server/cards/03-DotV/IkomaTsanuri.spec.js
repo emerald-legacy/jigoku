@@ -64,16 +64,16 @@ describe('Ikoma Tsanuri', function() {
                 });
                 this.player2.pass();
 
-                let ikomaTsanuriMil = this.ikomaTsanuri.militarySkill;
-                let ikomaTsanuriPol = this.ikomaTsanuri.politicalSkill;
-                let matsuBerserkerMil = this.matsuBerserker.militarySkill;
-                let matsuBerserkerPol = this.matsuBerserker.politicalSkill;
-                let obstinateRecruitMil = this.obstinateRecruit.militarySkill;
-                let obstinateRecruitPol = this.obstinateRecruit.politicalSkill;
-                let kitsuSpiritcallerMil = this.kitsuSpiritcaller.militarySkill;
-                let kitsuSpiritcallerPol = this.kitsuSpiritcaller.politicalSkill;
-                let dojiWhispererMil = this.dojiWhisperer.militarySkill;
-                let dojiWhispererPol = this.dojiWhisperer.politicalSkill;
+                const ikomaTsanuriMil = this.ikomaTsanuri.militarySkill;
+                const ikomaTsanuriPol = this.ikomaTsanuri.politicalSkill;
+                const matsuBerserkerMil = this.matsuBerserker.militarySkill;
+                const matsuBerserkerPol = this.matsuBerserker.politicalSkill;
+                const obstinateRecruitMil = this.obstinateRecruit.militarySkill;
+                const obstinateRecruitPol = this.obstinateRecruit.politicalSkill;
+                const kitsuSpiritcallerMil = this.kitsuSpiritcaller.militarySkill;
+                const kitsuSpiritcallerPol = this.kitsuSpiritcaller.politicalSkill;
+                const dojiWhispererMil = this.dojiWhisperer.militarySkill;
+                const dojiWhispererPol = this.dojiWhisperer.politicalSkill;
 
                 this.player1.clickCard(this.ikomaTsanuri);
 

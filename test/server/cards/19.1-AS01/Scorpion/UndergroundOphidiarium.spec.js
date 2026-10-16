@@ -37,7 +37,7 @@ describe('Underground Ophidiarium', function () {
             });
 
             it('should put the card in the player\'s hand', function () {
-                let handsize = this.player1.player.hand.length;
+                const handsize = this.player1.player.hand.length;
                 this.player1.clickCard(this.undergroundOphidiarium);
                 this.player1.clickPrompt('Fiery Madness');
                 expect(this.player1.player.hand.length).toBe(handsize + 1);

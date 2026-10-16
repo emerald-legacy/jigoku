@@ -1,6 +1,7 @@
-import { Element } from '../../Constants.js';
+import type { Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { isRingClaimed } from '../claimedRings.js';
 
 export function makeTempleOfFortuneX(id: string, element: Element) {
     const elementKeys = [`${id}-${element}-0`, `${id}-${element}-1`];
@@ -8,28 +9,25 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
     return class TempleOfFortuneX extends ProvinceCard {
         static id = id;
 
-        setupCardAbilities() {
+        override setupCardAbilities() {
             this.persistentEffect({
-                condition: (context) =>
-                    context.game.rings[this.getCurrentElementSymbol(elementKeys[0])].isConsideredClaimed(),
-                effect: AbilityDsl.effects.modifyProvinceStrength(2)
+                condition: () => isRingClaimed(this, elementKeys[0]),
+                effect: modifyProvinceStrength(2)
             });
 
-            this.forcedReaction({
-                title: 'Place one fate on the unclaimed ring',
-                when: {
+            this.forcedReaction('Place one fate on the unclaimed ring')
+                .when({
                     onConflictDeclared: (event, context) =>
                         event.conflict.declaredProvince === context.source &&
                         context.game.rings[this.getCurrentElementSymbol(elementKeys[1])].isUnclaimed()
-                },
-                gameAction: AbilityDsl.actions.placeFateOnRing((context) => ({
+                })
+                .placeFateOnRing((context) => ({
                     target: context.game.rings[this.getCurrentElementSymbol(elementKeys[1])]
-                }))
-            });
+                }));
         }
 
-        getPrintedElementSymbols() {
-            let symbols = super.getPrintedElementSymbols();
+        override getPrintedElementSymbols() {
+            const symbols = super.getPrintedElementSymbols();
             symbols.push({ element, key: elementKeys[0], prettyName: 'Strength Bonus' });
             symbols.push({ element, key: elementKeys[1], prettyName: 'Fate Ring' });
             return symbols;

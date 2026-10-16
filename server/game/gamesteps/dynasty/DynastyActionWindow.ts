@@ -1,17 +1,14 @@
-import type { MsgArg } from '../../GameChat.js';
+import { msg } from '../../GameChat.js';
 import { EffectName, EventName } from '../../Constants.js';
-import { parseGameMode } from '../../GameMode.js';
 import type Game from '../../Game.js';
-import type { Event } from '../../Events/Event.js';
-import type { GameEvent } from '../../Events/EventPayloads.js';
-import ActionWindow from '../ActionWindow.js';
+import { ActionWindow } from '../ActionWindow.js';
 
 export class DynastyActionWindow extends ActionWindow {
     constructor(game: Game) {
         super(game, 'Play cards from provinces', 'dynasty');
     }
 
-    activePrompt() {
+    override activePrompt() {
         return {
             menuTitle: 'Click pass when done',
             buttons: super.activePrompt().buttons,
@@ -19,7 +16,7 @@ export class DynastyActionWindow extends ActionWindow {
         };
     }
 
-    pass() {
+    override pass() {
         this.currentPlayer.passDynasty();
 
         if(this.#opponentPassed()) {
@@ -27,7 +24,7 @@ export class DynastyActionWindow extends ActionWindow {
             return this.complete();
         }
 
-        if(parseGameMode(this.game.gameMode).dynastyPhasePassingFate) {
+        if(this.game.rules.dynastyPhasePassingFate) {
             this.#handlePassingFate();
         } else {
             this.#handleSimplePass();
@@ -36,7 +33,7 @@ export class DynastyActionWindow extends ActionWindow {
         this.nextPlayer();
     }
 
-    nextPlayer() {
+    override nextPlayer() {
         this.#checkPhaseRestart();
 
         const otherPlayer = this.currentPlayer.opponent;
@@ -50,16 +47,16 @@ export class DynastyActionWindow extends ActionWindow {
     }
 
     #handlePassingFate(): void {
-        this.game.addMessage('{0} is the first to pass, and gains 1 fate', this.currentPlayer);
+        this.game.addMessage(msg`${this.currentPlayer} is the first to pass, and gains 1 fate`);
         this.game.raiseEvent(
             EventName.OnPassDuringDynasty,
             { player: this.currentPlayer, firstToPass: true },
-            (event: Event) => (event as GameEvent<EventName.OnPassDuringDynasty>).player?.modifyFate(1)
+            (event) => event.player.modifyFate(1)
         );
     }
 
     #handleSimplePass(): void {
-        this.game.addMessage('{0} passes', this.currentPlayer);
+        this.game.addMessage(msg`${this.currentPlayer} passes`);
         this.game.raiseEvent(EventName.OnPassDuringDynasty, { player: this.currentPlayer, firstToPass: false });
     }
 
@@ -69,7 +66,7 @@ export class DynastyActionWindow extends ActionWindow {
             this.currentPlayer.opponent?.anyEffect?.(EffectName.RestartDynastyPhase)
         ) {
             const effectSource = this.currentPlayer.mostRecentEffect(EffectName.RestartDynastyPhase);
-            this.game.addMessage('The dynasty phase is ended due to the effects of {0}', effectSource as MsgArg);
+            this.game.addMessage(msg`The dynasty phase is ended due to the effects of ${effectSource}`);
             this.complete();
         }
     }

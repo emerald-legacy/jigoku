@@ -1,33 +1,31 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players, Location } from '../../Constants.js';
+import { putIntoPlay } from '../../GameActions/GameActions.js';
+import { CardType, Players, Location, Trait } from '../../Constants.js';
 
 class UnifiedCompany extends DrawCard {
     static id = 'unified-company';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Put a 2 cost or less bushi into play from dynasty discard',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Put a 2 cost or less bushi into play from dynasty discard')
+            .when({
                 afterConflict: (event, context) => {
                     return event.conflict.winner === context.source.controller &&
                         context.source.isParticipating() &&
                         context.player.opponent &&
                         context.player.hand.length < context.player.opponent.hand.length;
                 }
-            },
-            gameAction: AbilityDsl.actions.selectCard(() => ({
+            })
+            .selectCard(() => ({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
                 cardCondition: (card) => {
-                    return card.hasTrait('bushi') &&
+                    return card.hasTrait(Trait.Bushi) &&
                         card.costLessThan(3) &&
                         !card.isUnique();
                 },
-                gameAction: AbilityDsl.actions.putIntoPlay()
-            }))
-        });
+                gameAction: putIntoPlay()
+            }));
     }
 }
 

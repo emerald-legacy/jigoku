@@ -1,35 +1,22 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type { ConflictRecord } from '../../../ConflictTracker.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { CardType, Phase, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OutmaneuveredByForce extends DrawCard {
     static id = 'outmaneuvered-by-force';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Declare a conflict right now',
-            phase: Phases.Conflict,
-            condition: (context) =>
-                context.game.getConflicts(Players.All).filter((conflict: ConflictRecord & { declared?: boolean }) => conflict.declared).length === 0,
-
-            gameAction: AbilityDsl.actions.initiateConflict({ canPass: false })
-        });
-    }
-
-    public canPlay(context: AbilityContext, playType: string): boolean {
-        return (
-            !context.game.isDuringConflict() &&
-            this.controlsBerserkerOrBigCharacter(context) &&
-            super.canPlay(context, playType)
-        );
+    public override setupCardAbilities() {
+        this.action('Declare a conflict right now')
+            .playOnlyIf((context) => !context.game.isDuringConflict() && this.controlsBerserkerOrBigCharacter(context))
+            .condition((context) => context.game.getConflicts(Players.All).every((conflict) => conflict.passed))
+            .phase(Phase.Conflict)
+            .initiateConflict({ canPass: false });
     }
 
     private controlsBerserkerOrBigCharacter(context: AbilityContext): boolean {
         return context.player.cardsInPlay.some(
-            (card: DrawCard) =>
-                card.getType() === CardType.Character && (card.hasTrait('berserker') || (card.printedMilitarySkill ?? 0) >= 5)
+            (card) =>
+                card.type === CardType.Character && (card.hasTrait(Trait.Berserker) || (card.printedMilitarySkill ?? 0) >= 5)
         );
     }
 }

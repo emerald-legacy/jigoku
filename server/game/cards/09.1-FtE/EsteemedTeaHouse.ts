@@ -1,31 +1,30 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Duration } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
+import { returnToHand } from '../../GameActions/GameActions.js';
+import { CardType, Duration, RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
+import { controlsParticipating } from '../controlsParticipating.js';
 
 class EsteemedTeaHouse extends DrawCard {
     static id = 'esteemed-tea-house';
 
-    setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Return attachment to owners hand',
-            condition: context => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')),
-            target: {
+    override setupCardAbilities() {
+        this.action('Return attachment to owners hand')
+            .condition((context) => controlsParticipating(context.player, Trait.Courtier))
+            .target({
                 cardType: CardType.Attachment,
-                cardCondition: card => Boolean(card.parentCharacter?.isParticipating()),
-                gameAction: AbilityDsl.actions.returnToHand()
-            },
-            gameAction: AbilityDsl.actions.playerLastingEffect<DrawCard>(context => ({
+                cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())
+            }, returnToHand())
+            .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                targetController: context.target?.owner,
-                effect: AbilityDsl.effects.playerCannot({
-                    cannot: 'play',
-                    restricts: 'copiesOfX',
+                target: context.target?.owner,
+                effect: playerCannot({
+                    cannot: RestrictionType.Play,
+                    appliesTo: RestrictionScope.CopiesOfX,
                     params: context.target?.name
                 })
-            })),
-            effect: 'return {0} to {1}\'s hand and prevent them from playing copies this phase',
-            effectArgs: context => [context.target?.owner ?? '']
-        });
+            }))
+            .chatText((context) => msg`return ${context.chatTarget()} to ${context.target.owner}'s hand and prevent them from playing copies this phase`);
     }
 }
 

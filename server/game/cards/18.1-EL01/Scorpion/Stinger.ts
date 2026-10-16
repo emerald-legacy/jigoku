@@ -1,35 +1,31 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { Location, Players, CardType, Phases } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { cardCannot } from '../../../effects.js';
+import { attach } from '../../../GameActions/GameActions.js';
+import { Location, Players, CardType, Phase, ConflictType, RestrictionType } from '../../../Constants.js';
 
 class Stinger extends DrawCard {
     static id = 'stinger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
-            condition: context => context.game.currentPhase !== Phases.Fate,
-            effect: AbilityDsl.effects.cardCannot({
-                cannot: 'ready',
+            condition: (context) => context.game.currentPhase !== Phase.Fate,
+            effect: cardCannot({
+                cannot: RestrictionType.Ready,
                 source: this
             })
         });
 
-        this.action({
-            title: 'Attach this to an attacking character',
-            cost: AbilityDsl.costs.payHonor(1),
-            condition: context => context.game.isDuringConflict('military'),
-            location: Location.Hand,
-            target: {
+        this.conflictAction('Attach this to an attacking character', { conflictType: ConflictType.Military })
+            .location(Location.Hand)
+            .cost(costs.payHonor(1))
+            .target({
                 player: Players.Self,
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking(),
-                gameAction: AbilityDsl.actions.attach((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    attachment: context.source,
-                    target: context.target
-                }))
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, attach((context) => ({
+                attachment: context.source
+            })));
     }
 }
 

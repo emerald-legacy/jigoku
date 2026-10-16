@@ -73,5 +73,29 @@ describe('Tennyo\'s Blessing', function() {
                 expect(this.getChatLogs(5)).toContain('player1 selects no cards');
             });
         });
+
+        describe('Max 1 per round', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'dynasty',
+                    player1: {
+                        hand: ['tennyo-s-blessing', 'tennyo-s-blessing']
+                    }
+                });
+                [this.blessing, this.blessing2] = this.player1.filterCardsByName('tennyo-s-blessing');
+                this.province1 = this.player1.findCardByName('shameful-display', 'province 1');
+            });
+
+            it('cannot play a second copy in the same round', function() {
+                this.player1.clickCard(this.blessing);
+                this.player1.clickCard(this.province1);
+                this.player1.clickPrompt('Take nothing');
+                expect(this.blessing.location).toBe('conflict discard pile');
+                this.player2.pass();
+
+                this.player1.clickCard(this.blessing2);
+                expect(this.blessing2.location).toBe('hand');
+            });
+        });
     });
 });

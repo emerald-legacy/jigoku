@@ -1,32 +1,42 @@
-import StaticEffect from './StaticEffect.js';
+import { EffectApplier } from './EffectApplier.js';
+import { EffectValue } from './EffectValue.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { EffectName } from '../Constants.js';
-import type { EffectTarget } from './EffectBuilder.js';
 import type { GameObject } from '../GameObject.js';
+import type { EffectValueMap } from './EffectValueMap.js';
 
-type DynamicCalculate = (target: EffectTarget, context: AbilityContext) => unknown;
+// Method syntax on purpose: the effect's match picks its targets, so a calculation may take a narrower target type.
+interface Calculation<Target, Value> {
+    calculate(target: Target, context: AbilityContext): Value;
+}
+export type DynamicValue<Value, Target> = Calculation<Target, Value>['calculate'];
 
-export default class DynamicEffect extends StaticEffect {
-    values: Record<string, unknown>;
-    calculate: DynamicCalculate;
+export class DynamicEffect<EffectType extends EffectName = EffectName, Target extends GameObject = GameObject> extends EffectApplier<EffectType, Target> {
+    value = new EffectValue(true);
+    values: Record<string, EffectValueMap[EffectType]>;
+    calculate: DynamicValue<EffectValueMap[EffectType], Target>;
 
-    constructor(type: EffectName, calculate: DynamicCalculate) {
-        super(type, undefined);
+    constructor(type: EffectType, calculate: DynamicValue<EffectValueMap[EffectType], Target>) {
+        super(type);
         this.values = {};
         this.calculate = calculate;
     }
 
-    apply(target: GameObject) {
-        super.apply(target);
+    apply(target: Target) {
+        target.addEffect(this);
         this.recalculate(target);
     }
 
-    recalculate(target?: GameObject): boolean {
+    unapply(target: Target) {
+        target.removeEffect(this);
+    }
+
+    override recalculate(target: Target): boolean {
         if(!target) {
             return false;
         }
-        let oldValue = this.getValue(target);
-        let newValue = this.setValue(target, this.calculate(target as EffectTarget, this.context));
+        const oldValue = this.getValue(target);
+        const newValue = this.setValue(target, this.calculate(target, this.context));
         if(typeof oldValue === 'function' && typeof newValue === 'function') {
             return oldValue.toString() !== newValue.toString();
         }
@@ -44,12 +54,19 @@ export default class DynamicEffect extends StaticEffect {
         return oldValue !== newValue;
     }
 
-    getValue<T = unknown>(target?: GameObject): T {
-        return (target ? this.values[target.uuid] : undefined) as T;
+    getValue(target: GameObject): EffectValueMap[EffectType];
+    getValue(): EffectValueMap[EffectType] | undefined;
+    getValue(target?: GameObject): EffectValueMap[EffectType] | undefined {
+        return target ? this.values[target.uuid] : undefined;
     }
 
-    setValue(target: GameObject, value: unknown) {
+    setValue(target: GameObject, value: EffectValueMap[EffectType]) {
         this.values[target.uuid] = value;
         return value;
+    }
+
+    setContext(context: AbilityContext) {
+        this.context = context;
+        this.value.setContext(context);
     }
 }

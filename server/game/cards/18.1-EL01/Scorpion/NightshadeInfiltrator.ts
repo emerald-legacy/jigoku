@@ -1,27 +1,24 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Players } from '../../../Constants.js';
 
 class NightshadeInfiltrator extends DrawCard {
     static id = 'nightshade-infiltrator';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Give a character -3/-3',
-            cost: AbilityDsl.costs.dishonorSelf(),
-            condition: context => context.source.isParticipating(),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Give a character -3/-3')
+            .cost(costs.dishonorSelf())
+            .target({
                 player: Players.Self,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: context.target,
-                    effect: AbilityDsl.effects.modifyBothSkills(-3)
-                }))
-            },
-            effect: 'give {0} -3{1}/-3{2}',
-            effectArgs: () => ['military', 'political']
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect({
+                effect: modifyBothSkills(-3)
+            }))
+            .chatText((context) => msg`give ${context.chatTarget()} -3${'military'}/-3${'political'}`);
     }
 }
 

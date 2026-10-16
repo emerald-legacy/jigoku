@@ -1,40 +1,32 @@
 import { CardType, Location, PlayType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflictOpportunity } from '../../../AbilityLimit.js';
+import { canPlayFromOwn } from '../../../effects.js';
+import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MeditationsOnOrthodoxy extends DrawCard {
     static id = 'meditations-on-orthodoxy';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => Boolean(context.player.opponent) && context.player.isMoreHonorable(),
             location: Location.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
+            effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
-        this.reaction({
-            title: 'Ready characters',
-            when: {
+        this.reaction('Ready characters')
+            .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
-            },
-            target: {
+            })
+            .targetCards({
                 mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose characters',
                 numCards: 2,
                 cardType: CardType.Character,
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.ready()
-            },
-            then: (context) => ({
-                gameAction: [
-                    AbilityDsl.actions.moveCard({
-                        target: context?.source,
-                        destination: Location.ConflictDeck,
-                        bottom: true
-                    })
-                ]
-            }),
-            max: AbilityDsl.limit.perConflictOpportunity(1)
-        });
+                controller: Players.Any
+            }, ready())
+            .max(perConflictOpportunity(1))
+            .afterwards()
+            .moveCard({ destination: Location.ConflictDeck, bottom: true });
     }
 }

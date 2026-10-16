@@ -1,4 +1,4 @@
-import AbilityResolver from '../../../build/server/game/gamesteps/AbilityResolver.js';
+import { AbilityResolver } from '../../../build/server/game/gamesteps/AbilityResolver.js';
 
 describe('AbilityResolver', function() {
     beforeEach(function() {
@@ -23,12 +23,13 @@ describe('AbilityResolver', function() {
         this.ability.isCardAbility.and.returnValue(false);
         this.ability.hasLegalTargets.and.returnValue(true);
         this.ability.resolveTargets.and.returnValue({});
-        this.source = jasmine.createSpyObj('source', ['createSnapshot', 'getType']);
+        this.source = jasmine.createSpyObj('source', ['createSnapshot', 'getType', 'isDrawCard']);
+        this.source.isDrawCard.and.returnValue(true);
         this.costEvent = jasmine.createSpyObj('costEvent', ['getResolutionEvent']);
         this.costEvent.getResolutionEvent.and.returnValue({ cancelled: false });
         this.player = { player: 1 };
         this.game.getPlayers.and.returnValue([this.player]);
-        this.context = { foo: 'bar', player: this.player, source: this.source, ability: this.ability, targets: {}, selects: {}, rings: {}, tokens: {} };
+        this.context = { foo: 'bar', player: this.player, source: this.source, ability: this.ability, targets: {}, selects: {}, rings: {}, tokens: {}, costs: {} };
         this.resolver = new AbilityResolver(this.game, this.context);
     });
 

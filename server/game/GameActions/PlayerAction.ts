@@ -1,24 +1,43 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
-export type PlayerActionProperties = GameActionProperties;
+export interface PlayerActionProperties extends GameActionProperties {
+    target?: Player | Player[];
+}
 
-export class PlayerAction<P extends PlayerActionProperties = PlayerActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
-    targetType = ['player'];
+export type PlayerEvent<EventType extends EventName, Context extends AbilityContext> = ActionEvent<EventType, Context> & { player: Player };
 
-    defaultTargets(context: AbilityContext): Player[] {
-        return context.player && context.player.opponent ? [context.player.opponent] : [];
+export class PlayerAction<
+    Properties extends PlayerActionProperties = PlayerActionProperties,
+    EventType extends EventName = EventName,
+    Context extends AbilityContext = AbilityContext,
+    Defaulted extends keyof Properties = never
+> extends GameAction<Properties, EventType, Context, Defaulted> {
+    override targetType = ['player'];
+
+    /** The ability's player; actions aimed at the opponent return `opponentTargets(context)`. */
+    override defaultTargets(context: Context): Player[] {
+        return context.player ? [context.player] : [];
     }
 
-    checkEventCondition(event: GameEvent<N>, additionalProperties: Record<string, unknown> = {}): boolean {
-        return this.canAffect((event as { player: Player }).player, (event.context as AbilityContext), additionalProperties);
+    protected opponentTargets(context: Context): Player[] {
+        return context.player?.opponent ? [context.player.opponent] : [];
     }
 
-    addPropertiesToEvent(event: GameEvent<N>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    override checkEventCondition(event: PlayerEvent<EventType, Context>, additionalProperties: ActionOverrides = {}): boolean {
+        return this.canAffect(event.player, event.context, additionalProperties);
+    }
+
+    override addPropertiesToEvent(event: PlayerEvent<EventType, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        (event as { player: Player }).player = player;
+        event.player = player;
     }
+}
+
+/** Whether an action's players are just the ability's own player, whom its chat line doesn't name. */
+export function onlyThePlayer(players: Player[], context: AbilityContext): boolean {
+    return players.length === 0 || (players.length === 1 && players[0] === context.player);
 }

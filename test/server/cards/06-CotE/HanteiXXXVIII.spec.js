@@ -169,7 +169,7 @@ describe('Hantei XXXVII', function() {
             });
 
             it('should trigger for Backhanded Compliment', function() {
-                let handSize = this.player2.hand.length;
+                const handSize = this.player2.hand.length;
                 this.player2.clickCard('backhanded-compliment');
                 expect(this.player2).toHavePrompt('Backhanded Compliment');
                 this.player2.clickPrompt('player1');
@@ -358,7 +358,7 @@ describe('Hantei XXXVII', function() {
             });
 
             it('should trigger for Utako Kamoko', function() {
-                let handSize = this.player2.hand.length;
+                const handSize = this.player2.hand.length;
                 this.asahinaStoryteller.honor();
                 this.player2.pass();
                 this.player1.clickCard(this.hantei);
@@ -414,7 +414,7 @@ describe('Hantei XXXVII', function() {
 
             describe('when Duelist Training is triggered', function() {
                 it('should allow Hantei to be used', function() {
-                    let handSize = this.player2.hand.length;
+                    const handSize = this.player2.hand.length;
                     this.player2.clickCard(this.prudentChallenger);
                     this.player2.clickPrompt('Initiate a duel to bow');
                     expect(this.player2).toHavePrompt('Prudent Challenger');

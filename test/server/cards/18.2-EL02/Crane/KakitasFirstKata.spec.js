@@ -1,3 +1,6 @@
+import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { bow } from '../../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Kakita\'s First Kata', function() {
     integration(function() {
         beforeEach(function() {
@@ -113,3 +116,44 @@ describe('Kakita\'s First Kata', function() {
         });
     });
 });
+
+describe('Kakita\'s First Kata with a bow before the conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['vice-proprietor']
+                },
+                player2: {
+                    inPlay: ['kakita-yoshi', 'doji-challenger'],
+                    hand: ['kakita-s-first-kata']
+                }
+            });
+
+            this.vice = this.player1.findCardByName('vice-proprietor');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.stance = this.player2.findCardByName('kakita-s-first-kata');
+        });
+
+        it('does not ready a character bowed before the conflict', function() {
+            const context = new ThenAbility(this.vice, {}).createContext(this.player1.player);
+            this.game.queueSimpleStep(() => bow().resolve(this.yoshi, context));
+            this.game.continue();
+            expect(this.yoshi.bowed).toBe(true);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.vice],
+                defenders: [this.challenger],
+                type: 'political'
+            });
+
+            this.player2.clickCard(this.stance);
+            this.player2.clickCard(this.yoshi);
+            expect(this.yoshi.bowed).toBe(true);
+        });
+    });
+});
+

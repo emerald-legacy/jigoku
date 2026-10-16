@@ -19,7 +19,7 @@ describe('Khanbulak Benefactor', function() {
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.khanbulak);
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.khanbulak);
                 expect(this.player1.hand.length).toBe(hand + 2);
 
@@ -33,7 +33,7 @@ describe('Khanbulak Benefactor', function() {
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.khanbulak);
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.khanbulak);
                 expect(this.player1.hand.length).toBe(hand + 2);
 
@@ -41,7 +41,7 @@ describe('Khanbulak Benefactor', function() {
             });
 
             it('dire effect - should not cause errors if you buy with 0 fate', function() {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.khanbulak);
                 this.player1.clickPrompt('0');
                 this.player1.clickCard(this.khanbulak);

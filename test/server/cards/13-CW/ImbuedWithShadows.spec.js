@@ -85,7 +85,7 @@ describe('Imbued with Shadows', function() {
             });
 
             it('Should remove the honor and the status tokens from the chosen characters', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.player1.pass();
                 this.player2.clickCard(this.shadows);
@@ -117,7 +117,7 @@ describe('Imbued with Shadows', function() {
             });
 
             it('Should not let you choose more characters than you chose to lose honor', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.player1.pass();
                 this.player2.clickCard(this.shadows);
@@ -159,7 +159,7 @@ describe('Imbued with Shadows', function() {
             });
 
             it('should allow Finger of Jade to cancel', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 this.player1.playAttachment(this.jade, this.ambusher);
                 this.player2.clickCard(this.shadows);
                 this.player2.clickPrompt(3);
@@ -181,7 +181,7 @@ describe('Imbued with Shadows', function() {
             });
 
             it('Should prompt you if a character has multiple status tokens', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.youth.taint();
                 this.liar.taint();

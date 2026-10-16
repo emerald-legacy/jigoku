@@ -22,15 +22,10 @@ export class HonorTracker {
     }
 
     resetHonorEvents(round: number, phase: string): void {
-        this.honorEvents = this.honorEvents.filter((event) => event.round !== round && event.phase !== phase);
+        this.honorEvents = this.honorEvents.filter((event) => event.round !== round || event.phase !== phase);
     }
 
     getTotalHonor(): number {
         return this.honor;
-    }
-
-    reset(): void {
-        this.honor = 0;
-        this.honorEvents = [];
     }
 }

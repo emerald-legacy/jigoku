@@ -56,7 +56,7 @@ describe('Shinjo Kyora', function() {
                     attackers: ['moto-youth'],
                     defenders: [this.shinjoKyoraP2]
                 });
-                let fateP1 = this.player1.fate;
+                const fateP1 = this.player1.fate;
                 this.player2.clickCard(this.shinjoKyoraP2);
                 this.player2.clickRing('fire');
                 expect(this.player1.fate).toBe(fateP1 + 1);
@@ -69,13 +69,13 @@ describe('Shinjo Kyora', function() {
                 });
                 this.player2.pass();
                 this.player1.playAttachment(this.advisor, 'moto-youth');
-                let fateP1 = this.player1.fate;
+                const fateP1 = this.player1.fate;
                 this.player2.clickCard(this.shinjoKyoraP2);
                 this.player2.clickRing('fire');
                 expect(this.player1.fate).toBe(fateP1 + 1);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.advisor);
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.advisor);
                 expect(this.player1.hand.length).toBe(hand + 1);
             });

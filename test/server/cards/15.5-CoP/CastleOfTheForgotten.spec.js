@@ -1,3 +1,6 @@
+import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Castle of the Forgotten', function() {
     integration(function() {
         beforeEach(function() {
@@ -100,6 +103,42 @@ describe('Castle of the Forgotten', function() {
             expect(this.player2.player.getRemainingConflictOpportunitiesForType('military')).toBe(2);
             expect(this.player2.player.getRemainingConflictOpportunitiesForType('political')).toBe(0);
             expect(this.player2.player.getConflictOpportunities()).toBe(1);
+        });
+    });
+});
+
+describe('Castle of the Forgotten other breaks', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    stronghold: ['castle-of-the-forgotten']
+                },
+                player2: {
+                    inPlay: ['border-rider']
+                }
+            });
+            this.castle = this.player1.findCardByName('castle-of-the-forgotten');
+            this.rider = this.player2.findCardByName('border-rider');
+            this.opponentsProvince = this.player2.findCardByName('shameful-display', 'province 1');
+        });
+
+        it('reacts when the opponent\'s province breaks outside a conflict, as you broke it', function() {
+            const context = new ThenAbility(this.rider, {}).createContext(this.player2.player);
+            this.game.queueSimpleStep(() => breakProvince().resolve(this.opponentsProvince, context));
+            this.game.continue();
+            expect(this.opponentsProvince.isBroken).toBe(true);
+            expect(this.player1).toBeAbleToSelect(this.castle);
+        });
+
+        it('does not react when your own province breaks', function() {
+            const ownProvince = this.player1.findCardByName('shameful-display', 'province 1');
+            const context = new ThenAbility(this.rider, {}).createContext(this.player2.player);
+            this.game.queueSimpleStep(() => breakProvince().resolve(ownProvince, context));
+            this.game.continue();
+            expect(ownProvince.isBroken).toBe(true);
+            expect(this.player1).not.toBeAbleToSelect(this.castle);
         });
     });
 });

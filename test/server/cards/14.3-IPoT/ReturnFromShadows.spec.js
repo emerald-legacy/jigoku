@@ -202,7 +202,7 @@ describe('Return From Shadows', function() {
                 province: this.manicured
             });
 
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.clickCard(this.manicured);
             expect(this.player1).toHavePrompt('Conflict Action Window');

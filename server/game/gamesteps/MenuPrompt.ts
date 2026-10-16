@@ -1,77 +1,62 @@
-import { UiPrompt } from './UiPrompt.js';
+import { type ActivePrompt, UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 
-type MenuCommandHandler = (player: Player, arg: string, context?: unknown) => boolean;
+/** Called for a button or control naming it, with the button's `arg`; returning true completes the prompt. */
+export type MenuHandler = (player: Player, arg: string) => boolean;
 
-type MenuContext = object;
+/** The handlers a prompt's buttons and controls name, by method name. */
+export type MenuHandlers = Record<string, MenuHandler>;
 
-type MenuPromptButton = { text?: string; arg?: string; method?: string; [key: string]: unknown };
-
-interface MenuPromptProperties {
+export interface MenuPromptProperties {
+    /** What the prompt is for, usually a card; gives the default waiting title. */
     source?: { name: string } | string;
     waitingPromptTitle?: string;
     promptTitle?: string;
-    activePrompt: { buttons?: MenuPromptButton[]; [key: string]: unknown };
-    context?: unknown;
+    /** The prompt shown to the prompted player; its buttons and controls name a handler in `method`. */
+    activePrompt: ActivePrompt;
 }
 
-/**
- * General purpose menu prompt. By specifying a context object, the buttons in
- * the active prompt can call the corresponding method on the context object.
- * Methods on the contact object should return true in order to complete the
- * prompt.
- *
- * The properties option object may contain the following:
- * activePrompt       - the full prompt to display for the prompted player.
- * waitingPromptTitle - the title to display for opponents.
- * source             - what is at the origin of the user prompt, usually a card;
- *                      used to provide a default waitingPromptTitle, if missing
- */
-class MenuPrompt extends UiPrompt {
+/** A menu whose buttons and controls call the handlers given for it, nothing else. */
+export class MenuPrompt extends UiPrompt {
     player: Player;
-    context: MenuContext;
+    handlers: MenuHandlers;
     properties: MenuPromptProperties;
 
-    constructor(game: Game, player: Player, context: MenuContext, properties: MenuPromptProperties) {
+    constructor(game: Game, player: Player, handlers: MenuHandlers, properties: MenuPromptProperties) {
         super(game);
         this.player = player;
-        this.context = context;
+        this.handlers = handlers;
         if(properties.source && !properties.waitingPromptTitle) {
             properties.waitingPromptTitle = 'Waiting for opponent to use ' + (typeof properties.source === 'string' ? properties.source : properties.source.name);
         }
         this.properties = properties;
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return player === this.player;
     }
 
-    activePrompt() {
-        let promptTitle = this.properties.promptTitle || (this.properties.source && typeof this.properties.source !== 'string' ? this.properties.source.name : undefined);
+    override activePrompt() {
+        const promptTitle = this.properties.promptTitle || (this.properties.source && typeof this.properties.source !== 'string' ? this.properties.source.name : undefined);
         return Object.assign({ promptTitle: promptTitle }, this.properties.activePrompt);
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: this.properties.waitingPromptTitle || 'Waiting for opponent' };
     }
 
-    menuCommand(player: Player, arg: string, method: string): boolean {
-        const context = this.context as Record<string, MenuCommandHandler>;
-        if(!context[method]) {
+    override menuCommand(player: Player, arg: string, method: string): boolean {
+        const handler = Object.hasOwn(this.handlers, method) ? this.handlers[method] : undefined;
+        if(!handler) {
             return false;
         }
 
-        if(context[method](player, arg, this.properties.context)) {
+        if(handler(player, arg)) {
             this.complete();
         }
 
         return true;
     }
-
-    hasMethodButton(method: string): boolean {
-        return (this.properties.activePrompt.buttons ?? []).some((button: MenuPromptButton) => button.method === method);
-    }
 }
 
-export default MenuPrompt;

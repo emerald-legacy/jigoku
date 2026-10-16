@@ -40,7 +40,7 @@ describe('Agasha Sumiko 2', function() {
             this.player2.honor = 11;
             this.player1.honor = 10;
 
-            let p2honor = this.player2.honor;
+            const p2honor = this.player2.honor;
             this.player2.clickCard(this.swim);
             this.player2.clickCard(this.sumiko);
             expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -79,7 +79,7 @@ describe('Agasha Sumiko 2', function() {
             this.player2.clickCard(this.swim);
             this.player2.clickCard(this.sumiko);
             expect(this.player1).toHavePrompt('Triggered Abilities');
-            let p2Fate = this.player2.fate;
+            const p2Fate = this.player2.fate;
             expect(this.player1).toBeAbleToSelect(this.sumiko);
             this.player1.clickCard(this.sumiko);
             expect(this.player2.fate).toBe(p2Fate - 2);
@@ -93,7 +93,7 @@ describe('Agasha Sumiko 2', function() {
             this.player2.clickCard(this.swim);
             this.player2.clickCard(this.sumiko);
             expect(this.player1).toHavePrompt('Triggered Abilities');
-            let p2Hand = this.player2.hand.length;
+            const p2Hand = this.player2.hand.length;
             expect(this.player1).toBeAbleToSelect(this.sumiko);
             this.player1.clickCard(this.sumiko);
             expect(this.player2).toHavePrompt('Choose 2 cards to discard');
@@ -126,9 +126,9 @@ describe('Agasha Sumiko 2', function() {
             this.player2.clickCard(this.swim);
             this.player2.clickCard(this.sumiko);
             expect(this.player1).toHavePrompt('Triggered Abilities');
-            let p2Fate = this.player2.fate;
-            let p2Honor = this.player2.honor;
-            let p2Hand = this.player2.hand.length;
+            const p2Fate = this.player2.fate;
+            const p2Honor = this.player2.honor;
+            const p2Hand = this.player2.hand.length;
             expect(this.player1).toBeAbleToSelect(this.sumiko);
             this.player1.clickCard(this.sumiko);
             expect(this.player2).toHavePrompt('Choose 2 cards to discard');
@@ -159,7 +159,7 @@ describe('Agasha Sumiko 2', function() {
             this.player2.clickCard(this.fan2);
             this.player2.clickPrompt('Done');
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 lose 2 honor, lose 2 fate and disard 2 cards');
+            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 lose 2 honor, lose 2 fate and discard 2 cards');
             expect(this.getChatLogs(5)).toContain('player2 discards Fine Katana and Ornate Fan');
         });
 
@@ -179,7 +179,7 @@ describe('Agasha Sumiko 2', function() {
             this.player2.clickCard(this.fan2);
             this.player2.clickPrompt('Done');
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 lose 2 fate and disard 2 cards');
+            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 lose 2 fate and discard 2 cards');
             expect(this.getChatLogs(5)).toContain('player2 discards Fine Katana and Ornate Fan');
         });
 

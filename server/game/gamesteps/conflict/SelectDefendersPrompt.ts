@@ -4,18 +4,9 @@ import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type DrawCard from '../../DrawCard.js';
 import type { Conflict } from '../../Conflict.js';
+import { capitalize } from '../../utils/capitalize.js';
 
-const capitalize: Record<string, string> = {
-    military: 'Military',
-    political: 'Political',
-    air: 'Air',
-    water: 'Water',
-    earth: 'Earth',
-    fire: 'Fire',
-    void: 'Void'
-};
-
-class SelectDefendersPrompt extends UiPrompt {
+export class SelectDefendersPrompt extends UiPrompt {
     player: Player;
     conflict: Conflict;
 
@@ -24,7 +15,7 @@ class SelectDefendersPrompt extends UiPrompt {
 
         this.player = player;
         this.conflict = conflict;
-        let mustBeDeclared = this.player.cardsInPlay.filter((card: DrawCard) =>
+        const mustBeDeclared = this.player.cardsInPlay.filter((card: DrawCard) =>
             card.getEffects(EffectName.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === conflict.conflictType));
         for(const card of mustBeDeclared) {
             if(this.checkCardCondition(card) && !this.conflict.defenders.includes(card)) {
@@ -33,12 +24,12 @@ class SelectDefendersPrompt extends UiPrompt {
         }
     }
 
-    activeCondition(player: Player): boolean {
+    override activeCondition(player: Player): boolean {
         return player === this.player;
     }
 
-    activePrompt() {
-        let promptTitle = (capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' Conflict: '
+    override activePrompt() {
+        let promptTitle = (capitalize(this.conflict.conflictType ?? '') + ' ' + capitalize(this.conflict.element ?? '') + ' Conflict: '
             + this.conflict.attackerSkill + ' vs ' + this.conflict.defenderSkill);
 
         if(!this.conflict.conflictType || !this.conflict.element) {
@@ -51,11 +42,11 @@ class SelectDefendersPrompt extends UiPrompt {
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to choose defenders' };
     }
 
-    onCardClicked(player: Player, card: DrawCard): boolean {
+    override onCardClicked(player: Player, card: DrawCard): boolean {
         if(player !== this.player) {
             return false;
         }
@@ -94,7 +85,7 @@ class SelectDefendersPrompt extends UiPrompt {
         return true;
     }
 
-    menuCommand(): boolean {
+    override menuCommand(): boolean {
         this.conflict.defenders.forEach((card: DrawCard) => card.covert = false);
         this.conflict.setDefendersChosen(true);
         this.complete();
@@ -103,4 +94,3 @@ class SelectDefendersPrompt extends UiPrompt {
     }
 }
 
-export default SelectDefendersPrompt;

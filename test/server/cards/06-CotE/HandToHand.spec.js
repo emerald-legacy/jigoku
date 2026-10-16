@@ -97,6 +97,7 @@ describe('Hand to Hand', function() {
                     this.player1.clickCard(this.reprieve);
                     expect(this.reprieve.location).toBe('conflict discard pile');
                     expect(this.player2).toHavePrompt('Conflict Action Window');
+                    expect(this.getChatLogs(5).filter((line) => line.includes('insufficient legal targets'))).toEqual([]);
                 });
 
                 it('should be able to be cancelled by initiator', function() {

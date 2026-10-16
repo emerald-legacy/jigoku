@@ -1,32 +1,29 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Players } from '../../../Constants.js';
+import { cardCannot } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 class YogoTadashi extends DrawCard {
     static id = 'yogo-tadashi';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Prevent a character from being targeted by events',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Prevent a character from being targeted by events')
+            .when({
                 onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false,
-                onDefendersDeclared: (event, context) => event.defenders?.includes(context.source) ?? false,
+                onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
                 onMoveToConflict: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: context.target,
-                    effect: AbilityDsl.effects.cardCannot({
-                        cannot: 'target',
-                        restricts: 'opponentsEvents'
-                    })
-                }))
-            },
-            effect: 'prevent {0} from being targeted by events played by {1}',
-            effectArgs: context => [context.player.opponent].filter((p): p is NonNullable<typeof p> => p !== undefined)
-        });
+                controller: Players.Any
+            }, cardLastingEffect({
+                effect: cardCannot({
+                    cannot: RestrictionType.Target,
+                    appliesTo: RestrictionScope.OpponentsEvents
+                })
+            }))
+            .chatText((context) => msg`prevent ${context.chatTarget()} from being targeted by events played by ${context.player.opponent}`);
     }
 }
 

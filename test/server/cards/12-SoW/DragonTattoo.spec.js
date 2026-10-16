@@ -149,7 +149,7 @@ describe('Dragon Tattoo', function() {
         });
 
         it('should allow re-using reactions', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();
@@ -405,7 +405,7 @@ describe('Dragon Tattoo', function() {
         it('should make you pay the fate cost twice', function() {
             this.player1.fate = 10;
             this.noMoreActions();
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.initiateConflict({
                 attackers: [this.kazue, this.challenger],
                 defenders: [this.kuwanan],
@@ -438,7 +438,7 @@ describe('Dragon Tattoo', function() {
         it('should only remove from game if you can\'t pay the fate cost twice', function() {
             this.player1.fate = 5;
             this.noMoreActions();
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.initiateConflict({
                 attackers: [this.kazue, this.challenger],
                 defenders: [this.kuwanan],
@@ -570,7 +570,7 @@ describe('Dragon Tattoo', function() {
         });
 
         it('watch commander - actions - should get two watch commander triggers', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player2.playAttachment(this.watchCommander, this.kuwanan);
             this.noMoreActions();
             this.initiateConflict({
@@ -615,7 +615,7 @@ describe('Dragon Tattoo', function() {
         });
 
         it('watch commander - reactions - should get two watch commander triggers', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player2.playAttachment(this.watchCommander, this.kuwanan);
             this.noMoreActions();
             this.player1.passConflict();

@@ -1,37 +1,31 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import { delayedEffect } from '../../effects.js';
+import { bow, discardFromPlay } from '../../GameActions/GameActions.js';
+import { CardType, ConflictType } from '../../Constants.js';
 
 class DojiKuwanan extends DrawCard {
     static id = 'doji-kuwanan';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext) =>
-                    context.player && context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru'),
-                message: '{1} is discarded from play as its controller controls {0}',
-                messageArgs: (context: AbilityContext) => [
-                    context.source,
-                    context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
-                ],
-                gameAction: AbilityDsl.actions.discardFromPlay((context: AbilityContext) => ({
+            effect: delayedEffect({
+                condition: (context) =>
+                    context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru'),
+                message: (context) => msg`${context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')} is discarded from play as its controller controls ${context.source}`,
+                gameAction: discardFromPlay((context) => ({
                     target: context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
                 }))
             })
         });
-        this.action({
-            title: 'Bow a participating character with lower military skill',
-            condition: (context) =>
-                context.source.game.isDuringConflict('military') && context.source.isParticipating(),
-            target: {
+        this.action('Bow a participating character with lower military skill')
+            .condition((context) =>
+                context.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                    card.militarySkill < context.source.militarySkill && card.isParticipating()
+            }, bow());
     }
 }
 

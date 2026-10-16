@@ -1,27 +1,26 @@
+import { msg } from '../../GameChat.js';
 import { ConflictType, DuelType, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotDeclareConflictsOfType } from '../../effects.js';
+import { playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KakitaYuri extends DrawCard {
     static id = 'kakita-yuri';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Political duel to stop military conflicts',
-            initiateDuel: {
+    override setupCardAbilities() {
+        this.action('Political duel to stop military conflicts')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                message: 'prevent {0} from declaring military conflicts this phase',
-                messageArgs: (duel) => [duel.loserController ?? 'no one'],
+                chatText: (_context, duel) => msg`prevent ${duel.loserController ?? 'no one'} from declaring military conflicts this phase`,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.playerLastingEffect(() => ({
-                        targetController: duel.loserController,
+                    playerLastingEffect(() => ({
+                        target: duel.loserController,
                         duration: Duration.UntilEndOfPhase,
                         effect: duel.loser
-                            ? AbilityDsl.effects.cannotDeclareConflictsOfType(ConflictType.Military)
+                            ? cannotDeclareConflictsOfType(ConflictType.Military)
                             : []
                     }))
-            }
-        });
+            }));
     }
 }

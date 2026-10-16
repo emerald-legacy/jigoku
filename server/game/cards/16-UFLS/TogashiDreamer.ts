@@ -1,30 +1,26 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Trait } from '../../Constants.js';
+import { placeFateOnRing } from '../../GameActions/GameActions.js';
 
 class TogashiDreamer extends DrawCard {
     static id = 'togashi-dreamer';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Move a fate from a character to a ring',
-            when: {
-                onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait('kiho') && context.source.isParticipating()
-            },
-            targets: {
-                character: {
-                    cardType: CardType.Character,
-                    cardCondition: card => card.hasStatusTokens && card.isParticipating()
-                },
-                ring: {
-                    mode: TargetMode.Ring,
-                    dependsOn: 'character',
-                    activePromptTitle: 'Choose an unclaimed ring to move fate to',
-                    ringCondition: ring => ring.isUnclaimed(),
-                    gameAction: AbilityDsl.actions.placeFateOnRing(context => ({ origin: context.targets.character }))
-                }
-            }
-        });
+    override setupCardAbilities() {
+        this.reaction('Move a fate from a character to a ring')
+            .when({
+                onCardPlayed: (event, context) => event.player === context.player && event.card.hasTrait(Trait.Kiho) && context.source.isParticipating()
+            })
+            .target({
+                name: 'character',
+                cardType: CardType.Character,
+                cardCondition: (card) => card.hasStatusTokens && card.isParticipating()
+            })
+            .ringTarget({
+                name: 'ring',
+                dependsOn: 'character',
+                activePromptTitle: 'Choose an unclaimed ring to move fate to',
+                ringCondition: (ring) => ring.isUnclaimed()
+            }, placeFateOnRing((context) => ({ origin: context.targets.character })));
     }
 }
 

@@ -1,26 +1,21 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players, CardType, Trait } from '../../Constants.js';
+import { attach } from '../../GameActions/GameActions.js';
 
 class ShinjoSaddle extends DrawCard {
     static id = 'shinjo-saddle';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
-            myControl: true,
-            trait: 'cavalry'
+            trait: Trait.Cavalry
         });
 
-        this.action({
-            title: 'Move to another character',
-            target: {
+        this.action('Move to another character')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('cavalry'),
-                gameAction: ability.actions.attach((context: AbilityContext<DrawCard, DrawCard>) => ({ attachment: context.source }))
-            }
-        });
+                cardCondition: (card) => card.hasTrait(Trait.Cavalry)
+            }, attach((context) => ({ attachment: context.source })));
     }
 }
 

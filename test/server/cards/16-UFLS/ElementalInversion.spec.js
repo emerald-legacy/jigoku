@@ -40,7 +40,7 @@ describe('Elemental Inversion', function() {
 
         it('should switch the contested ring, moving all fate from it instead of giving it to the attacking player', function() {
             this.game.rings.water.fate = 2;
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.youth],
@@ -64,7 +64,7 @@ describe('Elemental Inversion', function() {
         });
 
         it('should work if the target ring has no fate', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.youth],

@@ -1,17 +1,18 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 
 class TwoHeavensTechnique extends DrawCard {
     static id = 'two-heavens-technique';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'bushi'
+            trait: Trait.Bushi
         });
 
         this.whileAttached({
-            condition: context => !!context.source.parentCharacter && context.source.parentCharacter.attachments.filter((card) => card.hasTrait('weapon')).length === 2,
-            effect: AbilityDsl.effects.addKeyword('covert')
+            condition: (context) => !!context.source.parentCharacter && context.source.parentCharacter.attachments.filter((card) => card.hasTrait(Trait.Weapon)).length === 2,
+            effect: addKeyword('covert')
         });
     }
 }

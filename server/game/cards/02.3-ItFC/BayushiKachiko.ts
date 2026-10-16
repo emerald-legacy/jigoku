@@ -1,34 +1,25 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import { bow, optional, sendHome, sequential } from '../../GameActions/GameActions.js';
+import { CardType, ConflictType } from '../../Constants.js';
 
 class BayushiKachiko extends DrawCard {
     static id = 'bayushi-kachiko';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Send a character home',
-            condition: context => this.game.isDuringConflict('political') && context.source.isParticipating(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Send a character home')
+            .condition((context) => this.game.isDuringConflict(ConflictType.Political) && context.source.isParticipating())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.politicalSkill < context.source.politicalSkill && card.isParticipating(),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.sendHome(),
-                    AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        activePromptTitle: 'Do you want to bow ' + context.target.name + '?',
-                        choices: ['Yes', 'No'],
-                        choiceHandler: (choice, displayMessage) => {
-                            if(displayMessage && choice === 'Yes') {
-                                context.game.addMessage('{0} chooses to bow {1} due to {2}\'s ability', context.player, context.target, context.source);
-                            }
-                            return { target: (choice === 'Yes' ? context.target : []) };
-                        },
-                        gameAction: AbilityDsl.actions.bow()
-                    }))
-                ])
-            }
-        });
+                cardCondition: (card, context) => card.politicalSkill < context.source.politicalSkill && card.isParticipating()
+            }, sequential([
+                sendHome(),
+                optional((context) => ({
+                    activePromptTitle: 'Do you want to bow ' + context.target.name + '?',
+                    gameAction: bow(),
+                    acceptMessage: () => msg`${context.player} chooses to bow ${context.target} due to ${context.source}'s ability`
+                }))
+            ]));
     }
 }
 

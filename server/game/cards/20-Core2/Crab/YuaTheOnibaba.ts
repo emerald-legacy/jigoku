@@ -1,23 +1,28 @@
-import { Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { Trait } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
 
-function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict) {
-    const res = {
-        toBuff: [] as Array<DrawCard>,
-        toNerf: [] as Array<DrawCard>
+function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict | null) {
+    const res: { toBuff: DrawCard[]; toNerf: DrawCard[] } = {
+        toBuff: [],
+        toNerf: []
     };
+    if(!conflict) {
+        return res;
+    }
     for(const character of conflict.getAttackers()) {
-        if(!character.hasTrait('bushi')) {
+        if(!character.hasTrait(Trait.Bushi)) {
             res.toNerf.push(character);
         } else if(character.controller === yuaController) {
             res.toBuff.push(character);
         }
     }
     for(const character of conflict.getDefenders()) {
-        if(!character.hasTrait('bushi')) {
+        if(!character.hasTrait(Trait.Bushi)) {
             res.toNerf.push(character);
         } else if(character.controller === yuaController) {
             res.toBuff.push(character);
@@ -29,29 +34,21 @@ function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict) {
 export default class YuaTheOnibaba extends DrawCard {
     static id = 'yua-the-onibaba';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Weaken non-bushi, empower bushi',
-            condition: (context) => context.source.isParticipating(),
-            effect: 'give all friendly participating bushi characters +1{1} / +1{2} and give all participating non-bushi characters -1{1} / -1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.multipleContext((context) => {
+    public override setupCardAbilities() {
+        this.conflictAction('Weaken non-bushi, empower bushi')
+            .gameAction(multiple((context) => {
                 const targets = charactersToBuffAndNerf(context.player, context.game.currentConflict);
-                return {
-                    gameActions: [
-                        AbilityDsl.actions.cardLastingEffect({
-                            target: targets.toBuff,
-                            effect: AbilityDsl.effects.modifyBothSkills(1),
-                            duration: Duration.UntilEndOfConflict
-                        }),
-                        AbilityDsl.actions.cardLastingEffect({
-                            target: targets.toNerf,
-                            effect: AbilityDsl.effects.modifyBothSkills(-1),
-                            duration: Duration.UntilEndOfConflict
-                        })
-                    ]
-                };
-            })
-        });
+                return [
+                    cardLastingEffect({
+                        target: targets.toBuff,
+                        effect: modifyBothSkills(1)
+                    }),
+                    cardLastingEffect({
+                        target: targets.toNerf,
+                        effect: modifyBothSkills(-1)
+                    })
+                ];
+            }))
+            .chatText(() => msg`give all friendly participating bushi characters +1${'military'} / +1${'political'} and give all participating non-bushi characters -1${'military'} / -1${'political'}`);
     }
 }

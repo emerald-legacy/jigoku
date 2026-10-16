@@ -1,24 +1,20 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class TryAgainTomorrow extends DrawCard {
     static id = 'try-again-tomorrow';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Send a Character home',
-            condition: (context: AbilityContext) =>
+    override setupCardAbilities() {
+        this.action('Send a Character home')
+            .condition((context) =>
                 context.player.anyCardsInPlay((card) => card.isParticipating() &&
-                card.hasTrait('courtier') && card.isHonored),
-            cannotBeMirrored: true,
-            target: {
+                card.hasTrait(Trait.Courtier) && card.isHonored))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: ability.actions.sendHome()
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, sendHome())
+            .cannotBeMirrored();
     }
 }
 

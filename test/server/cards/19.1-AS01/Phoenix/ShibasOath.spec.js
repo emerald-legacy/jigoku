@@ -195,3 +195,38 @@ describe('Shiba\'s Oath', function () {
         });
     });
 });
+
+describe('Shiba\'s Oath own abilities', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['valiant-oathkeeper', 'solemn-scholar'],
+                    hand: ['shiba-s-oath', 'banzai']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.valiantOathkeeper = this.player1.findCardByName('valiant-oathkeeper');
+            this.solemnScholar = this.player1.findCardByName('solemn-scholar');
+            this.player1.player.optionSettings.cancelOwnAbilities = true;
+            this.player1.clickCard('shiba-s-oath');
+            this.player1.clickCard(this.valiantOathkeeper);
+            this.player1.clickCard('shiba-s-oath');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.valiantOathkeeper, this.solemnScholar],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('does not cancel your own abilities', function () {
+            this.player1.clickCard('banzai');
+            this.player1.clickCard(this.solemnScholar);
+            expect(this.player1).not.toBeAbleToSelect(this.valiantOathkeeper);
+        });
+    });
+});

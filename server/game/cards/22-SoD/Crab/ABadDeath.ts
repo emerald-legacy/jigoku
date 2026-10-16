@@ -1,37 +1,31 @@
-import { CardType, Players, TargetMode } from '../../../Constants.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Players, TargetMode, Trait } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class ABadDeath extends DrawCard {
     static id = 'a-bad-death';
 
-    public setupCardAbilities() {
-        this.reaction({
-            title: 'Sacrifice a character to dishonor characters',
-            when: {
+    public override setupCardAbilities() {
+        this.reaction('Sacrifice a character to dishonor characters')
+            .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && !!context.player.opponent
-            },
-            cost: AbilityDsl.costs.dishonorAndSacrifice({
+            })
+            .cost(costs.dishonorAndSacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard) => card.isParticipating()
-            }),
-            cannotTargetFirst: true,
-            target: {
+                cardCondition: (card) => card.isParticipating()
+            }))
+            .targetCards({
                 mode: TargetMode.UpToVariable,
-                numCardsFunc: (context) => (context.costs.dishonorAndSacrificeStateWhenChosen as DrawCard)?.hasTrait('berserker') ? 2 : 1,
+                numCardsFunc: (context) => context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait(Trait.Berserker) ? 2 : 1,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.dishonor()
-            },
-            then: (context: AbilityContext) => ({
-                message: '{0} draws a card',
-                gameAction: AbilityDsl.actions.draw({
-                    target: context.player,
-                    amount: 1
-                })
-            })
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, dishonor())
+            .cannotTargetFirst()
+            .afterwards()
+            .draw(1)
+            .message((context) => msg`${context.player} draws a card`);
     }
 }

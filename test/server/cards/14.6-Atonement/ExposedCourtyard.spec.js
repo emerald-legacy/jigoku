@@ -52,6 +52,22 @@ describe('Exposed Courtyard', function() {
             expect(this.fan.location).toBe('conflict deck');
         });
 
+        it('should work when the only event in the discard pile is one discarded by the cost', function () {
+            for(const card of [...this.player2.player.conflictDiscardPile]) {
+                this.player2.moveCard(card, 'removed from game');
+            }
+            expect(this.player2.player.conflictDiscardPile.length).toBe(0);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.warrior],
+                defenders: [this.tsuko]
+            });
+            this.player2.clickCard(this.courtyard);
+            expect(this.player2).toHavePrompt('Choose an event');
+            expect(this.player2).toBeAbleToSelect(this.fury);
+        });
+
         it('should not work in a pol conflict', function () {
             this.noMoreActions();
             this.initiateConflict({
@@ -101,6 +117,23 @@ describe('Exposed Courtyard', function() {
             expect(this.getChatLogs(4)).toContain('player2 plays Soul Beyond Reproach to honor Matsu Tsuko, then honor it again');
             expect(this.getChatLogs(4)).toContain('Soul Beyond Reproach returns to the bottom of the deck due to Exposed Courtyard\'s effect');
             expect(this.soul.location).toBe('conflict deck');
+        });
+
+        it('should end once the picked event leaves the discard pile', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.warrior],
+                defenders: [this.tsuko]
+            });
+            this.player2.clickCard(this.courtyard);
+            this.player2.clickCard(this.soul);
+            this.player2.moveCard(this.soul, 'hand');
+            this.player2.moveCard(this.soul, 'conflict discard pile');
+            this.player1.pass();
+            this.player2.clickCard(this.soul);
+            expect(this.soul.location).toBe('conflict discard pile');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
         });
 
         it('should let you play interrupts', function () {

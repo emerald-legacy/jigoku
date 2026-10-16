@@ -118,8 +118,8 @@ describe('Hida Tsuru', function() {
                 this.player2.clickPrompt('0');
                 this.player2.clickPrompt('Conflict');
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(5);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(4);
+                expect(this.hidaTsuru.militarySkill).toBe(5);
+                expect(this.hidaTsuru.politicalSkill).toBe(4);
             });
 
             it('should trigger multiple times in a conflict', function() {
@@ -131,23 +131,23 @@ describe('Hida Tsuru', function() {
                 this.player2.clickPrompt('0');
                 this.player2.clickPrompt('Conflict');
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(5);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(4);
+                expect(this.hidaTsuru.militarySkill).toBe(5);
+                expect(this.hidaTsuru.politicalSkill).toBe(4);
                 this.player1.clickCard(this.fg);
                 this.player1.clickCard(this.scout);
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(6);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(5);
+                expect(this.hidaTsuru.militarySkill).toBe(6);
+                expect(this.hidaTsuru.politicalSkill).toBe(5);
                 this.player2.clickCard(this.shinjoOutrider);
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(7);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(6);
+                expect(this.hidaTsuru.militarySkill).toBe(7);
+                expect(this.hidaTsuru.politicalSkill).toBe(6);
                 this.player1.clickCard(this.stewardOfLaw);
                 this.player1.clickPrompt('0');
                 this.player1.clickPrompt('Conflict');
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(8);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(7);
+                expect(this.hidaTsuru.militarySkill).toBe(8);
+                expect(this.hidaTsuru.politicalSkill).toBe(7);
             });
         });
     });

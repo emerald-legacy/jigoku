@@ -28,7 +28,7 @@ describe('Commune With the Spirits', function() {
         });
 
         it('should discard the fate and claim the ring as political', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.spirits);
             this.player1.clickRing('air');
             expect(this.game.rings.air.conflictType).toBe('political');

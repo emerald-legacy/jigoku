@@ -1,19 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
 
 class FourTemplesAdvisor extends DrawCard {
     static id = 'four-temples-advisor';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Draw a card',
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            when: {
-                onMoveFate: (event, context) => event.origin && event.origin.type === 'ring' && event.recipient && event.recipient === context.player
-            },
-            gameAction: AbilityDsl.actions.draw(),
-            effect: 'draw a card'
-        });
+    override setupCardAbilities() {
+        this.reaction('Draw a card')
+            .when({
+                onMoveFate: (event, context) => event.origin && event.origin.type === 'ring' && event.recipient === context.player
+            })
+            .draw()
+            .chatText('draw a card')
+            .limit(unlimited());
     }
 }
 

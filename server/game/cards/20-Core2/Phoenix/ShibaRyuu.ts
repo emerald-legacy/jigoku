@@ -1,14 +1,14 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { changeConflictSkillFunction } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaRyuu extends DrawCard {
     static id = 'shiba-ryuu';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
-            effect: AbilityDsl.effects.changeConflictSkillFunction(
-                (card: DrawCard) => card.getMilitarySkill() + card.getPoliticalSkill()
+            effect: changeConflictSkillFunction(
+                (card) => card.militarySkill + card.politicalSkill
             )
         });
     }

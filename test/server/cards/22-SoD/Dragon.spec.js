@@ -85,7 +85,7 @@ describe('SoD - Dragon', function () {
 
             it('should prompt opponent to pick a card', function () {
                 this.player1.clickCard(this.night);
-                let deck = this.player1.conflictDeck.length;
+                const deck = this.player1.conflictDeck.length;
 
                 expect(this.player1).toHavePrompt('Choose two conflict cards');
                 expect(this.player1).not.toBeAbleToSelect(this.singer);
@@ -149,7 +149,7 @@ describe('SoD - Dragon', function () {
                     defenders: [this.yokuni]
                 });
 
-                const mil = this.monk.getMilitarySkill();
+                const mil = this.monk.militarySkill;
                 const fate = this.player1.fate;
 
                 this.player2.pass();
@@ -165,7 +165,7 @@ describe('SoD - Dragon', function () {
                 this.player1.clickRing('fire');
 
                 expect(this.player1.fate).toBe(fate + 5);
-                expect(this.monk.getMilitarySkill()).toBe(mil + 2);
+                expect(this.monk.militarySkill).toBe(mil + 2);
 
                 expect(this.game.rings.fire.conflictType).toBe('military');
                 expect(this.game.rings.fire.fate).toBe(0);
@@ -211,7 +211,7 @@ describe('SoD - Dragon', function () {
                 this.player1.clickCard(this.monk);
                 this.player1.clickCard(this.yokuni);
 
-                expect(this.yokuni.getMilitarySkill()).toBe(1);
+                expect(this.yokuni.militarySkill).toBe(1);
                 expect(this.yokuni.fate).toBe(1);
 
                 expect(this.getChatLogs(5)).toContain('player1 plays The Hundred Hand Strike to give Togashi Yokuni -4military and -4political');
@@ -233,7 +233,7 @@ describe('SoD - Dragon', function () {
                 this.player1.clickCard(this.monk);
                 this.player1.clickCard(this.yokuni);
 
-                expect(this.yokuni.getMilitarySkill()).toBe(0);
+                expect(this.yokuni.militarySkill).toBe(0);
                 expect(this.yokuni.fate).toBe(0);
 
                 expect(this.getChatLogs(5)).toContain('player1 plays The Hundred Hand Strike to give Togashi Yokuni -6military and -6political');
@@ -256,7 +256,7 @@ describe('SoD - Dragon', function () {
                 this.player1.clickCard(this.monk);
                 this.player1.clickCard(this.yokuni);
 
-                expect(this.yokuni.getMilitarySkill()).toBe(3);
+                expect(this.yokuni.militarySkill).toBe(3);
                 expect(this.yokuni.fate).toBe(0);
 
                 expect(this.getChatLogs(5)).toContain('player1 plays The Hundred Hand Strike to give Togashi Yokuni -2military and -2political');
@@ -369,7 +369,7 @@ describe('SoD - Dragon', function () {
             });
 
             it('holding', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.player.showBid = 1;
                 this.player2.player.showBid = 5;
 

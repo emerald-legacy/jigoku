@@ -1,35 +1,33 @@
-import { Duration, EventName, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { Duration, Phase } from '../../Constants.js';
+import { perRound } from '../../AbilityLimit.js';
+import { playerDelayedEffect } from '../../effects.js';
+import { handler } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { FatePhase } from '../../gamesteps/FatePhase.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class JurojinsCurse extends DrawCard {
     static id = 'jurojin-s-curse';
 
-    setupCardAbilities() {
-        this.forcedInterrupt({
-            title: 'Resolve a second fate phase',
-            when: {
+    override setupCardAbilities() {
+        this.forcedInterrupt('Resolve a second fate phase')
+            .when({
                 onPhaseEnded: (event, context) =>
-                    context.source.parentCharacter && event.phase === Phases.Fate && !context.source.parentCharacter.bowed
-            },
-            effect: 'resolve a second fate phase after this',
-            gameAction: AbilityDsl.actions.playerLastingEffect({
+                    context.source.parentCharacter && event.phase === Phase.Fate && !context.source.parentCharacter.bowed
+            })
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfRound,
-                effect: AbilityDsl.effects.playerDelayedEffect({
+                effect: playerDelayedEffect({
                     when: {
-                        onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>) => event.phase === Phases.Fate
+                        onPhaseEnded: (event) => event.phase === Phase.Fate
                     },
-                    message: '{0} takes hold!',
-                    messageArgs: (context: AbilityContext) => [context.source],
-                    gameAction: AbilityDsl.actions.handler({
+                    message: (context) => msg`${context.source} takes hold`,
+                    gameAction: handler({
                         handler: (context) => context.game.queueStep(new FatePhase(context.game))
                     })
                 })
-            }),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            })
+            .chatText('resolve a second fate phase after this')
+            .max(perRound(1));
     }
 }

@@ -1,18 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { ConflictType } from '../../Constants.js';
 
 class CaptiveAudience extends DrawCard {
     static id = 'captive-audience';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Change the conflict to military',
-            cost: AbilityDsl.costs.payHonor(1),
-            condition: () => this.game.isDuringConflict('political'),
-            effect: 'switch the conflict type to {1}',
-            effectArgs: () => 'military',
-            handler: () => this.game.currentConflict?.switchType()
-        });
+    override setupCardAbilities() {
+        this.action('Change the conflict to military')
+            .condition(() => this.game.isDuringConflict(ConflictType.Political))
+            .cost(costs.payHonor(1))
+            .switchConflictType({ targetConflictType: ConflictType.Military });
     }
 }
 

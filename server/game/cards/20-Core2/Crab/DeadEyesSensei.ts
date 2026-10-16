@@ -1,26 +1,24 @@
-import { CardType, Duration, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Duration, Players, Trait } from '../../../Constants.js';
+import { addTrait } from '../../../effects.js';
+import { cardLastingEffect, multiple, ready, removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DeadEyesSensei extends DrawCard {
     static id = 'dead-eyes-sensei';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Ready a character and give them Berserker',
-            target: {
+    public override setupCardAbilities() {
+        this.action('Ready a character and give them Berserker')
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.removeFate(),
-                    AbilityDsl.actions.cardLastingEffect({
-                        duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.addTrait('berserker')
-                    })
-                ])
-            },
-            effect: 'ready and remove a fate from {0}, giving them the Berserker trait'
-        });
+                controller: Players.Self
+            }, multiple([
+                ready(),
+                removeFate(),
+                cardLastingEffect({
+                    duration: Duration.UntilEndOfPhase,
+                    effect: addTrait(Trait.Berserker)
+                })
+            ]))
+            .chatText('ready and remove a fate from {0}, giving them the Berserker trait');
     }
 }

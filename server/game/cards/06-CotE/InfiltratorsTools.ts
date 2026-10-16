@@ -1,16 +1,17 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { Trait } from '../../Constants.js';
+import { addKeyword } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class InfiltratorsTools extends DrawCard {
     static id = 'infiltrator-s-tools';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'shinobi'
+            trait: Trait.Shinobi
         });
 
         this.whileAttached({
-            effect: ability.effects.addKeyword('covert')
+            effect: addKeyword('covert')
         });
     }
 }

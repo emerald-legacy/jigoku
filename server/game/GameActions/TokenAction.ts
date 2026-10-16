@@ -1,38 +1,37 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 import type { StatusToken } from '../StatusToken.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { EventName } from '../Constants.js';
 
-import type { Event } from '../Events/Event.js';
 export interface TokenActionProperties extends GameActionProperties {
     target?: StatusToken | StatusToken[];
 }
 
-export class TokenAction<P extends TokenActionProperties = TokenActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
-    targetType = ['token'];
+export type TokenEvent<EventType extends EventName, Context extends AbilityContext> = ActionEvent<EventType, Context> & { token: StatusToken };
 
-    defaultTargets(context: AbilityContext): StatusToken[] {
+export class TokenAction<
+    Properties extends TokenActionProperties = TokenActionProperties,
+    EventType extends EventName = EventName,
+    Context extends AbilityContext = AbilityContext,
+    Defaulted extends keyof Properties = never
+> extends GameAction<Properties, EventType, Context, Defaulted> {
+    override targetType = ['token'];
+
+    override defaultTargets(context: Context): StatusToken[] {
         return context.source.statusTokens ? [...context.source.statusTokens] : [];
     }
 
-    canAffect(target: StatusToken, context: AbilityContext, _additionalProperties = {}): boolean {
-        if(Array.isArray(target)) {
-            return target.length > 0 && target.every((a) => a.type === 'token');
-        }
+    override canAffect(target: StatusToken, _context: Context, _additionalProperties = {}): boolean {
         return target.type === 'token';
     }
 
-    checkEventCondition(event: GameEvent<N>, additionalProperties = {}): boolean {
-        return this.canAffect((event as { token?: StatusToken | StatusToken[] }).token as StatusToken, (event.context as AbilityContext), additionalProperties);
+    override checkEventCondition(event: TokenEvent<EventType, Context>, additionalProperties: ActionOverrides = {}): boolean {
+        return this.canAffect(event.token, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: GameEvent<N>, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    override addPropertiesToEvent(event: TokenEvent<EventType, Context>, token: StatusToken, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
-        const typedEvent = event as Event & { token: StatusToken | StatusToken[] };
-        typedEvent.token = token;
-        if(Array.isArray(typedEvent.token)) {
-            typedEvent.token = [...typedEvent.token];
-        }
+        event.token = token;
     }
 }

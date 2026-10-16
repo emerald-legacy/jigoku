@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
-import { EventName } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type { Cost } from './Cost.js';
-import { Event } from '../Events/Event.js';
+import type { Event } from '../Events/Event.js';
 import { ReduceableFateCost } from './ReduceableFateCost.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 
 export class TargetDependentFateCost extends ReduceableFateCost implements Cost {
@@ -11,7 +11,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         super(ignoreType);
     }
 
-    public canPay(context: AbilityContext<DrawCard>): boolean {
+    public override canPay(context: AbilityContext<DrawCard>): boolean {
         if(context.source.printedCost === null) {
             return false;
         }
@@ -22,52 +22,64 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         const reducedCost = context.player.getMinimumCost(
             context.playType,
             context,
-            context.targets[this.dependsOn] as DrawCard,
+            this.#target(context),
             this.ignoreType
         );
 
-        if(reducedCost !== 0 && this.payFateCostToOpponent && (!context.player.opponent || !context.player.opponent.checkRestrictions('gainFate', context))) {
+        if(reducedCost !== 0 && context.source.isTemptationsMaho()) {
+            return false;
+        }
+
+        if(reducedCost !== 0 && context.payFateCostToOpponent && (!context.player.opponent || !context.player.opponent.checkRestrictions(RestrictionType.GainFate, context))) {
             return false;
         }
 
         return (
             context.player.fate >= reducedCost &&
-            (reducedCost === 0 || context.player.checkRestrictions('spendFate', context))
+            (reducedCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
         );
     }
 
-    public payEvent(context: TriggeredAbilityContext<DrawCard>): Event {
+    public override payEvent(context: AbilityContext<DrawCard>): Event {
         const amount = (context.costs.targetDependentFate = this.getReducedCost(context));
 
-        if(this.payFateCostToOpponent) {
-            return new Event(EventName.OnMoveFate, { amount, context }, () => {
+        if(context.payFateCostToOpponent) {
+            return context.game.getEvent(EventName.OnMoveFate, { amount, context }, () => {
                 context.player.markUsedReducers(
                     context.playType,
                     context.source,
-                    context.targets[this.dependsOn] as DrawCard
+                    this.#target(context),
+                    this.ignoreType
                 );
-                context.player.fate -= this.getFinalFatecost(context, amount);
-                if(context.player.opponent) {
-                    context.player.opponent.fate += this.getFinalFatecost(context, amount);
-                }
+                // once: it takes the fate from any alternate pools
+                const cost = this.getFinalFatecost(context, amount);
+                context.player.modifyFate(-cost);
+                context.player.opponent?.modifyFate(cost);
             });
         }
 
-        return new Event(EventName.OnSpendFate, { amount, context }, () => {
+        return context.game.getEvent(EventName.OnSpendFate, { amount, context }, () => {
             context.player.markUsedReducers(
                 context.playType,
                 context.source,
-                context.targets[this.dependsOn] as DrawCard
+                this.#target(context),
+                this.ignoreType
             );
-            context.player.fate -= this.getFinalFatecost(context, amount);
+            context.player.modifyFate(-this.getFinalFatecost(context, amount));
         });
     }
 
-    protected getReducedCost(context: AbilityContext<DrawCard>): number {
+    /** The single card the cost depends on (the attachment's parent). */
+    #target(context: AbilityContext): BaseCard | undefined {
+        const target = context.targets[this.dependsOn];
+        return Array.isArray(target) ? undefined : target;
+    }
+
+    public override getReducedCost(context: AbilityContext<DrawCard>): number {
         return context.player.getReducedCost(
             context.playType,
             context.source,
-            context.targets[this.dependsOn] as DrawCard,
+            this.#target(context),
             this.ignoreType
         );
     }

@@ -40,14 +40,14 @@ describe('ProvinceCard', function () {
 
         describe('when the card has a reaction', function () {
             beforeEach(function () {
-                this.card.reaction({
-                    title: 'Force opponent to discard cards equal to the number of attackers',
-                    when: {
-                        onProvinceRevealed: (event) => event.card === this && this.controller.opponent.hand.length > 0
-                    },
-                    handler: () => {
-                        this.game.doSomething();
-                    }
+                this.card.declareAbilities(() => {
+                    this.card.reaction('Force opponent to discard cards equal to the number of attackers')
+                        .when({
+                            onProvinceRevealed: (event) => event.card === this && this.controller.opponent.hand.length > 0
+                        })
+                        .handler(() => {
+                            this.game.doSomething();
+                        });
                 });
                 spyOn(this.card.abilities.reactions[0], 'registerEvents');
                 spyOn(this.card.abilities.reactions[0], 'unregisterEvents');

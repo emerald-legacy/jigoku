@@ -5,7 +5,7 @@ describe('Webisus Blessing', function () {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['doji-whisperer', 'solemn-scholar'],
-                    hand: ['webisu-s-blessing']
+                    hand: ['webisu-s-blessing', 'webisu-s-blessing']
                 },
                 player2: {
                     inPlay: ['doji-kuwanan']
@@ -86,6 +86,18 @@ describe('Webisus Blessing', function () {
             expect(this.getChatLogs(10)).toContain(
                 'player1 plays Webisu\'s Blessing to discard Doji Whisperer\'s Tainted Token'
             );
+        });
+
+        it('cannot play a second copy in the same round (max 1 per round)', function () {
+            const [first, second] = this.player1.filterCardsByName('webisu-s-blessing');
+            this.player1.clickCard(first);
+            this.player1.clickCard(this.kuwanan);
+            this.player1.clickPrompt('Done');
+            expect(first.location).toBe('conflict discard pile');
+            this.player2.pass();
+
+            this.player1.clickCard(second);
+            expect(second.location).toBe('hand');
         });
     });
 });

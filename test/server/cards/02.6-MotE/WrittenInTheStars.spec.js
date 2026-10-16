@@ -34,7 +34,7 @@ describe('Written in the Stars', function() {
             });
 
             it('should remove 1 fate from each unclaimed ring if chosen', function() {
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 this.player1.clickCard(this.writtenInTheStars);
                 this.player1.clickPrompt('Remove one fate from each unclaimed ring');
                 expect(this.game.rings.air.fate).toBe(0);

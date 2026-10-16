@@ -1,49 +1,40 @@
+import { msg } from '../../../GameChat.js';
+import type Player from '../../../Player.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { Location } from '../../../Constants.js';
-import BaseCard from '../../../BaseCard.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import * as costs from '../../../costs/index.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { Location, Trait } from '../../../Constants.js';
+import type BaseCard from '../../../BaseCard.js';
 
 export default class PurveyorOfRarities extends DrawCard {
     static id = 'purveyor-of-rarities';
 
-    setupCardAbilities() {
-        this.conflictAction({
-            title: 'Discard a card for bonuses',
-            max: AbilityDsl.limit.perConflict(1),
-            cost: AbilityDsl.costs.discardCard({ location: Location.Hand }),
-            gameAction: AbilityDsl.actions.conditional((context: AbilityContext) => ({
-                condition: () => this.#cardCondition(context),
-                trueGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect({
-                        target: context.source,
-                        effect: AbilityDsl.effects.modifyBothSkills(1)
-                    }),
-                    AbilityDsl.actions.gainFate({
-                        target: context.player
-                    })
-                ]),
-                falseGameAction: AbilityDsl.actions.cardLastingEffect({
-                    target: context.source,
-                    effect: AbilityDsl.effects.modifyBothSkills(3)
-                })
-            })),
-            effect: 'give +{1}{2}/+{1}{3} to {4}{5}',
-            effectArgs: context => this.#cardCondition(context) ?
-                [1, 'military', 'political', context.source, ' and gain 1 fate'] :
-                [3, 'military', 'political', context.source, '']
-        });
+    override setupCardAbilities() {
+        this.conflictAction('Discard a card for bonuses')
+            .cost(costs.discardCard({ location: Location.Hand }))
+            .if((context) => this.cardCondition(context.costs.discardCard, context.player))
+                .cardLastingEffect((context) => ({ target: context.source, effect: modifyBothSkills(1) }))
+                .gainFate(1)
+            .otherwise()
+                .cardLastingEffect((context) => ({ target: context.source, effect: modifyBothSkills(3) }))
+            .chatText((context) => this.cardCondition(context.costs.discardCard, context.player)
+                ? msg`give +${1}${'military'}/+${1}${'political'} to ${context.source}${' and gain 1 fate'}`
+                : msg`give +${3}${'military'}/+${3}${'political'} to ${context.source}`)
+            .max(perConflict(1));
     }
 
-    #cardCondition(context: AbilityContext) {
-        if(!context.costs.discardCard) {
+    private cardCondition(discarded: BaseCard | BaseCard[] | undefined, player: Player) {
+        if(!discarded) {
             return false;
         }
-        const card = (context.costs.discardCard as BaseCard[])[0];
-        return card.hasSomeTrait('gaijin', 'foreign') || this.#isOutOfClan(card);
+        const card = Array.isArray(discarded) ? discarded[0] : discarded;
+        return card.hasTrait(Trait.Foreign) || this.isOutOfClan(card, player);
     }
 
-    #isOutOfClan(card: BaseCard): boolean {
-        return !card.isFaction('neutral') && !card.isFaction('unicorn');
+    /** RRG Out-of-clan: no symbol of the clan of its controller's stronghold (without one, the deck's clan). */
+    private isOutOfClan(card: BaseCard, player: Player): boolean {
+        const clan = player.stronghold ? player.stronghold.printedFaction : player.faction.value;
+        return !card.isFaction('neutral') && !(clan && card.isFaction(clan));
     }
 }

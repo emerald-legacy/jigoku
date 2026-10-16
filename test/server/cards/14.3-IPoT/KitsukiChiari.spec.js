@@ -53,7 +53,7 @@ describe('Kitsuki Chiari', function () {
                 attackers: [this.isawaTadaka],
                 province: this.p1
             });
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.player2.clickCard(this.chiari);
             expect(this.player2).toHavePrompt('Name a card');
@@ -75,7 +75,7 @@ describe('Kitsuki Chiari', function () {
                 attackers: [this.isawaTadaka],
                 province: this.p1
             });
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.player2.clickCard(this.chiari);
             expect(this.player2).toHavePrompt('Name a card');
@@ -97,8 +97,9 @@ describe('Kitsuki Chiari', function () {
                 attackers: [this.isawaTadaka],
                 province: this.p1
             });
-            this.player1.moveCard(this.ornateFan, 'conflict disard pile');
-            let hand = this.player1.hand.length;
+            this.player1.moveCard(this.ornateFan, 'conflict discard pile');
+            expect(this.ornateFan.location).toBe('conflict discard pile');
+            const hand = this.player1.hand.length;
 
             this.player2.clickCard(this.chiari);
             expect(this.player2).toHavePrompt('Name a card');

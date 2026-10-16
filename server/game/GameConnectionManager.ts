@@ -1,9 +1,10 @@
+import { msg } from './GameChat.js';
 import Player from './Player.js';
 import { Spectator } from './Spectator.js';
 import type Game from './Game.js';
-import type Socket from '../Socket.js';
+import type { Socket } from '../Socket.js';
 import type { GamePlayerUser } from './Player.js';
-import type { LobbyUser, UserIdentity } from '../gamenode/LobbyProtocol.js';
+import type { UserIdentity } from '../gamenode/LobbyProtocol.js';
 
 export class GameConnectionManager {
     constructor(private readonly game: Game) {}
@@ -14,21 +15,19 @@ export class GameConnectionManager {
             return false;
         }
 
-        game.playersAndSpectators[user.username] = new Spectator(socketId, user);
-        game.invalidatePlayerCaches();
-        game.addMessage('{0} has joined the game as a spectator', user.username);
+        game.addPlayerOrSpectator(user.username, new Spectator(socketId, user));
+        game.addMessage(msg`${user.username} has joined the game as a spectator`);
 
         return true;
     }
 
-    join(socketId: string, user: LobbyUser): boolean {
+    join(socketId: string, user: GamePlayerUser): boolean {
         const game = this.game;
         if(game.started || game.getPlayers().length === 2) {
             return false;
         }
 
-        game.playersAndSpectators[user.username] = new Player(socketId, user as GamePlayerUser, game.owner === user.username, game);
-        game.invalidatePlayerCaches();
+        game.addPlayerOrSpectator(user.username, new Player(socketId, user, game.owner === user.username, game));
 
         return true;
     }
@@ -53,11 +52,10 @@ export class GameConnectionManager {
             return;
         }
 
-        game.addMessage('{0} has left the game', playerName);
+        game.addMessage(msg`${playerName} has left the game`);
 
         if(game.isSpectator(player) || !game.started) {
-            delete game.playersAndSpectators[playerName];
-            game.invalidatePlayerCaches();
+            game.removePlayerOrSpectator(playerName);
         } else {
             player.left = true;
 
@@ -75,11 +73,10 @@ export class GameConnectionManager {
             return;
         }
 
-        game.addMessage('{0} has disconnected', player);
+        game.addMessage(msg`${player} has disconnected`);
 
         if(game.isSpectator(player)) {
-            delete game.playersAndSpectators[playerName];
-            game.invalidatePlayerCaches();
+            game.removePlayerOrSpectator(playerName);
         } else {
             player.disconnected = true;
         }
@@ -96,10 +93,9 @@ export class GameConnectionManager {
         }
 
         if(game.isSpectator(player) || !game.started) {
-            delete game.playersAndSpectators[playerName];
-            game.invalidatePlayerCaches();
+            game.removePlayerOrSpectator(playerName);
         } else {
-            game.addMessage('{0} has failed to connect to the game', player);
+            game.addMessage(msg`${player} has failed to connect to the game`);
 
             player.disconnected = true;
 
@@ -119,6 +115,6 @@ export class GameConnectionManager {
         player.socket = socket;
         player.disconnected = false;
 
-        this.game.addMessage('{0} has reconnected', player);
+        this.game.addMessage(msg`${player} has reconnected`);
     }
 }

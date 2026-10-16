@@ -112,8 +112,8 @@ describe('The Skin of Fu Leng', function () {
                         attackers: [this.toshimoko],
                         defenders: [this.ardent]
                     });
-                    let p1 = this.player1.honor;
-                    let p2 = this.player2.honor;
+                    const p1 = this.player1.honor;
+                    const p2 = this.player2.honor;
                     this.player2.pass();
                     this.player1.clickCard(this.scorp1);
                     this.player1.clickCard(this.ardent);
@@ -279,8 +279,8 @@ describe('The Skin of Fu Leng', function () {
                         attackers: [this.toshimoko],
                         defenders: [this.ardent]
                     });
-                    let p1 = this.player1.honor;
-                    let p2 = this.player2.honor;
+                    const p1 = this.player1.honor;
+                    const p2 = this.player2.honor;
                     this.player2.clickCard(this.scorp2);
                     this.player2.clickCard(this.toshimoko);
                     expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -528,7 +528,7 @@ describe('The Skin of Fu Leng', function () {
                         defenders: [this.kami],
                         ring: 'air'
                     });
-                    let honor = this.player1.honor;
+                    const honor = this.player1.honor;
                     this.player2.pass();
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.kami);
@@ -630,11 +630,11 @@ describe('The Skin of Fu Leng', function () {
                         type: 'military'
                     });
 
-                    let conflicts = this.player1.player.getConflictOpportunities();
-                    let milConflicts = this.player1.player.getRemainingConflictOpportunitiesForType('military');
+                    const conflicts = this.player1.player.getConflictOpportunities();
+                    const milConflicts = this.player1.player.getRemainingConflictOpportunitiesForType('military');
 
-                    let conflicts2 = this.player2.player.getConflictOpportunities();
-                    let milConflicts2 = this.player2.player.getRemainingConflictOpportunitiesForType('military');
+                    const conflicts2 = this.player2.player.getConflictOpportunities();
+                    const milConflicts2 = this.player2.player.getRemainingConflictOpportunitiesForType('military');
 
                     this.noMoreActions();
                     expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -958,7 +958,7 @@ describe('The Skin of Fu Leng', function () {
                         }
                     }
 
-                    let hand = this.player1.hand.length;
+                    const hand = this.player1.hand.length;
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.kageyu);
                     expect(this.player1.hand.length).toBe(hand + 5);
@@ -995,7 +995,7 @@ describe('The Skin of Fu Leng', function () {
                     this.player2.passConflict();
                     this.noMoreActions();
 
-                    let honor = this.player1.honor;
+                    const honor = this.player1.honor;
 
                     this.player2.clickPrompt('Political');
                     expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -1828,6 +1828,35 @@ describe('The Skin of Fu Leng', function () {
                     this.player2.clickCard(this.callow);
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                 });
+            });
+        });
+
+        describe('Opponent\'s attachments', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kakita-toshimoko'],
+                        hand: ['the-skin-of-fu-leng']
+                    },
+                    player2: {
+                        inPlay: [{ card: 'doji-whisperer', attachments: ['court-mask'] }]
+                    }
+                });
+
+                this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+                this.skin = this.player1.findCardByName('the-skin-of-fu-leng');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+                this.courtMask = this.player2.findCardByName('court-mask');
+                this.player1.playAttachment(this.skin, this.toshimoko);
+                this.player2.pass();
+            });
+
+            it('should not let you trigger abilities on the opponent\'s attachments', function () {
+                this.player1.clickCard(this.courtMask);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.courtMask.location).toBe('play area');
+                expect(this.whisperer.isDishonored).toBe(false);
             });
         });
     });

@@ -109,7 +109,7 @@ describe('Natures Wrath', function () {
             this.player2.clickCard(this.uji);
             expect(this.uji.isOrdinary()).toBe(true);
             expect(this.getChatLogs(5)).toContain(
-                'player2 chooses to dishonor Daidoji Uji to resolve Nature\'s Wrath again'
+                'player2 chooses to dishonor a participating character to resolve Nature\'s Wrath again'
             );
 
             expect(this.player2).toHavePrompt('Choose a character');
@@ -131,7 +131,8 @@ describe('Natures Wrath', function () {
             this.player2.clickCard(this.uji);
 
             expect(this.uji.isDishonored).toBe(true);
-            expect(this.getChatLogs(5)).toContain('player2 chooses to dishonor Daidoji Uji for no effect');
+            expect(this.getChatLogs(5)).toContain('player2 chooses to dishonor a participating character for no effect');
+            expect(this.getChatLogs(5)).toContain('player2 dishonors Daidoji Uji');
 
             expect(this.player2).not.toHavePrompt('Choose a character');
         });

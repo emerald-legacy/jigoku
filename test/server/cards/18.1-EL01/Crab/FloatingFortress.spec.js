@@ -9,7 +9,7 @@ describe('Floating Fortress', function () {
                 player2: {
                     inPlay: ['brash-samurai'],
                     hand: ['fine-katana', 'ornate-fan'],
-                    dynastyDiscard: ['floating-fortress', 'imperial-storehouse', 'fire-and-oil']
+                    dynastyDiscard: ['floating-fortress', 'floating-fortress', 'imperial-storehouse', 'fire-and-oil']
                 }
             });
 
@@ -30,7 +30,7 @@ describe('Floating Fortress', function () {
         });
 
         it('becomes a copy of a holding', function () {
-            let initialFate = this.player2.fate;
+            const initialFate = this.player2.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.diplomat],
@@ -80,6 +80,26 @@ describe('Floating Fortress', function () {
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.clickCard(this.fortress);
             expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+
+        it('only one copy can be used in a conflict (max 1 per conflict)', function () {
+            const fortress2 = this.player2.filterCardsByName('floating-fortress').find((card) => card !== this.fortress);
+            this.player2.placeCardInProvince(fortress2, 'province 3');
+            fortress2.facedown = false;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.diplomat],
+                defenders: [this.brash],
+                province: this.sd1
+            });
+            this.player2.clickCard(this.fortress);
+            this.player2.clickCard(this.oil);
+            this.player2.clickPrompt('No');
+            this.player1.pass();
+
+            this.player2.clickCard(fortress2);
+            expect(this.player2).not.toHavePrompt('Choose a holding');
         });
     });
 });

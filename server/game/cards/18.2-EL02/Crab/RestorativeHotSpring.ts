@@ -1,23 +1,22 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { removeFromGame } from '../../../GameActions/GameActions.js';
 
 class RestorativeHotSpring extends DrawCard {
     static id = 'restorative-hot-spring';
 
-    setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Prevent a character from leaving play',
-            cost: AbilityDsl.costs.payFate(1),
-            when: {
+    override setupCardAbilities() {
+        this.wouldInterrupt('Prevent a character from leaving play')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.type === CardType.Character && event.card.location === Location.PlayArea
-            },
-            effect: 'prevent {1} from leaving play, removing itself from the game instead',
-            effectArgs: context => context.event.card as DrawCard,
-            gameAction: AbilityDsl.actions.cancel({
-                replacementGameAction: AbilityDsl.actions.removeFromGame(context => ({ target: context.source }))
             })
-        });
+            .cost(costs.payFate(1))
+            .cancel({
+                replacementGameAction: removeFromGame((context) => ({ target: context.source }))
+            })
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play, removing itself from the game instead`);
     }
 }
 

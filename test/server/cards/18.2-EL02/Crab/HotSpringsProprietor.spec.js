@@ -61,7 +61,7 @@ describe('Hot Springs Proprietor', function() {
             this.player1.clickPrompt('Hida Guardian');
             expect(this.hidaGuardian.location).toBe('play area');
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Hot Springs Proprietor to search their dynasty deck for a character that costs 1 and put it into play');
+            expect(this.getChatLogs(5)).toContain('player1 uses Hot Springs Proprietor to search their dynasty deck for a character with printed cost 1 or less and put it into play');
             expect(this.getChatLogs(5)).toContain('player1 is shuffling their dynasty deck');
         });
 

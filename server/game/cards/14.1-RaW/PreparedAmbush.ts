@@ -1,21 +1,20 @@
 import { Location } from '../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainPlayAction } from '../../effects.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
-import DrawCard from '../../DrawCard.js';
 
 export default class PreparedAmbush extends BattlefieldAttachment {
     static id = 'prepared-ambush';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
 
         this.persistentEffect({
             condition: (context) =>
                 !!(context.game.isDuringConflict() && context.source.parentProvince?.isConflictProvince()),
             targetLocation: Location.Provinces,
-            match: (card: DrawCard) => card.isDynasty && card.isFaceup(),
-            effect: AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHandIntoConflict)
+            match: (card) => card.isDynasty && card.isFaceup(),
+            effect: gainPlayAction(PlayCharacterAsIfFromHandIntoConflict)
         });
     }
 }

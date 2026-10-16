@@ -1,5 +1,6 @@
 import type Player from './Player.js';
 import type { Conflict } from './Conflict.js';
+import type { ProvinceCard } from './ProvinceCard.js';
 import { ConflictType, Players } from './Constants.js';
 
 export interface ConflictRecord {
@@ -10,6 +11,8 @@ export interface ConflictRecord {
     completed?: boolean;
     winner?: Player;
     typeSwitched?: boolean;
+    /** The provinces broken in the conflict: the conflict's own list. */
+    brokenProvinces: ProvinceCard[];
 }
 
 export class ConflictTracker {
@@ -20,14 +23,15 @@ export class ConflictTracker {
             attackingPlayer: conflict.attackingPlayer,
             declaredType: conflict.declaredType,
             passed: conflict.conflictPassed,
-            uuid: conflict.uuid
+            uuid: conflict.uuid,
+            brokenProvinces: conflict.brokenProvinces
         });
         if(conflict.conflictPassed) {
             conflict.attackingPlayer.declaredConflictOpportunities[ConflictType.Passed]++;
         } else if(conflict.forcedDeclaredType) {
             conflict.attackingPlayer.declaredConflictOpportunities[ConflictType.Forced]++;
-        } else {
-            conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType as ConflictType]++;
+        } else if(conflict.declaredType) {
+            conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType]++;
         }
     }
 
@@ -45,9 +49,5 @@ export class ConflictTracker {
             record.winner = conflict.winner;
             record.typeSwitched = conflict.conflictTypeSwitched;
         }
-    }
-
-    reset(): void {
-        this.records = [];
     }
 }

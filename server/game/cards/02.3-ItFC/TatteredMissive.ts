@@ -1,28 +1,27 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Location, Trait } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class TatteredMissive extends DrawCard {
     static id = 'tattered-missive';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
-            trait: 'courtier'
+            trait: Trait.Courtier
         });
 
-        this.action({
-            title: 'Search top 5 cards',
-            condition: context => context.player.conflictDeck.length > 0,
-            cost: AbilityDsl.costs.bowParent(),
-            effect: 'look at the top 5 cards of their conflict deck',
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: 5,
-                gameAction: AbilityDsl.actions.moveCard({
+        this.action('Search top 5 cards')
+            .condition((context) => context.player.conflictDeck.length > 0)
+            .cost(costs.bowParent())
+            .deckSearch({
+                cardsToLookAt: 5,
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             })
-        });
+            .chatText('look at the top 5 cards of their conflict deck');
     }
 }
 

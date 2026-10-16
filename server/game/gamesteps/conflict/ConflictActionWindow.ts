@@ -1,20 +1,13 @@
-import ActionWindow from '../ActionWindow.js';
+import { msg } from '../../GameChat.js';
+import { ActionWindow } from '../ActionWindow.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
-import type AbilityResolver from '../AbilityResolver.js';
+import type { AbilityResolver } from '../AbilityResolver.js';
 import type { Conflict } from '../../Conflict.js';
+import { RestrictionType } from '../../Constants.js';
+import { capitalize } from '../../utils/capitalize.js';
 
-const capitalize: Record<string, string> = {
-    military: 'Military',
-    political: 'Political',
-    air: 'Air',
-    water: 'Water',
-    earth: 'Earth',
-    fire: 'Fire',
-    void: 'Void'
-};
-
-class ConflictActionWindow extends ActionWindow {
+export class ConflictActionWindow extends ActionWindow {
     conflict: Conflict;
     displayTotals: boolean;
 
@@ -24,22 +17,26 @@ class ConflictActionWindow extends ActionWindow {
         this.displayTotals = true;
     }
 
-    continue(): boolean {
-        let completed = super.continue();
+    private conflictText(): string {
+        return capitalize(this.conflict.conflictType ?? '') + ' ' + capitalize(this.conflict.element ?? '') + ' conflict';
+    }
+
+    override continue(): boolean {
+        const completed = super.continue();
         if(!completed && this.displayTotals) {
-            //this.conflict.calculateSkill();
-            let conflictText = capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' conflict';
-            this.game.addMessage('{0} - Attacker: {1} Defender: {2}', conflictText, this.conflict.attackerSkill, this.conflict.defenderSkill);
+            const conflictText = this.conflictText();
+            this.game.addMessage(msg`${conflictText} - Attacker: ${this.conflict.attackerSkill} Defender: ${this.conflict.defenderSkill}`);
             let winnerText = 'Attacker is winning the conflict';
-            let breakingProvinces: ProvinceCard[] = [];
-            if(this.conflict.attackerSkill === 0 && this.conflict.defenderSkill === 0) {
+            const breakingProvinces: ProvinceCard[] = [];
+            const winner = this.conflict.getWinningPlayer();
+            if(!winner) {
                 winnerText = 'No-one is winning the conflict';
-            } else if(this.conflict.defenderSkill > this.conflict.attackerSkill) {
+            } else if(winner === this.conflict.defendingPlayer) {
                 winnerText = 'Defender is winning the conflict';
             } else {
                 const provinces = this.conflict.getConflictProvinces();
                 provinces.forEach((province: ProvinceCard) => {
-                    if(province && !province.isBroken && province.allowGameAction('break') && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
+                    if(!province.isBroken && province.checkRestrictions(RestrictionType.Break, this.game.getFrameworkContext(this.conflict.attackingPlayer)) && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
                         breakingProvinces.push(province);
                     }
                 });
@@ -49,18 +46,17 @@ class ConflictActionWindow extends ActionWindow {
                     winnerText = winnerText + ' - {0} are breaking!';
                 }
             }
-            this.game.addMessage(winnerText, breakingProvinces);
+            this.game.addMessage([winnerText, [breakingProvinces]]);
             this.displayTotals = false;
         }
         return completed;
     }
 
-    activePrompt() {
-        let props = super.activePrompt();
+    override activePrompt() {
+        const props = super.activePrompt();
 
-        //this.conflict.calculateSkill();
-        let conflictText = capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' conflict';
-        let skillText = 'Attacker: ' + this.conflict.attackerSkill + ' Defender: ' + this.conflict.defenderSkill;
+        const conflictText = this.conflictText();
+        const skillText = 'Attacker: ' + this.conflict.attackerSkill + ' Defender: ' + this.conflict.defenderSkill;
         return {
             menuTitle: [conflictText, skillText].join('\n'),
             buttons: props.buttons,
@@ -68,7 +64,7 @@ class ConflictActionWindow extends ActionWindow {
         };
     }
 
-    postResolutionUpdate(resolver: AbilityResolver): void {
+    override postResolutionUpdate(resolver: AbilityResolver): void {
         super.postResolutionUpdate(resolver);
         if(!this.game.manualMode) {
             this.displayTotals = true;
@@ -76,4 +72,3 @@ class ConflictActionWindow extends ActionWindow {
     }
 }
 
-export default ConflictActionWindow;

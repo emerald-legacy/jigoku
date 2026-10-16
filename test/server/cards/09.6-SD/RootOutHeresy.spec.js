@@ -54,7 +54,7 @@ describe('Root Out Heresy', function() {
                     defenders: [this.whisperer],
                     province: this.shameful2
                 });
-                let strength = this.shameful2.strength;
+                const strength = this.shameful2.strength;
                 this.player2.pass();
                 this.player1.clickCard(this.root);
                 expect(this.fury.location).toBe('conflict discard pile');
@@ -69,7 +69,7 @@ describe('Root Out Heresy', function() {
                     province: this.shameful2
                 });
                 this.player2.moveCard(this.p2Root, 'hand');
-                let strength = this.shameful2.strength;
+                const strength = this.shameful2.strength;
                 this.player2.clickCard(this.p2Root);
                 expect(this.root.location).toBe('conflict discard pile');
                 expect(this.shameful2.strength).toBe(strength - 1);
@@ -82,7 +82,7 @@ describe('Root Out Heresy', function() {
                     defenders: [this.whisperer],
                     province: this.shameful2
                 });
-                let strength = this.shameful2.strength;
+                const strength = this.shameful2.strength;
                 this.player2.clickCard(this.fury);
                 this.player2.clickCard(this.moto);
                 this.player1.clickCard(this.root);

@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Foreign Customs', function () {
     integration(function () {
@@ -6,7 +6,7 @@ describe('Foreign Customs', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     player1: {
                         hand: ['foreign-customs'],
                         inPlay: ['adept-of-the-waves', 'sand-road-merchant', 'worldly-shiotome']
@@ -41,7 +41,7 @@ describe('Foreign Customs', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     player1: {
                         hand: ['foreign-customs', 'composite-yumi'],
                         inPlay: ['adept-of-the-waves', 'wandering-ronin']
@@ -75,7 +75,7 @@ describe('Foreign Customs', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     player1: {
                         fate: 20,
                         inPlay: ['doji-challenger', 'kakita-yoshi', 'daidoji-uji']

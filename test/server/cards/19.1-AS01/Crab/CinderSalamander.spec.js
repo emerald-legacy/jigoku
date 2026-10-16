@@ -69,13 +69,21 @@ describe('Cinder Salamander', function () {
                     }
                 });
 
-                let salamanders = this.player1.filterCardsByName('cinder-salamander');
+                const salamanders = this.player1.filterCardsByName('cinder-salamander');
                 this.salamander1 = salamanders[0];
                 this.salamander2 = salamanders[1];
                 this.salamander3 = salamanders[2];
 
                 this.player1.claimRing('fire');
                 this.game.checkGameState(true);
+            });
+
+            it('does nothing when the opponent has claimed the fire ring', function () {
+                this.player2.claimRing('fire');
+                this.player1.clickCard(this.salamander1);
+
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.player1).not.toHavePrompt('Select characters to put into play from your deck');
             });
 
             it('when 3 salamanders are in play, shuffle dynasty deck', function () {

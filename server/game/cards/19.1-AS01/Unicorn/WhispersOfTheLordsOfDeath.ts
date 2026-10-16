@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { changePlayerGloryModifier } from '../../../effects.js';
 import { CardType, FavorType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -6,30 +6,26 @@ import type Player from '../../../Player.js';
 export default class WhispersOfTheLordsOfDeath extends DrawCard {
     static id = 'whispers-of-the-lords-of-death';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
-            effect: AbilityDsl.effects.changePlayerGloryModifier((player: Player) => this.highestMilitaryForPlayer(player))
+            effect: changePlayerGloryModifier((player) => this.highestMilitaryForPlayer(player))
         });
 
-        this.reaction({
-            title: 'Put into play',
-            location: [Location.Hand],
-            when: {
+        this.reaction('Put into play')
+            .when({
                 onCardLeavesPlay: (event, context) =>
                     event.card.type === CardType.Character &&
                     event.cardStateWhenLeftPlay?.location === Location.PlayArea &&
                     context.game.isDuringConflict()
-            },
-            gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.putIntoPlay((context) => ({ target: context.source })),
-                AbilityDsl.actions.claimImperialFavor((context) => ({
-                    target: context.player,
-                    side: FavorType.Military
-                }))
-            ]),
-            effect: 'put {0} into play and claim the Imperial Favor'
-        });
+            })
+            .location([Location.Hand])
+            .putIntoPlay()
+            .claimImperialFavor((context) => ({
+                target: context.player,
+                side: FavorType.Military
+            }))
+            .chatText('put {0} into play and claim the Imperial Favor');
     }
 
     private highestMilitaryForPlayer(player: Player) {
@@ -38,7 +34,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
                 return maxMil;
             }
 
-            const cardMil = card.getMilitarySkill();
+            const cardMil = card.militarySkill;
             return cardMil > maxMil ? cardMil : maxMil;
         }, 0);
     }

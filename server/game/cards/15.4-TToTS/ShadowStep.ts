@@ -1,37 +1,25 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, CharacterStatus, Players, Trait } from '../../Constants.js';
+import { removeFromGame } from '../../GameActions/GameActions.js';
 
 class ShadowStep extends DrawCard {
     static id = 'shadow-step';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Remove a character from the game and put it into play',
-            target: {
+    override setupCardAbilities() {
+        this.action('Remove a character from the game and put it into play')
+            .target({
                 cardType: CardType.Character,
-                cardCondition: card => !card.hasTrait('mythic'),
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.removeFromGame(context => ({
-                        target: context.target
-                    })),
-                    AbilityDsl.actions.conditional({
-                        condition: context => {
-                            return (context.target as DrawCard).hasTrait('shadow');
-                        },
-                        trueGameAction: AbilityDsl.actions.putIntoPlay(context => ({
-                            target: context.target
-                        })),
-                        falseGameAction: AbilityDsl.actions.putIntoPlay(context => ({
-                            target: context.target,
-                            status: 'dishonored'
-                        }))
-                    })
-                ])
-            },
-            effect: 'remove {0} from the game, then put it back into play'
-        });
+                cardCondition: (card) => !card.hasTrait(Trait.Mythic),
+                controller: Players.Self
+            }, removeFromGame((context) => ({
+                target: context.target
+            })))
+            .chatText('remove {0} from the game, then put it back into play')
+            .afterwards()
+            .if((context) => !!context.target?.hasTrait(Trait.Shadow))
+            .putIntoPlay((context) => ({ target: context.target }))
+            .otherwise()
+            .putIntoPlay((context) => ({ target: context.target, status: CharacterStatus.Dishonored }));
     }
 }
 

@@ -1,89 +1,67 @@
-import { GameModes } from '../../../GameModes.js';
-import { CardType, EventName, TargetMode, Decks, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { CardType, TargetMode, DeckType, Location, Players } from '../../Constants.js';
+import { hideWhenFaceUp } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import BaseCard from '../../BaseCard.js';
-import type { EventPayload, GameEvent } from '../../Events/EventPayloads.js';
-import type Player from '../../Player.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
+import { placeInProvince } from '../../GameActions/GameActions.js';
 
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Look at your dynasty deck',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Look at your dynasty deck')
+            .when({
                 onCharacterEntersPlay: (event, context) =>
-                    event.card === context.source && context.game.gameMode !== GameModes.Skirmish
-            },
-            gameAction: AbilityDsl.actions.deckSearch({
+                    event.card === context.source && context.game.rules.setupHaveStrongholds
+            })
+            .deckSearch({
                 cardCondition: (card) => card.type === CardType.Holding,
-                targetMode: TargetMode.Unlimited,
-                deck: Decks.DynastyDeck,
-                selectedCardsHandler: (context, event, cards) => {
-                    const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
+                mode: TargetMode.Unlimited,
+                deck: DeckType.Dynasty,
+                selectedCardsHandler: (_context, event, cards) => {
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1}', searchEvent.player, cards);
+                        this.game.addMessage(msg`${event.player} selects ${cards}`);
                         cards.forEach((card) => {
-                            searchEvent.player.stronghold?.addChildCard(card, Location.UnderneathStronghold);
-                            searchEvent.player.moveCard(card, Location.UnderneathStronghold);
-                            card.lastingEffect(() => ({
+                            event.player.stronghold?.addChildCard(card, Location.UnderneathStronghold);
+                            event.player.moveCard(card, Location.UnderneathStronghold);
+                            card.lastingEffect({
                                 until: {
-                                    onCardMoved: (event: EventPayload<EventName.OnCardMoved>) =>
+                                    onCardMoved: (event) =>
                                         event.card === card && event.originalLocation === Location.UnderneathStronghold
                                 },
                                 match: card,
-                                effect: [AbilityDsl.effects.hideWhenFaceUp()]
-                            }));
+                                effect: [hideWhenFaceUp()]
+                            });
                         });
                     } else {
-                        this.game.addMessage('{0} selects no holdings', searchEvent.player);
+                        this.game.addMessage(msg`${event.player} selects no holdings`);
                     }
                 }
+            });
+
+        this.action('Put a holding in a province')
+            .condition((context) => context.game.rules.setupHaveStrongholds)
+            .target({
+                name: 'first',
+                activePromptTitle: 'Choose a holding',
+                cardType: CardType.Holding,
+                controller: Players.Self,
+                location: Location.UnderneathStronghold,
+                cardCondition: (card, context) => !!context.player.stronghold && context.player.stronghold.childCards.includes(card)
             })
-        });
-
-        this.action({
-            title: 'Put a holding in a province',
-            condition: (context) => context.game.gameMode !== GameModes.Skirmish,
-            targets: {
-                first: {
-                    activePromptTitle: 'Choose a holding',
-                    cardType: CardType.Holding,
-                    controller: Players.Self,
-                    location: Location.UnderneathStronghold,
-                    cardCondition: (card: DrawCard, context) => !!context?.player.stronghold && context.player.stronghold.childCards.includes(card)
-                },
-                second: {
-                    activePromptTitle: 'Choose an unbroken province',
-                    dependsOn: 'first',
-                    optional: false,
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    controller: Players.Self,
-                    cardCondition: (card: BaseCard) => card.location !== Location.StrongholdProvince && !(card as ProvinceCard).isBroken
-                }
-            },
-            handler: (context) => {
-                let holding = context.targets.first as DrawCard;
-                let province = context.targets.second as ProvinceCard;
-
-                let cards = context.player.getDynastyCardsInProvince(province.location);
-                if(context.player.stronghold) {
-                    context.player.stronghold.removeChildCard(holding, province.location);
-                }
-                holding.facedown = false;
-                cards.forEach(card => {
-                    context.player.moveCard(card, Location.DynastyDiscardPile);
-                });
-            },
-            effect: 'discard {1}, replacing {2} with {3}',
-            effectArgs: (context) => [
-                context.player.getDynastyCardsInProvince((context.targets.second as ProvinceCard).location),
-                context.player.getDynastyCardsInProvince((context.targets.second as ProvinceCard).location).length > 1 ? 'them' : 'it',
-                context.targets.first as DrawCard
-            ]
-        });
+            .target({
+                name: 'second',
+                activePromptTitle: 'Choose an unbroken province',
+                dependsOn: 'first',
+                cardType: CardType.Province,
+                location: Location.Provinces,
+                controller: Players.Self,
+                cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
+            })
+            .gameAction(placeInProvince((context) => ({
+                target: context.targets.first,
+                destination: context.targets.second.location,
+                discard: 'all'
+            })))
+            .chatText((context) => msg`discard ${context.player.getDynastyCardsInProvince(context.targets.second.location)}, replacing ${context.player.getDynastyCardsInProvince(context.targets.second.location).length > 1 ? 'them' : 'it'} with ${context.targets.first}`);
     }
 }

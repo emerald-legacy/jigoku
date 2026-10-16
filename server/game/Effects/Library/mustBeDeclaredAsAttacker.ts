@@ -1,8 +1,6 @@
-import { EffectName } from '../../Constants.js';
+import { type ConflictType, EffectName } from '../../Constants.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 
-export type MustBeDeclaredAsAttackerValue = 'both' | 'military' | 'political';
-
-export function mustBeDeclaredAsAttacker(type: MustBeDeclaredAsAttackerValue = 'both') {
+export function mustBeDeclaredAsAttacker(type: ConflictType | 'both' = 'both') {
     return EffectBuilder.card.static(EffectName.MustBeDeclaredAsAttacker, type);
 }

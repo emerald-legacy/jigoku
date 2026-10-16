@@ -57,7 +57,7 @@ describe('Disguise', function () {
             });
 
             it('should cost fate equal to the difference and discard the character', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.kageyu);
                 this.player1.clickCard(this.whisperer);
                 expect(this.player1.fate).toBe(fate - 2);
@@ -76,7 +76,7 @@ describe('Disguise', function () {
             it('should transfer attachments', function () {
                 this.player1.playAttachment(this.newName, this.brash);
                 this.player2.pass();
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.kageyu);
                 this.player1.clickCard(this.brash);
                 expect(this.player1.fate).toBe(fate - 1);

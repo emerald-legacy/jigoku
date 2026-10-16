@@ -1,43 +1,35 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, ConflictType, TargetMode } from '../../../Constants.js';
+import { CardType, ConflictType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class ToGovernTheLand extends DrawCard {
     static id = 'to-govern-the-land';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Send home and bow based on bushi\'s power',
-            condition: (context) => this.conditionToTrigger(ConflictType.Political, context),
-            target: {
+    public override setupCardAbilities() {
+        this.conflictAction('Send home and bow based on bushi\'s power', { conflictType: ConflictType.Political })
+            .condition((context) => this.conditionToTrigger(ConflictType.Political, context))
+            .target({
                 cardType: CardType.Character,
-                mode: TargetMode.Single,
-                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Political, card, context),
-                gameAction: this.gameAction()
-            }
-        });
+                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Political, card, context)
+            }, this.gameAction());
 
-        this.action({
-            title: 'Send home and bow based on courtier\'s power',
-            condition: (context) => this.conditionToTrigger(ConflictType.Military, context),
-            target: {
+        this.conflictAction('Send home and bow based on courtier\'s power', { conflictType: ConflictType.Military })
+            .condition((context) => this.conditionToTrigger(ConflictType.Military, context))
+            .target({
                 cardType: CardType.Character,
-                mode: TargetMode.Single,
-                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Military, card, context),
-                gameAction: this.gameAction()
-            }
-        });
+                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Military, card, context)
+            }, this.gameAction());
     }
 
-    private governSkill(conflictType: ConflictType, card: BaseCard): number {
+    private governSkill(conflictType: ConflictType, card: DrawCard): number {
         switch(conflictType) {
             case ConflictType.Political:
-                return (card as DrawCard).getMilitarySkill();
+                return card.militarySkill;
             case ConflictType.Military:
-                return (card as DrawCard).getPoliticalSkill();
+                return card.politicalSkill;
             default:
                 return NaN;
         }
@@ -50,20 +42,17 @@ export default class ToGovernTheLand extends DrawCard {
 
         switch(conflictType) {
             case ConflictType.Political:
-                return card.hasTrait('bushi');
+                return card.hasTrait(Trait.Bushi);
             case ConflictType.Military:
-                return card.hasTrait('courtier');
+                return card.hasTrait(Trait.Courtier);
             default:
                 return false;
         }
     }
 
     private conditionToTrigger(conflictType: ConflictType, context: AbilityContext): boolean {
-        return (
-            context.game.isDuringConflict(conflictType) &&
-            (context.game.currentConflict?.getParticipants() as BaseCard[] ?? []).some((card) =>
-                this.governFulfillTrait(conflictType, context, card)
-            )
+        return (context.game.currentConflict?.getParticipants() ?? []).some((card) =>
+            this.governFulfillTrait(conflictType, context, card)
         );
     }
 
@@ -72,7 +61,7 @@ export default class ToGovernTheLand extends DrawCard {
             return false;
         }
 
-        const maxSkillExclusive = (context.game.currentConflict?.getParticipants() as BaseCard[] ?? []).reduce(
+        const maxSkillExclusive = (context.game.currentConflict?.getParticipants() ?? []).reduce(
             (max, myCard) => {
                 if(!this.governFulfillTrait(conflictType, context, myCard)) {
                     return max;
@@ -87,6 +76,6 @@ export default class ToGovernTheLand extends DrawCard {
     }
 
     private gameAction(): GameAction {
-        return AbilityDsl.actions.multiple([AbilityDsl.actions.sendHome(), AbilityDsl.actions.bow()]);
+        return multiple([sendHome(), bow()]);
     }
 }

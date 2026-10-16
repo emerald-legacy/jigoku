@@ -39,7 +39,7 @@ describe('Relentless Inquisitor', function() {
                 expect(this.player2).toBeAbleToSelect(this.outrider);
                 expect(this.player2).toBeAbleToSelect(this.moto);
                 expect(this.player2).not.toBeAbleToSelect(this.toshimoko); // no fate & bowed
-                expect(this.player2).not.toBeAbleToSelect(this.challenger); // fate & bowed
+                expect(this.player2).toBeAbleToSelect(this.challenger); // fate & bowed: only the fate can be removed
                 expect(this.player2).not.toBeAbleToSelect(this.wayfinder); // not participating
                 expect(this.player2).not.toBeAbleToSelect(this.inquisitor); // not controlled by opponent
             });
@@ -64,7 +64,7 @@ describe('Relentless Inquisitor', function() {
                     defenders: [this.inquisitor]
                 });
 
-                let fate = this.outrider.fate;
+                const fate = this.outrider.fate;
                 this.player2.clickCard(this.inquisitor);
                 this.player2.clickCard(this.outrider);
                 this.player1.clickPrompt('Remove a fate from this character');
@@ -80,7 +80,7 @@ describe('Relentless Inquisitor', function() {
                     defenders: [this.inquisitor]
                 });
 
-                let fate = this.outrider.fate;
+                const fate = this.outrider.fate;
                 this.player2.clickCard(this.inquisitor);
                 this.player2.clickCard(this.outrider);
                 this.player1.clickPrompt('Bow this character');

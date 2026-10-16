@@ -1,24 +1,22 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Duration, Trait } from '../../Constants.js';
+import { addTrait, modifyMilitarySkill } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class PeerlessDiscipline extends DrawCard {
     static id = 'peerless-discipline';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Give each character +1 military and Bushi',
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+    override setupCardAbilities() {
+        this.action('Give each character +1 military and Bushi')
+            .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter(() => true),
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(1),
-                    AbilityDsl.effects.addTrait('bushi')
+                    modifyMilitarySkill(1),
+                    addTrait(Trait.Bushi)
                 ],
                 duration: Duration.UntilEndOfPhase
-            })),
-            effect: 'give all characters they control +1{1} and the Bushi trait',
-            effectArgs: ['military']
-        });
+            }))
+            .chatText(() => msg`give all characters they control +1${'military'} and the Bushi trait`);
     }
 }
 

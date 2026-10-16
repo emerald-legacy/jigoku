@@ -1,48 +1,29 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Element, Trait } from '../../Constants.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { controlsShugenja } from '../controlsShugenja.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'katana-of-fire-fire';
+const elementSymbol = { key: 'katana-of-fire-fire', element: Element.Fire };
 
 class KatanaOfFire extends DrawCard {
     static id = 'katana-of-fire';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
+        this.playOnlyIf((context) => controlsShugenja(context.player));
+
         this.whileAttached({
-            effect: AbilityDsl.effects.modifyMilitarySkill(() => this.totalKatanaModifier())
+            effect: modifyMilitarySkill(() => this.getTotalKatanaModifier())
         });
     }
 
-    canPlay(context: AbilityContext, playType: string) {
-        if(!context.player.cardsInPlay.some((card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
-            return false;
-        }
-
-        return super.canPlay(context, playType);
+    getTotalKatanaModifier() {
+        const fireRingBonus = hasClaimedRing(this, elementSymbol.key, this.controller) ? 2 : 0;
+        return fireRingBonus + this.controller.getNumberOfCardsInPlay((card) => card.hasTrait(Trait.Fire));
     }
 
-    // Helper methods for clarity - TODO: needs fixing to not use this.controller
-    controllerHasFireRing() {
-        return this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(this.controller);
-    }
-    numberOfFireCards() {
-        return this.controller.getNumberOfCardsInPlay((card: DrawCard) => card.hasTrait('fire'));
-    }
-    totalKatanaModifier() {
-        var skillModifier = this.controllerHasFireRing() ? 2 : 0;
-        skillModifier += this.numberOfFireCards();
-        return skillModifier;
-    }
-
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Fire
-        });
-        return symbols;
+    override getPrintedElementSymbols() {
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

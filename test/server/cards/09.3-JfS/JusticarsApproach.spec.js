@@ -117,6 +117,91 @@ describe('Justicar\'s Approach', function() {
                 expect(this.getChatLogs(4)).toContain('Duel Effect: discard Matsu Berserker');
             });
 
+            it('should dishonor an ordinary loser without bowing or discarding it', function() {
+                this.player1.clickCard(this.justicarsApproach);
+                this.player1.clickCard(this.dojiWhisperer);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.dojiWhisperer, this.brashSamurai],
+                    defenders: [this.matsuBerserker]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.dojiWhisperer);
+                this.player1.clickCard(this.matsuBerserker);
+                this.player1.clickPrompt('5');
+                this.player2.clickPrompt('1');
+                expect(this.matsuBerserker.isDishonored).toBe(true);
+                expect(this.matsuBerserker.bowed).toBe(false);
+                expect(this.matsuBerserker.location).toBe('play area');
+                expect(this.dojiWhisperer.isDishonored).toBe(false);
+                expect(this.dojiWhisperer.bowed).toBe(false);
+            });
+
+            it('should dishonor a bowed loser that is not dishonored, without discarding it', function() {
+                this.player1.clickCard(this.justicarsApproach);
+                this.player1.clickCard(this.dojiWhisperer);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.dojiWhisperer, this.brashSamurai],
+                    defenders: [this.matsuBerserker]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.forShame);
+                this.player1.clickCard(this.matsuBerserker);
+                this.player2.clickPrompt('Bow this character');
+                expect(this.matsuBerserker.bowed).toBe(true);
+                expect(this.matsuBerserker.isDishonored).toBe(false);
+                this.player2.pass();
+                this.player1.clickCard(this.dojiWhisperer);
+                this.player1.clickCard(this.matsuBerserker);
+                this.player1.clickPrompt('5');
+                this.player2.clickPrompt('1');
+                expect(this.matsuBerserker.isDishonored).toBe(true);
+                expect(this.matsuBerserker.location).toBe('play area');
+            });
+
+            it('should only make an honored loser ordinary, without bowing it', function() {
+                this.player1.clickCard(this.justicarsApproach);
+                this.player1.clickCard(this.dojiWhisperer);
+                this.kitsuSpiritcaller.honor();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.dojiWhisperer, this.brashSamurai],
+                    defenders: [this.kitsuSpiritcaller]
+                });
+                expect(this.kitsuSpiritcaller.isHonored).toBe(true);
+                this.player2.pass();
+                this.player1.clickCard(this.dojiWhisperer);
+                this.player1.clickCard(this.kitsuSpiritcaller);
+                this.player1.clickPrompt('5');
+                this.player2.clickPrompt('1');
+                expect(this.kitsuSpiritcaller.isHonored).toBe(false);
+                expect(this.kitsuSpiritcaller.isDishonored).toBe(false);
+                expect(this.kitsuSpiritcaller.bowed).toBe(false);
+                expect(this.kitsuSpiritcaller.location).toBe('play area');
+            });
+
+            it('should bow a dishonored loser that is not bowed, without discarding it', function() {
+                this.player1.clickCard(this.justicarsApproach);
+                this.player1.clickCard(this.dojiWhisperer);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.dojiWhisperer, this.brashSamurai],
+                    defenders: [this.matsuBerserker]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.wayOfTheScorpion);
+                this.player1.clickCard(this.matsuBerserker);
+                this.player2.pass();
+                this.player1.clickCard(this.dojiWhisperer);
+                this.player1.clickCard(this.matsuBerserker);
+                this.player1.clickPrompt('5');
+                this.player2.clickPrompt('1');
+                expect(this.matsuBerserker.bowed).toBe(true);
+                expect(this.matsuBerserker.isDishonored).toBe(true);
+                expect(this.matsuBerserker.location).toBe('play area');
+            });
+
             it('should have no effect if the duel is drawn', function() {
                 this.player1.clickCard(this.justicarsApproach);
                 this.player1.clickCard(this.dojiWhisperer);

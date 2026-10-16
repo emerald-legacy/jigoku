@@ -1,24 +1,24 @@
-import MulliganDynastyPrompt from './MulliganDynastyPrompt.js';
+import { msg } from '../../GameChat.js';
+import { MulliganDynastyPrompt } from './MulliganDynastyPrompt.js';
 import { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
-import type DrawCard from '../../DrawCard.js';
 
-class MulliganConflictPrompt extends MulliganDynastyPrompt {
+export class MulliganConflictPrompt extends MulliganDynastyPrompt {
     readyToStart?: boolean;
 
-    completionCondition(player: Player): boolean {
+    override completionCondition(player: Player): boolean {
         return !!player.takenConflictMulligan;
     }
 
-    activePrompt() {
+    override activePrompt() {
         return Object.assign(super.activePrompt(), {
             menuTitle: 'Select conflict cards to mulligan',
             promptTitle: 'Conflict Mulligan'
         });
     }
 
-    highlightSelectableCards(): void {
+    override highlightSelectableCards(): void {
         this.game.getPlayers().forEach((player: Player) => {
             if(!this.selectableCards[player.name]) {
                 this.selectableCards[player.name] = player.hand.slice();
@@ -27,32 +27,30 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
         });
     }
 
-    cardCondition(card: BaseCard): boolean {
+    override cardCondition(card: BaseCard): boolean {
         return card.location === Location.Hand;
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to mulligan conflict cards' };
     }
 
-    menuCommand(player: Player, arg: string): boolean {
+    override menuCommand(player: Player, arg: string): boolean {
         if(arg === 'done') {
             if(this.selectedCards[player.name].length > 0) {
                 for(const card of this.selectedCards[player.name]) {
-                    player.moveCard(card, 'conflict deck bottom');
+                    player.moveCard(card, Location.ConflictDeck, { bottom: true });
                 }
                 player.drawCardsToHand(this.selectedCards[player.name].length);
                 player.shuffleConflictDeck();
-                this.game.addMessage('{0} has mulliganed {1} cards from the conflict deck', player, this.selectedCards[player.name].length);
+                this.game.addMessage(msg`${player} has mulliganed ${this.selectedCards[player.name].length} cards from the conflict deck`);
             } else {
-                this.game.addMessage('{0} has kept all conflict cards', player);
+                this.game.addMessage(msg`${player} has kept all conflict cards`);
             }
             this.game.getProvinceArray(false).forEach((location: Location) => {
-                let cards = player.getDynastyCardsInProvince(location);
-                cards.forEach((card: DrawCard) => {
-                    if(card) {
-                        card.facedown = true;
-                    }
+                const cards = player.getDynastyCardsInProvince(location);
+                cards.forEach((card) => {
+                    card.facedown = true;
                 });
             });
             player.clearSelectedCards();
@@ -65,4 +63,3 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
     }
 }
 
-export default MulliganConflictPrompt;

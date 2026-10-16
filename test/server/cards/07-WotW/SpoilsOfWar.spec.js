@@ -63,7 +63,7 @@ describe('Spoils Of War', function() {
             });
 
             it('should draw 3 cards', function() {
-                let P1hand = this.player1.hand.length; //5
+                const P1hand = this.player1.hand.length; //5
                 this.noMoreActions();
                 expect(this.player1).toBeAbleToSelect(this.spoilsOfWar);
                 this.player1.clickCard(this.spoilsOfWar);

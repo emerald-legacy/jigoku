@@ -1,20 +1,20 @@
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { Conflict } from '../Conflict.js';
 import type DrawCard from '../DrawCard.js';
-import { CardType, EffectName, EventName } from '../Constants.js';
+import { CardType, EffectName, EventName, RestrictionType } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export type SendHomeProperties = CardActionProperties;
 
-export class SendHomeAction extends CardGameAction {
-    name = 'sendHome';
-    eventName = EventName.OnSendHome;
-    cost = 'moving home {0}';
-    effect = 'send {0} home';
-    targetType = [CardType.Character];
+export class SendHomeAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<SendHomeProperties, EventName.OnSendHome, Context> {
+    override name = 'sendHome';
+    override restriction = RestrictionType.SendHome;
+    override eventName = EventName.OnSendHome;
+    override cost = 'moving home {0}';
+    override effect = 'send {0} home';
+    override targetType = [CardType.Character];
 
-    canAffect(card: DrawCard, context: AbilityContext): boolean {
+    override canAffect(card: DrawCard, context: Context): boolean {
         return (
             super.canAffect(card, context) &&
             card.isParticipating() &&
@@ -22,10 +22,8 @@ export class SendHomeAction extends CardGameAction {
         );
     }
 
-    eventHandler(event: GameEvent<EventName.OnSendHome>): void {
-        const context = event.context as AbilityContext;
-        if(event.card) {
-            (context.game.currentConflict as Conflict).removeFromConflict(event.card);
-        }
+    override eventHandler(event: ActionEvent<EventName.OnSendHome, Context>): void {
+        const context = event.context;
+        context.game.requireConflict().removeFromConflict(event.card);
     }
 }

@@ -50,8 +50,8 @@
                 defenders: [this.challenger, this.toturi]
             });
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.gichin);
@@ -93,8 +93,8 @@
                 defenders: [this.challenger, this.toturi]
             });
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.gichin);
@@ -117,8 +117,8 @@
                 defenders: [this.challenger, this.toturi]
             });
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.gichin);
@@ -145,8 +145,8 @@
                 defenders: [this.challenger, this.yaruma]
             });
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.gichin);

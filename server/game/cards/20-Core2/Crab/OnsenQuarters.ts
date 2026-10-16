@@ -1,46 +1,42 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import type BaseCard from '../../../BaseCard.js';
-import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../../effects.js';
 import type Ring from '../../../Ring.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class OnsenQuarters extends ProvinceCard {
     static id = 'onsen-quarters';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            condition: () => true,
-            match: (card: DrawCard, context) =>
-                !!context && card.type === CardType.Province && card !== (context?.source as BaseCard) && card.controller === context?.player,
-            effect: AbilityDsl.effects.modifyProvinceStrength(1)
+            match: (card, context) =>
+                !!context && card.type === CardType.Province && card !== context.source && card.controller === context.player,
+            effect: modifyProvinceStrength(1)
         });
 
-        this.reaction({
-            title: 'Resolve the ring effect',
-            when: {
+        this.reaction('Resolve the ring effect')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
-                    event.conflict.getConflictProvinces().some((a: ProvinceCard) => a === context.source)
-            },
-            gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({
-                target: this.#ringForRole(context),
+                    event.conflict.getConflictProvinces().some((a) => a === context.source)
+            })
+            .resolveRingEffect((context) => ({
+                target: this.ringForRole(context),
                 player: context.player
-            }))
-        });
+            }));
     }
 
-    #ringForRole(context: AbilityContext): Ring | undefined {
+    private ringForRole(context: AbilityContext): Ring | undefined {
         const role = context.player.role;
         if(!role) {
             return undefined;
         }
         for(const trait of role.traits) {
-            if(trait in context.game.rings) {
-                return context.game.rings[trait];
+            const ring = context.game.ringFor(trait);
+            if(ring) {
+                return ring;
             }
         }
         return undefined;

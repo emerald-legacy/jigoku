@@ -1,6 +1,8 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Element, Players, TargetMode } from '../../../Constants.js';
+import { modifyGlory, modifyMilitarySkill, setBaseMilitarySkill } from '../../../effects.js';
+import { cardLastingEffect, chooseAction, multiple } from '../../../GameActions/GameActions.js';
+import { CardType, Element, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const VULNERABLE_ELEMENT = 'ichigo-kun-fire';
@@ -11,57 +13,55 @@ const LESS_MIL_MORE_GLORY = 'Reduce own military, increase other glory';
 export default class IchigoKun extends DrawCard {
     static id = 'ichigo-kun';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
-                context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT) as Element) ?? false,
-            effect: AbilityDsl.effects.setBaseMilitarySkill(0)
+                context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT)) ?? false,
+            effect: setBaseMilitarySkill(0)
         });
 
-        this.action({
-            title: 'Modify military skill and glory',
-            targets: {
-                otherCharacter: {
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (card, context) => card.isParticipating() && card !== context.source
-                },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'otherCharacter',
-                    choices: (context) => ({
-                        [MORE_MIL_LESS_GLORY]: this.actionSequence(context as AbilityContext<this>, { military: +2, glory: -2 }),
-                        [LESS_MIL_MORE_GLORY]: this.actionSequence(context as AbilityContext<this>, { military: -2, glory: +2 })
-                    })
+        this.conflictAction('Modify military skill and glory', { evenFromHome: true })
+            .target({
+                name: 'otherCharacter',
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (card, context) => card.isParticipating() && card !== context.source
+            })
+            .moveToConflict()
+            .chatText((context) => msg`move ${context.source} to the conflict`)
+            .afterwards()
+            .gameAction(chooseAction((context) => ({
+                choices: {
+                    [MORE_MIL_LESS_GLORY]: {
+                        action: this.getModifiers(context, { military: +2, glory: -2 }),
+                        message: (_context, _target, player) =>
+                            msg`${player} chooses to give ${context.source} +2 ${'military'} and ${context.targets.otherCharacter} -2 glory - ${context.source} is wild today`
+                    },
+                    [LESS_MIL_MORE_GLORY]: {
+                        action: this.getModifiers(context, { military: -2, glory: +2 }),
+                        message: (_context, _target, player) =>
+                            msg`${player} chooses to give ${context.source} -2 ${'military'} and ${context.targets.otherCharacter} +2 glory - ${context.source} is well-behaved. Impressive`
+                    }
                 }
-            },
-            effect: 'give {0} {1} {2} and {3} {4} glory - {0} {5}',
-            effectArgs: (context) =>
-                context.selects.select.choice === MORE_MIL_LESS_GLORY
-                    ? ['+2', 'military', context.targets.otherCharacter, '-2', 'is wild today!']
-                    : ['-2', 'military', context.targets.otherCharacter, '+2', 'is well-behaved. Impressive!']
-        });
+            })));
     }
 
-    public getPrintedElementSymbols() {
+    public override getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push({ key: VULNERABLE_ELEMENT, prettyName: 'Restricted Ring', element: Element.Fire });
         return symbols;
     }
 
-    private actionSequence(context: AbilityContext<this>, modifiers: { military: number; glory: number }) {
-        return AbilityDsl.actions.sequential([
-            AbilityDsl.actions.moveToConflict({ target: context.source }),
-            AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cardLastingEffect({
-                    target: context.source,
-                    effect: AbilityDsl.effects.modifyMilitarySkill(modifiers.military)
-                }),
-                AbilityDsl.actions.cardLastingEffect({
-                    target: context.targets.otherCharacter,
-                    effect: AbilityDsl.effects.modifyGlory(modifiers.glory)
-                })
-            ])
+    private getModifiers(context: AbilityContext, modifiers: { military: number; glory: number }) {
+        return multiple([
+            cardLastingEffect({
+                target: context.source,
+                effect: modifyMilitarySkill(modifiers.military)
+            }),
+            cardLastingEffect({
+                target: context.targets.otherCharacter,
+                effect: modifyGlory(modifiers.glory)
+            })
         ]);
     }
 }

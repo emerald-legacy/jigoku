@@ -1,50 +1,32 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type { Cost } from '../../costs/Cost.js';
-
-const nitenCaptureParentCost = function(): Cost {
-    return {
-        canPay: function() {
-            return true;
-        },
-        resolve: function(context: AbilityContext) {
-            context.costs.nitenCaptureParentCost = (context.source as DrawCard).parentCharacter;
-        },
-        pay: function() {
-        }
-    };
-
-};
+import * as costs from '../../costs/index.js';
+import { perRound } from '../../AbilityLimit.js';
+import { captureParentCost } from '../captureParentCost.js';
 
 class Niten extends DrawCard {
     static id = 'niten';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             faction: 'dragon'
         });
 
-        this.action({
-            title: 'Put an attachment into play',
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()),
-            cost: [
-                nitenCaptureParentCost(),
-                AbilityDsl.costs.returnSelfToHand()
-            ],
-            target: {
+        this.action('Put an attachment into play')
+            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
+            .cost(captureParentCost())
+            .cost(costs.returnSelfToHand())
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Self,
                 location: Location.Hand,
-                cardCondition: (card, context) => card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.nitenCaptureParentCost as DrawCard)
-            },
-            gameAction: AbilityDsl.actions.attach(context => ({
-                target: context.costs.nitenCaptureParentCost,
+                cardCondition: (card, context) => card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.captureParentCost ?? undefined)
+            })
+            .attach((context) => ({
+                target: context.costs.captureParentCost ?? [],
                 attachment: context.target
-            })),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            }))
+            .max(perRound(1));
     }
 }
 

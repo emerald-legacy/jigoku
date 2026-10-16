@@ -1,25 +1,24 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Location, RemainingCards, TargetMode } from '../../Constants.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class AlibiArtist extends DrawCard {
     static id = 'alibi-artist';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Look at top 2 cards of conflict deck',
-            condition: context => context.player.honor <= 6,
-            effect: 'look at the top two cards of their conflict deck',
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: 2,
-                gameAction: AbilityDsl.actions.moveCard({
+    override setupCardAbilities() {
+        this.action('Look at top 2 cards of conflict deck')
+            .condition((context) => context.player.honor <= 6)
+            .deckSearch({
+                cardsToLookAt: 2,
+                mode: TargetMode.Exactly,
+                numCards: 1,
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                reveal: false,
-                placeOnBottomInRandomOrder: true
+                remainingCards: RemainingCards.BottomRandom,
+                reveal: false
             })
-        });
+            .chatText('look at the top two cards of their conflict deck');
     }
 }
 
