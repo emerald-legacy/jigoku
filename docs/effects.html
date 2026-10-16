@@ -1798,7 +1798,7 @@ this.action('Prevent an opponent contesting a ring')
     <h3><code>cannotResolveRings()</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-cannotResolveRings">#</a></h3>
     <p>"Cancel all ring effects until the end of the conflict" for the affected players.</p>
     <ul class="edge">
-      <li>Cancels both the conflict ring's resolution and any <code>resolveRingEffect</code> for that player, with "&lt;player&gt;'s ring effect is cancelled."</li>
+      <li>Cancels both the conflict ring's resolution and any <code>resolveRingEffect</code> for that player, with "&lt;player&gt;'s ring effect is cancelled".</li>
       <li>For "all ring effects", target both players: <code>playerLastingEffect({ target: Players.Any, … })</code>.</li>
     </ul>
     <pre><code>// Mountaintop Vigil: Void role only. Action: During a conflict - cancel all ring effects until the end of the conflict.

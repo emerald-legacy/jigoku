@@ -93,7 +93,7 @@ describe('Bayushi Shoju 2', function() {
                 this.player2.clickCard(this.diplomat);
                 this.player2.clickPrompt('Military');
                 expect(this.getChatLogs(2)).toContain('player2 claims the Emperor\'s military favor!');
-                expect(this.getChatLogs(1)).toContain('The imperial favor is discarded as player2 cannot have it');
+                expect(this.getChatLogs(1)).toContain('The Imperial Favor is discarded as player2 cannot have it');
 
                 expect(this.player1.player.imperialFavor).toBe('');
                 expect(this.player2.player.imperialFavor).toBe('');
@@ -110,7 +110,7 @@ describe('Bayushi Shoju 2', function() {
                 this.player2.clickCard(this.diplomat);
                 this.player2.clickPrompt('Military');
                 expect(this.getChatLogs(2)).toContain('player2 claims the Emperor\'s military favor!');
-                expect(this.getChatLogs(1)).toContain('The imperial favor is discarded as player2 cannot have it');
+                expect(this.getChatLogs(1)).toContain('The Imperial Favor is discarded as player2 cannot have it');
 
                 expect(this.player1.player.imperialFavor).toBe('');
                 expect(this.player2.player.imperialFavor).toBe('');
@@ -142,7 +142,7 @@ describe('Bayushi Shoju 2', function() {
                 this.player1.clickCard(this.bayushiShoju);
                 this.player1.clickPrompt('0');
 
-                expect(this.getChatLogs(1)).toContain('The imperial favor is discarded as player2 cannot have it');
+                expect(this.getChatLogs(1)).toContain('The Imperial Favor is discarded as player2 cannot have it');
 
                 expect(this.player1.player.imperialFavor).toBe('');
                 expect(this.player2.player.imperialFavor).toBe('');
@@ -157,7 +157,7 @@ describe('Bayushi Shoju 2', function() {
                 this.player1.clickCard(this.bayushiShoju);
                 this.player1.clickPrompt('0');
 
-                expect(this.getChatLogs(1)).not.toContain('The imperial favor is discarded as player1 cannot have it');
+                expect(this.getChatLogs(1)).not.toContain('The Imperial Favor is discarded as player1 cannot have it');
 
                 expect(this.player1.player.imperialFavor).toBe('military');
                 expect(this.player2.player.imperialFavor).toBe('');

@@ -1115,7 +1115,7 @@ this.reaction('Search for a character card')
     <ul class="edge">
       <li>Illegal when the deck is empty. The nested action is not checked beforehand: the token doesn't exist yet.</li>
       <li>The top card is taken out of the deck (its location becomes removed from game); the token stands in for it. The nested action resolves in a then-window, with only the targets it sets itself.</li>
-      <li>Chat: <code>turn the top card of {0}'s {1} deck into a token</code>. {1} is the <code>DeckType</code> value, which already ends in "deck", so the default line reads "… conflict deck deck …". Give the ability its own <code>chatText</code>.</li>
+      <li>Chat: <code>turn the top card of {0}'s {1} into a token</code>, {1} being the <code>DeckType</code> value ("conflict deck").</li>
       <li>Builder shortcut: <code>.tokenFromTopCard(…)</code>.</li>
     </ul>
     <pre><code>// Pride: Action: Bow this stronghold. Choose a character you control with no Follower attachments - put the top card of your conflict deck into play, facedown, attached to that character as a +1[conflict-military], +1[conflict-political] Follower attachment.
@@ -1635,7 +1635,7 @@ this.action('Create spirits from facedown dynasty cards')
     </table>
     <ul class="edge">
       <li>It has no restriction type of its own and no other legality check.</li>
-      <li>Raises an unnamed event. Chat: "fills <em>location</em> to <em>N</em> cards!", or with <code>amount</code> "fills <em>location</em> with <em>N</em> cards".</li>
+      <li>Raises an unnamed event. Chat: "fill <em>location</em> up to <em>N</em> cards", or with <code>amount</code> "fill <em>location</em> with <em>N</em> cards".</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// City of the Rich Frog: After setup, fill this province to 3 cards. When you would refill this province, refill it to 3 cards instead of 1.
@@ -1914,7 +1914,7 @@ this.action('Remove a ring from the unclaimed ring pool')
       </tbody>
     </table>
     <ul class="edge">
-      <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled.</code></li>
+      <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled</code>.</li>
       <li>A ring with several elements needs a conflict: the player chooses up to the conflict's number of elements to resolve, one ring at a time. Buttons: "Done" once one is chosen, "Resolve All Elements" when all may be resolved, and "Don't Resolve the Conflict Ring".</li>
       <li>Each element then resolves as an optional <a href="#ga-resolveRingEffect"><code>resolveRingEffect</code></a>. It has no restriction type of its own. Raises <code>onResolveConflictRing</code>.</li>
       <li>Chat: <code>resolve {0}</code>.</li>
@@ -1945,7 +1945,7 @@ this.reaction('Resolve the ring effect')
     </table>
     <ul class="edge">
       <li>Several rings: one event opens a window where the effects resolve one at a time. They are ordered by the rings' priority (reversed when the ability's player is not the first player), unless <code>enforceOrderedResolution</code> keeps the given order. The action's own <code>optional</code> applies to each of them.</li>
-      <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled.</code> Raises <code>onResolveRingElement</code>.</li>
+      <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled</code>. Raises <code>onResolveRingElement</code>.</li>
       <li>Chat: <code>resolve {0} effect</code>.</li>
       <li>Builder shortcut: <code>.resolveRingEffect(…)</code>.</li>
     </ul>

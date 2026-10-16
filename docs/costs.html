@@ -1129,7 +1129,7 @@ this.reaction('Place a fate on a character')
         hideIfNoLegalTargets: true,
         cardCondition: (_card, context) =&gt; Boolean(context.costs.honorTakenFromOpponent)
     }, placeFate((context) =&gt; ({ origin: context.player.opponent })))
-    .chatText((context) =&gt; msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) =&gt; 'place a fate from their pool on ' + name)}`);</code></pre>
+    .chatText((context) =&gt; msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) =&gt; msg`place a fate from their pool on ${card}`)}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/RoadsideInn.ts">Roadside Inn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ExpertInterpreter.ts">Expert Interpreter</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/AgashaProdigy.ts">Agasha Prodigy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a></p>
   </div>
 

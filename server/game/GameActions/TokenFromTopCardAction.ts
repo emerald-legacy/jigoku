@@ -19,7 +19,7 @@ export class TokenFromTopCardAction<Context extends AbilityContext = AbilityCont
 
     protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { deck } = this.getProperties(context, additionalProperties);
-        return ['turn the top card of {0}\'s {1} deck into a token', [deck]];
+        return ['turn the top card of {0}\'s {1} into a token', [deck]];
     }
 
 

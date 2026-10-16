@@ -89,7 +89,7 @@ describe('Expert Interpreter', function () {
             this.player2.clickPrompt('Yes');
             this.player2.clickRing('fire');
             expect(this.getChatLogs(3)).toContain(
-                'player1 uses Expert Interpreter to prevent characters from entering play while the Air Ring is contested.  player2 gives player1 1 honor to also apply this effect to the Fire Ring'
+                'player1 uses Expert Interpreter to prevent characters from entering play while the Air Ring is contested. player2 gives player1 1 honor to also apply this effect to the Fire Ring'
             );
             expect(this.player1.honor).toBe(p1Honor + 1);
             expect(this.player2.honor).toBe(p2Honor - 1);

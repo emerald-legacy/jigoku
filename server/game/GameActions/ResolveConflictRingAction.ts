@@ -34,7 +34,7 @@ export class ResolveConflictRingAction<Context extends AbilityContext = AbilityC
         const cannotResolveRingEffects = eventContext.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
-            eventContext.game.addMessage(msg`${eventContext.player}'s ring effect is cancelled.`);
+            eventContext.game.addMessage(msg`${eventContext.player}'s ring effect is cancelled`);
             event.cancel();
             return;
         }

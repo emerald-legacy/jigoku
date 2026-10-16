@@ -49,7 +49,7 @@ describe('Criminal Contacts', function() {
             expect(this.player2).toBeAbleToSelect(this.shibaTsukune);
             expect(this.player2).not.toBeAbleToSelect(this.solemnScholar);
             this.player2.clickCard(this.shibaTsukune);
-            expect(this.getChatLogs(1)).toContain('player1 plays Criminal Contacts to discard a fate from Matsu Berserker.  player2 gives player1 1 honor to discard a fate from Shiba Tsukune');
+            expect(this.getChatLogs(1)).toContain('player1 plays Criminal Contacts to discard a fate from Matsu Berserker. player2 gives player1 1 honor to discard a fate from Shiba Tsukune');
 
             expect(this.matsuBerserker.fate).toBe(0);
             expect(this.shibaTsukune.fate).toBe(0);
@@ -63,7 +63,7 @@ describe('Criminal Contacts', function() {
             this.player1.clickCard(this.matsuBerserker);
             this.player2.clickPrompt('Yes');
             this.player2.clickCard(this.matsuBerserker);
-            expect(this.getChatLogs(1)).toContain('player1 plays Criminal Contacts to discard a fate from Matsu Berserker.  player2 gives player1 1 honor to discard a fate from Matsu Berserker');
+            expect(this.getChatLogs(1)).toContain('player1 plays Criminal Contacts to discard a fate from Matsu Berserker. player2 gives player1 1 honor to discard a fate from Matsu Berserker');
 
             expect(this.matsuBerserker.fate).toBe(0);
 

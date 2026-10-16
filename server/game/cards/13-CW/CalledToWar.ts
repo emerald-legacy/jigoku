@@ -24,7 +24,7 @@ class CalledToWar extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (card, context) => Boolean(card.hasTrait(Trait.Bushi) && context.costs.honorTakenFromOpponent)
             }, placeFate())
-            .chatText((context) => msg`place a fate on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate on ' + name)}`);
+            .chatText((context) => msg`place a fate on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) => msg`place a fate on ${card}`)}`);
     }
 }
 

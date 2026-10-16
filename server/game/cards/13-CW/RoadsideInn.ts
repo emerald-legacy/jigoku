@@ -28,7 +28,7 @@ class RoadsideInn extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (_card, context) => Boolean(context.costs.honorTakenFromOpponent)
             }, placeFate((context) => ({ origin: context.player.opponent })))
-            .chatText((context) => msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) => 'place a fate from their pool on ' + name)}`);
+            .chatText((context) => msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) => msg`place a fate from their pool on ${card}`)}`);
     }
 }
 

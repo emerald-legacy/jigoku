@@ -1193,22 +1193,22 @@ private msgArticle(card: DrawCard): string {
 
   <div class="ref" id="he-honorTransferMessage" data-name="honorTransferMessage">
     <h3><code>honorTransferMessage(context, chosen, what)</code> <span class="kind">Helper</span> <a class="anchor" href="#he-honorTransferMessage">#</a></h3>
-    <p>The tail of the chat text for "Each opponent may give you 1 honor and choose a character": <code>'.  {opponent} gives {player} 1 honor to {what(chosen.name)}'</code>, or an empty string if the opponent chose nothing.</p>
+    <p>The tail of the chat text for "Each opponent may give you 1 honor and choose a character": <code>. {opponent} gives {player} 1 honor to {what(chosen)}</code>, or an empty string if the opponent chose nothing.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>required</td><td>The ability's context.</td></tr>
-        <tr><td><code>chosen</code></td><td><code>Named | [] | undefined</code></td><td>required</td><td>The opponent's optional target, <code>context.targets.oppCharacter</code>. An empty array means "not chosen".</td></tr>
-        <tr><td><code>what</code></td><td><code>(name: string) =&gt; string</code></td><td>required</td><td>The rest of the sentence for the chosen name.</td></tr>
+        <tr><td><code>chosen</code></td><td><code>Chosen | [] | undefined</code></td><td>required</td><td>The opponent's optional target, <code>context.targets.oppCharacter</code>. An empty array means "not chosen".</td></tr>
+        <tr><td><code>what</code></td><td><code>(chosen: Chosen) =&gt; MessageArgs</code></td><td>required</td><td>The rest of the sentence, as a <code>msg</code> template naming the chosen card or ring.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Pairs with <code>costs.optionalTakeHonorFromOpponent(…)</code> and an optional opponent target guarded by <code>context.costs.honorTakenFromOpponent</code>.</li>
       <li>Empty when there is no opponent.</li>
-      <li>It returns a plain string built from names, so the players and the chosen card in it are not shown as players and cards in the chat.</li>
+      <li>It returns a nested message (<code>MsgArg</code>) to put inside the ability's <code>msg</code> chat text; the players and the chosen card show as links.</li>
     </ul>
     <pre><code>// Roadside Inn: Reaction: After the fate phase begins, choose a character. Each opponent may give you 1 honor and choose a character - …
-.chatText((context) =&gt; msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) =&gt; 'place a fate from their pool on ' + name)}`);</code></pre>
+.chatText((context) =&gt; msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) =&gt; msg`place a fate from their pool on ${card}`)}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/AgashaProdigy.ts">Agasha Prodigy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ExpertInterpreter.ts">Expert Interpreter</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/MerchantOfCuriosities.ts">Merchant of Curiosities</a> (6 card files)</p>
   </div>
 </section>

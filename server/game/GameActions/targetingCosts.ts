@@ -34,7 +34,7 @@ export function payTargetingCosts(context: AbilityContext, costs: TargetingCost[
         return;
     }
     for(const { target, amount } of costs) {
-        context.game.addMessage(msg`${context.player} pays ${amount} fate in order to target ${target.name}`);
+        context.game.addMessage(msg`${context.player} pays ${amount} fate in order to target ${target}`);
     }
     context.targetingCostPaid = [...context.targetingCostPaid, ...costs.map(({ target }) => target)];
     new LoseFateAction({ amount: total(costs) }).resolve(context.player, context);

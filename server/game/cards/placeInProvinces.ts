@@ -28,7 +28,7 @@ export function placeInProvinces(context: AbilityContext, cards: DrawCard[]): vo
                 cardCondition: (card) =>
                     card.type === CardType.Province && card.location !== Location.StrongholdProvince && !chosenProvinces.includes(card),
                 onSelect: (_player, card) => {
-                    context.game.addMessage(msg`${context.player} puts ${currentCard} into ${card.isFacedown() ? 'a facedown province' : card.name}`);
+                    context.game.addMessage(msg`${context.player} puts ${currentCard} into ${card.isFacedown() ? 'a facedown province' : card}`);
                     chosenProvinces.push(card);
                     placeInProvince({ destination: card.location }).resolve(currentCard, context);
                     remaining = remaining.filter((a) => a !== currentCard);

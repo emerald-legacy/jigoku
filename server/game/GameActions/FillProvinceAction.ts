@@ -16,12 +16,12 @@ export interface FillProvinceProperties extends PlayerActionProperties {
 export class FillProvinceAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<FillProvinceProperties, EventName.Unnamed, Context, 'location' | 'fillTo' | 'faceup'> {
     override defaultProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
     override name = 'fillProvince';
-    override effect = 'fills {0} with more cards';
+    override effect = 'fill {0} with more cards';
 
 
     protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         const { fillTo, amount } = this.getProperties(context, additionalProperties);
-        return amount === undefined ? ['fills {0} to {1} cards!', [fillTo]] : ['fills {0} with {1} cards', [amount]];
+        return amount === undefined ? ['fill {0} up to {1} cards', [fillTo]] : ['fill {0} with {1} cards', [amount]];
     }
 
     protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {

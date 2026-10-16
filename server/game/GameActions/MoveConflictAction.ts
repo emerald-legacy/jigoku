@@ -12,7 +12,7 @@ export class MoveConflictAction<Context extends AbilityContext = AbilityContext>
     override eventName = EventName.OnConflictMoved;
     override targetType = [CardType.Province];
     override effect = 'move the conflict to {0}';
-    override cost = 'moves the conflict to {0}';
+    override cost = 'moving the conflict to {0}';
 
     override canAffect(card: ProvinceCard, context: Context): boolean {
         if(

@@ -80,7 +80,7 @@ describe('Agasha Prodigy', function () {
             expect(this.magistrate.attachments).toContain(this.katana2);
 
             expect(this.getChatLogs(10)).toContain(
-                'player1 uses Agasha Prodigy to discard the top card of their deck and attempt to attach it to Agasha Prodigy.  player2 gives player1 1 honor to discard the top card of their deck and attempt to attach it to Righteous Magistrate'
+                'player1 uses Agasha Prodigy to discard the top card of their deck and attempt to attach it to Agasha Prodigy. player2 gives player1 1 honor to discard the top card of their deck and attempt to attach it to Righteous Magistrate'
             );
         });
 
@@ -132,7 +132,7 @@ describe('Agasha Prodigy', function () {
             expect(this.fury.location).toBe('conflict discard pile');
 
             expect(this.getChatLogs(10)).toContain(
-                'player1 uses Agasha Prodigy to discard the top card of their deck and attempt to attach it to Agasha Prodigy.  player2 gives player1 1 honor to discard the top card of their deck and attempt to attach it to Righteous Magistrate'
+                'player1 uses Agasha Prodigy to discard the top card of their deck and attempt to attach it to Agasha Prodigy. player2 gives player1 1 honor to discard the top card of their deck and attempt to attach it to Righteous Magistrate'
             );
         });
 

@@ -40,7 +40,8 @@ export class GainStatusTokenAction<Context extends AbilityContext = AbilityConte
     }
 
     protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
-        return ['give {0} a {1} status token', [this.getProperties(context, additionalProperties).token]];
+        const { token } = this.getProperties(context, additionalProperties);
+        return [token === CharacterStatus.Honored ? 'give {0} an {1} status token' : 'give {0} a {1} status token', [token]];
     }
 
     override addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenGained, Context>, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): void {

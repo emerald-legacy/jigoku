@@ -42,7 +42,7 @@ class ExpertInterpreter extends DrawCard {
                     appliesTo: RestrictionScope.Characters
                 })
             })))
-            .chatText((context) => msg`prevent characters from entering play while the ${context.rings.myRing} is contested${honorTransferMessage(context, context.rings.oppRing, (name) => 'also apply this effect to the ' + name)}`);
+            .chatText((context) => msg`prevent characters from entering play while the ${context.rings.myRing} is contested${honorTransferMessage(context, context.rings.oppRing, (ring) => msg`also apply this effect to the ${ring}`)}`);
     }
 }
 
