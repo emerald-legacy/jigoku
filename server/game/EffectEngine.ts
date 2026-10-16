@@ -11,12 +11,12 @@ import type { GameEvent } from './Events/EventPayloads.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type Game from './Game.js';
 
-function fireTrigger<N extends EventName>(when: DelayedEffectWhen, name: N, event: Event, context: AbilityContext): unknown {
+function fireTrigger<EventType extends EventName>(when: DelayedEffectWhen, name: EventType, event: Event, context: AbilityContext): unknown {
     const trigger = when[name];
     return trigger && event.is(name) && trigger(event, context);
 }
 
-function untilEnds<N extends EventName>(until: EffectUntil, name: N, event: Event): unknown {
+function untilEnds<EventType extends EventName>(until: EffectUntil, name: EventType, event: Event): unknown {
     const ends = until[name];
     return ends && event.is(name) && ends(event);
 }

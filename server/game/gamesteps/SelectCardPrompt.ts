@@ -30,36 +30,36 @@ interface PromptOptions {
 
 type SelectorOptions = Omit<CardSelectorProperties, 'cardType' | 'cardCondition' | 'mode' | 'numCards' | 'multiSelect' | 'maxStat' | 'optional'>;
 
-interface CardChoice<K extends CardTypes> extends PromptOptions, SelectorOptions {
+interface CardChoice<Types extends CardTypes> extends PromptOptions, SelectorOptions {
     selector?: undefined;
-    cardType?: K;
-    cardCondition?: (card: CardOfType<K>, context: AbilityContext) => boolean;
-    onCardToggle?: (player: Player, card: CardOfType<K>) => void;
+    cardType?: Types;
+    cardCondition?: (card: CardOfType<Types>, context: AbilityContext) => boolean;
+    onCardToggle?: (player: Player, card: CardOfType<Types>) => void;
 }
 
 /** One card, passed on its own. */
-export interface SingleCardChoice<K extends CardTypes> extends CardChoice<K> {
+export interface SingleCardChoice<Types extends CardTypes> extends CardChoice<Types> {
     mode?: SingleCardMode;
     numCards?: 1;
     multiSelect?: false;
     maxStat?: undefined;
     optional?: false;
-    onSelect?: (player: Player, card: CardOfType<K>) => boolean | void;
+    onSelect?: (player: Player, card: CardOfType<Types>) => boolean | void;
 }
 
 /** Skipping it passes `[]`. */
-export interface OptionalCardChoice<K extends CardTypes> extends Omit<SingleCardChoice<K>, 'optional' | 'onSelect'> {
+export interface OptionalCardChoice<Types extends CardTypes> extends Omit<SingleCardChoice<Types>, 'optional' | 'onSelect'> {
     optional: true;
-    onSelect?: (player: Player, card: CardOfType<K> | []) => boolean | void;
+    onSelect?: (player: Player, card: CardOfType<Types> | []) => boolean | void;
 }
 
-export interface CardsChoice<K extends CardTypes> extends CardChoice<K> {
+export interface CardsChoice<Types extends CardTypes> extends CardChoice<Types> {
     mode: MultiCardMode;
     numCards?: number;
     multiSelect?: boolean;
     maxStat?: () => number;
     optional?: boolean;
-    onSelect?: (player: Player, cards: CardOfType<K>[]) => boolean | void;
+    onSelect?: (player: Player, cards: CardOfType<Types>[]) => boolean | void;
 }
 
 /** A selector built by the caller decides what is passed. */
@@ -69,8 +69,8 @@ export interface SelectorChoice extends PromptOptions {
     onCardToggle?: (player: Player, card: BaseCard) => void;
 }
 
-export type SelectCardPromptProperties<K extends CardTypes = CardTypes> =
-    SingleCardChoice<K> | OptionalCardChoice<K> | CardsChoice<K> | SelectorChoice;
+export type SelectCardPromptProperties<Types extends CardTypes = CardTypes> =
+    SingleCardChoice<Types> | OptionalCardChoice<Types> | CardsChoice<Types> | SelectorChoice;
 
 interface ErasedProperties extends PromptOptions, CardSelectorProperties {
     selector?: BaseCardSelector;
@@ -82,12 +82,12 @@ type DefaultedProperties = 'buttons' | 'controls' | 'selectCard' | 'cardConditio
 
 type ResolvedProperties = ErasedProperties & Required<Pick<ErasedProperties, DefaultedProperties>> & { source: EffectSource };
 
-function isCardsChoice<K extends CardTypes>(properties: SingleCardChoice<K> | OptionalCardChoice<K> | CardsChoice<K>): properties is CardsChoice<K> {
+function isCardsChoice<Types extends CardTypes>(properties: SingleCardChoice<Types> | OptionalCardChoice<Types> | CardsChoice<Types>): properties is CardsChoice<Types> {
     return isMultiCardMode(properties.mode ?? defaultMode(properties));
 }
 
 /** The selector only offers cards of the declared types, so the checks never reject one. */
-function erase<K extends CardTypes>(properties: SelectCardPromptProperties<K>): ErasedProperties {
+function erase<Types extends CardTypes>(properties: SelectCardPromptProperties<Types>): ErasedProperties {
     if(properties.selector) {
         return properties;
     }
@@ -177,7 +177,7 @@ function single(selected: BaseCard | BaseCard[]): BaseCard {
  *                      the order of the selection during the prompt.
  * mustSelect         - an array of cards which must be selected
  */
-export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt {
+export class SelectCardPrompt<Types extends CardTypes = CardTypes> extends UiPrompt {
     choosingPlayer: Player;
     properties: ResolvedProperties;
     context: AbilityContext;
@@ -187,7 +187,7 @@ export class SelectCardPrompt<K extends CardTypes = CardTypes> extends UiPrompt 
     onlyMustSelectMayBeChosen: boolean;
     cannotUnselectMustSelect: boolean;
 
-    constructor(game: Game, choosingPlayer: Player, typedProperties: SelectCardPromptProperties<K>) {
+    constructor(game: Game, choosingPlayer: Player, typedProperties: SelectCardPromptProperties<Types>) {
         super(game);
         const properties = erase(typedProperties);
 

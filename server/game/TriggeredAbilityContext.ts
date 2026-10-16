@@ -16,33 +16,33 @@ export type AnyEvent = Event & Omit<EventUnion, 'context' | 'name' | 'cancelled'
  */
 export type TriggeringEvent = AnyEvent | Event[] | undefined;
 
-interface TriggeredAbilityContextProperties<E extends TriggeringEvent = AnyEvent> extends AbilityContextProperties {
+interface TriggeredAbilityContextProperties<Trigger extends TriggeringEvent = AnyEvent> extends AbilityContextProperties {
     ability: TriggeredAbility;
-    event: E;
+    event: Trigger;
 }
 
 export class TriggeredAbilityContext<
-    S extends EffectSource = BaseCard,
-    T extends BaseCard = BaseCard,
-    E extends TriggeringEvent = AnyEvent
-> extends AbilityContext<S, T> {
+    Source extends EffectSource = BaseCard,
+    Target extends BaseCard = BaseCard,
+    Trigger extends TriggeringEvent = AnyEvent
+> extends AbilityContext<Source, Target> {
     declare ability: TriggeredAbility;
-    event: E;
+    event: Trigger;
 
-    constructor(properties: TriggeredAbilityContextProperties<E>) {
+    constructor(properties: TriggeredAbilityContextProperties<Trigger>) {
         super(properties);
         this.event = properties.event;
     }
 
-    override copy(newProps: Partial<TriggeredAbilityContextProperties<E>>): TriggeredAbilityContext<S, T, E> {
+    override copy(newProps: Partial<TriggeredAbilityContextProperties<Trigger>>): TriggeredAbilityContext<Source, Target, Trigger> {
         return this.copyStateTo(this.createCopy(newProps));
     }
 
-    override createCopy(newProps: Partial<TriggeredAbilityContextProperties<E>>): TriggeredAbilityContext<S, T, E> {
-        return new TriggeredAbilityContext<S, T, E>(Object.assign(this.getProps(), newProps));
+    override createCopy(newProps: Partial<TriggeredAbilityContextProperties<Trigger>>): TriggeredAbilityContext<Source, Target, Trigger> {
+        return new TriggeredAbilityContext<Source, Target, Trigger>(Object.assign(this.getProps(), newProps));
     }
 
-    override getProps(): TriggeredAbilityContextProperties<E> {
+    override getProps(): TriggeredAbilityContextProperties<Trigger> {
         return Object.assign(super.getProps(), { ability: this.ability, event: this.event });
     }
 

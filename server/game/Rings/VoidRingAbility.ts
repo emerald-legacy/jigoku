@@ -21,7 +21,7 @@ export class VoidRingAbility extends BaseAbility {
                 buttons: optional ? [{ text: 'Don\'t resolve', arg: 'dontResolve' }] : [],
                 cardType: CardType.Character,
 
-                cardCondition: <C extends DrawCard>(card: C, context: AbilityContext) =>
+                cardCondition: <Card extends DrawCard>(card: Card, context: AbilityContext) =>
                     card.allowGameAction('removeFate', context)
             }
         });

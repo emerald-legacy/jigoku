@@ -95,8 +95,8 @@ const PLAYABLE_OUT_OF_PLAY_LOCATIONS: Set<Location> = new Set([
 ]);
 
 /** Method syntax, so a card class's registrar stays assignable to its base class's. */
-interface ActionRegistrar<S extends EffectSource> {
-    register(properties: ActionProps<S>): void;
+interface ActionRegistrar<Source extends EffectSource> {
+    register(properties: ActionProps<Source>): void;
 }
 
 export interface CardSummary {
@@ -211,8 +211,8 @@ export class BaseCard extends EffectSource {
         return copyEffect?.value instanceof CopyCard ? copyEffect.value : undefined;
     }
 
-    private gainedFromAllAbilities<T>(abilitiesOf: (value: ProvidedAbilities) => T[], ignoreDynamicGains: boolean): T[] {
-        let gained: T[] = [];
+    private gainedFromAllAbilities<Value>(abilitiesOf: (value: ProvidedAbilities) => Value[], ignoreDynamicGains: boolean): Value[] {
+        let gained: Value[] = [];
         for(const effect of this.getRawEffects()) {
             if(effect.type === EffectName.GainAllAbilities && effect.value instanceof GainAllAbilities) {
                 gained = gained.concat(abilitiesOf(effect.value));
@@ -398,7 +398,7 @@ export class BaseCard extends EffectSource {
      * Applies an effect that continues as long as the card providing the effect
      * is both in play and not blank.
      */
-    persistentEffect<T extends EffectTarget, L extends TargetLocation = Location.PlayArea>(properties: PersistentEffectProps<this, T, L>): void {
+    persistentEffect<Target extends EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(properties: PersistentEffectProps<this, Target, LocationType>): void {
         const allowedLocations = [
             Location.Any,
             Location.ConflictDiscardPile,
@@ -454,14 +454,14 @@ export class BaseCard extends EffectSource {
         }
     }
 
-    composure<T extends EffectTarget, L extends TargetLocation = Location.PlayArea>(properties: Omit<PersistentEffectProps<this, T, L>, 'condition'>): void {
+    composure<Target extends EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(properties: Omit<PersistentEffectProps<this, Target, LocationType>, 'condition'>): void {
         this.persistentEffect({
             condition: (context: AbilityContext<this>) => context.player.hasComposure(),
             ...properties
         });
     }
 
-    dire<T extends EffectTarget, L extends TargetLocation = Location.PlayArea>(properties: PersistentEffectProps<this, T, L>): void {
+    dire<Target extends EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(properties: PersistentEffectProps<this, Target, LocationType>): void {
         const condition = properties.condition;
         this.persistentEffect({
             isKeywordEffect: true,

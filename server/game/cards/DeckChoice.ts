@@ -25,7 +25,7 @@ interface Pile {
 export class DeckChoice {
     constructor(private readonly options: DeckChoiceOptions) {}
 
-    choices<A>(action: (player: Player, deck: DeckType) => A): (context: AbilityContext) => Record<string, A> {
+    choices<Result>(action: (player: Player, deck: DeckType) => Result): (context: AbilityContext) => Record<string, Result> {
         return (context) => Object.fromEntries(
             this.#piles(context)
                 .filter((pile) => pile.cards.length > 0)

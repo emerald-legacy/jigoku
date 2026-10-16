@@ -56,23 +56,23 @@ const hasDash: Partial<Record<EffectName, (card: DrawCard, effect: EffectApplier
  * What an `ActiveEffect` applies to its targets. `N` is the effect's name, which decides its value
  * type; `T` is the kind of object the effect's builder targets.
  */
-export abstract class EffectApplier<N extends EffectName = EffectName, T extends GameObject = GameObject, V = EffectValueMap[N]> {
-    type: N;
+export abstract class EffectApplier<EffectType extends EffectName = EffectName, Target extends GameObject = GameObject, Value = EffectValueMap[EffectType]> {
+    type: EffectType;
     context!: AbilityContext;
     duration?: Duration | null;
     abstract value: unknown;
 
-    constructor(type: N) {
+    constructor(type: EffectType) {
         this.type = type;
         this.duration = null;
     }
 
-    abstract apply(target: T): void;
+    abstract apply(target: Target): void;
 
-    abstract unapply(target: T): void;
+    abstract unapply(target: Target): void;
 
-    abstract getValue(target: GameObject): V;
-    abstract getValue(): V | undefined;
+    abstract getValue(target: GameObject): Value;
+    abstract getValue(): Value | undefined;
 
     abstract setContext(context: AbilityContext): void;
 
@@ -83,7 +83,7 @@ export abstract class EffectApplier<N extends EffectName = EffectName, T extends
         };
     }
 
-    recalculate(_target: T): boolean {
+    recalculate(_target: Target): boolean {
         return false;
     }
 

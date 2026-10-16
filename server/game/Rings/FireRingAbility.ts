@@ -19,7 +19,7 @@ export class FireRingAbility extends BaseAbility {
             target: {
                 activePromptTitle: 'Choose character to honor or dishonor',
                 cardType: CardType.Character,
-                cardCondition: <C extends DrawCard>(card: C, context: AbilityContext) =>
+                cardCondition: <Card extends DrawCard>(card: Card, context: AbilityContext) =>
                     card.allowGameAction('honor', context) || card.allowGameAction('dishonor', context),
                 buttons: optional ? [{ text: 'Don\'t resolve', arg: 'dontResolve' }] : []
             }

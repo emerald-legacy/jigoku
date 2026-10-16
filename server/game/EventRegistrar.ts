@@ -5,7 +5,7 @@ import type { OwnContextCallback } from './Interfaces.js';
 import { eventNamesIn } from './utils/helpers.js';
 
 /** Handlers by game event, each getting its event typed; method syntax, so a narrower parameter fits. */
-export type EventHandlers = { [N in EventName]?: OwnContextCallback<[event: GameEvent<N>], void> };
+export type EventHandlers = { [EventType in EventName]?: OwnContextCallback<[event: GameEvent<EventType>], void> };
 
 /** A card's listeners to game events and trigger windows, until `unregisterAll`. */
 export class EventRegistrar {
@@ -21,7 +21,7 @@ export class EventRegistrar {
     }
 
     /** Listens to an event in each `abilityType` trigger window, before its abilities are offered. */
-    registerTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>) => void): void {
+    registerTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>) => void): void {
         this.game.onTriggerWindow(eventName, abilityType, handler);
         this.#unsubscribers.push(() => this.game.offTriggerWindow(eventName, abilityType, handler));
     }
@@ -31,7 +31,7 @@ export class EventRegistrar {
         this.#unsubscribers = [];
     }
 
-    #on<N extends EventName>(eventName: N, handler: EventHandlers[N]): void {
+    #on<EventType extends EventName>(eventName: EventType, handler: EventHandlers[EventType]): void {
         if(!handler) {
             return;
         }

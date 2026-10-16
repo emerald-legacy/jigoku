@@ -10,16 +10,16 @@ import type { EventWindow } from './Events/EventWindow.js';
 import type { ThenEventWindow } from './Events/ThenEventWindow.js';
 import type { OwnContextCallback } from './Interfaces.js';
 
-export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
-    gameAction?: DeclaredGameAction<C> | DeclaredGameAction<C>[];
-    handler?: OwnContextCallback<[context: C], void>;
+export interface ThenAbilityProperties<Context extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
+    gameAction?: DeclaredGameAction<Context> | DeclaredGameAction<Context>[];
+    handler?: OwnContextCallback<[context: Context], void>;
     /** Runs when the ability starts resolving, before its handler or game actions. */
-    onResolve?: OwnContextCallback<[context: C], void>;
-    then?: ThenAbilityProperties | OwnContextCallback<[context: C], ThenAbilityProperties | undefined>;
+    onResolve?: OwnContextCallback<[context: Context], void>;
+    then?: ThenAbilityProperties | OwnContextCallback<[context: Context], ThenAbilityProperties | undefined>;
     // called with the context on the immediate path, with an Event via EventWindow.addThenAbility
-    thenCondition?(contextOrEvent: C | Event): boolean;
+    thenCondition?(contextOrEvent: Context | Event): boolean;
     /** The step's whole chat line; nothing when it returns undefined. */
-    message?: OwnContextCallback<[context: C], MessageArgs | undefined>;
+    message?: OwnContextCallback<[context: Context], MessageArgs | undefined>;
     /** Its context starts with the chosen targets, selects and costs of the ability it continues, and that ability's events as `previousEvents`. */
     inheritTargets?: boolean;
 }

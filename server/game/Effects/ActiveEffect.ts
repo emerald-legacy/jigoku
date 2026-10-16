@@ -13,21 +13,21 @@ import type Player from '../Player.js';
 import type { TargetLocation } from '../Interfaces.js';
 
 // Method syntax on purpose: a match function may take a narrower target type than its effect's targets.
-interface Matcher<T> {
-    match(target: T, context?: AbilityContext): boolean;
+interface Matcher<Value> {
+    match(target: Value, context?: AbilityContext): boolean;
 }
-export type EffectMatchFn<T extends GameObject = GameObject> = Matcher<T>['match'];
-export type EffectMatch<T extends GameObject = GameObject> = EffectMatchFn<T> | T;
+export type EffectMatchFn<Target extends GameObject = GameObject> = Matcher<Target>['match'];
+export type EffectMatch<Target extends GameObject = GameObject> = EffectMatchFn<Target> | Target;
 
 // Method syntax on purpose: cards narrow the event type.
-interface UntilCallback<N extends EventName> {
-    ends(event: GameEvent<N>): unknown;
+interface UntilCallback<EventType extends EventName> {
+    ends(event: GameEvent<EventType>): unknown;
 }
 /** Ends a custom-duration effect when one of these events happens and its callback returns true. */
-export type EffectUntil = { [N in EventName]?: UntilCallback<N>['ends'] };
+export type EffectUntil = { [EventType in EventName]?: UntilCallback<EventType>['ends'] };
 
-export interface EffectProperties<T extends GameObject = GameObject> {
-    match?: EffectMatch<T>;
+export interface EffectProperties<Target extends GameObject = GameObject> {
+    match?: EffectMatch<Target>;
     duration?: Duration;
     until?: EffectUntil;
     condition?: (context: AbilityContext) => boolean;
@@ -69,23 +69,23 @@ export interface EffectProperties<T extends GameObject = GameObject> {
  *                    to match.  Card effects only.
  * effect           - object representing the effect to be applied.
  */
-export class ActiveEffect<T extends GameObject = GameObject> {
+export class ActiveEffect<Target extends GameObject = GameObject> {
     game: Game;
     source: EffectSource;
-    match: EffectMatch<T>;
+    match: EffectMatch<Target>;
     duration: Duration | undefined;
     until: EffectUntil;
     condition: (context: AbilityContext) => boolean;
     location: Location;
     canChangeZoneOnce: boolean;
     canChangeZoneNTimes: number;
-    effect: EffectApplier<EffectName, T>;
+    effect: EffectApplier<EffectName, Target>;
     ability: BaseAbility | undefined;
-    targets: T[];
+    targets: Target[];
     context!: AbilityContext;
     endingMessage: string | undefined;
 
-    constructor(game: Game, source: EffectSource, properties: EffectProperties<T>, effect: EffectApplier<EffectName, T>) {
+    constructor(game: Game, source: EffectSource, properties: EffectProperties<Target>, effect: EffectApplier<EffectName, Target>) {
         this.game = game;
         this.source = source;
         this.match = properties.match || (() => true);
@@ -114,20 +114,20 @@ export class ActiveEffect<T extends GameObject = GameObject> {
         this.effect.setContext(this.context);
     }
 
-    isValidTarget(_target: T): boolean {
+    isValidTarget(_target: Target): boolean {
         return true;
     }
 
-    getTargets(_matchFn: EffectMatchFn<T>): T[] {
+    getTargets(_matchFn: EffectMatchFn<Target>): Target[] {
         return [];
     }
 
-    addTarget(target: T) {
+    addTarget(target: Target) {
         this.targets.push(target);
         this.effect.apply(target);
     }
 
-    removeTargets(targets: T[]) {
+    removeTargets(targets: Target[]) {
         targets.forEach((target) => this.effect.unapply(target));
         this.targets = this.targets.filter((t) => !targets.includes(t));
     }

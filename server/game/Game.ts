@@ -371,7 +371,7 @@ export class Game {
     /**
      * Returns all cards from anywhere in the game matching the passed predicate
      */
-    findAnyCardsInAnyList<T extends BaseCard>(predicate: (card: BaseCard) => card is T): T[];
+    findAnyCardsInAnyList<Card extends BaseCard>(predicate: (card: BaseCard) => card is Card): Card[];
     findAnyCardsInAnyList(predicate: (card: BaseCard) => boolean): BaseCard[];
     findAnyCardsInAnyList(predicate: (card: BaseCard) => boolean): BaseCard[] {
         return this.allCards.filter(predicate);
@@ -597,15 +597,15 @@ export class Game {
         this.prompts.promptForCardName(player, onName, menuTitle);
     }
 
-    promptWithHandlerMenu<T extends BaseCard, C extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<T, C>): void {
+    promptWithHandlerMenu<Card extends BaseCard, ChoiceValue extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<Card, ChoiceValue>): void {
         this.prompts.promptWithHandlerMenu(player, properties);
     }
 
-    promptForSelect<const K extends CardTypes = undefined>(player: Player, properties: SingleCardChoice<K>): void;
-    promptForSelect<const K extends CardTypes = undefined>(player: Player, properties: OptionalCardChoice<K>): void;
-    promptForSelect<const K extends CardTypes = undefined>(player: Player, properties: CardsChoice<K>): void;
+    promptForSelect<const Types extends CardTypes = undefined>(player: Player, properties: SingleCardChoice<Types>): void;
+    promptForSelect<const Types extends CardTypes = undefined>(player: Player, properties: OptionalCardChoice<Types>): void;
+    promptForSelect<const Types extends CardTypes = undefined>(player: Player, properties: CardsChoice<Types>): void;
     promptForSelect(player: Player, properties: SelectorChoice): void;
-    promptForSelect<K extends CardTypes>(player: Player, properties: SelectCardPromptProperties<K>): void {
+    promptForSelect<Types extends CardTypes>(player: Player, properties: SelectCardPromptProperties<Types>): void {
         this.prompts.promptForSelect(player, properties);
     }
 
@@ -735,7 +735,7 @@ export class Game {
     /*
      * Adds a step to the pipeline queue
      */
-    queueStep<T extends Step>(step: T): T {
+    queueStep<Value extends Step>(step: Value): Value {
         this.pipeline.queueStep(step);
         return step;
     }
@@ -762,18 +762,18 @@ export class Game {
         this.queueStep(window);
     }
 
-    getEvent<N extends EventName>(eventName: N, params?: EventParams<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N> {
+    getEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>, handler?: (event: GameEvent<EventType>) => void): GameEvent<EventType> {
         return this.events.getEvent(eventName, params, handler);
     }
 
     /**
      * Creates a game Event, and opens a window for it.
      */
-    raiseEvent<N extends EventName>(eventName: N, params?: EventParams<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N> {
+    raiseEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>, handler?: (event: GameEvent<EventType>) => void): GameEvent<EventType> {
         return this.events.raiseEvent(eventName, params, handler);
     }
 
-    emitEvent<N extends EventName>(eventName: N, params?: EventParams<N>): void {
+    emitEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>): void {
         this.events.emitEvent(eventName, params);
     }
 
@@ -782,24 +782,24 @@ export class Game {
         this.events.emit(event);
     }
 
-    on<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
+    on<EventType extends EventName>(eventName: EventType, handler: (event: GameEvent<EventType>) => void): void {
         this.events.on(eventName, handler);
     }
 
-    off<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
+    off<EventType extends EventName>(eventName: EventType, handler: (event: GameEvent<EventType>) => void): void {
         this.events.off(eventName, handler);
     }
 
     /** Called for each event of an `abilityType` trigger window, with the window to offer abilities to (none for other effects). */
-    onTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+    onTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
         this.events.onTriggerWindow(eventName, abilityType, handler);
     }
 
-    onceTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+    onceTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
         this.events.onceTriggerWindow(eventName, abilityType, handler);
     }
 
-    offTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+    offTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
         this.events.offTriggerWindow(eventName, abilityType, handler);
     }
 

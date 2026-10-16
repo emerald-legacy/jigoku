@@ -25,7 +25,7 @@ const MAX_DEBUG_DATA_LENGTH = 4 * 1024 * 1024;
 type GameCommand = (args: unknown[]) => ((game: Game, player: string) => void) | undefined;
 
 /** Extra trailing arguments are ignored. */
-function command<S extends z.ZodTuple>(schema: S, run: (game: Game, player: string, args: z.output<S>) => void): GameCommand {
+function command<Schema extends z.ZodTuple>(schema: Schema, run: (game: Game, player: string, args: z.output<Schema>) => void): GameCommand {
     return (args) => {
         const parsed = schema.safeParse(args.slice(0, schema.def.items.length));
         return parsed.success ? (game, player) => run(game, player, parsed.data) : undefined;

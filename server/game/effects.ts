@@ -120,7 +120,7 @@ export const changeType = (type: CardType) => EffectBuilder.card.static(EffectNa
 export const contributeToConflict = (player: FlexibleValue<Player>) => EffectBuilder.card.flexible(EffectName.ContributeToConflict, player);
 export const canContributeWhileBowed = () => EffectBuilder.card.static(EffectName.CanContributeWhileBowed, true);
 export const canContributeGloryWhileBowed = () => EffectBuilder.card.static(EffectName.CanContributeGloryWhileBowed, true);
-export const customDetachedCard = <S>(properties: DetachedValue<BaseCard, S>) => EffectBuilder.card.detached(EffectName.CustomEffect, properties);
+export const customDetachedCard = <State>(properties: DetachedValue<BaseCard, State>) => EffectBuilder.card.detached(EffectName.CustomEffect, properties);
 export const customRefillProvince = (refillFunc: EffectValueMap[EffectName.CustomProvinceRefillEffect]) => EffectBuilder.card.static(EffectName.CustomProvinceRefillEffect, refillFunc);
 export const doesNotBow = () => EffectBuilder.card.static(EffectName.DoesNotBow, true);
 export const doesNotReady = () => EffectBuilder.card.static(EffectName.DoesNotReady, true);
@@ -246,7 +246,7 @@ export const canPlayFromOpponents = (location: Location, cards: DrawCard[], sour
 export const limitHonorGainPerPhase = (amount: number) => EffectBuilder.player.static(EffectName.LimitHonorGainPerPhase, amount);
 export const cannotResolveRings = () => EffectBuilder.player.static(EffectName.CannotResolveRings, true);
 export const changePlayerSkillModifier = (value: FlexibleValue<number, Player>) => EffectBuilder.player.flexible(EffectName.ChangePlayerSkillModifier, value);
-export const customDetachedPlayer = <S>(properties: DetachedValue<Player, S>) => EffectBuilder.player.detached(EffectName.CustomEffect, properties);
+export const customDetachedPlayer = <State>(properties: DetachedValue<Player, State>) => EffectBuilder.player.detached(EffectName.CustomEffect, properties);
 export const gainActionPhasePriority = () =>
     EffectBuilder.player.detached(EffectName.GainActionPhasePriority, {
         apply: (player) => (player.actionPhasePriority = true),

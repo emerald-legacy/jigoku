@@ -9,7 +9,7 @@ import { EffectValue } from '../EffectValue.js';
 import { GainAbility } from '../GainAbility.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
-export class CopyCard<C extends BaseCard> extends EffectValue<C, BaseCard> {
+export class CopyCard<Card extends BaseCard> extends EffectValue<Card, BaseCard> {
     actions: Array<GainAbility>;
     reactions: Array<GainAbility>;
     persistentEffects: StoredPersistentEffect[];
@@ -21,7 +21,7 @@ export class CopyCard<C extends BaseCard> extends EffectValue<C, BaseCard> {
         }
     >();
 
-    constructor(card: C) {
+    constructor(card: Card) {
         super(card);
         this.actions = card.abilities.actions.map((action: CardAction) => new GainAbility(AbilityType.Action, action));
         this.reactions = card.abilities.reactions.map(

@@ -94,7 +94,7 @@ export class PlayerZones {
 
     /** Takes the card out of the pile at `source`. */
     removeCard(source: string, uuid: string): void {
-        const without = <T extends BaseCard>(cards: T[]) => cards.filter((card) => card.uuid !== uuid);
+        const without = <Card extends BaseCard>(cards: Card[]) => cards.filter((card) => card.uuid !== uuid);
         switch(source) {
             case Location.Hand:
                 this.hand = without(this.hand);

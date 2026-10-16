@@ -22,7 +22,7 @@ export interface LobbyHandlers {
 }
 
 /** A command's payload, or nothing for a command without one. */
-type OutboundArg<C extends OutboundMessage['command']> = Extract<OutboundMessage, { command: C }> extends { arg: infer A } ? [arg: A] : [];
+type OutboundArg<Command extends OutboundMessage['command']> = Extract<OutboundMessage, { command: Command }> extends { arg: infer Result } ? [arg: Result] : [];
 
 const TEN_SECONDS = 10_000;
 const ONE_SECOND = 1_000;
@@ -117,7 +117,7 @@ export class WsSocket {
         this.reconnectDelay = Math.min(this.reconnectDelay * 2, MAX_RECONNECT_DELAY);
     }
 
-    public send<C extends OutboundMessage['command']>(command: C, ...[arg]: OutboundArg<C>): void {
+    public send<Command extends OutboundMessage['command']>(command: Command, ...[arg]: OutboundArg<Command>): void {
         if(!this.ws || this.ws.readyState !== WebSocket.OPEN) {
             logger.debug(`Cannot send ${command}, WebSocket not open`);
             return;

@@ -1,19 +1,19 @@
 import { EventName } from '../Constants.js';
-export type Derivable<T, C> = T | ((context: C) => T);
+export type Derivable<Value, Context> = Value | ((context: Context) => Value);
 
 /** Values that can't be mistaken for their own factory. */
 type Derived = string | number | boolean | null | undefined | readonly unknown[];
 
-export function derive<T extends Derived, C>(input: Derivable<T, C>, context: C): T {
+export function derive<Value extends Derived, Context>(input: Derivable<Value, Context>, context: Context): Value {
     return typeof input === 'function' ? input(context) : input;
 }
 
 /** Whether `key` is one of the object's own keys, not an inherited one such as `toString`. */
-export function isOwnKey<T extends object>(object: T, key: PropertyKey): key is keyof T {
+export function isOwnKey<Container extends object>(object: Container, key: PropertyKey): key is keyof Container {
     return Object.hasOwn(object, key);
 }
 
-export function isEnumValue<E extends Record<string, string>>(enumObject: E, value: string): value is E[keyof E] {
+export function isEnumValue<EnumType extends Record<string, string>>(enumObject: EnumType, value: string): value is EnumType[keyof EnumType] {
     return Object.values(enumObject).includes(value);
 }
 

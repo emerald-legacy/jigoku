@@ -43,12 +43,12 @@ export interface AbilityContextProperties {
  *   target: { cardType: ..., gameAction: injure(
  *       (context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({ ... })) }
  */
-export type ResolvedAbilityContext<S extends EffectSource = BaseCard, T extends BaseCard = BaseCard> =
-    AbilityContext<S, T> & { target: T };
+export type ResolvedAbilityContext<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> =
+    AbilityContext<Source, Target> & { target: Target };
 
-export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCard = BaseCard> {
+export class AbilityContext<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> {
     game: Game;
-    source: S;
+    source: Source;
     player: Player;
     ability: BaseAbility;
     // Bags are dynamically keyed by per-ability target/cost names; values typed to
@@ -67,7 +67,7 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
     stage: Stage;
     targetAbility: CardAbility | undefined;
     /** Set by `AbilityTargetCard` when one card is chosen for a target named `'target'`; several cards stay in `targets.target`. */
-    target: T | undefined;
+    target: Target | undefined;
     select: string | undefined;
     ring: Ring | undefined;
     token: StatusToken[] | undefined;
@@ -95,20 +95,20 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
 
 
     /** What the ability targets, for messages and prompt arrows: the cards chosen for a target named `target`, else `target`. */
-    messageTarget(): T | BaseCard[] | undefined {
+    messageTarget(): Target | BaseCard[] | undefined {
         const chosen = this.targets.target;
         return Array.isArray(chosen) ? chosen : this.target;
     }
 
     /** What a chat text string's `{0}` names: the target, else the ring, else the source. */
-    chatTarget(): T | BaseCard[] | Ring | S {
+    chatTarget(): Target | BaseCard[] | Ring | Source {
         return this.messageTarget() || this.ring || this.source;
     }
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
         // a framework context's source is a plain EffectSource and its player may be missing
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
-        this.source = (properties.source || new EffectSource(this.game)) as S;
+        this.source = (properties.source || new EffectSource(this.game)) as Source;
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
         this.player = properties.player as Player;
         this.ability = properties.ability || new BaseAbility({});
@@ -129,11 +129,11 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         return this.originatingContext ?? this;
     }
 
-    copy(newProps: Partial<AbilityContextProperties>): AbilityContext<S, T> {
+    copy(newProps: Partial<AbilityContextProperties>): AbilityContext<Source, Target> {
         return this.copyStateTo(this.createCopy(newProps));
     }
 
-    protected copyStateTo<C extends AbilityContext<S, T>>(copy: C): C {
+    protected copyStateTo<Context extends AbilityContext<Source, Target>>(copy: Context): Context {
         copy.target = this.target;
         copy.token = this.token;
         copy.element = this.element;
@@ -154,8 +154,8 @@ export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCar
         return copy;
     }
 
-    createCopy(newProps: Partial<AbilityContextProperties>): AbilityContext<S, T> {
-        return new AbilityContext<S, T>(Object.assign(this.getProps(), newProps));
+    createCopy(newProps: Partial<AbilityContextProperties>): AbilityContext<Source, Target> {
+        return new AbilityContext<Source, Target>(Object.assign(this.getProps(), newProps));
     }
 
     refillProvince(player: Player, location: Location): void {

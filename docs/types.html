@@ -2953,7 +2953,7 @@ this.interrupt('Ready for Glory Count')
 <section class="group">
   <h3 class="group-title" id="ctx-group-object">The context object</h3>
 <div class="ref" id="ctx-AbilityContext" data-name="AbilityContext">
-  <h3><code>AbilityContext&lt;S, T&gt;</code> <span class="kind">Class</span> <a class="anchor" href="#ctx-AbilityContext">#</a></h3>
+  <h3><code>AbilityContext&lt;Source, Target&gt;</code> <span class="kind">Class</span> <a class="anchor" href="#ctx-AbilityContext">#</a></h3>
   <p>The object every callback of an ability receives as <code>context</code>: conditions, <code>cardCondition</code>, property factories (<code>(context) =&gt; ({ … })</code>), <code>chatText</code>, <code>handler</code>, <code>then</code> factories. One is created each time an ability is used (for a trigger, one per player while checking). <code>S</code> is the source's type, <code>T</code> the type of <code>context.target</code>. Defined in <code>server/game/AbilityContext.ts</code>.</p>
   <p>The table lists every field and method and when it is set. The fields cards use are described below.</p>
   <table>
@@ -2993,7 +2993,7 @@ this.interrupt('Ready for Glory Count')
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DuelistTraining.ts">Duelist Training</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/ShrineMaiden.ts">Shrine Maiden</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BackAlleyHideaway.ts">Back-Alley Hideaway</a></p>
 </div>
 <div class="ref" id="ctx-TriggeredAbilityContext" data-name="TriggeredAbilityContext">
-  <h3><code>TriggeredAbilityContext&lt;S, T, E&gt;</code> <span class="kind">Class</span> <a class="anchor" href="#ctx-TriggeredAbilityContext">#</a></h3>
+  <h3><code>TriggeredAbilityContext&lt;Source, Target, Trigger&gt;</code> <span class="kind">Class</span> <a class="anchor" href="#ctx-TriggeredAbilityContext">#</a></h3>
   <p>The context of a triggered ability (reaction, interrupt, forced, duel reaction, would-interrupt). It adds <code>event</code> and <code>cancel()</code> to <code>AbilityContext</code>. Defined in <code>server/game/TriggeredAbilityContext.ts</code>.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
@@ -3334,17 +3334,17 @@ this.reaction('Bow a character that just readied')
 <section class="group">
   <h3 class="group-title" id="ctx-group-typing">Typing</h3>
 <div class="ref" id="ctx-typing" data-name="ActionContext TriggerContext ResolvedAbilityContext">
-  <h3><code>ActionContext&lt;S&gt; / TriggerContext&lt;S, W&gt;</code> <span class="kind">Type</span> <a class="anchor" href="#ctx-typing">#</a></h3>
+  <h3><code>ActionContext&lt;Source&gt; / TriggerContext&lt;Source, When&gt;</code> <span class="kind">Type</span> <a class="anchor" href="#ctx-typing">#</a></h3>
   <p>The builder types the context of each callback from what the ability declared, so callbacks need no casts:</p>
   <table>
         <thead><tr><th>Type</th><th>Where</th><th>What it adds</th></tr></thead>
         <tbody>
-          <tr><td><code>ActionContext&lt;S&gt;</code></td><td><code>this.action()</code>, <code>this.conflictAction()</code></td><td><code>source: S</code> (the card's class) and <code>ability: CardAction</code>.</td></tr>
-          <tr><td><code>TriggerContext&lt;S, W&gt;</code></td><td><code>this.reaction()</code>, <code>interrupt()</code>, forced and duel triggers</td><td>A <code>TriggeredAbilityContext&lt;S&gt;</code> whose <code>event</code> is the union of the payloads of the <code>when</code> keys <code>W</code>.</td></tr>
+          <tr><td><code>ActionContext&lt;Source&gt;</code></td><td><code>this.action()</code>, <code>this.conflictAction()</code></td><td><code>source: Source</code> (the card's class) and <code>ability: CardAction</code>.</td></tr>
+          <tr><td><code>TriggerContext&lt;Source, When&gt;</code></td><td><code>this.reaction()</code>, <code>interrupt()</code>, forced and duel triggers</td><td>A <code>TriggeredAbilityContext&lt;Source&gt;</code> whose <code>event</code> is the union of the payloads of the <code>when</code> keys <code>When</code>.</td></tr>
           <tr><td>targets</td><td>after <code>.target()</code>, <code>.targetCards()</code>, <code>.ringTarget()</code>, <code>.tokenTarget()</code>, <code>.select()</code></td><td><code>targets.&lt;name&gt;</code>, <code>rings.&lt;name&gt;</code>, <code>tokens.&lt;name&gt;</code>, <code>selects.&lt;name&gt;</code>, and <code>target</code> / <code>ring</code> / <code>token</code> / <code>select</code> for the name <code>target</code>.</td></tr>
           <tr><td>costs</td><td>after <code>.cost()</code></td><td><code>costs</code> as <code>Partial</code> of what the costs record.</td></tr>
-          <tr><td><code>StepContext</code></td><td>after <code>.then()</code>, <code>.thenIf()</code>, <code>.afterwards()</code></td><td>A plain <code>AbilityContext&lt;S&gt;</code> with the earlier targets; no <code>event</code>, and action-only members are gone.</td></tr>
-          <tr><td><code>ResolvedAbilityContext&lt;S, T&gt;</code></td><td>object-form abilities (gained abilities written as objects)</td><td>An <code>AbilityContext&lt;S, T&gt;</code> whose <code>target</code> is not optional. Annotate a property factory with it only when the target is named <code>target</code>, is not optional and is a single card.</td></tr>
+          <tr><td><code>StepContext</code></td><td>after <code>.then()</code>, <code>.thenIf()</code>, <code>.afterwards()</code></td><td>A plain <code>AbilityContext&lt;Source&gt;</code> with the earlier targets; no <code>event</code>, and action-only members are gone.</td></tr>
+          <tr><td><code>ResolvedAbilityContext&lt;Source, Target&gt;</code></td><td>object-form abilities (gained abilities written as objects)</td><td>An <code>AbilityContext&lt;Source, Target&gt;</code> whose <code>target</code> is not optional. Annotate a property factory with it only when the target is named <code>target</code>, is not optional and is a single card.</td></tr>
         </tbody>
       </table>
   <ul class="edge">

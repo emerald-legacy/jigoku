@@ -22,7 +22,7 @@ interface PreparedDeck {
 }
 
 /** Builds the card's registered implementation; it must be a `base`, which is also the fallback. */
-export function createCard<T extends BaseCard>(player: Player, cardData: CardData, base: CardClass<T>): T {
+export function createCard<Card extends BaseCard>(player: Player, cardData: CardData, base: CardClass<Card>): Card {
     const Implementation = player.game.cardLibrary.get(cardData.id) ?? base;
     const card = new Implementation(player, cardData);
     if(!(card instanceof base)) {

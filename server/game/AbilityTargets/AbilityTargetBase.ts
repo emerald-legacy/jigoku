@@ -12,11 +12,11 @@ export interface AbilityTargetBaseProperties {
 }
 
 /** What every kind of ability target shares: its name, the target depending on it, and who chooses it. */
-export abstract class AbilityTargetBase<P extends AbilityTargetBaseProperties> {
+export abstract class AbilityTargetBase<Properties extends AbilityTargetBaseProperties> {
     dependentTarget: DependentTarget | null = null;
     dependentCost: { canPay(context: AbilityContext): boolean } | null = null;
 
-    constructor(public name: string, public properties: P, ability: OwningAbility) {
+    constructor(public name: string, public properties: Properties, ability: OwningAbility) {
         if(properties.dependsOn) {
             const dependsOnTarget = ability.targets.find((target) => target.name === properties.dependsOn);
             if(dependsOnTarget) {

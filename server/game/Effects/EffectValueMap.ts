@@ -44,23 +44,23 @@ export interface ParticipantCostEffect {
 
 
 // Method syntax on purpose: cards narrow the context and event types.
-interface DelayedEffectCallbacks<N extends EventName, S extends BaseCard> {
-    condition(context: AbilityContext<S>): unknown;
-    trigger(event: GameEvent<N>, context: AbilityContext<S>): unknown;
-    message(context: AbilityContext<S>, targets: GameObject[]): MessageArgs;
+interface DelayedEffectCallbacks<EventType extends EventName, Source extends BaseCard> {
+    condition(context: AbilityContext<Source>): unknown;
+    trigger(event: GameEvent<EventType>, context: AbilityContext<Source>): unknown;
+    message(context: AbilityContext<Source>, targets: GameObject[]): MessageArgs;
 }
 
 /** `S` is the card whose effect it is, like a trigger's `WhenType<S>`. */
-export type DelayedEffectWhen<S extends BaseCard = BaseCard> = { [N in EventName]?: DelayedEffectCallbacks<N, S>['trigger'] };
+export type DelayedEffectWhen<Source extends BaseCard = BaseCard> = { [EventType in EventName]?: DelayedEffectCallbacks<EventType, Source>['trigger'] };
 
-export type DelayedEffectValue<S extends BaseCard = BaseCard> = {
-    condition?: DelayedEffectCallbacks<EventName, S>['condition'];
-    when?: DelayedEffectWhen<S>;
+export type DelayedEffectValue<Source extends BaseCard = BaseCard> = {
+    condition?: DelayedEffectCallbacks<EventName, Source>['condition'];
+    when?: DelayedEffectWhen<Source>;
     multipleTrigger?: boolean;
     onlyRemoveOnSuccess?: boolean;
     gameAction: GameAction;
     /** The chat line when it fires; `targets` are what it affects. */
-    message?: DelayedEffectCallbacks<EventName, S>['message'];
+    message?: DelayedEffectCallbacks<EventName, Source>['message'];
 };
 
 // Method syntax on purpose: cards narrow the card type.
@@ -254,12 +254,12 @@ export interface EffectValueMap {
 }
 
 export type NumericEffectName = {
-    [K in EffectName]: EffectValueMap[K] extends number ? K : never
+    [EffectType in EffectName]: EffectValueMap[EffectType] extends number ? EffectType : never
 }[EffectName];
 
 /** Names whose values are never functions, so a function passed for them is a per-target calculation. */
 export type FlexibleEffectName = {
-    [K in EffectName]: EffectValueMap[K] extends (...args: never[]) => unknown ? never : K
+    [EffectType in EffectName]: EffectValueMap[EffectType] extends (...args: never[]) => unknown ? never : EffectType
 }[EffectName];
 
 export interface ICanOnlyBeDeclaredAsAttackerWithCondition {

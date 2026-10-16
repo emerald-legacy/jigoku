@@ -79,10 +79,10 @@ export class GameObject {
         }
     }
 
-    public getEffects<N extends EffectName>(type: N): EffectValueMap[N][] {
+    public getEffects<EffectType extends EffectName>(type: EffectType): EffectValueMap[EffectType][] {
         // Fast path: no suppress effects — use indexed lookup
         const effects = this.suppressEffectCount === 0 ? this.effectsByType.get(type) : this.getRawEffects();
-        const values: EffectValueMap[N][] = [];
+        const values: EffectValueMap[EffectType][] = [];
         for(const effect of effects ?? []) {
             if(isEffectOf(effect, type)) {
                 values.push(effect.getValue(this));
@@ -189,7 +189,7 @@ export class GameObject {
         return !this.facedown;
     }
 
-    public mostRecentEffect<N extends EffectName>(type: N): EffectValueMap[N] | undefined {
+    public mostRecentEffect<EffectType extends EffectName>(type: EffectType): EffectValueMap[EffectType] | undefined {
         const effects = this.getEffects(type);
         return effects[effects.length - 1];
     }

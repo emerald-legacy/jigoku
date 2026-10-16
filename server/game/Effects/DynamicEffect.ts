@@ -6,32 +6,32 @@ import type { GameObject } from '../GameObject.js';
 import type { EffectValueMap } from './EffectValueMap.js';
 
 // Method syntax on purpose: the effect's match picks its targets, so a calculation may take a narrower target type.
-interface Calculation<T, V> {
-    calculate(target: T, context: AbilityContext): V;
+interface Calculation<Target, Value> {
+    calculate(target: Target, context: AbilityContext): Value;
 }
-export type DynamicValue<V, T> = Calculation<T, V>['calculate'];
+export type DynamicValue<Value, Target> = Calculation<Target, Value>['calculate'];
 
-export class DynamicEffect<N extends EffectName = EffectName, T extends GameObject = GameObject> extends EffectApplier<N, T> {
+export class DynamicEffect<EffectType extends EffectName = EffectName, Target extends GameObject = GameObject> extends EffectApplier<EffectType, Target> {
     value = new EffectValue(true);
-    values: Record<string, EffectValueMap[N]>;
-    calculate: DynamicValue<EffectValueMap[N], T>;
+    values: Record<string, EffectValueMap[EffectType]>;
+    calculate: DynamicValue<EffectValueMap[EffectType], Target>;
 
-    constructor(type: N, calculate: DynamicValue<EffectValueMap[N], T>) {
+    constructor(type: EffectType, calculate: DynamicValue<EffectValueMap[EffectType], Target>) {
         super(type);
         this.values = {};
         this.calculate = calculate;
     }
 
-    apply(target: T) {
+    apply(target: Target) {
         target.addEffect(this);
         this.recalculate(target);
     }
 
-    unapply(target: T) {
+    unapply(target: Target) {
         target.removeEffect(this);
     }
 
-    override recalculate(target: T): boolean {
+    override recalculate(target: Target): boolean {
         if(!target) {
             return false;
         }
@@ -54,13 +54,13 @@ export class DynamicEffect<N extends EffectName = EffectName, T extends GameObje
         return oldValue !== newValue;
     }
 
-    getValue(target: GameObject): EffectValueMap[N];
-    getValue(): EffectValueMap[N] | undefined;
-    getValue(target?: GameObject): EffectValueMap[N] | undefined {
+    getValue(target: GameObject): EffectValueMap[EffectType];
+    getValue(): EffectValueMap[EffectType] | undefined;
+    getValue(target?: GameObject): EffectValueMap[EffectType] | undefined {
         return target ? this.values[target.uuid] : undefined;
     }
 
-    setValue(target: GameObject, value: EffectValueMap[N]) {
+    setValue(target: GameObject, value: EffectValueMap[EffectType]) {
         this.values[target.uuid] = value;
         return value;
     }

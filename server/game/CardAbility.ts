@@ -14,7 +14,7 @@ import { msg, type MessageArgs, type MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
 import { joinEffectMessages } from './GameActions/GameAction.js';
 
-export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
+export interface CardAbilityProperties<Context extends AbilityContext = AbilityContext> extends ThenAbilityProperties<Context> {
     title?: string;
     limit?: IAbilityLimit;
     location?: Location | Location[];
@@ -28,8 +28,8 @@ export interface CardAbilityProperties<C extends AbilityContext = AbilityContext
     condition?: (context: AbilityContext) => boolean;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     /** A format whose `{0}` is the target, or a message without positions (`msg` template). */
-    chatText?: string | OwnContextCallback<[context: C], MessageArgs | undefined>;
-    chatTextArgs?: EffectArg | OwnContextCallback<[context: C], EffectArg>;
+    chatText?: string | OwnContextCallback<[context: Context], MessageArgs | undefined>;
+    chatTextArgs?: EffectArg | OwnContextCallback<[context: Context], EffectArg>;
 }
 
 /** Cost results are open-ended; only those the chat can format are passed to it. */

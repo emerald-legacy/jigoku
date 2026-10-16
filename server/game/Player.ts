@@ -412,7 +412,7 @@ export class Player extends GameObject {
     }
 
     /** The first matching card in the list, or attached to a card in it. */
-    findCard<T extends BaseCard>(cardList: T[], predicate: (card: T | DrawCard) => boolean): T | DrawCard | undefined {
+    findCard<Card extends BaseCard>(cardList: Card[], predicate: (card: Card | DrawCard) => boolean): Card | DrawCard | undefined {
         const cards = this.findCards(cardList, predicate);
         if(!cards || cards.length === 0) {
             return undefined;
@@ -421,12 +421,12 @@ export class Player extends GameObject {
         return cards[0];
     }
 
-    findCards<T extends BaseCard>(cardList: T[], predicate: (card: T | DrawCard) => boolean): Array<T | DrawCard> {
+    findCards<Card extends BaseCard>(cardList: Card[], predicate: (card: Card | DrawCard) => boolean): Array<Card | DrawCard> {
         if(!cardList) {
             return [];
         }
 
-        const cardsToReturn: Array<T | DrawCard> = [];
+        const cardsToReturn: Array<Card | DrawCard> = [];
 
         for(const card of cardList) {
             if(predicate(card)) {

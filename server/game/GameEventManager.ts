@@ -20,8 +20,8 @@ export class GameEventManager {
 
     constructor(private readonly game: Game) {}
 
-    getEvent<N extends EventName>(eventName: N, params?: EventParams<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N> {
-        const payload: EventPayload<N> | undefined = params;
+    getEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>, handler?: (event: GameEvent<EventType>) => void): GameEvent<EventType> {
+        const payload: EventPayload<EventType> | undefined = params;
         const event = Object.assign(new Event(eventName, {}), payload);
         if(handler) {
             event.replaceHandler(() => handler(event));
@@ -29,13 +29,13 @@ export class GameEventManager {
         return event;
     }
 
-    raiseEvent<N extends EventName>(eventName: N, params?: EventParams<N>, handler: (event: GameEvent<N>) => void = () => true): GameEvent<N> {
+    raiseEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>, handler: (event: GameEvent<EventType>) => void = () => true): GameEvent<EventType> {
         const event = this.getEvent(eventName, params, handler);
         this.openEventWindow([event]);
         return event;
     }
 
-    emitEvent<N extends EventName>(eventName: N, params?: EventParams<N>): void {
+    emitEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>): void {
         this.emit(this.getEvent(eventName, params));
     }
 
@@ -44,24 +44,24 @@ export class GameEventManager {
         this.gameEvents.emit(event.name, event);
     }
 
-    on<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
+    on<EventType extends EventName>(eventName: EventType, handler: (event: GameEvent<EventType>) => void): void {
         this.gameEvents.on(eventName, handler);
     }
 
-    off<N extends EventName>(eventName: N, handler: (event: GameEvent<N>) => void): void {
+    off<EventType extends EventName>(eventName: EventType, handler: (event: GameEvent<EventType>) => void): void {
         this.gameEvents.off(eventName, handler);
     }
 
     /** Called for each event of an `abilityType` trigger window, with the window to offer abilities to (none for other effects). */
-    onTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+    onTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
         this.triggerWindows.on(windowKey(eventName, abilityType), handler);
     }
 
-    onceTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+    onceTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
         this.triggerWindows.once(windowKey(eventName, abilityType), handler);
     }
 
-    offTriggerWindow<N extends EventName>(eventName: N, abilityType: AbilityType, handler: (event: GameEvent<N>, window?: ChoiceWindow) => void): void {
+    offTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
         this.triggerWindows.off(windowKey(eventName, abilityType), handler);
     }
 

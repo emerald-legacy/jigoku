@@ -30,11 +30,11 @@ export class GamePromptHelper {
         });
     }
 
-    promptWithHandlerMenu<T extends BaseCard, C extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<T, C>): void {
+    promptWithHandlerMenu<Card extends BaseCard, ChoiceValue extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<Card, ChoiceValue>): void {
         this.game.queueStep(new HandlerMenuPrompt(this.game, player, properties));
     }
 
-    promptForSelect<K extends CardTypes>(player: Player, properties: SelectCardPromptProperties<K>): void {
+    promptForSelect<Types extends CardTypes>(player: Player, properties: SelectCardPromptProperties<Types>): void {
         this.game.queueStep(new SelectCardPrompt(this.game, player, properties));
     }
 

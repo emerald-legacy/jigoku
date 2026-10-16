@@ -1,14 +1,14 @@
 import type { OwnContextCallback } from './Interfaces.js';
 
 /** A listener; method syntax, so one taking a narrower argument (a game event's typed payload) fits. */
-export type EventHandler<A extends unknown[] = unknown[]> = OwnContextCallback<A, void>;
+export type EventHandler<Args extends unknown[] = unknown[]> = OwnContextCallback<Args, void>;
 
 /** Listeners by key, each called with the arguments `A` of its bus. */
-export class GameEventBus<A extends unknown[] = unknown[]> {
-    private handlers = new Map<string, Set<EventHandler<A>>>();
-    private onceWrappers = new Map<string, Map<EventHandler<A>, EventHandler<A>>>();
+export class GameEventBus<Args extends unknown[] = unknown[]> {
+    private handlers = new Map<string, Set<EventHandler<Args>>>();
+    private onceWrappers = new Map<string, Map<EventHandler<Args>, EventHandler<Args>>>();
 
-    on(eventName: string, handler: EventHandler<A>): void {
+    on(eventName: string, handler: EventHandler<Args>): void {
         let bucket = this.handlers.get(eventName);
         if(!bucket) {
             bucket = new Set();
@@ -17,7 +17,7 @@ export class GameEventBus<A extends unknown[] = unknown[]> {
         bucket.add(handler);
     }
 
-    off(eventName: string, handler: EventHandler<A>): void {
+    off(eventName: string, handler: EventHandler<Args>): void {
         // A `once` registration stores its wrapper keyed by the caller's original
         // handler, so off(name, originalHandler) can cancel a still-pending once.
         const onceForEvent = this.onceWrappers.get(eventName);
@@ -38,8 +38,8 @@ export class GameEventBus<A extends unknown[] = unknown[]> {
         }
     }
 
-    once(eventName: string, handler: EventHandler<A>): void {
-        const wrapper: EventHandler<A> = (...args) => {
+    once(eventName: string, handler: EventHandler<Args>): void {
+        const wrapper: EventHandler<Args> = (...args) => {
             this.off(eventName, handler);
             handler(...args);
         };
@@ -52,7 +52,7 @@ export class GameEventBus<A extends unknown[] = unknown[]> {
         this.on(eventName, wrapper);
     }
 
-    emit(eventName: string, ...args: A): void {
+    emit(eventName: string, ...args: Args): void {
         const bucket = this.handlers.get(eventName);
         if(!bucket) {
             return;

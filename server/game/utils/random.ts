@@ -1,12 +1,12 @@
 import { randomInt } from 'crypto';
 
 /** One item, each equally likely; `undefined` for an empty array. */
-export function randomItem<T>(array: readonly T[]): T | undefined {
+export function randomItem<Item>(array: readonly Item[]): Item | undefined {
     return array.length > 0 ? array[randomInt(0, array.length)] : undefined;
 }
 
 /** A shuffled copy (Fisher-Yates). */
-export function shuffle<T>(array: readonly T[]): T[] {
+export function shuffle<Item>(array: readonly Item[]): Item[] {
     const result = array.slice();
     for(let i = result.length - 1; i > 0; i--) {
         const j = randomInt(0, i + 1);

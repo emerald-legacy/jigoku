@@ -54,7 +54,7 @@ export class Event {
         return event instanceof Event ? event.getPromptCard() : undefined;
     }
 
-    is<N extends EventName>(name: N): this is GameEvent<N> {
+    is<EventType extends EventName>(name: EventType): this is GameEvent<EventType> {
         return this.name === name;
     }
 

@@ -36,7 +36,7 @@ export interface CardData {
 }
 
 /** Optional card data: a malformed value counts as missing rather than failing the card. */
-const optional = <T>(schema: z.ZodType<T>) => schema.nullish().catch(null);
+const optional = <Value>(schema: z.ZodType<Value>) => schema.nullish().catch(null);
 
 /** Card data as the lobby sends it: only id, name and type are required; fields the engine doesn't read pass through unchecked. */
 export const CardDataSchema: z.ZodType<CardData> = z.looseObject({

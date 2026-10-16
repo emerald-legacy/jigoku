@@ -5,13 +5,13 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import type { EffectValueMap } from './EffectValueMap.js';
 
-export type StaticValue<N extends EffectName, T extends GameObject> = EffectValueMap[N] | EffectValueBase<EffectValueMap[N], T>;
+export type StaticValue<EffectType extends EffectName, Target extends GameObject> = EffectValueMap[EffectType] | EffectValueBase<EffectValueMap[EffectType], Target>;
 
-export class StaticEffect<N extends EffectName = EffectName, T extends GameObject = GameObject> extends EffectApplier<N, T> {
-    value: EffectValueBase<EffectValueMap[N], T>;
-    copies = new Map<string, EffectValueBase<EffectValueMap[N], T>>();
+export class StaticEffect<EffectType extends EffectName = EffectName, Target extends GameObject = GameObject> extends EffectApplier<EffectType, Target> {
+    value: EffectValueBase<EffectValueMap[EffectType], Target>;
+    copies = new Map<string, EffectValueBase<EffectValueMap[EffectType], Target>>();
 
-    constructor(type: N, value: StaticValue<N, T>) {
+    constructor(type: EffectType, value: StaticValue<EffectType, Target>) {
         super(type);
         if(value instanceof EffectValueBase) {
             this.value = value;
@@ -21,7 +21,7 @@ export class StaticEffect<N extends EffectName = EffectName, T extends GameObjec
         this.value.reset();
     }
 
-    apply(target: T) {
+    apply(target: Target) {
         target.addEffect(this);
         const copy = this.value.copyForTarget();
         if(copy) {
@@ -32,7 +32,7 @@ export class StaticEffect<N extends EffectName = EffectName, T extends GameObjec
         }
     }
 
-    unapply(target: T) {
+    unapply(target: Target) {
         target.removeEffect(this);
         const copy = this.copies.get(target.uuid);
         if(copy) {
@@ -43,13 +43,13 @@ export class StaticEffect<N extends EffectName = EffectName, T extends GameObjec
         }
     }
 
-    getValue(target: GameObject): EffectValueMap[N];
-    getValue(): EffectValueMap[N] | undefined;
-    getValue(): EffectValueMap[N] {
+    getValue(target: GameObject): EffectValueMap[EffectType];
+    getValue(): EffectValueMap[EffectType] | undefined;
+    getValue(): EffectValueMap[EffectType] {
         return this.value.getValue();
     }
 
-    override recalculate(_target: T) {
+    override recalculate(_target: Target) {
         return this.value.recalculate();
     }
 

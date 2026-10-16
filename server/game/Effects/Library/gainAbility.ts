@@ -23,7 +23,7 @@ export function gainAbility<Source extends BaseCard = DrawCard>(abilityType: Abi
 
 export function gainAbility<Source extends BaseCard = DrawCard>(abilityType: AbilityType.DuelReaction, properties: TriggeredAbilityWhenProps<Source>): Res;
 
-export function gainAbility<Source extends BaseCard = DrawCard, T extends EffectTarget = EffectTarget, L extends TargetLocation = Location.PlayArea>(abilityType: AbilityType.Persistent, properties: PersistentEffectProps<Source, T, L>): Res;
+export function gainAbility<Source extends BaseCard = DrawCard, Target extends EffectTarget = EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(abilityType: AbilityType.Persistent, properties: PersistentEffectProps<Source, Target, LocationType>): Res;
 
 export function gainAbility<Source extends BaseCard = DrawCard>(abilityType: AbilityType.Reaction, properties: TriggeredAbilityProps<Source>): Res;
 

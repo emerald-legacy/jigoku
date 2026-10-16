@@ -17,23 +17,23 @@ export interface HandlerMenuOption {
     handler: () => void;
 }
 
-export interface HandlerMenuPromptProperties<T extends BaseCard = BaseCard, C extends Choice = Choice> {
+export interface HandlerMenuPromptProperties<Card extends BaseCard = BaseCard, ChoiceType extends Choice = Choice> {
     source?: EffectSource | string;
     context?: AbilityContext;
     waitingPromptTitle?: string;
     activePromptTitle?: string;
     options?: HandlerMenuOption[];
     /** Labels computed at run time, all handled by `choiceHandler`; not together with `options`. */
-    choices?: C[];
-    choiceHandler?: (choice: C) => void;
-    cards?: T[];
-    cardCondition?: (card: T, context: AbilityContext) => boolean;
-    cardHandler?: (card: T) => void;
+    choices?: ChoiceType[];
+    choiceHandler?: (choice: ChoiceType) => void;
+    cards?: Card[];
+    cardCondition?: (card: Card, context: AbilityContext) => boolean;
+    cardHandler?: (card: Card) => void;
     controls?: PromptControl[];
     target?: GameObject | GameObject[];
 }
 
-type ResolvedHandlerMenuPromptProperties<T extends BaseCard, C extends Choice> = HandlerMenuPromptProperties<T, C> & { source: EffectSource; choices: C[] };
+type ResolvedHandlerMenuPromptProperties<Card extends BaseCard, ChoiceType extends Choice> = HandlerMenuPromptProperties<Card, ChoiceType> & { source: EffectSource; choices: ChoiceType[] };
 
 /**
  * General purpose menu prompt.
@@ -51,14 +51,14 @@ type ResolvedHandlerMenuPromptProperties<T extends BaseCard, C extends Choice> =
  * cardCondition      - disables the prompt buttons for any cards which return false
  * cardHandler        - handler which is called when a card button is clicked
  */
-export class HandlerMenuPrompt<T extends BaseCard = BaseCard, C extends Choice = Choice> extends UiPrompt {
+export class HandlerMenuPrompt<Card extends BaseCard = BaseCard, ChoiceType extends Choice = Choice> extends UiPrompt {
     player: Player;
-    properties: ResolvedHandlerMenuPromptProperties<T, C>;
-    cardCondition: (card: T, context: AbilityContext) => boolean;
+    properties: ResolvedHandlerMenuPromptProperties<Card, ChoiceType>;
+    cardCondition: (card: Card, context: AbilityContext) => boolean;
     context: AbilityContext;
     source: EffectSource;
 
-    constructor(game: Game, player: Player, properties: HandlerMenuPromptProperties<T, C>) {
+    constructor(game: Game, player: Player, properties: HandlerMenuPromptProperties<Card, ChoiceType>) {
         super(game);
         this.player = player;
         if(properties.options && properties.choices?.length) {

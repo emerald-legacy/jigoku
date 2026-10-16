@@ -48,8 +48,8 @@ interface AbilityTarget extends DependentTarget {
  * A game action as ability properties declare it: typed for the ability's own context, so nested
  * property factories get that context. The ability checks that it is a `GameAction` when stored.
  */
-export interface DeclaredGameAction<C = never> {
-    hasLegalTarget(context: C, additionalProperties?: ActionOverrides): boolean;
+export interface DeclaredGameAction<Context = never> {
+    hasLegalTarget(context: Context, additionalProperties?: ActionOverrides): boolean;
 }
 
 export function toGameAction(action: object, message = 'An ability\'s gameAction must be a game action'): GameAction {

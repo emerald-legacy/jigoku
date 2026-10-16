@@ -100,7 +100,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     getStrengthModifiers(): StatModifier[] {
-        const effectsOf = <N extends NumericEffectName>(type: N) => this.getRawEffects().filter((effect) => isEffectOf(effect, type));
+        const effectsOf = <EffectType extends NumericEffectName>(type: EffectType) => this.getRawEffects().filter((effect) => isEffectOf(effect, type));
         const setModifier = (effect: EffectApplier<NumericEffectName>) =>
             StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect));
 

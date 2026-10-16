@@ -101,7 +101,7 @@ this.conflictAction('Discard a character')
     </tbody>
 </table>
 <pre><code>// cards/captureCost.ts: a free cost that records a value before later costs change it (Niten records its parent before returning to hand)
-export function captureCost&lt;N extends string, V&gt;(name: N, capture: (context: AbilityContext) =&gt; V): Cost&lt;{ [K in N]: V }&gt; {
+export function captureCost&lt;Name extends string, Value&gt;(name: Name, capture: (context: AbilityContext) =&gt; Value): Cost&lt;{ [Key in Name]: Value }&gt; {
     return {
         canPay() {
             return true;

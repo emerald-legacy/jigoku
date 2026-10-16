@@ -340,32 +340,32 @@ interface EventPayloadMap {
 }
 
 /** What an emitter passes for an event: the keys the event manages itself are ruled out. */
-export type EventParams<N extends EventName> = EventPayload<N> & {
+export type EventParams<EventType extends EventName> = EventPayload<EventType> & {
     cancelled?: never;
     resolved?: never;
     handler?: never;
     window?: never;
 };
 
-export type EventPayload<K extends string> =
-    K extends keyof EventPayloadMap ? EventPayloadMap[K] & { name?: K } : BaseEventPayload & Record<string, unknown>;
+export type EventPayload<Key extends string> =
+    Key extends keyof EventPayloadMap ? EventPayloadMap[Key] & { name?: Key } : BaseEventPayload & Record<string, unknown>;
 
 // An event of a specific name, carrying its precise payload fields alongside the
 // framework Event surface. Produced by the typed event factory. The payload comes first so that
 // its narrower `card` wins over `Event.card` when their methods differ (`createSnapshot`).
-export type GameEvent<N extends string = EventName> = EventPayload<N> & Event;
+export type GameEvent<Name extends string = EventName> = EventPayload<Name> & Event;
 
-type AllPayloadKeys = EventPayloadMap[keyof EventPayloadMap] extends infer P
-    ? P extends object ? keyof P : never
+type AllPayloadKeys = EventPayloadMap[keyof EventPayloadMap] extends infer Properties
+    ? Properties extends object ? keyof Properties : never
     : never;
 
 // The union of every value `K` can take across all payloads, for `EventUnion`.
-type PayloadValueAt<K extends PropertyKey> = EventPayloadMap[keyof EventPayloadMap] extends infer P
-    ? P extends object ? (K extends keyof P ? P[K] : never) : never
+type PayloadValueAt<Key extends PropertyKey> = EventPayloadMap[keyof EventPayloadMap] extends infer Properties
+    ? Properties extends object ? (Key extends keyof Properties ? Properties[Key] : never) : never
     : never;
 
 // All-fields-optional view, for typing an event whose specific name is not known
 // at the use site (e.g. the triggering event on a TriggeredAbilityContext).
 export type EventUnion = {
-    [K in AllPayloadKeys]?: PayloadValueAt<K>;
+    [Key in AllPayloadKeys]?: PayloadValueAt<Key>;
 };

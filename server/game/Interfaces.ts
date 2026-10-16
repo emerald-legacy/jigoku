@@ -160,7 +160,7 @@ export type EffectArg =
  * can be stored as a plain ability, because the ability only ever calls it with a context whose
  * source is its own card.
  */
-export type OwnContextCallback<Args extends unknown[], R> = { callback(...args: Args): R }['callback'];
+export type OwnContextCallback<Args extends unknown[], Result> = { callback(...args: Args): Result }['callback'];
 
 interface AbilityProps<Context> {
     title: string;
@@ -245,15 +245,15 @@ export type TriggeredAbilityProps<Source extends EffectSource = BaseCard, Target
 export type TargetLocation = Location | (string & {});
 
 /** A card effect matches the cards in its target location: only draw cards are in play. */
-type MatchTarget<T, L extends TargetLocation> = T extends BaseCard ? (L extends Location.PlayArea ? DrawCard : BaseCard) : T;
+type MatchTarget<Value, LocationType extends TargetLocation> = Value extends BaseCard ? (LocationType extends Location.PlayArea ? DrawCard : BaseCard) : Value;
 
-export interface PersistentEffectProps<Source extends EffectSource = BaseCard, T extends EffectTarget = EffectTarget, L extends TargetLocation = Location.PlayArea> {
+export interface PersistentEffectProps<Source extends EffectSource = BaseCard, Target extends EffectTarget = EffectTarget, LocationType extends TargetLocation = Location.PlayArea> {
     location?: Location;
     condition?: (context: AbilityContext<Source>) => boolean;
-    match?: (target: MatchTarget<T, L>, context?: AbilityContext<Source>) => boolean;
+    match?: (target: MatchTarget<Target, LocationType>, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
-    targetLocation?: L;
-    effect: EffectFactory<T> | EffectFactory<T>[];
+    targetLocation?: LocationType;
+    effect: EffectFactory<Target> | EffectFactory<Target>[];
     createCopies?: boolean;
     /** A keyword's effect (e.g. dire), which survives losing all non-keyword abilities. */
     isKeywordEffect?: boolean;

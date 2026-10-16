@@ -9,7 +9,7 @@ import type Player from './Player.js';
 import type { Event } from './Events/Event.js';
 import type { OwnContextCallback, WhenType } from './Interfaces.js';
 
-type AggregateContext<S extends BaseCard = BaseCard> = TriggeredAbilityContext<S, BaseCard, Event[]>;
+type AggregateContext<Source extends BaseCard = BaseCard> = TriggeredAbilityContext<Source, BaseCard, Event[]>;
 
 export type TriggerChoice = TriggeredAbilityContext<BaseCard, BaseCard, AnyEventOrAggregate>;
 type AnyEventOrAggregate = Exclude<TriggeringEvent, undefined>;
@@ -20,22 +20,22 @@ export interface ChoiceWindow {
 }
 
 
-function fireWhen<N extends EventName>(when: WhenType, name: N, event: Event, context: TriggeredAbilityContext): unknown {
+function fireWhen<EventType extends EventName>(when: WhenType, name: EventType, event: Event, context: TriggeredAbilityContext): unknown {
     const condition = when[name];
     return condition && event.is(name) && condition(event, context);
 }
 
 // Author-facing shape: `WhenType<S>` narrows each handler's event payload by event name and types
 // `context.source` as `S`. The runtime fields below erase that back to base `Event`/`BaseCard`.
-export interface TriggeredAbilityProperties<S extends BaseCard = BaseCard> extends CardAbilityProperties<TriggeredAbilityContext<S>> {
-    when?: WhenType<S>;
-    aggregateWhen?: OwnContextCallback<[events: Event[], context: AggregateContext<S>], boolean>;
+export interface TriggeredAbilityProperties<Source extends BaseCard = BaseCard> extends CardAbilityProperties<TriggeredAbilityContext<Source>> {
+    when?: WhenType<Source>;
+    aggregateWhen?: OwnContextCallback<[events: Event[], context: AggregateContext<Source>], boolean>;
     anyPlayer?: boolean;
     collectiveTrigger?: boolean;
 }
 
 
-export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
+export class TriggeredAbility<Source extends BaseCard = BaseCard> extends CardAbility {
     when?: WhenType;
     aggregateWhen?: OwnContextCallback<[events: Event[], context: AggregateContext], boolean>;
     anyPlayer: boolean;
@@ -43,7 +43,7 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
     /** While registered, how to stop listening. */
     private unsubscribers: (() => void)[] | null = null;
 
-    constructor(card: S, abilityType: AbilityType, properties: TriggeredAbilityProperties<S>) {
+    constructor(card: Source, abilityType: AbilityType, properties: TriggeredAbilityProperties<Source>) {
         super(card, properties);
         this.when = properties.when;
         this.aggregateWhen = properties.aggregateWhen;
@@ -114,7 +114,7 @@ export class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility
         return this.newContext(player, events);
     }
 
-    private newContext<E extends TriggeringEvent>(player: Player, event: E): TriggeredAbilityContext<BaseCard, BaseCard, E> {
+    private newContext<Trigger extends TriggeringEvent>(player: Player, event: Trigger): TriggeredAbilityContext<BaseCard, BaseCard, Trigger> {
         return new TriggeredAbilityContext({
             event,
             game: this.game,

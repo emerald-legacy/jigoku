@@ -16,7 +16,7 @@ interface InitiateDuelHelperProps {
 }
 
 /** The ability's properties with the duel's condition and targets added; `properties` itself is left as written. */
-export const initiateDuel = <P extends InitiateDuelHelperProps>(card: BaseCard, properties: P): P => {
+export const initiateDuel = <Properties extends InitiateDuelHelperProps>(card: BaseCard, properties: Properties): Properties => {
     const source = properties.initiateDuel;
     if(!source) {
         return properties;
@@ -40,7 +40,7 @@ const checkChallengerCondition = (card: DrawCard, context: AbilityContext, sourc
     return challengerCondition(card, context);
 };
 
-const initiateDuelFromCharacter = <P extends InitiateDuelHelperProps>(card: DrawCard, properties: P, source: DuelSource): P => {
+const initiateDuelFromCharacter = <Properties extends InitiateDuelHelperProps>(card: DrawCard, properties: Properties, source: DuelSource): Properties => {
     const prevCondition = properties.condition;
     return {
         ...properties,
@@ -58,7 +58,7 @@ const initiateDuelFromCharacter = <P extends InitiateDuelHelperProps>(card: Draw
     };
 };
 
-const initiateDuelFromOther = <P extends InitiateDuelHelperProps>(properties: P, source: DuelSource): P => ({
+const initiateDuelFromOther = <Properties extends InitiateDuelHelperProps>(properties: Properties, source: DuelSource): Properties => ({
     ...properties,
     targets: {
         challenger: {

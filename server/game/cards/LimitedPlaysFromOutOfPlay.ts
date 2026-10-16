@@ -9,37 +9,37 @@ import type { EventPayload } from '../Events/EventPayloads.js';
 
 type CardPlayed = EventPayload<EventName.OnCardPlayed>;
 
-interface LimitedPlaysOptions<T extends DrawCard> {
+interface LimitedPlaysOptions<Card extends DrawCard> {
     /** "(Max N per round.)" */
     max: number;
     /** While the card lets its player play these cards. */
-    active: (context: AbilityContext<T>) => boolean;
+    active: (context: AbilityContext<Card>) => boolean;
     /** Whether this play is one the card allows, such as the top card of the conflict deck. */
-    allows: (event: CardPlayed, context: AbilityContext<T>) => boolean;
+    allows: (event: CardPlayed, context: AbilityContext<Card>) => boolean;
     /** After "{player} ", for example "plays a card from their conflict deck". */
     description: string;
     /** Once a play counts, for example removing the played card from the game. */
-    afterPlay?: (event: CardPlayed, context: AbilityContext<T>) => void;
+    afterPlay?: (event: CardPlayed, context: AbilityContext<Card>) => void;
 }
 
 /**
  * "You may play … as if it were in your hand (max N per round)": counts the plays this card allowed.
  * The count starts again at the end of the round and when the card enters play.
  */
-export class LimitedPlaysFromOutOfPlay<T extends DrawCard> {
+export class LimitedPlaysFromOutOfPlay<Card extends DrawCard> {
     private played = 0;
     private mostRecentEvent?: CardPlayed;
 
     constructor(
-        private readonly card: T,
-        private readonly options: LimitedPlaysOptions<T>
+        private readonly card: Card,
+        private readonly options: LimitedPlaysOptions<Card>
     ) {
         new EventRegistrar(card.game).register({
             [EventName.OnRoundEnded]: () => this.onRoundEnded(),
             [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event)
         });
         card.persistentEffect({
-            effect: delayedEffect<T>({
+            effect: delayedEffect<Card>({
                 when: {
                     onCardPlayed: (event, context) => {
                         if(!this.available) {
@@ -57,7 +57,7 @@ export class LimitedPlaysFromOutOfPlay<T extends DrawCard> {
                     }
                 },
                 gameAction: handler({
-                    handler: (context: AbilityContext<T>) => this.count(context)
+                    handler: (context: AbilityContext<Card>) => this.count(context)
                 })
             })
         });
@@ -68,7 +68,7 @@ export class LimitedPlaysFromOutOfPlay<T extends DrawCard> {
         return this.played < this.options.max;
     }
 
-    private count(context: AbilityContext<T>): void {
+    private count(context: AbilityContext<Card>): void {
         const event = this.mostRecentEvent;
         if(!event || (event.limitedPlaySource && event.limitedPlaySource !== this.card)) {
             return;

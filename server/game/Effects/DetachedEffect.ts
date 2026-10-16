@@ -6,30 +6,30 @@ import type { GameObject } from '../GameObject.js';
 
 // Method syntax on purpose: the effect's match picks its targets, so the callbacks may take a narrower target type.
 // `state` is what `apply` returned for this target.
-export interface DetachedValue<T, S = unknown> {
-    apply(target: T, context: AbilityContext, state?: unknown): S;
-    unapply(target: T, context: AbilityContext, state: S): unknown;
+export interface DetachedValue<Value, State = unknown> {
+    apply(target: Value, context: AbilityContext, state?: unknown): State;
+    unapply(target: Value, context: AbilityContext, state: State): unknown;
 }
 
 /** Runs its callbacks when applied and unapplied; its targets never hold it, so it has no value to read. */
-export class DetachedEffect<N extends EffectName = EffectName, T extends GameObject = GameObject, S = unknown> extends EffectApplier<N, T, boolean> {
+export class DetachedEffect<EffectType extends EffectName = EffectName, Target extends GameObject = GameObject, State = unknown> extends EffectApplier<EffectType, Target, boolean> {
     value = new EffectValue(true);
-    detached: DetachedValue<T, S>;
+    detached: DetachedValue<Target, State>;
     // what apply returned, until unapply; then what unapply returned, until the next apply
-    applied: Record<string, S> = {};
+    applied: Record<string, State> = {};
     leftover: Record<string, unknown> = {};
 
-    constructor(type: N, detached: DetachedValue<T, S>) {
+    constructor(type: EffectType, detached: DetachedValue<Target, State>) {
         super(type);
         this.detached = detached;
     }
 
-    apply(target: T) {
+    apply(target: Target) {
         this.applied[target.uuid] = this.detached.apply(target, this.context, this.leftover[target.uuid]);
         delete this.leftover[target.uuid];
     }
 
-    unapply(target: T) {
+    unapply(target: Target) {
         const state = this.detached.unapply(target, this.context, this.applied[target.uuid]);
         delete this.applied[target.uuid];
         if(state !== undefined) {
