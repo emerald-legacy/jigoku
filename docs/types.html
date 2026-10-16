@@ -255,9 +255,9 @@ chosenReturnToDeck((context) =&gt; ({
           <tr><td><code>ForcedInterrupt</code></td><td><code>'forcedInterrupt'</code></td><td><code>this.forcedInterrupt()</code>. Resolves without asking, after the would-interrupts.</td></tr>
           <tr><td><code>Interrupt</code></td><td><code>'interrupt'</code></td><td><code>this.interrupt()</code>.</td></tr>
           <tr><td><code>KeywordInterrupt</code></td><td><code>'keywordInterrupt'</code></td><td>Keyword abilities that interrupt: Courtesy, Sincerity, Thriving.</td></tr>
-          <tr><td><code>KeywordReaction</code></td><td><code>'keywordReaction'</code></td><td>Keyword abilities that react: Pride, Rally, Covert, Tutored. Right after the event resolves.</td></tr>
+          <tr><td><code>KeywordReaction</code></td><td><code>'keywordReaction'</code></td><td>Keyword abilities that react: Pride, Rally, Tutored, right after the event resolves. Covert also has this type, but it resolves while the conflict is declared, not in an event window.</td></tr>
           <tr><td><code>ForcedReaction</code></td><td><code>'forcedReaction'</code></td><td><code>this.forcedReaction()</code>.</td></tr>
-          <tr><td><code>DuelReaction</code></td><td><code>'duelReaction'</code></td><td><code>this.duelChallenge()</code>, <code>this.duelFocus()</code>, <code>this.duelStrike()</code>. A window after forced reactions and before reactions; the code reserves it for duel challenge, focus and strike.</td></tr>
+          <tr><td><code>DuelReaction</code></td><td><code>'duelReaction'</code></td><td><code>this.duelChallenge()</code>, <code>this.duelFocus()</code>, <code>this.duelStrike()</code>. A window after forced reactions and before reactions; the code reserves it for duel challenge, focus and strike. A duel reaction a card gains through <code>gainAbility</code> (Togashi Yokuni copying one) is never offered: <code>getReactions()</code> keeps gained abilities only of the other triggered types.</td></tr>
           <tr><td><code>Reaction</code></td><td><code>'reaction'</code></td><td><code>this.reaction()</code>. The last window.</td></tr>
           <tr><td><code>Persistent</code></td><td><code>'persistent'</code></td><td>A persistent effect. <code>gainAbility(AbilityType.Persistent, { … })</code> grants one.</td></tr>
           <tr><td><code>OtherEffects</code></td><td><code>'otherEffects'</code></td><td>Not an ability kind: the trigger-window key for effects that cancel an event (after keyword interrupts, before the event resolves), used with <code>registerTriggerWindow</code>.</td></tr>
@@ -282,10 +282,10 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
           <tr><td><code>Blanked</code></td><td><code>'blank'</code></td><td>A printed ability on a blank card, or a gained ability on a card with <code>loseGainedAbilities</code>.</td><td>no</td></tr>
           <tr><td><code>CannotInitiate</code></td><td><code>'cannotInitiate'</code></td><td>A keyword ability on a card that cannot initiate keywords.</td><td>no</td></tr>
           <tr><td><code>CannotPayCost</code></td><td><code>'cost'</code></td><td>The costs cannot be paid.</td><td>yes</td></tr>
-          <tr><td><code>CannotPlaceFate</code></td><td><code>'restriction'</code></td><td>Playing a character while the player has a <code>PlayCharacter</code> or <code>EnterPlay</code> restriction; a duplicate that cannot have fate placed.</td><td>no</td></tr>
+          <tr><td><code>CannotPlaceFate</code></td><td><code>'restriction'</code></td><td>Playing a character while the player has a <code>PlayCharacter</code> or <code>EnterPlay</code> restriction (despite the name); a duplicate that cannot have fate placed.</td><td>no</td></tr>
           <tr><td><code>CannotTrigger</code></td><td><code>'cannotTrigger'</code></td><td>The card cannot trigger abilities (facedown or <code>TriggerAbilities</code> restriction), or the event or card cannot be played.</td><td>in play actions</td></tr>
           <tr><td><code>ConditionNotMet</code></td><td><code>'condition'</code></td><td>The ability's <code>condition</code> is false; or the ability has no targets and none of its game actions has a legal target.</td><td>yes</td></tr>
-          <tr><td><code>DuplicateUnique</code></td><td><code>'unique'</code></td><td>Another copy of a unique card is in play (or, for a duplicate, none is).</td><td>no</td></tr>
+          <tr><td><code>DuplicateUnique</code></td><td><code>'unique'</code></td><td>Another copy of a unique card is in play (for a duplicate: no copy the player controls is).</td><td>no</td></tr>
           <tr><td><code>Facedown</code></td><td><code>'facedown'</code></td><td>The card is facedown: a dynasty card in a province, or a card used as a duplicate.</td><td>yes</td></tr>
           <tr><td><code>LimitedAlreadyPlayed</code></td><td><code>'limited'</code></td><td>A Limited card when the player already played their Limited cards this round.</td><td>no</td></tr>
           <tr><td><code>LimitReached</code></td><td><code>'limit'</code></td><td>The ability's limit (<code>.limit()</code>) is used up.</td><td>yes</td></tr>
@@ -294,14 +294,13 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
           <tr><td><code>TriggeringRestricted</code></td><td><code>'triggeringRestrictions'</code></td><td>Never returned; listing it skips the <code>TriggerAbilities</code> restriction check of the source card.</td><td>yes</td></tr>
           <tr><td><code>WrongLocation</code></td><td><code>'location'</code></td><td>The card is not where the ability can be used (or played) from.</td><td>yes</td></tr>
           <tr><td><code>WrongPhase</code></td><td><code>'phase'</code></td><td>The ability's <code>.phase()</code> does not match, or a dynasty-phase rule forbids it.</td><td>yes</td></tr>
-          <tr><td><code>WrongPlayer</code></td><td><code>'player'</code></td><td>The player is not allowed to trigger it (not the controller and no <code>anyPlayer</code>).</td><td>yes</td></tr>
+          <tr><td><code>WrongPlayer</code></td><td><code>'player'</code></td><td>The player is not allowed to trigger it: not the controller, no <code>anyPlayer</code>, and no effect lets the opponent trigger the card.</td><td>yes</td></tr>
           <tr><td><code>WrongProvince</code></td><td><code>'province'</code></td><td>A province action whose <code>conflictProvinceCondition</code> fails.</td><td>yes</td></tr>
         </tbody>
       </table>
   <ul class="edge">
     <li>"Ignorable: yes" means that listing the blocker in <code>ignoredBlockers</code> skips its check (in at least one <code>meetsRequirements</code>). Blockers marked "no" are always checked.</li>
-    <li><code>resolveAbility</code> always adds <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code> and <code>TriggeringRestricted</code> to the ignored blockers; <code>triggerAbility</code> adds <code>WrongPlayer</code>, <code>WrongLocation</code> and <code>LimitReached</code>.</li>
-    <li><code>CannotPlaceFate</code> is also what playing a character returns for the <code>PlayCharacter</code> and <code>EnterPlay</code> restrictions, despite its name.</li>
+    <li><code>resolveAbility</code> always adds <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code> and <code>TriggeringRestricted</code> to the ignored blockers; <code>triggerAbility</code> adds <code>WrongPlayer</code>, <code>WrongLocation</code> and <code>LimitReached</code>. With <code>subResolution: true</code>, both also ignore <code>MaxReached</code>.</li>
   </ul>
   <pre><code>// The Mirror's Gaze: Reaction: After the effects of an opponent's event resolve – resolve that event again as if you had just played it, ignoring costs and triggering conditions. You may choose new targets.
 .gameAction(resolveAbility((context) =&gt; ({
@@ -801,7 +800,7 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>OpponentsRingEffects</code></td><td><code>'opponentsRingEffects'</code></td><td>Ring effects resolved by the opponent.</td></tr>
           <tr><td><code>OpponentsTriggeredAbilities</code></td><td><code>'opponentsTriggeredAbilities'</code></td><td>Triggered abilities (including actions) of the opponent.</td></tr>
           <tr><td><code>OpponentsTriggeredActionAbilities</code></td><td><code>'opponentsTriggeredActionAbilities'</code></td><td>Action abilities of the opponent.</td></tr>
-          <tr><td><code>OwnCardEffects</code></td><td><code>'ownCardEffects'</code></td><td>The same for the applying player's own attempts.</td></tr>
+          <tr><td><code>OwnCardEffects</code></td><td><code>'ownCardEffects'</code></td><td><code>CardEffects</code> attempts by the applying player.</td></tr>
           <tr><td><code>Reactions</code></td><td><code>'reactions'</code></td><td>Reaction abilities.</td></tr>
           <tr><td><code>RingEffects</code></td><td><code>'ringEffects'</code></td><td>Ring effects (the source is a ring).</td></tr>
           <tr><td><code>Source</code></td><td><code>'source'</code></td><td>Attempts whose source is the effect's source.</td></tr>
@@ -809,7 +808,7 @@ onEffectApplied: (event, context) =&gt; {
         </tbody>
       </table>
   <ul class="edge">
-    <li><code>OpponentsTriggeredAbilities</code> also matches action abilities: <code>isTriggeredAbility()</code> is true for every card ability, actions included. It does not match keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity).</li>
+    <li><code>OpponentsTriggeredAbilities</code> also matches action abilities: <code>isTriggeredAbility()</code> is true for every <code>CardAbility</code> (actions, triggered abilities, events). It does not match keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), nor a then-step, whose ability is a <code>ThenAbility</code>.</li>
   </ul>
   <pre><code>// Master of the Blade: Duel Strike: For this conflict, this character cannot be bowed by opponents' card effects and does not bow as a result of conflict resolution.
 cardCannot({
@@ -855,13 +854,13 @@ cardCannot({
           <tr><td><code>PlaceFate</code></td><td><code>'placeFate'</code></td><td><code>placeFate</code>, <code>placeFateOnRing</code>, extra fate when a character is played.</td></tr>
           <tr><td><code>PlaceFateWhenPlayingCharacter</code></td><td><code>'placeFateWhenPlayingCharacter'</code></td><td>Choosing extra fate when playing a character.</td></tr>
           <tr><td><code>PlaceFateWhenPlayingCharacterFromProvince</code></td><td><code>'placeFateWhenPlayingCharacterFromProvince'</code></td><td>The same, from a province.</td></tr>
-          <tr><td><code>Play</code></td><td><code>'play'</code></td><td>Playing a card (<code>canPlay</code>) and attaching it.</td></tr>
+          <tr><td><code>Play</code></td><td><code>'play'</code></td><td>Playing a card (<code>canPlay</code>: on the card and on its player). Playing an attachment also checks it on the card it would attach to.</td></tr>
           <tr><td><code>PlayCharacter</code></td><td><code>'playCharacter'</code></td><td>Playing a character from hand (checked on the player).</td></tr>
           <tr><td><code>PreventedFromLeavingPlay</code></td><td><code>'preventedFromLeavingPlay'</code></td><td><code>cancel()</code> on <code>onCardLeavesPlay</code>: a restricted card cannot have leaving play cancelled (Legendary).</td></tr>
           <tr><td><code>PutIntoConflict</code></td><td><code>'putIntoConflict'</code></td><td><code>putIntoConflict</code></td></tr>
           <tr><td><code>PutIntoPlay</code></td><td><code>'putIntoPlay'</code></td><td><code>putIntoPlay</code>, <code>putIntoConflict</code></td></tr>
           <tr><td><code>Ready</code></td><td><code>'ready'</code></td><td><code>ready</code></td></tr>
-          <tr><td><code>ReceiveDishonorToken</code></td><td><code>'receiveDishonorToken'</code></td><td>Dishonoring an ordinary character, <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
+          <tr><td><code>ReceiveDishonorToken</code></td><td><code>'receiveDishonorToken'</code></td><td>Dishonoring an ordinary character or province (<code>dishonor</code>, <code>dishonorProvince</code>), <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
           <tr><td><code>ReceiveHonorToken</code></td><td><code>'receiveHonorToken'</code></td><td>Honoring an ordinary character, <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
           <tr><td><code>ReceiveTaintedToken</code></td><td><code>'receiveTaintedToken'</code></td><td><code>taint</code>, <code>moveStatusToken</code>.</td></tr>
           <tr><td><code>RemoveFate</code></td><td><code>'removeFate'</code></td><td><code>removeFate</code></td></tr>
@@ -921,7 +920,7 @@ cardCannot({
 <p>Everything that happens in a game is an event (<code>Event</code>). A triggered ability names the events it responds to in <code>.when({ onX: (event, context) =&gt; … })</code>: the key is the event's string value, <code>event</code> is typed by the key, and the predicate returns whether the ability may trigger. In code the names are the <code>EventName</code> members (<code>EventName.OnCardPlayed</code>).</p>
 <p>Events resolve in an event window (<code>EventWindow</code>). A window runs these steps for its events, in this order:</p>
 <ol>
-    <li>Each event's condition is checked. A game-action event re-checks that its target is still legal, and is cancelled if not.</li>
+    <li>Each event's condition is checked. A game action's event re-checks that its target is still legal, and is cancelled if not. Unnamed events (<code>moveCard</code>, <code>placeCardUnderneath</code>, …) skip this check.</li>
     <li>Would-interrupts.</li>
     <li>Contingent events are added: a card leaving play adds the discard of each attachment and the removal of its fate. A would-interrupt window opens for them.</li>
     <li>Forced interrupts.</li>
@@ -937,7 +936,7 @@ cardCannot({
     <li>Duel reactions.</li>
     <li>Reactions.</li>
 </ol>
-<p>An event raised while another window is open (by the effects of an ability, or by a step of the game flow) opens a "then" window. Its interrupts are offered at once. Its reactions are handed to the enclosing window, so reactions to what an ability did are offered after the whole ability has resolved.</p>
+<p>The effects of an ability, and some steps of the game flow, raise their events in a "then" window when another window is already open. Its interrupts and keyword reactions are offered at once. Its forced reactions, duel reactions and reactions are handed to the enclosing window, so reactions to what an ability did are offered after the whole ability has resolved.</p>
 <p><strong>Cancelling.</strong> An interrupt cancels its event with the <code>cancel()</code> step or game action. The handler does not run and no reactions follow. An event without a handler only loses its reactions. For a game action, a cancelled event means the action does not happen to that target; the entries below say where cancelling means something else. <code>cancel()</code> has no legal target when:</p>
 <ul>
     <li>the event has <code>cannotBeCancelled</code> (from a game action created with <code>cannotBeCancelled: true</code>);</li>
@@ -1197,7 +1196,7 @@ this.interrupt('Reduce cost of next attachment')
   <ul class="edge">
     <li>Interrupts come before costs are paid. Cancelling it stops the whole ability, costs included.</li>
     <li>Reactions are offered after the ability has resolved.</li>
-    <li>Then-steps (<code>ThenAbility</code>) count as card abilities, so it fires for them as well.</li>
+    <li>Then-steps (<code>ThenAbility</code>) count as card abilities, so it fires for each step as well, and a <code>when</code> on it matches again for each step.</li>
   </ul>
   <pre><code>// Kamayari: … Reaction: After a character triggers an ability during a conflict in which attached character is participating – bow that character.
 this.reaction('Bow character who triggered ability')
@@ -1947,7 +1946,7 @@ onStatusTokenMoved: (event, context) =&gt;
         </tbody>
       </table>
   <ul class="edge">
-    <li>Its condition re-determines the winner: if interrupts changed it, this event is cancelled and a new one replaces it in the same window.</li>
+    <li>Its condition re-determines the winner: if interrupts changed it, this event is cancelled and a new one replaces it in the same window. This also happens in manual mode, so a result chosen by hand is replaced by the computed one.</li>
     <li>Not raised for a passed conflict or one that failed to initiate.</li>
     <li>The Pride keyword reacts to it.</li>
   </ul>
@@ -2991,7 +2990,7 @@ this.interrupt('Ready for Glory Count')
     <li>Costs (<code>Stage.Cost</code>).</li>
     <li>Targets checked, or chosen, after costs (<code>Stage.Target</code>).</li>
     <li>Limits used up; the chat line.</li>
-    <li><code>onInitiateAbilityEffects</code>, for card abilities.</li>
+    <li><code>onInitiateAbilityEffects</code>, for actions, triggered abilities and events (not for then-steps or keyword abilities).</li>
     <li>The effects (<code>Stage.Effect</code>).</li>
     <li>Queued province refills.</li>
 </ol>
@@ -3067,7 +3066,7 @@ this.interrupt('Ready for Glory Count')
   <p>The ability being resolved. Useful members: <code>title</code>, <code>abilityType</code> (<code>AbilityType</code>), <code>isCardPlayed()</code> (an event card, or a play action), <code>isCardAbility()</code>, <code>isTriggeredAbility()</code>, <code>isKeywordAbility()</code>, <code>cannotBeMirrored</code>, <code>getReducedCost(context)</code> on play abilities.</p>
   <ul class="edge">
     <li>In an action's context the builder types it as <code>CardAction</code> (<code>ActionContext</code>); in a trigger's, as <code>TriggeredAbility</code>.</li>
-    <li><code>isTriggeredAbility()</code> is true for actions too: every <code>CardAbility</code> counts as triggered, except keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity). Compare <code>abilityType</code> with <code>AbilityType.Action</code> to tell actions apart.</li>
+    <li><code>isTriggeredAbility()</code> is true for actions too: every <code>CardAbility</code> counts as triggered. It is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity) and for then-steps. Compare <code>abilityType</code> with <code>AbilityType.Action</code> to tell actions apart.</li>
   </ul>
   <pre><code>// Hida Kisada: While you have not lost a conflict this phase, cancel the effects of the first action ability your opponent triggers from a card during each conflict.
 if(
@@ -3199,7 +3198,7 @@ gameAction: multiple((context) =&gt; {
 </div>
 <div class="ref" id="ctx-target" data-name="target targets">
   <h3><code>context.target</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-target">#</a></h3>
-  <p>The card chosen for a target: <code>context.targets[name]</code> for every card target, and <code>context.target</code> when the target is named <code>target</code> (the default for an unnamed target) and holds one card. <code>{0}</code> in the chat text is this target.</p>
+  <p>The card chosen for a target: <code>context.targets[name]</code> for every card target, and <code>context.target</code> when the target is named <code>target</code> (the default for an unnamed target) and holds one card. <code>{0}</code> in a chat text names it (see <a href="#ctx-chatTarget"><code>chatTarget()</code></a>).</p>
   <p>When it is set: targets are chosen before costs (<code>Stage.PreTarget</code>). They are chosen after costs instead when the ability has <code>cannotTargetFirst()</code>, when the player clicks "Pay costs first", or for a target the opponent chooses (that target and the ones after it wait). After costs (<code>Stage.Target</code>) every target is checked again; if one is no longer legal, all are chosen again.</p>
   <ul class="edge">
     <li>A multi-card target (<code>targetCards()</code>, or a target with a multi-card <code>mode</code>) stores an array in <code>context.targets[name]</code> and leaves <code>context.target</code> unset.</li>
@@ -3393,7 +3392,7 @@ this.reaction('Bow a character that just readied')
           <tr><td><code>TriggerContext&lt;Source, When&gt;</code></td><td><code>this.reaction()</code>, <code>interrupt()</code>, forced and duel triggers</td><td>A <code>TriggeredAbilityContext&lt;Source&gt;</code> whose <code>event</code> is the union of the payloads of the <code>when</code> keys <code>When</code>.</td></tr>
           <tr><td>targets</td><td>after <code>.target()</code>, <code>.targetCards()</code>, <code>.ringTarget()</code>, <code>.tokenTarget()</code>, <code>.select()</code></td><td><code>targets.&lt;name&gt;</code>, <code>rings.&lt;name&gt;</code>, <code>tokens.&lt;name&gt;</code>, <code>selects.&lt;name&gt;</code>, and <code>target</code> / <code>ring</code> / <code>token</code> / <code>select</code> for the name <code>target</code>.</td></tr>
           <tr><td>costs</td><td>after <code>.cost()</code></td><td><code>costs</code> as <code>Partial</code> of what the costs record.</td></tr>
-          <tr><td><code>StepContext</code></td><td>after <code>.then()</code>, <code>.thenIf()</code>, <code>.afterwards()</code></td><td>A plain <code>AbilityContext&lt;Source&gt;</code> with the earlier targets. It has no <code>event</code>, and <code>ability</code> is a plain <code>BaseAbility</code>, not <code>CardAction</code> or <code>TriggeredAbility</code>.</td></tr>
+          <tr><td><code>StepContext</code></td><td>after <code>.then()</code>, <code>.thenIf()</code>, <code>.afterwards()</code>, <code>.afterwardsIf()</code></td><td>A plain <code>AbilityContext&lt;Source&gt;</code> with the earlier targets. It has no <code>event</code>, and <code>ability</code> is a plain <code>BaseAbility</code>, not <code>CardAction</code> or <code>TriggeredAbility</code>.</td></tr>
           <tr><td><code>ResolvedAbilityContext&lt;Source, Target&gt;</code></td><td>object-form abilities (gained abilities written as objects)</td><td>An <code>AbilityContext&lt;Source, Target&gt;</code> whose <code>target</code> is not optional. Annotate a property factory with it only when the target is named <code>target</code>, is not optional and is a single card.</td></tr>
         </tbody>
       </table>

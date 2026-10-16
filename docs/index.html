@@ -62,7 +62,7 @@
 <p>The order matters. The builder fixes its types from left to right, so each call sees only what the calls before it declared. A <code>chatText()</code> after a <code>target()</code> knows the target's card type; one before it doesn't. The <a href="builder.html">ability builder</a> page documents every call.</p>
 
 <h2 id="start-anatomy">Anatomy of a card file</h2>
-<p>Every card is a class in its own file under <code>server/game/cards/</code>, in the folder of its pack (and of its clan, for newer packs). The file is named after the card in PascalCase: <code>server/game/cards/01-Core/Assassination.ts</code>. The card loader imports every file in these folders and registers its default export by its <code>static id</code>; there is nothing else to register. Files directly in <code>server/game/cards/</code> are shared helpers, not cards.</p>
+<p>Every card is a class in its own file under <code>server/game/cards/</code>, in the folder of its pack (and of its clan, for newer packs). The file is named after the card in PascalCase: <code>server/game/cards/01-Core/Assassination.ts</code>. The card loader imports every file in these folders and registers its default export by its <code>static id</code>; there is nothing else to register. Files directly in <code>server/game/cards/</code>, and files whose name starts with <code>_</code>, are shared helpers, not cards.</p>
 <pre><code>import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -99,7 +99,7 @@ export default Assassination;</code></pre>
     <thead><tr><th>The card says</th><th>Write</th></tr></thead>
     <tbody>
         <tr><td>Action:</td><td><code>this.action(title)</code></td></tr>
-        <tr><td>Conflict Action:</td><td><code>this.conflictAction(title, options?)</code>. It works only during a conflict. A character must be participating, and so must an attachment's character, unless the option <code>evenFromHome</code> is set. Provinces and strongholds have no <code>conflictAction()</code>: see <a href="builder.html#cm-conflictAction"><code>conflictAction</code></a>.</td></tr>
+        <tr><td>Conflict Action:</td><td><code>this.conflictAction(title, options?)</code>. It works only during a conflict (of the type in the option <code>conflictType</code>, if set). A character must be participating, and so must an attachment's character, unless the option <code>evenFromHome</code> is set. Provinces and strongholds have no <code>conflictAction()</code>: see <a href="builder.html#cm-conflictAction"><code>conflictAction</code></a>.</td></tr>
         <tr><td>Reaction: After …</td><td><code>this.reaction(title).when({ … })</code></td></tr>
         <tr><td>Interrupt: When …</td><td><code>this.interrupt(title).when({ … })</code></td></tr>
         <tr><td>Interrupt: When … would …</td><td><code>this.wouldInterrupt(title).when({ … })</code>, usually with <code>.cancel()</code></td></tr>
@@ -124,7 +124,7 @@ export default Assassination;</code></pre>
     <tbody>
         <tr><td><code>context.source</code></td><td>The card the ability is on, typed as the card's own class.</td></tr>
         <tr><td><code>context.player</code></td><td>The player using the ability.</td></tr>
-        <tr><td><code>context.target</code></td><td>The card chosen by the target named <code>target</code> (a target without a name).</td></tr>
+        <tr><td><code>context.target</code></td><td>The card chosen by the target named <code>target</code> (a target without a name). When it chooses several cards, they are in <code>context.targets.target</code>.</td></tr>
         <tr><td><code>context.targets.name</code></td><td>The card(s) chosen by the target with that <code>name</code>.</td></tr>
         <tr><td><code>context.ring</code> / <code>context.rings.name</code></td><td>Chosen rings.</td></tr>
         <tr><td><code>context.select</code> / <code>context.selects.name.choice</code></td><td>The label chosen in a <code>select</code>.</td></tr>
@@ -148,7 +148,7 @@ export default Assassination;</code></pre>
 <ul>
     <li><strong>"If you do, …"</strong> is <code>then()</code>: the next step runs only if the step before it resolved in full.</li>
     <li><strong>A plain "Then, …"</strong> only sets the order: <code>afterwards()</code>, which runs either way. (The Emerald Legacy rules have a success rule only for "to"; their errata turn conditional "Then"s into "If you do".)</li>
-    <li><strong>"Then, if …"</strong> is <code>thenIf((context) =&gt; …)</code>; an "If …" read after the step without "then" is <code>afterwardsIf((context) =&gt; …)</code>.</li>
+    <li><strong>"Then, if …"</strong> is <code>afterwardsIf((context) =&gt; …)</code>: only the condition counts. <strong>"If you do, and …"</strong> is <code>thenIf((context) =&gt; …)</code>: the step before must have resolved in full, and the condition must hold.</li>
     <li>A step's context holds the targets chosen so far, so <code>context.target</code> still names the card chosen in the first step.</li>
 </ul>
 
@@ -157,7 +157,8 @@ export default Assassination;</code></pre>
     <li><strong>"If X, do A. Otherwise, do B."</strong> is <code>.if((context) =&gt; X).a().otherwise().b()</code>.
         <ul>
             <li>Without <code>otherwise()</code>, nothing happens when the condition fails. An ability whose only effect is that <code>if()</code> can't be used then.</li>
-            <li>Right after a card target, the branches belong to that target. They resolve on the chosen card, after the target's own game actions, and only cards a branch can affect are selectable. After several card targets without game actions, the branches stay on the ability.</li>
+            <li>Right after a card target, the branches belong to that target. They resolve on the chosen card, after the target's own game actions, and only cards a branch can affect are selectable.</li>
+            <li>The branches stay on the ability when several card targets have no game actions, or when the target has game actions and the ability already has game actions of its own.</li>
         </ul>
     </li>
     <li><strong>"Do A, if able. Otherwise, do B."</strong> is <code>.ifAble().a().otherwise().b()</code>. There is no condition: A resolves when it can, B when it can't. <code>otherwise()</code> is required. The branches always stay on the ability, so their game actions name their targets.</li>
@@ -167,7 +168,7 @@ export default Assassination;</code></pre>
 <div class="rule"><blockquote>If the effects of an ability are canceled, the ability is still considered to have been used, and any costs have still been paid.</blockquote><cite>Cancel</cite></div>
 <p>So costs are paid before the effects can be cancelled, and they stay paid. Limits also count a use when the effects are cancelled.</p>
 <ul>
-    <li><code>limit()</code> is the card's "Limit X per …". It counts for each copy of the card. Without <code>limit()</code>, an action or triggered ability can be used once per round.</li>
+    <li><code>limit()</code> is the card's "Limit X per …". It counts for each copy of the card. Without <code>limit()</code>, an action or triggered ability (forced ones too) can be used once per round. "(Unlimited.)" is <code>limit(unlimited())</code>.</li>
     <li><code>max()</code> is "Max X per …". It counts for each player, across all copies of the card with that title.</li>
 </ul>
 
@@ -252,7 +253,7 @@ this.action('Take control of an attachment')
     }))
     .otherwise()
     .discardFromPlay((context) =&gt; ({ target: context.target }));</code></pre>
-<p>The dishonored character is a cost, recorded in <code>context.costs.dishonor</code>. Attaching fails when the rules don't allow it (for example a second copy of the same attachment), and then the attachment is discarded.</p>
+<p>The dishonored character is a cost, recorded in <code>context.costs.dishonor</code>. Attaching fails when the rules don't allow it (for example, the attachment's "… character only" condition), and then the attachment is discarded.</p>
 
 <h3 id="start-example-select">A choice before the dash: Hero of Three Trees</h3>
 <pre><code>// Hero of Three Trees: Action: During a conflict in which this character is participating, if you have fewer cards
@@ -279,8 +280,8 @@ this.action('Gain 1 honor or reduce the attacked province strength')
     });</code></pre>
 <p>"Select one" before the dash is a <code>select()</code>; each choice brings the chat line for when it's chosen. The card says "Action: During a conflict in which this character is participating", not "Conflict Action:", so it is an <code>action()</code> with that condition written out. <code>context.player.opponent</code> is checked because a solo game has no opponent.</p>
 
-<h3 id="start-example-gained">A granted ability: Kagi-nawa</h3>
-<pre><code>// Kagi-nawa: If attached character has the Shinobi trait, it gains: “Conflict Action: Choose a character with
+<h3 id="start-example-gained">A granted ability: Kagi-Nawa</h3>
+<pre><code>// Kagi-Nawa: If attached character has the Shinobi trait, it gains: “Conflict Action: Choose a character with
 // printed cost 2 or lower - move that character to this conflict.”
 this.whileAttached({
     match: (card) =&gt; card.hasTrait(Trait.Shinobi),
@@ -350,7 +351,7 @@ this.whileAttached({
     <ul>
         <li>A card that searches the top X cards of a deck is tested with more than X cards in the deck, and the spec checks that the rest stays untouched.</li>
         <li>A bug in the engine (rather than in one card) gets its regression spec in <code>test/server/integration/</code>, not in a card's spec.</li>
-        <li>An ability with a <code>select()</code> before the dash always shows its prompt when it is used, with "Pay costs first" and "Cancel", even when only one choice is legal. The spec clicks the choice (<code>clickPrompt('Move into conflict')</code>) before it checks anything.</li>
+        <li>An ability with a <code>select()</code> before the dash shows its prompt when it is used, with "Pay costs first" and "Cancel", even when only one choice is legal (unless the opponent makes the choice). The spec clicks the choice (<code>clickPrompt('Move into conflict')</code>) before it checks anything.</li>
         <li>A spec should fail without the fix it tests. Run a subset with <code>npm run jasmine -- &lt;spec paths&gt;</code>.</li>
     </ul>
 </div>
@@ -361,8 +362,8 @@ this.whileAttached({
     <thead><tr><th>Already checked</th><th>So don't add</th><th>Keep a check when</th></tr></thead>
     <tbody>
         <tr><td><code>conflictAction()</code> requires a conflict and, on a character, its participation.</td><td><code>isDuringConflict()</code>, <code>context.source.isParticipating()</code></td><td>The text adds more, such as a ring or a player state.</td></tr>
-        <tr><td>A province's <code>action()</code> works only during a conflict at that province (<a href="builder.html#b-conflictProvinceCondition"><code>conflictProvinceCondition</code></a> changes which).</td><td><code>isConflictProvince()</code> or <code>isDuringConflict()</code> in its condition</td><td>Never for the province itself. Keeper of Secret Names resolves a province's action with the province check switched off (<code>Blocker.WrongProvince</code>); a condition repeating it would stop Keeper.</td></tr>
-        <tr><td><code>initiateDuel()</code> with <code>requiresConflict</code> (the default) needs a participating challenger and duel target.</td><td><code>isDuringConflict()</code>, the source's <code>isParticipating()</code></td><td>The duel needs a conflict of one type: <code>isDuringConflict(ConflictType.Military)</code>.</td></tr>
+        <tr><td>A province's <code>action()</code> works only during a conflict at that province (<a href="builder.html#b-conflictProvinceCondition"><code>conflictProvinceCondition</code></a> changes which; <code>canTriggerOutsideConflict()</code> turns the check off).</td><td><code>isConflictProvince()</code> or <code>isDuringConflict()</code> in its condition</td><td>Never for the province itself. Keeper of Secret Names resolves a province's action with the province check switched off (<code>Blocker.WrongProvince</code>); a condition repeating it would stop Keeper.</td></tr>
+        <tr><td><code>initiateDuel()</code> with <code>requiresConflict</code> (the default) needs a participating challenger and duel target, unless it sets its own <code>challengerCondition</code> or <code>targetCondition</code>.</td><td><code>isDuringConflict()</code>, the source's <code>isParticipating()</code></td><td>The duel needs a conflict of one type: <code>isDuringConflict(ConflictType.Military)</code>. Or the duel sets its own <code>challengerCondition</code> or <code>targetCondition</code>, which replace the participation check.</td></tr>
         <tr><td>A target whose <code>cardCondition</code> needs <code>isParticipating()</code>, <code>isAttacking()</code> or <code>isDefending()</code>: no card passes without a conflict.</td><td><code>isDuringConflict()</code> on the ability</td><td>It checks the conflict type; or it guards an access to <code>game.currentConflict</code>; or the ability has no target to filter (its actions compute their own targets), so nothing else stops the costs being paid outside a conflict.</td></tr>
         <tr><td><code>sendHome</code> only affects participating characters, <code>moveToConflict</code> only characters at home during a conflict.</td><td><code>isParticipating()</code> / <code>!isParticipating()</code> in that target's <code>cardCondition</code>, <code>isDuringConflict()</code> on the ability</td><td>The target has no game action of its own and a later target's action reads it (<code>context.targets.character</code>): its condition is the only filter.</td></tr>
     </tbody>
@@ -376,7 +377,7 @@ this.whileAttached({
     <li><strong><code>.gameAction(x(…))</code> where a shortcut exists:</strong> write <code>.x(…)</code>.</li>
     <li><strong>A choice after the dash written as a target</strong> (or the other way round). See <a href="#start-timing">timing</a>.</li>
     <li><strong>"Then" as <code>then()</code></strong> when the card has no "if you do": that's <code>afterwards()</code>.</li>
-    <li><strong>Repeating a default:</strong> <code>{ target: context.source }</code> on a card game action that isn't under a target (card game actions default to the source), or <code>player: Players.Self</code>.</li>
+    <li><strong>Repeating a default:</strong> <code>{ target: context.source }</code> on a card game action that isn't under a target (card game actions default to the source), or <code>player: Players.Self</code> on a target.</li>
     <li><strong>Reading <code>context.costs</code> in a condition</strong> without handling <code>undefined</code>: it is only set once the costs are paid.</li>
     <li><strong><code>this.game</code> or <code>this.x</code> inside a callback</strong> instead of <code>context.game</code> and <code>context.source</code>: the context is the ability being resolved, which matters for copies and gained abilities. Calling a helper method of the card's own class (<code>this.countBushi(context)</code>) is fine.</li>
     <li><strong>A <code>conditional()</code> for "Select one –":</strong> it picks a branch by itself without asking the player. A choice the player makes is a <code>select()</code> (before the dash) or <code>chooseAction</code> (after it).</li>

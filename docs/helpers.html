@@ -567,6 +567,7 @@ this.persistentEffect({
     </table>
     <ul class="edge">
       <li>The top card is fixed when the function runs. The effect also ends when that card leaves the conflict deck or the player's conflict deck is shuffled; a new top card is not playable.</li>
+      <li>Rearranging the deck (Truthseeker) doesn't end it. The deck's current top card is shown to both players, which may then not be the card that can be played.</li>
       <li>Check <code>context.player.conflictDeck.length &gt; 0</code> in the ability's condition: with an empty deck there is no card to reveal.</li>
     </ul>
     <pre><code>// Artisan Academy: Action: During the conflict phase – reveal the top card of your conflict deck.
@@ -1204,6 +1205,7 @@ private msgArticle(card: DrawCard): string {
     <ul class="edge">
       <li>Pairs with <code>costs.optionalTakeHonorFromOpponent(…)</code> and an optional opponent target guarded by <code>context.costs.honorTakenFromOpponent</code>.</li>
       <li>Empty when there is no opponent.</li>
+      <li>It returns a plain string built from names, so the players and the chosen card in it are not shown as players and cards in the chat.</li>
     </ul>
     <pre><code>// Roadside Inn: Reaction: After the fate phase begins, choose a character. Each opponent may give you 1 honor and choose a character - …
 .chatText((context) =&gt; msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (name) =&gt; 'place a fate from their pool on ' + name)}`);</code></pre>
@@ -1900,7 +1902,7 @@ context.player.moveCard(chosenProvince, attackedLocation);</code></pre>
 
   <div class="ref" id="q-addMessage" data-name="addMessage">
     <h3><code>game.addMessage(message)</code> <span class="kind">Chat</span> <a class="anchor" href="#q-addMessage">#</a></h3>
-    <p>Writes a line to the game chat. Pass a <code>msg</code> tagged template (cards, players and rings in it become links), or a format string with <code>{0}</code>, <code>{1}</code> and the arguments after it.</p>
+    <p>Writes a line to the game chat. Pass a <code>msg</code> tagged template (cards, players and rings in it are shown as such), or the pair it builds: <code>['format with {0} and {1}', [arg0, arg1]]</code>.</p>
     <ul class="edge">
       <li>The ability's own line comes from <code>chatText(…)</code>; use <code>addMessage</code> for extra lines in handlers and prompts.</li>
     </ul>

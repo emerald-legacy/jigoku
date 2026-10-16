@@ -40,7 +40,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
     <tbody>
         <tr><td><code>target</code></td><td>depends on the action</td><td>see <a href="#ga-defaults">defaults</a></td><td>What the action affects.</td></tr>
         <tr><td><code>cannotBeCancelled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The event can't be cancelled. While the effect resolves, the target's restrictions don't stop it either. Disguise discards the replaced character this way.</td></tr>
-        <tr><td><code>optional</code></td><td><code>boolean</code></td><td><code>false</code></td><td>For a <code>then()</code> step whose actions are all optional: if none of them can resolve, the step still counts as usable when the step after it can.</td></tr>
+        <tr><td><code>optional</code></td><td><code>boolean</code></td><td><code>false</code></td><td>For an ability or step whose actions are all optional: if none of them can resolve, it still counts as usable when its next step (<code>then()</code>, <code>afterwards()</code>) can.</td></tr>
     </tbody>
 </table>
 
@@ -65,7 +65,13 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
 
 <h3 id="ga-legality">Legality</h3>
 <ul>
-    <li>An action only affects targets it can affect: a bowed character can't be bowed, a character with no fate loses none, restrictions such as "cannot be dishonored" apply. Illegal targets are skipped; an action with no legal target does nothing.</li>
+    <li>An action only affects targets it can affect: a bowed character can't be bowed, a character with no fate loses none, restrictions such as "cannot be dishonored" apply. An action with no legal target does nothing.</li>
+    <li><strong>Illegal targets in a list:</strong> player, ring and token actions skip a target they can't affect. Most card actions create an event for every target, and the event window cancels the event of each card the action can't affect. That cancelled event counts as not resolved, so a <code>then()</code> step after the action doesn't run. <code>discardCard</code>, <code>lookAt</code>, <code>setAside</code> and <code>duel</code> skip illegal cards first. Two more consequences:
+        <ul>
+            <li>An "unless" cost on a card (<a href="effects.html#ef-unlessActionCost"><code>unlessActionCost</code></a>, Softskin) is asked for before that check, even when the action can't affect the card.</li>
+            <li><code>moveCard</code>, <code>placeCardUnderneath</code> and <code>placeInProvince</code> raise unnamed events, which the window doesn't check. They also move a card they can't affect.</li>
+        </ul>
+        This matters only for a <code>target</code> list you compute: a card target already offers only cards the action can affect.</li>
     <li>An ability without targets can be used only if at least one of its game actions has a legal target. An ability with targets needs a legal choice for each target, and a target's own actions decide which cards are legal.</li>
     <li><strong>Restrictions:</strong> many actions have a restriction type, such as <code>RestrictionType.Bow</code>. Restrictions of that type stop it, and so do restrictions that name no type. An action without a type is stopped only by the ones that name no type. A card's restrictions include those on the ability's player and on the current conflict, so "you cannot …" effects apply too.</li>
     <li><strong>Events:</strong> most actions raise an event, named in each entry. Interrupts can cancel it (unless <code>cannotBeCancelled</code>). A cancelled action doesn't happen; the ability still counts as used.</li>
@@ -77,7 +83,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
 <h2 id="ga-reference">Reference</h2>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-status">Card status</h3>
-<p>Card actions that change a card's state: bowed or ready, honored or dishonored, tainted, faceup or facedown, and the tokens on it. Each one raises its own event, so reactions such as "after a character is honored" see it. Without a <code>target</code> they affect the ability's source.</p>
+<p>Actions that change a card's state: bowed or ready, honored or dishonored, tainted, faceup or facedown, and the tokens on it. Each one raises its own event, so reactions such as "after a character is honored" see it. Without a <code>target</code> they affect the ability's source. <code>discardStatusToken</code> and <code>moveStatusToken</code> target tokens, not cards: by default every status token on the source.</p>
 <div class="ref" id="ga-addToken" data-name="addToken">
     <h3><code>addToken(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-addToken">#</a></h3>
     <p>Places a token on a card, such as an honor token on a province or holding.</p>
@@ -90,7 +96,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
     </table>
     <ul class="edge">
       <li>The card must be faceup. A holding or province must be in a province; any other card must be in play.</li>
-      <li>It has no restriction type, so only restrictions that name no action stop it.</li>
+      <li>It has no restriction type, so only restrictions that name no type stop it.</li>
       <li>Raises <code>onAddTokenToCard</code> (<code>event.tokenType</code>). Chat: "add an honor token to <em>card</em>".</li>
       <li>Builder shortcut: <code>.addToken(…)</code>.</li>
     </ul>
@@ -220,7 +226,7 @@ this.interrupt('Blank and reveal a province')
       <li>An honored card can't get an honored token, a dishonored card can't get a dishonored token, a tainted card can't get a tainted one.</li>
       <li>An honored token needs <code>ReceiveHonorToken</code>, a dishonored one <code>ReceiveDishonorToken</code>, a tainted one <code>ReceiveTaintedToken</code>; the first two are checked even when the card holds the opposite token.</li>
       <li>The opposite token cancels out: an honored token on a dishonored character removes its dishonored token and leaves it ordinary (and the other way round).</li>
-      <li>Neither the location nor a restriction type is checked.</li>
+      <li>The location isn't checked. It has no restriction type of its own.</li>
       <li>Raises <code>onStatusTokenGained</code> (<code>event.token</code> is the <code>CharacterStatus</code>). Chat: "give <em>card</em> a <em>honored</em> status token".</li>
       <li>No builder shortcut.</li>
     </ul>
@@ -333,7 +339,7 @@ this.conflictAction('Ready a character')
     </table>
     <ul class="edge">
       <li>A card that is faceup in a province or in play can't be revealed. A card elsewhere (hand, deck) can, faceup or not.</li>
-      <li>It has no restriction type of its own, so only restrictions that name no action apply. Raises <code>onCardRevealed</code>.</li>
+      <li>It has no restriction type of its own, so only restrictions that name no type apply. Raises <code>onCardRevealed</code>.</li>
       <li>Chat: <code>reveal a card</code> (the target is not named). With <code>chatMessage: true</code> it also prints <code>{player} reveals {card} due to {source}</code> when the card is revealed.</li>
       <li>Builder shortcut: <code>.reveal(…)</code>.</li>
     </ul>
@@ -581,7 +587,7 @@ this.action('Remove fate from characters')
       <li>The default target is the opponent, not the ability's player. In a solo game there is no target.</li>
       <li>All or nothing: illegal when the target has less fate than <code>amount</code>, or has no opponent, or <code>amount</code> is not positive.</li>
       <li>It has no restriction type of its own. Raises <code>onMoveFate</code> from the target to their opponent.</li>
-      <li>Chat: <code>take {1} fate from {0}</code>.</li>
+      <li>Chat: <code>take {1} fate from {0}</code>; as a cost (paid by the ability's player): <code>giving {1} fate to {2}</code>, {2} being their opponent.</li>
       <li>Builder shortcut: <code>.takeFate(…)</code>.</li>
     </ul>
     <pre><code>// Way Station Trader: Reaction: After a province is revealed during a conflict in which this character is participating, choose an opponent - take 1 fate from that opponent.
@@ -608,7 +614,7 @@ this.reaction('Take a fate from your opponent')
       <li>The amount is capped by the receiver's limit on honor gained per phase (<code>EffectName.LimitHonorGainPerPhase</code>). Illegal when that limit leaves nothing to transfer.</li>
       <li>With <code>afterBid</code>, the chat also says "<em>player</em> gives <em>opponent</em> <em>N</em> honor" when it resolves.</li>
       <li>Checks <code>RestrictionType.TakeHonor</code>. Raises <code>onTransferHonor</code>.</li>
-      <li>Chat: <code>take {1} honor from {0}</code>, worked out from the ability's player's opponent to the ability's player whatever the target is.</li>
+      <li>Chat: <code>take {1} honor from {0}</code>, worked out from the ability's player's opponent to the ability's player whatever the target is. As a cost (paid by the ability's player): <code>giving {1} honor to {2}</code>, {2} being their opponent.</li>
       <li>Builder shortcut: <code>.takeHonor(…)</code>.</li>
     </ul>
     <pre><code>// Kakita Asami: Action: While this character is participating in a [conflict-political] conflict, if you count more current [conflict-political] skill in the conflict than your opponent – take 1 honor from that opponent.
@@ -792,7 +798,7 @@ this.action('Return to hand')
     <ul class="edge">
       <li>Characters and attachments must be in play; a holding must be faceup in a province.</li>
       <li>Checks <code>RestrictionType.Sacrifice</code>, not the discard restriction. Raises <code>onCardLeavesPlay</code> with <code>isSacrifice</code> set.</li>
-      <li>Chat: <code>sacrifice {0}</code>.</li>
+      <li>Chat: <code>sacrifice {0}</code>; as a cost: <code>sacrificing {0}</code>.</li>
       <li>Builder shortcut: <code>.sacrifice(…)</code>.</li>
     </ul>
     <pre><code>// Way of the Crab: Action: Sacrifice a (friendly) [clan-crab] character. Choose an opponent – that player must sacrifice a character. (Max 1 per round.)
@@ -883,8 +889,8 @@ this.reaction('Draw 2 cards and return 1')
         <tr><td><code>deck</code></td><td><code>DeckType</code></td><td><code>DeckType.Conflict</code></td><td><code>Conflict</code> or <code>Dynasty</code>.</td></tr>
         <tr><td><code>cardsToLookAt</code></td><td><code>number | (context) =&gt; number</code></td><td><code>-1</code> (the whole deck)</td><td>How many cards from the top. 0 makes the action illegal.</td></tr>
         <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>any card</td><td>Which cards can be taken. Searching the whole deck, other cards aren't shown; looking at the top cards, they are shown but can't be taken.</td></tr>
-        <tr><td><code>mode</code></td><td><code>TargetMode</code></td><td><code>TargetMode.Single</code></td><td>How many cards are taken: <code>Single</code> (one), <code>UpTo</code>/<code>UpToVariable</code> (up to <code>numCards</code>), <code>Exactly</code> (<code>numCards</code>, with no button to stop early), <code>Unlimited</code> (any number). <code>ExactlyVariable</code> behaves like <code>UpTo</code>: it keeps the button.</td></tr>
-        <tr><td><code>numCards</code></td><td><code>number | (context) =&gt; number</code></td><td><code>1</code></td><td>The count for the <code>UpTo</code> and <code>Exactly</code> modes.</td></tr>
+        <tr><td><code>mode</code></td><td><code>TargetMode</code></td><td><code>TargetMode.Single</code></td><td>How many cards are taken: <code>Single</code> (one), <code>UpTo</code>/<code>UpToVariable</code> (up to <code>numCards</code>), <code>Exactly</code> (<code>numCards</code>, with no button to stop early), <code>Unlimited</code> (any number). <code>ExactlyVariable</code> behaves like <code>UpTo</code>: it keeps the button. Every mode except <code>Exactly</code>, the default <code>Single</code> included, lets the chooser take nothing.</td></tr>
+        <tr><td><code>numCards</code></td><td><code>number | (context) =&gt; number</code></td><td><code>1</code></td><td>The count for the <code>UpTo</code>, <code>UpToVariable</code>, <code>Exactly</code> and <code>ExactlyVariable</code> modes.</td></tr>
         <tr><td><code>uniqueNames</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No two taken cards may share a name.</td></tr>
         <tr><td><code>gameAction</code></td><td><code>GameAction</code></td><td>none</td><td>Resolves on all taken cards together. A card it can't affect can't be taken.</td></tr>
         <tr><td><code>remainingCards</code></td><td><code>RemainingCards | (context) =&gt; RemainingCards</code></td><td><code>RemainingCards.Shuffle</code></td><td>The cards looked at but not taken: <code>Shuffle</code> the deck, <code>Discard</code> them, leave them on <code>Top</code>, <code>TopAnyOrder</code> (the player rearranges them), or <code>BottomRandom</code>.</td></tr>
@@ -892,7 +898,7 @@ this.reaction('Draw 2 cards and return 1')
         <tr><td><code>player</code></td><td><code>Players.Self | Players.Opponent | Player</code></td><td>the searched player</td><td>Who chooses the cards.</td></tr>
         <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>"Select a card [to reveal]", "Select up to <em>N</em> cards…", or "Select all cards…" for <code>Unlimited</code></td><td>The prompt's title.</td></tr>
         <tr><td><code>doneButtonText</code></td><td><code>string</code></td><td>"Take nothing", then "Done"</td><td>The button that ends the choice. <code>Exactly</code> mode has none.</td></tr>
-        <tr><td><code>hideIfNoLegalTargets</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Skip the prompt when no card can be taken.</td></tr>
+        <tr><td><code>hideIfNoLegalTargets</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Skip the prompt when no card can be taken. <code>Exactly</code> mode always skips it then.</td></tr>
         <tr><td><code>message</code></td><td><code>(context, cards, chooser) =&gt; MessageArgs</code></td><td>"<em>chooser</em> takes <em>cards</em>"</td><td>The chat line when cards are taken.</td></tr>
         <tr><td><code>takesNothingMessage</code></td><td><code>(context, chooser) =&gt; MessageArgs | undefined</code></td><td>"<em>chooser</em> takes nothing"</td><td>The chat line when nothing is taken; <code>undefined</code> for none.</td></tr>
         <tr><td><code>takesNothingGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>Resolves (with its own default target) when nothing is taken.</td></tr>
@@ -1151,6 +1157,7 @@ this.action('Give a character a +1/+1 attachment')
       <li><code>destination</code> must be a legal place for the card (a dynasty card can't go to the hand, a conflict card can't go to the dynasty deck).</li>
       <li><code>changePlayer</code> needs a card that allows its control to change (<code>RestrictionType.TakeControl</code>) and, for a unique card, no other copy in play for the ability's player.</li>
       <li>Leaving a province refills it, unless the card is switched. Checks <code>RestrictionType.Move</code>, and <code>RestrictionType.MoveToHand</code> when the destination is the hand. The action has no event of its own; the move raises <code>onCardMoved</code>.</li>
+      <li>These checks only filter a card target. A card in a <code>target</code> list you pass is moved even when they fail (see <a href="#ga-legality">legality</a>).</li>
       <li>Chat: <code>move {0} to {1}'s {2}</code> ({1} is the destination's player, {2} the location), <code>move {0} to the bottom of {1}'s {2}</code> with <code>bottom</code>, <code>shuffle {0} into {1}'s {2}</code> with <code>shuffle</code>.</li>
       <li>Builder shortcut: <code>.moveCard(…)</code>.</li>
     </ul>
@@ -1177,7 +1184,7 @@ this.reaction('Add a card from the discard pile to the hand')
     </table>
     <ul class="edge">
       <li>Characters, attachments, events and holdings, from any location. The card's controller becomes the controller of the ability's source.</li>
-      <li>It has no restriction type of its own, and no event of its own.</li>
+      <li>It has no restriction type of its own, and no event of its own. Its checks only filter a card target. A card in a <code>target</code> list you pass is placed even when they fail (see <a href="#ga-legality">legality</a>).</li>
       <li>Chat: <code>place {0} underneath {1}</code>.</li>
       <li>Builder shortcut: <code>.placeCardUnderneath(…)</code>.</li>
     </ul>
@@ -1206,7 +1213,7 @@ this.reaction('Put the event underneath attached character')
     <ul class="edge">
       <li>Only dynasty characters, holdings and events, not already in that location. <code>destination</code> must be a province location. Where the card is now isn't checked otherwise.</li>
       <li>A card underneath the stronghold is taken from there. The province it came from is not refilled.</li>
-      <li>It has no restriction type of its own, and no event of its own.</li>
+      <li>It has no restriction type of its own, and no event of its own. Its checks only filter a card target. A card in a <code>target</code> list you pass is placed even when they fail (see <a href="#ga-legality">legality</a>).</li>
       <li>Chat: <code>put {0} into a province</code>.</li>
       <li>No builder shortcut.</li>
     </ul>
@@ -1466,7 +1473,7 @@ this.reaction('Put this character into play')
           <li>another copy of a unique attachment is in play for the ability's player.</li>
         </ul>
       </li>
-      <li>It has no restriction type, so only restrictions that name no action stop it. ("Cannot play attachments on" restrictions apply to playing an attachment from hand, not to this action.)</li>
+      <li>It has no restriction type, so only restrictions that name no type stop it. ("Cannot play attachments on" restrictions apply to playing an attachment from hand, not to this action.)</li>
       <li>A character in play that becomes an attachment leaves the conflict.</li>
       <li>Raises <code>onCardAttached</code> (<code>event.parent</code>, <code>event.card</code> is the attachment, <code>event.originalLocation</code>).</li>
       <li>Chat: "attach <em>attachment</em> to <em>target</em>"; with <code>takeControl</code>: "take control of and attach <em>parent</em>'s <em>attachment</em> to <em>target</em>"; with <code>giveControl</code>: "give control of and attach …".</li>
@@ -1627,7 +1634,7 @@ this.action('Create spirits from facedown dynasty cards')
       </tbody>
     </table>
     <ul class="edge">
-      <li>No restriction type and no check beyond the target being a player.</li>
+      <li>It has no restriction type of its own and no other legality check.</li>
       <li>Raises an unnamed event. Chat: "fills <em>location</em> to <em>N</em> cards!", or with <code>amount</code> "fills <em>location</em> with <em>N</em> cards".</li>
       <li>No builder shortcut.</li>
     </ul>
@@ -2271,7 +2278,7 @@ this.action('Duel an opposing character')
     </table>
     <ul class="edge">
       <li>A character in play that may duel, isn't already in the duel, and isn't controlled by the challenging player. It must meet the duel's target condition, or be participating when the duel requires a conflict.</li>
-      <li>"May duel" is <code>allowGameAction('duel')</code>: the checks of <code>duel()</code>, including <code>RestrictionType.Duel</code> and restrictions that name no action.</li>
+      <li>"May duel" is <code>allowGameAction('duel')</code>: the checks of <code>duel()</code>, including <code>RestrictionType.Duel</code> and restrictions that name no type.</li>
       <li>Raises <code>onAddDuelParticipant</code>. Chat: "extend the duel challenge to <em>card</em>".</li>
       <li>No builder shortcut.</li>
     </ul>
@@ -2900,8 +2907,7 @@ moveCardInProvinceAction(this)
     <ul class="edge">
       <li>Legal if any nested action is legal before anything resolves. Each later action is checked again after the earlier ones resolved, and skipped if it has no legal target then.</li>
       <li>Each action except the last resolves its events in a then-window before the next action is checked; the last action's events resolve with the rest of the ability.</li>
-      <li>The chat uses the first action's message even when that action ends up with nothing to do; give the ability a <code>chatText</code>.</li>
-      <li>Chat: the first nested action's message only.</li>
+      <li>Chat: the first nested action's message only, even when that action ends up with nothing to do. Give the ability a <code>chatText</code>.</li>
       <li>No builder shortcut; use it on a target or with <code>.gameAction(…)</code> (or use <code>.then()</code> steps).</li>
     </ul>
     <pre><code>// Tranquil Philosopher: Action: Choose an unclaimed ring - move 1 fate from that ring to another unclaimed ring. Then, gain 1 honor.
@@ -3353,7 +3359,8 @@ this.action('Discard status token from attached character')
     <ul class="edge">
       <li>Legal if the ability meets its requirements with these ignored: wrong player, wrong location, limit reached, triggering restrictions, plus <code>ignoredBlockers</code>; and it is not at its max for the player (unless <code>subResolution</code>).</li>
       <li>It goes straight to costs and targets: no early targeting, and it can't be cancelled while choosing. Play costs (an event's fate cost) are never paid.</li>
-      <li>Counts toward the ability's max unless <code>subResolution</code>. The resolved ability's own chat line reads <code>{player} resolves {card} …</code> instead of "uses" or "plays". Raises <code>onCardAbilityInitiated</code>.</li>
+      <li>Counts toward the ability's max unless <code>subResolution</code>. The resolved ability's own chat line reads <code>{player} resolves {card} …</code> instead of "uses" or "plays".</li>
+      <li>The resolution raises <code>onCardAbilityInitiated</code>, and also <code>onCardAbilityTriggered</code> for a card ability unless <code>subResolution</code> is set.</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// The Mirror's Gaze: Reaction: After the effects of an opponent's event resolve – resolve that event again as if you had just played it, ignoring costs and triggering conditions. You may choose new targets.

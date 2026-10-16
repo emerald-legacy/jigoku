@@ -65,7 +65,7 @@ this.action('Sacrifice to discard an attachment')
 
   <div class="ref" id="cm-conflictAction" data-name="conflictAction">
     <h3><code>conflictAction(title, options?)</code> <span class="kind">Card method</span> <a class="anchor" href="#cm-conflictAction">#</a></h3>
-    <p>Starts a "Conflict Action:" (or "[military] Conflict Action:"): an action that can only be used during a conflict, of <code>conflictType</code> if given. A character must be participating; an attachment in play needs its character to be participating. Events and holdings only need the conflict. Defined on <code>DrawCard</code>. Only for a card whose Emerald Legacy text prints "Conflict Action:". A card that exists only in its older print (A Fate Worse Than Death, Fate Has No Secrets) or whose text says "Action: During a conflict, …" or "While this character is participating …" is an <code>action()</code> with that condition written out.</p>
+    <p>Starts a "Conflict Action:" (or "[military] Conflict Action:"): an action that can only be used during a conflict, of <code>conflictType</code> if given. A character must be participating; an attachment in play needs its character to be participating. Events and holdings only need the conflict. Defined on <code>DrawCard</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -75,6 +75,7 @@ this.action('Sacrifice to discard an attachment')
       </tbody>
     </table>
     <ul class="edge">
+      <li>Use it only when the card's Emerald Legacy text prints "Conflict Action:". A card printed only in an older version (A Fate Worse Than Death, Fate Has No Secrets) stays an <code>action()</code>, even when its card data says "Conflict Action:". So does older wording such as "Action: During a conflict, …": write that condition out.</li>
       <li>The conflict check is added to the ability's own <a href="#b-condition"><code>condition()</code></a> when the builder is registered; both must hold.</li>
       <li>A copy of the ability (Illustrious Plagiarist) is checked for the card that has it: a character that copies a Conflict Action must be participating.</li>
       <li>The check reads the card's current type: a character played as an attachment (Togashi Kazue) is checked as an attachment.</li>
@@ -484,8 +485,8 @@ this.declareAbilities(() =&gt; {
     <li>When and where the ability can be used: <code>phase()</code>, <code>location()</code>, <code>condition()</code>, <code>playOnlyIf()</code>, <code>anyPlayer()</code>, <code>collectiveTrigger()</code>, <code>evenDuringDynasty()</code>, <code>canTriggerOutsideConflict()</code>, <code>conflictProvinceCondition()</code></li>
     <li><code>cost()</code></li>
     <li>Targets</li>
-    <li>Effects: game actions, <code>if()</code>/<code>ifAble()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>onResolve()</code>; in a step also <code>message()</code></li>
-    <li><code>chatText()</code></li>
+    <li>Effects: game actions, <code>if()</code>/<code>ifAble()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>onResolve()</code></li>
+    <li>Chat: <code>chatText()</code> on the ability, <code>message()</code> on a step</li>
     <li><code>limit()</code> / <code>max()</code>, <code>cannotTargetFirst()</code>, <code>cannotBeMirrored()</code>, <code>notPrinted()</code></li>
     <li><code>then()</code> and the other next steps; a following step uses the same order, without the ability's settings</li>
   </ol>
@@ -899,7 +900,8 @@ this.action('Prevent an opponent contesting a ring')
       <li>The ability can only be used when at least one choice is offered. Choices are listed in the object's key order.</li>
       <li>When only one choice is offered after costs are paid, it is taken without a prompt (before costs, the "Pay costs first" and "Cancel" buttons still show the prompt).</li>
       <li>A value that is none of the three throws <code>"not a game action"</code>.</li>
-      <li>With <code>{ action, chatText }</code> choices the ability has no <a href="#b-chatText"><code>chatText()</code></a> of its own: both throw at registration <code>"chatText() and a select's chatText choices both say what the ability does"</code>. A choice without <code>chatText</code> uses its game actions' text. Only one select per ability can have such choices. A step prints no ability line, so there they throw at registration <code>"a then step prints its message with message()"</code>; use <a href="#b-message"><code>message()</code></a>.</li>
+      <li>With <code>{ action, chatText }</code> choices the ability has no <a href="#b-chatText"><code>chatText()</code></a> of its own: both together throw at registration <code>"chatText() and a select's chatText choices both say what the ability does"</code>. A choice without <code>chatText</code> uses its game actions' text. Only one select per ability can have such choices.</li>
+      <li>In a step, <code>{ action, chatText }</code> choices throw at registration <code>"a then step prints its message with message()"</code>: a step has no ability line. Use <a href="#b-message"><code>message()</code></a>.</li>
       <li>The choices' game actions keep their own default targets; name the target in them when it is an earlier target (<code>bow((context) =&gt; ({ target: context.targets.character }))</code>).</li>
     </ul>
     <pre><code>// Windswept Yurt: Action: Sacrifice this holding, select one – each player gains 2 fate or each player gains 2 honor. Refill this province faceup.
@@ -980,7 +982,7 @@ this.action('Select a player to lose an honor and draw a card')
       <li>A card is a legal choice only if: the ability may target it (restrictions, immunity and targeting costs), it is in <code>location</code> with the right controller and type, <code>cardCondition</code> holds, at least one of the target's game actions can affect it (when it has any), and a target depending on it has a choice. A card in a hand can only be chosen by its controller.</li>
       <li>When the opponent chooses (<code>player: Players.Opponent</code>), the choice is made after the costs are paid.</li>
       <li>With <a href="#b-handler"><code>handler()</code></a> the target's game actions only decide what can be chosen; they don't resolve.</li>
-      <li><a href="#b-if"><code>if()</code></a> or <code>otherwise()</code> right after a card target puts their game actions on that target; see there.</li>
+      <li><a href="#b-if"><code>if()</code></a> right after a card target can put its branches on that target; see there.</li>
     </ul>
     <pre><code>// Palm Strike: Conflict Action: Choose a participating Monk character with no Weapon attachments you control, and choose a participating character with no Weapon attachments controlled by the opponent - bow that opponent's character. …
 this.conflictAction('Bow a character')
@@ -1023,7 +1025,7 @@ this.conflictAction('Bow a character')
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>Exactly</code> and <code>ExactlyVariable</code> need at least that many legal cards for the ability to be used; <code>UpTo</code> and <code>Unlimited</code> need one.</li>
+      <li><code>Exactly</code> and <code>ExactlyVariable</code> need at least that many legal cards for the ability to be used; <code>UpTo</code> and <code>Unlimited</code> need one; <code>UpToVariable</code> needs one and a count above 0.</li>
       <li><code>cardCondition</code> sees one candidate at a time; later callbacks see the array. <code>context.target</code> is not set for an array, but a <code>chatText()</code> string's <code>{0}</code> names all chosen cards.</li>
       <li>With <code>MaxStat</code>, a card whose value alone is above <code>maxStat()</code> can't be chosen. <code>cardStat</code> throws <code>"&lt;card name&gt; is not a card this target can hold"</code> for a card outside <code>cardType</code>.</li>
     </ul>
@@ -1054,7 +1056,7 @@ this.action('Shuffle cards back into your deck')
       </tbody>
     </table>
     <ul class="edge">
-      <li>A card can only be chosen when one of the game actions has a legal target with its tokens (if there are game actions).</li>
+      <li>A card can only be chosen when one of the game actions has a legal target (if there are game actions). That check runs with all of the card's status tokens at once, not with each token on its own.</li>
       <li>Choosing the card is not targeting it: restrictions on being targeted don't apply.</li>
     </ul>
     <pre><code>// Bayushi Dairu: Action: During a conflict in which this character is participating, choose a status token on another character in play - move that token to this character.
@@ -1209,6 +1211,7 @@ this.action('Initiate a Military duel')
     <li>A step is declared with the same methods as the ability, minus the ability's own settings.</li>
     <li>Its context is new, but it starts with the targets, selects, rings, tokens and costs chosen so far. <code>context.previousEvents</code> holds the events of the step before.</li>
     <li>A step has at most one next step: a second <code>then()</code>, <code>afterwards()</code>, <code>mayResolveAgain()</code> … throws <code>"a step has one next step"</code>.</li>
+    <li>A step is resolved like a new ability. It raises <code>onCardAbilityInitiated</code> again, so a reaction to that event (Kamayari) can trigger on the step too. When one of the step's targets has no legal choice, the chat prints "{player} attempted to use {card}, but there are insufficient legal targets" and the step stops.</li>
   </ul>
   <div class="note">
     <p><strong>"Then" or "if you do"?</strong> <code>then()</code> follows only when the step before resolved in full; <code>afterwards()</code> follows regardless. Card text "if you do" is <code>then()</code>. A plain "Then" only sets the order, so it is <code>afterwards()</code>. The RRG has a success rule only for "to" (quoted below), and its errata turn conditional "Then"s into "If you do". The same holds for <code>thenIf()</code> and <code>afterwardsIf()</code>.</p>
@@ -1259,7 +1262,12 @@ this.reaction('Put this into play')
         <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>required</td><td>Gets the typed context with every declared target.</td></tr>
       </tbody>
     </table>
-    <p><strong>On a card target.</strong> Right after a card target, the branches belong to that target: they become its game actions and resolve on the chosen card (an action without its own <code>target</code> affects it). This applies when the last target is the only card target without game actions, or when the last target has game actions of its own and the ability has none yet (its own actions then come first in both branches). After several card targets without game actions, or once the ability has game actions of its own, the branches stay on the ability and the actions name their targets.</p>
+    <p><strong>On a card target.</strong> Right after a card target, the branches can belong to that target. They then become its game actions and resolve on the chosen card (an action without its own <code>target</code> affects it). This happens when:</p>
+    <ul>
+      <li>the last target is the only card target without game actions; or</li>
+      <li>the last target has game actions of its own and the ability has none yet. The target's own actions then come first in both branches.</li>
+    </ul>
+    <p>In every other case the branches stay on the ability, and their actions name their targets. Examples: several card targets without game actions; a last target with game actions after the ability already has game actions of its own.</p>
     <ul class="edge">
       <li>On a target, <code>condition</code> is read for each candidate, before the other targets are chosen. Only cards that the applying branch can affect are selectable.</li>
       <li>Without <code>otherwise()</code>, the "no" branch has no legal target. An ability whose only effect is a failing <code>if()</code> can't be used, and on a bare target the cards that fail the condition aren't selectable. Game actions before the <code>if()</code>, or a target's own game actions (which then form the "no" branch), still make it usable.</li>
@@ -1327,6 +1335,7 @@ this.action('Take control of an attachment')
       <li>It takes the step's next-step slot: not with <code>then()</code> or <code>afterwards()</code> on the same step. Like <code>then()</code>, it is offered only when the ability resolved in full.</li>
       <li>The ability resolves again only when the payment's event resolved and wasn't cancelled (an effect that changes the payment still counts).</li>
       <li>The second resolution doesn't count toward the ability's <code>max</code>. With a cost it offers "{label} for no effect" instead of asking again; without a cost it doesn't ask again.</li>
+      <li>Without a cost, Yes and No are offered only when the ability can resolve again. When it can't, the chat prints the "insufficient legal targets" line instead of the question (see <a href="#b-group-flow">Flow</a>).</li>
     </ul>
     <pre><code>// Banzai!: Action: During a conflict, choose a participating character – that character gets +2[conflict-military] until the end of the conflict. You may lose 1 honor to resolve this ability twice. (Max 1 per conflict.)
 this.action('Increase a character\'s military skill')
@@ -1352,7 +1361,7 @@ this.action('Increase a character\'s military skill')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The question is asked only when the ability can resolve again. In a solo game the player is asked.</li>
+      <li>The question is asked only when the ability can resolve again. When it can't, the chat prints the "insufficient legal targets" line instead (see <a href="#b-group-flow">Flow</a>). In a solo game the player is asked.</li>
       <li>It takes the step's next-step slot, like <a href="#b-mayResolveAgain"><code>mayResolveAgain()</code></a>.</li>
     </ul>
     <pre><code>// Hand to Hand: Action: During a [conflict-military] conflict, choose an attachment on a participating character - discard that attachment.  Then, your opponent may resolve this ability.
@@ -1390,7 +1399,7 @@ this.action('Move this character to the conflict or home from the conflict')
     <ul class="edge">
       <li>If this step raised no events (nothing it could do), the step doesn't follow.</li>
       <li>The step resolves after this step's events, before reactions to them. Its targets are chosen then.</li>
-      <li>In the step, <code>chatText()</code> throws <code>"a then step prints its message with message()"</code>, and the ability's own settings throw <code>"… belongs to the ability, before then()"</code>. A step prints nothing unless it has <a href="#b-message"><code>message()</code></a>.</li>
+      <li>In the step, <code>chatText()</code> throws <code>"a then step prints its message with message()"</code>, and the ability's own settings throw <code>"… belongs to the ability, before then()"</code>. A step prints only its <a href="#b-message"><code>message()</code></a>, and the "insufficient legal targets" line when its targets have no legal choice (see <a href="#b-group-flow">Flow</a>).</li>
       <li>For a plain "Then" use <a href="#b-afterwards"><code>afterwards()</code></a> (see the note above).</li>
     </ul>
     <pre><code>// Ujiaki's Offer: Action: During a [conflict-political] conflict, choose a participating character … - place 1 fate on the chosen character. If you do, bow it, move it home, and dishonor it.
@@ -1428,7 +1437,7 @@ this.action('Place a fate on a participating character, bow it, move it home, an
 
 <section class="group">
   <h3 class="group-title" id="b-group-chat">Chat</h3>
-  <p>When an ability is used, the chat prints "{player} uses {card}, {costs} to {chatText}" ("plays" for an event). A step prints only its <code>message()</code>.</p>
+  <p>When an ability is used, the chat prints "{player} uses {card}, {costs} to {chatText}" ("plays" for an event). A step prints only its <code>message()</code> (and the "insufficient legal targets" line when its targets have no legal choice).</p>
 
   <div class="ref" id="b-chatMessage" data-name="chatMessage">
     <h3><code>chatMessage(message)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-chatMessage">#</a></h3>

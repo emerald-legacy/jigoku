@@ -38,7 +38,7 @@
             <li><code>WrongPlayer</code>: the card's controller, unless <code>anyPlayer()</code> or an effect lets the opponent trigger it. Not checked for events.</li>
             <li><code>ConditionNotMet</code>: the ability's <code>condition()</code>.</li>
         </ol>
-        A triggered ability (<code>TriggeredAbility</code>) checks only <code>WrongPlayer</code> and <code>ConditionNotMet</code> at this level. Opponents can't trigger forced abilities, even with an effect that lets them trigger the card. The ability listens only while its card is in one of its locations, and its <code>when()</code> is checked when the event happens.
+        A triggered ability (<code>TriggeredAbility</code>) checks only <code>WrongPlayer</code> and <code>ConditionNotMet</code> at this level. Opponents can't trigger forced abilities, even with an effect that lets them trigger the card. An event passes <code>WrongPlayer</code> for any player who can play it from where it is. The ability listens only while its card is in one of its locations, and its <code>when()</code> is checked when the event happens.
     </li>
     <li><strong>The card ability</strong> (<code>CardAbility</code>):
         <ol>
@@ -53,7 +53,7 @@
     <li><strong>The ability</strong> (<code>BaseAbility</code>):
         <ol>
             <li><code>CannotPayCost</code>: some cost can't be paid.</li>
-            <li>Without targets: <code>ConditionNotMet</code> when none of its game actions has a legal target. With targets: <code>NoLegalTarget</code> when a target has no legal choice.</li>
+            <li>Without targets: <code>ConditionNotMet</code> when none of its game actions has a legal target. An ability without game actions (only a handler) passes. With targets: <code>NoLegalTarget</code> when a target has no legal choice.</li>
         </ol>
     </li>
 </ol>
@@ -79,7 +79,7 @@
         <tr><td><code>Facedown</code></td><td>That the card is facedown. Only the play actions check it: playing a dynasty character from a province, and adding a duplicate to a unique character.</td></tr>
     </tbody>
 </table>
-<p><code>Blanked</code>, <code>CannotTrigger</code>, <code>CannotInitiate</code>, <code>LimitedAlreadyPlayed</code> and <code>NoLegalTarget</code> always apply. <code>DuplicateUnique</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities.</p>
+<p><code>Blanked</code>, <code>CannotInitiate</code>, <code>LimitedAlreadyPlayed</code> and <code>NoLegalTarget</code> always apply. <code>CannotTrigger</code> always applies to abilities; the play actions for characters and attachments would skip their play-restriction check for it, but no caller passes it. <code>DuplicateUnique</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities.</p>
 
 <h2 id="eng-resolver">How an ability resolves</h2>
 <p><code>AbilityResolver</code> runs these steps:</p>
@@ -87,11 +87,11 @@
     <li><code>createSnapshot()</code>: a draw card's state goes into <code>context.cardStateWhenInitiated</code>.</li>
     <li><code>resolveEarlyTargets()</code>: at <code>Stage.PreTarget</code>, the targets are offered before the costs (with "Pay costs first"), unless <code>cannotTargetFirst()</code>.</li>
     <li><code>checkForCancel()</code>.</li>
-    <li><code>openInitiateAbilityEventWindow()</code>: one event window with <code>onCardAbilityInitiated</code> (<code>onAbilityResolverInitiated</code> for an ability that isn't a card's), plus <code>onCardPlayed</code> for a played card and <code>onCardAbilityTriggered</code> for a triggered card ability. The initiate event's handler queues:
+    <li><code>openInitiateAbilityEventWindow()</code>: one event window with <code>onCardAbilityInitiated</code> (<code>onAbilityResolverInitiated</code> when <code>isCardAbility()</code> is false), plus <code>onCardPlayed</code> for a played card and <code>onCardAbilityTriggered</code> for a card ability with <code>isTriggeredAbility()</code>, actions included. The initiate event's handler queues:
         <ol>
             <li><code>resolveCosts()</code>, <code>payCosts()</code> (all costs in one event window), <code>checkCostsWerePaid()</code>;</li>
             <li><code>resolveTargets()</code> at <code>Stage.Target</code>, then <code>checkForCancel()</code>;</li>
-            <li><code>initiateAbilityEffects()</code>: pays the costs of targeting (effects that make choosing a card cost fate), counts the limit (not for a card in hand) and the max, and writes the chat line. For a card ability it then moves a played event to "being played" and opens a then-window with <code>onInitiateAbilityEffects</code>. Cancelling that event cancels the effects; the costs stay paid and the limit stays counted.</li>
+            <li><code>initiateAbilityEffects()</code>: checks that the costs of targeting can be paid (effects that make choosing a card cost fate), counts the limit and the max, writes the chat line, then pays the costs of targeting. The limit isn't counted for a card in hand, or for a card that changed location since it was used. For an ability with <code>isTriggeredAbility()</code> it then moves a played event to "being played" and opens a then-window with <code>onInitiateAbilityEffects</code>. Cancelling that event cancels the effects; the costs stay paid and the limit stays counted. Other abilities go straight on.</li>
             <li><code>executeHandler()</code> at <code>Stage.Effect</code>: the game actions resolve.</li>
             <li><code>moveEventCardToDiscard()</code>.</li>
         </ol>
@@ -100,12 +100,13 @@
 </ol>
 <ul>
     <li>A reaction to <code>onCardAbilityInitiated</code> fires after the early targets were chosen: a select before the dash is answered before the reaction's window opens.</li>
-    <li><code>isTriggeredAbility()</code> is true for every card ability, actions included. It is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity) and for a bare <code>BaseAbility</code>. So a reaction that filters on <code>event.ability.isTriggeredAbility()</code> also reacts to actions.</li>
-    <li><code>isTriggeredAbilityInstance()</code> is true only for a <code>TriggeredAbility</code>: reactions and interrupts, forced ones and duel triggers included.</li>
+    <li><code>isTriggeredAbility()</code> is true for every card ability, actions included. It is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), for steps and for a bare <code>BaseAbility</code>. So a reaction that filters on <code>event.ability.isTriggeredAbility()</code> also reacts to actions.</li>
+    <li><code>isTriggeredAbilityInstance()</code> is true only for a <code>TriggeredAbility</code>: reactions and interrupts, forced ones and duel triggers included. The keyword abilities built on it (Pride, Rally, Tutored, Thriving, Courtesy, Sincerity) are instances too; Covert is not.</li>
+    <li><code>isCardAbility()</code> is true for every <code>ThenAbility</code> (card abilities, keyword abilities and steps) and for Covert. A step after <code>then()</code> or <code>afterwards()</code> runs through its own <code>AbilityResolver</code>. So it raises <code>onCardAbilityInitiated</code> again, and a reaction to that event can trigger a second time. When the step's targets have no legal choice, the chat says "… attempted to use …, but there are insufficient legal targets".</li>
 </ul>
 
 <h2 id="eng-game-actions">Running game actions from engine code</h2>
-<p>A game action doesn't change the game by itself. It first collects its events (<code>action.addEventsToArray(events, context)</code>: one per legal target). Then an event window resolves them. Open that window one step later, as the entry points below do: some actions add their events only after a prompt.</p>
+<p>A game action doesn't change the game by itself. It first collects its events with <code>action.addEventsToArray(events, context)</code>. Most actions add one event per legal target. A card game action adds one for every target, and the event window cancels the events whose target it can't affect (events without a name skip that check). Then the event window resolves them. Open that window one step later, as the entry points below do: some actions add their events only after a prompt.</p>
 <p>Engine code that acts for a player, outside any card ability, uses <code>game.getFrameworkContext(player)</code> as its context. A rule that acts for no player uses <code>game.getGameContext()</code>; its <code>player</code> is missing.</p>
 <table>
     <thead><tr><th>Entry point</th><th>Use</th></tr></thead>
@@ -113,7 +114,7 @@
         <tr><td><code>game.resolveActions([bow({ target }), dishonor({ target })], context?)</code></td><td>Several actions in one window, then emptied provinces refill; returns the events. For rules, rings, keywords, prompts, and a handler resolving things that happen together. Without a context it uses the game's own (<code>game.getGameContext()</code>).</td></tr>
         <tr><td><code>action.resolve(target, context)</code></td><td>One action inside an ability, such as in a handler; the ability refills at its end.</td></tr>
         <tr><td><code>game.openEventWindow(events)</code></td><td>Events already collected (costs, contingent events).</td></tr>
-        <tr><td><code>game.openThenEventWindow(events)</code></td><td>Events resolved while another event window is open; their reactions wait for that window.</td></tr>
+        <tr><td><code>game.openThenEventWindow(events)</code></td><td>Events resolved while another event window is open; their reactions wait for that window. With no window open, it opens a normal one.</td></tr>
         <tr><td><code>game.raiseEvent(name, params, handler)</code></td><td>A framework event without a game action.</td></tr>
     </tbody>
 </table>

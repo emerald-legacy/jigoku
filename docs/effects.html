@@ -49,9 +49,16 @@
         <tr><td>Duel effect</td><td>The current duel</td><td><code>duelLastingEffect</code></td></tr>
     </tbody>
 </table>
+<p>Which cards a <code>persistentEffect</code> reaches with a card effect:</p>
+<ul>
+    <li>Without <code>match</code>: the card itself.</li>
+    <li>With <code>match</code>: matching cards in the play area. Set <code>targetLocation</code> for cards elsewhere, provinces included.</li>
+    <li>Only cards that the effect source's controller controls, unless <code>targetController</code> says otherwise (the default is <code>Players.Self</code>).</li>
+    <li><code>whileAttached</code> reaches the attached card, whoever controls it.</li>
+</ul>
 
 <h3 id="ef-values">Fixed and computed values</h3>
-<p>Some effects take a value or a function of the game state: <code>modifyMilitarySkill(2)</code> or <code>modifyMilitarySkill((card, context) =&gt; card.attachments.length)</code>. A function is recalculated at every state check. The parameter tables show which effects take a function; "A fixed value" or "Static only" means they don't.</p>
+<p>Some effects take a value or a function of the game state: <code>modifyMilitarySkill(2)</code> or <code>modifyMilitarySkill((card, context) =&gt; card.attachments.length)</code>. A function is recalculated at every state check. The parameter tables show which effects take a function; "A fixed value" means it doesn't.</p>
 <p>A few entries say "a detached effect". Such an effect runs code when it starts on a target and when it ends. The target doesn't hold it, so <code>getEffects</code> can't read it.</p>
 
 <h3 id="ef-several">Several effects at once</h3>
@@ -319,14 +326,14 @@ action: cardLastingEffect({
     <li><strong>Multipliers:</strong> each multiplier applies last, to the running total.</li>
   </ol>
   <p>The result is floored at 0, and a dash counts as 0.</p>
-  <p>A lasting effect that changes a skill can't be applied to a character with a dash in that skill (<code>EffectApplier.canBeApplied</code>). Such a character is not a legal target of a <code>cardLastingEffect</code> with that effect. <code>modifyBothSkills</code> is only blocked when both skills are dashes. Persistent effects still reach the character, but the dash stays a dash.</p>
+  <p>A lasting effect that changes a skill can't be applied to a character with a dash in that skill (<code>EffectApplier.canBeApplied</code>). A <code>cardLastingEffect</code> skips that effect on the character. If none of its effects can be applied, the character is not a legal target. <code>modifyBothSkills</code> is only blocked when both skills are dashes. Persistent effects still reach the character, but the dash stays a dash.</p>
 <div class="ref" id="ef-modifyBaseMilitarySkillMultiplier" data-name="modifyBaseMilitarySkillMultiplier modifyBasePoliticalSkillMultiplier">
     <h3><code>modifyBaseMilitarySkillMultiplier(value)</code> <code>modifyBasePoliticalSkillMultiplier(value)</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-modifyBaseMilitarySkillMultiplier">#</a></h3>
     <p>Multiplies the character's base military (or political) skill, as in "double that character's base [conflict-military] skill" (Way of the Lion).</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>value</code></td><td><code>number | (card, context) =&gt; number</code></td><td>required</td><td>The factor. A function is recalculated for each target (flexible value).</td></tr>
+        <tr><td><code>value</code></td><td><code>number | (card, context) =&gt; number</code></td><td>required</td><td>The factor. A function is recalculated for each target.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -372,7 +379,7 @@ this.persistentEffect({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>value</code></td><td><code>number | (card, context) =&gt; number</code></td><td>required</td><td>The amount; negative to reduce. A function is recalculated for each target whenever the game state is checked.</td></tr>
+        <tr><td><code>value</code></td><td><code>number | (card, context) =&gt; number</code></td><td>required</td><td>The amount; negative to reduce. A function is recalculated for each target at every state check.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -442,7 +449,7 @@ export function copyBaseSkillEffects(card: DrawCard, { base = false, skills = [S
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>value</code></td><td><code>number</code></td><td>required</td><td>The new base skill. Static only.</td></tr>
+        <tr><td><code>value</code></td><td><code>number</code></td><td>required</td><td>The new base skill. A fixed value.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -483,7 +490,7 @@ this.action('Make all participating characters have base skills of 1/1')
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>value</code></td><td><code>number</code></td><td>required</td><td>The skill. Static only: compute it when the ability resolves.</td></tr>
+        <tr><td><code>value</code></td><td><code>number</code></td><td>required</td><td>The skill. A fixed value: compute it when the ability resolves.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -831,7 +838,7 @@ this.persistentEffect({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>value</code></td><td><code>number</code></td><td>required</td><td>The new base glory. Static only.</td></tr>
+        <tr><td><code>value</code></td><td><code>number</code></td><td>required</td><td>The new base glory. A fixed value.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -851,7 +858,7 @@ this.persistentEffect({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>value</code></td><td><code>number</code></td><td>required</td><td>The glory. Static only.</td></tr>
+        <tr><td><code>value</code></td><td><code>number</code></td><td>required</td><td>The glory. A fixed value.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -871,7 +878,13 @@ this.reaction('Set a character\'s glory to 0')
 </section>
 <section class="group">
 <h3 class="group-title" id="ef-group-2-status">Status tokens</h3>
-<p>An honored token gives a character <code>modifyBothSkills</code> of plus its glory; a dishonored token, minus its glory. A tainted token gives +2 to both skills and an honor cost to declare the character in a conflict. The card effects in this group change how the tokens on a character work.</p>
+<p>What the tokens do:</p>
+  <ul>
+    <li>An honored token gives a character <code>modifyBothSkills</code> of plus its glory; a dishonored token, minus its glory.</li>
+    <li>A tainted token on a character gives +2 to both skills, and declaring the character as an attacker or defender costs 1 honor (<code>honorCostToDeclare</code>).</li>
+    <li>A tainted token on a province gives +2 strength, and declaring defenders at that province costs 1 honor.</li>
+  </ul>
+  <p>The card effects in this group change how the tokens on a character work.</p>
 <div class="ref" id="ef-honorStatusDoesNotAffectLeavePlay" data-name="honorStatusDoesNotAffectLeavePlay">
     <h3><code>honorStatusDoesNotAffectLeavePlay()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-honorStatusDoesNotAffectLeavePlay">#</a></h3>
     <p>When the character leaves play, its controller doesn't gain or lose honor for its honored or dishonored status.</p>
@@ -906,7 +919,8 @@ effect: [honorStatusDoesNotModifySkill(), honorStatusDoesNotAffectLeavePlay(), t
     <h3><code>honorStatusReverseModifySkill()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-honorStatusReverseModifySkill">#</a></h3>
     <p>The dishonored token adds the character's glory to its skills instead of subtracting it.</p>
     <ul class="edge">
-      <li>Only the dishonored token's modifier is reversed; honored and tainted tokens are unchanged.</li>
+      <li>Only the modifier of a token titled "Dishonored Token" is reversed; honored and tainted tokens are unchanged.</li>
+      <li>The check uses the token's title, not what it counts as. A token changed by <code>treatStatusTokenAs</code> keeps its title, so an honored token treated as dishonored is not reversed.</li>
       <li>Applied after <code>honorStatusDoesNotModifySkill</code>: if both apply, the modifier is 0.</li>
     </ul>
     <pre><code>// Shosuro Sadako: While this character is dishonored, add its glory to its [conflict-military] and [conflict-political] instead of substracting it.
@@ -1191,7 +1205,8 @@ this.dire({
     <h3><code>loseGainedAbilities()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-loseGainedAbilities">#</a></h3>
     <p>The card loses all gained abilities; printed ones are kept. "With Air affinity, it also loses all gained abilities."</p>
     <ul class="edge">
-      <li>Gained actions and triggered abilities stop working (<code>Blocker.Blanked</code>), and so do persistent effects granted with <code>gainAbility</code>. Persistent effects copied by <code>gainAllAbilities</code> are not checked and keep working.</li>
+      <li>Every action and triggered ability that is not printed and not a keyword ability stops working (<code>Blocker.Blanked</code>): gained ones, copied ones (<code>copyCard</code>, <code>gainAllAbilities</code>) and the card's own <code>.notPrinted()</code> ones.</li>
+      <li>Persistent effects granted with <code>gainAbility</code> stop too. Persistent effects copied by <code>copyCard</code> or <code>gainAllAbilities</code> are not checked and keep working.</li>
       <li>Keywords: only <code>addKeyword</code> effects whose source is the card itself still count, so keywords from attachments and other cards are lost.</li>
       <li>Pair it with <code>blank()</code> for "loses all abilities".</li>
     </ul>
@@ -1211,7 +1226,7 @@ this.whileAttached({
     <p>Makes the card's reactions and interrupts listen for their triggers while it is out of play, so an event that is a reaction or interrupt can be played from there.</p>
     <ul class="edge">
       <li>Use it together with <code>canPlayFromOutOfPlay</code>; on its own it lets nothing be played.</li>
-      <li>A detached effect: on apply it calls <code>registerEvents()</code> on each of the card's reactions. Unapply does nothing.</li>
+      <li>A detached effect: on apply it calls <code>registerEvents()</code> on each of the card's triggered abilities (<code>getReactions()</code>: reactions and interrupts). Unapply does nothing.</li>
       <li><code>playableFromUnderneath(card, match?)</code> in <code>server/game/cards/cardsUnderneath.ts</code> builds the usual pair for cards underneath another card.</li>
     </ul>
     <pre><code>// Exposed Courtyard: … Choose an event in your conflict discard pile - you may play that card as if it were in your hand until the end of the conflict. …
@@ -1337,7 +1352,7 @@ this.persistentEffect({
   </div>
 <div class="ref" id="ef-cannotTriggerAbilities" data-name="cannotTriggerAbilities">
     <h3><code>cannotTriggerAbilities()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-cannotTriggerAbilities">#</a></h3>
-    <p>"Characters in your opponent's home cannot trigger abilities": the card's actions and triggered abilities can't be used.</p>
+    <p>"Characters in your opponent's home cannot trigger abilities": no player can use the card's actions and triggered abilities.</p>
     <ul class="edge">
       <li>Short for <code>cardCannot(RestrictionType.TriggerAbilities)</code>. It covers printed and gained abilities; use <code>cardCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo })</code> to narrow it.</li>
       <li>Abilities on facedown cards can't be triggered anyway.</li>
@@ -1558,7 +1573,8 @@ playerLastingEffect({
     </table>
     <ul class="edge">
       <li>Checked when a card game action builds its events, so it also catches framework steps (readying in the fate phase).</li>
-      <li>The cost is paid automatically, without a prompt. If it has no legal target, the chat says the cost can't be paid and the action doesn't affect this card.</li>
+      <li>The cost is paid automatically, without a prompt: "&lt;player&gt; … in order to &lt;action&gt;". If it has no legal target, the chat says "&lt;player&gt; cannot pay the additional cost required to …" and the action doesn't affect this card.</li>
+      <li>The cost is paid before the action checks whether it can affect the card. A <code>ready</code> whose target is set directly (not chosen as a target) on a character that is already ready still makes its controller pay.</li>
     </ul>
     <pre><code>// Softskin: Attached character cannot ready unless its controller discards the top 3 cards of his or her conflict deck.
 this.whileAttached({
@@ -1588,7 +1604,7 @@ this.whileAttached({
   </table>
   <ul>
     <li>The control, unique, faction, trait and card-condition checks run in <code>canAttach</code>, so they decide whether the attachment can be played or moved onto a character.</li>
-    <li>They run again at every game state check. An attachment that no longer meets them is discarded with "… is discarded from … as it is no longer legally attached".</li>
+    <li>They run again at every state check. An attachment that no longer meets them is discarded with "… is discarded from … as it is no longer legally attached".</li>
     <li>The limits (<code>limit</code>, <code>limitTrait</code>) are only checked at the state check.</li>
     <li>The base <code>canAttach</code> accepts only characters. <code>ProvinceAttachment</code> replaces it and doesn't read these effects; it has <code>controllerProvinceOnly()</code> and <code>unbrokenOnly()</code> instead.</li>
   </ul>
@@ -2117,7 +2133,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Paid by the declaring player after attackers (or defenders) are declared, one honor loss per effect.</li>
+      <li>Paid by the declaring player after attackers (or defenders) are declared, one honor loss per effect. Chat: "&lt;player&gt; pays N honor to declare their attackers" (or defenders), with N the total.</li>
       <li>The tainted status token is this effect with <code>{ amount: 1, dueToStatusToken: true }</code>; <code>taintedStatusDoesNotCostHonor()</code> switches that one off.</li>
     </ul>
     <pre><code>// Unleashed Experiment: … As an additional cost to declare this character as an attacker or defender, you lose 2 honor.
@@ -2742,7 +2758,7 @@ this.legendary(1);</code></pre>
     </table>
     <ul class="edge">
       <li>Read from the controller of the ability's source card. A target that player can't pay for (or can't spend fate) can't be chosen.</li>
-      <li>Flexible: you may pass <code>(player, context) =&gt; ({ amount, match })</code> instead of the object.</li>
+      <li>The object may also be a function <code>(player, context) =&gt; ({ amount, match })</code>, recalculated for each player.</li>
       <li>For a cost written on the target card itself, see <code>fateCostToTarget</code>.</li>
     </ul>
     <pre><code>// To Show the Path: Action: Choose a non-Shugenja non-Monk character - until the end of the phase, whenever an opponent chooses that character or an attachment on it as a target of a card ability, they must pay 1 additional fate as an additional cost.
@@ -3128,7 +3144,7 @@ this.persistentEffect({
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>when</code></td><td><code>{ [eventName]: (event, context) =&gt; boolean }</code></td><td>none</td><td>The events that fire it.</td></tr>
-        <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>none</td><td>Used instead of <code>when</code>: fires whenever events have resolved and this is true.</td></tr>
+        <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>none</td><td>Instead of <code>when</code>: fire whenever this is true at a state check after events. Takes precedence over <code>when</code>.</td></tr>
         <tr><td><code>gameAction</code></td><td><code>GameAction</code></td><td>required</td><td>What happens; its target is the player(s) the effect is on.</td></tr>
         <tr><td><code>message</code></td><td><code>(context, targets) =&gt; MessageArgs</code></td><td>none</td><td>Chat line when it fires, shown if the action has a legal target.</td></tr>
         <tr><td><code>multipleTrigger</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Keep the effect after it fires.</td></tr>
@@ -3314,7 +3330,7 @@ this.duelChallenge('Apply status tokens to the duel', (duel, context) =&gt; duel
       </tbody>
     </table>
     <ul class="edge">
-      <li>The duel only counts values stored together with itself. The one-argument form (<code>modifyDuelistSkill(value)</code>, also flexible) is accepted by the types but never counted by <code>Duel</code>.</li>
+      <li>The duel only counts values stored together with itself. The one-argument form (<code>modifyDuelistSkill(value)</code>, which also takes a function) is accepted by the types but never counted by <code>Duel</code>.</li>
       <li>It is counted even when <code>ignoreDuelSkill</code> applies.</li>
     </ul>
     <pre><code>// Biting Steel: Duel Challenge: Choose a Weapon on attached character - apply both skill modifiers from that attachment to attached character's duel statistic.
@@ -3817,7 +3833,7 @@ this.persistentEffect({
       <tbody>
         <tr><td><code>gameAction</code></td><td><code>GameAction</code></td><td>required</td><td>What happens. Without a target of its own it acts on the effect's targets (the cards the effect is on).</td></tr>
         <tr><td><code>when</code></td><td><code>{ [eventName]: (event, context) =&gt; boolean }</code></td><td>none</td><td>Fire when one of these events happens and its function returns true.</td></tr>
-        <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>none</td><td>Instead of <code>when</code>: fire whenever this is true at a game-state check after events. Takes precedence over <code>when</code>.</td></tr>
+        <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>none</td><td>Instead of <code>when</code>: fire whenever this is true at a state check after events. Takes precedence over <code>when</code>.</td></tr>
         <tr><td><code>multipleTrigger</code></td><td><code>boolean</code></td><td><code>false</code></td><td>With <code>when</code>: keep the effect after it fires.</td></tr>
         <tr><td><code>onlyRemoveOnSuccess</code></td><td><code>boolean</code></td><td><code>false</code></td><td>With <code>when</code>: only remove the effect when a function returned true.</td></tr>
         <tr><td><code>message</code></td><td><code>(context, targets) =&gt; MessageArgs</code></td><td>none</td><td>The chat line when it fires; shown only if <code>gameAction</code> has a legal target.</td></tr>

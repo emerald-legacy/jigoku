@@ -26,7 +26,8 @@
     <p>Every cost an ability can have, what it records, and the limits on how often an ability can be used.</p>
 </header>
 <h2 id="co-costs">Costs</h2>
-<p>A cost is what the player pays to use an ability: the imperative instructions before the dash ("Bow this character", "Lose 1 honor", "Sacrifice a character"). Import the costs as a namespace: <code>import * as costs from '../../costs/index.js'</code>. Many costs share a name with a game action (<code>bow</code>, <code>dishonor</code>, …); the namespace keeps them apart. Call <code>.cost(...)</code> once per cost; all costs of an ability are paid together. The functions live in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/boardCosts.ts"><code>boardCosts.ts</code></a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/fateAndHonorCosts.ts"><code>fateAndHonorCosts.ts</code></a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/variableAndOptionalCosts.ts"><code>variableAndOptionalCosts.ts</code></a>.</p>
+<p>A cost is what the player pays to use an ability: the imperative instructions before the dash ("Bow this character", "Lose 1 honor", "Sacrifice a character"). Call <code>.cost(...)</code> once per cost; all costs of an ability are paid together.</p>
+<p>Import the costs as a namespace: <code>import * as costs from '../../costs/index.js'</code>. Many costs share a name with a game action (<code>bow</code>, <code>dishonor</code>, …); the namespace keeps them apart. The functions live in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/boardCosts.ts"><code>boardCosts.ts</code></a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/fateAndHonorCosts.ts"><code>fateAndHonorCosts.ts</code></a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/variableAndOptionalCosts.ts"><code>variableAndOptionalCosts.ts</code></a>.</p>
 <div class="rule"><blockquote>Any imperative instruction (other than "choose…," which denotes one or more targets must be chosen, or "select…," which denotes that one or more of a number of effects must be selected) that appears before the dash of a triggered ability is considered a part of that ability’s cost.</blockquote><cite>Cost</cite></div>
 <div class="rule"><blockquote>If multiple costs for a single card or ability require payment, those costs must be paid simultaneously. If any part of a cost payment is prevented, once all costs that can be paid are paid, the process of initiating the ability or playing the card immediately ends without further resolution.</blockquote><cite>Cost</cite></div>
 <div class="rule"><blockquote>If the effects of an ability are canceled, the ability is still considered to have been used, and any costs have still been paid.</blockquote><cite>Cancel</cite></div>
@@ -45,7 +46,7 @@ this.conflictAction('Discard a character')
     <li><strong>Early targets.</strong> Unless the ability has <code>cannotTargetFirst()</code>, its targets are checked and offered first (stage <code>PreTarget</code>); the player may pick "Pay costs first". The targets are confirmed after the costs.</li>
     <li><strong>Choosing.</strong> The costs resolve in the order they were declared: each one asks its question (which card, how much fate, Yes or No) and collects the events that pay it. While the resolver allows it, every prompt has a Cancel button; cancelling ends the ability and nothing is paid.</li>
     <li><strong>Paying.</strong> All collected events resolve in one event window, so the costs are paid simultaneously. If any of them is cancelled or prevented, the chat says "<em>player1 attempted to use X, but did not successfully pay the required costs</em>" and the ability ends; what was paid stays paid.</li>
-    <li><strong>Then</strong> the targets are chosen or confirmed, the limit and max count the use, the chat line is written and the effects initiate. The effects can still be cancelled; the costs stay paid.</li>
+    <li><strong>Then</strong> the targets are chosen or confirmed. If no legal target is left, the chat says "<em>player1 attempted to use X, but there are insufficient legal targets</em>" and the ability ends; the costs stay paid. Otherwise the limit and max count the use, the chat line is written and the effects initiate. The effects can still be cancelled; the costs stay paid.</li>
 </ol>
 <ul>
     <li>An event card gets <code>payReduceableFateCost()</code> (its printed fate cost) added after its own costs automatically; don't declare it.</li>
@@ -57,7 +58,8 @@ this.conflictAction('Discard a character')
 </ul>
 
 <h3 id="co-records">What costs record</h3>
-<p>Once paid, a cost may record what was paid in <code>context.costs</code>, typed by the builder (your editor shows the keys). A selection cost records the chosen card (or the list of cards, for a multi-card mode) under its own name and a snapshot under <code>&lt;name&gt;StateWhenChosen</code>: <code>costs.dishonor(…)</code> gives <code>context.costs.dishonor</code> and <code>context.costs.dishonorStateWhenChosen</code>. Read the snapshot when the card changes while paying (a sacrificed card has left play; the snapshot still has its traits and skill).</p>
+<p>Once paid, a cost may record what was paid in <code>context.costs</code>, typed by the builder (your editor shows the keys). A selection cost records the chosen card under its own name, and a snapshot of it under <code>&lt;name&gt;StateWhenChosen</code>: <code>costs.dishonor(…)</code> gives <code>context.costs.dishonor</code> and <code>context.costs.dishonorStateWhenChosen</code>. Read the snapshot when the card changes while paying (a sacrificed card has left play; the snapshot still has its traits and skill).</p>
+<p>A multi-card mode (<code>Exactly</code>, <code>UpTo</code>, <code>Unlimited</code>, …) records a list, even for one card, and no snapshot: the <code>StateWhenChosen</code> key is typed but stays <code>undefined</code>.</p>
 <table>
     <thead><tr><th>Cost</th><th>Key</th><th>Value</th></tr></thead>
     <tbody>
@@ -361,7 +363,7 @@ this.action('Move and give -2/-2')
       <tr><td><code>controller</code></td><td><code>Players</code></td><td><code>Players.Self</code></td><td>Whose cards. Costs are paid with "friendly" cards, so the default is right for nearly every card.</td></tr>
       <tr><td><code>location</code></td><td><code>Location | Location[]</code></td><td><code>Location.Any</code> (<code>discardCard</code>: <code>Location.Hand</code>)</td><td>Where the card is. <code>Location.Provinces</code> means every province.</td></tr>
       <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>any card</td><td>Extra condition. <code>context</code> is the context of the ability paying the cost.</td></tr>
-      <tr><td><code>mode</code></td><td><code>TargetMode</code></td><td>from <code>numCards</code>: <code>Single</code> for 1, <code>UpTo</code> for more, <code>Unlimited</code> for 0</td><td>How many cards: <code>Single</code>, <code>Exactly</code>, <code>UpTo</code>, <code>Unlimited</code>, … A multi-card mode records a list.</td></tr>
+      <tr><td><code>mode</code></td><td><code>TargetMode</code></td><td>from <code>numCards</code>: <code>Single</code> for 1, <code>UpTo</code> for more, <code>Unlimited</code> for 0 (<code>discardCard</code>: <code>Exactly</code>)</td><td>How many cards: <code>Single</code>, <code>Exactly</code>, <code>UpTo</code>, <code>Unlimited</code>, … A multi-card mode records a list.</td></tr>
       <tr><td><code>numCards</code></td><td><code>number</code></td><td>1</td><td>The count for <code>Exactly</code> and <code>UpTo</code>.</td></tr>
       <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>per cost (see each entry)</td><td>The prompt's title.</td></tr>
       <tr><td><code>hidePromptIfSingleCard</code></td><td><code>boolean</code></td><td><code>false</code></td><td>With exactly one legal card, pay with it without asking.</td></tr>
@@ -371,7 +373,7 @@ this.action('Move and give -2/-2')
   <ul>
     <li>Only cards the paying action can affect are offered: a bow cost offers ready cards, a dishonor cost characters that can be dishonored. <code>cardCondition</code> only narrows further.</li>
     <li>The cost can't be paid when fewer cards than the mode needs are legal.</li>
-    <li>It records the chosen card under its own name, typed by <code>cardType</code> and <code>mode</code>, and a snapshot under <code>&lt;name&gt;StateWhenChosen</code>.</li>
+    <li>It records the chosen card under its own name, typed by <code>cardType</code> and <code>mode</code>, and a snapshot under <code>&lt;name&gt;StateWhenChosen</code>. A multi-card mode records a list and no snapshot (see <a href="#co-records">What costs record</a>).</li>
     <li>Chat: the paying action's cost text, with the chosen card as <code>{0}</code>.</li>
   </ul>
 
@@ -430,9 +432,9 @@ this.reaction('Break the attacked province')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The default mode is <code>Exactly</code>, so <code>context.costs.discardCard</code> is a list even for one card.</li>
+      <li>The default mode is <code>Exactly</code>, so <code>context.costs.discardCard</code> is a list even for one card, and <code>discardCardStateWhenChosen</code> stays unset. Pass <code>mode: TargetMode.Single</code> to get one card and its snapshot.</li>
       <li>Can't be paid with fewer than <code>numCards</code> legal cards, or when the player can't discard from hand.</li>
-      <li>Prompt: "Select card to discard", or "Select N cards to discard" when <code>numCards</code> is more than 1. Records <code>discardCard</code>, <code>discardCardStateWhenChosen</code>. Chat: <code>discarding {0}</code>.</li>
+      <li>Prompt: "Select card to discard", or "Select N cards to discard" when <code>numCards</code> is more than 1. Records <code>discardCard</code>. Chat: <code>discarding {0}</code>.</li>
     </ul>
     <pre><code>// Sharpen the Mind: Action: During a conflict, discard a card from your hand - attached character gets +3[conflict-military] and +3[conflict-political] until the end of the conflict.
 this.action('Give +3/+3 to attached character')
@@ -902,7 +904,7 @@ this.action('Bow a character')
     </table>
     <ul class="edge">
       <li>Can't be paid without an opponent, with an amount of 0, when an honor-gain limit leaves nothing to transfer, or when honor can't be taken from the player.</li>
-      <li>Effects that modify honor transfers change the amount.</li>
+      <li>An honor-gain limit on the opponent (<a href="effects.html#ef-limitHonorGainPerPhase"><code>limitHonorGainPerPhase</code></a>) lowers the amount transferred. No other effect changes it.</li>
       <li>Chat: <code>giving {1} honor to {2}</code> (the amount actually transferred, the opponent).</li>
       <li>Also used as an added cost: Command Respect makes the opponent pay it with <code>additionalPlayCost</code>.</li>
     </ul>
@@ -1004,6 +1006,7 @@ this.conflictAction('Discard a character')
       <li>Can't be paid when the card has no printed cost (a dash), when its minimum cost is more than the player's fate, or when the player can't spend fate (and the cost isn't 0). A Temptations maho card can only be played when its cost is reduced to 0.</li>
       <li>When fate on other cards or rings may pay for the card (alternate fate pools), the player is asked how much to take from each; the chat says "<em>player1 takes N fate from X to pay the cost of Y</em>".</li>
       <li>Marks the reducers used. Skipped when <code>context.ignoreFateCost</code> is set, and when another card's effect resolves the ability.</li>
+      <li>With <code>ignoreType</code>, a reducer limited to another card type lowers the cost but is not marked used, so a one-use reducer (<code>limit: fixed(1)</code>) stays.</li>
       <li>Records <code>fate</code> (the reduced cost) and, with alternate pools, <code>alternateFate</code> (a map of pool to fate). No cost text.</li>
     </ul>
     <pre><code>// CardAbility (engine): an event card pays its printed cost
@@ -1027,6 +1030,7 @@ if(card.getType() === CardType.Event &amp;&amp; !this.isKeywordAbility()) {
       <li>The target only offers cards the cost can be paid for. Before the target is chosen, the cost counts as payable.</li>
       <li>When the fate goes to the opponent (playing with <code>payFateToOpponent</code>), it can't be paid if the opponent can't gain fate.</li>
       <li>A Temptations Mahō card can only be paid for a target that reduces its cost to 0 (with the fate on your characters), as with <a href="#co-payReduceableFateCost"><code>payReduceableFateCost</code></a>.</li>
+      <li>With <code>ignoreType</code>, a reducer limited to another card type lowers the cost but is not marked used. A character played as an attachment with Daimyō's Favor's "next attachment" reduction leaves that reduction in place.</li>
       <li>Records <code>targetDependentFate</code>: the reduced cost. No cost text.</li>
     </ul>
     <pre><code>// PlayAttachmentAction (engine)
@@ -1175,7 +1179,7 @@ this.action('Switch this attachment with another')
     </table>
     <ul class="edge">
       <li>Cost reductions that apply to playing the source from hand are taken off the fate actually spent, so X can go above the player's fate by that much. A player who can't spend fate can still pick X up to the reduction.</li>
-      <li>Always payable when such a reduction applies; otherwise it needs at least <code>minAmount</code> fate and a player who can lose fate. With <code>context.ignoreFateCost</code> it is always payable and X costs nothing.</li>
+      <li>Always payable when such a reduction applies. Otherwise the player needs at least <code>minAmount</code> fate (plus any cost increase) and must be able to lose fate. With <code>context.ignoreFateCost</code> it is always payable and X costs nothing.</li>
       <li>Records <code>fatePaid</code>: X (0 on Cancel). No cost text.</li>
     </ul>
     <pre><code>// Favorable Alliance: Action: Set aside cards from the top of up to two conflict decks, …, until X cards are set aside. …
