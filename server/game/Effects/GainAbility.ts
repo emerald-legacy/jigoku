@@ -187,6 +187,7 @@ export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
         }
         if(
             [
+                AbilityType.DuelReaction,
                 AbilityType.ForcedInterrupt,
                 AbilityType.ForcedReaction,
                 AbilityType.Interrupt,

@@ -257,7 +257,7 @@ chosenReturnToDeck((context) =&gt; ({
           <tr><td><code>KeywordInterrupt</code></td><td><code>'keywordInterrupt'</code></td><td>Keyword abilities that interrupt: Courtesy, Sincerity, Thriving.</td></tr>
           <tr><td><code>KeywordReaction</code></td><td><code>'keywordReaction'</code></td><td>Keyword abilities that react: Pride, Rally, Tutored, right after the event resolves. Covert also has this type, but it resolves while the conflict is declared, not in an event window.</td></tr>
           <tr><td><code>ForcedReaction</code></td><td><code>'forcedReaction'</code></td><td><code>this.forcedReaction()</code>.</td></tr>
-          <tr><td><code>DuelReaction</code></td><td><code>'duelReaction'</code></td><td><code>this.duelChallenge()</code>, <code>this.duelFocus()</code>, <code>this.duelStrike()</code>. A window after forced reactions and before reactions; the code reserves it for duel challenge, focus and strike. A duel reaction a card gains through <code>gainAbility</code> (Togashi Yokuni copying one) is never offered: <code>getReactions()</code> keeps gained abilities only of the other triggered types.</td></tr>
+          <tr><td><code>DuelReaction</code></td><td><code>'duelReaction'</code></td><td><code>this.duelChallenge()</code>, <code>this.duelFocus()</code>, <code>this.duelStrike()</code>. A window after forced reactions and before reactions; the code reserves it for duel challenge, focus and strike.</td></tr>
           <tr><td><code>Reaction</code></td><td><code>'reaction'</code></td><td><code>this.reaction()</code>. The last window.</td></tr>
           <tr><td><code>Persistent</code></td><td><code>'persistent'</code></td><td>A persistent effect. <code>gainAbility(AbilityType.Persistent, { … })</code> grants one.</td></tr>
           <tr><td><code>OtherEffects</code></td><td><code>'otherEffects'</code></td><td>Not an ability kind: the trigger-window key for effects that cancel an event (after keyword interrupts, before the event resolves), used with <code>registerTriggerWindow</code>.</td></tr>
@@ -1946,7 +1946,7 @@ onStatusTokenMoved: (event, context) =&gt;
         </tbody>
       </table>
   <ul class="edge">
-    <li>Its condition re-determines the winner: if interrupts changed it, this event is cancelled and a new one replaces it in the same window. This also happens in manual mode, so a result chosen by hand is replaced by the computed one.</li>
+    <li>Its condition re-determines the winner: if interrupts changed it, this event is cancelled and a new one replaces it in the same window. A result chosen by hand in manual mode is kept.</li>
     <li>Not raised for a passed conflict or one that failed to initiate.</li>
     <li>The Pride keyword reacts to it.</li>
   </ul>

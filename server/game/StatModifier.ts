@@ -1,5 +1,5 @@
 import type BaseCard from './BaseCard.js';
-import type { CardType } from './Constants.js';
+import type { CardType, CharacterStatus } from './Constants.js';
 
 interface EffectLike {
     context?: { source?: { name?: string; type?: string } };
@@ -20,6 +20,8 @@ export class StatModifier {
     countsAsBase: boolean = false;
     type: string | undefined;
     overrides: boolean;
+    /** For a status token's modifier: the status the token grants now (Disciple of Deception can change it). */
+    status?: CharacterStatus;
 
     constructor(amount: number, name: string, overrides: boolean, type?: string) {
         this.amount = amount;

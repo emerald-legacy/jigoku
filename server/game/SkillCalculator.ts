@@ -1,5 +1,6 @@
 import { StatModifier } from './StatModifier.js';
-import { EffectName } from './Constants.js';
+import { CharacterStatus, EffectName } from './Constants.js';
+import { StatusToken } from './StatusToken.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf, isEffectOfAny } from './Effects/types.js';
 import type { EffectApplier } from './Effects/EffectApplier.js';
@@ -29,6 +30,15 @@ interface BaseSkillModifiers {
 
 export class SkillCalculator {
     constructor(private card: DrawCard) {}
+
+    private getModifier(value: number, effect: EffectApplier): StatModifier {
+        const modifier = StatModifier.fromEffect(value, effect);
+        const source = effect.context?.source;
+        if(source instanceof StatusToken) {
+            modifier.status = source.grantedStatus;
+        }
+        return modifier;
+    }
 
     getBaseSkillModifiers(): BaseSkillModifiers {
         const baseModifierEffects = [
@@ -223,8 +233,7 @@ export class SkillCalculator {
 
         const modifierEffects = rawEffects.filter((effect) => isEffectOfAny(effect, names.modifiers));
         modifierEffects.forEach((modifierEffect) => {
-            const value = modifierEffect.getValue(this.card);
-            modifiers.push(StatModifier.fromEffect(value, modifierEffect));
+            modifiers.push(this.getModifier(modifierEffect.getValue(this.card), modifierEffect));
         });
 
         this.adjustHonorStatusModifiers(modifiers);
@@ -261,7 +270,7 @@ export class SkillCalculator {
         );
         if(reverseEffects.length > 0) {
             modifiers.forEach((modifier) => {
-                if(modifier.type === 'token' && modifier.amount !== 0 && modifier.name === 'Dishonored Token') {
+                if(modifier.type === 'token' && modifier.amount !== 0 && modifier.status === CharacterStatus.Dishonored) {
                     modifier.amount = 0 - modifier.amount;
                     modifier.name += ` (${StatModifier.getEffectName(reverseEffects[0])})`;
                 }
@@ -284,8 +293,7 @@ export class SkillCalculator {
         let modifiers: StatModifier[] = [];
         const modifierEffects = this.card.getRawEffects().filter((effect) => isEffectOf(effect, EffectName.ModifyBothSkills));
         modifierEffects.forEach((modifierEffect) => {
-            const value = modifierEffect.getValue(this.card);
-            modifiers.push(StatModifier.fromEffect(value, modifierEffect));
+            modifiers.push(this.getModifier(modifierEffect.getValue(this.card), modifierEffect));
         });
         modifiers = modifiers.filter((modifier) => modifier.type === 'token');
         this.adjustHonorStatusModifiers(modifiers);

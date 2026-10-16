@@ -214,8 +214,8 @@ export class PlayerCostManager {
         return targetCost;
     }
 
-    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard): void {
-        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType, card, target));
+    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType = false): void {
+        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType, card, target, ignoreType));
         matchingReducers.forEach((reducer) => {
             reducer.markUsed();
             if(reducer.isExpired()) {

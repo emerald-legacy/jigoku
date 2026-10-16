@@ -78,6 +78,7 @@ interface CardAbilities {
 }
 
 const TRIGGERED_ABILITY_TYPES = new Set<AbilityType>([
+    AbilityType.DuelReaction,
     AbilityType.ForcedInterrupt,
     AbilityType.ForcedReaction,
     AbilityType.Interrupt,

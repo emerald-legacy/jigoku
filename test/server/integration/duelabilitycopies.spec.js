@@ -33,3 +33,44 @@ describe('copied duel abilities', function() {
         });
     });
 });
+
+describe('a duel focus gained by Togashi Yokuni', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-yokuni'],
+                    hand: ['policy-debate']
+                },
+                player2: {
+                    inPlay: ['isawa-house-guard']
+                }
+            });
+            this.yokuni = this.player1.findCardByName('togashi-yokuni');
+            this.houseGuard = this.player2.findCardByName('isawa-house-guard');
+            this.yokuni.honor();
+
+            this.player1.clickCard(this.yokuni);
+            this.player1.clickCard(this.houseGuard);
+            this.player1.clickPrompt('Help a character with a duel');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.yokuni],
+                defenders: [this.houseGuard]
+            });
+            this.player2.pass();
+        });
+
+        it('is offered in Yokuni\'s duel', function() {
+            this.player1.clickCard('policy-debate');
+            this.player1.clickCard(this.yokuni);
+            this.player1.clickCard(this.houseGuard);
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.yokuni);
+        });
+    });
+});

@@ -820,8 +820,8 @@ export class Player extends GameObject {
         return this.costManager.getTargetingCost(abilitySource, targets);
     }
 
-    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard): void {
-        this.costManager.markUsedReducers(playingType, card, target);
+    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType = false): void {
+        this.costManager.markUsedReducers(playingType, card, target, ignoreType);
     }
 
     get costReducers(): CostReducer[] {

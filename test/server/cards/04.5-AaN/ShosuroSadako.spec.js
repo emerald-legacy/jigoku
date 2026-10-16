@@ -89,3 +89,40 @@ describe('Shosuro Sadako', function() {
         });
     });
 });
+
+describe('Shosuro Sadako with Disciple of Deception', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['disciple-of-deception', 'young-rumormonger']
+                },
+                player2: {
+                    inPlay: ['shosuro-sadako']
+                }
+            });
+            this.deception = this.player1.findCardByName('disciple-of-deception');
+            this.rumormonger = this.player1.findCardByName('young-rumormonger');
+            this.sadako = this.player2.findCardByName('shosuro-sadako');
+            this.rumormonger.dishonor();
+            this.sadako.honor();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.deception],
+                defenders: [this.sadako]
+            });
+            this.player2.pass();
+        });
+
+        it('adds her glory when her honored token is treated as dishonored', function() {
+            this.player1.clickCard(this.deception);
+            this.player1.clickCard(this.rumormonger);
+            this.player1.clickCard(this.sadako);
+            expect(this.sadako.isDishonored).toBe(true);
+            expect(this.sadako.militarySkill).toBe(4);
+            expect(this.sadako.politicalSkill).toBe(4);
+        });
+    });
+});

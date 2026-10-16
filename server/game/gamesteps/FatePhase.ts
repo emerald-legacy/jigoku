@@ -32,7 +32,8 @@ export class FatePhase extends PhaseStep {
             new SimpleStep(game, () => this.discardCharactersWithNoFate()),
             new SimpleStep(game, () => this.removeFateFromCharacters()),
             new SimpleStep(game, () => this.placeFateOnUnclaimedRings()),
-            new ActionWindow(this.game, 'Action Window', 'fate'),
+            // built when it runs: the first player may have changed since the round began
+            new SimpleStep(game, () => this.game.queueStep(new ActionWindow(this.game, 'Action Window', 'fate'))),
             new SimpleStep(game, () => this.readyCards()),
             new SimpleStep(game, () => this.discardFromProvinces()),
             new SimpleStep(game, () => this.returnRings()),

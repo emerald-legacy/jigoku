@@ -913,14 +913,13 @@ this.persistentEffect({
     </ul>
     <pre><code>// Bayushi Yojiro (see above)
 effect: [honorStatusDoesNotModifySkill(), honorStatusDoesNotAffectLeavePlay(), taintedStatusDoesNotCostHonor()]</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/BayushiYojiro.ts">Bayushi Yojiro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/UtakuKamoko.ts">Utaku Kamoko</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/BayushiYojiro.ts">Bayushi Yojiro</a></p>
   </div>
 <div class="ref" id="ef-honorStatusReverseModifySkill" data-name="honorStatusReverseModifySkill">
     <h3><code>honorStatusReverseModifySkill()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-honorStatusReverseModifySkill">#</a></h3>
     <p>The dishonored token adds the character's glory to its skills instead of subtracting it.</p>
     <ul class="edge">
-      <li>Only the modifier of a token titled "Dishonored Token" is reversed; honored and tainted tokens are unchanged.</li>
-      <li>The check uses the token's title, not what it counts as. A token changed by <code>treatStatusTokenAs</code> keeps its title, so an honored token treated as dishonored is not reversed.</li>
+      <li>Only the modifier of a token that counts as dishonored is reversed, including an honored token treated as dishonored (<code>treatStatusTokenAs</code>); honored and tainted tokens are unchanged.</li>
       <li>Applied after <code>honorStatusDoesNotModifySkill</code>: if both apply, the modifier is 0.</li>
     </ul>
     <pre><code>// Shosuro Sadako: While this character is dishonored, add its glory to its [conflict-military] and [conflict-political] instead of substracting it.
@@ -940,7 +939,7 @@ this.persistentEffect({
 this.whileAttached({
     effect: statusTokensDoNotDecreaseSkill()
 });</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/TheLionsShadow.ts">The Lion's Shadow</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/TheLionsShadow.ts">The Lion's Shadow</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/UtakuKamoko.ts">Utaku Kamoko</a></p>
   </div>
 <div class="ref" id="ef-taintedStatusDoesNotCostHonor" data-name="taintedStatusDoesNotCostHonor">
     <h3><code>taintedStatusDoesNotCostHonor()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-taintedStatusDoesNotCostHonor">#</a></h3>

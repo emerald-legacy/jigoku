@@ -171,3 +171,25 @@ describe('Utaku Kamoko and a province broken outside a conflict', function() {
         });
     });
 });
+
+describe('Utaku Kamoko dishonored and tainted', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['utaku-kamoko']
+                }
+            });
+            this.kamoko = this.player1.findCardByName('utaku-kamoko');
+            this.kamoko.dishonor();
+            this.kamoko.taint();
+            this.game.checkGameState(true);
+        });
+
+        it('keeps the tainted bonus', function() {
+            expect(this.kamoko.militarySkill).toBe(5);
+            expect(this.kamoko.politicalSkill).toBe(5);
+        });
+    });
+});

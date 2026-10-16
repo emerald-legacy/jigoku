@@ -43,6 +43,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     conflict: Conflict;
     canPass: boolean;
     covert: AbilityContext<DrawCard, DrawCard>[];
+    #resultChosenManually = false;
 
     constructor(game: Game, conflict: Conflict, canPass: boolean = true) {
         super(game);
@@ -669,6 +670,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     manuallyDetermineWinner(player: Player, choice: string): boolean {
+        this.#resultChosenManually = true;
         if(choice === 'attacker') {
             this.conflict.winner = player;
             this.conflict.loser = this.conflict.defendingPlayer;
@@ -712,6 +714,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 }
             });
             event.condition = (afterConflictEvent: AnyEvent) => {
+                if(this.#resultChosenManually) {
+                    return true;
+                }
                 const prevWinner = afterConflictEvent.conflict?.winner;
                 this.conflict.winnerDetermined = false;
                 this.conflict.determineWinner();

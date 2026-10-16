@@ -48,7 +48,8 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
                 context.player.markUsedReducers(
                     context.playType,
                     context.source,
-                    this.#target(context)
+                    this.#target(context),
+                    this.ignoreType
                 );
                 // once: it takes the fate from any alternate pools
                 const cost = this.getFinalFatecost(context, amount);
@@ -61,7 +62,8 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             context.player.markUsedReducers(
                 context.playType,
                 context.source,
-                this.#target(context)
+                this.#target(context),
+                this.ignoreType
             );
             context.player.modifyFate(-this.getFinalFatecost(context, amount));
         });

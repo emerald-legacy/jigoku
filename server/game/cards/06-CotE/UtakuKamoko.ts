@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { honorStatusDoesNotModifySkill } from '../../effects.js';
+import { statusTokensDoNotDecreaseSkill } from '../../effects.js';
 import { Location } from '../../Constants.js';
 
 class UtakuKamoko extends DrawCard {
@@ -9,7 +9,7 @@ class UtakuKamoko extends DrawCard {
     override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDishonored,
-            effect: honorStatusDoesNotModifySkill()
+            effect: statusTokensDoNotDecreaseSkill()
         });
         this.reaction('Ready and honor')
             .when({
