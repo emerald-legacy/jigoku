@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DuelType, Duration, Players, ConflictType, Trait } from '../../../Constants.js';
+import { CardType, Duration, Players, ConflictType, Trait } from '../../../Constants.js';
 import { modifyDuelistSkill } from '../../../effects.js';
 import { cardLastingEffect, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -33,8 +33,7 @@ export default class BitingSteel extends DrawCard {
         });
 
         this.duelChallenge('Add a Weapon to your duel stats', (duel, context) =>
-            (duel.duelType === DuelType.Military || duel.duelType === DuelType.Political) &&
-                !!context.source.parentCharacter && duel.isInvolved(context.source.parentCharacter))
+            !!context.source.parentCharacter && duel.isInvolved(context.source.parentCharacter))
             .target({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) =>
