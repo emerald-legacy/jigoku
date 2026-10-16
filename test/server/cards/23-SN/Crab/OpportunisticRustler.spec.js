@@ -46,6 +46,7 @@ describe('Opportunistic Rustler', function () {
             expect(this.getChatLogs(5)).toContain('player1 uses Opportunistic Rustler to look at player2\'s dynasty deck');
 
             expect(this.player1).toHavePrompt('Select a card to reveal');
+            expect(this.player1).not.toHavePromptButton('Take nothing');
             expect(this.player1).toHavePromptButton(this.brash.name);
             expect(this.player1).toHavePromptButton(this.courtly.name);
             expect(this.player1).not.toHavePromptButton(this.tengu.name);

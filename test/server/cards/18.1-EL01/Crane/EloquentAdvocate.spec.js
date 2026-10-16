@@ -43,6 +43,7 @@ describe('Eloquent Advocate', function() {
             this.player2.clickCard(this.advocate);
 
             expect(this.player2).toHavePrompt('Select a card');
+            expect(this.player2).not.toHavePromptButton('Take nothing');
             expect(this.player2).toHavePromptButton('Policy Debate');
             expect(this.player2).toHavePromptButton('Ornate Fan');
             expect(this.policyDebate.location).toBe('conflict deck');

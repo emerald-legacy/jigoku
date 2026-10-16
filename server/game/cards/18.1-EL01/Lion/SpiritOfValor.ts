@@ -21,6 +21,7 @@ export default class SpiritOfValor extends DrawCard {
         });
 
         this.action('Gain abilities from a character in your discard pile')
+            .condition((context) => context.game.isDuringConflict())
             .cost(captureParentCost())
             .cost(costs.sacrificeSelf())
             .target({

@@ -34,7 +34,7 @@ class KaiuForges extends DrawCard {
         }
         const provinceLocation = context.target.location;
         const cards = context.player.getDynastyCardsInProvince(provinceLocation);
-        if(!cards.some((card) => card.type === CardType.Holding && card.hasTrait(Trait.KaiuWall))) {
+        if(!cards.some((card) => card.type === CardType.Holding && card.isFaceup() && card.hasTrait(Trait.KaiuWall))) {
             this.game.addMessage(msg`${context.player} cannot put a holding into play because there is no Kaiu Wall in the selected province`);
             return;
         }
@@ -45,7 +45,7 @@ class KaiuForges extends DrawCard {
             controller: Players.Self,
             context: context,
             targets: false,
-            cardCondition: (card) => cards.includes(card) && card.hasTrait(Trait.KaiuWall),
+            cardCondition: (card) => cards.includes(card) && card.isFaceup() && card.hasTrait(Trait.KaiuWall),
             onSelect: (player, card) => {
                 this.game.addMessage(msg`${player} chooses to replace ${card} with ${cardFromDeck}`);
                 sequential([

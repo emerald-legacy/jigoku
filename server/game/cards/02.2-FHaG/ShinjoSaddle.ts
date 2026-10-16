@@ -7,7 +7,6 @@ class ShinjoSaddle extends DrawCard {
 
     override setupCardAbilities() {
         this.attachmentConditions({
-            myControl: true,
             trait: Trait.Cavalry
         });
 

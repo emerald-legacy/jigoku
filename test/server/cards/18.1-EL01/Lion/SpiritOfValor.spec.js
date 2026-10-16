@@ -37,6 +37,16 @@ describe('Spirit of Valor', function () {
             });
         });
 
+        describe('outside a conflict', function () {
+            it('cannot be used', function () {
+                this.player1.playAttachment(this.spiritOfValor, this.kaede);
+                this.player2.pass();
+                this.player1.clickCard(this.spiritOfValor);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.spiritOfValor.location).toBe('play area');
+            });
+        });
+
         describe('action ability', function () {
             beforeEach(function () {
                 this.player1.playAttachment(this.spiritOfValor, this.kaede);

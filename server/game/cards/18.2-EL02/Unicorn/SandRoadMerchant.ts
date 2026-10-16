@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { Location, Players, RemainingCards } from '../../../Constants.js';
+import { Location, Players, RemainingCards, TargetMode } from '../../../Constants.js';
 import {
     chooseAction,
     deckSearch,
@@ -27,6 +27,8 @@ export default class SandRoadMerchant extends DrawCard {
             .gameAction(sequential((context) => [
                 deckSearch({
                     cardsToLookAt: 2,
+                    mode: TargetMode.Exactly,
+                    numCards: 1,
                     target: context.player.opponent,
                     player: Players.Self,
                     gameAction: placeCardUnderneath({

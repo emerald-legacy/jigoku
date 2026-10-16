@@ -45,6 +45,7 @@ describe('Sand Road Merchant', function() {
             expect(this.player1).toHavePrompt('Select a card to reveal');
             expect(this.player1).toHavePromptButton('Policy Debate');
             expect(this.player1).toHavePromptButton('Fine Katana');
+            expect(this.player1).not.toHavePromptButton('Take nothing');
             expect(this.policyDebate.location).toBe('conflict deck');
             this.player1.clickPrompt('Policy Debate');
             expect(this.policyDebate.location).toBe(this.merchant.uuid);

@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
-import { ConflictType, Location, RemainingCards } from '../../../Constants.js';
+import { ConflictType, Location, RemainingCards, TargetMode } from '../../../Constants.js';
 
 class EloquentAdvocate extends DrawCard {
     static id = 'eloquent-advocate';
@@ -13,6 +13,8 @@ class EloquentAdvocate extends DrawCard {
             })
             .deckSearch({
                 cardsToLookAt: 2,
+                mode: TargetMode.Exactly,
+                numCards: 1,
                 gameAction: moveCard({
                     destination: Location.Hand
                 }),

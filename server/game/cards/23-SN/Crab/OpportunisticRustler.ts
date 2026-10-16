@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, moveCard, multiple, noAction } from '../../../GameActions/GameActions.js';
-import { ConflictType, DeckType, Location, Players, RemainingCards, Trait } from '../../../Constants.js';
+import { ConflictType, DeckType, Location, Players, RemainingCards, TargetMode, Trait } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import { msg } from '../../../GameChat.js';
 
@@ -15,6 +15,8 @@ export default class OpportunisticRustler extends DrawCard {
             })
             .deckSearch((context) => ({
                 cardsToLookAt: (context) => context.game.currentConflict?.declaredProvince?.printedStrength || 1,
+                mode: TargetMode.Exactly,
+                numCards: 1,
                 target: context.player.opponent,
                 player: Players.Self,
                 deck: DeckType.Dynasty,

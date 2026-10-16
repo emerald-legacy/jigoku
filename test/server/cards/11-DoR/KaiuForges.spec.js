@@ -76,6 +76,16 @@ describe('Kaiu Forges', function() {
                 expect(this.player1).toHavePromptButton('Take nothing');
             });
 
+            it('should not swap with a facedown Kaiu Wall', function() {
+                this.watchtowerOfValor.facedown = true;
+                this.player1.clickCard(this.kaiuForges);
+                this.player1.clickCard(this.p2);
+                this.player1.clickPrompt('Forgotten Library');
+                expect(this.getChatLogs(3)).toContain('player1 cannot put a holding into play because there is no Kaiu Wall in the selected province');
+                expect(this.watchtowerOfValor.location).toBe('province 2');
+                expect(this.player2).toHavePrompt('Action Window');
+            });
+
             it('should allow you to take nothing', function() {
                 expect(this.kaiuForges.location).toBe('province 1');
                 this.player1.clickCard(this.kaiuForges);

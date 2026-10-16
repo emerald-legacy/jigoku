@@ -622,7 +622,7 @@ this.action('Remove discarded characters to discard a card')
 this.action('Ready this character')
     .cost(costs.returnToDeck({
         location: Location.Provinces,
-        cardCondition: (card) =&gt; card.type === CardType.Holding,
+        cardCondition: (card) =&gt; card.type === CardType.Holding &amp;&amp; card.isFaceup(),
         bottom: true
     }))
     .ready();</code></pre>

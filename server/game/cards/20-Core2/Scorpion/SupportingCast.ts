@@ -28,7 +28,7 @@ export default class SupportingCast extends DrawCard {
                 activePromptTitle: 'Choose a character to bow',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card) =>
-                    context.event.cardTargets.some((eventCard) => eventCard === card),
+                    card.controller === context.player && context.event.cardTargets.some((eventCard) => eventCard === card),
                 gameAction: bow()
             })), cardLastingEffect({
                 effect: modifyMilitarySkill(3)
