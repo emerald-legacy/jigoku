@@ -4,7 +4,8 @@ describe('Cliffs of the Sea Dragon', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['solemn-scholar', 'shiba-tsukune']
+                    inPlay: ['solemn-scholar', 'shiba-tsukune'],
+                    hand: ['written-in-the-stars']
                 },
                 player2: {
                     inPlay: ['daidoji-uji', 'doji-challenger', 'eager-scout'],
@@ -141,6 +142,21 @@ describe('Cliffs of the Sea Dragon', function () {
                 ring: 'air'
             });
             expect(this.player2.fate).toBe(fate + 5);
+        });
+
+        it('stops the opponent again in the fate phase after a pass in the conflict phase', function () {
+            this.player1.player.promptedActionWindows.fate = true;
+            this.noMoreActions();
+            this.flow.finishConflictPhase();
+            this.player1.pass();
+            expect(this.game.currentPhase).toBe('fate');
+            this.player1.clickPrompt('Done');
+            this.player2.clickPrompt('Done');
+            expect(this.game.rings.air.fate).toBe(1);
+            // every unclaimed ring has fate, so removing is the only option
+            this.player1.clickCard('written-in-the-stars');
+            expect(this.player1).not.toHavePrompt('Written in the Stars');
+            expect(this.game.rings.air.fate).toBe(1);
         });
     });
 });

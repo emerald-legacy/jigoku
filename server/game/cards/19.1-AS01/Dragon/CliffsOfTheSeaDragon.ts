@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { playerCannot } from '../../../effects.js';
-import { Players, RestrictionType } from '../../../Constants.js';
+import { Phase, Players, RestrictionType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type { ConflictRecord } from '../../../ConflictTracker.js';
 
@@ -11,6 +11,7 @@ export default class CliffsOfTheSeaDragon extends ProvinceCard {
         this.persistentEffect({
             targetController: Players.Opponent,
             condition: (context) =>
+                context.game.currentPhase !== Phase.Conflict ||
                 !context.game.conflictRecord.some((conflict) => this.isTurnedOff(context, conflict)),
             effect: playerCannot(RestrictionType.TakeFateFromRings)
         });
