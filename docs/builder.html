@@ -390,6 +390,7 @@ this.tutored('Writ of Survey');</code></pre>
         <tr><td><code>targetController</code></td><td><code>Players</code></td><td><code>Players.Self</code></td><td>Whose objects can be matched: <code>Self</code>, <code>Opponent</code> or <code>Any</code>.</td></tr>
         <tr><td><code>targetLocation</code></td><td><code>Location</code></td><td><code>Location.PlayArea</code> (without <code>match</code>: <code>Any</code> when <code>location</code> is <code>Any</code>, <code>Provinces</code> for provinces, holdings and strongholds)</td><td>Where matched cards must be.</td></tr>
         <tr><td><code>isKeywordEffect</code></td><td><code>boolean</code></td><td><code>false</code></td><td>A keyword's effect: it survives "loses all non-keyword abilities".</td></tr>
+        <tr><td><code>printedSkillBonus</code></td><td><code>boolean</code></td><td><code>false</code></td><td>A printed attachment skill bonus (set by the engine for the card's [conflict-military]/[conflict-political] bonus): not a card effect, so restrictions on card effects such as an immunity don't stop it (EmeraldDB ruling on Reclusive Zokujin).</td></tr>
         <tr><td><code>createCopies</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Read only when these properties are given to <code>gainAbility</code> for a persistent ability: each card that gains it gets its own copy.</td></tr>
       </tbody>
     </table>

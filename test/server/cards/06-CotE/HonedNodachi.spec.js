@@ -118,3 +118,39 @@ describe('Honed Nodachi', function() {
         });
     });
 });
+
+describe('Honed Nodachi on an opponent\'s character', function() {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['honed-nodachi']
+                },
+                player2: {
+                    inPlay: ['matsu-berserker']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.berserker = this.player2.findCardByName('matsu-berserker');
+            this.berserker.fate = 1;
+            this.nodachi = this.player1.playAttachment('honed-nodachi', this.berserker);
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+        });
+
+        it('cannot remove a fate from a character you don\'t control to pay its cost (EmeraldDB ruling)', function () {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.berserker.fate).toBe(1);
+        });
+    });
+});
+

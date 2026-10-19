@@ -2,6 +2,7 @@
 export enum RestrictionType {
     ApplyCovert = 'applyCovert',
     ApplyEffect = 'applyEffect',
+    Attach = 'attach',
     Bow = 'bow',
     Break = 'break',
     ChooseConflictRing = 'chooseConflictRing',

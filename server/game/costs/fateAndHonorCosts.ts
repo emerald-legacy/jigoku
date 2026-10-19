@@ -32,8 +32,8 @@ export function payTargetDependentFateCost(targetName: string, ignoreType = fals
 export function payFate(amount: number | ((context: AbilityContext) => number) = 1): Cost {
     return new GameActionCost(
         typeof amount === 'function'
-            ? GameActions.loseFate((context) => ({ target: context.player, amount: amount(context) }))
-            : GameActions.loseFate((context) => ({ target: context.player, amount }))
+            ? GameActions.loseFate((context) => ({ target: context.player, amount: amount(context), spend: true }))
+            : GameActions.loseFate((context) => ({ target: context.player, amount, spend: true }))
     );
 }
 
@@ -122,7 +122,7 @@ export function payVariableFate(properties: {
             return (
                 costModifiers < 0 ||
                 (context.player.fate >= deriveMinAmount(context) + costModifiers &&
-                    GameActions.loseFate().canAffect(context.player, context))
+                    GameActions.loseFate({ spend: true }).canAffect(context.player, context))
             );
         },
         resolve(context: AbilityContext<DrawCard>, result) {
@@ -138,7 +138,7 @@ export function payVariableFate(properties: {
             if(maxAmount >= 0) {
                 max = Math.min(maxAmount, context.player.fate - costModifiers);
             }
-            if(!GameActions.loseFate().canAffect(context.player, context)) {
+            if(!GameActions.loseFate({ spend: true }).canAffect(context.player, context)) {
                 max = Math.min(max, -costModifiers);
             }
             const choices = Array.from({ length: max + 1 - min }, (_, idx) => String(idx + min));
@@ -170,7 +170,7 @@ export function payVariableFate(properties: {
             const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
             const cost = (context.costs.fatePaid ?? 0) + Math.min(0, costModifiers); //+ve cost modifiers are applied by the engine
             if(cost > 0) {
-                const action = GameActions.loseFate({ amount: cost });
+                const action = GameActions.loseFate({ amount: cost, spend: true });
                 return action.getEvent(context.player, context);
             }
 

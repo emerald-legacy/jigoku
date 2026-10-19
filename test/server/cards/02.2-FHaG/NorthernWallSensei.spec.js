@@ -68,3 +68,51 @@ describe('Northern Wall Sensei', function() {
         });
     });
 });
+
+describe('Northern Wall Sensei and peripheral entities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['northern-wall-sensei', { card: 'togashi-initiate', attachments: ['fine-katana'] }],
+                    hand: ['high-kick']
+                },
+                player2: {
+                    inPlay: ['doji-challenger', 'adept-of-the-waves'],
+                    hand: ['consumed-by-five-fires']
+                }
+            });
+            this.sensei = this.player1.findCardByName('northern-wall-sensei');
+            this.initiate = this.player1.findCardByName('togashi-initiate');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.initiate.fate = 2;
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.sensei, this.initiate],
+                defenders: [this.challenger]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.sensei);
+            this.player1.clickCard(this.initiate);
+        });
+
+        it('lets the immune character pay an event\'s cost (EmeraldDB ruling)', function() {
+            this.player2.pass();
+            this.player1.clickCard('high-kick');
+            this.player1.clickCard(this.challenger);
+            expect(this.player1).toBeAbleToSelect(this.initiate);
+            this.player1.clickCard(this.initiate);
+            expect(this.initiate.bowed).toBe(true);
+        });
+
+        it('doesn\'t protect its fate from an event (EmeraldDB ruling)', function() {
+            this.player2.clickCard('consumed-by-five-fires');
+            expect(this.player2).toBeAbleToSelect(this.initiate);
+            this.player2.clickCard(this.initiate);
+            this.player2.clickPrompt('2');
+            expect(this.initiate.fate).toBe(0);
+        });
+    });
+});

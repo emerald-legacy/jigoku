@@ -414,3 +414,43 @@ describe('Jealous Ancestor attached to its controller\'s own character', functio
         });
     });
 });
+
+describe('Jealous Ancestor and the opponent\'s cards', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer', { card: 'matsu-berserker', attachments: ['dai-tsuchi'] }]
+                },
+                player2: {
+                    inPlay: [{ card: 'doji-challenger', attachments: ['fine-katana'] }],
+                    hand: ['jealous-ancestor']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.katana = this.player2.findCardByName('fine-katana');
+            this.player1.pass();
+            this.player2.clickCard('jealous-ancestor');
+            this.player2.clickPrompt('Play Jealous Ancestor as an attachment');
+            this.player2.clickCard(this.whisperer);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.whisperer, this.berserker],
+                defenders: [this.challenger]
+            });
+            this.player2.pass();
+        });
+
+        it('lets the parent\'s controller return an opponent\'s card to that opponent\'s hand', function () {
+            this.player1.clickCard(this.berserker);
+            expect(this.player1).toBeAbleToSelect(this.katana);
+            this.player1.clickCard(this.katana);
+            expect(this.katana.location).toBe('hand');
+        });
+    });
+});
+

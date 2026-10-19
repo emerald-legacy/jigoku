@@ -42,7 +42,7 @@ class SurgingWave extends DrawCard {
                             acceptMessage: () => msg`${context.player} chooses to spend a fate to prevent ${context.target} from bowing during conflict resolution`,
                             declineMessage: () => msg`${context.player} chooses not to spend a fate to prevent ${context.target} from bowing during conflict resolution`,
                             gameAction: joint([
-                                loseFate({ target: context.player }),
+                                loseFate({ target: context.player, spend: true }),
                                 cardLastingEffect(() => ({
                                     effect: doesNotBow(),
                                     target: context.target

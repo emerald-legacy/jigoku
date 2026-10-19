@@ -8,13 +8,14 @@ import type { ActionEvent } from './GameAction.js';
 
 export interface LoseFateProperties extends PlayerActionProperties {
     amount?: number;
+    /** The player spends or pays the fate (a cost, "spend/pay X fate"): a "cannot spend fate" restriction stops it (Blood of Onnotangu). Losing fate isn't spending it. */
+    spend?: boolean;
 }
 
-export class LoseFateAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, Context, 'amount'> {
+export class LoseFateAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, Context, 'amount' | 'spend'> {
     override name = 'loseFate';
-    override restriction = RestrictionType.SpendFate;
     override eventName = EventName.OnModifyFate;
-    override defaultProperties = { amount: 1 };
+    override defaultProperties = { amount: 1, spend: false };
 
     protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['make {0} lose {1} fate', [this.getProperties(context, additionalProperties).amount]];
@@ -28,7 +29,9 @@ export class LoseFateAction<Context extends AbilityContext = AbilityContext> ext
 
     override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        return properties.amount > 0 && player.fate > 0 && super.canAffect(player, context, additionalProperties);
+        return properties.amount > 0 && player.fate > 0 &&
+            (!properties.spend || player.checkRestrictions(RestrictionType.SpendFate, context)) &&
+            super.canAffect(player, context, additionalProperties);
     }
 
     override addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {

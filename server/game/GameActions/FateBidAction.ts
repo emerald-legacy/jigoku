@@ -60,7 +60,7 @@ export class FateBidAction<Context extends AbilityContext = AbilityContext> exte
                 const actions: Array<LoseFateAction> = [];
                 for(const [player, amount] of result.bids) {
                     context.game.addMessage(msg`${player} spends ${amount} fate`);
-                    actions.push(new LoseFateAction({ amount, target: player }));
+                    actions.push(new LoseFateAction({ amount, target: player, spend: true }));
                 }
                 new JointGameAction(actions).resolve(undefined, context);
             })

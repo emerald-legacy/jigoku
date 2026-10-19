@@ -127,7 +127,7 @@ export function captureCost&lt;Name extends string, Value&gt;(name: Name, captur
     <h3><code>bowParent()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-bowParent">#</a></h3>
     <p>"Bow attached character": bows the character the source is attached to.</p>
     <ul class="edge">
-      <li>Can't be paid when the source has no parent, or the parent is not in play, is already bowed or can't be bowed.</li>
+      <li>Can't be paid when the source has no parent, or the parent is not in play, is already bowed, can't be bowed, or is controlled by another player (RRG Cost: a cost is paid with what you control).</li>
       <li>Chat: <code>bowing {0}</code>, with the parent as <code>{0}</code>.</li>
     </ul>
     <pre><code>// Tattered Missive: Action: Bow attached character – search the top 5 cards of your conflict deck for a card, reveal it, and add it to your hand. Shuffle.
@@ -244,7 +244,7 @@ this.wouldInterrupt('Cancel a spell')
     <h3><code>removeFateFromParent()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-removeFateFromParent">#</a></h3>
     <p>"Remove 1 fate from attached character": removes 1 fate from the source's parent to the general pool.</p>
     <ul class="edge">
-      <li>Can't be paid when there is no parent, it has no fate, or fate can't be removed from it.</li>
+      <li>Can't be paid when there is no parent, it has no fate, fate can't be removed from it, or another player controls it (RRG Cost; EmeraldDB ruling on Honed Nodachi).</li>
       <li>Chat: <code>removing 1 fate from {0}</code>.</li>
     </ul>
     <pre><code>// Honed Nodachi: Reaction: After attached character wins a [conflict-military] conflict, remove 1 fate from attached character. Your opponent chooses a participating character he or she controls - discard that character.

@@ -259,6 +259,8 @@ export interface PersistentEffectProps<Source extends EffectSource = BaseCard, T
     createCopies?: boolean;
     /** A keyword's effect (e.g. dire), which survives losing all non-keyword abilities. */
     isKeywordEffect?: boolean;
+    /** A printed attachment skill bonus: not a card effect, so restrictions on card effects (Reclusive Zokujin's immunity) don't stop it. */
+    printedSkillBonus?: boolean;
 }
 
 export type traitLimit = {

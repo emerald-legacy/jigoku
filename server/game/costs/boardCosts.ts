@@ -21,8 +21,14 @@ export function bowSelf(): Cost {
 /**
  * Cost that will bow the card that the card that initiated the ability is attached to.
  */
+/** A cost is paid with what the player controls (RRG Cost): the parent only counts while it is theirs. */
+function ownParent(context: AbilityContext) {
+    const parent = context.source.parentCharacter;
+    return parent && parent.controller === context.player ? parent : [];
+}
+
 export function bowParent(): Cost {
-    return new GameActionCost(GameActions.bow((context) => ({ target: context.source.parentCharacter ?? [] })));
+    return new GameActionCost(GameActions.bow((context) => ({ target: ownParent(context) })));
 }
 
 /**
@@ -146,7 +152,7 @@ export function removeFate<const Types extends CardTypes = undefined, const Mode
  * Cost that will discard a fate from the card's parent
  */
 export function removeFateFromParent(): Cost {
-    return new GameActionCost(GameActions.removeFate((context) => ({ target: context.source.parentCharacter ?? [] })));
+    return new GameActionCost(GameActions.removeFate((context) => ({ target: ownParent(context) })));
 }
 
 /**

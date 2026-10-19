@@ -180,13 +180,15 @@ export class CardAbility extends ThenAbility {
 
     override getCosts(context: AbilityContext, playCosts = true, triggerCosts = true): Cost[] {
         let costs = super.getCosts(context, playCosts);
-        if(!context.subResolution && triggerCosts && context.player.anyEffect(EffectName.AdditionalTriggerCost)) {
+        // "an additional cost to trigger an ability": keywords aren't triggered abilities
+        const withTriggerCosts = triggerCosts && !this.isKeywordAbility();
+        if(!context.subResolution && withTriggerCosts && context.player.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.player
                 .getEffects(EffectName.AdditionalTriggerCost)
                 .map((effect) => effect(context));
             costs = costs.concat(...additionalTriggerCosts);
         }
-        if(!context.subResolution && triggerCosts && context.source.anyEffect(EffectName.AdditionalTriggerCost)) {
+        if(!context.subResolution && withTriggerCosts && context.source.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.source
                 .getEffects(EffectName.AdditionalTriggerCost)
                 .map((effect) => effect(context));

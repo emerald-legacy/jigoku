@@ -474,11 +474,12 @@ this.action('Gain an honor')
       <tbody>
         <tr><td><code>target</code></td><td><code>Player | Player[]</code></td><td>the ability's player</td><td>Who loses fate.</td></tr>
         <tr><td><code>amount</code></td><td><code>number</code></td><td><code>1</code></td><td>How much fate.</td></tr>
+        <tr><td><code>spend</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The player spends or pays the fate: costs, "spend/pay X fate", fate bids. Only then does a <code>RestrictionType.SpendFate</code> restriction stop it (Blood of Onnotangu); "lose X fate" isn't spending (EmeraldDB ruling).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Illegal unless <code>amount</code> is greater than 0 and the player has fate. A player with less fate loses what they have.</li>
-      <li>Restriction: <code>RestrictionType.SpendFate</code>.</li>
+      <li>Restriction: <code>RestrictionType.SpendFate</code>, with <code>spend: true</code> only. The fate costs (<code>payFate</code>, <code>payVariableFate</code>, targeting costs) set it.</li>
       <li>Raises <code>onModifyFate</code> with a negative <code>event.amount</code>. Chat: "make <em>player</em> lose <em>N</em> fate"; as a cost: "spending <em>N</em> fate".</li>
       <li>Builder shortcut: <code>.loseFate(n)</code> or <code>.loseFate(properties)</code>.</li>
     </ul>
@@ -1856,7 +1857,7 @@ this.reaction('Declare a new conflict')
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>amount</code> must be positive. An origin must have fate and must not be restricted from spending fate (<code>RestrictionType.SpendFate</code>). A ring origin also needs the ability's player to be allowed to take fate from rings (<code>RestrictionType.TakeFateFromRings</code>, The Stone of Sorrows). At most the origin's fate moves.</li>
+      <li><code>amount</code> must be positive. An origin must have fate and must not be restricted from spending fate (<code>RestrictionType.SpendFate</code>). A character origin must be allowed to lose fate (<code>RestrictionType.RemoveFate</code>, Student of War). A ring origin also needs the ability's player to be allowed to take fate from rings (<code>RestrictionType.TakeFateFromRings</code>, The Stone of Sorrows). At most the origin's fate moves.</li>
       <li>Checks <code>RestrictionType.PlaceFate</code> on the ring. Raises <code>onMoveFate</code>.</li>
       <li>Chat: <code>place {1} fate on {0}</code>, or <code>move {1} fate from {2} to {0}</code> with an origin.</li>
       <li>Builder shortcut: <code>.placeFateOnRing(…)</code>.</li>

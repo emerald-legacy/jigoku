@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -28,6 +28,7 @@ export class AttachAction<Context extends AbilityContext = AbilityContext> exten
     'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised'
 > {
     override name = 'attach';
+    override restriction = RestrictionType.Attach;
     override eventName = EventName.OnCardAttached;
     override targetType = [CardType.Character, CardType.Province];
     override defaultProperties = {

@@ -168,3 +168,34 @@ describe('Diligent Chaperone', function () {
         });
     });
 });
+
+describe('Diligent Chaperone when several characters lose status tokens at once', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['diligent-chaperone', 'doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['perfect-land-ethos']
+                }
+            });
+            this.chaperone = this.player1.findCardByName('diligent-chaperone');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.whisperer.dishonor();
+            this.challenger.honor();
+        });
+
+        it('doesn\'t react to an honored token removed from an opponent\'s character', function () {
+            this.player1.pass();
+            this.player2.clickCard('perfect-land-ethos');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.whisperer.isOrdinary()).toBe(true);
+            expect(this.challenger.isOrdinary()).toBe(true);
+        });
+    });
+});
+

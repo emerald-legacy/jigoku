@@ -8,7 +8,7 @@ class DiplomaticGiftGiver extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Put fate on characters')
-            .condition((context) => !!(context.source.isParticipating() && context.player.opponent && loseFate().canAffect(context.player.opponent, context) && loseFate().canAffect(context.player, context)))
+            .condition((context) => !!(context.source.isParticipating() && context.player.opponent && loseFate({ spend: true }).canAffect(context.player.opponent, context) && loseFate({ spend: true }).canAffect(context.player, context)))
             .target({
                 name: 'firstCharacter',
                 activePromptTitle: 'Choose a character to receive the gift of fate',

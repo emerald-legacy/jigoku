@@ -33,13 +33,13 @@ class ObjectionCost implements Cost {
 
     canPay(context: AbilityContext): boolean {
         const amount = currentObjectionCost(context.player);
-        return amount === 0 || loseFate({ target: context.player, amount }).hasLegalTarget(context);
+        return amount === 0 || loseFate({ target: context.player, amount, spend: true }).hasLegalTarget(context);
     }
 
     pay(context: AbilityContext): void {
         const fateCost = currentObjectionCost(context.player);
         if(fateCost > 0) {
-            loseFate({ amount: fateCost }).resolve(context.player, context);
+            loseFate({ amount: fateCost, spend: true }).resolve(context.player, context);
         }
 
         increaseObjectionCost(context.player);

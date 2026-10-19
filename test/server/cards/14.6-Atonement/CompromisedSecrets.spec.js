@@ -132,3 +132,38 @@ describe('Compromised Secrets', function () {
         });
     });
 });
+
+describe('Compromised Secrets and keywords', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    hand: ['compromised-secrets']
+                },
+                player2: {
+                    honor: 11,
+                    inPlay: ['akodo-gunso']
+                }
+            });
+            this.gunso = this.player2.findCardByName('akodo-gunso');
+            this.player1.playAttachment('compromised-secrets', this.gunso);
+            // player1 has no characters, so their conflict opportunity passes by itself
+            this.noMoreActions();
+            this.noMoreActions();
+        });
+
+        it('doesn\'t add a cost to Pride, which isn\'t a triggered ability', function () {
+            this.initiateConflict({
+                attackers: [this.gunso],
+                defenders: []
+            });
+            const honor1 = this.player1.honor;
+            this.noMoreActions();
+            expect(this.gunso.isHonored).toBe(true);
+            expect(this.player1.honor).toBe(honor1 - 1); // only the unopposed honor loss
+        });
+    });
+});
+

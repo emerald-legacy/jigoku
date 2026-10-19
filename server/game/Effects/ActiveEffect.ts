@@ -40,6 +40,8 @@ export interface EffectProperties<Target extends GameObject = GameObject> {
     targetController?: Players | Player;
     targetLocation?: TargetLocation;
     target?: GameObject | GameObject[];
+    /** A printed attachment skill bonus: not a card effect, so restrictions on card effects (Reclusive Zokujin's immunity) don't stop it. */
+    printedSkillBonus?: boolean;
 }
 
 /**

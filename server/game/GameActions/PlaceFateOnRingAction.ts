@@ -40,6 +40,10 @@ export class PlaceFateOnRingAction<Context extends AbilityContext = AbilityConte
         ) {
             return false;
         }
+        // moving fate off a character removes it from that character (Student of War "cannot lose fate")
+        if(properties.origin && !(properties.origin instanceof Ring) && !properties.origin.checkRestrictions(RestrictionType.RemoveFate, context)) {
+            return false;
+        }
         // moving fate off a ring removes it from that ring (The Stone of Sorrows)
         if(properties.origin instanceof Ring && !context.player.checkRestrictions(RestrictionType.TakeFateFromRings, context)) {
             return false;

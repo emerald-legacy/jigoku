@@ -62,6 +62,7 @@ export interface StoredPersistentEffect {
     type?: EffectName;
     abilityType?: AbilityType;
     isKeywordEffect?: boolean;
+    printedSkillBonus?: boolean;
 }
 
 interface ProvidedAbilities {

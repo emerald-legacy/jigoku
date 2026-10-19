@@ -31,7 +31,8 @@ export class DiscardStatusTokenAction<Context extends AbilityContext = AbilityCo
         additionalProperties: Record<string, unknown>
     ): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
-        event.cards = this.#cardsLosingStatus(context, additionalProperties);
+        // each token's event names only its own card (Diligent Chaperone reacts per character)
+        event.cards = token.card ? [token.card] : [];
     }
 
     override eventHandler(event: ActionEvent<EventName.OnStatusTokenDiscarded, Context>): void {

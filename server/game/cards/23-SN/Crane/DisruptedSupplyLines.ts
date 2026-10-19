@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 
 const resourcesAvailable = (context: AbilityContext) => {
-    const fateAvailable = loseFate().canAffect(context.player, context);
+    const fateAvailable = loseFate({ spend: true }).canAffect(context.player, context);
 
     const eligibleCharacters = context.player.cardsInPlay.filter(
         (card) => card.type === CardType.Character &&
@@ -64,7 +64,7 @@ function disruptedSupplyLinesCost(): Cost<{ disruptedSupplyLinesCostFatePaid: bo
         payEvent(context) {
             const events: Event[] = [];
             if(context.costs.disruptedSupplyLinesCostFatePaid) {
-                const loseFateaction = loseFate({ target: context.player });
+                const loseFateaction = loseFate({ target: context.player, spend: true });
                 events.push(loseFateaction.getEvent(context.player, context));
             }
 

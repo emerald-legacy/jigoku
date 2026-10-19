@@ -1484,6 +1484,8 @@ this.whileAttached({
     <ul class="edge">
       <li>Also accepts a bare <code>RestrictionType</code> or <code>PlayType</code>, which works like <code>cardCannot(type)</code> with no scope.</li>
       <li>Immunity covers targeting (<code>Target</code>), every game action, and new effects: a persistent effect from an immune-to source isn't applied (<code>RestrictionType.ApplyEffect</code> is checked with that effect's context), and a lasting effect action can't affect the card.</li>
+      <li>It doesn't stop the card from paying costs (it never matches at <code>Stage.Cost</code>), nor peripheral entities: fate can be removed from it and cards attached to it (<code>RestrictionType.RemoveFate</code>, <code>RestrictionType.Attach</code>). RRG Immune; EmeraldDB rulings on Northern Wall Sensei and Nezumi Infiltrator.</li>
+      <li>A printed attachment skill bonus isn't a card effect, so it still applies (Fiery Madness on Reclusive Zokujin).</li>
       <li>"Immune to X and Y" needs two <code>immunity</code> effects; one effect with <code>appliesTo: [X, Y]</code> only matches sources that are both.</li>
       <li>Common scopes: <code>Events</code>, <code>OpponentsCardEffects</code>, <code>OpponentsRingEffects</code>, <code>CardEffectsExceptOwn</code>, <code>RingEffects</code>.</li>
     </ul>
@@ -3528,15 +3530,23 @@ this.persistentEffect({
     targetController: Players.Any,
     condition: (context) =&gt; context.source.isAttacking(),
     effect: [
-        suppressEffects((effect) =&gt;
-            effect.isProvinceStrengthModifier() &amp;&amp; (effect.getValue() ?? 0) &gt; 0
-        ),
+        suppressEffects((effect) =&gt; this.increasesStrength(effect)),
         provinceCannotHaveSkillIncreased(),
-        cannotApplyLastingEffects((effect) =&gt;
-            effect.isProvinceStrengthModifier() &amp;&amp; (effect.getValue() ?? 0) &gt; 0
-        )
+        cannotApplyLastingEffects((effect) =&gt; this.increasesStrength(effect))
     ]
-});</code></pre>
+});
+
+// a set strength is not an increase; a calculated one has its value per province
+private increasesStrength(effect: EffectApplier&lt;EffectName, GameObject, unknown&gt;): boolean {
+    const provinces = this.game.currentConflict?.getConflictProvinces() ?? [];
+    if(isEffectOf(effect, EffectName.ModifyProvinceStrength)) {
+        return provinces.some((province) =&gt; (effect.getValue(province) ?? 0) &gt; 0);
+    }
+    if(isEffectOf(effect, EffectName.ModifyProvinceStrengthMultiplier)) {
+        return provinces.some((province) =&gt; (effect.getValue(province) ?? 1) &gt; 1);
+    }
+    return false;
+}</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SeasonedPatroller.ts">Seasoned Patroller</a></p>
   </div>
 <div class="ref" id="ef-refillProvinceTo" data-name="refillProvinceTo">

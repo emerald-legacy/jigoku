@@ -131,6 +131,9 @@ const getApplyingPlayer = (effect: Restriction): Player => {
 
 const printedCostOf = (card: BaseCard) => (card.isDrawCard() ? card.printedCost ?? 0 : 0);
 
+/** What an immunity (a restriction naming no type) doesn't stop (RRG Immune): peripheral entities such as fate and attachments aren't immune. */
+const immunityExemptTypes = new Set<RestrictionType | PlayType | undefined>([RestrictionType.RemoveFate, RestrictionType.Attach]);
+
 const leavePlayTypes = new Set<RestrictionType | PlayType | undefined>([
     RestrictionType.DiscardFromPlay,
     RestrictionType.Sacrifice,
@@ -176,7 +179,11 @@ export class Restriction extends EffectValueBase<Restriction> {
             return leavePlayTypes.has(type) && this.checkCondition(context, card);
         }
 
-        return (!this.type || this.type === type) && this.checkCondition(context, card);
+        if(!this.type) {
+            // an immunity doesn't stop a card from being used to pay costs (RRG Immune)
+            return context?.stage !== Stage.Cost && !immunityExemptTypes.has(type) && this.checkCondition(context, card);
+        }
+        return this.type === type && this.checkCondition(context, card);
     }
 
     checkCondition(context: AbilityContext, card?: BaseCard): boolean {

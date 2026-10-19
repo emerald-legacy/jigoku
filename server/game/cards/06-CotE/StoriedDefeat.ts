@@ -31,7 +31,7 @@ export default class StoriedDefeat extends DrawCard {
                     acceptMessage: () => msg`${context.player} chooses to spend a fate to dishonor ${context.target}`,
                     declineMessage: () => msg`${context.player} chooses not to spend a fate to dishonor ${context.target}`,
                     gameAction: joint([
-                        loseFate({ target: context.player }),
+                        loseFate({ target: context.player, spend: true }),
                         resolveAbility({
                             target: context.source,
                             subResolution: true,

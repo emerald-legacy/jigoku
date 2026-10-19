@@ -26,7 +26,7 @@ function total(costs: TargetingCost[]): number {
 
 export function canPayTargetingCosts(context: AbilityContext, costs: TargetingCost[]): boolean {
     const amount = total(costs);
-    return amount === 0 || (context.player.fate >= amount && new LoseFateAction({ amount }).canAffect(context.player, context));
+    return amount === 0 || (context.player.fate >= amount && new LoseFateAction({ amount, spend: true }).canAffect(context.player, context));
 }
 
 export function payTargetingCosts(context: AbilityContext, costs: TargetingCost[]): void {
@@ -37,5 +37,5 @@ export function payTargetingCosts(context: AbilityContext, costs: TargetingCost[
         context.game.addMessage(msg`${context.player} pays ${amount} fate in order to target ${target}`);
     }
     context.targetingCostPaid = [...context.targetingCostPaid, ...costs.map(({ target }) => target)];
-    new LoseFateAction({ amount: total(costs) }).resolve(context.player, context);
+    new LoseFateAction({ amount: total(costs), spend: true }).resolve(context.player, context);
 }

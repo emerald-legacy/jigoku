@@ -93,3 +93,40 @@ describe('Togashi Naname', function () {
         });
     });
 });
+
+describe('Togashi Naname and a character that cannot lose fate', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['student-of-war']
+                },
+                player2: {
+                    inPlay: ['togashi-naname']
+                }
+            });
+            this.student = this.player1.findCardByName('student-of-war');
+            this.naname = this.player2.findCardByName('togashi-naname');
+            this.student.fate = 2;
+            this.player1.player.showBid = 1;
+            this.player2.player.showBid = 5;
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.student],
+                defenders: [this.naname],
+                ring: 'fire'
+            });
+        });
+
+        it('only lets the opponent resolve the ring, as the fate can\'t move (EmeraldDB ruling)', function () {
+            this.player2.clickCard(this.naname);
+            this.player2.clickCard(this.student);
+            this.player2.clickRing('air');
+            expect(this.player1).not.toHavePromptButton('Move a fate from Student of War to the Air Ring');
+            expect(this.student.fate).toBe(2);
+            expect(this.game.rings.air.fate).toBe(0);
+        });
+    });
+});
+

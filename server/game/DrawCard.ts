@@ -241,6 +241,7 @@ export class DrawCard extends BaseCard {
             this.persistentEffect({
                 match: (card) => card === this.parent,
                 targetController: Players.Any,
+                printedSkillBonus: true,
                 effect: attachmentMilitarySkillModifier(() =>
                     this.isAttachmentBonusModifierSwitchActive() ? politicalBonus : militaryBonus
                 )
@@ -250,6 +251,7 @@ export class DrawCard extends BaseCard {
             this.persistentEffect({
                 match: (card) => card === this.parent,
                 targetController: Players.Any,
+                printedSkillBonus: true,
                 effect: attachmentPoliticalSkillModifier(() =>
                     this.isAttachmentBonusModifierSwitchActive() ? militaryBonus : politicalBonus
                 )

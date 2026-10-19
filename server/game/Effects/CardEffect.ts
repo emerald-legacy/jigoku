@@ -15,6 +15,7 @@ const provinceCardTypes: readonly string[] = [CardType.Province, CardType.Strong
 export class CardEffect extends ActiveEffect<BaseCard> {
     targetController: Players | Player;
     targetLocation: TargetLocation;
+    printedSkillBonus: boolean;
 
     constructor(game: Game, source: EffectSource, properties: EffectProperties<BaseCard>, effect: EffectApplier<EffectName, BaseCard>) {
         if(!properties.match) {
@@ -29,6 +30,7 @@ export class CardEffect extends ActiveEffect<BaseCard> {
         super(game, source, properties, effect);
         this.targetController = properties.targetController || Players.Self;
         this.targetLocation = properties.targetLocation || Location.PlayArea;
+        this.printedSkillBonus = !!properties.printedSkillBonus;
     }
 
     override isValidTarget(target: BaseCard): boolean {
@@ -38,7 +40,7 @@ export class CardEffect extends ActiveEffect<BaseCard> {
         }
         const sourceController = this.source.getEffectController();
         return (
-            target.checkRestrictions(RestrictionType.ApplyEffect, this.context) &&
+            (this.printedSkillBonus || target.checkRestrictions(RestrictionType.ApplyEffect, this.context)) &&
             (this.targetController !== Players.Self || target.controller === sourceController) &&
             (this.targetController !== Players.Opponent || target.controller !== sourceController)
         );
