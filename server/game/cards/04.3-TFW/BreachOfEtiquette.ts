@@ -18,7 +18,7 @@ class BreachOfEtiquette extends DrawCard {
                         onCardAbilityTriggered: (event) =>
                             event.player === context.player && event.card.type === CardType.Character && !event.card.hasTrait(Trait.Courtier)
                     },
-                    message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player}`,
+                    message: () => msg`${context.player} loses 1 honor due to ${context.source}`,
                     multipleTrigger: true,
                     gameAction: loseHonor()
                 })
@@ -30,7 +30,7 @@ class BreachOfEtiquette extends DrawCard {
                         onCardAbilityTriggered: (event) =>
                             event.player === context.player.opponent && event.card.type === CardType.Character && !event.card.hasTrait(Trait.Courtier)
                     },
-                    message: (effectContext) => msg`${effectContext.source} loses 1 honor due to ${context.player.opponent}`,
+                    message: () => msg`${context.player.opponent} loses 1 honor due to ${context.source}`,
                     multipleTrigger: true,
                     gameAction: loseHonor()
                 })

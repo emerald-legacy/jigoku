@@ -1,6 +1,5 @@
 import { elementTrait } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
-import type { Conflict } from '../Conflict.js';
 import type { Element } from '../Constants.js';
 import type { ElementSymbolInfo } from '../ElementSymbol.js';
 import type Game from '../Game.js';
@@ -28,16 +27,15 @@ export function countClaimedRings(game: Game, predicate: (ring: Ring) => boolean
     return Object.values(game.rings).filter((ring) => ring.isConsideredClaimed() && predicate(ring)).length;
 }
 
-/** Whether an `onClaimRing` event claims an element that is a trait of the player's role, through the conflict's ring or the claimed ring. */
-export function claimsRoleElement(player: Player, event: { ring: Ring; conflict?: Conflict }): boolean {
+/** Whether an `onClaimRing` event claims a ring with an element that is a trait of the player's role (a contested ring keeps its added elements until the claim's reactions are over). */
+export function claimsRoleElement(player: Player, event: { ring: Ring }): boolean {
     const role = player.role;
-    return !!role && (!!event.conflict?.elements.some((element) => role.hasTrait(elementTrait(element))) || role.hasTrait(elementTrait(event.ring.element)));
+    return !!role && event.ring.getElements().some((element) => role.hasTrait(elementTrait(element)));
 }
 
-/** Whether an `onClaimRing` event claims the element of the card's symbol `key`, through the conflict's ring or the claimed ring. */
-export function claimsRingOf(card: BaseCard, key: string, event: { ring: Ring; conflict?: Conflict }): boolean {
-    const element = card.getCurrentElementSymbol(key);
-    return !!event.conflict?.hasElement(element) || event.ring.hasElement(element);
+/** Whether an `onClaimRing` event claims a ring with the element of the card's symbol `key`. */
+export function claimsRingOf(card: BaseCard, key: string, event: { ring: Ring }): boolean {
+    return event.ring.hasElement(card.getCurrentElementSymbol(key));
 }
 
 /** The printed 'Claimed Ring' symbols, new on each call because a replaced element is written into them. */

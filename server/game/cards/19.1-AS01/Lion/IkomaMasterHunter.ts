@@ -20,10 +20,8 @@ export default class IkomaMasterHunter extends DrawCard {
                 effect: delayedEffect({
                     when: {
                         onMoveToConflict: (event) => event.card === context.target,
-                        onDefendersDeclared: (event) =>
-                            event.conflict.getParticipants().includes(context.target),
-                        onConflictDeclared: (event) =>
-                            event.conflict.getParticipants().includes(context.target)
+                        onDefendersDeclared: (event) => event.defenders.includes(context.target),
+                        onConflictDeclared: (event) => event.conflict.attackers.includes(context.target)
                     },
                     multipleTrigger: true,
                     gameAction: multiple([

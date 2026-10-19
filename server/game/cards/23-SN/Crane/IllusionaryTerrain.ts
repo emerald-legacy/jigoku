@@ -34,7 +34,9 @@ export default class IllusionaryTerrain extends DrawCard {
                     return context.event.conflict.defendingPlayer === context.player ? Players.Self : Players.Opponent;
                 },
                 cardCondition: (card, context) => card.isFaceup() &&
-                    card !== context.event.conflict.conflictProvince
+                    card !== context.event.conflict.conflictProvince &&
+                    !(context.event.conflict.conflictProvince?.location === Location.StrongholdProvince &&
+                        card.isProvinceCard() && card.cannotBeStrongholdProvince())
             }, cardLastingEffect((context) => ({
                 target: context.event.conflict.conflictProvince ?? [],
                 targetLocation: Location.Any,

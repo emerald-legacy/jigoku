@@ -23,7 +23,7 @@ describe('Tranquil Philosopher', function() {
                 expect(this.player1).toHavePrompt('Choose an unclaimed ring to move fate from');
                 expect(this.player1).toBeAbleToSelectRing('air');
                 expect(this.player1).toBeAbleToSelectRing('earth');
-                expect(this.player1).not.toBeAbleToSelectRing('fire');
+                expect(this.player1).toBeAbleToSelectRing('fire');
                 expect(this.player1).toBeAbleToSelectRing('void');
                 expect(this.player1).not.toBeAbleToSelectRing('water');
             });
@@ -59,12 +59,23 @@ describe('Tranquil Philosopher', function() {
                 expect(this.getChatLogs(3)).toContain('player1 moves a fate from the Air Ring to the Void Ring');
             });
 
-            it('cannot be used when no unclaimed ring has fate', function() {
+            it('can choose a ring with no fate just to gain 1 honor', function() {
+                const honor = this.player1.player.honor;
+                this.player1.clickCard(this.tranquilPhilosopher);
+                this.player1.clickRing('fire');
+                expect(this.player1.player.honor).toBe(honor + 1);
+                expect(this.game.rings.fire.fate).toBe(0);
+                expect(this.player2).toHavePrompt('Action Window');
+            });
+
+            it('can be used when no unclaimed ring has fate', function() {
                 this.game.rings.air.fate = 0;
                 this.game.rings.earth.fate = 0;
                 this.game.rings.void.fate = 0;
+                const honor = this.player1.player.honor;
                 this.player1.clickCard(this.tranquilPhilosopher);
-                expect(this.player1).toHavePrompt('Action Window');
+                this.player1.clickRing('air');
+                expect(this.player1.player.honor).toBe(honor + 1);
             });
         });
     });

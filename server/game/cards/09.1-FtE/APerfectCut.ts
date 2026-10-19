@@ -18,9 +18,7 @@ class APerfectCut extends DrawCard {
                     modifyMilitarySkill(2),
                     delayedEffect({
                         when: {
-                            afterConflict: (event) =>
-                                context.target.isParticipating() &&
-                                    context.target.controller === event.conflict.winner
+                            afterConflict: (event) => event.conflict.isOnWinningSide(context.target)
                         },
                         gameAction: honor(),
                         message: () => msg`${context.target} is honored due to the delayed effect of ${context.source}`

@@ -579,6 +579,31 @@ this.action('Make top card of conflict deck playable')
     .chatText('reveal the top card of their conflict deck');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ArtisanAcademy.ts">Artisan Academy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/PillowBook.ts">Pillow Book</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/MasterpiecePainter.ts">Masterpiece Painter</a></p>
   </div>
+
+  <div class="ref" id="he-getExtraUseDuration" data-name="getExtraUseDuration">
+    <h3><code>getExtraUseDuration(ability)</code> <span class="kind">Helper</span> <a class="anchor" href="#he-getExtraUseDuration">#</a></h3>
+    <p>The duration for "trigger that ability an additional time this round (or specified period)": the ability's own limit period (<code>Duration.UntilEndOfConflict</code> for a per-conflict limit, <code>Duration.UntilEndOfPhase</code> for a per-phase limit), otherwise <code>Duration.UntilEndOfRound</code>. Pass it as the <code>duration</code> of the <code>increaseLimitOnAbilities</code> lasting effect.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>ability</code></td><td><code>CardAbility | undefined</code></td><td>required</td><td>The ability that gets the extra use.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Reads <code>ability.limit.getResetEvents()</code>. An ability without a limit gets the round.</li>
+      <li>One effect per ability: a card that gives every ability of a card an extra use (Kaiu Inventor) builds one lasting effect per triggered ability, each with <code>targetAbility</code> and its own duration.</li>
+    </ul>
+    <pre><code>// Kaiu Inventor: Action: Choose a holding you control – you may trigger each of that holding's triggered abilities an additional time this round (or specified period).
+multiple((context) =&gt; [...context.target?.getActions() ?? [], ...context.target?.getReactions() ?? []]
+    .filter((ability): ability is CardAbility =&gt; ability instanceof CardAbility &amp;&amp; ability.isTriggeredAbility())
+    .map((ability) =&gt; cardLastingEffect({
+        target: context.target,
+        duration: getExtraUseDuration(ability),
+        targetLocation: Location.Provinces,
+        effect: increaseLimitOnAbilities({ targetAbility: ability })
+    })))</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/KaiuInventor.ts">Kaiu Inventor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SmugglingDeal.ts">Smuggling Deal</a></p>
+  </div>
 </section>
 
 <section class="group">
@@ -991,13 +1016,13 @@ class ThirdTowerGuard extends DrawCard {
 
   <div class="ref" id="he-claimsRingOf" data-name="claimsRingOf">
     <h3><code>claimsRingOf(card, key, event)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-claimsRingOf">#</a></h3>
-    <p>For <code>onClaimRing</code>: "After the [element] ring is claimed". True if the claimed ring, or the conflict's ring, has the element of <code>card</code>'s symbol <code>key</code>.</p>
+    <p>For <code>onClaimRing</code>: "After the [element] ring is claimed". True if the claimed ring has the element of <code>card</code>'s symbol <code>key</code>. A ring claimed at the end of a conflict is still contested during the claim's reactions, so the elements the attackers added count; a different ring claimed by a card effect during the conflict doesn't take the contested ring's elements.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>required</td><td>The card with the symbol (<code>this</code>).</td></tr>
         <tr><td><code>key</code></td><td><code>string</code></td><td>required</td><td>The symbol's key.</td></tr>
-        <tr><td><code>event</code></td><td><code>{ ring: Ring; conflict?: Conflict }</code></td><td>required</td><td>The <code>onClaimRing</code> event.</td></tr>
+        <tr><td><code>event</code></td><td><code>{ ring: Ring }</code></td><td>required</td><td>The <code>onClaimRing</code> event.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1013,12 +1038,12 @@ class ThirdTowerGuard extends DrawCard {
 
   <div class="ref" id="he-claimsRoleElement" data-name="claimsRoleElement">
     <h3><code>claimsRoleElement(player, event)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-claimsRoleElement">#</a></h3>
-    <p>For <code>onClaimRing</code>: "After you claim a ring that matches the element of your role". True if the player's role card has a trait equal to one of the conflict's elements, or to the claimed ring's own element.</p>
+    <p>For <code>onClaimRing</code>: "After you claim a ring that matches the element of your role". True if the player's role card has a trait equal to one of the claimed ring's elements (as for <code>claimsRingOf</code>).</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>player</code></td><td><code>Player</code></td><td>required</td><td>Whose role.</td></tr>
-        <tr><td><code>event</code></td><td><code>{ ring: Ring; conflict?: Conflict }</code></td><td>required</td><td>The <code>onClaimRing</code> event.</td></tr>
+        <tr><td><code>event</code></td><td><code>{ ring: Ring }</code></td><td>required</td><td>The <code>onClaimRing</code> event.</td></tr>
       </tbody>
     </table>
     <ul class="edge">

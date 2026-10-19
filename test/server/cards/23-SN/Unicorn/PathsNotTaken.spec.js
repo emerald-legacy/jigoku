@@ -119,3 +119,37 @@ describe('Paths Not Taken with a dash cost', function () {
         });
     });
 });
+
+describe('Paths Not Taken at a province with printed strength X', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['doji-challenger'],
+                    provinces: ['the-roar-of-the-lioness'],
+                    hand: ['paths-not-taken']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.roar = this.player1.findCardByName('the-roar-of-the-lioness');
+        });
+
+        it('counts X as 0, so no character qualifies', function () {
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                province: this.roar,
+                attackers: [this.whisperer],
+                defenders: []
+            });
+            expect(this.roar.getBaseStrength()).toBeGreaterThan(3);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

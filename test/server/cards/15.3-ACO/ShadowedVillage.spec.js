@@ -95,22 +95,8 @@ describe('Shadowed Village', function() {
             expect(this.getChatLogs(5)).toContain('player1 uses Shadowed Village to draw a card');
         });
 
-        it('should react to leaving play with fate', function() {
-            this.noMoreActions();
-            this.initiateConflict({
-                type: 'military',
-                attackers: [this.manipulator],
-                defenders: []
-            });
-            this.player2.clickCard(this.assassination);
-            this.player2.clickCard(this.manipulator);
-            expect(this.player1).toHavePrompt('Triggered Abilities');
-            expect(this.player1).toBeAbleToSelect(this.village);
-        });
-
-        it('leaving play - should not pick up dishonored status', function() {
+        it('should not react to fate leaving with a character that leaves play (EmeraldDB ruling)', function() {
             const hand = this.player1.hand.length;
-            this.manipulator.dishonor();
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',
@@ -119,9 +105,9 @@ describe('Shadowed Village', function() {
             });
             this.player2.clickCard(this.assassination);
             this.player2.clickCard(this.manipulator);
-            this.player1.clickCard(this.village);
-            expect(this.player1.hand.length).toBe(hand + 1); //+1 from draw
-            expect(this.getChatLogs(5)).toContain('player1 uses Shadowed Village to draw a card');
+            expect(this.manipulator.location).toBe('dynasty discard pile');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1.hand.length).toBe(hand);
         });
 
         it('should not react to opponent\'s characters losing fate', function() {

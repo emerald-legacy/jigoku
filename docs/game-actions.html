@@ -2209,7 +2209,7 @@ this.action('Flip the Imperial Favor')
 this.action('Return player\'s rings')
     .gameAction(performGloryCount({
         gameAction: (winner) =&gt; (winner &amp;&amp; winner.opponent)
-            ? returnRing({ target: winner.opponent.getClaimedRings() })
+            ? returnRing({ target: winner.opponent.getClaimedRings().filter((ring) =&gt; ring.claimedBy === winner.opponent?.name) })
             : noAction()
     }));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SeveredFromTheStream.ts">Severed from the Stream</a></p>
@@ -2914,7 +2914,7 @@ moveCardInProvinceAction(this)
 this.action('Move fate on rings')
     .ringTarget({
         activePromptTitle: 'Choose an unclaimed ring to move fate from',
-        ringCondition: (ring) =&gt; ring.isUnclaimed() &amp;&amp; ring.fate &gt; 0
+        ringCondition: (ring) =&gt; ring.isUnclaimed()
     }, sequential([
         selectRing((context) =&gt; ({
             activePromptTitle: 'Choose an unclaimed ring to move fate to',

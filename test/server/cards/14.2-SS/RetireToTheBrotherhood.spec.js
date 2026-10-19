@@ -153,7 +153,7 @@ describe('Retire To The Brotherhood', function() {
 
             expect(this.getChatLogs(10)).toContain('player2 uses Retire to the Brotherhood to discard Doji Whisperer, Daidoji Uji, Matsu Berserker, Bayushi Shoju, Doji Challenger and Daidoji Netsu');
             expect(this.getChatLogs(10)).toContain('player1 reveals Dispatch to Nowhere, Windswept Yurt and Shiba Tsukune');
-            expect(this.getChatLogs(10)).toContain('player2 is shuffling their dynasty deck');
+            expect(this.getChatLogs(10)).not.toContain('player2 is shuffling their dynasty deck'); // discarded nothing, revealed nothing (EmeraldDB ruling)
             expect(this.getChatLogs(10)).toContain('player1 is shuffling their dynasty deck');
 
             expect(this.shoju2.location).toBe('dynasty deck');

@@ -6,6 +6,7 @@ describe('Keeper Initiate', function() {
                 player1: {
                     role: 'keeper-of-air',
                     inPlay: ['doji-whisperer'],
+                    hand: ['commune-with-the-spirits'],
                     dynastyDiscard: ['keeper-initiate']
                 },
                 player2: {
@@ -58,6 +59,24 @@ describe('Keeper Initiate', function() {
             winConflictWith.call(this, 'fire');
             this.player1.clickPrompt('Don\'t resolve');
 
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.initiate.location).toBe('dynasty discard pile');
+        });
+
+        it('does not trigger when a card claims another ring during a conflict on a matching ring', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                province: 'entrenched-position',
+                ring: 'air',
+                type: 'political',
+                attackers: [this.whisperer],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard('commune-with-the-spirits');
+            this.player1.clickRing('fire');
+
+            expect(this.game.rings.fire.claimedBy).toBe(this.player1.player.name);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.initiate.location).toBe('dynasty discard pile');
         });

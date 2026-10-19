@@ -33,6 +33,22 @@ describe('Isawa Tadaka 2', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.favorableGround);
             });
 
+            it('cannot be used when the opponent has no cards in hand', function() {
+                for(const card of this.player2.hand) {
+                    this.player2.moveCard(card, 'conflict discard pile');
+                }
+                expect(this.player2.hand.length).toBe(0);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.isawaTadaka],
+                    defenders: []
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.isawaTadaka);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.adeptOfTheWaves.location).toBe('dynasty discard pile');
+            });
+
             it('should not allow you to not choose a character to remove from the game', function() {
                 this.noMoreActions();
                 this.initiateConflict({

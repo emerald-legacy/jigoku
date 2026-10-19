@@ -395,3 +395,45 @@ describe('Illusionary Terrain copying a province that cancels ring effects', fun
     });
 });
 
+describe('Illusionary Terrain on the stronghold province', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-toshimoko']
+                },
+                player2: {
+                    provinces: ['public-forum', 'elemental-fury', 'fertile-fields', 'avalanche-of-stone'],
+                    hand: ['illusionary-terrain']
+                }
+            });
+            this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+            this.forum = this.player2.findCardByName('public-forum');
+            this.fury = this.player2.findCardByName('elemental-fury');
+            this.fields = this.player2.findCardByName('fertile-fields');
+            this.stone = this.player2.findCardByName('avalanche-of-stone');
+            this.stronghold = this.player2.findCardByName('shameful-display', 'stronghold province');
+            this.terrain = this.player2.findCardByName('illusionary-terrain');
+
+            for(const province of [this.forum, this.fury, this.fields, this.stone]) {
+                province.facedown = false;
+            }
+            this.fury.isBroken = true;
+            this.fields.isBroken = true;
+            this.stone.isBroken = true;
+            this.game.checkGameState(true);
+        });
+
+        it('cannot copy a province that cannot be a stronghold province (EmeraldDB ruling)', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.toshimoko],
+                province: this.stronghold
+            });
+            this.player2.clickCard(this.terrain);
+            expect(this.player2).toBeAbleToSelect(this.fury);
+            expect(this.player2).not.toBeAbleToSelect(this.forum);
+        });
+    });
+});

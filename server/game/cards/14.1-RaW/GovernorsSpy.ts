@@ -46,7 +46,6 @@ class GovernorsSpy extends DrawCard {
                 controller: targetPlayer === context.player ? Players.Self : Players.Opponent,
                 cardCondition: (card) =>
                     card.type === CardType.Province &&
-                    card.location !== Location.StrongholdProvince &&
                     (unplacedCards.length > emptyProvinces().length || emptyProvinces().includes(card.location)),
                 onSelect: (player, card) => {
                     this.game.addMessage(msg`${player} places a card`);

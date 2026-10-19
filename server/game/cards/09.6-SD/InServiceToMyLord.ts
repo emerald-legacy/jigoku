@@ -21,7 +21,7 @@ class InServiceToMyLord extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a unique character',
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isUnique()
+                cardCondition: (card, context) => card.isUnique() && ready().canAffect(card, context)
             }, multiple([
                 ready(),
                 moveCard((context) => ({

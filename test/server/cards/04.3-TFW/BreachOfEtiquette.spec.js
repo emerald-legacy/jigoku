@@ -36,6 +36,7 @@ describe('Breach of Etiquette', function() {
                 this.player1.clickCard(this.brashSamurai);
                 expect(this.player1.honor).toBe(9);
                 expect(this.brashSamurai.militarySkill).toBe(1);
+                expect(this.getChatLogs(5)).toContain('player1 loses 1 honor due to Breach of Etiquette');
             });
 
             it('should not trigger when an opponent cancels a non-courtier ability', function() {
@@ -50,6 +51,7 @@ describe('Breach of Etiquette', function() {
                 this.player2.clickCard(this.brashSamurai);
                 expect(this.player2.honor).toBe(10);
                 expect(this.brashSamurai.militarySkill).toBe(4);
+                expect(this.getChatLogs(5)).toContain('player2 loses 1 honor due to Breach of Etiquette');
             });
 
             it('should not trigger when a courtier uses an ability', function() {

@@ -12,7 +12,7 @@ class RelentlessInquisitor extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => card.isParticipating() && bow().canAffect(card, context)
             })
             .select({
                 name: 'select',

@@ -185,5 +185,41 @@ describe('Moto Chagatai', function() {
                 expect(this.chagatai.bowed).toBe(true);
             });
         });
+
+        describe('Moto Chagatai\'s ability while defending', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['moto-chagatai']
+                    },
+                    player2: {
+                        inPlay: ['steward-of-law']
+                    }
+                });
+
+                this.chagatai = this.player1.findCardByName('moto-chagatai');
+                this.steward = this.player2.findCardByName('steward-of-law');
+                this.attackerProvince = this.player2.findCardByName('shameful-display', 'province 1');
+            });
+
+            it('does not bow when a province of the attacking opponent was broken in the conflict', function() {
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.steward],
+                    defenders: [this.chagatai]
+                });
+                this.game.queueSimpleStep(() => breakProvince().resolve(this.attackerProvince, this.game.getFrameworkContext(this.player1.player)));
+                this.game.continue();
+                this.player2.clickPrompt('No');
+                expect(this.attackerProvince.isBroken).toBe(true);
+
+                this.noMoreActions();
+                expect(this.chagatai.bowed).toBe(false);
+            });
+        });
     });
 });

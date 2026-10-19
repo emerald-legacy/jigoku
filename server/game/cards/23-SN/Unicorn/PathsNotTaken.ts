@@ -35,7 +35,7 @@ export default class PathsNotTaken extends DrawCard {
             return Math.max(...strengths);
         }
 
-        const strengths = attackedProvinces.map((a) => a.getBaseStrength());
+        const strengths = attackedProvinces.map((a) => a.printedStrength);
         return Math.max(...strengths);
     }
 }

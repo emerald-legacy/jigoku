@@ -43,6 +43,13 @@ describe('Procedural Interference', function() {
             expect(this.player1).toBeAbleToSelect(this.shamefulDisplay);
         });
 
+        it('cannot choose the stronghold province (EmeraldDB ruling)', function () {
+            this.player2.moveCard(this.storehouse2, 'stronghold province');
+            this.player1.clickCard(this.interference);
+            expect(this.player1).toBeAbleToSelect(this.shamefulDisplay);
+            expect(this.player1).not.toBeAbleToSelect(this.pStronghold);
+        });
+
         it('should give the opponent an option to select between effects', function() {
             this.player1.clickCard(this.interference);
             this.player1.clickCard(this.shamefulDisplay);

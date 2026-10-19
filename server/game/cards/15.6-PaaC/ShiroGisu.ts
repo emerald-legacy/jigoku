@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { Location, RemainingCards } from '../../Constants.js';
+import { Location, RemainingCards, TargetMode } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
@@ -14,6 +14,8 @@ export default class ShiroGisu extends StrongholdCard {
             .cost(costs.bowSelf())
             .deckSearch({
                 cardsToLookAt: (context) => this.getCharactersWithoutFate(context),
+                mode: TargetMode.Exactly,
+                numCards: 1,
                 activePromptTitle: 'Choose a card to put in your hand',
                 gameAction: moveCard({
                     destination: Location.Hand

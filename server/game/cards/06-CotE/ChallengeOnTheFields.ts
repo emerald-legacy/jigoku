@@ -4,8 +4,9 @@ import { DuelType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 
+// Shiksha Scout's additional character counts (EmeraldDB ruling)
 function participatingCharacters(player: Player): number {
-    return player.filterCardsInPlay((card) => card.isParticipating()).length;
+    return player.game.currentConflict?.getNumberOfParticipantsFor(player) ?? 0;
 }
 
 export default class ChallengeOnTheFields extends DrawCard {

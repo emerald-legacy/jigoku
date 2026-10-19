@@ -11,6 +11,8 @@ class ShadowedVillage extends DrawCard {
             .when({
                 onMoveFate: (event, context) =>
                     context.game.currentPhase !== Phase.Fate &&
+                    // fate leaving with a character that leaves play isn't removed by an effect
+                    !event.isContingent &&
                     event.origin &&
                     event.origin.type === CardType.Character &&
                     'controller' in event.origin &&

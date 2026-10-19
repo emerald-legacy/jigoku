@@ -13,7 +13,7 @@ class ProceduralInterference extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 cardType: CardType.Province,
-                cardCondition: (card) => card.controller.getDynastyCardsInProvince(card.location).length > 0
+                cardCondition: (card) => card.location !== Location.StrongholdProvince && card.controller.getDynastyCardsInProvince(card.location).length > 0
             })
             .select({
                 name: 'select',

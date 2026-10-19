@@ -278,3 +278,40 @@ describe('Challenge on the Fields', function () {
         });
     });
 });
+
+describe('Challenge on the Fields with Shiksha Scout', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 11,
+                    inPlay: ['border-rider', 'shiksha-scout'],
+                    hand: ['challenge-on-the-fields']
+                },
+                player2: {
+                    honor: 11,
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.borderRider = this.player1.findCardByName('border-rider');
+            this.scout = this.player1.findCardByName('shiksha-scout');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderRider, this.scout],
+                defenders: [this.whisperer],
+                type: 'political'
+            });
+            this.player2.pass();
+        });
+
+        it('counts Shiksha Scout\'s additional character (EmeraldDB ruling)', function () {
+            this.player1.clickCard('challenge-on-the-fields');
+            this.player1.clickCard(this.borderRider);
+            this.player1.clickCard(this.whisperer);
+            // printed 2, +1 for Shiksha Scout and +1 for its additional character
+            expect(this.borderRider.militarySkill).toBe(4);
+        });
+    });
+});

@@ -18,10 +18,9 @@ export default class IsawaTadaka2 extends DrawCard {
             }))
             .gameAction(multiple((context) => {
                 const removed = context.costs.removeFromGame;
-                const cards =
-                    context.player.opponent && removed
-                        ? shuffle(context.player.opponent.hand).slice(0, Array.isArray(removed) ? removed.length : 1)
-                        : [context.source];
+                const hand = context.player.opponent?.hand ?? [];
+                // before the cost is paid, the whole hand stands for the cards that will be looked at
+                const cards = removed ? shuffle(hand).slice(0, Array.isArray(removed) ? removed.length : 1) : hand;
                 return [
                     lookAt(() => ({
                         target: cards.slice().sort((a, b) => a.name.localeCompare(b.name))

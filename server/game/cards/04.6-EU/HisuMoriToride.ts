@@ -1,4 +1,4 @@
-import { CardType, Duration, ConflictType, Trait } from '../../Constants.js';
+import { CardType, Duration, ConflictType, EffectName, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { additionalConflict } from '../../effects.js';
@@ -16,6 +16,8 @@ export default class HisuMoriToride extends StrongholdCard {
                     !!context.game.currentConflict &&
                     context.game.currentConflict.hasMoreParticipants(context.player)
             })
+            // under Waning Hostilities an additional conflict changes nothing
+            .condition((context) => !context.player.anyEffect(EffectName.SetMaxConflicts))
             .cost(costs.bowSelf())
             .cost(costs.sacrifice({
                 cardType: CardType.Character,

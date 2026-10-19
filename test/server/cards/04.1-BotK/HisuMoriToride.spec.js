@@ -66,3 +66,38 @@ describe('Hisu Mori Toride', function() {
         });
     });
 });
+
+describe('Hisu Mori Toride under Waning Hostilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    stronghold: 'hisu-mori-toride-lion',
+                    inPlay: ['matsu-berserker', 'matsu-seventh-legion'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    hand: ['waning-hostilities']
+                }
+            });
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+        });
+
+        it('is not offered, as an additional conflict changes nothing (EmeraldDB ruling)', function() {
+            this.noMoreActions();
+            this.player2.clickCard('waning-hostilities');
+            expect(this.getChatLogs(3)).toContain('player2 plays Waning Hostilities to limit both players to a single conflict this turn');
+            this.player1.playAttachment('fine-katana', 'matsu-berserker');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['matsu-berserker'],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.pass();
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

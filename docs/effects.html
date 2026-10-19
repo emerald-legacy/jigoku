@@ -1154,7 +1154,7 @@ this.whileAttached({
     <pre><code>// Smuggling Deal: … choose an ability on a character you control - you may trigger that ability an additional time this round (or specified period).
 cardLastingEffect((context) =&gt; ({
     target: context.targetAbility?.card,
-    duration: this.getExtraUseDuration(context.targetAbility),
+    duration: getExtraUseDuration(context.targetAbility),
     effect: increaseLimitOnAbilities({
         targetAbility: context.targetAbility
     })
@@ -3179,7 +3179,7 @@ this.persistentEffect({
             onCardAbilityTriggered: (event) =&gt;
                 event.player === context.player &amp;&amp; event.card.type === CardType.Character &amp;&amp; !event.card.hasTrait(Trait.Courtier)
         },
-        message: (effectContext) =&gt; msg`${effectContext.source} loses 1 honor due to ${context.player}`,
+        message: () =&gt; msg`${context.player} loses 1 honor due to ${context.source}`,
         multipleTrigger: true,
         gameAction: loseHonor()
     })
@@ -3867,9 +3867,7 @@ cardLastingEffect((context) =&gt; ({
         modifyMilitarySkill(2),
         delayedEffect({
             when: {
-                afterConflict: (event) =&gt;
-                    context.target.isParticipating() &amp;&amp;
-                        context.target.controller === event.conflict.winner
+                afterConflict: (event) =&gt; event.conflict.isOnWinningSide(context.target)
             },
             gameAction: honor(),
             message: () =&gt; msg`${context.target} is honored due to the delayed effect of ${context.source}`

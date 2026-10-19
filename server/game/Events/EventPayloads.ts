@@ -27,6 +27,8 @@ interface BaseEventPayload {
     resolved?: boolean;
     context?: AbilityContext;
     cannotBeCancelled?: boolean;
+    /** Raised as a consequence of another event (fate and attachments leaving with a character). */
+    isContingent?: boolean;
 }
 
 interface EventPayloadMap {

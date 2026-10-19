@@ -1,7 +1,9 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Duration, Players, CardType } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 import { increaseLimitOnAbilities } from '../../effects.js';
-import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { cardLastingEffect, multiple } from '../../GameActions/GameActions.js';
+import { getExtraUseDuration } from '../extraAbilityUse.js';
+import { CardAbility } from '../../CardAbility.js';
 
 class KaiuInventor extends DrawCard {
     static id = 'kaiu-inventor';
@@ -13,11 +15,14 @@ class KaiuInventor extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.isFaceup()
-            }, cardLastingEffect({
-                duration: Duration.UntilEndOfRound,
-                targetLocation: Location.Provinces,
-                effect: increaseLimitOnAbilities()
-            }))
+            }, multiple((context) => [...context.target?.getActions() ?? [], ...context.target?.getReactions() ?? []]
+                .filter((ability): ability is CardAbility => ability instanceof CardAbility && ability.isTriggeredAbility())
+                .map((ability) => cardLastingEffect({
+                    target: context.target,
+                    duration: getExtraUseDuration(ability),
+                    targetLocation: Location.Provinces,
+                    effect: increaseLimitOnAbilities({ targetAbility: ability })
+                }))))
             .chatText('add an additional use to each of {0}\'s abilities');
     }
 }

@@ -217,7 +217,7 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
 
             this.player1.clickCard(this.p2_4);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
@@ -228,7 +228,7 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
 
             this.player1.clickCard(this.p2_1);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
@@ -239,7 +239,7 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
 
             this.player1.clickCard(this.p2_3);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
@@ -250,7 +250,7 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
 
             this.player1.clickCard(this.p2_4);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
@@ -261,7 +261,7 @@ describe('Governors Spy', function() {
             expect(this.player1).toBeAbleToSelect(this.p2_2);
             expect(this.player1).toBeAbleToSelect(this.p2_3);
             expect(this.player1).toBeAbleToSelect(this.p2_4);
-            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
+            expect(this.player1).toBeAbleToSelect(this.p2_Stronghold);
 
             this.player1.clickCard(this.p2_1);
             expect(this.getChatLogs(1)).toContain('player1 places a card');
@@ -284,6 +284,42 @@ describe('Governors Spy', function() {
             expect(this.shoju.location).toBe('province 4');
             expect(this.blackmail.location).toBe('province 1');
             expect(this.asami.location).toBe('province 2');
+        });
+
+        it('can put a card on the stronghold province while each other province still gets one', function() {
+            this.noMoreActions();
+
+            this.player2.moveCard(this.shoju, 'province 1');
+            this.player2.moveCard(this.asami, 'province 1');
+
+            this.initiateConflict({
+                attackers: [this.spy],
+                defenders: [],
+                type: 'political'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.spy);
+            this.player1.clickPrompt('player2');
+
+            this.player1.clickPrompt('Alibi Artist');
+            this.player1.clickCard(this.p2_Stronghold);
+            this.player1.clickPrompt('Bayushi Liar');
+            this.player1.clickCard(this.p2_Stronghold);
+            this.player1.clickPrompt('Bayushi Manipulator');
+            expect(this.player1).not.toBeAbleToSelect(this.p2_Stronghold);
+            this.player1.clickCard(this.p2_1);
+            this.player1.clickPrompt('Bayushi Shoju');
+            this.player1.clickCard(this.p2_2);
+            this.player1.clickPrompt('Blackmail Artist');
+            this.player1.clickCard(this.p2_3);
+            this.player1.clickPrompt('Yogo Asami');
+            this.player1.clickCard(this.p2_4);
+
+            expect(this.alibi.location).toBe('stronghold province');
+            expect(this.liar.location).toBe('stronghold province');
+            expect(this.manipulator.location).toBe('province 1');
+            expect(this.asami.location).toBe('province 4');
         });
 
         it('should work with both players', function() {

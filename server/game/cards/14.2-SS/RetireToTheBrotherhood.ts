@@ -53,14 +53,15 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                 ]),
                 chatMessage((context) => this.enteredPlayMessage(context, context.player)),
                 chatMessage((context) => this.enteredPlayMessage(context, context.player.opponent)),
+                // a player who discarded nothing revealed nothing, so their deck isn't shuffled (EmeraldDB ruling)
                 multiple([
                     shuffleDeck((context) => ({
                         deck: Location.DynastyDeck,
-                        target: context.player
+                        target: this.getDiscardedCount(context, context.player) > 0 ? context.player : []
                     })),
                     shuffleDeck((context) => ({
                         deck: Location.DynastyDeck,
-                        target: context.player.opponent ? context.player.opponent : []
+                        target: context.player.opponent && this.getDiscardedCount(context, context.player.opponent) > 0 ? context.player.opponent : []
                     }))
                 ])
             ]));
@@ -72,8 +73,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
         if(!player) {
             return { revealed, characters };
         }
-        const discarded = context.events.filter((event) =>
-            event.is(EventName.OnCardLeavesPlay) && !event.cancelled && event.cardStateWhenLeftPlay?.controller === player).length;
+        const discarded = this.getDiscardedCount(context, player);
 
         //Reveal cards until as many characters as were discarded are found
         for(const card of player.dynastyDeck) {
@@ -86,6 +86,11 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
             }
         }
         return { revealed, characters };
+    }
+
+    private getDiscardedCount(context: AbilityContext, player: Player) {
+        return context.events.filter((event) =>
+            event.is(EventName.OnCardLeavesPlay) && !event.cancelled && event.cardStateWhenLeftPlay?.controller === player).length;
     }
 
     private enteredPlayMessage(context: AbilityContext, player: Player | undefined) {

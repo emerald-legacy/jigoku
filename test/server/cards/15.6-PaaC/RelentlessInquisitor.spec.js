@@ -39,7 +39,7 @@ describe('Relentless Inquisitor', function() {
                 expect(this.player2).toBeAbleToSelect(this.outrider);
                 expect(this.player2).toBeAbleToSelect(this.moto);
                 expect(this.player2).not.toBeAbleToSelect(this.toshimoko); // no fate & bowed
-                expect(this.player2).toBeAbleToSelect(this.challenger); // fate & bowed: only the fate can be removed
+                expect(this.player2).not.toBeAbleToSelect(this.challenger); // fate & bowed: a character that can't bow can't be chosen (EmeraldDB ruling)
                 expect(this.player2).not.toBeAbleToSelect(this.wayfinder); // not participating
                 expect(this.player2).not.toBeAbleToSelect(this.inquisitor); // not controlled by opponent
             });

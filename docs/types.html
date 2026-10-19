@@ -943,7 +943,7 @@ cardCannot({
     <li>the event's card is an event card whose owner has <code>eventsCannotBeCancelled()</code>;</li>
     <li>the event is <code>onCardLeavesPlay</code> of a card that cannot be prevented from leaving play.</li>
 </ul>
-<p><strong>Fields.</strong> Every event has <code>name</code>, <code>context</code>, <code>cancelled</code>, <code>resolved</code>, <code>cannotBeCancelled</code>, <code>window</code> and <code>is(name)</code>; <code>event.is(EventName.OnCardHonored)</code> narrows the type. Events a game action creates always have a <code>context</code>. Events the game flow raises have <code>context: null</code>, which is why many predicates read <code>event.context?.player</code>. The payload tables list the other fields, typed as in <code>server/game/Events/EventPayloads.ts</code>.</p>
+<p><strong>Fields.</strong> Every event has <code>name</code>, <code>context</code>, <code>cancelled</code>, <code>resolved</code>, <code>cannotBeCancelled</code>, <code>isContingent</code> (raised as a consequence of another event: the fate and attachments leaving with a character), <code>window</code> and <code>is(name)</code>; <code>event.is(EventName.OnCardHonored)</code> narrows the type. Events a game action creates always have a <code>context</code>. Events the game flow raises have <code>context: null</code>, which is why many predicates read <code>event.context?.player</code>. The payload tables list the other fields, typed as in <code>server/game/Events/EventPayloads.ts</code>.</p>
 <p><strong>Who may trigger.</strong> A <code>when</code> predicate is evaluated once per player, with <code>context.player</code> set to that player. The ability is then offered only to a player allowed to trigger it.</p>
 <p><strong>Listening without a trigger.</strong> Event names are also used by <code>until</code> maps of lasting effects (<code>Duration.Custom</code>), <code>when</code> of <code>delayedEffect</code>, <code>EventRegistrar.register()</code> and <code>registerTriggerWindow()</code>. These listen to the event itself. So they also see the two events that open no window: <code>onCardMoved</code> (from moving a card) and <code>onDeckShuffled</code>.</p>
 
@@ -2055,7 +2055,7 @@ this.wouldInterrupt('Switch the attacked province with a facedown province')
 this.reaction('Declare a new conflict')
     .when({
         onConflictFinished: (event, context) =&gt;
-            event.conflict.attackingPlayer === context.player &amp;&amp; event.conflict.winner === context.player &amp;&amp;
+            event.conflict.attackingPlayer === context.player &amp;&amp;
             this.game.getDeclaredConflictCount(context.player) === 1 &amp;&amp;
             event.conflict.getConflictProvinces().some((a) =&gt; a.isBroken)
     })
@@ -3228,7 +3228,7 @@ this.reaction('Honor a character')
     controller: Players.Self
 }, cardLastingEffect((context) =&gt; ({
     target: context.targetAbility?.card,
-    duration: this.getExtraUseDuration(context.targetAbility),
+    duration: getExtraUseDuration(context.targetAbility),
     effect: increaseLimitOnAbilities({
         targetAbility: context.targetAbility
     })

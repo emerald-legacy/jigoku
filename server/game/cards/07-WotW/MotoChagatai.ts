@@ -7,7 +7,6 @@ export default class MotoChagatai extends DrawCard {
     public override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
-                context.source.isAttacking() &&
                 !!context.game.currentConflict?.brokenProvinces.some((province) => province.controller === context.player.opponent),
             effect: doesNotBow()
         });

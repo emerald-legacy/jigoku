@@ -145,3 +145,41 @@ describe('A Perfect Cut', function() {
         });
     });
 });
+
+describe('A Perfect Cut on a character on the other player\'s side', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['steward-of-law']
+                },
+                player2: {
+                    hand: ['join-the-fray', 'a-perfect-cut'],
+                    dynastyDiscard: ['moto-chagatai']
+                }
+            });
+            this.steward = this.player1.findCardByName('steward-of-law');
+            this.chagatai = this.player2.placeCardInProvince('moto-chagatai', 'province 1');
+            this.noMoreActions();
+        });
+
+        it('honors it when its side wins the conflict', function() {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.steward],
+                defenders: []
+            });
+            this.player2.clickCard('join-the-fray');
+            this.player2.clickCard(this.chagatai);
+            this.player2.clickPrompt('player1');
+            expect(this.game.currentConflict.attackers).toContain(this.chagatai);
+            this.player1.pass();
+            this.player2.clickCard('a-perfect-cut');
+            this.player2.clickCard(this.chagatai);
+
+            this.noMoreActions();
+            expect(this.chagatai.isHonored).toBe(true);
+        });
+    });
+});
