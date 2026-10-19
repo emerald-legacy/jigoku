@@ -11,7 +11,7 @@ export default class BayushiTruthseeker extends DrawCard {
             .when({
                 afterConflict: (event, context) =>
                     context.player.opponent !== undefined &&
-                    event.conflict.winner === context.source.controller &&
+                    event.conflict.isOnWinningSide(context.source) &&
                     context.source.isAttacking()
             })
             .cardMenu((context) => ({

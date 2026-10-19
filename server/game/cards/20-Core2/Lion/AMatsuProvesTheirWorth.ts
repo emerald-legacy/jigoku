@@ -25,7 +25,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                         delayedEffect({
                             when: {
                                 afterConflict: (event) =>
-                                    event.conflict.winner !== target.controller || !target.isParticipating()
+                                    !event.conflict.isOnWinningSide(target)
                             },
                             gameAction: discardFromPlay(),
                             message: (context) => msg`${target} is discarded from play due to failing at ${context.source}`
@@ -33,7 +33,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                         delayedEffect({
                             when: {
                                 afterConflict: (event) =>
-                                    event.conflict.winner === target.controller && target.isParticipating()
+                                    event.conflict.isOnWinningSide(target)
                             },
                             gameAction: multiple([
                                 honor(),

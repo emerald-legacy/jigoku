@@ -11,8 +11,7 @@ export default class ScarletSabre extends DrawCard {
                 .when({
                     afterConflict: (event, context) =>
                         context.player.opponent &&
-                        context.source.isParticipating() &&
-                        event.conflict.winner === context.source.controller
+                        event.conflict.isOnWinningSide(context.source)
                 })
                 .loseFate((context) => ({ target: context.player.opponent })))
         });

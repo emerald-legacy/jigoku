@@ -9,7 +9,7 @@ class GarantoGuardian extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Resolve a ring effect')
             .when({
-                afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.source.controller && context.source.isParticipating()
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source) && context.source.isDefending()
             })
             .selectRing((context) => ({
                 activePromptTitle: 'Choose a ring effect to resolve',

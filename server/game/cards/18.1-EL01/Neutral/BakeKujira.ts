@@ -11,7 +11,7 @@ export default class BakeKujira extends DrawCard {
         this.reaction('Eat a character')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller && context.source.isParticipating()
+                    event.conflict.isOnWinningSide(context.source)
             })
             .target({
                 cardType: CardType.Character,

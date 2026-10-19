@@ -9,8 +9,7 @@ class KyofukisHammer extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Discard a card from a province')
             .when({
-                afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
-                                                    event.conflict.winner === context.source.parentCharacter.controller
+                afterConflict: (event, context) => !!context.source.parentCharacter && event.conflict.isOnWinningSide(context.source.parentCharacter)
             })
             .target({
                 location: Location.Provinces,

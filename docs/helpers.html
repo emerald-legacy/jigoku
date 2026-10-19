@@ -2138,6 +2138,18 @@ conflict.getCurrentSkill(context.player, ConflictType.Political) &gt; conflict.g
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DesperateAide.ts">Desperate Aide</a></p>
   </div>
 
+  <div class="ref" id="q-isOnWinningSide" data-name="isOnWinningSide isOnLosingSide">
+    <h3><code>conflict.isOnWinningSide(card)</code>, <code>conflict.isOnLosingSide(card)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isOnWinningSide">#</a></h3>
+    <p>"This character wins / loses the conflict": the card participates on the winning (losing) side. RRG Winning a Conflict: the side counts, not the controller, so a character put on the other player's side (Join the Fray) wins with that side. <code>false</code> while nobody has won.</p>
+    <ul class="edge">
+      <li>"You win a conflict" stays <code>event.conflict.winner === context.player</code>.</li>
+      <li>Add <code>card.isAttacking()</code> / <code>card.isDefending()</code> for "as the attacker / defender".</li>
+    </ul>
+    <pre><code>// Asako Diplomat: Reaction: After this character wins a conflict, choose a character – honor or dishonor that character.
+afterConflict: (event, context) =&gt; event.conflict.isOnWinningSide(context.source)</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsakoDiplomat.ts">Asako Diplomat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Deathseeker.ts">Deathseeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HonoredBlade.ts">Honored Blade</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.2-BoB/UtakuRumaru.ts">Utaku Rumaru</a> (77 card files)</p>
+  </div>
+
   <div class="ref" id="q-getAttackers" data-name="getAttackers getDefenders">
     <h3><code>conflict.getAttackers(predicate?)</code>, <code>conflict.getDefenders(predicate?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getAttackers">#</a></h3>
     <p>"each attacking character", "each defending character": the attacking (defending) characters that match <code>predicate</code>, including characters that participate from home on that side.</p>

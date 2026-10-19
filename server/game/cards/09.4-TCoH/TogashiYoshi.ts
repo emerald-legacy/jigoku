@@ -8,8 +8,7 @@ class TogashiYoshi extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Gain 1 fate from an unclaimed ring')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
-                    context.source.isParticipating()
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source)
             })
             .selectRing((context) => ({
                 ringCondition:  (ring) => ring.fate >= 1 && ring.isUnclaimed(),

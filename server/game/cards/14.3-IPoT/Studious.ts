@@ -18,7 +18,7 @@ class Studious extends DrawCard {
             effect: gainAbility.reaction('Draw a card', (ability) => ability
                 .when({
                     afterConflict: (event, context) =>
-                        event.conflict.winner === context.source.controller && context.source.isParticipating()
+                        event.conflict.isOnWinningSide(context.source)
                 })
                 .draw())
         });

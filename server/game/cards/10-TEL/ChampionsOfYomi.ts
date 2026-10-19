@@ -11,9 +11,10 @@ class ChampionsOfYomi extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Put into play')
             .when({
-                afterConflict: (event, context) => event.conflict.loser === context.player
-                    && event.conflict.defendingPlayer !== context.player
-                    && event.conflict.getAttackers().length !== 0
+                afterConflict: (event, context) =>
+                    // a character you control on the losing attacking side, whoever is the attacking player
+                    event.conflict.loser === event.conflict.attackingPlayer &&
+                    event.conflict.getAttackers().some((card) => card.controller === context.player)
             })
             .location(Location.DynastyDiscardPile)
             .cost(costs.bow({

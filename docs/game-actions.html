@@ -434,8 +434,7 @@ this.forcedReaction('Reap your rewards')
     .when({
         afterConflict: (_event, context) =&gt; !!context.source.parentCharacter
     })
-    .if((context) =&gt; !!context.source.parentCharacter?.isParticipating() &amp;&amp;
-        context.event.conflict.winner === context.source.parentCharacter?.controller)
+    .if((context) =&gt; !!context.source.parentCharacter &amp;&amp; context.event.conflict.isOnWinningSide(context.source.parentCharacter))
         .gainFate(1)
         .discardFromPlay()
     .otherwise()
@@ -945,7 +944,7 @@ this.action('Search top 8 card for a spell')
 this.reaction('Force opponent to discard a card')
     .when({
         afterConflict: (event, context) =&gt;
-            event.conflict.loser === context.player &amp;&amp;
+            event.conflict.isOnLosingSide(context.source) &amp;&amp;
             context.source.isAttacking() &amp;&amp;
             context.player.opponent &amp;&amp;
             context.player.hand.length &lt; context.player.opponent.hand.length

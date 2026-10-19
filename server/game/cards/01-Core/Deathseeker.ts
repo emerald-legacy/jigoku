@@ -10,7 +10,7 @@ class Deathseeker extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Remove fate/discard character')
             .when({
-                afterConflict: (event, context) => event.conflict.loser === context.player && context.source.isAttacking()
+                afterConflict: (event, context) => event.conflict.isOnLosingSide(context.source) && context.source.isAttacking()
             })
             .cost(costs.sacrificeSelf())
             .target({

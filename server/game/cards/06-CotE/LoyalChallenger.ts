@@ -12,16 +12,14 @@ class LoyalChallenger extends DrawCard {
             effect: [
                 delayedEffect({
                     when: {
-                        afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
-                            context.source.isDrawCard() && context.source.isParticipating()
+                        afterConflict: (event, context) => context.source.isDrawCard() && event.conflict.isOnWinningSide(context.source)
                     },
                     message: (context) => msg`${context.player} gains 1 honor due to ${context.source} winning a conflict`,
                     gameAction: gainHonor((context) => ({ target: context.player }))
                 }),
                 delayedEffect({
                     when: {
-                        afterConflict: (event, context) => event.conflict.loser === context.source.controller &&
-                            context.source.isDrawCard() && context.source.isParticipating()
+                        afterConflict: (event, context) => context.source.isDrawCard() && event.conflict.isOnLosingSide(context.source)
                     },
                     message: (context) => msg`${context.player} loses 1 honor due to ${context.source} losing a conflict`,
                     gameAction: loseHonor((context) => ({ target: context.player }))

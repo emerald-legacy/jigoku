@@ -9,7 +9,7 @@ class HigashiKazeCompany extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Prevent a character from bowing')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source)
             })
             .target({
                 cardType: CardType.Character,

@@ -16,8 +16,7 @@ class UtakuBattleSteed extends DrawCard {
 
         this.reaction('Honor attached character')
             .when({
-                afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
-                                                   event.conflict.winner === context.source.parentCharacter.controller &&
+                afterConflict: (event, context) => !!context.source.parentCharacter && event.conflict.isOnWinningSide(context.source.parentCharacter) &&
                                                    event.conflict.conflictType === ConflictType.Military
             })
             .honor((context) => ({

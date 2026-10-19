@@ -8,7 +8,7 @@ class MantisSeafarer extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Gain a fate')
             .when({
-                afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source)
             })
             .cost(costs.payHonor(1))
             .gainFate()

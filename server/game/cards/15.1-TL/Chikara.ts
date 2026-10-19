@@ -18,7 +18,7 @@ class Chikara extends DrawCard {
             effect: gainAbility.reaction('Return all fate from, then sacrifice a character', (ability) => ability
                 .when({
                     afterConflict: (event, context) => {
-                        return event.conflict.winner === context.source.controller && context.source.isParticipating();
+                        return event.conflict.isOnWinningSide(context.source);
                     }
                 })
                 .target({

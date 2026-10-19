@@ -9,7 +9,7 @@ class AkodoMakoto extends DrawCard {
         this.reaction('Remove fate/discard character')
             .when({
                 afterConflict: (event, context) => {
-                    return event.conflict.winner === context.source.controller && context.source.isParticipating();
+                    return event.conflict.isOnWinningSide(context.source);
                 }
             })
             .target({

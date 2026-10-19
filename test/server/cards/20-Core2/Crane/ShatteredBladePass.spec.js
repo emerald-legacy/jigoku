@@ -66,3 +66,44 @@ describe('Shattered Blade Pass', function () {
         });
     });
 });
+
+describe('Shattered Blade Pass with Contested Countryside', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['aggressive-moto', 'giver-of-gifts'],
+                    dynastyDiscard: ['contested-countryside'],
+                    role: 'keeper-of-void'
+                },
+                player2: {
+                    inPlay: ['togashi-initiate'],
+                    provinces: ['shattered-blade-pass']
+                }
+            });
+            this.aggressiveMoto = this.player1.findCardByName('aggressive-moto');
+            this.giverOfGifts = this.player1.findCardByName('giver-of-gifts');
+            this.countryside = this.player1.findCardByName('contested-countryside');
+            this.player1.moveCard(this.countryside, 'province 1');
+            this.countryside.facedown = false;
+            this.shatteredBladePass = this.player2.findCardByName('shattered-blade-pass', 'province 1');
+            this.game.checkGameState(true);
+        });
+
+        it('cannot be used by the attacker, who controls participating characters, even without defenders', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.giverOfGifts],
+                defenders: [],
+                province: this.shatteredBladePass
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.shatteredBladePass);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.game.currentConflict.attackers).not.toContain(this.aggressiveMoto);
+        });
+    });
+});

@@ -13,7 +13,7 @@ class SlovenlyScavenger extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Shuffle a discard pile into a deck')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source)
             })
             .cost(costs.sacrificeSelf())
             .selectFrom({

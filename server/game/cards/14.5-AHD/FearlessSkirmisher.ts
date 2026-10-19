@@ -9,8 +9,7 @@ class FearlessSkirmisher extends DrawCard {
         this.reaction('Move a dishonored status token')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller &&
-                    context.source.isParticipating() &&
+                    event.conflict.isOnWinningSide(context.source) &&
                     event.conflict.conflictType === ConflictType.Military
             })
             .tokenTarget({

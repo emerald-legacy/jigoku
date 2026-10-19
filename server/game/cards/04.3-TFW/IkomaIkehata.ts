@@ -8,7 +8,7 @@ class IkomaIkehata extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Honor a character and draw a card')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() && event.conflict.conflictType === ConflictType.Political
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source) && event.conflict.conflictType === ConflictType.Political
             })
             .target({
                 activePromptTitle: 'Choose a character to honor',

@@ -7,7 +7,7 @@ class QuarrelsomeYouth extends DrawCard {
         this.reaction('Force opponent to discard a card')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.loser === context.player &&
+                    event.conflict.isOnLosingSide(context.source) &&
                     context.source.isAttacking() &&
                     context.player.opponent &&
                     context.player.hand.length < context.player.opponent.hand.length

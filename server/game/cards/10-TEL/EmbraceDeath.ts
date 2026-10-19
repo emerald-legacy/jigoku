@@ -10,9 +10,8 @@ class EmbraceDeath extends DrawCard {
         this.reaction('Sacrifice a bushi, remove a fate/discard')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.loser === context.player &&
-                    context.player.isAttackingPlayer() &&
-                    event.conflict.getAttackers().some((card) => card.hasTrait(Trait.Bushi))
+                    event.conflict.loser === event.conflict.attackingPlayer &&
+                    event.conflict.getAttackers().some((card) => card.hasTrait(Trait.Bushi) && card.controller === context.player)
             })
             .cost(costs.sacrifice({
                 cardType: CardType.Character,

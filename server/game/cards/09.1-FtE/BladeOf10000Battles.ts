@@ -13,8 +13,7 @@ class BladeOf10000Battles extends DrawCard {
 
         this.reaction('Add a card from the discard pile to the hand')
             .when({
-                afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
-                                                    event.conflict.winner === context.source.parentCharacter.controller &&
+                afterConflict: (event, context) => !!context.source.parentCharacter && event.conflict.isOnWinningSide(context.source.parentCharacter) &&
                                                     context.player.isMoreHonorable()
             })
             .target({

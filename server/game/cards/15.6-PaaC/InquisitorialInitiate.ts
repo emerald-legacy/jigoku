@@ -20,8 +20,7 @@ export default class InquisitorialInitiate extends DrawCard {
         this.reaction('Discard an opponent\'s card')
             .when({
                 afterConflict: (event, context) =>
-                    context.source.isParticipating() &&
-                    event.conflict.winner === context.source.controller &&
+                    event.conflict.isOnWinningSide(context.source) &&
                     revealCount(context) > 0
             })
             .targetCards({

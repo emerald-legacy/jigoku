@@ -10,8 +10,7 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
             .when({
                 afterConflict: (_event, context) => !!context.source.parentCharacter
             })
-            .if((context) => !!context.source.parentCharacter?.isParticipating() &&
-                context.event.conflict.winner === context.source.parentCharacter?.controller)
+            .if((context) => !!context.source.parentCharacter && context.event.conflict.isOnWinningSide(context.source.parentCharacter))
                 .gainFate(1)
                 .discardFromPlay()
             .otherwise()

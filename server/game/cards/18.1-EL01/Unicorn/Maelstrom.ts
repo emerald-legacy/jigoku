@@ -104,9 +104,7 @@ export default class Maelstrom extends ProvinceCard {
                         effect: delayedEffect({
                             when: {
                                 afterConflict: (event) =>
-                                    event.conflict.winner === target.controller &&
-                                        target.isParticipating() &&
-                                        target.controller === triggeringPlayer
+                                    event.conflict.isOnWinningSide(target) && target.controller === triggeringPlayer
                             },
                             message: () => msg`${target} is honored due to ${context.source}'s effect`,
                             gameAction: honor()

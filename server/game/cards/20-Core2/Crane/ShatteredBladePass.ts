@@ -8,7 +8,7 @@ export default class ShatteredBladePass extends ProvinceCard {
 
     public override setupCardAbilities() {
         this.action('Ready a character and move it to the conflict')
-            .condition((context) => context.game.currentConflict !== null && context.game.currentConflict.defenders.length === 0)
+            .condition((context) => !context.player.cardsInPlay.some((card) => card.isParticipating()))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

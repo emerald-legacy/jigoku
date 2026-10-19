@@ -6,10 +6,7 @@ class TirelessSodanSenzo extends DrawCard {
 
     override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => {
-                const conflict = this.game.currentConflict;
-                return context.source.isParticipating() && conflict !== null && conflict.loser === context.player;
-            },
+            condition: (context) => !!this.game.currentConflict?.isOnLosingSide(context.source),
             effect: doesNotBow()
         });
     }

@@ -7,7 +7,7 @@ class StaunchHida extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Resolve the ring effect')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source) && context.source.isDefending()
             })
             .resolveConflictRing()
             .max(perConflict(1));

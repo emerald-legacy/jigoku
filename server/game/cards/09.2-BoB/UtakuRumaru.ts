@@ -22,7 +22,7 @@ class UtakuRumaru extends DrawCard {
 
         this.reaction('Honor a participating character')
             .when({
-                afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source)
             })
             .cost(costs.discardCard({
                 location: Location.Hand

@@ -7,7 +7,7 @@ class BlackmailArtist extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Take 1 honor')
             .when({
-                afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller &&
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source) &&
                                                    context.player.opponent && event.conflict.conflictType === ConflictType.Political
             })
             .takeHonor();

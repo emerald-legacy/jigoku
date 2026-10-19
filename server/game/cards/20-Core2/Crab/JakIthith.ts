@@ -23,7 +23,7 @@ export default class JakIthith extends DrawCard {
         this.reaction('Take control of an attachment')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller && context.source.isParticipating()
+                    event.conflict.isOnWinningSide(context.source)
             })
             .target({
                 name: ATTACHMENT,

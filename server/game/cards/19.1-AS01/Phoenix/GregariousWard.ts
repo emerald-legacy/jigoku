@@ -8,8 +8,7 @@ export default class GregariousWard extends DrawCard {
         this.reaction('Gain fate')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller &&
-                    context.source.isParticipating() &&
+                    event.conflict.isOnWinningSide(context.source) &&
                     event.conflict.hasMoreParticipants(context.player)
             })
             .placeFate()

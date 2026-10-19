@@ -448,7 +448,7 @@ this.conflictAction('Move two monks to the conflict', { conflictType: ConflictTy
   <pre><code>// Blackmail Artist: Reaction: After this character wins a [conflict-political] conflict – take 1 honor from your opponent.
 this.reaction('Take 1 honor')
     .when({
-        afterConflict: (event, context) =&gt; context.source.isParticipating() &amp;&amp; event.conflict.winner === context.source.controller &amp;&amp;
+        afterConflict: (event, context) =&gt; event.conflict.isOnWinningSide(context.source) &amp;&amp;
                                            context.player.opponent &amp;&amp; event.conflict.conflictType === ConflictType.Political
     })
     .takeHonor();</code></pre>
@@ -1953,7 +1953,7 @@ onStatusTokenMoved: (event, context) =&gt;
   <pre><code>// Blackmail Artist: Reaction: After this character wins a [conflict-political] conflict – take 1 honor from your opponent.
 this.reaction('Take 1 honor')
     .when({
-        afterConflict: (event, context) =&gt; context.source.isParticipating() &amp;&amp; event.conflict.winner === context.source.controller &amp;&amp;
+        afterConflict: (event, context) =&gt; event.conflict.isOnWinningSide(context.source) &amp;&amp;
                                            context.player.opponent &amp;&amp; event.conflict.conflictType === ConflictType.Political
     })
     .takeHonor();</code></pre>
@@ -2621,9 +2621,9 @@ this.duelFocus('Set bid to 0')
 this.wouldInterrupt('Cancel a duel')
     .when({
         onDuelInitiated: (event, context) =&gt;
+            // errata: any duel that targets a character you control, not only an opponent's
             !!event.context &amp;&amp;
-            event.context.player === context.player.opponent &amp;&amp;
-            …
+            Object.values(event.context.targets).flat().some((card) =&gt; card?.controller === context.player)
     })
     .cancel()</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/StayYourHand.ts">Stay Your Hand</a></p>
@@ -3090,13 +3090,12 @@ if(
   <h3><code>context.player</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-player">#</a></h3>
   <p>The player using the ability: who triggers or plays it, pays its costs and is "you" in its text. Player actions (<code>gainHonor</code>, <code>draw</code>, …) default to this player; <code>context.player.opponent</code> is the opponent (undefined in a solo game).</p>
   <ul class="edge">
-    <li>For a triggered ability, a context is created for each player in turn, and the <code>when</code> predicate runs with each. <code>meetsRequirements</code> then keeps only a player allowed to trigger it: the controller, unless <code>anyPlayer()</code> or <code>canBeTriggeredByOpponent</code> is set. So in the predicate <code>context.player</code> is not always the card's controller. When the text means the controller, compare with <code>context.source.controller</code>, as Asako Diplomat does below.</li>
+    <li>For a triggered ability, a context is created for each player in turn, and the <code>when</code> predicate runs with each. <code>meetsRequirements</code> then keeps only a player allowed to trigger it: the controller, unless <code>anyPlayer()</code> or <code>canBeTriggeredByOpponent</code> is set. So in the predicate <code>context.player</code> is not always the card's controller. When the text means the card or its controller, check <code>context.source</code>: its <code>controller</code>, or its side in the conflict, as Asako Diplomat does below.</li>
     <li>An event card can be played by a player who can play it from where it is, even if they do not own it.</li>
     <li>The game context (<code>game.getGameContext()</code>) has no player, so <code>event.context.player</code> can be undefined.</li>
   </ul>
   <pre><code>// Asako Diplomat: Reaction: After this character wins a conflict, choose a character – honor or dishonor that character.
-afterConflict: (event, context) =&gt;
-    event.conflict.winner === context.source.controller &amp;&amp; context.source.isParticipating()</code></pre>
+afterConflict: (event, context) =&gt; event.conflict.isOnWinningSide(context.source)</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsakoDiplomat.ts">Asako Diplomat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Blackmail.ts">Blackmail</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BlackmailArtist.ts">Blackmail Artist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CityOfTheOpenHand.ts">City of the Open Hand</a></p>
 </div>
 <div class="ref" id="ctx-source" data-name="source">

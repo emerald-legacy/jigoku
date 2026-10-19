@@ -12,7 +12,7 @@ export default class CollectorOfFavors extends DrawCard {
             effect: gainAbility.reaction('Gain 1 fate', (ability) => ability
                 .when({
                     afterConflict: (event, context) =>
-                        event.conflict.winner === context.source.controller && context.source.isParticipating()
+                        event.conflict.isOnWinningSide(context.source)
                 })
                 .gainFate())
         });

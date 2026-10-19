@@ -10,7 +10,7 @@ export default class GoldenPlainsRaider extends DrawCard {
             .when({
                 afterConflict: (event, context) =>
                     context.source.isAttacking() &&
-                    event.conflict.winner === context.source.controller &&
+                    event.conflict.isOnWinningSide(context.source) &&
                     context.player.opponent !== undefined
             })
             .target({

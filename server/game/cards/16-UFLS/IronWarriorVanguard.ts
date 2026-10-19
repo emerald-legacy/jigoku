@@ -8,8 +8,7 @@ class IronWarriorVanguard extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
-                                                   context.source.isParticipating()
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source)
             })
             .target({
                 activePromptTitle: 'Choose a character to honor',

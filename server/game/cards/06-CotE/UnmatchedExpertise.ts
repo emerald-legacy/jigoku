@@ -10,8 +10,7 @@ class UnmatchedExpertise extends DrawCard {
         });
         this.forcedReaction('Removed after attached character loses a conflict')
             .when({
-                afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
-                                                   event.conflict.loser === context.source.parentCharacter.controller
+                afterConflict: (event, context) => !!context.source.parentCharacter && event.conflict.isOnLosingSide(context.source.parentCharacter)
             })
             .discardFromPlay();
     }

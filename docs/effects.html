@@ -2112,7 +2112,7 @@ this.persistentEffect({
     </ul>
     <pre><code>// Shadowlands Hunter: Each conflict this character wins while attacking is considered to be unopposed.
 this.persistentEffect({
-    condition: (context) =&gt; context.source.isAttacking() &amp;&amp; this.game.currentConflict?.winner === context.player,
+    condition: (context) =&gt; context.source.isAttacking() &amp;&amp; !!this.game.currentConflict?.isOnWinningSide(context.source),
     effect: forceConflictUnopposed()
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/ShadowlandsHunter.ts">Shadowlands Hunter</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/MaliciousTimekeeper.ts">Malicious Timekeeper</a></p>
@@ -2378,7 +2378,7 @@ this.action('Allow attacking the stronghold')
     </ul>
     <pre><code>// Isawa Kaede: … If this character wins the conflict as an attacker, instead of choosing an element to resolve, resolve each of that ring's effects.
 this.persistentEffect({
-    condition: (context) =&gt; context.source.isAttacking() &amp;&amp; this.game.currentConflict?.winner === context.player,
+    condition: (context) =&gt; context.source.isAttacking() &amp;&amp; !!this.game.currentConflict?.isOnWinningSide(context.source),
     effect: modifyConflictElementsToResolve(5)
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/IsawaKaede.ts">Isawa Kaede</a></p>

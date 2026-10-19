@@ -8,7 +8,7 @@ class EloquentAdvocate extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Look at top 2 cards of conflict deck')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating() &&
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source) &&
                                                    event.conflict.conflictType === ConflictType.Political
             })
             .deckSearch({

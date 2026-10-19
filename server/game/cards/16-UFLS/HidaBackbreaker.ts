@@ -8,8 +8,7 @@ class HidaBackbreaker extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Dishonor a character')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
-                                                   context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source) && context.game.isDuringConflict(ConflictType.Military)
             })
             .target({
                 activePromptTitle: 'Choose a character to dishonor',

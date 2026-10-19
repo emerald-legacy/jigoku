@@ -11,7 +11,7 @@ class MercenaryCompany extends DrawCard {
     override setupCardAbilities() {
         this.forcedReaction('Give control of this character')
             .when({
-                afterConflict: (event, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()
+                afterConflict: (event, context) => !!context.player.opponent && event.conflict.isOnLosingSide(context.source)
                     && loseFate().canAffect(context.player.opponent, context)
                     && placeFate().canAffect(context.source, context)
             })

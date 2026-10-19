@@ -10,8 +10,7 @@ export default class YasukiYoshi extends DrawCard {
         this.reaction('Cause honor loss to the conflict loser')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller &&
-                    context.source.isParticipating()
+                    event.conflict.isOnWinningSide(context.source)
             })
             .loseHonor((context) => ({
                 target: context.event.conflict.loser

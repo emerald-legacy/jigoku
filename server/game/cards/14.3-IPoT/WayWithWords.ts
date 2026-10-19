@@ -10,8 +10,7 @@ class WayWithWords extends DrawCard {
             effect: gainAbility.reaction('Take 1 honor', (ability) => ability
                 .when({
                     afterConflict: (event, context) =>
-                        context.source.isParticipating() &&
-                        event.conflict.winner === context.source.controller &&
+                        event.conflict.isOnWinningSide(context.source) &&
                         context.player.opponent &&
                         event.conflict.conflictType === ConflictType.Political
                 })

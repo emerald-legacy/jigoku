@@ -6,7 +6,7 @@ class ShadowlandsHunter extends DrawCard {
 
     override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.source.isAttacking() && this.game.currentConflict?.winner === context.player,
+            condition: (context) => context.source.isAttacking() && !!this.game.currentConflict?.isOnWinningSide(context.source),
             effect: forceConflictUnopposed()
         });
     }

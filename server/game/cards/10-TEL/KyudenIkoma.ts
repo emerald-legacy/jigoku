@@ -10,9 +10,9 @@ export default class KyudenIkoma extends StrongholdCard {
         this.reaction('Bow a non-champion')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.loser === context.player &&
-                    event.conflict.defendingPlayer !== context.player &&
-                    event.conflict.getAttackers().length !== 0
+                    // a character you control on the losing attacking side, whoever is the attacking player
+                    event.conflict.loser === event.conflict.attackingPlayer &&
+                    event.conflict.getAttackers().some((card) => card.controller === context.player)
             })
             .cost(costs.bowSelf())
             .target({

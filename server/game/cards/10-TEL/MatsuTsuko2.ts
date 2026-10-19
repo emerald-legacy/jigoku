@@ -10,7 +10,7 @@ export default class MatsuTsuko2 extends DrawCard {
         this.reaction('Break the province')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller &&
+                    event.conflict.isOnWinningSide(context.source) &&
                     context.source.isAttacking() &&
                     context.player.isMoreHonorable() &&
                     event.conflict.getConflictProvinces().some((p) => p.location !== Location.StrongholdProvince)

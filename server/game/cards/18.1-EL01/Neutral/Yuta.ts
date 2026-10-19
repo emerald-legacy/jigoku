@@ -6,7 +6,7 @@ class Yuta extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Steal a fate')
             .when({
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isAttacking()
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source) && context.source.isAttacking()
             })
             .takeFate();
     }

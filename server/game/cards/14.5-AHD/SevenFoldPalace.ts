@@ -8,8 +8,7 @@ export default class SevenFoldPalace extends StrongholdCard {
         this.reaction('Gain 2 Honor')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.player &&
-                    context.player.isAttackingPlayer() &&
+                    event.conflict.isAttackerTheWinner() &&
                     event.conflict.getAttackers().some((card) => card.isHonored && card.controller === context.player)
             })
             .cost(costs.bowSelf())

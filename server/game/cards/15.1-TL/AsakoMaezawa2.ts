@@ -9,8 +9,7 @@ export default class AsakoMaezawa2 extends DrawCard {
         this.reaction('Bow a character with no fate')
             .when({
                 afterConflict: (event, context) =>
-                    context.source.isParticipating() &&
-                    event.conflict.winner === context.source.controller &&
+                    event.conflict.isOnWinningSide(context.source) &&
                     context.player.opponent !== undefined
             })
             .target({

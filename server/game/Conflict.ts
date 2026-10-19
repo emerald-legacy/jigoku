@@ -522,6 +522,20 @@ export class Conflict extends GameObject {
         return defenderCanWin ? this.defendingPlayer : undefined;
     }
 
+    /** "this character wins the conflict" (RRG Winning a Conflict): it participates on the winning side, whoever controls it. */
+    isOnWinningSide(card: DrawCard): boolean {
+        return !!this.winner && this.isParticipatingFor(card, this.winner);
+    }
+
+    /** "this character loses the conflict": it participates on the losing side, whoever controls it. */
+    isOnLosingSide(card: DrawCard): boolean {
+        return !!this.loser && this.isParticipatingFor(card, this.loser);
+    }
+
+    private isParticipatingFor(card: DrawCard, player: Player): boolean {
+        return this.isParticipating(card) && (player === this.attackingPlayer ? this.isAttacking(card) : this.isDefending(card));
+    }
+
     isAttackerTheWinner() {
         return this.winner === this.attackingPlayer;
     }

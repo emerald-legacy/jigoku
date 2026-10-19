@@ -11,8 +11,7 @@ export default class YoungIseZumi extends DrawCard {
         this.reaction('Prevent a ring from being used for a conflict')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller &&
-                    context.source.isParticipating()
+                    event.conflict.isOnWinningSide(context.source)
             })
             .cost(costs.payFateToRing(1, () => true))
             .ringLastingEffect((context) => ({

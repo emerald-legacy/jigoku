@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { joint, returnRing, selectRing, takeRing } from '../../GameActions/GameActions.js';
+import { chatMessage, joint, returnRing, selectRing, takeRing } from '../../GameActions/GameActions.js';
 
 class AsakoTogama extends DrawCard {
     static id = 'asako-togama';
@@ -8,19 +8,18 @@ class AsakoTogama extends DrawCard {
     override setupCardAbilities() {
         this.action('Switch a claimed ring with an unclaimed one')
             .condition((context) => context.source.isParticipating())
-            .gameAction(joint([
+            .ringTarget({
+                activePromptTitle: 'Choose a ring to take',
+                ringCondition: (ring) => ring.isUnclaimed()
+            }, joint([
                 selectRing((context) => ({
                     activePromptTitle: 'Choose a ring to return',
                     ringCondition: (ring) => ring.claimedBy === context.player.name,
                     message: (context, ring) => msg`${context.player} returns the ${ring}`,
                     gameAction: returnRing()
                 })),
-                selectRing({
-                    activePromptTitle: 'Choose a ring to take',
-                    ringCondition: (ring) => ring.isUnclaimed(),
-                    message: (context, ring) => msg`${context.player} takes the ${ring}`,
-                    gameAction: takeRing({ takeFate: true })
-                })
+                takeRing((context) => ({ target: context.ring, takeFate: true })),
+                chatMessage((context) => msg`${context.player} takes the ${context.ring}`)
             ]))
             .chatText('switch a claimed ring with an unclaimed one');
     }

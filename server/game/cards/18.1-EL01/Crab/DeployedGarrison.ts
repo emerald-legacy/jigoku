@@ -19,9 +19,8 @@ export default class DeployedGarrison extends DrawCard {
         this.reaction('Does not bow at the end of the conflict')
             .when({
                 afterConflict: (event, context) =>
-                    context.player.isDefendingPlayer() &&
-                    event.conflict.winner === context.source.controller &&
-                    context.source.isParticipating() &&
+                    event.conflict.isOnWinningSide(context.source) &&
+                    context.source.isDefending() &&
                     this.conflictNearHolding(context, event.conflict)
             })
             .cardLastingEffect({

@@ -33,6 +33,16 @@ describe('Asako Togama', function() {
 
             this.player2.pass();
             this.player1.clickCard(this.togama);
+            expect(this.player1).toHavePrompt('Choose a ring to take');
+            expect(this.player1).not.toBeAbleToSelectRing('air');
+            expect(this.player1).toBeAbleToSelectRing('earth');
+            expect(this.player1).toBeAbleToSelectRing('fire');
+            expect(this.player1).toBeAbleToSelectRing('void');
+            expect(this.player1).not.toBeAbleToSelectRing('water');
+            // the ring to take is chosen before the ability resolves
+            expect(this.getChatLogs(3)).not.toContain('player1 uses Asako Togama to switch a claimed ring with an unclaimed one');
+
+            this.player1.clickRing('void');
             expect(this.player1).toHavePrompt('Choose a ring to return');
             expect(this.player1).toBeAbleToSelectRing('air');
             expect(this.player1).not.toBeAbleToSelectRing('earth');
@@ -41,22 +51,14 @@ describe('Asako Togama', function() {
             expect(this.player1).not.toBeAbleToSelectRing('water');
 
             this.player1.clickRing('air');
-            expect(this.player1).toHavePrompt('Choose a ring to take');
-            expect(this.player1).not.toBeAbleToSelectRing('air');
-            expect(this.player1).toBeAbleToSelectRing('earth');
-            expect(this.player1).toBeAbleToSelectRing('fire');
-            expect(this.player1).toBeAbleToSelectRing('void');
-            expect(this.player1).not.toBeAbleToSelectRing('water');
-
-            this.player1.clickRing('void');
             expect(this.player1.fate).toBe(fate + ringFate);
             expect(this.game.rings.air.isUnclaimed()).toBe(true);
             expect(this.game.rings.void.isUnclaimed()).toBe(false);
 
             expect(this.getChatLogs(6)).toContain('player1 uses Asako Togama to switch a claimed ring with an unclaimed one');
             expect(this.getChatLogs(5)).toContain('player1 returns the Air Ring');
-            expect(this.getChatLogs(4)).toContain('player1 takes the Void Ring');
-            expect(this.getChatLogs(3)).toContain('player1 takes 2 fate from Void Ring');
+            expect(this.getChatLogs(5)).toContain('player1 takes the Void Ring');
+            expect(this.getChatLogs(5)).toContain('player1 takes 2 fate from Void Ring');
         });
 
         it('should not work while not participating', function() {

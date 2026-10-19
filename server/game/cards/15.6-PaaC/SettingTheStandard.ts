@@ -10,7 +10,7 @@ class SettingTheStandard extends DrawCard {
             effect: gainAbility.reaction('Draw 2 cards and discard one', (ability) => ability
                 .when({
                     afterConflict: (event, context) =>
-                        event.conflict.winner === context.source.controller && context.source.isParticipating()
+                        event.conflict.isOnWinningSide(context.source)
                 })
                 .gameAction(sequential([
                     draw((context) => ({ target: context.player, amount: 2 })),

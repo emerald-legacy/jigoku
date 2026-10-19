@@ -11,7 +11,7 @@ export default class KakitaToshimoko extends DrawCard {
         this.wouldInterrupt('Initiate a military duel')
             .when({
                 afterConflict: (event, context) =>
-                    context.source.isParticipating() && event.conflict.loser === context.player
+                    event.conflict.isOnLosingSide(context.source)
             })
             .initiateDuel((context) => ({
                 type: DuelType.Military,

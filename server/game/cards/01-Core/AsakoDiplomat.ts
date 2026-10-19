@@ -10,7 +10,7 @@ export default class AsakoDiplomat extends DrawCard {
         this.reaction('Honor or dishonor a character')
             .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller && context.source.isParticipating()
+                    event.conflict.isOnWinningSide(context.source)
             })
             .target({
                 activePromptTitle: 'Choose a character to honor or dishonor',
