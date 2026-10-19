@@ -1,11 +1,10 @@
 import { msg } from '../../GameChat.js';
-import { CardType, DeckType, Duration, Location, Players } from '../../Constants.js';
+import { CardType, Duration, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import * as costs from '../../costs/index.js';
 import { delayedEffect } from '../../effects.js';
 import {
     cardLastingEffect,
-    handler,
+    discardCard,
     multiple,
     putIntoPlay,
     returnToDeck,
@@ -21,12 +20,9 @@ export default class SpectralVisitation extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => context.source === event.card
             })
-            .cost(costs.discardTopCardsFromDeck({ amount: 4, deck: DeckType.Dynasty }))
+            // errata: the discard is after the dash, "Then" chooses whether or not 4 cards were discarded
             .gameAction(sequential([
-                // always legal, so this can trigger when only the cards the cost discards give it a choice
-                handler({
-                    handler: () => true
-                }),
+                discardCard((context) => ({ target: context.player.dynastyDeck.slice(0, 4) })),
                 selectCard({
                     location: Location.DynastyDiscardPile,
                     cardType: CardType.Character,
@@ -48,7 +44,7 @@ export default class SpectralVisitation extends ProvinceCard {
                     message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the phase`
                 })
             ]))
-            .chatText('put a dynasty character into play')
+            .chatText((context) => msg`discard ${context.player.dynastyDeck.slice(0, 4)} and put a dynasty character into play`)
             .cannotTargetFirst();
     }
 }

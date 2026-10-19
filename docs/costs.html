@@ -68,7 +68,6 @@ this.conflictAction('Discard a character')
         <tr><td><code>dishonorAndSacrifice(…)</code></td><td><code>dishonorAndSacrifice</code>, <code>dishonorAndSacrificeStateWhenChosen</code></td><td>the card, a snapshot</td></tr>
         <tr><td><code>discardCardsOf(fn)</code></td><td><code>discardCard</code></td><td>the cards <code>fn</code> returned</td></tr>
         <tr><td><code>revealCardsOf(fn)</code></td><td><code>reveal</code></td><td>the revealed cards</td></tr>
-        <tr><td><code>discardTopCardsFromDeck(…)</code></td><td><code>discardTopCardsFromDeck</code></td><td>the discarded cards</td></tr>
         <tr><td><code>discardCardsUpToVariableX(n)</code></td><td><code>discardCardsUpToVariableX</code></td><td>the discarded cards</td></tr>
         <tr><td><code>discardHand()</code></td><td><code>discardHand</code></td><td>the discarded cards</td></tr>
         <tr><td><code>switchLocation()</code></td><td><code>switchLocation</code></td><td>the moved card</td></tr>
@@ -798,30 +797,6 @@ this.action('Make top card of conflict deck playable')
     .playerLastingEffect(() =&gt; ({ duration: Duration.UntilEndOfPhase, effect: showTopConflictCard(Players.Self) }))
     .chatText('play cards from their conflict deck this phase');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/CallingTheStorm.ts">Calling the Storm</a></p>
-  </div>
-
-  <div class="ref" id="co-discardTopCardsFromDeck" data-name="discardTopCardsFromDeck">
-    <h3><code>discardTopCardsFromDeck(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardTopCardsFromDeck">#</a></h3>
-    <p>"Discard the top N cards of your … deck": moves the top cards of one of the player's decks to its discard pile.</p>
-    <table>
-      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>amount</code></td><td><code>number</code></td><td>required</td><td>How many cards.</td></tr>
-        <tr><td><code>deck</code></td><td><code>DeckType</code></td><td>required</td><td><code>DeckType.Dynasty</code>, or the conflict deck for anything else.</td></tr>
-      </tbody>
-    </table>
-    <ul class="edge">
-      <li>Can't be paid when the deck holds fewer than <code>amount</code> cards.</li>
-      <li>The cards are moved directly, without a discard event: abilities that react to cards being discarded don't see them.</li>
-      <li>Records <code>discardTopCardsFromDeck</code>: the cards. Chat: <code>discarding {0}</code>.</li>
-    </ul>
-    <pre><code>// Spectral Visitation: Reaction: After this province is revealed, discard the top 4 cards of your dynasty deck. Choose a character in your dynasty discard pile - put that character into play. …
-this.reaction('put a character from your discard pile into play')
-    .when({ onCardRevealed: (event, context) =&gt; context.source === event.card })
-    .cost(costs.discardTopCardsFromDeck({ amount: 4, deck: DeckType.Dynasty }))
-    .gameAction(sequential([ … ]))
-    .cannotTargetFirst();</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/SpectralVisitation.ts">Spectral Visitation</a></p>
   </div>
 
   <div class="ref" id="co-revealCardsOf" data-name="revealCardsOf">

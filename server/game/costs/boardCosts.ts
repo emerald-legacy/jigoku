@@ -1,4 +1,4 @@
-import { CharacterStatus, DeckType, Location, TargetMode } from '../Constants.js';
+import { CharacterStatus, Location, TargetMode } from '../Constants.js';
 import * as GameActions from '../GameActions/GameActions.js';
 import { eraseSelectCardsProperties, SelectCardAction } from '../GameActions/SelectCardAction.js';
 import type { ReturnToDeckProperties } from '../GameActions/ReturnToDeckAction.js';
@@ -126,28 +126,6 @@ export function discardCard<const Types extends CardTypes = undefined, const Mod
         { location: Location.Hand, mode: TargetMode.Exactly, ...properties },
         (properties?.numCards ?? 0) > 1 ? `Select ${properties?.numCards} cards to discard` : 'Select card to discard'
     );
-}
-
-export function discardTopCardsFromDeck(properties: { amount: number; deck: DeckType }): Cost<{ discardTopCardsFromDeck: DrawCard[] }> {
-    const getDeck =
-        properties.deck === DeckType.Dynasty
-            ? (context: AbilityContext) => context.player.dynastyDeck
-            : (context: AbilityContext) => context.player.conflictDeck;
-    const destination =
-        properties.deck === DeckType.Dynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
-    return {
-        getActionName: (_context) => 'discardTopCardsFromDeck',
-        getCostMessage: (_context) => ['discarding {0}'],
-        canPay: (context) => getDeck(context).length >= properties.amount,
-        resolve: (context) => {
-            context.costs.discardTopCardsFromDeck = getDeck(context).slice(0, properties.amount);
-        },
-        pay: (context) => {
-            for(const card of context.costs.discardTopCardsFromDeck ?? []) {
-                card.controller.moveCard(card, destination);
-            }
-        }
-    };
 }
 
 /**

@@ -38,7 +38,7 @@ describe('Exposed Courtyard', function() {
             this.courtyard.facedown = false;
         });
 
-        it('should discard 2 cards as a cost', function () {
+        it('should discard the top 2 cards', function () {
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',
@@ -68,6 +68,21 @@ describe('Exposed Courtyard', function() {
             expect(this.player2).toBeAbleToSelect(this.fury);
         });
 
+        it('discards what is left if your deck has fewer than 2 cards (errata: the discard is part of the effect)', function () {
+            this.player2.reduceDeckToNumber('conflict deck', 0);
+            this.player2.moveCard(this.fury, 'conflict deck');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.warrior],
+                defenders: [this.tsuko]
+            });
+            this.player2.clickCard(this.courtyard);
+            expect(this.player2).toHavePrompt('Choose an event');
+            expect(this.player2.player.conflictDeck.length).toBe(0);
+            expect(this.player2).toBeAbleToSelect(this.fury);
+        });
+
         it('should not work in a pol conflict', function () {
             this.noMoreActions();
             this.initiateConflict({
@@ -87,7 +102,7 @@ describe('Exposed Courtyard', function() {
                 defenders: [this.tsuko]
             });
             this.player2.clickCard(this.courtyard);
-            expect(this.getChatLogs(5)).toContain('player2 uses Exposed Courtyard, discarding Fine Katana and Mirumoto\'s Fury to pick an event to make playable this conflict');
+            expect(this.getChatLogs(5)).toContain('player2 uses Exposed Courtyard to discard Fine Katana and Mirumoto\'s Fury and pick an event to make playable this conflict');
             expect(this.player2).toHavePrompt('Choose an event');
             expect(this.player2).toBeAbleToSelect(this.voice);
             expect(this.player2).toBeAbleToSelect(this.soul);

@@ -1,32 +1,10 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { canPlayFromOutOfPlay, delayedEffect, registerToPlayFromOutOfPlay } from '../../effects.js';
-import { cardLastingEffect, handler, returnToDeck, selectCard, sequential } from '../../GameActions/GameActions.js';
+import { cardLastingEffect, discardCard, returnToDeck, selectCard, sequential } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players, ConflictType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
-import type { Cost } from '../../costs/Cost.js';
-
-const exposedCourtyardCost = (): Cost<{ exposedCourtyardCost: DrawCard[] }> => ({
-    getActionName(_context) {
-        return 'exposedCourtyardCost';
-    },
-    getCostMessage(_context) {
-        return ['discarding {0}'];
-    },
-    canPay(context) {
-        return context.player.conflictDeck.length >= 2;
-    },
-    resolve(context) {
-        context.costs.exposedCourtyardCost = context.player.conflictDeck.slice(0, 2);
-    },
-    pay(context) {
-        const discardedCards = context.costs.exposedCourtyardCost ?? [];
-        discardedCards.slice(0, 2).forEach((card) => {
-            card.controller.moveCard(card, Location.ConflictDiscardPile);
-        });
-    }
-});
 
 class ExposedCourtyard extends DrawCard {
     static id = 'exposed-courtyard';
@@ -34,12 +12,8 @@ class ExposedCourtyard extends DrawCard {
     override setupCardAbilities() {
         this.action('Make an event in your conflict discard playable')
             .condition((context) => context.game.isDuringConflict(ConflictType.Military))
-            .cost(exposedCourtyardCost())
             .gameAction(sequential([
-                // always legal, so this can trigger when only the cards the cost discards give it a choice
-                handler({
-                    handler: () => true
-                }),
+                discardCard((context) => ({ target: context.player.conflictDeck.slice(0, 2) })),
                 selectCard((context) => ({
                     location: Location.ConflictDiscardPile,
                     cardType: CardType.Event,
@@ -61,7 +35,7 @@ class ExposedCourtyard extends DrawCard {
                     message: (context, card) => msg`${context.player} can play ${card} this conflict. It will be put on the bottom of the deck if it's played this conflict`
                 }))
             ]))
-            .chatText('pick an event to make playable this conflict')
+            .chatText((context) => msg`discard ${context.player.conflictDeck.slice(0, 2)} and pick an event to make playable this conflict`)
             .cannotTargetFirst();
     }
 
