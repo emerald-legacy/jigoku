@@ -8,7 +8,7 @@ class GaijinCustoms extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Ready a non-unicorn character')
-            .condition((context) => controlsClanCard(context.player, 'unicorn'))
+            .ifCondition((context) => controlsClanCard(context.player, 'unicorn'))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isFaction('unicorn')

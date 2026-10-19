@@ -2367,7 +2367,7 @@ effect: setMaxDeclaredConflicts(1)</code></pre>
     </ul>
     <pre><code>// Scouted Terrain: Action: During the conflict phase, choose an opponent. If that opponent controls at least 4 faceup provinces - you may attack that player's stronghold this phase.
 this.action('Allow attacking the stronghold')
-    .condition((context) =&gt; !!context.player.opponent &amp;&amp; context.player.getNumberOfOpponentsFaceupProvinces() &gt;= 4)
+    .ifCondition((context) =&gt; !!context.player.opponent &amp;&amp; context.player.getNumberOfOpponentsFaceupProvinces() &gt;= 4)
     .phase(Phase.Conflict)
     .playerLastingEffect((context) =&gt; ({
         target: context.player.opponent,
@@ -3071,7 +3071,7 @@ this.action('Prevent your events from being cancelled')
     <pre><code>// Wait Until It Sings: Conflict Action: If you control a participating Commander character - before this conflict
 // resolves, take an action. (Max 1 per conflict.)
 this.conflictAction('Take an action during conflict resolution')
-    .condition((context) =&gt; context.game.currentConflict?.getParticipants().some((p) =&gt; p.controller === context.player &amp;&amp; p.hasTrait(Trait.Commander)) ?? false)
+    .ifCondition((context) =&gt; context.game.currentConflict?.getParticipants().some((p) =&gt; p.controller === context.player &amp;&amp; p.hasTrait(Trait.Commander)) ?? false)
     .playerLastingEffect({
         effect: additionalActionAfterWindowCompleted(1)
     })

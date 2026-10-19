@@ -10,8 +10,8 @@ class CommandRespect extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Take honor from opponent when they play an event')
-            .condition((context) => !!(context.game.isDuringConflict() && context.player.opponent &&
-                context.player.hand.length < context.player.opponent.hand.length))
+            .condition((context) => context.game.isDuringConflict())
+            .ifCondition((context) => !!context.player.opponent && context.player.hand.length < context.player.opponent.hand.length)
             .playerLastingEffect((context) => ({
                 target: context.player.opponent,
                 effect: additionalPlayCost((sourceContext) =>

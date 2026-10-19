@@ -136,6 +136,7 @@ interface AbilityDraft {
     gameActions: GameAction[];
     handler?: (context: AbilityContext) => void;
     condition?: (context: AbilityContext) => boolean;
+    ifCondition?: (context: AbilityContext) => boolean;
     chatText?: string | ((context: AbilityContext) => MessageArgs);
     chatTextArgs?: (context: AbilityContext) => EffectArg;
     /** From a select's `{ action, chatText }` choices: the ability's chat line for the chosen label. */
@@ -179,7 +180,7 @@ interface AbilityDraft {
 }
 
 /** Settings of the ability itself: a then step can't have them. */
-const ABILITY_ONLY = ['condition', 'limit', 'max', 'location', 'cannotBeMirrored', 'cannotTargetFirst', 'initiateDuel', 'phase', 'evenDuringDynasty',
+const ABILITY_ONLY = ['condition', 'ifCondition', 'limit', 'max', 'location', 'cannotBeMirrored', 'cannotTargetFirst', 'initiateDuel', 'phase', 'evenDuringDynasty',
     'conflictProvinceCondition', 'canTriggerOutsideConflict', 'notPrinted', 'anyPlayer', 'collectiveTrigger', 'playCondition'] as const;
 
 /** What only an action's context has; a trigger's or a step's `ability` isn't a `CardAction`. */
@@ -734,6 +735,15 @@ export class AbilityBuilder<
 
     condition(condition: (context: Base) => boolean): this {
         this.#once('condition', this.#checked(condition, []), 'condition()');
+        return this;
+    }
+
+    /**
+     * An "If …" before the dash: a triggering condition (developer ruling on The Mirror's Gaze), which a copy ignores.
+     * "During …" and "While …" are play restrictions: put them in `condition()`, which copies must meet.
+     */
+    ifCondition(condition: (context: Base) => boolean): this {
+        this.#once('ifCondition', this.#checked(condition, []), 'ifCondition()');
         return this;
     }
 
@@ -1499,6 +1509,7 @@ function commonProperties(ability: AbilityDraft) {
         ...(draft.max ? { max: draft.max } : {}),
         ...(draft.location ? { location: draft.location } : {}),
         ...(draft.cannotBeMirrored ? { cannotBeMirrored: true } : {}),
+        ...(draft.ifCondition ? { ifCondition: draft.ifCondition } : {}),
         ...(draft.cannotTargetFirst ? { cannotTargetFirst: true } : {}),
         ...thenProperties(draft),
         ...(draft.initiateDuel ? { initiateDuel: draft.initiateDuel } : {}),

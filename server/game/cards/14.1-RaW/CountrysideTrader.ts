@@ -20,7 +20,7 @@ class CountrysideTrader extends DrawCard {
                 target: context.targetAbility?.card,
                 ability: context.targetAbility,
                 player: context.player,
-                ignoredBlockers: [Blocker.ConditionNotMet],
+                ignoredBlockers: [Blocker.ConditionNotMet, Blocker.IfConditionNotMet],
                 choosingPlayerOverride: context.choosingPlayerOverride
             })));
     }

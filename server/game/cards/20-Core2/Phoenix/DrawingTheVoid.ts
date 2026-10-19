@@ -18,7 +18,7 @@ export default class DrawingTheVoid extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Gaze into the void')
-            .condition((context) => controlsShugenja(context.player))
+            .ifCondition((context) => controlsShugenja(context.player))
             .gameAction(sequential((context) => {
                 const revealedCards = randomHandCards(context.player.opponent, 2);
                 return [

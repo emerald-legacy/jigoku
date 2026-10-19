@@ -7,7 +7,8 @@ class SubdueTheSpirits extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Add glory to both skills')
-            .condition((context) => this.game.isDuringConflict() && context.player.isMoreHonorable())
+            .condition(() => this.game.isDuringConflict())
+            .ifCondition((context) => context.player.isMoreHonorable())
             .cardLastingEffect((context) => ({
                 target: context.game.requireConflict().getCharacters(context.player),
                 effect: modifyBothSkills((card) => card.glory)

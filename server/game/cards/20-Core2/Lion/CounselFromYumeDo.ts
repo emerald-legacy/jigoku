@@ -9,7 +9,7 @@ export default class CounselFromYumeDo extends DrawCard {
 
     public override setupCardAbilities() {
         this.action('Shuffle cards back into your deck')
-            .condition((context) => controlsShugenja(context.player))
+            .ifCondition((context) => controlsShugenja(context.player))
             .targetCards({
                 mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose up to 3 conflict cards',

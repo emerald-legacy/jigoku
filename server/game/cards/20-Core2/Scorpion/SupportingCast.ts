@@ -35,6 +35,8 @@ export default class SupportingCast extends DrawCard {
                 effect: modifyMilitarySkill(3)
             }))
             .chatText((context) => msg`give +3 military skill to ${context.target} - ${context.event.cardTargets} was just a distraction`)
-            .max(perConflict(1));
+            .max(perConflict(1))
+            // "bow the first character" uses its triggering condition (developer ruling on The Mirror's Gaze)
+            .cannotBeMirrored();
     }
 }

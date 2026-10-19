@@ -21,7 +21,7 @@ export default class TheRushingWave extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Set a province to zero strength')
-            .condition((context) => controlsShugenja(context.player))
+            .ifCondition((context) => controlsShugenja(context.player))
             .target({
                 location: Location.Provinces,
                 cardType: CardType.Province

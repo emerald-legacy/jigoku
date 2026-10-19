@@ -7,7 +7,8 @@ class MomentOfPerfectBeauty extends DrawCard {
 
     override setupCardAbilities() {
         this.action('One more action and then end the conflict')
-            .condition((context) => {
+            .condition(() => !!this.game.currentConflict)
+            .ifCondition((context) => {
                 const conflict = this.game.currentConflict;
                 return !!conflict &&
                     conflict.getNumberOfParticipantsFor(context.player, (card) => card.isHonored) >

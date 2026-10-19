@@ -10,7 +10,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Move home each character without fate')
-            .condition((context) => controlsParticipating(context.player, Trait.Shugenja))
+            .ifCondition((context) => controlsParticipating(context.player, Trait.Shugenja))
             .gameAction(sequential([
                 sendHome((context) => ({
                     target:

@@ -10,7 +10,7 @@ export default class AllDistancesAreOne extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Move conflict to a different province')
-            .condition((context) =>
+            .ifCondition((context) =>
                 !!(context.game.currentConflict
                     ?.getConflictProvinces()
                     .every((province) => province.location !== Location.StrongholdProvince && !province.isBroken) &&

@@ -12,8 +12,8 @@ class ConsumedByFiveFires extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Remove up to 5 fate from characters')
+            .ifCondition((context) => controlsShugenja(context.player))
             .condition((context) =>
-                controlsShugenja(context.player) &&
                 !!context.player.opponent &&
                 context.player.opponent.cardsInPlay.some((card) => removeFate().canAffect(card, context)))
             .handler((context) => this.chooseCard(context, {}, []))

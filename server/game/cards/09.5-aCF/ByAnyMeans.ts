@@ -9,7 +9,7 @@ class ByAnyMeans extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Change base skill to match another character\'s')
-            .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
+            .ifCondition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
             .target({
                 name: 'myCharacter',
                 activePromptTitle: 'Choose a bushi character',

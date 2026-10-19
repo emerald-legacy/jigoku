@@ -132,3 +132,43 @@ describe('Hand to Hand', function() {
         });
     });
 });
+
+describe('Hand to Hand resolved again by an opponent who cannot play events', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['guest-of-honor', { card: 'doji-whisperer', attachments: ['fine-katana'] }],
+                    hand: ['hand-to-hand']
+                },
+                player2: {
+                    inPlay: [{ card: 'doji-challenger', attachments: ['ornate-fan'] }]
+                }
+            });
+            this.guest = this.player1.findCardByName('guest-of-honor');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.fan = this.player2.findCardByName('ornate-fan');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.guest, this.whisperer],
+                defenders: [this.challenger]
+            });
+            this.player2.pass();
+        });
+
+        it('still lets the opponent resolve it again: that isn\'t playing an event (EmeraldDB ruling)', function() {
+            this.player1.clickCard('hand-to-hand');
+            this.player1.clickCard(this.fan);
+            expect(this.fan.location).toBe('conflict discard pile');
+            expect(this.player2).toHavePrompt('Resolve Hand to Hand\'s ability again?');
+            this.player2.clickPrompt('Yes');
+            this.player2.clickCard(this.katana);
+            expect(this.katana.location).toBe('conflict discard pile');
+        });
+    });
+});
+

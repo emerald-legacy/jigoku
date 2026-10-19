@@ -611,7 +611,7 @@ this.reaction('Gain a fate/card')
 
   <div class="ref" id="b-condition" data-name="condition">
     <h3><code>condition(condition)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-condition">#</a></h3>
-    <p>A triggering condition: the ability can only be used while <code>condition</code> holds ("During a conflict, …", "If you control a Shugenja, …").</p>
+    <p>A play restriction or a check the effect needs: the ability can only be used while <code>condition</code> holds ("During a conflict, …", "While you are the defending player, …"). A copy of the ability (The Mirror's Gaze) must meet it too. For an "If …" before the dash use <a href="#b-ifCondition"><code>ifCondition()</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -621,7 +621,7 @@ this.reaction('Gain a fate/card')
     <ul class="edge">
       <li>Once per ability; on a step it throws (use <a href="#b-thenIf"><code>thenIf()</code></a> or <a href="#b-afterwardsIf"><code>afterwardsIf()</code></a>).</li>
       <li>On a <a href="#cm-conflictAction"><code>conflictAction()</code></a> and on a character's <a href="#b-initiateDuel"><code>initiateDuel()</code></a>, their own checks are added to it.</li>
-      <li>Effects that ignore triggering conditions skip it; use <a href="#b-playOnlyIf"><code>playOnlyIf()</code></a> for an event's "play only if".</li>
+      <li>Only effects that ignore all conditions skip it (Countryside Trader: "ignoring all triggering conditions"). Use <a href="#b-playOnlyIf"><code>playOnlyIf()</code></a> for an event's "play only if".</li>
       <li>A check on a card's participation already implies a conflict; no separate <code>isDuringConflict()</code> is needed.</li>
     </ul>
     <pre><code>// Stride the Waves: Action: During a conflict, if you have the [element-water] ring claimed - move attached character to the conflict or home from the conflict. (Limit twice per round.)
@@ -629,6 +629,25 @@ this.action('Move attached character in or out of the conflict')
     .condition((context) =&gt; context.game.isDuringConflict() &amp;&amp; hasClaimedRing(this, elementSymbol.key, context.player))
     …</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/StrideTheWaves.ts">Stride the Waves</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AdmitDefeat.ts">Admit Defeat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ArtisanAcademy.ts">Artisan Academy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsahinaArtisan.ts">Asahina Artisan</a></p>
+  </div>
+
+  <div class="ref" id="b-ifCondition" data-name="ifCondition">
+    <h3><code>ifCondition(condition)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-ifCondition">#</a></h3>
+    <p>An "If …" before the dash ("If you control a Shugenja character, …"): a triggering condition. The ability can only be triggered while it holds, but a copy (The Mirror's Gaze, which ignores triggering conditions) skips it (developer ruling #375: "After", "When" and "If" are triggering conditions; "During" and "While" are play restrictions).</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>required</td><td>Read with the ability's context before targets are chosen.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Once per ability, like <code>condition()</code>; both can be used: "During a conflict, if …" puts the first part in <code>condition()</code>, the second in <code>ifCondition()</code>.</li>
+      <li>Blocker when it fails: <code>Blocker.IfConditionNotMet</code>.</li>
+    </ul>
+    <pre><code>// For Shame!: Conflict Action: If you control a participating Courtier character, choose a participating character controlled by your opponent. Your opponent must select one – dishonor the chosen character or bow it.
+this.action('Dishonor or bow a character')
+    .ifCondition((context) =&gt; controlsParticipating(context.player, Trait.Courtier))</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForShame.ts">For Shame!</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/ConsumedByFiveFires.ts">Consumed by Five Fires</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SubdueTheSpirits.ts">Subdue the Spirits</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/WisdomOfTheWind.ts">Wisdom of the Wind</a> (44 card files)</p>
   </div>
 
   <div class="ref" id="b-conflictProvinceCondition" data-name="conflictProvinceCondition">
@@ -712,7 +731,7 @@ this.action('Sacrifice to discard an attachment')
 
   <div class="ref" id="b-playOnlyIf" data-name="playOnlyIf">
     <h3><code>playOnlyIf(condition)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-playOnlyIf">#</a></h3>
-    <p>Events only: the event's "Play only if …". It becomes a play restriction of the card (<a href="#cm-playOnlyIf"><code>this.playOnlyIf()</code></a>), not a triggering condition, so effects that ignore triggering conditions still respect it.</p>
+    <p>Events only: the event's "Play only if …". It becomes a play restriction of the card (<a href="#cm-playOnlyIf"><code>this.playOnlyIf()</code></a>), not a triggering condition, so a copy (The Mirror's Gaze) must meet it too. "Cannot play" restrictions (Isawa Tadaka, Guest of Honor) and the Limited rule don't stop a copy: resolving isn't playing.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1058,7 +1077,7 @@ this.conflictAction('Bow a character')
     </ul>
     <pre><code>// Counsel from Yume-do: Action: If you control a Shugenja character, choose up to 3 cards in your conflict discard pile - shuffle those cards into your conflict deck. …
 this.action('Shuffle cards back into your deck')
-    .condition((context) =&gt; controlsShugenja(context.player))
+    .ifCondition((context) =&gt; controlsShugenja(context.player))
     .targetCards({
         mode: TargetMode.UpTo,
         activePromptTitle: 'Choose up to 3 conflict cards',

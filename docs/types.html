@@ -306,7 +306,7 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
 .gameAction(resolveAbility((context) =&gt; ({
     target: context.event.card,
     ability: context.event.ability,
-    ignoredBlockers: [Blocker.CannotPayCost, Blocker.ConditionNotMet, Blocker.LimitReached],
+    ignoredBlockers: [Blocker.CannotPayCost, Blocker.IfConditionNotMet, Blocker.LimitReached],
     event: context.event.context instanceof TriggeredAbilityContext ? context.event.context.event : undefined
 })));</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/TheMirrorsGaze.ts">The Mirror's Gaze</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BackAlleyHideaway.ts">Back-Alley Hideaway</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/KeeperofSecretNames.ts">Keeper of Secret Names</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/CountrysideTrader.ts">Countryside Trader</a></p>
@@ -2057,9 +2057,10 @@ this.reaction('Declare a new conflict')
     .when({
         onConflictFinished: (event, context) =&gt;
             event.conflict.attackingPlayer === context.player &amp;&amp;
-            this.game.getDeclaredConflictCount(context.player) === 1 &amp;&amp;
             event.conflict.getConflictProvinces().some((a) =&gt; a.isBroken)
     })
+    // "your second conflict": a copy (The Mirror's Gaze) needs it too (developer ruling)
+    .condition((context) =&gt; this.game.getDeclaredConflictCount(context.player) === 1)
     .initiateConflict({ canPass: false });</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IvoryKingdomsUnicorn.ts">Ivory Kingdoms Unicorn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/UnderSiege.ts">Under Siege</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/Retribution.ts">Retribution!</a></p>
 </div>

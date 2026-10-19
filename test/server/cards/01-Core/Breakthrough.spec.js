@@ -194,3 +194,52 @@ describe('Breakthrough after a province broke outside conflict resolution', func
         });
     });
 });
+
+describe('Breakthrough copied by The Mirror\'s Gaze', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['moto-horde', 'aggressive-moto'],
+                    hand: ['breakthrough']
+                },
+                player2: {
+                    inPlay: ['asahina-storyteller', 'doji-whisperer'],
+                    hand: ['the-mirror-s-gaze']
+                }
+            });
+            this.motoHorde = this.player1.findCardByName('moto-horde');
+            this.aggressiveMoto = this.player1.findCardByName('aggressive-moto');
+            this.storyteller = this.player2.findCardByName('asahina-storyteller');
+            this.player1.pass();
+            this.mirror = this.player2.playAttachment('the-mirror-s-gaze', this.storyteller);
+            this.noMoreActions();
+        });
+
+        it('isn\'t offered to a player who hasn\'t declared exactly one conflict (developer ruling)', function () {
+            this.initiateConflict({
+                attackers: [this.motoHorde],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.pass();
+            this.player1.clickPrompt('Yes');
+            this.player1.clickPrompt('Gain 2 Honor');
+            this.player1.clickCard('breakthrough');
+            expect(this.player1).toHavePrompt('Initiate Conflict');
+            this.initiateConflict({
+                type: 'political',
+                ring: 'void',
+                province: this.player2.findCardByName('shameful-display', 'province 2'),
+                attackers: [this.aggressiveMoto],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.pass();
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).not.toBeAbleToSelect(this.mirror);
+        });
+    });
+});
+

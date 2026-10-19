@@ -52,7 +52,9 @@ class TradingOnTheSandRoad extends DrawCard {
                 target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                 destination: Location.RemovedFromGame
             }))
-            .chatText('remove the top 4 cards from each player\'s deck and make them playable by both players until the end of the round');
+            .chatText('remove the top 4 cards from each player\'s deck and make them playable by both players until the end of the round')
+            // its effects use its triggering condition (developer ruling on The Mirror's Gaze)
+            .cannotBeMirrored();
     }
 }
 

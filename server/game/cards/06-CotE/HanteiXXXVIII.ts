@@ -24,7 +24,8 @@ class HanteiXXXVIII extends DrawCard {
 
         this.interrupt('Choose targets for opponent\'s ability')
             .when({
-                onCardAbilityInitiated: (event, context) =>
+                // "triggers": not an ability resolved by another one (The Mirror's Gaze; EmeraldDB ruling)
+                onCardAbilityInitiated: (event, context) => !event.resolvedWithoutTriggering &&
                     event.ability.hasTargetsChosenByInitiatingPlayer(event.context) && event.context.player === context.player.opponent
             })
             .handler((context) => {

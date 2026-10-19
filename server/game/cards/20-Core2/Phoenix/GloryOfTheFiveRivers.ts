@@ -24,7 +24,7 @@ export default class GloryOfTheFiveRivers extends DrawCard {
 
     public override setupCardAbilities() {
         this.action('Honor a character and dishonor a character')
-            .condition((context) => context.player.isTraitInPlay(Trait.Courtier))
+            .ifCondition((context) => context.player.isTraitInPlay(Trait.Courtier))
             .gameAction(handler({
                 handler: (context) => {
                     let bidResult: Result;

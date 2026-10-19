@@ -7,7 +7,7 @@ export default class DevotionInAction extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Put a character into play')
-            .condition((context) =>
+            .ifCondition((context) =>
                 !!context.game.currentConflict?.hasMoreParticipants(context.player.opponent))
             .target({
                 cardType: CardType.Character,

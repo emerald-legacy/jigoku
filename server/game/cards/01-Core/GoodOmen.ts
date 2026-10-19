@@ -7,7 +7,7 @@ class GoodOmen extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Add a fate to a character')
-            .condition((context) => !!context.player.opponent && context.player.showBid < context.player.opponent.showBid)
+            .ifCondition((context) => !!context.player.opponent && context.player.showBid < context.player.opponent.showBid)
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => (card.getCost() ?? 0) > 2

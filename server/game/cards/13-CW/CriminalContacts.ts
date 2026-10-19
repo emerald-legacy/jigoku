@@ -10,7 +10,7 @@ class CriminalContacts extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Discard a fate from a character')
-            .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
+            .playOnlyIf((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
             .cost(costs.optionalTakeHonorFromOpponent())
             .target({
                 name: 'myCharacter',

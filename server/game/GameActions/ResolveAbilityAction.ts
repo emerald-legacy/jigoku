@@ -13,7 +13,7 @@ import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
-import { abilityContext, canResolveAbility, getResolutionContext } from './TriggerAbilityAction.js';
+import { canResolveAbility, getResolutionContext } from './TriggerAbilityAction.js';
 
 class ResolveAbilityActionResolver extends AbilityResolver {
     ignoreCosts: boolean;
@@ -41,7 +41,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
     }
 
     override openInitiateAbilityEventWindow() {
-        const params = { card: this.context.source, ability: this.context.ability, context: this.context };
+        const params = { card: this.context.source, ability: this.context.ability, context: this.context, resolvedWithoutTriggering: true };
         const events: Event[] = [
             this.game.getEvent(EventName.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps())
         ];
@@ -121,7 +121,9 @@ export class ResolveAbilityAction<Context extends AbilityContext = AbilityContex
             canResolveAbility(
                 properties,
                 context,
-                properties.ignoredBlockers.concat(Blocker.WrongPlayer, Blocker.WrongLocation, Blocker.LimitReached, Blocker.TriggeringRestricted)
+                // resolving isn't playing (RRG Resolve an Ability): play restrictions and the Limited rule don't apply
+                properties.ignoredBlockers.concat(Blocker.WrongPlayer, Blocker.WrongLocation, Blocker.LimitReached, Blocker.TriggeringRestricted,
+                    Blocker.CannotPlay, Blocker.LimitedAlreadyPlayed)
             )
         );
     }
@@ -142,8 +144,8 @@ export class ResolveAbilityAction<Context extends AbilityContext = AbilityContex
         );
     }
 
-    override hasTargetsChosenByInitiatingPlayer(context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties);
-        return properties.ability.hasTargetsChosenByInitiatingPlayer(abilityContext(properties, context));
+    /** The resolved ability isn't triggered (RRG Resolve an Ability), so its targets aren't chosen by triggering this one (Hantei XXXVIII; EmeraldDB ruling). */
+    override hasTargetsChosenByInitiatingPlayer(): boolean {
+        return false;
     }
 }

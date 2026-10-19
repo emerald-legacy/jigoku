@@ -9,7 +9,7 @@ export default class DesperateDefense extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Add Province Strength')
-            .condition((context) => context.player.cardsInPlay.some((card) => card.isParticipating()))
+            .ifCondition((context) => context.player.cardsInPlay.some((card) => card.isParticipating()))
             .selectAttackedProvince({
                 message: (context, cards) => msg`${context.player} increases the strength of ${cards}`,
                 gameAction: cardLastingEffect({

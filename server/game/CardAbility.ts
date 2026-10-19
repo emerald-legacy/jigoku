@@ -26,6 +26,8 @@ export interface CardAbilityProperties<Context extends AbilityContext = AbilityC
     abilityIdentifier?: string;
     origin?: BaseCard;
     condition?: (context: AbilityContext) => boolean;
+    /** An "If …" before the dash: a triggering condition, which copies (The Mirror's Gaze) ignore. */
+    ifCondition?: (context: AbilityContext) => boolean;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     /** A format whose `{0}` is the target, or a message without positions (`msg` template). */
     chatText?: string | OwnContextCallback<[context: Context], MessageArgs | undefined>;
@@ -80,6 +82,7 @@ export class CardAbility extends ThenAbility {
     override origin?: BaseCard;
     /** With a duel, its challenger check is part of it. */
     condition?: (context: AbilityContext) => boolean;
+    ifCondition?: (context: AbilityContext) => boolean;
 
     constructor(card: BaseCard, properties: CardAbilityProperties) {
         // a duel's condition and targets go on a copy, so a copy of this ability starts from the properties as written
@@ -87,6 +90,7 @@ export class CardAbility extends ThenAbility {
         super(card, withDuel);
         this.properties = properties;
         this.condition = withDuel.condition;
+        this.ifCondition = properties.ifCondition;
 
         this.title = properties.title;
         this.limit = properties.limit || AbilityLimit.perRound(1);
@@ -142,11 +146,23 @@ export class CardAbility extends ThenAbility {
             return Blocker.Blanked;
         }
 
-        if(
-            (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredBlockers)) ||
-            (this.card.type === CardType.Event && this.card.isDrawCard() && !this.card.canPlay(context, context.playType))
-        ) {
+        if(this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredBlockers)) {
             return Blocker.CannotTrigger;
+        }
+
+        if(this.card.type === CardType.Event && this.card.isDrawCard()) {
+            // resolving an event again (The Mirror's Gaze, Hand to Hand) isn't playing it (RRG Resolve an Ability) …
+            if(!ignoredBlockers.includes(Blocker.CannotPlay) && !this.card.canPlay(context, context.playType)) {
+                return Blocker.CannotPlay;
+            }
+            // … but its "Play only if" is a play restriction, which a copy must meet too
+            if(!this.card.meetsPlayConditions(context)) {
+                return Blocker.ConditionNotMet;
+            }
+        }
+
+        if(!ignoredBlockers.includes(Blocker.IfConditionNotMet) && this.ifCondition && !this.ifCondition(context)) {
+            return Blocker.IfConditionNotMet;
         }
 
         if(this.isKeywordAbility() && !this.card.canInitiateKeywords(context)) {
@@ -161,7 +177,7 @@ export class CardAbility extends ThenAbility {
             return Blocker.MaxReached;
         }
 
-        if(this.breaksLimitedRule(context)) {
+        if(!ignoredBlockers.includes(Blocker.LimitedAlreadyPlayed) && this.breaksLimitedRule(context)) {
             return Blocker.LimitedAlreadyPlayed;
         }
 

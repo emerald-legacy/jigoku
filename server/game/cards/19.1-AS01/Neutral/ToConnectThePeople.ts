@@ -12,8 +12,8 @@ export default class ToConnectThePeople extends DrawCard {
 
     public override setupCardAbilities() {
         this.action('Play a character from your opponent\'s discard pile')
-            .condition((context) =>
-                !context.game.isDuringConflict() &&
+            .condition((context) => !context.game.isDuringConflict())
+            .ifCondition((context) =>
                 context.player.cardsInPlay.some(
                     (card) => card.type === CardType.Character && card.hasTrait(Trait.Merchant)
                 ))

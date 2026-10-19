@@ -41,7 +41,9 @@ class KnowTheTerrain extends DrawCard {
                     }
                 });
             })
-            .chatText('switch the attacked province card');
+            .chatText('switch the attacked province card')
+            // its effects use its triggering condition (developer ruling on The Mirror's Gaze)
+            .cannotBeMirrored();
     }
 }
 

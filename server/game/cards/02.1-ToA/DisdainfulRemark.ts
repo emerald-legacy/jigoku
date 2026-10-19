@@ -10,8 +10,8 @@ class DisdainfulRemark extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Add Province Strength')
-            .condition((context) => controlsParticipating(context.player, Trait.Courtier) &&
-                                  !!context.player.opponent && context.player.opponent.hand.length > 0)
+            .ifCondition((context) => controlsParticipating(context.player, Trait.Courtier))
+            .condition((context) => !!context.player.opponent && context.player.opponent.hand.length > 0)
             .selectAttackedProvince({
                 message: (context, cards) => msg`${context.player} increases the strength of ${cards} by ${context.player.opponent?.hand.length ?? 0}`,
                 gameAction: cardLastingEffect((context) => ({

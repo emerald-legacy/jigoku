@@ -8,7 +8,7 @@ class UnquestionedHeritage extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Move an attachment')
-            .condition((context) => context.game.rings.air.isConsideredClaimed(context.player))
+            .ifCondition((context) => context.game.rings.air.isConsideredClaimed(context.player))
             .target({
                 cardType: CardType.Attachment,
                 controller: Players.Any,

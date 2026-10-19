@@ -10,7 +10,7 @@ export default class WingsOfThePhoenix extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Move a character')
-            .condition((context) => controlsShugenja(context.player))
+            .ifCondition((context) => controlsShugenja(context.player))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self

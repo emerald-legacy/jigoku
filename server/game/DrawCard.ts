@@ -598,8 +598,13 @@ export class DrawCard extends BaseCard {
             this.checkRestrictions(RestrictionType.Play, context) &&
             context.player.checkRestrictions(RestrictionType.Play, context) &&
             (!this.hasPrintedKeyword('peaceful') || !this.game.currentConflict) &&
-            (this.playConditions ?? []).every((condition) => condition(context))
+            this.meetsPlayConditions(context)
         );
+    }
+
+    /** The card's own "Play only if …": a play restriction, which a copy (The Mirror's Gaze) must meet too. */
+    meetsPlayConditions(context: AbilityContext): boolean {
+        return (this.playConditions ?? []).every((condition) => condition(context));
     }
 
     override getActions(location: string = this.location): BaseCardAbility[] {

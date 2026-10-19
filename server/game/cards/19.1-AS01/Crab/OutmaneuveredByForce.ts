@@ -8,7 +8,7 @@ export default class OutmaneuveredByForce extends DrawCard {
     public override setupCardAbilities() {
         this.action('Declare a conflict right now')
             .playOnlyIf((context) => !context.game.isDuringConflict() && this.controlsBerserkerOrBigCharacter(context))
-            .condition((context) => context.game.getConflicts(Players.All).every((conflict) => conflict.passed))
+            .ifCondition((context) => context.game.getConflicts(Players.All).every((conflict) => conflict.passed))
             .phase(Phase.Conflict)
             .initiateConflict({ canPass: false });
     }

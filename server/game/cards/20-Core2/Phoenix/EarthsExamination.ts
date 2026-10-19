@@ -9,7 +9,7 @@ export default class EarthsExamination extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Taint a character', { conflictType: ConflictType.Political })
-            .condition((context) => controlsShugenja(context.player))
+            .ifCondition((context) => controlsShugenja(context.player))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

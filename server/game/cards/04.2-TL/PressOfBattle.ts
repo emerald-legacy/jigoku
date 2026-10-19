@@ -7,9 +7,8 @@ class PressOfBattle extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Bow a non-unique character')
-            .condition((context) => this.game.isDuringConflict(ConflictType.Military) &&
-                                 !!this.game.currentConflict &&
-                                 this.game.currentConflict.hasMoreParticipants(context.player))
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
+            .ifCondition((context) => !!this.game.currentConflict?.hasMoreParticipants(context.player))
             .target({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,

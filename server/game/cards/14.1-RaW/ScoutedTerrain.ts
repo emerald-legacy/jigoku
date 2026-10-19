@@ -8,7 +8,7 @@ class ScoutedTerrain extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Allow attacking the stronghold')
-            .condition((context) => !!context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 4)
+            .ifCondition((context) => !!context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 4)
             .phase(Phase.Conflict)
             .playerLastingEffect((context) => ({
                 target: context.player.opponent,

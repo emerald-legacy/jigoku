@@ -182,6 +182,8 @@ interface EventPayloadMap {
         card: BaseCard;
         ability: BaseAbility;
         context: AbilityContext;
+        /** The ability is resolved by another one (The Mirror's Gaze, Hand to Hand), not triggered (RRG Resolve an Ability). */
+        resolvedWithoutTriggering?: boolean;
     };
     [EventName.OnCardAbilityTriggered]: BaseEventPayload & {
         player: Player;

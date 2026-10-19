@@ -765,7 +765,7 @@ this.action('Select a player to lose an honor and draw a card')
       <li>Counts by controller: your attachment on an opponent's character counts, an opponent's attachment on your character doesn't.</li>
     </ul>
     <pre><code>// Gaijin Customs: Action: If you control a [clan-unicorn] card, choose a non-[clan-unicorn] character – ready the chosen character.
-.condition((context) =&gt; controlsClanCard(context.player, 'unicorn'))</code></pre>
+.ifCondition((context) =&gt; controlsClanCard(context.player, 'unicorn'))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/GaijinCustoms.ts">Gaijin Customs</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Unicorn/ForeignCustoms.ts">Foreign Customs</a></p>
   </div>
 
@@ -1920,7 +1920,7 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
     <h3><code>player.isTraitInPlay(trait)</code> <span class="kind">Query</span> <a class="anchor" href="#q-player-isTraitInPlay">#</a></h3>
     <p>True if the player controls a face-up card in play with the trait: a card in the play area (characters and attachments), an unbroken province, or a holding in a province.</p>
     <pre><code>// Glory of the Five Rivers: Action: If you control a Courtier character - …
-.condition((context) =&gt; context.player.isTraitInPlay(Trait.Courtier))</code></pre>
+.ifCondition((context) =&gt; context.player.isTraitInPlay(Trait.Courtier))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/GloryOfTheFiveRivers.ts">Glory of the Five Rivers</a></p>
   </div>
 
@@ -2389,7 +2389,7 @@ target: context.ring.getElements().map((element) =&gt; this.game.rings[element])
       <li>Always <code>false</code> for a ring in the unclaimed pool. The contested ring and claimed rings are checked.</li>
     </ul>
     <pre><code>// Honor in Battle: Action: If you have claimed a [conflict-military] ring, choose a character - honor that character.
-.condition((context) =&gt; context.player.getClaimedRings().some((ring) =&gt; ring.isConflictType(ConflictType.Military)))</code></pre>
+.ifCondition((context) =&gt; context.player.getClaimedRings().some((ring) =&gt; ring.isConflictType(ConflictType.Military)))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/ShiotomeEncampment.ts">Shiotome Encampment</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/KitsuWarrior.ts">Kitsu Warrior</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/HonorInBattle.ts">Honor in Battle</a></p>
   </div>
 

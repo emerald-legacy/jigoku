@@ -7,8 +7,8 @@ class Misinformation extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Give opponent\'s participating cards -1/-1')
-            .condition((context) => this.game.isDuringConflict() &&
-                                  !!context.player.opponent && context.player.showBid > context.player.opponent.showBid + 1)
+            .condition(() => this.game.isDuringConflict())
+            .ifCondition((context) => !!context.player.opponent && context.player.showBid > context.player.opponent.showBid + 1)
             .cardLastingEffect((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: modifyBothSkills(-1)

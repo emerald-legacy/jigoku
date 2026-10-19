@@ -8,7 +8,8 @@ class SiegeWarfare extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Give attacked province -2 strength')
-            .condition((context) => context.player.isAttackingPlayer() && context.player.getNumberOfHoldingsInPlay() > 0)
+            .condition((context) => context.player.isAttackingPlayer())
+            .ifCondition((context) => context.player.getNumberOfHoldingsInPlay() > 0)
             .selectAttackedProvince({
                 cardCondition: (card) => card.getStrength() > 0,
                 message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by 2`,

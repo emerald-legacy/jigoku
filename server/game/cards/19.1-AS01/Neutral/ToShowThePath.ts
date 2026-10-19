@@ -9,7 +9,7 @@ export default class ToShowThePath extends DrawCard {
 
     public override setupCardAbilities() {
         this.action('Target unit costs more fate to target')
-            .condition((context) =>
+            .playOnlyIf((context) =>
                 context.player.cardsInPlay.some(
                     (card) => card.hasTrait(Trait.Monk) || card.hasTrait(Trait.Shugenja)
                 ))

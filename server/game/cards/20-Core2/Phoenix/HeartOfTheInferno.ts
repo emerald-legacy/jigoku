@@ -8,7 +8,7 @@ export default class HeartOfTheInferno extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Bow a card')
-            .condition((context) => controlsParticipating(context.player, Trait.Shugenja))
+            .ifCondition((context) => controlsParticipating(context.player, Trait.Shugenja))
             .target({
                 controller: Players.Any,
                 cardType: [CardType.Character, CardType.Attachment],

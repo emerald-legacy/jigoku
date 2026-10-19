@@ -103,6 +103,8 @@ export default class DisruptedSupplyLines extends DrawCard {
                     })),
                     chatText: (context) => msg`remove ${context.event.card} from the game`
                 }
-            });
+            })
+            // its effects use its triggering condition (developer ruling on The Mirror's Gaze)
+            .cannotBeMirrored();
     }
 }

@@ -9,7 +9,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Send characters home')
-            .condition((context) => controlsShugenja(context.player))
+            .ifCondition((context) => controlsShugenja(context.player))
             .targetCards({
                 activePromptTitle: 'Choose characters adding up to 4 printed cost',
                 numCards: Infinity,

@@ -8,7 +8,7 @@ export default class WaitUntilItSings extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Take an action during conflict resolution')
-            .condition((context) => context.game.currentConflict?.getParticipants().some((p) => p.controller === context.player && p.hasTrait(Trait.Commander)) ?? false)
+            .ifCondition((context) => context.game.currentConflict?.getParticipants().some((p) => p.controller === context.player && p.hasTrait(Trait.Commander)) ?? false)
             .playerLastingEffect({
                 effect: additionalActionAfterWindowCompleted(1)
             })

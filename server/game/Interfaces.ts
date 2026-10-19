@@ -174,6 +174,8 @@ interface AbilityProps<Context> {
     targets?: ActionTargets;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     cannotBeMirrored?: boolean;
+    /** An "If …" before the dash: a triggering condition, which copies (The Mirror's Gaze) ignore. */
+    ifCondition?: (context: AbilityContext) => boolean;
     printedAbility?: boolean;
     cannotTargetFirst?: boolean;
     /** `undefined` from the function: the game actions' own text. */

@@ -8,7 +8,7 @@ class ForShame extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Dishonor or bow a character')
-            .condition((context) => controlsParticipating(context.player, Trait.Courtier))
+            .ifCondition((context) => controlsParticipating(context.player, Trait.Courtier))
             .target({
                 name: 'character',
                 cardType: CardType.Character,
