@@ -40,11 +40,16 @@ export class ReduceableFateCost implements Cost {
             return true;
         }
 
-        if(context.source.isTemptationsMaho()) {
+        if(this.isCharacterFateOnly(context)) {
             return false;
         }
 
         return context.player.fate >= minCost && context.player.checkRestrictions(RestrictionType.SpendFate, context);
+    }
+
+    /** "Can only be paid for with fate on characters you control": the fate pool pays nothing (Temptations Mahō cards). */
+    protected isCharacterFateOnly(context: AbilityContext<DrawCard>): boolean {
+        return context.source.isTemptationsMaho();
     }
 
     protected getAlternateFatePools(context: AbilityContext<DrawCard>): Set<BaseCard | Ring> {
@@ -66,7 +71,7 @@ export class ReduceableFateCost implements Cost {
             alternatePoolTotal += pool.getFate();
         }
 
-        const maxPlayerFate = this.getMaxPlayerFate(context);
+        const maxPlayerFate = this.#getMaxPlayerFate(context);
         const reducedCost = this.getReducedCost(context);
         if(reducedCost > maxPlayerFate + alternatePoolTotal) {
             result.cancelled = true;
@@ -261,8 +266,8 @@ export class ReduceableFateCost implements Cost {
         });
     }
 
-    protected getMaxPlayerFate(context: AbilityContext<DrawCard>): number {
-        if(context.source.isTemptationsMaho()) {
+    #getMaxPlayerFate(context: AbilityContext<DrawCard>): number {
+        if(this.isCharacterFateOnly(context)) {
             return 0;
         }
         if(context.player.checkRestrictions(RestrictionType.SpendFate, context)) {

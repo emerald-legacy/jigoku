@@ -26,7 +26,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             this.ignoreType
         );
 
-        if(reducedCost !== 0 && context.source.isTemptationsMaho()) {
+        if(reducedCost !== 0 && this.isCharacterFateOnly(context)) {
             return false;
         }
 

@@ -978,7 +978,7 @@ this.conflictAction('Discard a character')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Can't be paid when the card has no printed cost (a dash), when its minimum cost is more than the player's fate, or when the player can't spend fate (and the cost isn't 0). A Temptations maho card can only be played when its cost is reduced to 0.</li>
+      <li>Can't be paid when the card has no printed cost (a dash), when its minimum cost is more than the player's fate, or when the player can't spend fate (and the cost isn't 0). A Temptations maho card ("can only be paid for with fate on characters you control") can only be played when its cost is reduced to 0: the fate on your characters reduces it, the fate pool pays nothing. A subclass sets this for its own cost by overriding <code>isCharacterFateOnly(context)</code> (Isawa Hifumi's cost).</li>
       <li>When fate on other cards or rings may pay for the card (alternate fate pools), the player is asked how much to take from each; the chat says "<em>player1 takes N fate from X to pay the cost of Y</em>".</li>
       <li>Marks the reducers used. Skipped when <code>context.ignoreFateCost</code> is set, and when another card's effect resolves the ability.</li>
       <li>With <code>ignoreType</code>, a reducer limited to another card type also lowers the cost, and is marked used.</li>

@@ -41,9 +41,9 @@ class HifumiCost extends ReduceableFateCost {
         return false;
     }
 
-    // the fate comes from characters only, never from the fate pool
-    protected override getMaxPlayerFate(): number {
-        return 0;
+    // "remove an amount of fate from (friendly) characters": never from the fate pool
+    protected override isCharacterFateOnly(): boolean {
+        return true;
     }
 
     public override getReducedCost(context: AbilityContext): number {
