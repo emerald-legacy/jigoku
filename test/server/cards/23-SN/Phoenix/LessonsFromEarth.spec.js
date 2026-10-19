@@ -65,12 +65,36 @@ describe('Lessons From Earth', function () {
             const hand2 = this.player2.hand.length;
 
             this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t Resolve');
             expect(this.getChatLogs(5)).toContain('player1 uses Lessons from Earth to cause player1 to draw a card and player2 to discard a card');
             expect(this.player2).not.toHavePrompt('Lessons from Earth');
             expect(this.getChatLogs(5)).toContain('player2\'s affinity to Earth prevents them from discarding a card');
 
             expect(this.player1.hand.length).toBe(hand + 1);
             expect(this.player2.hand.length).toBe(hand2);
+        });
+
+        it('stays on the province when it breaks and triggers when the conflict ends', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kuwanan],
+                defenders: [],
+                province: this.sd
+            });
+
+            const hand = this.player1.hand.length;
+            this.player2.pass();
+            this.player1.pass();
+            this.player1.clickPrompt('No');
+            expect(this.sd.isBroken).toBe(true);
+            expect(this.lessons.location).toBe('play area');
+            expect(this.player1.hand.length).toBe(hand);
+
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.lessons.parent).toBe(this.sd);
+            expect(this.player1.hand.length).toBe(hand + 1);
+            expect(this.getChatLogs(5)).toContain('player1 uses Lessons from Earth to cause player1 to draw a card and player2 to discard a card');
         });
 
     });
