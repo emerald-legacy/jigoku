@@ -81,6 +81,8 @@ interface BaseTargetCard extends BaseTarget {
     cardType?: CardType | CardType[];
     location?: Location | Location[];
     optional?: boolean;
+    /** While this is true the target is skipped (holds `[]`, no prompt); otherwise it is chosen as usual. */
+    skipIf?: (context: AbilityContext) => boolean;
 }
 
 export interface TargetCardExactlyUpTo extends BaseTargetCard {

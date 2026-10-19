@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { switchBaseSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { canSwitchSkills } from '../switchSkills.js';
 
 class BayushiYunako extends DrawCard {
     static id = 'bayushi-yunako';
@@ -11,7 +12,7 @@ class BayushiYunako extends DrawCard {
             .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => !card.hasDash()
+                cardCondition: (card) => canSwitchSkills(card)
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))

@@ -6,7 +6,9 @@ export default class ShrugOffDespair extends ProvinceCard {
 
     override setupCardAbilities() {
         this.action('Move the conflict to this province')
-            .condition((context) => context.game.isDuringConflict() && !context.source.isConflictProvince())
+            // "a conflict at another province you control"; resolved as if the conflict were here (Keeper of Secret Names), it isn't at another one (EmeraldDB ruling)
+            .condition((context) => !context.asIfConflictAt && !context.source.isConflictProvince() &&
+                !!context.game.currentConflict?.getConflictProvinces().some((province) => province.controller === context.player))
             .conflictProvinceCondition(() => true)
             .gameAction(moveConflict());
     }

@@ -1007,6 +1007,32 @@ this.conflictAction('Bow a character')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/PalmStrike.ts">Palm Strike</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/MiyaMystic.ts">Miya Mystic</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/RecklessAvenger.ts">Reckless Avenger</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AdmitDefeat.ts">Admit Defeat</a></p>
   </div>
 
+  <div class="ref" id="b-skippableTarget" data-name="skippableTarget skipIf">
+    <h3><code>skippableTarget(properties, ...gameActions)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-skippableTarget">#</a></h3>
+    <p>A <a href="#b-target"><code>target()</code></a> that doesn't apply in some situations. While <code>skipIf</code> returns true there is no prompt, the target holds <code>[]</code>, and its game actions do nothing. Otherwise it works exactly like <code>target()</code>: a legal card must be chosen, and without one the ability can't be used.</p>
+    <table>
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>skipIf</code></td><td><code>(context) =&gt; boolean</code></td><td>required</td><td>When the target is left out. It sees the earlier targets, like <code>controller</code>.</td></tr>
+        <tr><td colspan="4">All other <code>target()</code> properties except <code>optional</code>.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>The target is typed like an optional one: its game actions and later callbacks see <code>[]</code> when it was skipped.</li>
+      <li>Not the same as <code>optional: true</code>, which lets the player choose nothing.</li>
+    </ul>
+    <pre><code>// Kiku Matsuri: Action: During a conflict at this province, choose a participating character controlled by each player - honor each of those characters.
+// "each player": a player with no participating character gets no target (EmeraldDB ruling)
+.skippableTarget({
+    name: 'oppCharacter',
+    cardType: CardType.Character,
+    controller: Players.Opponent,
+    skipIf: (context) =&gt; !this.controlsParticipant(context.player.opponent),
+    cardCondition: (card) =&gt; card.isParticipating()
+}, honor())</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/KikuMatsuri.ts">Kiku Matsuri</a></p>
+  </div>
+
   <div class="ref" id="b-targetCards" data-name="targetCards">
     <h3><code>targetCards(properties, ...gameActions)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-targetCards">#</a></h3>
     <p>"Choose up to 3 cards …", "Choose X characters …": several cards in one choice, by <code>mode</code>. <code>context.targets[name]</code> is the array of chosen cards, and the game actions get the whole array as their target.</p>

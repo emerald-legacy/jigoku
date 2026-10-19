@@ -769,6 +769,23 @@ this.action('Select a player to lose an honor and draw a card')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/GaijinCustoms.ts">Gaijin Customs</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Unicorn/ForeignCustoms.ts">Foreign Customs</a></p>
   </div>
 
+  <div class="ref" id="he-canSwitchSkills" data-name="canSwitchSkills">
+    <h3><code>canSwitchSkills(card)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-canSwitchSkills">#</a></h3>
+    <p>For "switch that character's base [conflict-military] and [conflict-political] skill": true unless one of its skills is a dash (RRG Dash) or set by an effect (Unleash the Djinn, Wicked Tetsubō; EmeraldDB rulings).</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>required</td><td>The character to switch.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>A set <em>base</em> skill (My Ancestor's Strength) doesn't block it: the switch overrides the base, and a later set base still wins.</li>
+    </ul>
+    <pre><code>// Bayushi Yunako: Action: While this character is participating in a conflict, choose a character – switch that character's base [conflict-military] and [conflict-political] skill until the end of the conflict.
+cardCondition: (card) =&gt; canSwitchSkills(card)</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BayushiYunako.ts">Bayushi Yunako</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/AlongTheRiverOfGold.ts">Along the River of Gold</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/IsawaHeiko.ts">Isawa Heiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/EbbAndFlow.ts">Ebb and Flow</a> (7 card files)</p>
+  </div>
+
   <div class="ref" id="he-controlsShugenja" data-name="controlsShugenja">
     <h3><code>controlsShugenja(player)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-controlsShugenja">#</a></h3>
     <p>"Play only if you control a Shugenja character." True if the player has a character with the Shugenja trait in play.</p>
@@ -1551,8 +1568,9 @@ statistic: (card) =&gt; card.getMilitarySkillExcludingModifiers([EffectName.Atta
     <ul class="edge">
       <li>Always <code>false</code> for <code>'glory'</code> and for cards not printed as characters.</li>
     </ul>
-    <pre><code>// Bayushi Yunako: Action: … choose a character – switch that character's base [conflict-military] and [conflict-political] skill …
-cardCondition: (card) =&gt; !card.hasDash()</code></pre>
+    <pre><code>// Spiderweb Passage: … choose a character on the enemy side with 0[conflict-military] or 0[conflict-political]. …
+(!card.hasDash(SkillType.Political) &amp;&amp; card.politicalSkill === 0) ||
+    (!card.hasDash(SkillType.Military) &amp;&amp; card.militarySkill === 0)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BayushiYunako.ts">Bayushi Yunako</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/IsawaHeiko.ts">Isawa Heiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/FurtiveSympathizer.ts">Furtive Sympathizer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a> (8 card files)</p>
   </div>
 
@@ -2191,6 +2209,17 @@ conflict.getCurrentSkill(context.player, ConflictType.Political) &gt; conflict.g
     <pre><code>// Asako Diplomat: Reaction: After this character wins a conflict, choose a character – honor or dishonor that character.
 afterConflict: (event, context) =&gt; event.conflict.isOnWinningSide(context.source)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsakoDiplomat.ts">Asako Diplomat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Deathseeker.ts">Deathseeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HonoredBlade.ts">Honored Blade</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.2-BoB/UtakuRumaru.ts">Utaku Rumaru</a> (77 card files)</p>
+  </div>
+
+  <div class="ref" id="q-wonAtResolution" data-name="wonAtResolution wonAsAttacker">
+    <h3><code>conflict.wonAtResolution(card)</code>, <code>conflict.wonAsAttacker(card)</code> <span class="kind">Query</span> <a class="anchor" href="#q-wonAtResolution">#</a></h3>
+    <p>"This character won the conflict" (as an attacker) when it is read later than the winner: the side the card was on when the winner was determined (<code>attackersAtResolution</code> / <code>defendersAtResolution</code>). A character sent home afterwards (False Loyalties) or already home at step 3.3 still won. <code>false</code> before the winner is determined.</p>
+    <ul class="edge">
+      <li>Use <code>isOnWinningSide</code> in an <code>afterConflict</code> reaction, where participation is still current.</li>
+    </ul>
+    <pre><code>// Isawa Kaede: … If this character wins the conflict as an attacker, instead of choosing an element to resolve, resolve each of that ring's effects.
+condition: (context) =&gt; !!this.game.currentConflict?.wonAsAttacker(context.source),</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/IsawaKaede.ts">Isawa Kaede</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Neutral/PrayersOnTheEveOfBattle.ts">Prayers on the Eve of Battle</a></p>
   </div>
 
   <div class="ref" id="q-getAttackers" data-name="getAttackers getDefenders">

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { AbilityType, CardType, Location, Players, Duration, Trait } from '../../Constants.js';
+import { AbilityType, CardType, Location, Players, PlayType, Duration, Trait } from '../../Constants.js';
 import {
     addTrait,
     attachmentRestrictTraitAmount,
@@ -37,12 +37,14 @@ class VoiceOfTheAncestors extends DrawCard {
             .selectCard({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
-                cardCondition: (card) => card.isFaction('lion'),
+                // only a character you can pay for with the reduction (RRG Target)
+                cardCondition: (card, context) => card.isFaction('lion') &&
+                    context.player.getReducedCost(PlayType.Other, card, context.target) - 1 <= context.player.fate,
                 controller: Players.Self,
                 gameAction: sequential([
                     playerLastingEffect({
                         target: Players.Self,
-                        effect: reduceNextPlayedCardCost(1)
+                        effect: reduceNextPlayedCardCost(1, (card) => card.location === Location.DynastyDiscardPile)
                     }),
                     cardLastingEffect({
                         canChangeZoneOnce: true,

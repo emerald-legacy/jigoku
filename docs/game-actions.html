@@ -435,7 +435,7 @@ this.forcedReaction('Reap your rewards')
         // "after a conflict ends": step 3.3, when the characters are already home
         onConflictFinished: (_event, context) =&gt; !!context.source.parentCharacter
     })
-    .if((context) =&gt; this.wonConflict(context.event.conflict))
+    .if((context) =&gt; !!this.parentCharacter &amp;&amp; context.event.conflict.wonAtResolution(this.parentCharacter))
         .gainFate(1)
         .discardFromPlay()
     .otherwise()
@@ -1982,7 +1982,11 @@ this.action('Switch a claimed ring with an unclaimed one')
             activePromptTitle: 'Choose a ring to take',
             ringCondition: (ring) =&gt; ring.isUnclaimed(),
             message: (context, ring) =&gt; msg`${context.player} takes ${ring}`,
-            gameAction: takeRing({ takeFate: true })
+            // the taken ring keeps the returned ring's conflict type (EmeraldDB ruling)
+            gameAction: takeRing((context) =&gt; ({
+                takeFate: true,
+                conflictType: context.events.find((event) =&gt; event.is(EventName.OnReturnRing))?.ring?.conflictType
+            }))
         })
     ]))
     .chatText('switch a claimed ring with an unclaimed one');</code></pre>
@@ -2097,6 +2101,7 @@ this.reaction('Gain 1 fate from an unclaimed ring')
       <tbody>
         <tr><td><code>target</code></td><td><code>Ring | Ring[]</code></td><td>the conflict's ring</td><td>The rings to take.</td></tr>
         <tr><td><code>takeFate</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Also take all fate on the ring.</td></tr>
+        <tr><td><code>conflictType</code></td><td><code>ConflictType</code></td><td>unchanged</td><td>The side the ring is put in the claimed ring pool with ("retain the ring's conflict type").</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -2110,7 +2115,10 @@ selectRing({
     activePromptTitle: 'Choose a ring to take',
     ringCondition: (ring) =&gt; ring.isUnclaimed(),
     message: (context, ring) =&gt; msg`${context.player} takes ${ring}`,
-    gameAction: takeRing({ takeFate: true })
+    gameAction: takeRing((context) =&gt; ({
+        takeFate: true,
+        conflictType: context.events.find((event) =&gt; event.is(EventName.OnReturnRing))?.ring?.conflictType
+    }))
 })</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KnowTheWorld.ts">Know the World</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/RovingMichibiku.ts">Roving Michibiku</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/AsakoTogama.ts">Asako Togama</a></p>
   </div>
@@ -3354,6 +3362,7 @@ this.action('Discard status token from attached character')
         <tr><td><code>ignoredBlockers</code></td><td><code>Blocker[]</code></td><td><code>[]</code></td><td>More reasons to ignore. <code>Blocker.CannotPayCost</code> also skips paying the costs.</td></tr>
         <tr><td><code>subResolution</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Part of this ability's own resolution: it doesn't count toward the ability's max, isn't stopped by it, and raises no <code>onCardAbilityTriggered</code>.</td></tr>
         <tr><td><code>choosingPlayerOverride</code></td><td><code>Player | null</code></td><td>none</td><td>Another player chooses the ability's targets.</td></tr>
+        <tr><td><code>asIfConflictAt</code></td><td><code>BaseCard</code></td><td>none</td><td>The ability resolves "as if the conflict were at" this province (Keeper of Secret Names); its context has <code>asIfConflictAt</code>, so a condition such as Shrug Off Despair's "at another province" can refuse it.</td></tr>
       </tbody>
     </table>
     <ul class="edge">

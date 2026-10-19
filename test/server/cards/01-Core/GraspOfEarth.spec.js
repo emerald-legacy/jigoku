@@ -22,3 +22,40 @@ describe('Grasp of Earth', function () {
         });
     });
 });
+
+describe('Grasp of Earth and characters played as attachments', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['student-of-esoterica'],
+                    hand: ['grasp-of-earth']
+                },
+                player2: {
+                    inPlay: ['togashi-initiate'],
+                    hand: ['tattooed-wanderer']
+                }
+            });
+            this.student = this.player1.findCardByName('student-of-esoterica');
+            this.grasp = this.player1.playAttachment('grasp-of-earth', this.student);
+            this.initiate = this.player2.findCardByName('togashi-initiate');
+            this.wanderer = this.player2.findCardByName('tattooed-wanderer');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.student],
+                defenders: [this.initiate]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.grasp);
+        });
+
+        it('still lets the opponent play a character as an attachment (EmeraldDB ruling)', function () {
+            // playing it as a character stays blocked, so the attachment play starts directly
+            this.player2.clickCard(this.wanderer);
+            expect(this.player2).toBeAbleToSelect(this.initiate);
+            this.player2.clickCard(this.initiate);
+            expect(this.wanderer.parent).toBe(this.initiate);
+        });
+    });
+});

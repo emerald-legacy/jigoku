@@ -184,3 +184,36 @@ describe('Kuro and an attachment you cannot pay for', function () {
         });
     });
 });
+
+describe('Kuro and an attachment that cannot be played now', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    inPlay: ['kuro']
+                },
+                player2: {
+                    conflictDiscard: ['above-question', 'pacifism']
+                }
+            });
+            this.kuro = this.player1.findCardByName('kuro');
+            this.aq = this.player2.findCardByName('above-question');
+            this.pacifism = this.player2.findCardByName('pacifism');
+        });
+
+        it('does not offer a Peaceful attachment during a conflict (EmeraldDB ruling)', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kuro],
+                defenders: [],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.kuro);
+            expect(this.player1).toBeAbleToSelect(this.aq);
+            expect(this.player1).not.toBeAbleToSelect(this.pacifism);
+        });
+    });
+});

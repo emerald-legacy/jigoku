@@ -1,5 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
+import { EventName } from '../../Constants.js';
 import { joint, returnRing, selectRing, takeRing } from '../../GameActions/GameActions.js';
 
 class KnowTheWorld extends DrawCard {
@@ -18,7 +19,11 @@ class KnowTheWorld extends DrawCard {
                     activePromptTitle: 'Choose a ring to take',
                     ringCondition: (ring) => ring.isUnclaimed(),
                     message: (context, ring) => msg`${context.player} takes ${ring}`,
-                    gameAction: takeRing({ takeFate: true })
+                    // the taken ring keeps the returned ring's conflict type (EmeraldDB ruling)
+                    gameAction: takeRing((context) => ({
+                        takeFate: true,
+                        conflictType: context.events.find((event) => event.is(EventName.OnReturnRing))?.ring?.conflictType
+                    }))
                 })
             ]))
             .chatText('switch a claimed ring with an unclaimed one');

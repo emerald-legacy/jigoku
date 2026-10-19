@@ -35,7 +35,8 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         checkRestrictions[RestrictionScope.CardEffects](context, effect) && context.source !== effect.context?.source,
     [RestrictionScope.RingEffects]: (context) => context.source.isRing(),
     [RestrictionScope.CardAndRingEffects]: (context, effect) => checkRestrictions[RestrictionScope.CardEffects](context, effect) || checkRestrictions[RestrictionScope.RingEffects](context, effect),
-    [RestrictionScope.Characters]: (context) => context.source.type === CardType.Character,
+    // a character played as an attachment is played as an attachment (EmeraldDB rulings on Grasp of Earth, Daimyō's Favor)
+    [RestrictionScope.Characters]: (context) => context.source.type === CardType.Character && !context.ability?.isCharacterPlayedAsAttachment(),
     [RestrictionScope.CharactersWithNoFate]: (context) => context.source.type === CardType.Character && context.source.getFate() === 0,
     [RestrictionScope.CopiesOfDiscardEvents]: (context) =>
         context.source.type === CardType.Event &&

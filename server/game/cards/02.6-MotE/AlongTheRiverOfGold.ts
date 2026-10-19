@@ -2,6 +2,7 @@ import { CardType, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { switchBaseSkills } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { canSwitchSkills } from '../switchSkills.js';
 
 const ELEMENT_KEY = 'along-the-river-of-gold-water';
 
@@ -13,7 +14,7 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
             .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && !card.hasDash()
+                cardCondition: (card) => card.isParticipating() && canSwitchSkills(card)
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))

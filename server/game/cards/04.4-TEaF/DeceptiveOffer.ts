@@ -13,7 +13,9 @@ class DeceptiveOffer extends DrawCard {
                 name: 'character',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating()
+                // a character whose skills can't be modified can't be chosen just to take the honor (EmeraldDB ruling)
+                cardCondition: (card, context) => card.isParticipating() &&
+                    cardLastingEffect({ effect: modifyBothSkills(2) }).canAffect(card, context)
             })
             .select({
                 name: 'select',

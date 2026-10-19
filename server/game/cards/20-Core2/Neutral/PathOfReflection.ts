@@ -2,6 +2,7 @@ import { CardType, Element } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { switchBaseSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
+import { canSwitchSkills } from '../../switchSkills.js';
 
 export default class PathOfReflection extends ProvinceCard {
     static id = 'path-of-reflection';
@@ -16,7 +17,7 @@ export default class PathOfReflection extends ProvinceCard {
                 (context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(this.conflictElement)) ?? false))
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && !card.hasDash()
+                cardCondition: (card) => card.isParticipating() && canSwitchSkills(card)
             }, cardLastingEffect({ effect: switchBaseSkills() }))
             .chatText('switch {0}\'s military and political skill');
     }

@@ -11,6 +11,10 @@ export class PlayCharacterAsAttachment extends PlayAttachmentAction {
         this.title = `Play ${card.name} as an attachment`;
     }
 
+    public override isCharacterPlayedAsAttachment() {
+        return true;
+    }
+
     public override executeHandler(context: AbilityContext<DrawCard>) {
         cardLastingEffect({
             duration: Duration.Custom,

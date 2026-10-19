@@ -45,7 +45,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
     }
 
     public override executeHandler(context: AbilityContext<DrawCard>): void {
-        const extraFate = getExtraFateWhenPlayed(context.source, context);
+        const extraFate = getExtraFateWhenPlayed(context.source, context, false);
         const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         const atHomeHandler = () => {
             context.game.addMessage(msg`${context.player} plays ${context.source} at home with ${context.chooseFate} additional fate`);

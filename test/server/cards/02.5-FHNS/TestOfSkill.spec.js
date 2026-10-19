@@ -116,3 +116,35 @@ describe('Test of Skill', function() {
         });
     });
 });
+
+describe('Test of Skill played from the top of the deck', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    dynastyDeck: ['artisan-academy'],
+                    inPlay: ['doji-whisperer'],
+                    conflictDiscard: ['let-go', 'banzai', 'fine-katana', 'ornate-fan', 'test-of-skill']
+                }
+            });
+            this.academy = this.player1.placeCardInProvince('artisan-academy', 'province 1');
+            this.player1.reduceDeckToNumber('conflict deck', 0);
+            this.letGo = this.player1.moveCard('let-go', 'conflict deck');
+            this.banzai = this.player1.moveCard('banzai', 'conflict deck');
+            this.katana = this.player1.moveCard('fine-katana', 'conflict deck');
+            this.fan = this.player1.moveCard('ornate-fan', 'conflict deck');
+            this.testOfSkill = this.player1.moveCard('test-of-skill', 'conflict deck');
+        });
+
+        it('only takes from the revealed cards still in the deck (EmeraldDB ruling)', function() {
+            this.player1.clickCard(this.academy);
+            this.player2.pass();
+            this.player1.clickCard(this.testOfSkill);
+            this.player1.clickPrompt('event');
+            expect(this.player1).not.toHavePromptButton('Banzai!');
+            expect(this.player1).not.toHavePromptButton('Let Go');
+            expect(this.banzai.location).toBe('conflict deck');
+        });
+    });
+});

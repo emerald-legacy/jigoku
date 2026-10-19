@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { switchBaseSkills } from '../../effects.js';
+import { canSwitchSkills } from '../switchSkills.js';
 
 class FurtiveSympathizer extends DrawCard {
     static id = 'furtive-sympathizer';
@@ -8,7 +9,7 @@ class FurtiveSympathizer extends DrawCard {
         this.action('Switch each character\'s base skills')
             .condition((context) => context.source.isParticipating() && context.source.isOrdinary())
             .cardLastingEffect((context) => ({
-                target: context.game.currentConflict?.getParticipants().filter((a) => !a.hasDash()) ?? [],
+                target: context.game.currentConflict?.getParticipants().filter((a) => canSwitchSkills(a)) ?? [],
                 effect: switchBaseSkills()
             }))
             .chatText('switch all participating character\'s base military and political skill');

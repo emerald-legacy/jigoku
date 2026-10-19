@@ -382,3 +382,57 @@ describe('Keeper of Secret Names', function() {
         });
     });
 });
+
+describe('Keeper of Secret Names and Shrug Off Despair', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['keeper-of-secret-names', 'doji-challenger'],
+                    provinces: ['shrug-off-despair']
+                },
+                player2: {
+                    inPlay: ['keeper-of-secret-names', 'brash-samurai'],
+                    provinces: ['shrug-off-despair']
+                }
+            });
+            this.p1Keeper = this.player1.findCardByName('keeper-of-secret-names');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.p1Shrug = this.player1.findCardByName('shrug-off-despair');
+            this.p2Keeper = this.player2.findCardByName('keeper-of-secret-names');
+            this.p2Shrug = this.player2.findCardByName('shrug-off-despair');
+            this.p2Province = this.player2.findCardByName('shameful-display', 'province 2');
+            this.p1Shrug.facedown = false;
+            this.p2Shrug.facedown = false;
+            this.game.checkGameState(true);
+        });
+
+        it('cannot resolve Shrug Off Despair (EmeraldDB rulings)', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.p2Keeper],
+                province: this.p2Province
+            });
+            this.player2.clickCard(this.p2Keeper);
+            expect(this.player2).not.toBeAbleToSelect(this.p2Shrug);
+            this.player2.clickPrompt('Cancel');
+            this.player2.pass();
+            this.player1.clickCard(this.p1Keeper);
+            expect(this.player1).not.toBeAbleToSelect(this.p2Shrug);
+            expect(this.player1).not.toBeAbleToSelect(this.p1Shrug);
+        });
+
+        it('lets Shrug Off Despair itself be used by the defender', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.p2Keeper],
+                province: this.p2Province
+            });
+            this.player2.clickCard(this.p2Shrug);
+            expect(this.p2Shrug.isConflictProvince()).toBe(true);
+        });
+    });
+});

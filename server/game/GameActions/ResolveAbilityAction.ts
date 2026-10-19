@@ -3,6 +3,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { CardAbility } from '../CardAbility.js';
 import { EventName, Blocker } from '../Constants.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import { InitiateCardAbilityEvent } from '../Events/InitiateCardAbilityEvent.js';
@@ -98,6 +99,8 @@ export interface ResolveAbilityProperties extends CardActionProperties {
     player?: Player;
     event?: Event;
     choosingPlayerOverride?: Player | null;
+    /** The ability resolves "as if the conflict were at" this province (Keeper of Secret Names). */
+    asIfConflictAt?: BaseCard;
 }
 
 export class ResolveAbilityAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<ResolveAbilityProperties, EventName.Unnamed, Context, 'ignoredBlockers' | 'subResolution'> {

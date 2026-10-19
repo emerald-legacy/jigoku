@@ -57,8 +57,10 @@ describe('Gossip', function() {
             it('should name the card when played and log the effect', function() {
                 this.player1.clickCard('gossip');
                 expect(this.player1).toHavePrompt('Name a card');
+                // naming is the effect: the event has been played (and could have been cancelled) before the name is chosen
+                expect(this.getChatLogs(1)).toContain('player1 plays Gossip to name a card');
                 this.player1.chooseCardInPrompt(this.againstTheWaves.name, 'card-name');
-                expect(this.getChatLogs(3)).toContain('player1 plays Gossip, naming Against the Waves to prevent player2 from playing cards named Against the Waves from their hand this phase');
+                expect(this.getChatLogs(3)).toContain('player1 names Against the Waves - player2 cannot play cards named Against the Waves from their hand this phase');
             });
 
             it('should still let your opponent play other cards', function() {

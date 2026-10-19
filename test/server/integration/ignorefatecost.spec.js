@@ -28,15 +28,10 @@ describe('playing a card without paying its fate cost', function() {
             this.player2.pass();
         });
 
-        it('can choose an X-cost card with no fate in the pool', function() {
+        it('cannot choose an X-cost card, as X is 0 (EmeraldDB ruling on Kunshu)', function() {
             this.player1.fate = 0;
-            const deckSize = this.player1.conflictDeck.length;
             this.player1.clickCard(this.toshimoko);
-            expect(this.player1).toBeAbleToSelect(this.alliance);
-            this.player1.clickCard(this.alliance);
-            this.player1.clickPrompt('3');
-            expect(this.player1.fate).toBe(0);
-            expect(this.player1.conflictDeck.length).toBe(deckSize - 3);
+            expect(this.player1).not.toBeAbleToSelect(this.alliance);
         });
     });
 });

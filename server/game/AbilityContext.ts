@@ -80,6 +80,8 @@ export class AbilityContext<Source extends EffectSource = BaseCard, Target exten
     /** Every card chosen as a target across this triggering, continuations included. */
     chosenCardTargets: BaseCard[] = [];
     choosingPlayerOverride: Player | null = null;
+    /** Set when the ability resolves "as if the conflict were at" this province (Keeper of Secret Names). */
+    asIfConflictAt: BaseCard | undefined;
     gameActionsResolutionChain: GameAction[] = [];
     playType: PlayType | undefined;
     cardStateWhenInitiated: BaseCard | null = null;
@@ -145,6 +147,7 @@ export class AbilityContext<Source extends EffectSource = BaseCard, Target exten
         copy.originatingContext = this.originatingContext;
         copy.chosenCardTargets = this.chosenCardTargets;
         copy.choosingPlayerOverride = this.choosingPlayerOverride;
+        copy.asIfConflictAt = this.asIfConflictAt;
         copy.gameActionsResolutionChain = this.gameActionsResolutionChain;
         copy.playType = this.playType;
         copy.ignoreFateCost = this.ignoreFateCost;

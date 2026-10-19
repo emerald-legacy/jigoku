@@ -3,6 +3,7 @@ import { blank, gainAllAbilities, switchBaseSkills } from '../../../effects.js';
 import { cardLastingEffect, joint, loseFate, noAction } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
+import { canSwitchSkills } from '../../switchSkills.js';
 
 export default class EbbAndFlow extends DrawCard {
     static id = 'ebb-and-flow';
@@ -19,7 +20,7 @@ export default class EbbAndFlow extends DrawCard {
                 name: 'opponents',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating() && !card.hasDash()
+                cardCondition: (card) => card.isParticipating() && canSwitchSkills(card)
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))

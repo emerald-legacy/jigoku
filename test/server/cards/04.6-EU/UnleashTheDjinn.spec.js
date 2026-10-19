@@ -83,3 +83,51 @@ describe('Unleash the Djinn', function() {
         });
     });
 });
+
+describe('Unleash the Djinn and switching skills', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 7,
+                    inPlay: ['border-rider'],
+                    hand: ['unleash-the-djinn']
+                },
+                player2: {
+                    inPlay: ['bayushi-yunako', 'doji-whisperer', 'kakita-yoshi'],
+                    hand: ['natural-negotiator']
+                }
+            });
+            this.borderRider = this.player1.findCardByName('border-rider');
+            this.yunako = this.player2.findCardByName('bayushi-yunako');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.player1.pass();
+            this.negotiator = this.player2.playAttachment('natural-negotiator', this.whisperer);
+            expect(this.negotiator.parent).toBe(this.whisperer);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.borderRider],
+                defenders: [this.yunako, this.whisperer]
+            });
+            this.player2.pass();
+            this.player1.clickCard('unleash-the-djinn');
+        });
+
+        it('a character whose skills are set cannot have them switched (EmeraldDB ruling)', function() {
+            expect(this.borderRider.militarySkill).toBe(3);
+            this.player2.clickCard(this.yunako);
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+            expect(this.player2).not.toBeAbleToSelect(this.whisperer);
+            expect(this.player2).not.toBeAbleToSelect(this.borderRider);
+            expect(this.player2).not.toBeAbleToSelect(this.yunako);
+        });
+
+        it('Natural Negotiator cannot switch the attached character\'s set skills', function() {
+            this.player2.clickCard(this.negotiator);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

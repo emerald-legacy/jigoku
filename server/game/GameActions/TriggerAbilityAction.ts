@@ -3,6 +3,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { CardAbility } from '../CardAbility.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import { AbilityResolver } from '../gamesteps/AbilityResolver.js';
@@ -24,12 +25,16 @@ interface AbilityToResolve {
     subResolution?: boolean;
     player?: Player;
     event?: Event;
+    /** The ability resolves "as if the conflict were at" this province (Keeper of Secret Names). */
+    asIfConflictAt?: BaseCard;
 }
 
 export function abilityContext(properties: AbilityToResolve, context: AbilityContext) {
     const ability = properties.ability;
     const player = properties.player || context.player;
-    return ability.isTriggeredAbilityInstance() ? ability.createContext(player, properties.event) : ability.createContext(player);
+    const newContext = ability.isTriggeredAbilityInstance() ? ability.createContext(player, properties.event) : ability.createContext(player);
+    newContext.asIfConflictAt = properties.asIfConflictAt;
+    return newContext;
 }
 
 /** The context to resolve the ability in: a sub-resolution continues the triggering context. */

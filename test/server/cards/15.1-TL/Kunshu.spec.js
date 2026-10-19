@@ -271,7 +271,7 @@ describe('Kunshu', function () {
             expect(this.player1).toHavePrompt('Action Window');
         });
 
-        it('favorable alliance', function () {
+        it('cannot play an X-cost card, as X is 0 (EmeraldDB ruling)', function () {
             this.player1.player.imperialFavor = 'political';
             this.player1.clickCard(this.kunshu);
             this.player1.clickCard(this.toshimoko);
@@ -281,21 +281,9 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            const fate = this.player1.fate;
-            const deckSize = this.player1.conflictDeck.length;
-
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
-            this.player1.clickCard(this.alliance);
-
-            expect(this.player1).toHavePromptButton('1');
-            expect(this.player1).toHavePromptButton('2');
-            expect(this.player1).toHavePromptButton(deckSize.toString());
-            expect(this.player1).not.toHavePromptButton((deckSize + 1).toString());
-
-            this.player1.clickPrompt(deckSize.toString());
-            expect(this.player1.fate).toBe(fate);
-            expect(this.player1.conflictDeck.length).toBe(0);
+            expect(this.player1).not.toBeAbleToSelect(this.alliance);
         });
 
         it('Kachiko 2 - should not use up a Kachiko usage', function () {

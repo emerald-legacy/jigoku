@@ -1,26 +1,30 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import * as costs from '../../costs/index.js';
 import { playerCannot } from '../../effects.js';
+import { nameCard, playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration, PlayType, Players, RestrictionScope } from '../../Constants.js';
 
 class Gossip extends DrawCard {
     static id = 'gossip';
 
     override setupCardAbilities() {
+        // naming is the effect, so it happens after the event could be cancelled (EmeraldDB ruling)
         this.action('Name a card that your opponent cannot play for the phase')
-            .cost(costs.nameCard())
-            .playerLastingEffect((context) => ({
-                duration: Duration.UntilEndOfPhase,
-                target: Players.Opponent,
-                effect: playerCannot({
-                    cannot: PlayType.PlayFromHand,
-                    appliesTo: RestrictionScope.CopiesOfX,
-                    params: context.costs.namedCard
+            .gameAction(nameCard({
+                message: (_context, cardName, player) =>
+                    msg`${player} names ${cardName} - ${player.opponent} cannot play cards named ${cardName} from their hand this phase`,
+                gameAction: (cardName) => playerLastingEffect({
+                    duration: Duration.UntilEndOfPhase,
+                    target: Players.Opponent,
+                    effect: playerCannot({
+                        cannot: PlayType.PlayFromHand,
+                        appliesTo: RestrictionScope.CopiesOfX,
+                        params: cardName
+                    })
                 })
-            }))
-            .chatText((context) => msg`prevent ${context.player.opponent} from playing cards named ${context.costs.namedCard} from their hand this phase`);
+            }));
     }
 }
+
 
 export default Gossip;

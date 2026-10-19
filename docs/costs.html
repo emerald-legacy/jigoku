@@ -1246,16 +1246,17 @@ this.action('Draw 3 cards')
     <ul class="edge">
       <li>Always payable.</li>
       <li>Records <code>namedCard</code>: the name. Chat: <code>naming {1}</code>, with the name as <code>{1}</code>.</li>
+      <li>Only for naming before the dash. When naming is the effect ("Action: Name a card. …", Gossip), use the <a href="game-actions.html#ga-nameCard"><code>nameCard</code></a> game action: the card is named after the ability could be cancelled.</li>
     </ul>
-    <pre><code>// Gossip: Action: Name a card. Until the end of the phase, each opponent cannot play cards from his or her hand with that name.
-this.action('Name a card that your opponent cannot play for the phase')
+    <pre><code>// Kitsuki Chiari: Reaction: After a province you control is revealed, choose an opponent and name a card - reveal 4 random cards in that opponent's hand and discard each copy of the named card revealed this way.
+this.reaction('Name a card')
+    .when({
+        onCardRevealed: (event, context) =&gt; event.card.isProvince &amp;&amp; event.card.controller === context.player &amp;&amp;
+            context.player.opponent &amp;&amp; context.player.opponent.hand.length &gt; 0
+    })
     .cost(costs.nameCard())
-    .playerLastingEffect((context) =&gt; ({
-        duration: Duration.UntilEndOfPhase,
-        target: Players.Opponent,
-        effect: playerCannot({ cannot: PlayType.PlayFromHand, appliesTo: RestrictionScope.CopiesOfX, params: context.costs.namedCard })
-    }));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/Gossip.ts">Gossip</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ShiroKitsuki.ts">Shiro Kitsuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/KitsukiChiari.ts">Kitsuki Chiari</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Dragon/HonestAssessment.ts">Honest Assessment</a></p>
+    // … match: (context, card) =&gt; card.name === context.costs.namedCard</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ShiroKitsuki.ts">Shiro Kitsuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/KitsukiChiari.ts">Kitsuki Chiari</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Dragon/HonestAssessment.ts">Honest Assessment</a></p>
   </div>
 </section>
 

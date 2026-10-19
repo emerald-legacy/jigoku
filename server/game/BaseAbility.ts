@@ -311,6 +311,11 @@ export class BaseAbility {
         return false;
     }
 
+    /** Playing a character as an attachment: the card is played as an attachment, not as a character. */
+    isCharacterPlayedAsAttachment(): boolean {
+        return false;
+    }
+
     isCardAbility(): boolean {
         return false;
     }

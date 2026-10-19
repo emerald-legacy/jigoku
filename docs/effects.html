@@ -540,7 +540,7 @@ this.action('Switch a character\'s M and P skill')
     .condition((context) =&gt; context.source.isParticipating())
     .target({
         cardType: CardType.Character,
-        cardCondition: (card) =&gt; !card.hasDash()
+        cardCondition: (card) =&gt; canSwitchSkills(card)
     }, cardLastingEffect({
         effect: switchBaseSkills()
     }))</code></pre>
@@ -2394,7 +2394,8 @@ this.action('Allow attacking the stronghold')
     </ul>
     <pre><code>// Isawa Kaede: … If this character wins the conflict as an attacker, instead of choosing an element to resolve, resolve each of that ring's effects.
 this.persistentEffect({
-    condition: (context) =&gt; context.source.isAttacking() &amp;&amp; !!this.game.currentConflict?.isOnWinningSide(context.source),
+    // fixed when the winner is determined: sent home afterwards (False Loyalties), she still won (EmeraldDB ruling)
+    condition: (context) =&gt; !!this.game.currentConflict?.wonAsAttacker(context.source),
     effect: modifyConflictElementsToResolve(5)
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/IsawaKaede.ts">Isawa Kaede</a></p>
@@ -2706,7 +2707,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Read when the character is played from hand, from a province, or disguised; not when it is put into play by an effect.</li>
+      <li>Read when the character is played from a province (also disguised); not when it is played "as if it were in your hand" from there (Hidden Moon Dōjō, Prepared Ambush: EmeraldDB ruling on Toshi Ranbo), nor when it is put into play by an effect.</li>
       <li>The effect must be on the card while it is in the hand or province, so set <code>targetLocation</code>.</li>
       <li>Copies add up. A <code>cardCannot(RestrictionType.PlaceFate)</code> on the character cancels the extra fate.</li>
     </ul>

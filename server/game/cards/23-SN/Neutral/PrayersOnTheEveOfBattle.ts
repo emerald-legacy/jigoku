@@ -1,6 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
 import { perConflictOpportunity } from '../../../AbilityLimit.js';
 
 export default class PrayersOnTheEveOfBattle extends DrawCard {
@@ -12,7 +11,7 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
                 // "after a conflict ends": step 3.3, when the characters are already home
                 onConflictFinished: (_event, context) => !!context.source.parentCharacter
             })
-            .if((context) => this.wonConflict(context.event.conflict))
+            .if((context) => !!this.parentCharacter && context.event.conflict.wonAtResolution(this.parentCharacter))
                 .gainFate(1)
                 .discardFromPlay()
             .otherwise()
@@ -25,15 +24,5 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
             .location(Location.ConflictDiscardPile)
             .moveCard((context) => ({ target: context.source, destination: Location.Hand }))
             .max(perConflictOpportunity(1));
-    }
-
-    // the side it was on when the winner was determined
-    private wonConflict(conflict: Conflict): boolean {
-        const character = this.parentCharacter;
-        if(!character || !conflict.winner) {
-            return false;
-        }
-        const winners = conflict.winner === conflict.attackingPlayer ? conflict.attackersAtResolution : conflict.defendersAtResolution;
-        return winners.includes(character);
     }
 }

@@ -76,3 +76,36 @@ describe('Deceptive Offer', function() {
         });
     });
 });
+
+describe('Deceptive Offer at Festival of the Departed', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-manipulator'],
+                    hand: ['deceptive-offer']
+                },
+                player2: {
+                    provinces: ['festival-of-the-departed']
+                }
+            });
+            this.manipulator = this.player1.findCardByName('bayushi-manipulator');
+            this.festival = this.player2.findCardByName('festival-of-the-departed');
+        });
+
+        it('cannot be played when the skills can\'t be increased (EmeraldDB ruling)', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.festival,
+                attackers: [this.manipulator],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard('deceptive-offer');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1.findCardByName('deceptive-offer').location).toBe('hand');
+        });
+    });
+});

@@ -229,6 +229,11 @@ interface CardTargetProps<Context, EarlierContext, Types, DependsOn, Optional> e
     cardCondition?: (card: CardOfType<Types>, context: Context) => boolean;
 }
 
+/** While `skipIf` is true the target is skipped (holds `[]`, no prompt); otherwise it is chosen as usual. */
+interface SkipIfProps<EarlierContext> {
+    skipIf: (context: EarlierContext) => boolean;
+}
+
 type CardsModeProps<EarlierContext, Types> =
     | { mode: TargetMode.Exactly | TargetMode.UpTo; numCards: number; sameDiscardPile?: boolean }
     | { mode: TargetMode.ExactlyVariable | TargetMode.UpToVariable; numCardsFunc: (context: EarlierContext) => number }
@@ -432,6 +437,32 @@ export class AbilityBuilder<
         const candidate: TargetSpec = { bag: 'targets', name, holds: holdsCard };
         const own: TargetSpec = { bag: 'targets', name, holds: (value) => holdsCard(value) || skipped(value) };
         const entry: SingleCardEntry = this.#cardChoice(props);
+        this.#addCardTarget(name, entry, props, holdsCard, candidate, own, gameActions);
+        return new AbilityBuilder(this.draft);
+    }
+
+    /** A target that is skipped while `skipIf` is true: no prompt, and it holds `[]`. Otherwise it is chosen as a `target()`. */
+    skippableTarget<
+        const Name extends string = never,
+        const Types extends CardTypes = undefined,
+        DependsOn extends Dependency<Targets, Rings, Tokens, SelectNames> = never
+    >(
+        props: Named<Name> & CardTargetProps<
+            CandidateContext<Base, Targets, Rings, Costs, Tokens, DependsOn, TargetName<NoInfer<Name>>, CardOfType<Types>>,
+            EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>,
+            Types,
+            DependsOn,
+            false
+        > & SkipIfProps<EarlierContext<Base, Targets, Rings, Costs, Tokens, DependsOn>>,
+        ...gameActions: NoInfer<BuilderAction<Base, Visible<Targets, DependsOn & keyof Targets, TargetName<Name>, ChosenCard<Types, true>>, Earlier<Rings, DependsOn & keyof Rings>, Costs, Earlier<Tokens, DependsOn & keyof Tokens>>>[]
+    ): AbilityBuilder<Base, Targets & { [Key in TargetName<Name>]: ChosenCard<Types, true> }, Rings, Costs, Tokens, SelectNames> {
+        const name = props.name ?? 'target';
+        const holdsCard = holdsCardOf<Types>(props.cardType);
+        const candidate: TargetSpec = { bag: 'targets', name, holds: holdsCard };
+        const own: TargetSpec = { bag: 'targets', name, holds: (value) => holdsCard(value) || (Array.isArray(value) && value.length === 0) };
+        const entry: SingleCardEntry = this.#cardChoice(props);
+        const [earlier, others] = this.#earlier(props.dependsOn);
+        entry.skipIf = this.#checked(props.skipIf, earlier, others);
         this.#addCardTarget(name, entry, props, holdsCard, candidate, own, gameActions);
         return new AbilityBuilder(this.draft);
     }

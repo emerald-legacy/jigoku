@@ -532,6 +532,19 @@ export class Conflict extends GameObject {
         return !!this.loser && this.isParticipatingFor(card, this.loser);
     }
 
+    /** "this character won the conflict", after the conflict: it was on the winning side when the winner was determined, even if it left the conflict afterwards (False Loyalties). */
+    wonAtResolution(card: DrawCard): boolean {
+        if(!this.winner) {
+            return false;
+        }
+        return (this.winner === this.attackingPlayer ? this.attackersAtResolution : this.defendersAtResolution).includes(card);
+    }
+
+    /** "this character wins the conflict as an attacker", fixed when the winner is determined (as `wonAtResolution`). */
+    wonAsAttacker(card: DrawCard): boolean {
+        return this.winner === this.attackingPlayer && this.attackersAtResolution.includes(card);
+    }
+
     private isParticipatingFor(card: DrawCard, player: Player): boolean {
         return this.isParticipating(card) && (player === this.attackingPlayer ? this.isAttacking(card) : this.isDefending(card));
     }

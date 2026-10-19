@@ -12,6 +12,8 @@ interface AbilityTargetCardProperties {
     gameAction: GameAction[];
     dependsOn?: string;
     mode?: TargetMode;
+    optional?: boolean;
+    skipIf?: (context: AbilityContext) => boolean;
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     player?: ((context: AbilityContext) => Players) | Players;
 }
@@ -37,6 +39,11 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
         return CardSelector.for(Object.assign({}, properties, { cardCondition: cardCondition, targets: true }));
     }
 
+    /** A target with `skipIf` that is skipped now: nothing is chosen. */
+    isSkipped(context: AbilityContext): boolean {
+        return !!this.properties.skipIf?.(context);
+    }
+
     getContextCopy(card: BaseCard, context: AbilityContext): AbilityContext {
         const contextCopy = context.copy({});
         contextCopy.targets[this.name] = card;
@@ -47,7 +54,7 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
     }
 
     hasLegalTarget(context: AbilityContext): boolean {
-        return this.selector.optional || this.selector.hasEnoughTargets(context, this.getChoosingPlayer(context));
+        return this.isSkipped(context) || this.selector.optional || this.selector.hasEnoughTargets(context, this.getChoosingPlayer(context));
     }
 
     getGameAction(context: AbilityContext): HeldAction[] {
@@ -63,12 +70,16 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {
+        if(this.isSkipped(context)) {
+            context.targets[this.name] = [];
+            return;
+        }
         const chooser = this.chooserNow(context, targetResults);
         if(!chooser) {
             return;
         }
         const { player } = chooser;
-        const { cardCondition: _cardCondition, player: _playerProp, ...otherProperties } = this.properties;
+        const { cardCondition: _cardCondition, player: _playerProp, skipIf: _skipIf, ...otherProperties } = this.properties;
 
         const mustSelect = this.selector.getAllLegalTargets(context, player).filter((card: BaseCard) =>
             card.getEffects(EffectName.MustBeChosen).some((restriction) => restriction.isMatch(RestrictionType.Target, context))
@@ -93,6 +104,9 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
     }
 
     checkTarget(context: AbilityContext): boolean {
+        if(this.isSkipped(context)) {
+            return true;
+        }
         if(!context.targets[this.name]) {
             return false;
         } else if(context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {

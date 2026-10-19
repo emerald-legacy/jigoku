@@ -17,7 +17,8 @@ class IsawaKaede extends DrawCard {
             effect: addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
         });
         this.persistentEffect({
-            condition: (context) => context.source.isAttacking() && !!this.game.currentConflict?.isOnWinningSide(context.source),
+            // sent home after the winner was determined (False Loyalties), she still won as an attacker (EmeraldDB ruling)
+            condition: (context) => !!this.game.currentConflict?.wonAsAttacker(context.source),
             effect: modifyConflictElementsToResolve(5)
         });
     }

@@ -774,7 +774,7 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>CardAndRingEffects</code></td><td><code>'cardAndRingEffects'</code></td><td><code>CardEffects</code> or <code>RingEffects</code>.</td></tr>
           <tr><td><code>CardEffects</code></td><td><code>'cardEffects'</code></td><td>Attempts whose source is a card (event, character, holding, attachment, stronghold, province or role), made by a card ability or another non-play ability, outside <code>Stage.Cost</code>. Playing a character, attachment or holding does not count; an event's ability does. Costs are not effects.</td></tr>
           <tr><td><code>CardEffectsExceptOwn</code></td><td><code>'cardEffectsExceptOwn'</code></td><td><code>CardEffects</code> whose source is not the effect's source.</td></tr>
-          <tr><td><code>Characters</code></td><td><code>'characters'</code></td><td>Sources that are characters (<code>charactersCannot</code> sets it).</td></tr>
+          <tr><td><code>Characters</code></td><td><code>'characters'</code></td><td>Sources that are characters (<code>charactersCannot</code> sets it). A character played as an attachment (Tattooed Wanderer) is not one.</td></tr>
           <tr><td><code>CharactersWithNoFate</code></td><td><code>'charactersWithNoFate'</code></td><td>Characters with no fate on them.</td></tr>
           <tr><td><code>CopiesOfDiscardEvents</code></td><td><code>'copiesOfDiscardEvents'</code></td><td>Events with a copy in the player's conflict discard pile.</td></tr>
           <tr><td><code>CopiesOfX</code></td><td><code>'copiesOfX'</code></td><td>Sources named <code>params</code> (the restriction's <code>params</code>).</td></tr>

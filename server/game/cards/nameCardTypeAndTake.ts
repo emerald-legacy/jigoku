@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import { CardType, Location, RemainingCards, TargetMode, type Trait } from '../Constants.js';
 import type { Cost } from '../costs/Cost.js';
 import type { DeckSearchProperties } from '../GameActions/DeckSearchAction.js';
@@ -34,10 +35,14 @@ export function nameCardType(): Cost<{ namedCardType: CardType }> {
     };
 }
 
-/** The player adds up to 2 of the revealed cards of the named type to their hand, and the rest are discarded. */
-export function takeUpToTwoOfNamedType(context: AbilityContext & { costs: { namedCardType?: CardType } }, trait: Trait): DeckSearchProperties {
+/**
+ * The player adds up to 2 of the revealed cards of the named type to their hand, and the rest are discarded.
+ * Only the revealed cards still on top of the deck: a card played from the top of the deck was revealed but has left it (EmeraldDB ruling).
+ */
+export function takeUpToTwoOfNamedType(context: AbilityContext & { costs: { namedCardType?: CardType; reveal?: BaseCard[] } }, trait: Trait): DeckSearchProperties {
+    const revealed = context.costs.reveal;
     return {
-        cardsToLookAt: revealCount(context, trait),
+        cardsToLookAt: revealed ? revealed.filter((card) => card.location === Location.ConflictDeck).length : revealCount(context, trait),
         mode: TargetMode.UpTo,
         numCards: 2,
         activePromptTitle: 'Select a card',

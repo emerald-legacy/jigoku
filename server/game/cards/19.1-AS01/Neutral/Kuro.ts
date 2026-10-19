@@ -24,9 +24,10 @@ export default class Kuro extends DrawCard {
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent,
                 cardType: CardType.Attachment,
-                // only an attachment you can pay for with the reduction (RRG Target)
+                // only an attachment you can play on Kuro and pay for with the reduction (RRG Target)
                 cardCondition: (card, context) =>
                     (card.printedCost ?? 0) >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller }) &&
+                    card.canPlay(context.copy({ source: card }), PlayType.Other) &&
                     context.player.getReducedCost(PlayType.Other, card, this) - 1 <= context.player.fate
             }, sequential([
                 playerLastingEffect((context) => ({

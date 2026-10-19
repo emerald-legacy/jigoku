@@ -15,6 +15,7 @@ class KeeperOfSecretNames extends DrawCard {
             }, resolveAbility((context) => ({
                 ability: context.target.abilities.actions[0],
                 ignoredBlockers: [Blocker.WrongProvince],
+                asIfConflictAt: context.target,
                 choosingPlayerOverride: context.choosingPlayerOverride
             })));
     }

@@ -3,6 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { switchBaseSkills } from '../../effects.js';
 import { msg } from '../../GameChat.js';
+import { canSwitchSkills } from '../switchSkills.js';
 
 class NaturalNegotiator extends DrawCard {
     static id = 'natural-negotiator';
@@ -14,7 +15,8 @@ class NaturalNegotiator extends DrawCard {
         });
 
         this.action('Switch attached characters base skills')
-            .condition((context) => context.game.isDuringConflict())
+            .condition((context) => context.game.isDuringConflict() &&
+                !!context.source.parentCharacter && canSwitchSkills(context.source.parentCharacter))
             .cost(costs.giveHonorToOpponent())
             .cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],

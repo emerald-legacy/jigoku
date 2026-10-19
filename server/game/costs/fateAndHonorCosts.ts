@@ -114,8 +114,9 @@ export function payVariableFate(properties: {
     return {
         promptsPlayer: true,
         canPay(context: AbilityContext<DrawCard>) {
+            // ignoring the fate cost (Kunshu) makes X = 0 (EmeraldDB ruling)
             if(context.ignoreFateCost) {
-                return true;
+                return deriveMinAmount(context) <= 0;
             }
             const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
             return (
@@ -125,9 +126,11 @@ export function payVariableFate(properties: {
             );
         },
         resolve(context: AbilityContext<DrawCard>, result) {
-            const costModifiers = context.ignoreFateCost
-                ? -1000
-                : context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
+            if(context.ignoreFateCost) {
+                context.costs.fatePaid = 0;
+                return;
+            }
+            const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
 
             const maxAmount = deriveMaxAmount(context);
             const min = deriveMinAmount(context);

@@ -2,9 +2,12 @@ import type { AbilityContext } from './AbilityContext.js';
 import { Blocker, EffectName, RestrictionType, type PlayType } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 
-/** The fate a character enters play with besides what the player chose: extra fate and legendary fate. */
-export function getExtraFateWhenPlayed(card: DrawCard, context: AbilityContext): number {
-    const extraFate = card.checkRestrictions(RestrictionType.PlaceFate, context) ? card.sumEffects(EffectName.GainExtraFateWhenPlayed) : 0;
+/**
+ * The fate a character enters play with besides what the player chose: extra fate and legendary fate.
+ * The extra fate of a province (Toshi Ranbo) is for characters played from it, not "as if from your hand" (EmeraldDB ruling).
+ */
+export function getExtraFateWhenPlayed(card: DrawCard, context: AbilityContext, playedFromProvince = true): number {
+    const extraFate = playedFromProvince && card.checkRestrictions(RestrictionType.PlaceFate, context) ? card.sumEffects(EffectName.GainExtraFateWhenPlayed) : 0;
     return extraFate + card.sumEffects(EffectName.LegendaryFate);
 }
 
