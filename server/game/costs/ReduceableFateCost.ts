@@ -66,7 +66,7 @@ export class ReduceableFateCost implements Cost {
             alternatePoolTotal += pool.getFate();
         }
 
-        const maxPlayerFate = this.#getMaxPlayerFate(context);
+        const maxPlayerFate = this.getMaxPlayerFate(context);
         const reducedCost = this.getReducedCost(context);
         if(reducedCost > maxPlayerFate + alternatePoolTotal) {
             result.cancelled = true;
@@ -261,7 +261,7 @@ export class ReduceableFateCost implements Cost {
         });
     }
 
-    #getMaxPlayerFate(context: AbilityContext<DrawCard>): number {
+    protected getMaxPlayerFate(context: AbilityContext<DrawCard>): number {
         if(context.source.isTemptationsMaho()) {
             return 0;
         }

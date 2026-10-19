@@ -124,6 +124,7 @@ export enum EffectName {
     CostReducer = 'costReducer',
     ModifyCardsDrawnInDrawPhase = 'modifyCardsDrawnInDrawPhase',
     SetMaxConflicts = 'setMaxConflicts',
+    SetMaxDeclaredConflicts = 'setMaxDeclaredConflicts',
     ShowTopConflictCard = 'showTopConflictCard',
     ShowTopDynastyCard = 'showTopDynastyCard',
     ContributeToConflict = 'contributeToConflict',

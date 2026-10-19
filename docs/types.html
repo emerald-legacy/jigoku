@@ -3228,7 +3228,7 @@ this.reaction('Honor a character')
     controller: Players.Self
 }, cardLastingEffect((context) =&gt; ({
     target: context.targetAbility?.card,
-    duration: Duration.UntilEndOfRound,
+    duration: this.getExtraUseDuration(context.targetAbility),
     effect: increaseLimitOnAbilities({
         targetAbility: context.targetAbility
     })

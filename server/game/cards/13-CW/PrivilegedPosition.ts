@@ -1,4 +1,4 @@
-import { setMaxConflicts } from '../../effects.js';
+import { setMaxDeclaredConflicts } from '../../effects.js';
 import { Duration } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { msg } from '../../GameChat.js';
@@ -17,7 +17,7 @@ export default class PrivilegedPosition extends DrawCard {
             .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfRound,
                 target: context.player.opponent,
-                effect: setMaxConflicts(1)
+                effect: setMaxDeclaredConflicts(1)
             }))
             .chatText((context) => msg`limit ${context.player.opponent ?? context.player} to a single conflict this turn`);
     }

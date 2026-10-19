@@ -9,6 +9,9 @@ class IkomaMessageRunner extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Flip a card faceup')
+            // choosing nothing in both changes nothing, so there must be a card to turn faceup
+            .condition((context) => context.game.allCards.some((card) =>
+                card.isDynasty && card.isFacedown() && card.isInProvince() && flipDynasty().canAffect(card, context)))
             .targetCards({
                 name: 'myCard',
                 activePromptTitle: 'Choose a facedown card in your provinces',

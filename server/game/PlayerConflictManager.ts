@@ -59,6 +59,16 @@ export class PlayerConflictManager {
     }
 
     getConflictOpportunities(): number {
+        const opportunities = this.#getUncappedConflictOpportunities();
+        const maxDeclared = this.player.mostRecentEffect(EffectName.SetMaxDeclaredConflicts);
+        if(maxDeclared === undefined) {
+            return opportunities;
+        }
+        const declared = this.game.getConflicts(this.player).filter((record) => !record.passed).length;
+        return Math.min(opportunities, Math.max(0, maxDeclared - declared));
+    }
+
+    #getUncappedConflictOpportunities(): number {
         const setConflictDeclarationType = this.player.mostRecentEffect(EffectName.SetConflictDeclarationType);
         const forceConflictDeclarationType = this.player.mostRecentEffect(EffectName.ForceConflictDeclarationType);
         const provideConflictDeclarationType = this.player.mostRecentEffect(EffectName.ProvideConflictDeclarationType);

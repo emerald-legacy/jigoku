@@ -16,8 +16,8 @@ class TogashiHoshi extends DrawCard {
                     target: card,
                     effect: [changeType(CardType.Character)].concat(
                         card.printedType === CardType.Attachment ? [
-                            setBaseMilitarySkill(parseInt(card.cardData.military_bonus ?? '')),
-                            setBasePoliticalSkill(parseInt(card.cardData.political_bonus ?? '')),
+                            setBaseMilitarySkill(parseInt(card.cardData.military_bonus ?? '') || 0),
+                            setBasePoliticalSkill(parseInt(card.cardData.political_bonus ?? '') || 0),
                             setBaseGlory(0)
                         ] : []
                     )

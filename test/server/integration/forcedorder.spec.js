@@ -47,6 +47,9 @@ describe('forced abilities triggering at the same moment', function() {
                 defenders: [this.borderlands]
             });
             this.noMoreActions();
+            // Prayers resolves when the conflict ends (3.3): after the break and the ring effect
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Gain 2 honor');
 
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.prayers1.location).toBe('conflict discard pile');

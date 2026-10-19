@@ -13,6 +13,8 @@ export interface AbilityLimit {
     currentForPlayer(player: Player): number;
     clone(): AbilityLimit;
     isRepeatable(): boolean;
+    /** The events that reset the count; empty for a limit that never resets. */
+    getResetEvents(): ReadonlySet<EventName>;
     isAtMax(player: Player): boolean;
     increment(player: Player): void;
     reset(): void;
@@ -31,6 +33,10 @@ class UnlimitedAbilityLimit {
 
     public isRepeatable(): boolean {
         return true;
+    }
+
+    public getResetEvents(): ReadonlySet<EventName> {
+        return new Set();
     }
 
     public isAtMax(_player: Player): boolean {
@@ -75,6 +81,10 @@ class FixedAbilityLimit {
 
     public isRepeatable(): boolean {
         return false;
+    }
+
+    public getResetEvents(): ReadonlySet<EventName> {
+        return new Set();
     }
 
     public isAtMax(player: Player): boolean {
@@ -126,6 +136,10 @@ class RepeatableAbilityLimit extends FixedAbilityLimit {
 
     public override isRepeatable(): boolean {
         return true;
+    }
+
+    public override getResetEvents(): ReadonlySet<EventName> {
+        return this.eventName;
     }
 
     public override registerEvents(eventEmitter: EventBusLike): void {

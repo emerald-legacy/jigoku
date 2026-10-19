@@ -230,3 +230,55 @@ describe('Smuggling Deal', function () {
         });
     });
 });
+
+describe('Smuggling Deal on a once-per-conflict ability', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-sukune'],
+                    hand: ['smuggling-deal', 'fine-katana', 'ornate-fan', 'banzai', 'let-go']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'doji-challenger']
+                }
+            });
+            this.sukune = this.player1.findCardByName('hida-sukune');
+            this.smugglingDeal = this.player1.findCardByName('smuggling-deal');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+        });
+
+        it('gives one additional use in that conflict only', function () {
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({ attackers: [this.whisperer], defenders: [this.sukune] });
+            this.player1.clickCard(this.sukune);
+            this.player1.clickCard('fine-katana');
+            this.player2.pass();
+            this.player1.clickCard(this.smugglingDeal);
+            this.player1.clickCard(this.sukune);
+            this.player2.pass();
+            this.player1.clickCard(this.sukune);
+            this.player1.clickCard('ornate-fan');
+            expect(this.player1.findCardByName('ornate-fan').location).toBe('conflict discard pile');
+            this.player2.pass();
+            this.player1.clickCard(this.sukune);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+
+            this.player1.pass();
+            this.noMoreActions();
+            this.sukune.bowed = false;
+            this.noMoreActions();
+            this.initiateConflict({ attackers: [this.challenger], defenders: [this.sukune], ring: 'fire' });
+            this.player1.clickCard(this.sukune);
+            this.player1.clickCard('banzai');
+            expect(this.player1.findCardByName('banzai').location).toBe('conflict discard pile');
+            this.player2.pass();
+            this.player1.clickCard(this.sukune);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

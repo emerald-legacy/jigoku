@@ -7,7 +7,9 @@ class WhiteHordeVanguard extends DrawCard {
 
     override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.game.isDuringConflict() && context.game.conflictRecord.filter((record) => record.completed).length === 0,
+            // the first conflict lasts until it ends, also after its own record is completed (afterConflict reactions)
+            condition: (context) => context.game.isDuringConflict() &&
+                !context.game.conflictRecord.some((record) => record.completed && record.uuid !== context.game.currentConflict?.uuid),
             effect: [
                 cardCannot({
                     cannot: RestrictionType.SendHome,

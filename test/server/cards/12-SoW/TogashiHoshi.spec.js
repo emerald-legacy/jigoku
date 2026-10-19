@@ -273,3 +273,30 @@ describe('Togashi Hoshi', function () {
         });
     });
 });
+
+describe('Togashi Hoshi and a "+X" attachment', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-hoshi', { card: 'mirumoto-raitsugu', attachments: ['kobo-ichi-kai-jujutsu'] }],
+                    hand: ['fine-katana']
+                }
+            });
+            this.hoshi = this.player1.findCardByName('togashi-hoshi');
+            this.kobo = this.player1.findCardByName('kobo-ichi-kai-jujutsu');
+            this.katana = this.player1.findCardByName('fine-katana');
+        });
+
+        it('has base skill 0 that modifiers change (X counts as 0)', function () {
+            this.player1.clickCard(this.hoshi);
+            this.player1.clickCard(this.kobo);
+            expect(this.kobo.type).toBe('character');
+            expect(this.kobo.militarySkill).toBe(0);
+            this.player2.pass();
+            this.player1.playAttachment(this.katana, this.kobo);
+            expect(this.kobo.militarySkill).toBe(2);
+        });
+    });
+});

@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { cardCannot, mustBeDeclaredAsAttacker } from '../../../effects.js';
 import { cardLastingEffect, initiateConflict, ready, sequential } from '../../../GameActions/GameActions.js';
-import { CardType, Location, RestrictionType } from '../../../Constants.js';
+import { CardType, Location, Phase, RestrictionType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ScoutsSteed extends DrawCard {
@@ -17,7 +17,9 @@ export default class ScoutsSteed extends DrawCard {
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card, context) => card.isFacedown() && card.canBeAttacked() && card.controller !== context.player
+                // eligible only while you can declare a conflict: in the conflict phase, with an opportunity left
+                cardCondition: (card, context) => card.isFacedown() && card.canBeAttacked() && card.controller !== context.player &&
+                    context.game.currentPhase === Phase.Conflict && context.player.getConflictOpportunities() > 0
             })
             .gameAction(sequential(
                 ({ player, target: province, source: { parentCharacter: character } }) => [

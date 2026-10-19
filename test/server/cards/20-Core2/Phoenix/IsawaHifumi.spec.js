@@ -90,12 +90,17 @@ describe('Isawa Hifumi', function () {
             expect(this.player1).toBeAbleToSelect(this.isawaHifumi);
             expect(this.player1).toBeAbleToSelect(this.adeptOfTheWaves);
             expect(this.player1).not.toBeAbleToSelect(this.matsuBerserker);
+            // the fate comes from characters, never from the fate pool
+            expect(this.player1).not.toHavePromptButton('Done');
+            const poolFate = this.player1.fate;
 
             this.player1.clickCard(this.adeptOfTheWaves);
             expect(this.player1).toHavePrompt('Choose amount of fate to spend from Adept of the Waves');
+            expect(this.player1).not.toHavePromptButton('0');
 
             this.player1.clickPrompt('1');
             expect(this.adeptOfTheWaves.fate).toBe(0);
+            expect(this.player1.fate).toBe(poolFate);
             expect(this.player1).toHavePrompt('Choose an event');
 
             this.player1.clickCard(this.againstTheWaves);

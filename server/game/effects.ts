@@ -281,6 +281,8 @@ export const provideConflictDeclarationType = (type: ConflictType) =>
     EffectBuilder.player.static(EffectName.ProvideConflictDeclarationType, type);
 export const forceConflictDeclarationType = (type: ConflictType) => EffectBuilder.player.static(EffectName.ForceConflictDeclarationType, type);
 export const setMaxConflicts = (amount: number) => EffectBuilder.player.static(EffectName.SetMaxConflicts, amount);
+/** "cannot declare more than N conflicts": passed opportunities don't count. */
+export const setMaxDeclaredConflicts = (amount: number) => EffectBuilder.player.static(EffectName.SetMaxDeclaredConflicts, amount);
 export const setConflictTotalSkill = (value: number) => EffectBuilder.player.static(EffectName.SetConflictTotalSkill, value);
 export const showTopConflictCard = (players: Players = Players.Any) =>
     EffectBuilder.player.static(EffectName.ShowTopConflictCard, players);

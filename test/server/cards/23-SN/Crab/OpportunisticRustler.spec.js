@@ -98,3 +98,31 @@ describe('Opportunistic Rustler', function () {
         });
     });
 });
+
+describe('Opportunistic Rustler against a province with printed strength X', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['opportunistic-rustler']
+                },
+                player2: {
+                    provinces: ['the-roar-of-the-lioness']
+                }
+            });
+            this.rustler = this.player1.findCardByName('opportunistic-rustler');
+            this.roar = this.player2.findCardByName('the-roar-of-the-lioness');
+        });
+
+        it('looks at no cards, so it has no reaction (X counts as 0)', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.rustler],
+                province: this.roar
+            });
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

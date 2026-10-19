@@ -5,7 +5,7 @@ import {
     playerLastingEffect,
     sequential
 } from '../../../GameActions/GameActions.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, Location, PlayType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Kuro extends DrawCard {
@@ -24,13 +24,15 @@ export default class Kuro extends DrawCard {
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent,
                 cardType: CardType.Attachment,
-                cardCondition: (card) =>
-                    (card.printedCost ?? 0) >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller })
+                // only an attachment you can pay for with the reduction (RRG Target)
+                cardCondition: (card, context) =>
+                    (card.printedCost ?? 0) >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller }) &&
+                    context.player.getReducedCost(PlayType.Other, card, this) - 1 <= context.player.fate
             }, sequential([
-                playerLastingEffect({
+                playerLastingEffect((context) => ({
                     target: Players.Self,
-                    effect: reduceNextPlayedCardCost(1)
-                }),
+                    effect: reduceNextPlayedCardCost(1, (card) => card === context.target)
+                })),
                 playCard((context) => ({
                     source: this,
                     payCosts: true,

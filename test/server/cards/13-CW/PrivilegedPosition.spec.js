@@ -28,6 +28,18 @@ describe('Priviledged Position', function() {
                 expect(this.getChatLogs(4)).toContain('player1 plays Privileged Position to limit player2 to a single conflict this turn');
             });
 
+            it('does not count a passed opportunity as a declared conflict', function() {
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('2');
+                this.player1.clickCard(this.position);
+                this.noMoreActions();
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.player2.passConflict();
+                expect(this.player2.player.getConflictOpportunities()).toBe(1);
+            });
+
             it('should not trigger when bids are equal and reduce opponent to 1 conflict opportunity', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');

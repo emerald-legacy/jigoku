@@ -54,7 +54,7 @@ describe('Castle of the Forgotten', function() {
             expect(this.player2.player.getRemainingConflictOpportunitiesForType('political')).toBe(0);
             expect(this.player2.player.getConflictOpportunities()).toBe(2);
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Castle of the Forgotten, bowing Castle of the Forgotten to make all future conflicts military for this phase');
+            expect(this.getChatLogs(5)).toContain('player1 uses Castle of the Forgotten, bowing Castle of the Forgotten to make all future conflicts military for this round');
         });
 
         it('should make all added conflicts be military', function() {
@@ -139,6 +139,53 @@ describe('Castle of the Forgotten other breaks', function() {
             this.game.continue();
             expect(ownProvince.isBroken).toBe(true);
             expect(this.player1).not.toBeAbleToSelect(this.castle);
+        });
+    });
+});
+
+describe('Castle of the Forgotten after a break outside the conflict phase', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    stronghold: 'ebony-blood-garrison',
+                    inPlay: ['hida-guardian'],
+                    provinces: ['manicured-garden', 'avalanche-of-stone']
+                },
+                player2: {
+                    stronghold: 'castle-of-the-forgotten',
+                    inPlay: ['doji-whisperer'],
+                    provinces: ['entrenched-position', 'retire-to-the-brotherhood']
+                }
+            });
+            this.ebonyBloodGarrison = this.player1.findCardByName('ebony-blood-garrison');
+            this.hidaGuardian = this.player1.findCardByName('hida-guardian');
+            this.manicuredGarden = this.player1.findCardByName('manicured-garden');
+            this.entrenchedPosition = this.player2.findCardByName('entrenched-position');
+            this.retire = this.player2.findCardByName('retire-to-the-brotherhood');
+            this.castle = this.player2.findCardByName('castle-of-the-forgotten');
+            this.noMoreActions();
+        });
+
+        it('keeps the conflicts military for the rest of the round ("this round")', function () {
+            this.player1.clickCard(this.ebonyBloodGarrison);
+            this.player1.clickCard(this.manicuredGarden);
+            this.player1.clickCard(this.entrenchedPosition);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.castle);
+            expect(this.getChatLogs(5)).toContain('player2 uses Castle of the Forgotten, bowing Castle of the Forgotten to make all future conflicts military for this round');
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            expect(this.game.currentPhase).toBe('conflict');
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.hidaGuardian],
+                province: this.retire
+            });
+            expect(this.game.currentConflict.conflictType).toBe('military');
         });
     });
 });

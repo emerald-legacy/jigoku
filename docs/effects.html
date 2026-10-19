@@ -1154,7 +1154,7 @@ this.whileAttached({
     <pre><code>// Smuggling Deal: … choose an ability on a character you control - you may trigger that ability an additional time this round (or specified period).
 cardLastingEffect((context) =&gt; ({
     target: context.targetAbility?.card,
-    duration: Duration.UntilEndOfRound,
+    duration: this.getExtraUseDuration(context.targetAbility),
     effect: increaseLimitOnAbilities({
         targetAbility: context.targetAbility
     })
@@ -2313,18 +2313,18 @@ this.reaction('Make all conflicts military')
     .playerLastingEffect({
         target: Players.Any,
         effect: setConflictDeclarationType(ConflictType.Military),
-        duration: Duration.UntilEndOfPhase
+        duration: Duration.UntilEndOfRound
     })
-    .chatText(() =&gt; msg`make all future conflicts ${'military'} for this phase`);</code></pre>
+    .chatText(() =&gt; msg`make all future conflicts ${'military'} for this round`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/CastleOfTheForgotten.ts">Castle of the Forgotten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/KhansOrdu.ts">Khan's Ordu</a></p>
   </div>
 <div class="ref" id="ef-setMaxConflicts" data-name="setMaxConflicts">
     <h3><code>setMaxConflicts(amount)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-setMaxConflicts">#</a></h3>
-    <p>"Cannot declare more than one conflict … this round."</p>
+    <p>"Only N opportunities to declare a conflict": passed opportunities count. For "cannot declare more than N conflicts" use <a href="#ef-setMaxDeclaredConflicts"><code>setMaxDeclaredConflicts</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>amount</code></td><td><code>number</code></td><td>required</td><td>The total number of conflicts the player may declare; conflicts already declared this phase count.</td></tr>
+        <tr><td><code>amount</code></td><td><code>number</code></td><td>required</td><td>The total number of conflict opportunities; conflicts declared or passed this round count.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -2339,7 +2339,23 @@ this.reaction('Both players may only declare 1 conflict opportunity this turn')
         target: Players.Any,
         effect: setMaxConflicts(1)
     })</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/WaningHostilities.ts">Waning Hostilities</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/PrivilegedPosition.ts">Privileged Position</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/WaningHostilities.ts">Waning Hostilities</a></p>
+  </div>
+<div class="ref" id="ef-setMaxDeclaredConflicts" data-name="setMaxDeclaredConflicts">
+    <h3><code>setMaxDeclaredConflicts(amount)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-setMaxDeclaredConflicts">#</a></h3>
+    <p>"Cannot declare more than N conflicts": caps the normal opportunities at <code>amount</code> minus the conflicts already declared this round. Passing isn't declaring (RRG Pass), so passed opportunities don't count.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount</code></td><td><code>number</code></td><td>required</td><td>The number of conflicts the player may declare this round.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Only lowers the opportunities the player has anyway; the most recent effect wins.</li>
+    </ul>
+    <pre><code>// Privileged Position: Reaction: After honor dials are revealed during an honor bid - each opponent who bid higher than you cannot declare more than one conflict against you this round.
+effect: setMaxDeclaredConflicts(1)</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/PrivilegedPosition.ts">Privileged Position</a></p>
   </div>
 <div class="ref" id="ef-strongholdCanBeAttacked" data-name="strongholdCanBeAttacked">
     <h3><code>strongholdCanBeAttacked()</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-strongholdCanBeAttacked">#</a></h3>

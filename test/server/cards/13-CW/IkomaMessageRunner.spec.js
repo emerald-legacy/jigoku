@@ -95,3 +95,30 @@ describe('Ikoma Message Runner', function() {
         });
     });
 });
+
+describe('Ikoma Message Runner with nothing to turn faceup', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player2: {
+                    inPlay: ['ikoma-message-runner']
+                }
+            });
+            this.runner = this.player2.findCardByName('ikoma-message-runner');
+            for(const player of [this.player1, this.player2]) {
+                for(const location of ['province 1', 'province 2', 'province 3', 'province 4']) {
+                    for(const card of player.player.getDynastyCardsInProvince(location)) {
+                        card.facedown = false;
+                    }
+                }
+            }
+        });
+
+        it('cannot be used when no facedown card can be turned faceup', function() {
+            this.player1.pass();
+            this.player2.clickCard(this.runner);
+            expect(this.player2).toHavePrompt('Action Window');
+        });
+    });
+});

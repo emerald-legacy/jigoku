@@ -211,6 +211,7 @@ export interface EffectValueMap {
     [EffectName.CostReducer]: boolean;
     [EffectName.ModifyCardsDrawnInDrawPhase]: number;
     [EffectName.SetMaxConflicts]: number;
+    [EffectName.SetMaxDeclaredConflicts]: number;
     [EffectName.ShowTopConflictCard]: Players;
     [EffectName.ShowTopDynastyCard]: boolean;
     [EffectName.ContributeToConflict]: Player;

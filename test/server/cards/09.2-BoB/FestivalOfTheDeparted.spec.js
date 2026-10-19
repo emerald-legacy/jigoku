@@ -147,3 +147,41 @@ describe('Festival of the Departed', function() {
         });
     });
 });
+
+describe('Festival of the Departed and a computed skill increase', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['brash-samurai'],
+                    hand: ['subdue-the-spirits']
+                },
+                player2: {
+                    honor: 8,
+                    inPlay: ['matsu-berserker'],
+                    provinces: ['festival-of-the-departed']
+                }
+            });
+            this.brashSamurai = this.player1.findCardByName('brash-samurai');
+            this.subdue = this.player1.findCardByName('subdue-the-spirits');
+            this.berserker = this.player2.findCardByName('matsu-berserker');
+            this.festival = this.player2.findCardByName('festival-of-the-departed');
+        });
+
+        it('stops Subdue the Spirits (+glory) at this province', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.brashSamurai],
+                defenders: [this.berserker],
+                province: this.festival
+            });
+            const military = this.brashSamurai.militarySkill;
+            this.player2.pass();
+            this.player1.clickCard(this.subdue);
+            expect(this.getChatLogs(5).some((line) => line.includes('Subdue the Spirits'))).toBe(true);
+            expect(this.brashSamurai.militarySkill).toBe(military);
+        });
+    });
+});

@@ -17,8 +17,8 @@ export default class CastleOfTheForgotten extends StrongholdCard {
             .playerLastingEffect({
                 target: Players.Any,
                 effect: setConflictDeclarationType(ConflictType.Military),
-                duration: Duration.UntilEndOfPhase
+                duration: Duration.UntilEndOfRound
             })
-            .chatText(() => msg`make all future conflicts ${'military'} for this phase`);
+            .chatText(() => msg`make all future conflicts ${'military'} for this round`);
     }
 }

@@ -150,3 +150,37 @@ describe('Kuro', function () {
         });
     });
 });
+
+describe('Kuro and an attachment you cannot pay for', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 0,
+                    inPlay: ['kuro'],
+                    hand: ['banzai']
+                },
+                player2: {
+                    conflictDiscard: ['above-question', 'adorned-barcha']
+                }
+            });
+            this.kuro = this.player1.findCardByName('kuro');
+            this.aq = this.player2.findCardByName('above-question');
+            this.barcha = this.player2.findCardByName('adorned-barcha');
+        });
+
+        it('only offers attachments affordable after the reduction', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kuro],
+                defenders: [],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.kuro);
+            expect(this.player1).toBeAbleToSelect(this.aq);
+            expect(this.player1).not.toBeAbleToSelect(this.barcha);
+        });
+    });
+});

@@ -432,9 +432,10 @@ this.reaction('Flip province facedown')
     <pre><code>// Prayers on the Eve of Battle: Forced Reaction: After a conflict ends - if the attached character won that conflict, gain 1 fate and discard this card. Otherwise, remove this card from the game.
 this.forcedReaction('Reap your rewards')
     .when({
-        afterConflict: (_event, context) =&gt; !!context.source.parentCharacter
+        // "after a conflict ends": step 3.3, when the characters are already home
+        onConflictFinished: (_event, context) =&gt; !!context.source.parentCharacter
     })
-    .if((context) =&gt; !!context.source.parentCharacter &amp;&amp; context.event.conflict.isOnWinningSide(context.source.parentCharacter))
+    .if((context) =&gt; this.wonConflict(context.event.conflict))
         .gainFate(1)
         .discardFromPlay()
     .otherwise()
