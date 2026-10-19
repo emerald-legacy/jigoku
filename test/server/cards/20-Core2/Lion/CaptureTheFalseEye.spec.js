@@ -44,3 +44,47 @@ describe('Capture the False Eye', function () {
         });
     });
 });
+
+describe('Capture the False Eye and events from the discard pile', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-toturi', 'matsu-berserker'],
+                    hand: ['capture-the-false-eye'],
+                    conflictDiscard: ['chain-of-command']
+                },
+                player2: {
+                    inPlay: ['doji-kuwanan']
+                }
+            });
+            this.toturi = this.player1.findCardByName('akodo-toturi');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.capture = this.player1.findCardByName('capture-the-false-eye');
+            this.chain = this.player1.findCardByName('chain-of-command');
+            this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.toturi, this.berserker],
+                defenders: [this.kuwanan]
+            });
+        });
+
+        it('only makes events in your hand more expensive', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.capture);
+            this.player1.clickCard(this.kuwanan);
+            expect(this.kuwanan.bowed).toBe(true);
+            this.player2.pass();
+            this.toturi.bowed = true;
+            const fate = this.player1.fate;
+            this.player1.clickCard(this.chain);
+            this.player1.clickCard(this.toturi);
+            this.player1.clickCard(this.berserker);
+            expect(this.toturi.bowed).toBe(false);
+            expect(this.player1.fate).toBe(fate);
+        });
+    });
+});

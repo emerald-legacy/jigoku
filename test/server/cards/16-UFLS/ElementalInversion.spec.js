@@ -52,7 +52,8 @@ describe('Elemental Inversion', function() {
             this.player1.clickCard(this.inversion);
             expect(this.player1).not.toBeAbleToSelectRing('air');
             expect(this.player1).toBeAbleToSelectRing('earth');
-            expect(this.player1).toBeAbleToSelectRing('void');
+            // the defender's claimed ring can't be switched (RRG Rings)
+            expect(this.player1).not.toBeAbleToSelectRing('void');
             expect(this.player1).toBeAbleToSelectRing('fire');
             expect(this.player1).toBeAbleToSelectRing('water');
             this.player1.clickRing('water');
@@ -76,7 +77,8 @@ describe('Elemental Inversion', function() {
             this.player1.clickCard(this.inversion);
             expect(this.player1).not.toBeAbleToSelectRing('air');
             expect(this.player1).toBeAbleToSelectRing('earth');
-            expect(this.player1).toBeAbleToSelectRing('void');
+            // the defender's claimed ring can't be switched (RRG Rings)
+            expect(this.player1).not.toBeAbleToSelectRing('void');
             expect(this.player1).toBeAbleToSelectRing('fire');
             expect(this.player1).toBeAbleToSelectRing('water');
             this.player1.clickRing('water');

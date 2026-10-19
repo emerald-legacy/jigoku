@@ -10,4 +10,8 @@ export default class ShrugOffDespair extends ProvinceCard {
             .conflictProvinceCondition(() => true)
             .gameAction(moveConflict());
     }
+
+    override cannotBeStrongholdProvince() {
+        return true;
+    }
 }

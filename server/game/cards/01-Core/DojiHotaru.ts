@@ -10,7 +10,7 @@ class DojiHotaru extends DrawCard {
                 onClaimRing: (event, context) => this.game.isDuringConflict(ConflictType.Political) && context.source.isParticipating() &&
                                                  event.player === context.player
             })
-            .resolveConflictRing();
+            .resolveConflictRing((context) => ({ target: context.event.ring }));
     }
 }
 

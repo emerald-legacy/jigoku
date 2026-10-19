@@ -119,3 +119,41 @@ describe('Supporting Cast with targets of both players', function () {
         });
     });
 });
+
+describe('Supporting Cast and a targeted attachment', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['let-go'],
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    hand: ['supporting-cast'],
+                    inPlay: [{ card: 'shosuro-sadako', attachments: ['fine-katana'] }, 'bayushi-manipulator']
+                }
+            });
+            this.matsuBerserker = this.player1.findCardByName('matsu-berserker');
+            this.letGo = this.player1.findCardByName('let-go');
+            this.supportingCast = this.player2.findCardByName('supporting-cast');
+            this.shosuroSadako = this.player2.findCardByName('shosuro-sadako');
+            this.bayushiManipulator = this.player2.findCardByName('bayushi-manipulator');
+            this.katana = this.player2.findCardByName('fine-katana');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.matsuBerserker],
+                defenders: [this.bayushiManipulator, this.shosuroSadako]
+            });
+        });
+
+        it('does not trigger when only an attachment you control was targeted', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.letGo);
+            this.player1.clickCard(this.katana);
+            expect(this.katana.location).toBe('conflict discard pile');
+            expect(this.player2).not.toBeAbleToSelect(this.supportingCast);
+        });
+    });
+});

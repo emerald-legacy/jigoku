@@ -21,6 +21,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.source.type === CardType.Character &&
         context.player.areLocationsAdjacent(context.source.location, effect.requireContext().source.location),
     [RestrictionScope.AttachmentsWithSameClan]: (context, _effect, card) =>
+        context.ability.isCardPlayed() &&
         context.source.type === CardType.Attachment &&
         context.source.getPrintedFaction() !== 'neutral' &&
         !!card && card.isFaction(context.source.getPrintedFaction()),

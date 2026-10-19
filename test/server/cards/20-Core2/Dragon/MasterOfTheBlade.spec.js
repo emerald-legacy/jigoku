@@ -72,3 +72,34 @@ describe('Master of the Blade', function() {
         });
     });
 });
+
+describe('Master of the Blade outside a conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['master-of-the-blade']
+                },
+                player2: {
+                    inPlay: ['kakita-asami'],
+                    hand: ['unyielding-terms']
+                }
+            });
+            this.master = this.player1.findCardByName('master-of-the-blade');
+            this.asami = this.player2.findCardByName('kakita-asami');
+            this.unyieldingTerms = this.player2.findCardByName('unyielding-terms');
+        });
+
+        it('cannot use its Duel Strike in a duel outside a conflict ("for this conflict")', function() {
+            this.player1.pass();
+            this.player2.clickCard(this.unyieldingTerms);
+            this.player2.clickCard(this.asami);
+            this.player2.clickCard(this.master);
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).not.toBeAbleToSelect(this.master);
+        });
+    });
+});

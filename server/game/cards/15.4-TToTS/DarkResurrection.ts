@@ -12,7 +12,6 @@ class DarkResurrection extends DrawCard {
                 activePromptTitle: 'Choose up to three characters',
                 numCards: 3,
                 mode: TargetMode.UpTo,
-                optional: true,
                 cardType: CardType.Character,
                 location: [Location.DynastyDiscardPile],
                 controller: Players.Self,

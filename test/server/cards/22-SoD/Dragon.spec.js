@@ -431,3 +431,36 @@ describe('SoD - Dragon', function () {
     });
 });
 
+describe('Tattooed Man and costs', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['tattooed-man', 'ascetic-visionary-2', 'venerable-fortunist']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.tattooedMan = this.player1.findCardByName('tattooed-man');
+            this.visionary = this.player1.findCardByName('ascetic-visionary-2');
+            this.fortunist = this.player1.findCardByName('venerable-fortunist');
+        });
+
+        it('does not ready when fate is spent to a ring as a cost (costs are not effects)', function () {
+            this.tattooedMan.bow();
+            this.fortunist.bow();
+            this.noMoreActions();
+            this.initiateConflict({ attackers: [this.visionary], defenders: [] });
+            this.player2.pass();
+            this.player1.clickCard(this.visionary);
+            this.player1.clickCard(this.fortunist);
+            this.player1.clickRing('fire');
+            expect(this.fortunist.bowed).toBe(false);
+            expect(this.game.rings.fire.fate).toBe(1);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.tattooedMan.bowed).toBe(true);
+        });
+    });
+});

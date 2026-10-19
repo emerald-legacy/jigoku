@@ -9,7 +9,8 @@ class ElementalInversion extends DrawCard {
             .condition((context) => context.game.isDuringConflict())
             .ringTarget({
                 activePromptTitle: 'Choose an uncontested ring',
-                ringCondition: (ring) => !ring.isContested() && !ring.isRemovedFromGame()
+                ringCondition: (ring, context) => !ring.isContested() && !ring.isRemovedFromGame() &&
+                    (ring.isUnclaimed() || ring.claimedBy === context.game.currentConflict?.attackingPlayer.name)
             }, sequential([
                 placeFateOnRing((context) => ({
                     origin: context.ring,

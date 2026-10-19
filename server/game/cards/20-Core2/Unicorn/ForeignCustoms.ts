@@ -2,6 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { CardType, CharacterStatus, Location, Players, Trait } from '../../../Constants.js';
 import { putIntoConflict, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { controlsClanCard } from '../../controlsClanCard.js';
 
 export default class ForeignCustoms extends DrawCard {
     static id = 'foreign-customs';
@@ -19,13 +20,7 @@ export default class ForeignCustoms extends DrawCard {
             });
 
         this.action('Ready a non-unicorn character')
-            .condition((context) =>
-                context.player.stronghold?.isFaction('unicorn') ||
-                context.player.cardsInPlay.some(
-                    (card) =>
-                        card.isFaction('unicorn') ||
-                        card.attachments.some((a) => a.isFaction('unicorn'))
-                ))
+            .condition((context) => controlsClanCard(context.player, 'unicorn'))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait(Trait.Gaijin))

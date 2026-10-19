@@ -11,7 +11,8 @@ class Kamayari extends DrawCard {
 
         this.reaction('Bow character who triggered ability')
             .when({
-                onCardAbilityInitiated: (event, context) => event.card.type === CardType.Character && context.source.parentCharacter && context.source.parentCharacter.isParticipating()
+                onCardAbilityInitiated: (event, context) => event.card.type === CardType.Character && event.ability.isTriggeredAbility() &&
+                    !!context.source.parentCharacter && context.source.parentCharacter.isParticipating()
             })
             .bow((context) => ({ target: context.event.card }));
     }

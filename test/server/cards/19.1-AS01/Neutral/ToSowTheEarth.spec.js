@@ -72,3 +72,28 @@ describe('To Sow the Earth', function () {
         });
     });
 });
+
+describe('To Sow the Earth with a Peasant attachment', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'matsu-berserker', attachments: ['ashigaru-company'] }],
+                    hand: ['to-sow-the-earth'],
+                    provinces: ['shameful-display']
+                }
+            });
+            this.ashigaruCompany = this.player1.findCardByName('ashigaru-company');
+            this.toSowTheEarth = this.player1.findCardByName('to-sow-the-earth');
+            this.shameful = this.player1.findCardByName('shameful-display', 'province 1');
+            this.shameful.facedown = false;
+        });
+
+        it('cannot bow a Peasant attachment for the cost ("a Peasant character")', function () {
+            this.player1.clickCard(this.toSowTheEarth);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.shameful.facedown).toBe(false);
+        });
+    });
+});

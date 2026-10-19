@@ -2205,7 +2205,7 @@ this.action('Steal a fate')
       </tbody>
     </table>
     <pre><code>// Akodo Toturi: Reaction: After you claim a ring during a [conflict-military] conflict in which this character is participating – resolve that ring's effect.
-.resolveConflictRing()</code></pre>
+.resolveConflictRing((context) =&gt; ({ target: context.event.ring }))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AkodoToturi.ts">Akodo Toturi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DefendTheWall.ts">Defend the Wall</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DojiHotaru.ts">Doji Hotaru</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/StaunchHida.ts">Staunch Hida</a></p>
   </div>
   <div class="ref" id="b-resolveRingEffect" data-name="resolveRingEffect">

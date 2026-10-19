@@ -726,6 +726,24 @@ this.action('Select a player to lose an honor and draw a card')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/AMatsuProvesTheirWorth.ts">A Matsu Proves Their Worth</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Crab/RecklessAssault.ts">Reckless Assault</a></p>
   </div>
 
+  <div class="ref" id="he-controlsClanCard" data-name="controlsClanCard">
+    <h3><code>controlsClanCard(player, clan)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-controlsClanCard">#</a></h3>
+    <p>"If you control a [clan] card": true if the player controls a faceup card of that clan in play: a character or attachment (wherever it is attached), the stronghold, a faceup province, or a holding in a province.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>player</code></td><td><code>Player</code></td><td>required</td><td>Usually <code>context.player</code>.</td></tr>
+        <tr><td><code>clan</code></td><td><code>string</code></td><td>required</td><td>The faction, for example <code>'unicorn'</code>.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Counts by controller: your attachment on an opponent's character counts, an opponent's attachment on your character doesn't.</li>
+    </ul>
+    <pre><code>// Gaijin Customs: Action: If you control a [clan-unicorn] card, choose a non-[clan-unicorn] character – ready the chosen character.
+.condition((context) =&gt; controlsClanCard(context.player, 'unicorn'))</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/GaijinCustoms.ts">Gaijin Customs</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Unicorn/ForeignCustoms.ts">Foreign Customs</a></p>
+  </div>
+
   <div class="ref" id="he-controlsShugenja" data-name="controlsShugenja">
     <h3><code>controlsShugenja(player)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-controlsShugenja">#</a></h3>
     <p>"Play only if you control a Shugenja character." True if the player has a character with the Shugenja trait in play.</p>
@@ -2347,7 +2365,9 @@ ringCondition:  (ring) =&gt; ring.fate &gt;= 1 &amp;&amp; ring.isUnclaimed(),</c
       <li><code>isClaimed()</code> ignores effects that make a ring count as claimed; <code>isConsideredClaimed()</code> includes them.</li>
     </ul>
     <pre><code>// Elemental Inversion: Action: During a conflict, choose a ring - move all fate from the chosen ring to the contested ring and switch them. …
-ringCondition: (ring) =&gt; !ring.isContested() &amp;&amp; !ring.isRemovedFromGame()</code></pre>
+// RRG Rings: only rings in the attacking player's claimed or unclaimed pools
+ringCondition: (ring, context) =&gt; !ring.isContested() &amp;&amp; !ring.isRemovedFromGame() &amp;&amp;
+    (ring.isUnclaimed() || ring.claimedBy === context.game.currentConflict?.attackingPlayer.name)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/HenshinDisciple.ts">Henshin Disciple</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/EtherealDreamer.ts">Ethereal Dreamer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/ElementalInversion.ts">Elemental Inversion</a> (6 card files)</p>
   </div>
 </section>

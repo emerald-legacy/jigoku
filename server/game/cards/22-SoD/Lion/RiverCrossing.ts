@@ -16,4 +16,8 @@ export default class RiverCrossing extends ProvinceCard {
             })
             .chatText('make it so each character contributes 1 skill to the conflict');
     }
+
+    override cannotBeStrongholdProvince() {
+        return true;
+    }
 }

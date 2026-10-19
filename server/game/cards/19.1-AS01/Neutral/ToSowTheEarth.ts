@@ -26,6 +26,7 @@ export default class ToSowTheEarth extends DrawCard {
 
         this.action('Place a province facedown')
             .cost(costs.bow({
+                cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait(Trait.Peasant)
             }))
             .target({

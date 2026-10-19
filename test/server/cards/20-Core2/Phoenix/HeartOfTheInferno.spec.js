@@ -127,3 +127,40 @@ describe('Heart of the Inferno', function () {
         });
     });
 });
+
+describe('Heart of the Inferno and your attachment on the enemy side', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['heart-of-the-inferno', 'fine-katana'],
+                    inPlay: ['fire-tensai-initiate']
+                },
+                player2: {
+                    inPlay: ['brash-samurai']
+                }
+            });
+            this.heartOfTheInferno = this.player1.findCardByName('heart-of-the-inferno');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.fireTensai = this.player1.findCardByName('fire-tensai-initiate');
+            this.brash = this.player2.findCardByName('brash-samurai');
+
+            this.player1.playAttachment(this.katana, this.brash);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.fireTensai],
+                defenders: [this.brash]
+            });
+        });
+
+        it('can discard your own attachment on an enemy character (RRG Side)', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.heartOfTheInferno);
+            expect(this.player1).toBeAbleToSelect(this.katana);
+            this.player1.clickCard(this.katana);
+            expect(this.katana.location).toBe('conflict discard pile');
+        });
+    });
+});

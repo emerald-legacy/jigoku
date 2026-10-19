@@ -6,7 +6,7 @@ export default class MasterOfTheBlade extends DrawCard {
     static id = 'master-of-the-blade';
 
     public override setupCardAbilities() {
-        this.duelStrike('Don\'t bow during resolution', (duel, context) => duel.participants.includes(context.source))
+        this.duelStrike('Don\'t bow during resolution', (duel, context) => context.game.isDuringConflict() && duel.participants.includes(context.source))
             .cardLastingEffect((context) => ({
                 condition: (context) => context.game.isDuringConflict(),
                 effect: [

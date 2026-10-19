@@ -769,7 +769,7 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>AbilitiesTriggeredByOpponents</code></td><td><code>'abilitiesTriggeredByOpponents'</code></td><td>Non-forced triggered abilities of the applying player's opponent.</td></tr>
           <tr><td><code>ActionEvents</code></td><td><code>'actionEvents'</code></td><td>Action abilities of event cards.</td></tr>
           <tr><td><code>AdjacentCharacters</code></td><td><code>'adjacentCharacters'</code></td><td>Characters in a location adjacent to the effect source's location.</td></tr>
-          <tr><td><code>AttachmentsWithSameClan</code></td><td><code>'attachmentsWithSameClan'</code></td><td>Non-neutral attachments whose printed clan the restricted card has.</td></tr>
+          <tr><td><code>AttachmentsWithSameClan</code></td><td><code>'attachmentsWithSameClan'</code></td><td>Playing a non-neutral attachment whose printed clan the restricted card has (the attachment's own abilities are not restricted).</td></tr>
           <tr><td><code>AttackedProvinceNonForced</code></td><td><code>'attackedProvinceNonForced'</code></td><td>Non-forced triggered abilities of an attacked province.</td></tr>
           <tr><td><code>CardAndRingEffects</code></td><td><code>'cardAndRingEffects'</code></td><td><code>CardEffects</code> or <code>RingEffects</code>.</td></tr>
           <tr><td><code>CardEffects</code></td><td><code>'cardEffects'</code></td><td>Attempts whose source is a card (event, character, holding, attachment, stronghold, province or role), made by a card ability or another non-play ability, outside <code>Stage.Cost</code>. Playing a character, attachment or holding does not count; an event's ability does. Costs are not effects.</td></tr>
@@ -1201,7 +1201,8 @@ this.interrupt('Reduce cost of next attachment')
   <pre><code>// Kamayari: … Reaction: After a character triggers an ability during a conflict in which attached character is participating – bow that character.
 this.reaction('Bow character who triggered ability')
     .when({
-        onCardAbilityInitiated: (event, context) =&gt; event.card.type === CardType.Character &amp;&amp; context.source.parentCharacter &amp;&amp; context.source.parentCharacter.isParticipating()
+        onCardAbilityInitiated: (event, context) =&gt; event.card.type === CardType.Character &amp;&amp; event.ability.isTriggeredAbility() &amp;&amp;
+            !!context.source.parentCharacter &amp;&amp; context.source.parentCharacter.isParticipating()
     })
     .bow((context) =&gt; ({ target: context.event.card }));</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/Kamayari.ts">Kamayari</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/HanteiXXXVIII.ts">Hantei XXXVIII</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/KireiKo.ts">Kirei-ko</a></p>
@@ -2362,7 +2363,7 @@ this.reaction('Resolve ring effect')
         onClaimRing: (event, context) =&gt; this.game.isDuringConflict(ConflictType.Military) &amp;&amp; context.source.isParticipating() &amp;&amp;
                                          event.player === context.player
     })
-    .resolveConflictRing();</code></pre>
+    .resolveConflictRing((context) =&gt; ({ target: context.event.ring }));</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AkodoToturi.ts">Akodo Toturi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DojiHotaru.ts">Doji Hotaru</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KeeperInitiate.ts">Keeper Initiate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/SeekerInitiate.ts">Seeker Initiate</a></p>
 </div>
 <div class="ref" id="ev-onRemoveRingFromPlay" data-name="onRemoveRingFromPlay OnRemoveRingFromPlay">
@@ -2669,7 +2670,7 @@ this.wouldInterrupt('Cancel a duel')
         </tbody>
       </table>
   <pre><code>// Master of the Blade: Duel Strike: For this conflict, this character cannot be bowed by opponents' card effects and does not bow as a result of conflict resolution.
-this.duelStrike('Don\'t bow during resolution', (duel, context) =&gt; duel.participants.includes(context.source))
+this.duelStrike('Don\'t bow during resolution', (duel, context) =&gt; context.game.isDuringConflict() &amp;&amp; duel.participants.includes(context.source))
     .cardLastingEffect((context) =&gt; ({
         …</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/MasterOfTheBlade.ts">Master of the Blade</a></p>

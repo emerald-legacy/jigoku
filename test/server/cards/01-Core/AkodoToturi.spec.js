@@ -77,3 +77,41 @@ describe('Akodo Toturi', function () {
         });
     });
 });
+
+describe('Akodo Toturi and a ring claimed by a card effect', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-toturi', 'venerable-fortunist'],
+                    hand: ['strike-as-the-elements']
+                },
+                player2: {
+                    inPlay: ['togashi-initiate']
+                }
+            });
+            this.akodoToturi = this.player1.findCardByName('akodo-toturi');
+            this.fortunist = this.player1.findCardByName('venerable-fortunist');
+            this.strike = this.player1.findCardByName('strike-as-the-elements');
+            this.noMoreActions();
+        });
+
+        it('resolves the claimed ring, not the contested one', function () {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.akodoToturi, this.fortunist],
+                defenders: [],
+                ring: 'air'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.strike);
+            this.player1.clickCard(this.fortunist);
+            this.player1.clickRing('fire');
+            expect(this.game.rings.fire.claimedBy).toBe(this.player1.player.name);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.akodoToturi);
+            expect(this.player1).toHavePrompt('Fire Ring');
+        });
+    });
+});

@@ -14,7 +14,7 @@ export default class SupportingCast extends DrawCard {
                 onInitiateAbilityEffects: (event, context) => {
                     return (
                         context.game.isDuringConflict(ConflictType.Military) &&
-                        event.cardTargets.some((card) => card.controller === context.player)
+                        event.cardTargets.some((card) => card.type === CardType.Character && card.controller === context.player)
                     );
                 }
             })
@@ -27,6 +27,7 @@ export default class SupportingCast extends DrawCard {
             }, selectCard((context) => ({
                 activePromptTitle: 'Choose a character to bow',
                 hidePromptIfSingleCard: true,
+                cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.controller === context.player && context.event.cardTargets.some((eventCard) => eventCard === card),
                 gameAction: bow()

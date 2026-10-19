@@ -10,11 +10,10 @@ export default class HeartOfTheInferno extends DrawCard {
         this.conflictAction('Bow a card')
             .condition((context) => controlsParticipating(context.player, Trait.Shugenja))
             .target({
-                controller: Players.Opponent,
+                controller: Players.Any,
                 cardType: [CardType.Character, CardType.Attachment],
-                // On the enemy side: a participating character, or an attachment on one.
-                // An opponent's attachment on your own character is on your side, and a
-                // card attached to a ring or province has no `parentCharacter`, so it is on no side at all.
+                // On the enemy side (RRG Side, whoever controls the card): a participating character, or an
+                // attachment on one. A card attached to a ring or province has no `parentCharacter`, so it is on no side.
                 cardCondition: (card, context) => !!context.player.opponent &&
                     (card.isParticipatingFor(context.player.opponent) ||
                         !!card.parentCharacter?.isParticipatingFor(context.player.opponent)) &&

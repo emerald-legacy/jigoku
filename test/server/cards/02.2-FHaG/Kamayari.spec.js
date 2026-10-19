@@ -46,3 +46,34 @@ describe('Kamayari', function() {
         });
     });
 });
+
+describe('Kamayari and keyword abilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-shono']
+                },
+                player2: {
+                    inPlay: [{ card: 'matsu-berserker', attachments: ['kamayari'] }]
+                }
+            });
+            this.shono = this.player1.findCardByName('shinjo-shono');
+            this.berserker = this.player2.findCardByName('matsu-berserker');
+            this.kamayari = this.player2.findCardByName('kamayari');
+        });
+
+        it('does not react to Pride (a keyword is not a triggered ability)', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.shono],
+                defenders: [this.berserker]
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(10)).toContain('Shinjo Shono is dishonored due to their Pride');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

@@ -591,3 +591,23 @@ describe('SoD - Lion', function () {
     });
 });
 
+describe('River Crossing during setup', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'setup',
+                player1: {
+                    provinces: ['river-crossing']
+                },
+                skipAutoSetup: true
+            });
+            this.province = this.player1.findCardByName('river-crossing');
+            this.selectFirstPlayer(this.player1);
+        });
+
+        it('cannot be the stronghold province', function () {
+            expect(this.player1).toHavePrompt('Select stronghold province');
+            expect(this.player1).not.toBeAbleToSelect(this.province);
+        });
+    });
+});
