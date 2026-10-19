@@ -791,7 +791,7 @@ this.persistentEffect({
     </ul>
     <pre><code>// Imbued With Shadows: Action: Lose X honor. Choose X characters - discard a status token from each of those characters.
 private getNumberOfLegalTargets(context: AbilityContext) {
-    return countTargetable(context.game.findAnyCardsInPlay((card) =&gt; card.isHonored || card.isDishonored), context);
+    return countTargetable(context.game.findAnyCardsInPlay((card) =&gt; card.hasStatusTokens), context);
 }</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ImbuedWithShadows.ts">Imbued With Shadows</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/IsawaTsuke2.ts">Isawa Tsuke</a></p>
   </div>
@@ -2128,6 +2128,14 @@ afterConflict: (event, context) =&gt; event.conflict.winner === context.player &
     <pre><code>// Asako Shun: … Then, if the chosen character contributes zero skill to the conflict, gain 1 honor.
 return !!conflict &amp;&amp; conflict.calculateSkillFor([context.target]) === 0;</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Dragon/TheHundredHandStrike.ts">The Hundred Hand Strike</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/AsakoShun.ts">Asako Shun</a></p>
+  </div>
+
+  <div class="ref" id="q-getCurrentSkill" data-name="getCurrentSkill">
+    <h3><code>conflict.getCurrentSkill(player, type)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getCurrentSkill">#</a></h3>
+    <p>A player's current skill of a <code>ConflictType</code> (RRG "Current": the values used if the conflict were resolving now). For the conflict's type it is that side's total (<a href="#q-attackerSkill"><code>attackerSkill</code></a> or <code>defenderSkill</code>). For the other type it is that skill of each character that would count, with the same bowed and "cannot contribute" rules, but without the conflict's skill modifiers (Imperial Favor, side bonuses, changed skill functions).</p>
+    <pre><code>// Desperate Aide: … If you count more current [political] skill in the conflict than your opponent, gain 1 honor.
+conflict.getCurrentSkill(context.player, ConflictType.Political) &gt; conflict.getCurrentSkill(context.player.opponent, ConflictType.Political)</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DesperateAide.ts">Desperate Aide</a></p>
   </div>
 
   <div class="ref" id="q-getAttackers" data-name="getAttackers getDefenders">

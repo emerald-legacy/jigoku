@@ -76,6 +76,7 @@ describe('Desperate Aide', function () {
                 type: 'political'
             });
             this.yoshi.bowed = true;
+            this.game.checkGameState(true);
 
             const hand = this.player2.hand.length;
             const honor = this.player2.honor;
@@ -98,6 +99,61 @@ describe('Desperate Aide', function () {
             const honor = this.player2.honor;
             this.player2.clickCard(this.aide);
             expect(this.player2.hand.length).toBe(hand + 1);
+            expect(this.player2.honor).toBe(honor + 1);
+            expect(this.getChatLogs(5)).toContain('player2 uses Desperate Aide to draw 1 card and gain 1 honor');
+        });
+
+        it('counts the Imperial Favor in a political conflict', function () {
+            this.player2.player.showBid = 1;
+            this.player2.player.imperialFavor = 'political';
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.diplomat, this.brash],
+                defenders: [this.aide],
+                type: 'political'
+            });
+
+            const honor = this.player2.honor;
+            this.player2.clickCard(this.aide);
+            expect(this.player2.honor).toBe(honor + 1);
+        });
+    });
+});
+
+describe('Desperate Aide in a military conflict', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['enigmatic-magistrate', 'brash-samurai', 'doji-diplomat']
+                },
+                player2: {
+                    inPlay: ['desperate-aide', 'bayushi-manipulator']
+                }
+            });
+
+            this.magistrate = this.player1.findCardByName('enigmatic-magistrate');
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.diplomat = this.player1.findCardByName('doji-diplomat');
+
+            this.aide = this.player2.findCardByName('desperate-aide');
+            this.manipulator = this.player2.findCardByName('bayushi-manipulator');
+
+            this.player1.player.showBid = 5;
+            this.player2.player.showBid = 1;
+        });
+
+        it('does not count political skill of characters that cannot contribute', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.magistrate, this.brash, this.diplomat],
+                defenders: [this.aide, this.manipulator],
+                type: 'military'
+            });
+
+            const honor = this.player2.honor;
+            this.player2.clickCard(this.aide);
             expect(this.player2.honor).toBe(honor + 1);
             expect(this.getChatLogs(5)).toContain('player2 uses Desperate Aide to draw 1 card and gain 1 honor');
         });

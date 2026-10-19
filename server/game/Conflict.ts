@@ -400,25 +400,12 @@ export class Conflict extends GameObject {
             return stateChanged;
         }
 
-        const contributingLocations = [Location.PlayArea, ...this.game.getProvinceArray()];
-
-        const additionalContributingCards = this.game.findAnyCardsInAnyList(
-            (card): card is DrawCard =>
-                card.isDrawCard() &&
-                card.type === CardType.Character &&
-                contributingLocations.includes(card.location) &&
-                card.anyEffect(EffectName.ContributeToConflict)
-        );
-
         const setAttackerSkill = this.attackingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
         if(setAttackerSkill !== undefined) {
             this.attackerSkill = setAttackerSkill;
         } else {
-            const additionalAttackers = additionalContributingCards.filter((card) =>
-                card.getEffects(EffectName.ContributeToConflict).some((value) => value === this.attackingPlayer)
-            );
             this.attackerSkill =
-                this.calculateSkillFor(this.getAttackers().concat(additionalAttackers)) +
+                this.calculateSkillFor(this.getAttackers().concat(this.getAdditionalContributors(this.attackingPlayer))) +
                 this.attackingPlayer.skillModifier;
             if(favorAppliesTo(this.attackingPlayer.imperialFavor, this.conflictType) && this.#attackers.size > 0) {
                 this.attackerSkill++;
@@ -429,11 +416,8 @@ export class Conflict extends GameObject {
         if(setDefenderSkill !== undefined) {
             this.defenderSkill = setDefenderSkill;
         } else {
-            const additionalDefenders = additionalContributingCards.filter((card) =>
-                card.getEffects(EffectName.ContributeToConflict).some((value) => value === this.defendingPlayer)
-            );
             this.defenderSkill =
-                this.calculateSkillFor(this.getDefenders().concat(additionalDefenders)) +
+                this.calculateSkillFor(this.getDefenders().concat(this.getAdditionalContributors(this.defendingPlayer))) +
                 this.defendingPlayer.skillModifier;
             if(favorAppliesTo(this.defendingPlayer.imperialFavor, this.conflictType) && this.#defenders.size > 0) {
                 this.defenderSkill++;
@@ -443,16 +427,41 @@ export class Conflict extends GameObject {
         return stateChanged;
     }
 
-    calculateSkillFor(cards: DrawCard[]) {
+    /**
+     * A player's current skill of a type (RRG "Current"): the conflict total for the conflict's type. For the other
+     * type, the skill of that type of each character that would count, without the conflict's skill modifiers.
+     */
+    getCurrentSkill(player: Player, type: ConflictType): number {
+        const isAttacker = player === this.attackingPlayer;
+        if(type === this.conflictType) {
+            return isAttacker ? this.attackerSkill : this.defenderSkill;
+        }
+        const cards = (isAttacker ? this.getAttackers() : this.getDefenders()).concat(this.getAdditionalContributors(player));
+        return this.calculateSkillFor(cards, (card) => card.getSkill(type));
+    }
+
+    private getAdditionalContributors(player: Player): DrawCard[] {
+        const contributingLocations = [Location.PlayArea, ...this.game.getProvinceArray()];
+        return this.game.findAnyCardsInAnyList(
+            (card): card is DrawCard =>
+                card.isDrawCard() &&
+                card.type === CardType.Character &&
+                contributingLocations.includes(card.location) &&
+                card.getEffects(EffectName.ContributeToConflict).some((value) => value === player)
+        );
+    }
+
+    calculateSkillFor(cards: DrawCard[], fixedSkillFunction?: (card: DrawCard) => number) {
         let skillFunction =
-            this.mostRecentEffect(EffectName.ChangeConflictSkillFunction) ||
-            ((card: DrawCard) => card.getContributionToConflict(this.conflictType));
+            fixedSkillFunction ??
+            (this.mostRecentEffect(EffectName.ChangeConflictSkillFunction) ||
+                ((card: DrawCard) => card.getContributionToConflict(this.conflictType)));
         const cannotContributeFunctions = this.getEffects(EffectName.CannotContribute);
 
         return cards.reduce((sum, card) => {
             const canContributeWhileBowed = card.anyEffect(EffectName.CanContributeWhileBowed);
             let cannotContribute = card.bowed && !canContributeWhileBowed;
-            const playerSkillFunction = card.controller.mostRecentEffect(EffectName.ChangeConflictSkillFunction);
+            const playerSkillFunction = fixedSkillFunction ? undefined : card.controller.mostRecentEffect(EffectName.ChangeConflictSkillFunction);
             if(playerSkillFunction) {
                 skillFunction = playerSkillFunction;
             }

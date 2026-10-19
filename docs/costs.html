@@ -1420,15 +1420,19 @@ this.action('Give a character +3/+1/+1')
     <pre><code>// Daimyō's Favor: Action: Bow this attachment – reduce the cost of the next attachment you play on this character this phase by 1.
 this.action('Bow to reduce attachment cost')
     .cost(costs.bowSelf())
-    .playerLastingEffect((context) =&gt; ({
-        duration: Duration.UntilEndOfPhase,
-        effect: reduceCost({
-            amount: 1,
-            cardType: CardType.Attachment,
-            targetCondition: (target) =&gt; target === context.source.parentCharacter,
-            limit: fixed(1)
-        })
-    }));</code></pre>
+    .playerLastingEffect((context) =&gt; {
+        // "this character" is the one the Favor is on now, even if the Favor leaves play later
+        const character = context.source.parentCharacter;
+        return {
+            duration: Duration.UntilEndOfPhase,
+            effect: reduceCost({
+                amount: 1,
+                cardType: CardType.Attachment,
+                targetCondition: (target) =&gt; !!character &amp;&amp; target === character,
+                limit: fixed(1)
+            })
+        };
+    });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DaimyosFavor.ts">Daimyō's Favor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/YasukiProcurer.ts">Yasuki Procurer</a></p>
   </div>
 
