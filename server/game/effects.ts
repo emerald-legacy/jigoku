@@ -27,7 +27,6 @@ import type Ring from './Ring.js';
 import type { BaseAction } from './BaseAction.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EffectFactory, FlexibleValue } from './Effects/EffectBuilder.js';
-import type { DetachedValue } from './Effects/DetachedEffect.js';
 import type { DynamicMatch } from './Effects/GainAllAbilitiesDynamic.js';
 import type { CostReducerProps } from './CostReducer.js';
 import type { RestrictionProperties } from './Effects/Restriction.js';
@@ -120,7 +119,6 @@ export const changeType = (type: CardType) => EffectBuilder.card.static(EffectNa
 export const contributeToConflict = (player: FlexibleValue<Player>) => EffectBuilder.card.flexible(EffectName.ContributeToConflict, player);
 export const canContributeWhileBowed = () => EffectBuilder.card.static(EffectName.CanContributeWhileBowed, true);
 export const canContributeGloryWhileBowed = () => EffectBuilder.card.static(EffectName.CanContributeGloryWhileBowed, true);
-export const customDetachedCard = <State>(properties: DetachedValue<BaseCard, State>) => EffectBuilder.card.detached(EffectName.CustomEffect, properties);
 export const customRefillProvince = (refillFunc: EffectValueMap[EffectName.CustomProvinceRefillEffect]) => EffectBuilder.card.static(EffectName.CustomProvinceRefillEffect, refillFunc);
 export const doesNotBow = () => EffectBuilder.card.static(EffectName.DoesNotBow, true);
 export const doesNotReady = () => EffectBuilder.card.static(EffectName.DoesNotReady, true);
@@ -246,7 +244,6 @@ export const canPlayFromOpponents = (location: Location, cards: DrawCard[], sour
 export const limitHonorGainPerPhase = (amount: number) => EffectBuilder.player.static(EffectName.LimitHonorGainPerPhase, amount);
 export const cannotResolveRings = () => EffectBuilder.player.static(EffectName.CannotResolveRings, true);
 export const changePlayerSkillModifier = (value: FlexibleValue<number, Player>) => EffectBuilder.player.flexible(EffectName.ChangePlayerSkillModifier, value);
-export const customDetachedPlayer = <State>(properties: DetachedValue<Player, State>) => EffectBuilder.player.detached(EffectName.CustomEffect, properties);
 export const gainActionPhasePriority = () =>
     EffectBuilder.player.detached(EffectName.GainActionPhasePriority, {
         apply: (player) => (player.actionPhasePriority = true),

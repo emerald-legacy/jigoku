@@ -3751,23 +3751,6 @@ private hasTriggered(context: AbilityContext): boolean {
 }</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/PlantedFields.ts">Planted Fields</a> (<code>addPlayerFlag</code>), <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Unicorn/LoyalWarhound.ts">Loyal Warhound</a> (<code>addFlag</code>)</p>
   </div>
-<div class="ref" id="ef-customDetachedCard" data-name="customDetachedCard customDetachedPlayer">
-    <h3><code>customDetachedCard(properties)</code> / <code>customDetachedPlayer(properties)</code> <span class="kind">Card effect / Player effect</span> <a class="anchor" href="#ef-customDetachedCard">#</a></h3>
-    <p>Runs card code when the effect starts on a target and when it ends, for something no other effect does.</p>
-    <table>
-      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>apply</code></td><td><code>(target, context, state?) =&gt; S</code></td><td>required</td><td>Called when the effect starts on <code>target</code> (a card or a player). Its return value is kept for <code>unapply</code>.</td></tr>
-        <tr><td><code>unapply</code></td><td><code>(target, context, state: S) =&gt; unknown</code></td><td>required</td><td>Called when the effect stops on <code>target</code>, with what <code>apply</code> returned. A value other than <code>undefined</code> is passed to the next <code>apply</code> on that target as <code>state</code>.</td></tr>
-      </tbody>
-    </table>
-    <ul class="edge">
-      <li>A detached effect: the target does not hold it, so <code>getEffects</code> can't see it.</li>
-      <li>A persistent effect can stop and start many times (blanking, leaving play, conditions); <code>unapply</code> must undo exactly what <code>apply</code> did.</li>
-      <li>If the stored state has a <code>context</code> property, it is updated when the effect's context changes (for example on a change of control).</li>
-    </ul>
-    <p class="seen">Not used by any card.</p>
-  </div>
 <div class="ref" id="ef-customFatePhaseFateRemoval" data-name="customFatePhaseFateRemoval">
     <h3><code>customFatePhaseFateRemoval(func)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-customFatePhaseFateRemoval">#</a></h3>
     <p>"When fate would be removed from characters during the fate phase, instead distribute that fate among unclaimed rings as evenly as possible."</p>

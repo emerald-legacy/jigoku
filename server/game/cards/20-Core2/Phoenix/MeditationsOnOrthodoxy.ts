@@ -22,6 +22,8 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
                 mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose characters',
                 numCards: 2,
+                // 0 still puts this card on the bottom of the deck (decision "Up to X")
+                optional: true,
                 cardType: CardType.Character,
                 controller: Players.Any
             }, ready())

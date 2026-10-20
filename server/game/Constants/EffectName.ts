@@ -34,7 +34,6 @@ export enum EffectName {
     ChangeType = 'changeType',
     CopyCharacter = 'copyCharacter',
     CopyProvince = 'copyProvince',
-    CustomEffect = 'customEffect',
     CustomProvinceRefillEffect = 'customProvinceRefillEffect',
     DelayedEffect = 'delayedEffect',
     DoesNotBow = 'doesNotBow',

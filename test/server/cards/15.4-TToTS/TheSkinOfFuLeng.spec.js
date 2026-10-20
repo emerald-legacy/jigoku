@@ -1861,3 +1861,43 @@ describe('The Skin of Fu Leng', function () {
         });
     });
 });
+
+describe('The Skin of Fu Leng and "you control" attachments', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-toshimoko'],
+                    hand: ['the-skin-of-fu-leng']
+                },
+                player2: {
+                    inPlay: [{ card: 'lion-s-pride-brawler', attachments: ['finger-of-jade'] }, 'honored-general']
+                }
+            });
+            this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+            this.skin = this.player1.findCardByName('the-skin-of-fu-leng');
+            this.brawler = this.player2.findCardByName('lion-s-pride-brawler');
+            this.general = this.player2.findCardByName('honored-general');
+            this.jade = this.player2.findCardByName('finger-of-jade');
+            this.player1.playAttachment(this.skin, this.toshimoko);
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.brawler, this.general],
+                defenders: [this.toshimoko]
+            });
+        });
+
+        it('fall off when you trigger the character\'s ability (EmeraldDB ruling)', function () {
+            this.player1.clickCard(this.brawler);
+            this.player1.clickCard(this.toshimoko);
+            expect(this.toshimoko.bowed).toBe(true);
+            expect(this.jade.location).toBe('conflict discard pile');
+            expect(this.getChatLogs(5)).toContain('Finger of Jade is discarded from Lion\'s Pride Brawler as it is no longer legally attached');
+        });
+    });
+});
+

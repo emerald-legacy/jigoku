@@ -119,7 +119,6 @@ export interface EffectValueMap {
     [EffectName.ChangeType]: CardType;
     [EffectName.CopyCharacter]: DrawCard;
     [EffectName.CopyProvince]: ProvinceCard;
-    [EffectName.CustomEffect]: boolean;
     [EffectName.CustomProvinceRefillEffect]: (player: Player, province: ProvinceCard) => void;
     [EffectName.DelayedEffect]: DelayedEffectValue;
     [EffectName.DoesNotBow]: boolean;
