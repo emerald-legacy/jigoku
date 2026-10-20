@@ -1507,6 +1507,14 @@ cardCondition: (card) =&gt; card.costLessThan(3)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/ElegantTessen.ts">Elegant Tessen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a> (23 card files)</p>
   </div>
 
+  <div class="ref" id="q-printedCost" data-name="printedCost">
+    <h3><code>card.printedCost</code> <span class="kind">Field</span> <a class="anchor" href="#q-printedCost">#</a></h3>
+    <p>"Printed cost": the number on the card, ignoring copies and modifiers. <code>number | null</code>: <code>null</code> for a dash on a non-event and for cards that print no cost; a dash-cost event gets 0. Read it with <code>?? 0</code>; for the cost of a copied character use <a href="#q-getCost"><code>getCost()</code></a>.</p>
+    <pre><code>// Humble Magistrate: While this character is attacking, each character with printed cost 4 or higher does not count its skill towards the resolution of this conflict.
+(card) =&gt; (card.printedCost ?? 0) &gt;= 4</code></pre>
+    <p class="seen">Used by many cards, for example <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/HumbleMagistrate.ts">Humble Magistrate</a>. (38 card files)</p>
+  </div>
+
   <div class="ref" id="q-getFate" data-name="getFate">
     <h3><code>card.getFate()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getFate">#</a></h3>
     <p>The fate on the card. On a draw card, an effect that sets its apparent fate wins over the real count; other cards always return 0.</p>
@@ -1576,6 +1584,14 @@ statistic: (card) =&gt; card.getMilitarySkillExcludingModifiers([EffectName.Atta
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BayushiYunako.ts">Bayushi Yunako</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/IsawaHeiko.ts">Isawa Heiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/FurtiveSympathizer.ts">Furtive Sympathizer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a> (8 card files)</p>
   </div>
 
+  <div class="ref" id="q-bowed" data-name="bowed">
+    <h3><code>card.bowed</code> <span class="kind">Field</span> <a class="anchor" href="#q-bowed">#</a></h3>
+    <p>True if the card is bowed. Change it with the <code>bow</code> and <code>ready</code> game actions, not by setting the field (specs may set it directly).</p>
+    <pre><code>// Doji Gift Giver: … That opponent must choose a ready participating character he or she controls – bow that character.
+cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; !card.bowed</code></pre>
+    <p class="seen">Used by many cards, for example <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DojiGiftGiver.ts">Doji Gift Giver</a>. (34 card files)</p>
+  </div>
+
   <div class="ref" id="q-isHonored" data-name="isHonored isDishonored isTainted">
     <h3><code>card.isHonored</code>, <code>card.isDishonored</code>, <code>card.isTainted</code> <span class="kind">Getters</span> <a class="anchor" href="#q-isHonored">#</a></h3>
     <p>True if the card has the status token. A token that is treated as another status (Disciple of Deception) counts as the status it grants.</p>
@@ -1611,6 +1627,20 @@ effect: modifyProvinceStrength(() =&gt; this.getTokenCount(TokenType.Honor) * 2)
 
 <section class="group">
   <h3 class="group-title" id="q-group-card-location">Card: location, provinces and elements</h3>
+
+  <div class="ref" id="q-parentCharacter" data-name="parentCharacter parentProvince">
+    <h3><code>card.parentCharacter</code>, <code>card.parentProvince</code> <span class="kind">Getters</span> <a class="anchor" href="#q-parentCharacter">#</a></h3>
+    <p>"Attached character" / "attached province": what an attachment is attached to, or <code>null</code> when it is attached to something else or to nothing. A detached card has no parent.</p>
+    <ul class="edge">
+      <li><code>card.parent</code> is the raw host (it can also be a ring or a holding); prefer these getters for card text.</li>
+      <li>Game actions need a target, so write <code>context.source.parentCharacter ?? []</code>.</li>
+    </ul>
+    <pre><code>// Court Mask: Action: Return this attachment to your hand and dishonor attached character.
+.dishonor((context) =&gt; ({ target: context.source.parentCharacter ?? [] }))
+// Prepared Ambush: … During a conflict at attached province, …
+context.source.parentProvince?.isConflictProvince()</code></pre>
+    <p class="seen">Used by many cards, for example <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CourtMask.ts">Court Mask</a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/PreparedAmbush.ts">Prepared Ambush</a>. (about 140 card files)</p>
+  </div>
 
   <div class="ref" id="q-canAttach" data-name="canAttach">
     <h3><code>card.canAttach(parent, properties?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-canAttach">#</a></h3>
@@ -1689,6 +1719,14 @@ override getPrintedElementSymbols() {
     <pre><code>// Siege Warfare: … the attacked province gets -2 strength (to a minimum of 0).
 cardCondition: (card) =&gt; card.getStrength() &gt; 0,</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/NezumiInfiltrator.ts">Nezumi Infiltrator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/HeroOfThreeTrees.ts">Hero of Three Trees</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Unicorn/ShinjoAtagi.ts">Shinjo Atagi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Phoenix/IsawaHaruyo.ts">Isawa Haruyo</a> (8 card files)</p>
+  </div>
+
+  <div class="ref" id="q-isBroken" data-name="isBroken">
+    <h3><code>province.isBroken</code> <span class="kind">Field</span> <a class="anchor" href="#q-isBroken">#</a></h3>
+    <p>True if the province is broken ("unbroken province" is <code>!province.isBroken</code>). Only a <code>ProvinceCard</code> has it.</p>
+    <pre><code>// Rebuild: Action: Shuffle a card in one of your unbroken provinces back into your dynasty deck. …
+!card.controller.getProvinceCardInProvince(card.location)?.isBroken</code></pre>
+    <p class="seen">Used by many cards, for example <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Rebuild.ts">Rebuild</a>. (41 card files)</p>
   </div>
 
   <div class="ref" id="q-isConflictProvince" data-name="isConflictProvince">
