@@ -282,12 +282,14 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
           <tr><td><code>Blanked</code></td><td><code>'blank'</code></td><td>A printed ability on a blank card, or a gained ability on a card with <code>loseGainedAbilities</code>.</td><td>no</td></tr>
           <tr><td><code>CannotInitiate</code></td><td><code>'cannotInitiate'</code></td><td>A keyword ability on a card that cannot initiate keywords.</td><td>no</td></tr>
           <tr><td><code>CannotPayCost</code></td><td><code>'cost'</code></td><td>The costs cannot be paid.</td><td>yes</td></tr>
+          <tr><td><code>CannotPlay</code></td><td><code>'cannotPlay'</code></td><td>An event whose ability is used cannot be played (it is not playable from there or for this player).</td><td>yes (resolving isn't playing)</td></tr>
           <tr><td><code>CannotPlaceFate</code></td><td><code>'restriction'</code></td><td>Playing a character while the player has a <code>PlayCharacter</code> or <code>EnterPlay</code> restriction (despite the name); a duplicate that cannot have fate placed.</td><td>no</td></tr>
-          <tr><td><code>CannotTrigger</code></td><td><code>'cannotTrigger'</code></td><td>The card cannot trigger abilities (facedown or <code>TriggerAbilities</code> restriction), or the event or card cannot be played.</td><td>in play actions</td></tr>
-          <tr><td><code>ConditionNotMet</code></td><td><code>'condition'</code></td><td>The ability's <code>condition</code> is false; or the ability has no targets and none of its game actions has a legal target.</td><td>yes</td></tr>
+          <tr><td><code>CannotTrigger</code></td><td><code>'cannotTrigger'</code></td><td>The card cannot trigger abilities (facedown or <code>TriggerAbilities</code> restriction), or, for a play action, the card cannot be played.</td><td>in play actions</td></tr>
+          <tr><td><code>ConditionNotMet</code></td><td><code>'condition'</code></td><td>The ability's <code>condition</code> is false; or the ability has no targets and none of its game actions has a legal target; or an event's "Play only if" (<code>meetsPlayConditions</code>) fails, which can't be ignored.</td><td>yes (not the play condition)</td></tr>
           <tr><td><code>DuplicateUnique</code></td><td><code>'unique'</code></td><td>Another copy of a unique card is in play (for a duplicate: no copy the player controls is).</td><td>no</td></tr>
           <tr><td><code>Facedown</code></td><td><code>'facedown'</code></td><td>The card is facedown: a dynasty card in a province, or a card used as a duplicate.</td><td>yes</td></tr>
-          <tr><td><code>LimitedAlreadyPlayed</code></td><td><code>'limited'</code></td><td>A Limited card when the player already played their Limited cards this round.</td><td>no</td></tr>
+          <tr><td><code>IfConditionNotMet</code></td><td><code>'ifCondition'</code></td><td>The ability's <code>ifCondition()</code> ("If …" triggering condition) is false.</td><td>yes</td></tr>
+          <tr><td><code>LimitedAlreadyPlayed</code></td><td><code>'limited'</code></td><td>A Limited card when the player already played their Limited cards this round.</td><td>in card abilities (not play actions)</td></tr>
           <tr><td><code>LimitReached</code></td><td><code>'limit'</code></td><td>The ability's limit (<code>.limit()</code>) is used up.</td><td>yes</td></tr>
           <tr><td><code>MaxReached</code></td><td><code>'max'</code></td><td>The ability's max (<code>.max()</code>) is used up.</td><td>yes</td></tr>
           <tr><td><code>NoLegalTarget</code></td><td><code>'target'</code></td><td>A declared target has no legal choice.</td><td>no</td></tr>
@@ -300,7 +302,7 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
       </table>
   <ul class="edge">
     <li>"Ignorable: yes" means that listing the blocker in <code>ignoredBlockers</code> skips its check (in at least one <code>meetsRequirements</code>). Blockers marked "no" are always checked.</li>
-    <li><code>resolveAbility</code> always adds <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code> and <code>TriggeringRestricted</code> to the ignored blockers; <code>triggerAbility</code> adds <code>WrongPlayer</code>, <code>WrongLocation</code> and <code>LimitReached</code>. With <code>subResolution: true</code>, both also ignore <code>MaxReached</code>.</li>
+    <li><code>resolveAbility</code> always adds <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>TriggeringRestricted</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> to the ignored blockers (resolving isn't playing); <code>triggerAbility</code> adds <code>WrongPlayer</code>, <code>WrongLocation</code> and <code>LimitReached</code>. With <code>subResolution: true</code>, both also ignore <code>MaxReached</code>.</li>
   </ul>
   <pre><code>// The Mirror's Gaze: Reaction: After the effects of an opponent's event resolve – resolve that event again as if you had just played it, ignoring costs and triggering conditions. You may choose new targets.
 .gameAction(resolveAbility((context) =&gt; ({
@@ -669,6 +671,7 @@ effect: delayedEffect({
           <tr><td><code>SetConflictTotalSkill</code></td><td><code>'setConflictTotalSkill'</code></td><td><code>setConflictTotalSkill</code></td></tr>
           <tr><td><code>SetDash</code></td><td><code>'setDash'</code></td><td><code>setDash</code></td></tr>
           <tr><td><code>SetGlory</code></td><td><code>'setGlory'</code></td><td><code>setGlory</code></td></tr>
+          <tr><td><code>SetMaxDeclaredConflicts</code></td><td><code>'setMaxDeclaredConflicts'</code></td><td><code>setMaxDeclaredConflicts</code></td></tr>
           <tr><td><code>SetMilitarySkill</code></td><td><code>'setMilitarySkill'</code></td><td><code>setMilitarySkill</code></td></tr>
           <tr><td><code>SetPoliticalSkill</code></td><td><code>'setPoliticalSkill'</code></td><td><code>setPoliticalSkill</code></td></tr>
           <tr><td><code>SetProvinceStrengthBonus</code></td><td><code>'setProvinceStrengthBonus'</code></td><td><code>setProvinceStrengthBonus</code></td></tr>
@@ -925,12 +928,12 @@ cardCannot({
     <li>Contingent events are added: a card leaving play adds the discard of each attachment and the removal of its fate. A would-interrupt window opens for them.</li>
     <li>Forced interrupts.</li>
     <li>Interrupts.</li>
-    <li>Keyword interrupts (Courtesy, Sincerity, Thriving).</li>
+    <li>Keyword interrupts (Thriving).</li>
     <li>Other effects that cancel events.</li>
     <li>Pre-resolution effects.</li>
     <li>The handlers, sorted by <code>order</code>. This is where the event happens.</li>
     <li>The game state is checked.</li>
-    <li>Keyword reactions (Pride, Rally, Tutored).</li>
+    <li>Keyword reactions (Courtesy, Sincerity, Pride, Rally, Tutored).</li>
     <li><code>then</code> steps waiting for these events.</li>
     <li>Forced reactions.</li>
     <li>Duel reactions.</li>
@@ -1184,13 +1187,14 @@ this.interrupt('Reduce cost of next attachment')
 </div>
 <div class="ref" id="ev-onCardAbilityInitiated" data-name="onCardAbilityInitiated OnCardAbilityInitiated">
   <h3><code>onCardAbilityInitiated</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onCardAbilityInitiated">#</a></h3>
-  <p>Raised by <code>AbilityResolver</code> when a card ability starts resolving (actions, triggered abilities, events, then-steps), after targets chosen before costs. It shares the initiate window with <code>onCardAbilityTriggered</code> and, for an event card, <code>onCardPlayed</code>. Its handler queues the costs, the remaining targets and the effect. <code>resolveAbility</code> raises it too.</p>
+  <p>Raised by <code>AbilityResolver</code> when a card ability starts resolving (actions, triggered abilities, events), after targets chosen before costs. It shares the initiate window with <code>onCardAbilityTriggered</code> and, for an event card, <code>onCardPlayed</code>. Its handler queues the costs, the remaining targets and the effect. <code>resolveAbility</code> raises it too.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The ability's source.</td></tr>
           <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>The ability.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
+          <tr><td><code>resolvedWithoutTriggering</code></td><td><code>boolean?</code></td><td><code>true</code> when another ability resolves it (<code>resolveAbility</code>): it isn't triggered, so Hantei XXXVIII can't interrupt it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1209,7 +1213,7 @@ this.reaction('Bow character who triggered ability')
 </div>
 <div class="ref" id="ev-onCardAbilityTriggered" data-name="onCardAbilityTriggered OnCardAbilityTriggered">
   <h3><code>onCardAbilityTriggered</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onCardAbilityTriggered">#</a></h3>
-  <p>Raised with <code>onCardAbilityInitiated</code> when a <code>CardAbility</code> (an action, a triggered ability, an event's ability) is triggered; not for then-steps, and not for sub-resolutions of <code>resolveAbility</code>.</p>
+  <p>Raised with <code>onCardAbilityInitiated</code> when a <code>CardAbility</code> (an action, a triggered ability, an event's ability) is triggered; not for then-steps, and not for sub-resolutions of <code>resolveAbility</code>. Another <code>resolveAbility</code> raises it with <code>resolvedWithoutTriggering: true</code>, so The Mirror's Gaze can copy a copy.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
@@ -1217,18 +1221,20 @@ this.reaction('Bow character who triggered ability')
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The ability's source.</td></tr>
           <tr><td><code>ability</code></td><td><code>CardAbility</code></td><td>The ability.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
+          <tr><td><code>resolvedWithoutTriggering</code></td><td><code>boolean?</code></td><td><code>true</code> when another ability resolves it: it isn't triggered, so "triggers" cards (Breach of Etiquette, The Weight of Duty) ignore it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
     <li>No handler: cancelling it only stops reactions to it.</li>
     <li>Its reactions come after the ability resolved, so "after the effects of an event resolve" uses it (The Mirror's Gaze).</li>
-    <li>A running duel listens to it to record which players used a challenge, focus or strike ability.</li>
+    <li>A running duel listens to it to record which players used a challenge, focus or strike ability, ignoring abilities resolved without triggering.</li>
   </ul>
   <pre><code>// The Mirror's Gaze: Reaction: After the effects of an opponent's event resolve – resolve that event again as if you had just played it, ignoring costs and triggering conditions. You may choose new targets.
 this.reaction('Mirror an opponent\'s event')
     .when({
         onCardAbilityTriggered: (event, context) =&gt; event.card.type === CardType.Event &amp;&amp; !event.ability.cannotBeMirrored &amp;&amp;
-            event.context.player === context.player.opponent &amp;&amp; !event.cancelled
+            event.context.player === context.player.opponent &amp;&amp; !event.cancelled &amp;&amp;
+            event.context.stage === Stage.Effect
     })</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/TheMirrorsGaze.ts">The Mirror's Gaze</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/BreachOfEtiquette.ts">Breach of Etiquette</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Phoenix/TheWeightOfDuty.ts">The Weight of Duty</a></p>
 </div>
@@ -1334,6 +1340,7 @@ onSpendFate: (event, context) =&gt;
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>Set by ring actions.</td></tr>
           <tr><td><code>cardStateWhenMoved</code></td><td><code>DrawCard</code></td><td>Snapshot taken by some move actions.</td></tr>
           <tr><td><code>postBidAction</code>, <code>message</code></td><td><code>GameAction</code>, <code>(context) =&gt; MessageArgs</code></td><td>Set by <code>fateBid</code>: what resolves after the bid, and its chat line.</td></tr>
+          <tr><td><code>duel</code>, <code>isHonorBid</code></td><td><code>Duel | null</code>, <code>boolean</code></td><td>Set by an honor bid prompt that reveals the dials without raising <code>onHonorDialsRevealed</code>: the duel (if any), and whether honor is transferred.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1518,11 +1525,11 @@ this.reaction('Refill province faceup')
         </tbody>
       </table>
   <ul class="edge">
-    <li>It creates contingent events: a discard for each attachment in play on the card and a fate removal; a would-interrupt window opens for those.</li>
+    <li>It creates contingent events: a discard for each attachment in play on the card (skipping an attachment that already leaves play in the same window) and, if the fate can be removed, a fate removal; a would-interrupt window opens for those. <code>putIntoProvince</code> creates the same contingent events.</li>
     <li>Just before the handler: Ancestral sends a contingent attachment to hand instead, and <code>removeFromGameInsteadOfLeavingPlay</code> changes the destination.</li>
     <li>It cannot be cancelled for a card that cannot be prevented from leaving play (Legendary).</li>
     <li>Interrupts see the card still in play; reactions should read <code>cardStateWhenLeftPlay</code> (the card has moved by then).</li>
-    <li>Courtesy and Sincerity are keyword interrupts to it.</li>
+    <li>Courtesy and Sincerity are keyword reactions to it, using <code>cardStateWhenLeftPlay</code>.</li>
   </ul>
   <pre><code>// Vengeful Berserker: Reaction: After another character you control leaves play during a conflict – double this character's [conflict-military] skill until the end of the conflict.
 this.reaction('Double military skill')
@@ -1565,7 +1572,7 @@ card.lastingEffect({
     match: card,
     effect: [hideWhenFaceUp()]
 });</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/KaiuShihobu.ts">Kaiu Shihobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/EndlessArchives.ts">Endless Archives</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/DaidojiUji2.ts">Daidoji Uji</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/KaiuShihobu.ts">Kaiu Shihobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/EndlessArchives.ts">Endless Archives</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ArtisanAcademy.ts">Artisan Academy</a> (via <code>revealedTopCardPlayable</code>), <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BackAlleyHideaway.ts">Back-Alley Hideaway</a></p>
 </div>
 <div class="ref" id="ev-onCardsDiscarded" data-name="onCardsDiscarded OnCardsDiscarded">
   <h3><code>onCardsDiscarded</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onCardsDiscarded">#</a></h3>
@@ -3112,7 +3119,7 @@ if(
     !event.context.ability.isKeywordAbility() &amp;&amp;
     !event.context.ability.cannotBeCancelled
 ) {</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HidaKisada.ts">Hida Kisada</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShibaYojimbo.ts">Shiba Yōjimbō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/MantisTenkinja.ts">Mantis Tenkinja</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/ShosuroHyobu.ts">Shosuro Hyobu</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HidaKisada.ts">Hida Kisada</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShibaYojimbo.ts">Shiba Yōjimbō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/EarnestSculptor.ts">Earnest Sculptor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/ShosuroHyobu.ts">Shosuro Hyobu</a></p>
 </div>
 <div class="ref" id="ctx-game" data-name="game">
   <h3><code>context.game</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-game">#</a></h3>

@@ -387,7 +387,7 @@ this.action('Taint a participating character')
     </table>
     <ul class="edge">
       <li>The card must be faceup and in a province. Checks <code>RestrictionType.TurnFacedown</code>. Raises <code>onCardTurnedFacedown</code>.</li>
-      <li>A card controlled by someone other than its owner goes back to its owner first. The card loses what it had in play (<code>leavesPlay()</code>).</li>
+      <li>A card controlled by someone other than its owner goes back to its owner first. The card loses what it had in play (<code>leavesPlay()</code>), and lasting effects on it expire.</li>
       <li>A province that is being attacked is revealed again at once: the chat says <code>{card} is immediately revealed again!</code> and <code>onCardRevealed</code> is raised.</li>
       <li>Chat: <code>turn {0} facedown</code>.</li>
       <li>No builder shortcut.</li>
@@ -535,7 +535,7 @@ this.forcedReaction('After the conflict phase begins')
     <ul class="edge">
       <li>Only characters in play. Illegal with <code>amount</code> 0, or when the origin is the target itself.</li>
       <li>An origin must have fate; a character origin must allow fate to be removed from it; a ring origin needs the ability's player to be allowed to take fate from rings.</li>
-      <li>At most the origin's fate moves. If that is less than <code>amount</code>, the action doesn't count as fully resolved ("if you do" steps don't follow).</li>
+      <li>At most the origin's fate moves. Moving less than <code>amount</code> still counts as resolved in full; only a cancelled or redirected event doesn't.</li>
       <li>Checks <code>RestrictionType.PlaceFate</code>. Raises <code>onMoveFate</code>.</li>
       <li>Chat: <code>place {1} fate on {0}</code> ({1} is the amount).</li>
       <li>Builder shortcut: <code>.placeFate(…)</code>.</li>
@@ -622,7 +622,7 @@ this.reaction('Take a fate from your opponent')
 this.action('Take one honor from your opponent')
     .condition((context) =&gt; { … })
     .takeHonor();</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KakitaAsami.ts">Kakita Asami</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BlackmailArtist.ts">Blackmail Artist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CityOfTheOpenHand.ts">City of the Open Hand</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Levy.ts">Levy</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KakitaAsami.ts">Kakita Asami</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BlackmailArtist.ts">Blackmail Artist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/WayWithWords.ts">Way With Words</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Levy.ts">Levy</a></p>
   </div>
 </section>
 <section class="group">
@@ -904,6 +904,7 @@ this.reaction('Draw 2 cards and return 1')
         <tr><td><code>takesNothingGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>Resolves (with its own default target) when nothing is taken.</td></tr>
         <tr><td><code>selectedCardsHandler</code></td><td><code>(context, event, cards) =&gt; void</code></td><td>none</td><td>Replaces the default handling of the taken cards (the chat line and <code>gameAction</code>).</td></tr>
         <tr><td><code>remainingCardsHandler</code></td><td><code>(context, event, cards) =&gt; void</code></td><td>none</td><td>Replaces <code>remainingCards</code>.</td></tr>
+        <tr><td><code>targets</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The card is chosen ("choose"), so Hantei XXXVIII may make the choice; he can't see the cards and chooses none (Miya Library).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1250,7 +1251,7 @@ this.action('Place a holding from your deck faceup in the defending province')
     <ul class="edge">
       <li>The card must be in play, and <code>destination</code> a legal place for it. It goes to its owner's province.</li>
       <li>A conflict card is discarded instead, with the chat line <code>{card} is discarded instead since it can't enter a province legally!</code></li>
-      <li>Raises <code>onCardLeavesPlay</code>, but not like the leave-play actions: no attachment or fate events are added; attachments that are no longer legal fall off afterwards. It has no restriction type of its own.</li>
+      <li>Raises <code>onCardLeavesPlay</code> with the same contingent events as the leave-play actions: its attachments are discarded and its fate is removed (Ancestral returns to hand). Attachments that are no longer legal fall off afterwards. It has no restriction type of its own.</li>
       <li>Chat: <code>move {0} to {1}'s {2}</code>.</li>
       <li>No builder shortcut.</li>
     </ul>
@@ -1461,6 +1462,7 @@ this.reaction('Put this character into play')
         <tr><td><code>ignoreType</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Allow a card that isn't an attachment.</td></tr>
         <tr><td><code>ignoreUniqueness</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Skip the check for another copy of a unique attachment in play.</td></tr>
         <tr><td><code>viaDisguised</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Skip every check. The framework uses it to move attachments onto a Disguised character.</td></tr>
+        <tr><td><code>evenIfIllegal</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Move the attachment even where it can't be attached; the game then discards it (Iuchi Rimei, ruling #838).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1473,7 +1475,7 @@ this.reaction('Put this character into play')
           <li>another copy of a unique attachment is in play for the ability's player.</li>
         </ul>
       </li>
-      <li>It has no restriction type, so only restrictions that name no type stop it. ("Cannot play attachments on" restrictions apply to playing an attachment from hand, not to this action.)</li>
+      <li>Restriction: <code>RestrictionType.Attach</code>. ("Cannot play attachments on" restrictions apply to playing an attachment from hand, not to this action.)</li>
       <li>A character in play that becomes an attachment leaves the conflict.</li>
       <li>Raises <code>onCardAttached</code> (<code>event.parent</code>, <code>event.card</code> is the attachment, <code>event.originalLocation</code>).</li>
       <li>Chat: "attach <em>attachment</em> to <em>target</em>"; with <code>takeControl</code>: "take control of and attach <em>parent</em>'s <em>attachment</em> to <em>target</em>"; with <code>giveControl</code>: "give control of and attach …".</li>
@@ -2497,12 +2499,14 @@ this.conflictAction('Reduce opponent\'s characters mil', { conflictType: Conflic
         <tr><td><code>effect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>Conflict-wide effects such as <code>charactersCannot(…)</code>, <code>cannotContribute(…)</code> or <code>additionalAttackedProvince(…)</code>.</td></tr>
         <tr><td><code>duration</code></td><td><code>Duration</code></td><td><code>Duration.UntilEndOfConflict</code></td><td>How long it lasts.</td></tr>
         <tr><td><code>until</code></td><td><code>EffectUntil</code></td><td>none</td><td>With <code>Duration.Custom</code>: when it ends.</td></tr>
+        <tr><td><code>match</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>For a card effect: the cards it reaches while it lasts, also cards that enter play later (Grasp of Earth).</td></tr>
+        <tr><td><code>targetController</code></td><td><code>Players</code></td><td>none</td><td>With <code>match</code>: whose cards it reaches.</td></tr>
         <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>none</td><td>Only active while this holds.</td></tr>
         <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>the resolving ability</td><td>The ability the effect belongs to.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>Legal whenever it has at least one effect. A conflict effect always reaches the current conflict, so a chosen target changes nothing: pass the card to the effect factory instead, as A War on Two Fronts does with <code>additionalAttackedProvince(context.target)</code>.</li>
+      <li>Legal whenever it has at least one effect. A conflict effect always reaches the current conflict (a card effect with <code>match</code> reaches the matching cards), so a chosen target changes nothing: pass the card to the effect factory instead, as A War on Two Fronts does with <code>additionalAttackedProvince(context.target)</code>.</li>
       <li>Raises <code>onEffectApplied</code>. Chat: "apply a lasting effect".</li>
       <li>Builder shortcut: <code>.conflictLastingEffect(…)</code>.</li>
     </ul>
@@ -2616,7 +2620,7 @@ this.reaction('Count a ring as claimed')
         <tr><td><code>duration</code></td><td><code>Duration</code></td><td><code>Duration.Custom</code></td><td>How long control lasts.</td></tr>
         <tr><td><code>until</code></td><td><code>EffectUntil</code></td><td>none</td><td>With <code>Duration.Custom</code>: the events that end it.</td></tr>
         <tr><td><code>effect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td><code>takeControl(context.player)</code></td><td>The effects to apply instead.</td></tr>
-        <tr><td><code>targetLocation</code></td><td><code>TargetLocation</code></td><td><code>Location.PlayArea</code></td><td>Where the target must be for the effect to apply.</td></tr>
+        <tr><td><code>targetLocation</code></td><td><code>TargetLocation</code></td><td><code>Location.PlayArea</code></td><td>Doesn't limit it: the effect matches the card itself.</td></tr>
         <tr><td colspan="4">Also the other <code>cardLastingEffect</code> properties: <code>condition</code>, <code>canChangeZoneOnce</code>, <code>canChangeZoneNTimes</code>, <code>chatText</code>.</td></tr>
       </tbody>
     </table>
@@ -2651,13 +2655,13 @@ this.action('Take control of a character')
       <tbody>
         <tr><td><code>target</code></td><td><code>GameActionTarget | GameActionTarget[]</code></td><td>the triggering event's card</td><td>Passed to <code>replacementGameAction</code> as its target.</td></tr>
         <tr><td><code>replacementGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>"Instead, …": resolves in the cancelled event's window, on <code>target</code>.</td></tr>
-        <tr><td><code>thenGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>"Instead, X. Then, Y": resolves once the replacement has resolved.</td></tr>
+        <tr><td><code>thenGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>"Instead, X. Then, Y": resolves once the replacement has resolved in full.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Needs a triggered ability's context (an interrupt): it cancels <code>context.event</code>.</li>
       <li>Illegal when there is no event, it is already cancelled, or it can't be cancelled: <code>cannotBeCancelled</code> events, events played by a player whose events can't be cancelled, and a leaves-play event of a card that can't be prevented from leaving play (<code>RestrictionType.PreventedFromLeavingPlay</code>).</li>
-      <li>With <code>replacementGameAction</code>, it is legal only if the replacement has a legal target. A single replacement event becomes <code>event.replacementEvent</code> of the cancelled event (not for a sacrifice).</li>
+      <li>With <code>replacementGameAction</code>, it is legal only if the replacement has a legal target. A single replacement event becomes <code>event.replacementEvent</code> of the cancelled event (not for a sacrifice). The cancelled action then didn't resolve in full, so its own <code>then()</code> steps don't follow.</li>
       <li>Chat: "cancel the effects of <em>event card</em>", or with a replacement its own text followed by "instead of <em>event card</em>".</li>
       <li>Builder shortcut: <code>.cancel(…)</code> (interrupts only).</li>
     </ul>
@@ -2708,7 +2712,7 @@ this.wouldInterrupt('Dishonor this character instead')
       <tbody>
         <tr><td><code>condition</code></td><td><code>boolean | (context, properties) =&gt; boolean</code></td><td>required</td><td>Picks the branch. <code>properties.target</code> is the target list it was given.</td></tr>
         <tr><td><code>trueGameAction</code></td><td><code>GameAction</code></td><td>required</td><td>Resolved when the condition holds.</td></tr>
-        <tr><td><code>falseGameAction</code></td><td><code>GameAction</code></td><td>does nothing</td><td>Resolved otherwise.</td></tr>
+        <tr><td><code>falseGameAction</code></td><td><code>GameAction</code></td><td><code>noAction()</code></td><td>Resolved otherwise. The default is always legal, so a false condition still makes the action legal.</td></tr>
         <tr><td><code>target</code></td><td><code>GameActionTarget | GameActionTarget[]</code></td><td>none</td><td>Passed to both branches.</td></tr>
       </tbody>
     </table>
@@ -2878,6 +2882,22 @@ this.action('Remove a ring from the unclaimed ring pool')
 .cardLastingEffect((context) =&gt; ({ … }));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/EarthsExamination.ts">Earth's Examination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/SanctifiedEarth.ts">Sanctified Earth</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Neutral/TheMaidensIcyGrasp.ts">The Maiden's Icy Grasp</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/AwakeTheFearfulHeart.ts">Awake the Fearful Heart</a></p>
   </div>
+<div class="ref" id="ga-noAction" data-name="noAction">
+    <h3><code>noAction()</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-noAction">#</a></h3>
+    <p>Does nothing and is always legal: a "Done" choice, or the empty branch of <code>conditional</code> (its default <code>falseGameAction</code>).</p>
+    <ul class="edge">
+      <li>A duel whose result resolves it prints "The duel has no effect".</li>
+      <li>No builder shortcut.</li>
+    </ul>
+    <pre><code>// Deeds, not Words: … You may discard the Imperial Favor to honor that character. …
+chooseAction({
+    choices: {
+        'Discard the Imperial Favor': joint([…]),
+        Done: noAction()
+    }
+})</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Lion/DeedsNotWords.ts">Deeds, not Words</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/EbbAndFlow.ts">Ebb and Flow</a></p>
+</div>
 <div class="ref" id="ga-optional" data-name="optional">
     <h3><code>optional(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-optional">#</a></h3>
     <p>"You may …": a player answers Yes or No, and <code>gameAction</code> resolves on Yes.</p>
@@ -2921,6 +2941,7 @@ moveCardInProvinceAction(this)
     <ul class="edge">
       <li>Legal if any nested action is legal before anything resolves. Each later action is checked again after the earlier ones resolved, and skipped if it has no legal target then.</li>
       <li>Each action except the last resolves its events in a then-window before the next action is checked; the last action's events resolve with the rest of the ability.</li>
+      <li>A <code>then()</code> after it follows if every event, including those already resolved, resolved in full.</li>
       <li>Chat: the first nested action's message only, even when that action ends up with nothing to do. Give the ability a <code>chatText</code>.</li>
       <li>No builder shortcut; use it on a target or with <code>.gameAction(…)</code> (or use <code>.then()</code> steps).</li>
     </ul>
@@ -3166,7 +3187,8 @@ this.action('Look at opponent\'s hand and name a card')
     </ul>
     <pre><code>// Disdainful Remark: Action: During a conflict, if you control a participating Courtier character – until the end of the conflict, the attacked province gets +X strength. X is equal to the number of cards in your opponent's hand.
 this.action('Add Province Strength')
-    .condition((context) =&gt; …)
+    .ifCondition((context) =&gt; controlsParticipating(context.player, Trait.Courtier))
+    .condition((context) =&gt; !!context.player.opponent &amp;&amp; context.player.opponent.hand.length &gt; 0)
     .selectAttackedProvince({
         message: (context, cards) =&gt; msg`${context.player} increases the strength of ${cards} by ${context.player.opponent?.hand.length ?? 0}`,
         gameAction: cardLastingEffect((context) =&gt; ({
@@ -3372,10 +3394,10 @@ this.action('Discard status token from attached character')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Legal if the ability meets its requirements with these ignored: wrong player, wrong location, limit reached, triggering restrictions, plus <code>ignoredBlockers</code>; and it is not at its max for the player (unless <code>subResolution</code>).</li>
-      <li>It goes straight to costs and targets: no early targeting, and it can't be cancelled while choosing. Play costs (an event's fate cost) are never paid.</li>
+      <li>Legal if the ability meets its requirements with these ignored: wrong player, wrong location, limit reached, triggering restrictions, play restrictions (<code>CannotPlay</code>) and the Limited rule (<code>LimitedAlreadyPlayed</code>), plus <code>ignoredBlockers</code>; and it is not at its max for the player (unless <code>subResolution</code>).</li>
+      <li>It goes straight to costs and targets: no early targeting, and it can't be cancelled while choosing. Play costs (an event's fate cost) and costs added by effects (<code>additionalTriggerCost</code>, <code>additionalPlayCost</code>) are never paid.</li>
       <li>Counts toward the ability's max unless <code>subResolution</code>. The resolved ability's own chat line reads <code>{player} resolves {card} …</code> instead of "uses" or "plays".</li>
-      <li>The resolution raises <code>onCardAbilityInitiated</code>, and also <code>onCardAbilityTriggered</code> for a card ability unless <code>subResolution</code> is set.</li>
+      <li>The resolution raises <code>onCardAbilityInitiated</code>, and also <code>onCardAbilityTriggered</code> for a triggered card ability unless <code>subResolution</code> is set. Both carry <code>resolvedWithoutTriggering: true</code>: Breach of Etiquette, The Weight of Duty, Hantei XXXVIII and duel limits ignore them.</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// The Mirror's Gaze: Reaction: After the effects of an opponent's event resolve – resolve that event again as if you had just played it, ignoring costs and triggering conditions. You may choose new targets.

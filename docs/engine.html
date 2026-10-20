@@ -43,7 +43,10 @@
     <li><strong>The card ability</strong> (<code>CardAbility</code>):
         <ol>
             <li><code>Blanked</code>: a printed ability on a blank card, or a gained one while the card loses gained abilities.</li>
-            <li><code>CannotTrigger</code>: the card is facedown, a restriction stops its abilities from being triggered, or an event can't be played. <code>TriggeringRestricted</code> in <code>ignoredBlockers</code> skips the restrictions, not this blocker.</li>
+            <li><code>CannotTrigger</code> (triggered abilities only): the card is facedown, or a restriction stops its abilities from being triggered. <code>TriggeringRestricted</code> in <code>ignoredBlockers</code> skips the restrictions, not this blocker.</li>
+            <li><code>CannotPlay</code>: an event that can't be played (ignored when another ability resolves it).</li>
+            <li><code>ConditionNotMet</code>: an event's "Play only if" (<code>meetsPlayConditions</code>) fails; this check can't be skipped.</li>
+            <li><code>IfConditionNotMet</code>: the ability's <code>ifCondition()</code> is false.</li>
             <li><code>CannotInitiate</code>: a keyword ability while keywords can't be initiated.</li>
             <li><code>LimitReached</code>, then <code>MaxReached</code>: the ability's <code>limit()</code> and <code>max()</code>.</li>
             <li><code>LimitedAlreadyPlayed</code>: a Limited card when one was played this round.</li>
@@ -76,20 +79,24 @@
         <tr><td><code>LimitReached</code>, <code>MaxReached</code></td><td>The limit and the max.</td></tr>
         <tr><td><code>CannotPayCost</code></td><td>Whether the costs can be paid; <code>resolveAbility</code> then also skips paying them.</td></tr>
         <tr><td><code>TriggeringRestricted</code></td><td>Restrictions on triggering the card's abilities.</td></tr>
+        <tr><td><code>CannotPlay</code></td><td>Whether an event can be played.</td></tr>
+        <tr><td><code>IfConditionNotMet</code></td><td>The ability's <code>ifCondition()</code> (Countryside Trader, The Mirror's Gaze).</td></tr>
+        <tr><td><code>LimitedAlreadyPlayed</code></td><td>The Limited rule, in card abilities; play actions always check it.</td></tr>
         <tr><td><code>Facedown</code></td><td>That the card is facedown. Only the play actions check it: playing a dynasty character from a province, and adding a duplicate to a unique character.</td></tr>
     </tbody>
 </table>
-<p><code>Blanked</code>, <code>CannotInitiate</code>, <code>LimitedAlreadyPlayed</code> and <code>NoLegalTarget</code> always apply. <code>CannotTrigger</code> always applies to abilities; the play actions for characters and attachments would skip their play-restriction check for it, but no caller passes it. <code>DuplicateUnique</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities.</p>
+<p><code>resolveAbility</code> always ignores <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>TriggeringRestricted</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> (resolving isn't playing); a sub-resolution also ignores <code>MaxReached</code>.</p>
+<p><code>Blanked</code>, <code>CannotInitiate</code> and <code>NoLegalTarget</code> always apply. <code>CannotTrigger</code> always applies to abilities; the play actions for characters and attachments would skip their play-restriction check for it, but no caller passes it. <code>DuplicateUnique</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities.</p>
 
 <h2 id="eng-resolver">How an ability resolves</h2>
 <p><code>AbilityResolver</code> runs these steps:</p>
 <ol>
-    <li><code>createSnapshot()</code>: a draw card's state goes into <code>context.cardStateWhenInitiated</code>.</li>
+    <li><code>createSnapshot()</code>: the state of a character, holding or attachment source goes into <code>context.cardStateWhenInitiated</code> (events get no snapshot).</li>
     <li><code>resolveEarlyTargets()</code>: at <code>Stage.PreTarget</code>, the targets are offered before the costs (with "Pay costs first"), unless <code>cannotTargetFirst()</code>.</li>
     <li><code>checkForCancel()</code>.</li>
     <li><code>openInitiateAbilityEventWindow()</code>: one event window with <code>onCardAbilityInitiated</code> (<code>onAbilityResolverInitiated</code> when <code>isCardAbility()</code> is false or <code>isStep()</code> is true), plus <code>onCardPlayed</code> for a played card and <code>onCardAbilityTriggered</code> for a card ability with <code>isTriggeredAbility()</code>, actions included. The initiate event's handler queues:
         <ol>
-            <li><code>resolveCosts()</code>, <code>payCosts()</code> (all costs in one event window), <code>checkCostsWerePaid()</code>;</li>
+            <li><code>resolveCosts()</code>, <code>payCosts()</code> (all costs in one event window), <code>checkCostsWerePaid()</code> (if a cost was cancelled, the ability stops; for a played card it emits <code>onCardPlayCostsNotPaid</code> with <code>{ playEvent }</code>);</li>
             <li><code>resolveTargets()</code> at <code>Stage.Target</code>, then <code>checkForCancel()</code>;</li>
             <li><code>initiateAbilityEffects()</code>: checks that the costs of targeting can be paid (effects that make choosing a card cost fate), counts the limit and the max, writes the chat line, then pays the costs of targeting. The limit isn't counted for a card in hand, or for a card that changed location since it was used. For an ability with <code>isTriggeredAbility()</code> it then moves a played event to "being played" and opens a then-window with <code>onInitiateAbilityEffects</code>. Cancelling that event cancels the effects; the costs stay paid and the limit stays counted. Other abilities go straight on.</li>
             <li><code>executeHandler()</code> at <code>Stage.Effect</code>: the game actions resolve.</li>
@@ -98,6 +105,7 @@
     </li>
     <li><code>refillProvinces()</code>.</li>
 </ol>
+<p>An ability resolved by another one (<code>resolveAbility</code>) runs <code>ResolveAbilityActionResolver</code>: no early targets, no play or trigger costs (its own costs are paid unless <code>CannotPayCost</code> is ignored), <code>onCardAbilityInitiated</code> with <code>resolvedWithoutTriggering: true</code>, and, unless it is a sub-resolution, <code>onCardAbilityTriggered</code> with the same flag. It counts the max but not the limit.</p>
 <ul>
     <li>A reaction to <code>onCardAbilityInitiated</code> fires after the early targets were chosen: a select before the dash is answered before the reaction's window opens.</li>
     <li><code>isTriggeredAbility()</code> is true for every card ability, actions included. It is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), for steps and for a bare <code>BaseAbility</code>. So a reaction that filters on <code>event.ability.isTriggeredAbility()</code> also reacts to actions.</li>

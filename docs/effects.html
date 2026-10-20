@@ -42,7 +42,7 @@
 <table>
     <thead><tr><th>Label</th><th>Applies to</th><th>Put it there with</th></tr></thead>
     <tbody>
-        <tr><td>Card effect</td><td>A card</td><td><code>persistentEffect</code> with <code>match</code>, <code>whileAttached</code>, <code>cardLastingEffect</code></td></tr>
+        <tr><td>Card effect</td><td>A card</td><td><code>persistentEffect</code> with <code>match</code>, <code>whileAttached</code>, <code>cardLastingEffect</code>, <code>conflictLastingEffect</code> with <code>match</code></td></tr>
         <tr><td>Player effect</td><td>A player</td><td><code>persistentEffect</code> with <code>targetController</code>, <code>playerLastingEffect</code></td></tr>
         <tr><td>Ring effect</td><td>A ring</td><td><code>persistentEffect</code> with <code>match</code>, <code>ringLastingEffect</code></td></tr>
         <tr><td>Conflict effect</td><td>The current conflict</td><td><code>conflictLastingEffect</code>, or a <code>persistentEffect</code> with a <code>condition</code></td></tr>
@@ -55,6 +55,7 @@
     <li>With <code>match</code>: matching cards in the play area. Set <code>targetLocation</code> for cards elsewhere, provinces included.</li>
     <li>Only cards that the effect source's controller controls, unless <code>targetController</code> says otherwise (the default is <code>Players.Self</code>).</li>
     <li><code>whileAttached</code> reaches the attached card, whoever controls it.</li>
+    <li><code>conflictLastingEffect</code> with <code>match</code> reaches every matching card while it lasts, also cards that enter play later (Grasp of Earth).</li>
 </ul>
 
 <h3 id="ef-values">Fixed and computed values</h3>
@@ -735,7 +736,7 @@ this.action('Contribute printed military skill')
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>value</code></td><td><code>number | (player, context) =&gt; number</code></td><td>required</td><td>The amount added, fixed or recalculated.</td></tr>
+        <tr><td><code>value</code></td><td><code>number | (player) =&gt; number</code></td><td>required</td><td>The amount added, fixed or recalculated.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -2533,6 +2534,7 @@ this.dire({
       <li><code>additionalTriggerCost</code> is a player effect: it adds to every card ability the affected player initiates (actions, triggered abilities and events). <code>additionalTriggerCostForCard</code> is a card effect: it adds to every ability whose source is the card, whoever triggers it.</li>
       <li>Skipped when the ability is resolved without paying its trigger costs (<code>resolveAbility</code>) or as a sub-resolution. Playing a character or attachment card is not a card ability.</li>
       <li>An ability whose extra cost can't be paid can't be triggered. All effects add their costs.</li>
+      <li>Keyword abilities (Courtesy, Pride, Sincerity, …) are not triggered, so they get no extra cost.</li>
     </ul>
     <pre><code>// Magistrate of Reason: As an additional cost for your opponent to trigger a character ability during a conflict
 // in which this character is attacking, that opponent must spend 1 fate to an unclaimed ring.
@@ -3148,7 +3150,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Cards drawn are <code>max(bid + sum, 1)</code>, or 0 with a bid of 0.</li>
+      <li>Cards drawn are <code>max(bid + sum, 1)</code>, or <code>max(sum, 0)</code> with a bid of 0.</li>
     </ul>
     <pre><code>// Iwasaki Pupil: Each player draws 2 fewer cards from honor bids during the draw phase (to a minimum of 1).
 this.persistentEffect({
@@ -3181,7 +3183,7 @@ this.persistentEffect({
     target: Players.Self,
     effect: playerDelayedEffect({
         when: {
-            onCardAbilityTriggered: (event) =&gt;
+            onCardAbilityTriggered: (event) =&gt; !event.resolvedWithoutTriggering &amp;&amp;
                 event.player === context.player &amp;&amp; event.card.type === CardType.Character &amp;&amp; !event.card.hasTrait(Trait.Courtier)
         },
         message: () =&gt; msg`${context.player} loses 1 honor due to ${context.source}`,
@@ -3682,10 +3684,11 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Changes the destination of every way of leaving play (discard, sacrifice, return to hand or deck). It wins over Ancestral.</li>
+      <li>Changes the destination when the card leaves play by discard, sacrifice, or return to hand or deck (not when it is put into a province). It wins over Ancestral.</li>
       <li>The most recent effect's message is used.</li>
     </ul>
     <pre><code>// The Empty City: … put that character into play. The next time it would leave play this round, remove it from the game instead.
+.afterwardsIf((context) =&gt; context.target.location === Location.PlayArea)
 .cardLastingEffect((context) =&gt; ({
     target: context.target,
     duration: Duration.UntilEndOfRound,

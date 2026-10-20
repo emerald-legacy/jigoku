@@ -486,6 +486,7 @@ moveHoldingAction(this)
     </table>
     <ul class="edge">
       <li>Add <code>nameCardType()</code> as a cost before <code>.deckSearch(…)</code>, so the type is known when the search builds its properties.</li>
+      <li>After a reveal cost (<code>context.costs.reveal</code>) it looks only at the revealed cards still on top of the deck; a card played from there has left it (EmeraldDB ruling).</li>
       <li>The search sets <code>hideIfNoLegalTargets</code>, so with no card of the named type the cards are discarded without a prompt. It writes no "takes nothing" line.</li>
       <li>Chat: the cost text of <code>nameCardType()</code> is <code>naming {0}</code>, with the named type as <code>{0}</code>; the search adds "{player} adds {cards} to their hand".</li>
     </ul>
@@ -636,7 +637,7 @@ selectedCardsHandler: (context, event, [card]) =&gt; {
     }
     attachSearchedCard(context, context.target, card, (card) =&gt; msg`${event.player} takes ${card} and attaches it to ${context.target}`);
 }</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiMasanori.ts">Kitsuki Masanori</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/KaiuNoIshiTauro.ts">Kaiu no Ishi Tauro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crab/YasukiYoshi.ts">Yasuki Yoshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crane/KakitaMio.ts">Kakita Mio</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiMasanori.ts">Kitsuki Masanori</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/KaiuNoIshiTauro.ts">Kaiu no Ishi Tauro</a></p>
   </div>
 
   <div class="ref" id="he-DeckChoice" data-name="DeckChoice">
@@ -733,7 +734,7 @@ this.action('Select a player to lose an honor and draw a card')
 
   <div class="ref" id="he-attacksAloneWithTrait" data-name="attacksAloneWithTrait">
     <h3><code>attacksAloneWithTrait(conflict, player, trait)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-attacksAloneWithTrait">#</a></h3>
-    <p>"After a [Trait] character you control attacks alone": whether <code>player</code> is the attacking player, has exactly one participating character, and that character has <code>trait</code>.</p>
+    <p>"After a [Trait] character you control attacks alone": whether <code>player</code> is the attacking player, has exactly one participating character, and that character has <code>trait</code> and is controlled by <code>player</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -784,7 +785,7 @@ this.action('Select a player to lose an honor and draw a card')
     </ul>
     <pre><code>// Bayushi Yunako: Action: While this character is participating in a conflict, choose a character – switch that character's base [conflict-military] and [conflict-political] skill until the end of the conflict.
 cardCondition: (card) =&gt; canSwitchSkills(card)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BayushiYunako.ts">Bayushi Yunako</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/AlongTheRiverOfGold.ts">Along the River of Gold</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/IsawaHeiko.ts">Isawa Heiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/EbbAndFlow.ts">Ebb and Flow</a> (7 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a>, and through <code>canSwitchSkills</code> and <code>copyBaseSkills</code></p>
   </div>
 
   <div class="ref" id="he-controlsShugenja" data-name="controlsShugenja">
@@ -1500,7 +1501,7 @@ cardCondition: (card) =&gt; card.costLessThan(3)</code></pre>
 
   <div class="ref" id="q-getCost" data-name="getCost">
     <h3><code>card.getCost()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getCost">#</a></h3>
-    <p>The card's printed cost, or the printed cost of the character it copies. <code>number | null</code>: a dash cost counts as 0 (RRG Cost), <code>null</code> only for a holding or a token (Soldier, Unleashed Hound, …), which print no cost. The field <code>printedCost</code> stays <code>null</code> for a dash (it marks the card as unplayable), so read it with <code>?? 0</code>.</p>
+    <p>The card's printed cost, or the printed cost of the character it copies. <code>number | null</code>: a dash cost counts as 0 (RRG Cost), <code>null</code> only for a holding or a token (Soldier, Unleashed Hound, …), which print no cost. The field <code>printedCost</code> stays <code>null</code> for a dash on a non-event (it marks the card as unplayable; a dash-cost event gets 0), so read it with <code>?? 0</code>.</p>
     <pre><code>// Audience Chamber: Reaction: After you play a character with printed cost 4 or higher - place 1 fate on it.
 (event.card.getCost() ?? 0) &gt;= 4</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/ElegantTessen.ts">Elegant Tessen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a> (23 card files)</p>

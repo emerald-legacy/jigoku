@@ -51,12 +51,12 @@
 <p>The full order of the calls:</p>
 <ol>
     <li>The trigger, for reactions and interrupts: <code>when()</code> or <code>aggregateWhen()</code>.</li>
-    <li>When and where the ability can be used: <code>phase()</code>, <code>location()</code>, <code>condition()</code>, <code>playOnlyIf()</code>, <code>anyPlayer()</code>, <code>collectiveTrigger()</code>, <code>evenDuringDynasty()</code>, <code>canTriggerOutsideConflict()</code>, <code>conflictProvinceCondition()</code>.</li>
+    <li>When and where the ability can be used: <code>phase()</code>, <code>location()</code>, <code>condition()</code>, <code>ifCondition()</code>, <code>playOnlyIf()</code>, <code>anyPlayer()</code>, <code>collectiveTrigger()</code>, <code>evenDuringDynasty()</code>, <code>canTriggerOutsideConflict()</code>, <code>conflictProvinceCondition()</code>.</li>
     <li>Costs: <code>cost()</code>, once per cost.</li>
     <li>Targets: <code>target()</code>, <code>targetCards()</code>, <code>ringTarget()</code>, <code>select()</code>, <code>selectFrom()</code>, <code>abilityTarget()</code>, <code>elementTarget()</code>, <code>tokenTarget()</code>.</li>
     <li>Effects: game actions (a shortcut such as <code>.bow()</code>, or <code>gameAction()</code>), <code>if()</code>/<code>ifAble()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>onResolve()</code>.</li>
     <li>Chat: <code>chatText()</code> on the ability, <code>message()</code> on a step.</li>
-    <li>Limits and flags: <code>limit()</code>, <code>max()</code>, <code>cannotTargetFirst()</code>, <code>cannotBeMirrored()</code>, <code>notPrinted()</code>.</li>
+    <li>Limits and flags: <code>limit()</code>, <code>max()</code>, <code>cannotTargetFirst()</code>, <code>firstPlayerChoosesFirst()</code>, <code>cannotBeMirrored()</code>, <code>notPrinted()</code>.</li>
     <li>What comes next: a step with <code>then()</code>, <code>afterwards()</code>, <code>thenIf()</code> or <code>afterwardsIf()</code>, or <code>mayResolveAgain()</code>. A step is written in the same order, without the ability's own settings.</li>
 </ol>
 <p>The order matters. The builder fixes its types from left to right, so each call sees only what the calls before it declared. A <code>chatText()</code> after a <code>target()</code> knows the target's card type; one before it doesn't. The <a href="builder.html">ability builder</a> page documents every call.</p>
@@ -148,7 +148,8 @@ export default Assassination;</code></pre>
 <ul>
     <li><strong>"Then, …" and "If you do, …"</strong> are <code>then()</code>: the next step runs only if the step before it resolved in full (designer ruling, 2026-10-20).</li>
     <li><strong>"Then, if …" and "If you do, and …"</strong> are <code>thenIf((context) =&gt; …)</code>: the step before must have resolved in full, and the condition must hold.</li>
-    <li><strong>A sentence without "then"</strong> that must come after the effect ("Shuffle.", "If it is now …") is <code>afterwards()</code> or <code>afterwardsIf()</code>, which run either way. Otherwise the effects of an ability are simultaneous (RRG).</li>
+    <li><strong>A sentence without "then"</strong> that must come after the effect ("Shuffle.", "If it is now …") is <code>afterwards()</code> or <code>afterwardsIf()</code>, which run either way. Otherwise the effects of an ability are simultaneous (RRG), and a "may" (<code>optional()</code>, <code>onAffinity()</code> with a prompt, <code>chooseAction()</code>) is asked before any of them applies. Keep them in one step.</li>
+    <li>A few cards keep <code>afterwards()</code> for a "then" because a ruling or decision lets the rest resolve anyway (Mark of Shame, Soul Beyond Reproach, Test of Courage, Tranquil Philosopher, Warriors of the Wind, Yogo Hiroue, Ichigo-kun, Aranat).</li>
     <li>A step's context holds the targets chosen so far, so <code>context.target</code> still names the card chosen in the first step.</li>
 </ul>
 

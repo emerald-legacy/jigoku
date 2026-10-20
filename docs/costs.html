@@ -44,9 +44,9 @@ this.conflictAction('Discard a character')
 <ol>
     <li><strong>Legality.</strong> Before the ability can be used, the engine asks every cost <code>canPay(context)</code> on a copy of the context at <code>Stage.Cost</code>. If one says no, the ability is not offered (blocker <code>CannotPayCost</code>). Nothing is chosen or paid yet, so <code>context.costs</code> is empty.</li>
     <li><strong>Early targets.</strong> Unless the ability has <code>cannotTargetFirst()</code>, its targets are checked and offered first (stage <code>PreTarget</code>); the player may pick "Pay costs first". The targets are confirmed after the costs.</li>
-    <li><strong>Choosing.</strong> The costs resolve in the order they were declared: each one asks its question (which card, how much fate, Yes or No) and collects the events that pay it. While the resolver allows it, every prompt has a Cancel button; cancelling ends the ability and nothing is paid.</li>
-    <li><strong>Paying.</strong> All collected events resolve in one event window, so the costs are paid simultaneously. If any of them is cancelled or prevented, the chat says "<em>player1 attempted to use X, but did not successfully pay the required costs</em>" and the ability ends; what was paid stays paid.</li>
-    <li><strong>Then</strong> the targets are chosen or confirmed. If no legal target is left, the chat says "<em>player1 attempted to use X, but there are insufficient legal targets</em>" and the ability ends; the costs stay paid. Otherwise the limit and max count the use, the chat line is written and the effects initiate. The effects can still be cancelled; the costs stay paid.</li>
+    <li><strong>Choosing.</strong> The costs resolve in the order they were declared (with <code>firstPlayerChoosesFirst()</code> and the opponent as first player, costs marked <code>chosenByOpponent</code> come first): each one asks its question (which card, how much fate, Yes or No) and collects the events that pay it. While the resolver allows it, every prompt has a Cancel button; cancelling ends the ability and nothing is paid.</li>
+    <li><strong>Paying.</strong> All collected events resolve in one event window, so the costs are paid simultaneously. If any of them is cancelled or prevented, the chat says "<em>player1 attempted to use X, but did not successfully pay the required costs</em>" and the ability ends (for a played card it also raises <a href="types.html#ev-onCardPlayCostsNotPaid"><code>onCardPlayCostsNotPaid</code></a>); what was paid stays paid.</li>
+    <li><strong>Then</strong> the targets are chosen or confirmed. Costs of targeting (effects that make choosing a card cost fate) are checked and paid when the effects initiate; if they can't be paid, the chat says "<em>did not successfully pay the required costs</em>" and the ability ends before the limit or max counts. If no legal target is left, the chat says "<em>player1 attempted to use X, but there are insufficient legal targets</em>" and the ability ends; the costs stay paid. Otherwise the limit and max count the use, the chat line is written and the effects initiate. The effects can still be cancelled; the costs stay paid.</li>
 </ol>
 <ul>
     <li>An event card gets <code>payReduceableFateCost()</code> (its printed fate cost) added after its own costs automatically; don't declare it.</li>
@@ -102,6 +102,8 @@ this.conflictAction('Discard a character')
         <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something. If so, the action window skips its one-click confirmation menu and starts the ability directly.</td></tr>
         <tr><td><code>dependsOn</code></td><td>The name of a target the cost depends on: while that target is offered first, a candidate is legal only if the cost can be paid for it (<code>targetDependentFate</code>).</td></tr>
         <tr><td><code>hasTargetsChosenByInitiatingPlayer(context)</code></td><td>Whether paying makes the ability's player choose cards. It counts toward the ability's <code>hasTargetsChosenByInitiatingPlayer</code> (Hantei XXXVIII).</td></tr>
+        <tr><td><code>fateSpent(context)</code></td><td>The fate the player spends paying it (set by <code>payFate</code>). Targeting costs checked before the costs are paid subtract it from the fate available.</td></tr>
+        <tr><td><code>chosenByOpponent</code></td><td>The opponent makes this choice (set by <code>optionalTakeHonorFromOpponent</code>). With <code>firstPlayerChoosesFirst()</code> and the opponent as first player, these costs are chosen first.</td></tr>
         <tr><td><code>isPrintedFateCost</code>, <code>isPlayCost</code>, <code>getReducedCost(context)</code></td><td>Engine-only, set by the fate and play costs: <code>playCard</code> with <code>ignoreFateCost</code> skips the first, a play without play costs skips the second, and the ability's fate cost after reductions comes from the third.</td></tr>
         <tr><td><code>action</code>, <code>activePromptTitle</code></td><td>Fields of some built-in costs. The engine does not read them through <code>Cost</code>.</td></tr>
     </tbody>
@@ -885,7 +887,8 @@ this.action('Bow a character')
     </ul>
     <pre><code>// Command Respect: Action: During a conflict, if you have fewer cards in your hand than your opponent - as an additional cost for your opponent to play an event during this conflict, that opponent must give you 1 honor. (Max 1 per conflict.)
 this.action('Take honor from opponent when they play an event')
-    .condition((context) =&gt; … )
+    .condition((context) =&gt; context.game.isDuringConflict())
+    .ifCondition((context) =&gt; !!context.player.opponent &amp;&amp; context.player.hand.length &lt; context.player.opponent.hand.length)
     .playerLastingEffect((context) =&gt; ({
         target: context.player.opponent,
         effect: additionalPlayCost((sourceContext) =&gt;
@@ -1105,6 +1108,7 @@ this.reaction('Place a fate on a character')
         hideIfNoLegalTargets: true,
         cardCondition: (_card, context) =&gt; Boolean(context.costs.honorTakenFromOpponent)
     }, placeFate((context) =&gt; ({ origin: context.player.opponent })))
+    .firstPlayerChoosesFirst()
     .chatText((context) =&gt; msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) =&gt; msg`place a fate from their pool on ${card}`)}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/RoadsideInn.ts">Roadside Inn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ExpertInterpreter.ts">Expert Interpreter</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/AgashaProdigy.ts">Agasha Prodigy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a></p>
   </div>
@@ -1155,7 +1159,7 @@ this.action('Switch this attachment with another')
     </table>
     <ul class="edge">
       <li>Cost reductions that apply to playing the source from hand are taken off the fate actually spent, so X can go above the player's fate by that much. A player who can't spend fate can still pick X up to the reduction.</li>
-      <li>Always payable when such a reduction applies. Otherwise the player needs at least <code>minAmount</code> fate (plus any cost increase) and must be able to lose fate. With <code>context.ignoreFateCost</code> it is always payable and X costs nothing.</li>
+      <li>Always payable when such a reduction applies. Otherwise the player needs at least <code>minAmount</code> fate (plus any cost increase) and must be able to lose fate. With <code>context.ignoreFateCost</code> X is 0, so it is payable only when <code>minAmount</code> is 0 or less (EmeraldDB ruling, Kunshu).</li>
       <li>Records <code>fatePaid</code>: X (0 on Cancel). No cost text.</li>
     </ul>
     <pre><code>// Favorable Alliance: Action: Set aside cards from the top of up to two conflict decks, …, until X cards are set aside. …
