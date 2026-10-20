@@ -2188,14 +2188,18 @@ this.action('Flip the Imperial Favor')
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// Deeds, not Words: Conflict Action: Choose a participating character you control - that character gets +2[conflict-military] until the end of the conflict. You may discard the Imperial Favor to honor that character. If you win the conflict, claim the Imperial Favor.
-    .afterwardsIf((context) =&gt; context.player.imperialFavor !== '')
-    .select({
-        'Discard the Imperial Favor': joint([
-            loseImperialFavor((context) =&gt; ({ target: context.player })),
-            honor((context) =&gt; ({ target: context.target }))
-        ]),
-        Done: () =&gt; true
-    });</code></pre>
+    .gameAction(conditional((context) =&gt; ({
+        condition: context.player.imperialFavor !== '',
+        trueGameAction: chooseAction({
+            choices: {
+                'Discard the Imperial Favor': joint([
+                    loseImperialFavor({ target: context.player }),
+                    honor({ target: context.target })
+                ]),
+                Done: noAction()
+            }
+        })
+    })))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Lion/DeedsNotWords.ts">Deeds, not Words</a></p>
   </div>
 <div class="ref" id="ga-performGloryCount" data-name="performGloryCount">
@@ -2855,6 +2859,7 @@ this.action('Remove a ring from the unclaimed ring pool')
     <ul class="edge">
       <li>Legality only looks at the branch that applies now: without the affinity and without <code>noAffinityGameAction</code>, it is illegal.</li>
       <li>Saying No to the prompt resolves nothing (not <code>noAffinityGameAction</code>).</li>
+      <li>With the affinity but no legal target for <code>gameAction</code>, nobody is asked and nothing resolves.</li>
       <li>Chat: when the affinity is used, <code>{player} channels their {trait} affinity to {text}</code>, where {text} is <code>chatText</code> or the nested action's message. As an ability's effect message it is the message of the branch that applies.</li>
       <li>Builder: <code>.onAffinity(trait, { activePromptTitle, chatText })</code> is a step modifier, not this action's shortcut: it wraps all the step's game actions in one <code>onAffinity</code> action.</li>
     </ul>

@@ -48,8 +48,7 @@ describe('SoD - Crab', function () {
                 expect(this.player1).toHavePrompt('Action Window');
                 expect(this.yokuni.isDishonored).toBe(true);
                 expect(this.player1.hand.length).toBe(hand);
-                expect(this.getChatLogs(5)).toContain('player1 plays A Bad Death, dishonoring and sacrificing Agasha Swordsmith to dishonor Togashi Yokuni');
-                expect(this.getChatLogs(5)).toContain('player1 draws a card');
+                expect(this.getChatLogs(5)).toContain('player1 plays A Bad Death, dishonoring and sacrificing Agasha Swordsmith to dishonor Togashi Yokuni and draw 1 card');
             });
 
             it('cannot pay its cost with a character that is already dishonored', function () {
@@ -89,7 +88,7 @@ describe('SoD - Crab', function () {
                 this.player1.clickPrompt('Done');
                 expect(this.player1).toHavePrompt('Action Window');
                 expect(this.yokuni.isDishonored).toBe(true);
-                expect(this.getChatLogs(5)).toContain('player1 plays A Bad Death, dishonoring and sacrificing Silent Skirmisher to dishonor Togashi Yokuni and Doji Challenger');
+                expect(this.getChatLogs(5)).toContain('player1 plays A Bad Death, dishonoring and sacrificing Silent Skirmisher to dishonor Togashi Yokuni and Doji Challenger and draw 1 card');
             });
 
         });

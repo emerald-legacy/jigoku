@@ -2425,13 +2425,15 @@ this.persistentEffect({
       <li>Read from the player who lost the conflict; the chat names the effect's source.</li>
     </ul>
     <pre><code>// Castle of Air: Conflict Action: Bow a Shugenja character - the attacked province gets +4 strength this conflict. With Air affinity, you do not lose honor from this conflict being unopposed.
-.afterwards()
-.onAffinity(Trait.Air, { chatText: () =&gt; msg`prevent unopposed honor loss` })
-.playerLastingEffect({
-    target: Players.Self,
-    duration: Duration.UntilEndOfConflict,
-    effect: noUnopposedHonorLoss()
-})</code></pre>
+.gameAction(onAffinity({
+    trait: Trait.Air,
+    chatText: () =&gt; msg`prevent unopposed honor loss`,
+    gameAction: playerLastingEffect({
+        target: Players.Self,
+        duration: Duration.UntilEndOfConflict,
+        effect: noUnopposedHonorLoss()
+    })
+}))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Crane/CastleOfAir.ts">Castle of Air</a></p>
   </div>
 <div class="ref" id="ef-participatesFromHome" data-name="participatesFromHome">

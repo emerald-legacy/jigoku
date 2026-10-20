@@ -41,6 +41,9 @@ export class AffinityAction<Context extends AbilityContext = AbilityContext> ext
             return properties.noAffinityGameAction?.addEventsToArray(events, context, overrides);
         }
 
+        if(!properties.gameAction.hasLegalTarget(context, overrides)) {
+            return;
+        }
         if(!properties.activePromptTitle) {
             return this.#resolveAffinity(properties, events, context, overrides);
         }

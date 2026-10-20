@@ -147,8 +147,9 @@ describe('Captivating Story', function() {
             this.player2.pass();
             this.player1.clickCard(this.story);
             this.player1.clickCard(this.yoshi);
-            expect(this.yoshi.politicalSkill).toBe(pol + 3);
+            // the "may" is decided before any effect applies
             expect(this.player1).toHavePrompt('Remove 1 fate from Kakita Yoshi to honor them?');
+            expect(this.yoshi.politicalSkill).toBe(pol);
         });
 
         it('should discard the fate to honor the character', function() {
@@ -167,8 +168,9 @@ describe('Captivating Story', function() {
             this.player2.pass();
             this.player1.clickCard(this.story);
             this.player1.clickCard(this.yoshi);
-            expect(this.yoshi.politicalSkill).toBe(pol + 3);
+            // the "may" is decided before any effect applies
             expect(this.player1).toHavePrompt('Remove 1 fate from Kakita Yoshi to honor them?');
+            expect(this.yoshi.politicalSkill).toBe(pol);
             this.player1.clickPrompt('Yes');
             expect(this.yoshi.fate).toBe(0);
             expect(this.yoshi.isHonored).toBe(true);
@@ -193,9 +195,11 @@ describe('Captivating Story', function() {
             this.player2.pass();
             this.player1.clickCard(this.story);
             this.player1.clickCard(this.yoshi);
-            expect(this.yoshi.politicalSkill).toBe(pol + 3);
+            // the "may" is decided before any effect applies
             expect(this.player1).toHavePrompt('Remove 1 fate from Kakita Yoshi to honor them?');
+            expect(this.yoshi.politicalSkill).toBe(pol);
             this.player1.clickPrompt('No');
+            expect(this.yoshi.politicalSkill).toBe(pol + 3);
             expect(this.yoshi.fate).toBe(1);
             expect(this.yoshi.isHonored).toBe(false);
             expect(this.getChatLogs(5)).toContain('player1 plays Captivating Story to give Kakita Yoshi +1political for each faceup province they control (+3political)');

@@ -1,6 +1,6 @@
 import { CardType, Duration, RestrictionType, Trait } from '../../../Constants.js';
 import { loseFaction, playerCannot } from '../../../effects.js';
-import { cardLastingEffect, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, conditional, draw, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -26,9 +26,10 @@ export default class DisputedLineage extends DrawCard {
                     })
                 }))
             ]))
-            .chatText((context) => msg`remove ${context.chatTarget()}'s printed faction and prevent ${context.target.controller} from honoring characters while ${context.chatTarget()} is participating in a conflict`)
-            .afterwardsIf((context) => context.player.imperialFavor !== '')
-            .draw(1)
-            .message((context) => msg`${context.player} draws a card`);
+            .gameAction(conditional((context) => ({
+                condition: context.player.imperialFavor !== '',
+                trueGameAction: draw({ target: context.player })
+            })))
+            .chatText((context) => msg`remove ${context.chatTarget()}'s printed faction and prevent ${context.target.controller} from honoring characters while ${context.chatTarget()} is participating in a conflict${context.player.imperialFavor !== '' ? ' and draw a card' : ''}`);
     }
 }

@@ -352,8 +352,7 @@ describe('SoD - Scorpion', function () {
                 this.player1.clickCard(this.diplomat);
 
                 expect(this.player1.hand.length).toBe(hand);
-                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Doji Diplomat\'s printed faction and prevent player2 from honoring characters while Doji Diplomat is participating in a conflict');
-                expect(this.getChatLogs(5)).toContain('player1 draws a card');
+                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Doji Diplomat\'s printed faction and prevent player2 from honoring characters while Doji Diplomat is participating in a conflict and draw a card');
             });
         });
 

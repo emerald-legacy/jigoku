@@ -462,7 +462,8 @@ describe('SoD - Lion', function () {
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
-                expect(this.natsuko.militarySkill).toBe(mil + 2);
+                // the "may" is decided before any effect applies
+                expect(this.natsuko.militarySkill).toBe(mil);
                 expect(this.player2).toHavePromptButton('Discard the Imperial Favor');
                 expect(this.player2).toHavePromptButton('Done');
 
@@ -485,8 +486,8 @@ describe('SoD - Lion', function () {
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
-                expect(this.natsuko.militarySkill).toBe(mil + 2);
                 this.player2.clickPrompt('Done');
+                expect(this.natsuko.militarySkill).toBe(mil + 2);
                 expect(this.player2.player.imperialFavor).toBe('military');
             });
 

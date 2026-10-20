@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect, honor, removeFate, resolveAbility } from '../../GameActions/GameActions.js';
-import { CardType, Players } from '../../Constants.js';
+import { CardType, EventName, Players } from '../../Constants.js';
 import { CardAbility } from '../../CardAbility.js';
 
 class CaptivatingStory extends DrawCard {
@@ -19,7 +19,6 @@ class CaptivatingStory extends DrawCard {
                 effect: modifyPoliticalSkill(context.player.getNumberOfFaceupProvinces())
             })))
             .chatText((context) => msg`give ${context.chatTarget()} +1${'political'} for each faceup province they control (+${context.player.getNumberOfFaceupProvinces()}${'political'})`)
-            .afterwardsIf((context) => removeFate().canAffect(context.target, context))
             .optional((context) => ({
                 activePromptTitle: 'Remove 1 fate from ' + context.target.name + ' to honor them?',
                 required: context.player.getNumberOfFaceupProvinces() === 0,
@@ -27,7 +26,7 @@ class CaptivatingStory extends DrawCard {
                 declineMessage: () => msg`${context.player} chooses not to remove a fate from ${context.target} to honor them`,
                 gameAction: removeFate({ target: context.target })
             }))
-            .then()
+            .thenIf((context) => context.events.some((event) => event.name === EventName.OnMoveFate && event.isFullyResolved()))
             .gameAction(resolveAbility((context) => ({
                 target: context.source,
                 subResolution: true,

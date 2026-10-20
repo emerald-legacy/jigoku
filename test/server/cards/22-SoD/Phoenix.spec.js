@@ -684,13 +684,15 @@ describe('SoD - Phoenix', function () {
 
                 expect(this.getChatLogs(5)).toContain('player1 plays Ebb and Flow to switch Bayushi Aramoro\'s military and political skill');
 
-                expect(this.aramoro.militarySkill).toBe(2);
-                expect(this.aramoro.politicalSkill).toBe(5);
+                // the "may" is decided before any effect applies
                 expect(this.player1).toHavePrompt('Pay 1 fate to swap abilities?');
+                expect(this.aramoro.militarySkill).toBe(5);
                 expect(this.player1).toHavePromptButton('Yes');
                 expect(this.player1).toHavePromptButton('No');
 
                 this.player1.clickPrompt('Yes');
+                expect(this.aramoro.militarySkill).toBe(2);
+                expect(this.aramoro.politicalSkill).toBe(5);
 
                 expect(this.player1.fate).toBe(fate - 1);
                 expect(this.getChatLogs(5)).toContain('player1 channels their water affinity to swap the abilities of Adept of the Waves and Bayushi Aramoro');

@@ -25,7 +25,6 @@ export default class EbbAndFlow extends DrawCard {
                 effect: switchBaseSkills()
             }))
             .chatText((context) => msg`switch ${context.targets.opponents}'s military and political skill`)
-            .afterwardsIf((context) => context.player.fate > 0 && loseFate({ spend: true }).canAffect(context.player, context))
             .onAffinity(Trait.Water, {
                 activePromptTitle: 'Pay 1 fate to swap abilities?',
                 chatText: (context) => msg`swap the abilities of ${context.targets.mine} and ${context.targets.opponents}`

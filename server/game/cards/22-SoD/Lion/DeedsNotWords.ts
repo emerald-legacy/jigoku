@@ -3,12 +3,15 @@ import { CardType, Players } from '../../../Constants.js';
 import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
 import {
     cardLastingEffect,
+    chooseAction,
     claimImperialFavor,
+    conditional,
     honor,
     joint,
     loseImperialFavor,
-    playerLastingEffect,
-    sequential
+    multiple,
+    noAction,
+    playerLastingEffect
 } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,7 +24,7 @@ export default class DeedsNotWords extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            }, sequential([
+            }, multiple([
                 cardLastingEffect({
                     effect: modifyMilitarySkill(2)
                 }),
@@ -37,14 +40,18 @@ export default class DeedsNotWords extends DrawCard {
                     })
                 }))
             ]))
-            .chatText((context) => msg`give ${context.chatTarget()} +2${'military'}`)
-            .afterwardsIf((context) => context.player.imperialFavor !== '')
-            .select({
-                'Discard the Imperial Favor': joint([
-                    loseImperialFavor((context) => ({ target: context.player })),
-                    honor((context) => ({ target: context.target }))
-                ]),
-                Done: () => true
-            });
+            .gameAction(conditional((context) => ({
+                condition: context.player.imperialFavor !== '',
+                trueGameAction: chooseAction({
+                    choices: {
+                        'Discard the Imperial Favor': joint([
+                            loseImperialFavor({ target: context.player }),
+                            honor({ target: context.target })
+                        ]),
+                        Done: noAction()
+                    }
+                })
+            })))
+            .chatText((context) => msg`give ${context.chatTarget()} +2${'military'}`);
     }
 }

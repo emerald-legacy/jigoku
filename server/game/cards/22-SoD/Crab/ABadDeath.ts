@@ -2,7 +2,6 @@ import { CardType, Players, TargetMode, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { msg } from '../../../GameChat.js';
 
 export default class ABadDeath extends DrawCard {
     static id = 'a-bad-death';
@@ -23,9 +22,7 @@ export default class ABadDeath extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, dishonor())
-            .cannotTargetFirst()
-            .afterwards()
             .draw(1)
-            .message((context) => msg`${context.player} draws a card`);
+            .cannotTargetFirst();
     }
 }
