@@ -8,7 +8,7 @@ export default class IvoryKingdomsUnicorn extends DrawCard {
         this.reaction('Immediately declare a military conflict')
             .when({
                 onConflictFinished: (event, context) =>
-                    event.conflict.brokenProvinces.length > 0 && event.conflict.attackersAtResolution.includes(context.source)
+                    event.conflict.brokenProvinces.length > 0 && event.conflict.attackersAtEnd.includes(context.source)
             })
             .initiateConflict({
                 canPass: false,

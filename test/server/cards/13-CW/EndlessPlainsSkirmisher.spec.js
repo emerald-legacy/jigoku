@@ -331,3 +331,40 @@ describe('Endless Plains Skirmisher', function() {
         });
     });
 });
+
+describe('Endless Plains Skirmisher with pride on the other side', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'endless-plains-skirmisher', attachments: ['magnificent-kimono'] }, 'ikoma-prodigy']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+            this.skirmisher = this.player1.findCardByName('endless-plains-skirmisher');
+            this.ikomaProdigy = this.player1.findCardByName('ikoma-prodigy');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.ikomaProdigy],
+                defenders: [],
+                type: 'military',
+                ring: 'air'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.skirmisher);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('is honored when its side wins, though its controller lost', function() {
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher);
+            this.noMoreActions();
+            expect(this.game.rings.air.claimedBy).toBe(this.player2.player.name);
+            expect(this.skirmisher.isHonored).toBe(true);
+            expect(this.getChatLogs(5)).toContain('Endless Plains Skirmisher is honored due to their Pride');
+        });
+    });
+});
+

@@ -75,7 +75,8 @@ interface CardAbilities {
     actions: CardAction[];
     reactions: TriggeredAbility[];
     persistentEffects: StoredPersistentEffect[];
-    playActions: BaseAction[];
+    /** Ways to play the card: its play actions, or an ability of another card that plays it (Back-Alley Hideaway). */
+    playActions: Array<BaseAction | CardAction>;
 }
 
 const TRIGGERED_ABILITY_TYPES = new Set<AbilityType>([

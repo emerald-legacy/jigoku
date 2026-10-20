@@ -3766,25 +3766,7 @@ private hasTriggered(context: AbilityContext): boolean {
       <li>A persistent effect can stop and start many times (blanking, leaving play, conditions); <code>unapply</code> must undo exactly what <code>apply</code> did.</li>
       <li>If the stored state has a <code>context</code> property, it is updated when the effect's context changes (for example on a change of control).</li>
     </ul>
-    <pre><code>// Back-Alley Hideaway: Interrupt: When a [clan-scorpion] character you control leaves play – attach that character to
-// this holding facedown instead of placing it in its owner's discard pile. …
-const backAlleyPersistentEffect = {
-    apply: (card: EffectTarget) =&gt; {
-        if(!(card instanceof BackAlleyHideaway)) {
-            return;
-        }
-        card.showPopup = true;
-        …
-    },
-    unapply: (card: EffectTarget) =&gt; {
-        …
-    }
-};
-
-this.persistentEffect({
-    effect: customDetachedCard(backAlleyPersistentEffect)
-});</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BackAlleyHideaway.ts">Back-Alley Hideaway</a> (<code>customDetachedCard</code>); <code>customDetachedPlayer</code> is not used by any card yet.</p>
+    <p class="seen">Not used by any card.</p>
   </div>
 <div class="ref" id="ef-customFatePhaseFateRemoval" data-name="customFatePhaseFateRemoval">
     <h3><code>customFatePhaseFateRemoval(func)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-customFatePhaseFateRemoval">#</a></h3>

@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import type { AbilityContext } from '../AbilityContext.js';
+import { AbilityContext } from '../AbilityContext.js';
 import { delayedEffect } from '../effects.js';
 import { handler } from '../GameActions/GameActions.js';
 import { EventName } from '../Constants.js';
@@ -23,7 +23,8 @@ interface LimitedPlaysOptions<Card extends DrawCard> {
 }
 
 /**
- * "You may play … as if it were in your hand (max N per round)": counts the plays this card allowed.
+ * "You may play … as if it were in your hand. You cannot play more than N cards per round this way": counts the plays this card allowed.
+ * A play counts once initiated, even if its costs aren't paid (EmeraldDB ruling on Bayushi Kachiko).
  * The count starts again at the end of the round and when the card enters play.
  */
 export class LimitedPlaysFromOutOfPlay<Card extends DrawCard> {
@@ -36,7 +37,8 @@ export class LimitedPlaysFromOutOfPlay<Card extends DrawCard> {
     ) {
         new EventRegistrar(card.game).register({
             [EventName.OnRoundEnded]: () => this.onRoundEnded(),
-            [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event)
+            [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event),
+            [EventName.OnCardPlayCostsNotPaid]: (event) => this.onCostsNotPaid(event.playEvent)
         });
         card.persistentEffect({
             effect: delayedEffect<Card>({
@@ -46,14 +48,7 @@ export class LimitedPlaysFromOutOfPlay<Card extends DrawCard> {
                             return false;
                         }
                         this.mostRecentEvent = event;
-                        return (
-                            !event.onPlayCardSource &&
-                            !event.playedFromOutOfPlaySource &&
-                            !event.limitedPlaySource &&
-                            event.player === context.player &&
-                            options.active(context) &&
-                            options.allows(event, context)
-                        );
+                        return this.allowsPlay(event, context);
                     }
                 },
                 gameAction: handler({
@@ -61,6 +56,18 @@ export class LimitedPlaysFromOutOfPlay<Card extends DrawCard> {
                 })
             })
         });
+    }
+
+    /** A play this card allowed, not yet counted by another card. */
+    private allowsPlay(event: CardPlayed, context: AbilityContext<Card>): boolean {
+        return (
+            !event.onPlayCardSource &&
+            !event.playedFromOutOfPlaySource &&
+            !event.limitedPlaySource &&
+            event.player === context.player &&
+            this.options.active(context) &&
+            this.options.allows(event, context)
+        );
     }
 
     /** Whether the card still allows a play this round. */
@@ -78,6 +85,14 @@ export class LimitedPlaysFromOutOfPlay<Card extends DrawCard> {
         const remaining = this.options.max - this.played;
         context.game.addMessage(msg`${context.player} ${this.options.description} due to the ability of ${context.source} (${remaining} use${remaining === 1 ? '' : 's'} remaining)`);
         this.options.afterPlay?.(event, context);
+    }
+
+    private onCostsNotPaid(event: CardPlayed): void {
+        const context = new AbilityContext<Card>({ game: this.card.game, source: this.card, player: this.card.controller });
+        if(this.available && this.allowsPlay(event, context)) {
+            event.limitedPlaySource = this.card;
+            this.played++;
+        }
     }
 
     public onRoundEnded() {

@@ -207,3 +207,44 @@ describe('Shadow Step - Expert Interpreter interaction', function() {
         });
     });
 });
+
+describe('Shadow Step on a character you took control of', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 5,
+                    inPlay: ['kudaka'],
+                    hand: ['shadow-step', 'blackmail']
+                },
+                player2: {
+                    honor: 11,
+                    inPlay: ['togashi-initiate']
+                }
+            });
+            this.kudaka = this.player1.findCardByName('kudaka');
+            this.initiate = this.player2.findCardByName('togashi-initiate');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kudaka],
+                defenders: [this.initiate]
+            });
+            this.player2.pass();
+            this.player1.clickCard('blackmail');
+            this.player1.clickCard(this.initiate);
+            this.player2.pass();
+        });
+
+        it('puts it into play under its owner\'s control (EmeraldDB ruling)', function() {
+            expect(this.initiate.controller).toBe(this.player1.player);
+            this.player1.clickCard('shadow-step');
+            this.player1.clickCard(this.initiate);
+            expect(this.initiate.location).toBe('play area');
+            expect(this.initiate.controller).toBe(this.player2.player);
+            expect(this.player2.player.cardsInPlay).toContain(this.initiate);
+            expect(this.initiate.isDishonored).toBe(true);
+        });
+    });
+});
+

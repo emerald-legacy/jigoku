@@ -1433,6 +1433,19 @@ this.reaction('Opponent discards or dishonors')
     })</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShosuroMiyako.ts">Shosuro Miyako</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WatchCommander.ts">Watch Commander</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/MeekInformant.ts">Meek Informant</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/HirumaSkirmisher.ts">Hiruma Skirmisher</a></p>
 </div>
+<div class="ref" id="ev-onCardPlayCostsNotPaid" data-name="onCardPlayCostsNotPaid OnCardPlayCostsNotPaid">
+  <h3><code>onCardPlayCostsNotPaid</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onCardPlayCostsNotPaid">#</a></h3>
+  <p>Emitted by <code>AbilityResolver</code> when a card play was initiated but its costs weren't paid (Reprieve saving the character a cost sacrifices). The card isn't played: its <code>onCardPlayed</code> is never emitted. No window: listen with <code>EventRegistrar.register</code>.</p>
+  <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>playEvent</code></td><td><code>GameEvent&lt;EventName.OnCardPlayed&gt;</code></td><td>The play that failed.</td></tr>
+        </tbody>
+      </table>
+  <ul class="edge">
+    <li>A play counts toward "You cannot play more than 3 cards per round this way" once initiated (EmeraldDB ruling on Bayushi Kachiko), so <code>LimitedPlaysFromOutOfPlay</code> counts it.</li>
+  </ul>
+</div>
 <div class="ref" id="ev-onCharacterEntersPlay" data-name="onCharacterEntersPlay OnCharacterEntersPlay">
   <h3><code>onCharacterEntersPlay</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onCharacterEntersPlay">#</a></h3>
   <p>The event of <code>putIntoPlay</code>, <code>putIntoConflict</code> and <code>opponentPutIntoPlay</code>, which playing a character also uses. Its handler sets fate and status, moves the card into play, and adds it to the conflict when <code>intoConflict</code>.</p>
@@ -2513,7 +2526,27 @@ this.reaction('Gain honor on duel win')
         afterDuel: (event, context) =&gt; event.winner?.some((card) =&gt; card === context.source.parentCharacter) ?? false
     })
     .gainHonor();</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/KakitaBlade.ts">Kakita Blade</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/InsultToInjury.ts">Insult to Injury</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/CourtlyChallenger.ts">Courtly Challenger</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/ProvingGround.ts">Proving Ground</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/KakitaBlade.ts">Kakita Blade</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/InsultToInjury.ts">Insult to Injury</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/CourtlyChallenger.ts">Courtly Challenger</a></p>
+</div>
+<div class="ref" id="ev-onCharacterWinsDuel" data-name="onCharacterWinsDuel OnCharacterWinsDuel">
+  <h3><code>onCharacterWinsDuel</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onCharacterWinsDuel">#</a></h3>
+  <p>Raised by <code>DuelFlow</code> in the window of <code>afterDuel</code>, once per winning character: each winner is a triggering condition of its own, so "after a character you control wins a duel" triggers once per winner (EmeraldDB ruling on Proving Ground).</p>
+  <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>A winning character.</td></tr>
+          <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+        </tbody>
+      </table>
+  <pre><code>// Proving Ground: Reaction: After a character you control wins a duel - draw 1 card. (Limit twice per round.)
+this.reaction('Draw a card after winning a duel')
+    .when({
+        onCharacterWinsDuel: (event, context) =&gt; event.card.controller === context.player
+    })
+    .draw()
+    .limit(perRound(2));</code></pre>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/ProvingGround.ts">Proving Ground</a></p>
 </div>
 <div class="ref" id="ev-onAddDuelParticipant" data-name="onAddDuelParticipant OnAddDuelParticipant">
   <h3><code>onAddDuelParticipant</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onAddDuelParticipant">#</a></h3>

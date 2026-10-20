@@ -57,6 +57,10 @@ interface EventPayloadMap {
         /** Stamped by the card whose limited-use permission let it be played (Master Tactician, Bayushi Kachiko). */
         limitedPlaySource?: BaseCard;
     };
+    /** A card play was initiated but its costs weren't paid: it isn't played (`playEvent` is never emitted). */
+    [EventName.OnCardPlayCostsNotPaid]: BaseEventPayload & {
+        playEvent: GameEvent<EventName.OnCardPlayed>;
+    };
     [EventName.OnAbilityResolverInitiated]: BaseEventPayload & {
         card?: BaseCard;
         player?: Player;
@@ -155,6 +159,8 @@ interface EventPayloadMap {
         winningPlayer?: Player | Player[];
         losingPlayer?: Player | Player[];
     };
+    /** With `afterDuel`, once per winning character: each is a triggering condition of its own (Proving Ground). */
+    [EventName.OnCharacterWinsDuel]: BaseEventPayload & { card: DrawCard; duel: Duel };
     [EventName.OnDuelFinished]: BaseEventPayload & { duel: Duel };
     [EventName.OnAddDuelParticipant]: BaseEventPayload & { card: DrawCard; duel: Duel };
     [EventName.OnDuelChallenge]: BaseEventPayload & { duel: Duel };

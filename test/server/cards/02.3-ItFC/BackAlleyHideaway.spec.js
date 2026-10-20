@@ -36,7 +36,7 @@ describe('Back-Alley Hideaway', function() {
                     } else if(buttons.includes('End Round')) {
                         p.clickPrompt('End Round');
                         acted = true;
-                    } else if(menuTitle && menuTitle.indexOf('Imperial Favor') >= 0) {
+                    } else if(menuTitle && menuTitle.indexOf('Imperial Favor') >= 0 && !menuTitle.startsWith('Waiting')) {
                         p.clickPrompt('military');
                         acted = true;
                     } else if(buttons.length === 1 && buttons[0]) {
@@ -90,7 +90,7 @@ describe('Back-Alley Hideaway', function() {
                 expect(this.manipulator.parent).toBe(this.backAlley);
                 expect(this.backAlley.attachments).toContain(this.manipulator);
                 expect(this.manipulator.abilities.playActions.some(
-                    (action) => action.title === 'Play this character from Back-Alley Hideaway'
+                    (action) => action.title === 'Play a character from hiding'
                 )).toBe(true);
             });
 
@@ -158,14 +158,65 @@ describe('Back-Alley Hideaway', function() {
                 expect(this.game.currentPhase).toBe('dynasty');
 
                 this.player2.clickCard(this.manipulator);
+                this.player2.clickCard(this.manipulator);
                 this.player2.clickPrompt('0');
 
                 expect(this.manipulator.location).toBe('play area');
                 expect(this.backAlley.location).toBe('dynasty discard pile');
                 expect(this.manipulator.parent).toBeFalsy();
                 expect(this.manipulator.abilities.playActions.some(
-                    (action) => action.title === 'Play this character from Back-Alley Hideaway'
+                    (action) => action.title === 'Play a character from hiding'
                 )).toBe(false);
+            });
+        });
+
+        describe('a Disguised character in the Hideaway', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kakita-yoshi']
+                    },
+                    player2: {
+                        fate: 10,
+                        inPlay: ['shosuro-ibuki', 'bayushi-manipulator'],
+                        hand: ['noble-sacrifice'],
+                        dynastyDiscard: ['back-alley-hideaway'],
+                        provinces: ['toshi-ranbo']
+                    }
+                });
+                this.yoshi = this.player1.findCardByName('kakita-yoshi');
+                this.ibuki = this.player2.findCardByName('shosuro-ibuki');
+                this.manipulator = this.player2.findCardByName('bayushi-manipulator');
+                this.backAlley = this.player2.placeCardInProvince('back-alley-hideaway', 'province 1');
+                this.ibuki.honor();
+                this.yoshi.dishonor();
+                this.player1.pass();
+                this.player2.clickCard('noble-sacrifice');
+                this.player2.clickCard(this.yoshi);
+                this.player2.clickCard(this.ibuki);
+                this.player2.clickCard(this.backAlley);
+                expect(this.ibuki.parent).toBe(this.backAlley);
+            });
+
+            it('can be played using Disguised in the conflict phase (EmeraldDB ruling)', function() {
+                this.player1.pass();
+                this.player2.clickCard(this.ibuki);
+                this.player2.clickCard(this.ibuki);
+                this.player2.clickCard(this.manipulator);
+                expect(this.ibuki.location).toBe('play area');
+                expect(this.manipulator.location).toBe('dynasty discard pile');
+                expect(this.backAlley.location).toBe('dynasty discard pile');
+                expect(this.ibuki.parent).toBeFalsy();
+            });
+
+            it('gets Toshi Ranbo\'s extra fate when played in the dynasty phase (EmeraldDB ruling)', function() {
+                advanceToDynasty(this.flow);
+                this.player2.clickCard(this.ibuki);
+                this.player2.clickCard(this.ibuki);
+                this.player2.clickPrompt('0');
+                expect(this.ibuki.location).toBe('play area');
+                expect(this.ibuki.fate).toBe(1);
             });
         });
 

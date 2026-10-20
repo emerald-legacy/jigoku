@@ -710,3 +710,37 @@ describe('Dragon Tattoo - sub-resolutions', function() {
         });
     });
 });
+
+describe('Dragon Tattoo with an opponent\'s event', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    fate: 10,
+                    inPlay: [{ card: 'doji-challenger', attachments: ['dragon-tattoo'] }],
+                    hand: ['trading-on-the-sand-road']
+                },
+                player2: {
+                    conflictDiscard: ['way-of-the-crane']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.tattoo = this.player1.findCardByName('dragon-tattoo');
+            this.crane = this.player2.findCardByName('way-of-the-crane');
+            this.player2.moveCard(this.crane, 'conflict deck');
+            this.noMoreActions();
+            this.player1.clickCard('trading-on-the-sand-road');
+        });
+
+        it('reacts to an event you played though your opponent owns it', function() {
+            expect(this.crane.location).toBe('removed from game');
+            this.player1.clickCard(this.crane);
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.isHonored).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.tattoo);
+        });
+    });
+});
+

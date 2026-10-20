@@ -16,6 +16,7 @@ export function playableFromUnderneath(card: BaseCard, match: (underneath: BaseC
     };
 }
 
+/** Cards under `card`, whoever placed them or controls it now. */
 export function countCardsUnderneath(card: BaseCard): number {
-    return card.game.allCards.filter((underneath) => underneath.controller === card.controller && underneath.location === card.uuid).length;
+    return card.game.allCards.filter((underneath) => underneath.location === card.uuid).length;
 }

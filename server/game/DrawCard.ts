@@ -649,11 +649,15 @@ export class DrawCard extends BaseCard {
             this.parent = null;
         }
 
-        // Remove any cards underneath from the game
-        const cardsUnderneath = [...this.controller.getSourceList(this.uuid)];
+        // Remove any cards underneath from the game: in the pile of whoever placed them, also after a change of control (Stowaway; EmeraldDB ruling)
+        const players = this.owner.opponent ? [this.owner, this.owner.opponent] : [this.owner];
+        const piles = players.map((player) => ({ player, cards: [...player.getSourceList(this.uuid)] }));
+        const cardsUnderneath = piles.flatMap((pile) => pile.cards);
         if(cardsUnderneath.length > 0) {
-            for(const card of cardsUnderneath) {
-                this.controller.moveCard(card, Location.RemovedFromGame);
+            for(const { player, cards } of piles) {
+                for(const card of cards) {
+                    player.moveCard(card, Location.RemovedFromGame);
+                }
             }
             this.game.addMessage(msg`${cardsUnderneath} ${cardsUnderneath.length === 1 ? 'is' : 'are'} removed from the game due to ${this} leaving play`);
         }

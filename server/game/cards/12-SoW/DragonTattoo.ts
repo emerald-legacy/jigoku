@@ -20,7 +20,8 @@ export default class DragonTattoo extends DrawCard {
             .when({
                 onCardPlayed: (event, context) =>
                     event.card.type === CardType.Event &&
-                    event.card.controller === context.player &&
+                    // "you play": who played it, even an opponent's event (Trading on the Sand Road)
+                    event.player === context.player &&
                     (event.card.location === Location.ConflictDiscardPile ||
                         event.card.location === Location.DynastyDiscardPile) &&
                     // chosenCardTargets covers the whole triggering, sub-resolutions included

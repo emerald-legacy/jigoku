@@ -823,6 +823,8 @@ export class ConflictFlow extends BaseStepWithPipeline {
         if(this.conflictCancelled) {
             return;
         }
+        this.conflict.attackersAtEnd = this.conflict.attackers.slice();
+        this.conflict.defendersAtEnd = this.conflict.defenders.slice();
 
         // Create bow events for attackers
         const attackerBows = this.conflict.attackers.map((card: DrawCard) =>

@@ -130,3 +130,57 @@ describe('Stowaway', function() {
         });
     });
 });
+
+describe('Stowaway after a change of control', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 11,
+                    inPlay: ['kakita-yoshi'],
+                    hand: ['stowaway'],
+                    conflictDiscard: ['let-go', 'fine-katana']
+                },
+                player2: {
+                    honor: 8,
+                    inPlay: ['hida-yakamo'],
+                    hand: ['blackmail', 'assassination']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.stowaway = this.player1.findCardByName('stowaway');
+            this.letGo = this.player1.findCardByName('let-go');
+            this.katana = this.player1.findCardByName('fine-katana');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.stowaway);
+            this.player1.clickPrompt('0');
+            this.player1.clickPrompt('Conflict');
+            this.player1.clickCard(this.stowaway);
+            this.player1.clickCard(this.katana);
+            this.player1.clickCard(this.letGo);
+            this.player1.clickPrompt('Done');
+            this.mil = this.stowaway.militarySkill;
+            this.player2.clickCard('blackmail');
+            this.player2.clickCard(this.stowaway);
+        });
+
+        it('still counts and removes the cards under it (EmeraldDB ruling)', function() {
+            expect(this.stowaway.controller).toBe(this.player2.player);
+            expect(this.stowaway.militarySkill).toBe(this.mil);
+            this.player1.pass();
+            this.player2.clickCard('assassination');
+            this.player2.clickCard(this.stowaway);
+            expect(this.stowaway.location).toBe('conflict discard pile');
+            expect(this.katana.location).toBe('removed from game');
+            expect(this.letGo.location).toBe('removed from game');
+        });
+    });
+});
+

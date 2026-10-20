@@ -39,6 +39,9 @@ export class Conflict extends GameObject {
     /** The provinces broken while this conflict was the current one. */
     brokenProvinces: ProvinceCard[] = [];
     attackersAtResolution: DrawCard[] = [];
+    /** The attackers and defenders as the conflict finished resolving, before they returned home: one sent home earlier (False Loyalties) isn't among them. */
+    attackersAtEnd: DrawCard[] = [];
+    defendersAtEnd: DrawCard[] = [];
     defendersAtResolution: DrawCard[] = [];
     provinceStrengthsAtResolution: Array<{ province: ProvinceCard; strength: number }> = [];
     skillDifference?: number;

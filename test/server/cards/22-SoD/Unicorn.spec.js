@@ -301,6 +301,47 @@ describe('SoD - Unicorn', function () {
             });
         });
 
+        describe('Utaku Tomoe sent home by False Loyalties', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        honor: 10,
+                        inPlay: ['togashi-yokuni'],
+                        hand: ['false-loyalties']
+                    },
+                    player2: {
+                        honor: 12,
+                        inPlay: ['utaku-tomoe', 'moto-youth', 'moto-horde']
+                    }
+                });
+                this.tomoe = this.player2.findCardByName('utaku-tomoe');
+                this.youth = this.player2.findCardByName('moto-youth');
+                this.horde = this.player2.findCardByName('moto-horde');
+                this.yokuni = this.player1.findCardByName('togashi-yokuni');
+            });
+
+            it('can\'t react: it wasn\'t defending when the conflict finished', function () {
+                const honor = this.player2.honor;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.yokuni],
+                    defenders: [this.tomoe, this.horde]
+                });
+                this.player2.pass();
+                this.player1.pass();
+                this.player1.clickCard('false-loyalties');
+                this.player1.clickCard(this.tomoe);
+                this.player1.clickCard(this.youth);
+                expect(this.getChatLogs(1)).toContain('player1 plays False Loyalties to switch Utaku Tomoe and Moto Youth');
+                expect(this.tomoe.isParticipating()).toBe(false);
+                expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2.honor).toBe(honor);
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+        });
+
         describe('Utaku Tomoe and Palm Strike', function () {
             beforeEach(function () {
                 this.setupTest({

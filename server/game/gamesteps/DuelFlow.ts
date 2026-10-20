@@ -2,6 +2,7 @@ import { msg } from '../GameChat.js';
 import { EffectName, EventName } from '../Constants.js';
 import type { Duel } from '../Duel.js';
 import type Game from '../Game.js';
+import type { Event } from '../Events/Event.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
 import type { HonorBidPrompt } from './HonorBidPrompt.js';
@@ -86,13 +87,18 @@ export class DuelFlow extends BaseStepWithPipeline {
         if(!this.duel.winner) {
             this.game.addMessage(msg`The duel ends in a draw`);
         }
-        this.game.raiseEvent(EventName.AfterDuel, {
+        const events: Event[] = [this.game.getEvent(EventName.AfterDuel, {
             duel: this.duel,
             winner: this.duel.winner,
             loser: this.duel.loser,
             winningPlayer: this.duel.winningPlayer,
             losingPlayer: this.duel.losingPlayer
-        });
+        })];
+        // each winning character is a triggering condition of its own (EmeraldDB ruling on Proving Ground)
+        for(const card of this.duel.winner ?? []) {
+            events.push(this.game.getEvent(EventName.OnCharacterWinsDuel, { card, duel: this.duel }));
+        }
+        this.game.openEventWindow(events);
     }
 
     #applyDuelResults() {

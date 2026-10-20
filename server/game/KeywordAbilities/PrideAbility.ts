@@ -12,15 +12,16 @@ export class PrideAbility extends TriggeredAbility<DrawCard> {
         super(card, AbilityType.KeywordReaction, {
             when: {
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => {
+                    // "this character wins": its side wins, whoever controls it (Endless Plains Skirmisher)
                     const conflict = event.conflict;
-                    return context.source.isParticipating() && context.source.hasPride() &&
-                        ((conflict.winner === context.player && context.source.allowGameAction('honor', context)) ||
-                         (conflict.loser === context.player && context.source.allowGameAction('dishonor', context)));
+                    return context.source.hasPride() &&
+                        ((conflict.isOnWinningSide(context.source) && context.source.allowGameAction('honor', context)) ||
+                         (conflict.isOnLosingSide(context.source) && context.source.allowGameAction('dishonor', context)));
                 }
             },
             title: card.name + '\'s Pride',
             printedAbility: false,
-            message: (context: TriggeredAbilityContext) => context.event.conflict?.winner === context.player
+            message: (context: TriggeredAbilityContext) => context.event.conflict?.isOnWinningSide(card)
                 ? msg`${context.source} is honored due to their Pride`
                 : msg`${context.source} is dishonored due to their Pride`,
             limit: AbilityLimit.perConflict(1),
@@ -29,7 +30,7 @@ export class PrideAbility extends TriggeredAbility<DrawCard> {
                 if(!conflict) {
                     return;
                 }
-                if(conflict.winner === context.player) {
+                if(conflict.isOnWinningSide(card)) {
                     this.game.resolveActions([honor({ target: context.source })], context);
                 } else {
                     this.game.resolveActions([dishonor({ target: context.source })], context);

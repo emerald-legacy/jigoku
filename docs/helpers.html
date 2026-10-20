@@ -283,6 +283,7 @@ this.action('Bow a character who lost a duel')
     <ul class="edge">
       <li>A play counts only if it was made by the card's player, <code>active</code> and <code>allows</code> are true, and no other source already counted it (plays credited to another "play from out of play" source are skipped).</li>
       <li>The count goes back to 0 at the end of the round and when the card enters play.</li>
+      <li>A play whose costs aren't paid still counts: it was initiated (EmeraldDB ruling on Bayushi Kachiko; <a href="types.html#ev-onCardPlayCostsNotPaid"><code>onCardPlayCostsNotPaid</code></a>). It has no chat line and no <code>afterPlay</code>.</li>
       <li>Chat: "{player} {description} due to the ability of {card} (N uses remaining)".</li>
     </ul>
     <pre><code>// Master Tactician: During conflicts in which this character is participating, if there is a Battlefield in play, you may look at
@@ -822,7 +823,7 @@ return controlsParticipating(context.player, Trait.Scout, Trait.Shinobi) ? -2 : 
 
   <div class="ref" id="he-countCardsUnderneath" data-name="countCardsUnderneath">
     <h3><code>countCardsUnderneath(card)</code> <span class="kind">Count</span> <a class="anchor" href="#he-countCardsUnderneath">#</a></h3>
-    <p>"for each card under it": the number of cards underneath <code>card</code> (in the location <code>card.uuid</code>) controlled by <code>card</code>'s controller.</p>
+    <p>"for each card under it": the number of cards underneath <code>card</code> (in the location <code>card.uuid</code>), whoever placed them or controls <code>card</code> now (Stowaway after Blackmail).</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2254,16 +2255,17 @@ event.conflict.getConflictProvinces().some((p) =&gt; p === context.source)</code
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/DiversionaryManeuver.ts">Diversionary Maneuver</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/StudentOfTheTao.ts">Student of the Tao</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crab/DeployedGarrison.ts">Deployed Garrison</a> (23 card files)</p>
   </div>
 
-  <div class="ref" id="q-brokenProvinces" data-name="brokenProvinces attackersAtResolution defendersAtResolution">
-    <h3><code>conflict.brokenProvinces</code>, <code>conflict.attackersAtResolution</code>, <code>conflict.defendersAtResolution</code> <span class="kind">Field</span> <a class="anchor" href="#q-brokenProvinces">#</a></h3>
+  <div class="ref" id="q-brokenProvinces" data-name="brokenProvinces attackersAtResolution defendersAtResolution attackersAtEnd defendersAtEnd">
+    <h3><code>conflict.brokenProvinces</code>, <code>conflict.attackersAtResolution</code>, <code>conflict.defendersAtResolution</code>, <code>conflict.attackersAtEnd</code>, <code>conflict.defendersAtEnd</code> <span class="kind">Field</span> <a class="anchor" href="#q-brokenProvinces">#</a></h3>
     <p>What happened in a conflict, kept on the <code>Conflict</code> so a card needs no state of its own: the provinces broken while it was the current conflict, and the characters attacking and defending when the winner was determined.</p>
     <ul class="edge">
       <li><code>brokenProvinces</code> also records a province broken by an ability during the conflict. A province broken outside a conflict is in no conflict's list.</li>
-      <li><code>attackersAtResolution</code> and <code>defendersAtResolution</code> are copies taken when the winner is determined and stay empty until then; characters that leave the conflict afterwards remain in them. Read them in <code>onConflictFinished</code> for "a conflict in which this character was attacking/defending".</li>
+      <li><code>attackersAtResolution</code> and <code>defendersAtResolution</code> are copies taken when the winner is determined and stay empty until then; characters that leave the conflict afterwards remain in them ("this character won the conflict": Isawa Kaede).</li>
+      <li><code>attackersAtEnd</code> and <code>defendersAtEnd</code> are taken as the participants return home: a character sent home after the winner was determined (False Loyalties) isn't in them. Read them in <code>onConflictFinished</code> for "after the resolution of a conflict in which this character was attacking/defending" (EmeraldDB ruling on Ivory Kingdoms Unicorn).</li>
       <li>The current conflict is <code>context.game.currentConflict</code>; finished ones are the records of <a href="#q-getConflicts"><code>game.getConflicts(player)</code></a>, which share <code>brokenProvinces</code>.</li>
     </ul>
     <pre><code>// Utaku Tomoe: Reaction: After the resolution of a conflict in which this character was defending - if you won the conflict, gain 2 honor. Otherwise, ready this character.
-onConflictFinished: (event, context) =&gt; event.conflict.defendersAtResolution.includes(context.source)</code></pre>
+onConflictFinished: (event, context) =&gt; event.conflict.defendersAtEnd.includes(context.source)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IvoryKingdomsUnicorn.ts">Ivory Kingdoms Unicorn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/MotoChagatai.ts">Moto Chagatai</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/InfernoGuardInvoker.ts">Inferno Guard Invoker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/UtakuTomoe.ts">Utaku Tomoe</a></p>
   </div>
 
