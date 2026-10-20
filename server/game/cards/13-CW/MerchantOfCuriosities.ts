@@ -16,6 +16,7 @@ import { honorTransferMessage } from '../honorTransferMessage.js';
 
 function merchantOfCuriositiesCost(): Cost<{ merchantOfCuriositiesCostPaid: boolean; merchantOfCuriositiesCostDiscardedCard: DrawCard }> {
     return {
+        chosenByOpponent: true,
         canPay() {
             return true;
         },
@@ -88,6 +89,7 @@ class MerchantOfCuriosities extends DrawCard {
         this.action('Discard a card to draw a card')
             .cost(costs.discardCard())
             .cost(merchantOfCuriositiesCost())
+            .firstPlayerChoosesFirst()
             .draw((context) => ({
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player
             }))

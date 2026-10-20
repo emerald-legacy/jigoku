@@ -26,7 +26,9 @@ export class TurnFacedownAction<Context extends AbilityContext = AbilityContext>
             card.owner.moveCard(card, card.location);
         }
 
+        // turning facedown is leaving play: lasting effects on the card expire (EmeraldDB ruling)
         card.leavesPlay();
+        card.removeLastingEffects();
         if(card.isConflictProvince()) {
             context.game.addMessage(msg`${card} is immediately revealed again!`);
             card.inConflict = true;

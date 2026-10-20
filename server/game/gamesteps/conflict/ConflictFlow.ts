@@ -368,7 +368,8 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         this.covert = [];
-        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer) {
+        // defenders declared before attackers (Seven Stings Keep): too late for covert (EmeraldDB ruling)
+        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.defendersChosen) {
             return;
         }
 
@@ -428,7 +429,8 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
     promptForCovertEmerald(): void {
         this.covert = [];
-        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer) {
+        // defenders declared before attackers (Seven Stings Keep): too late for covert (EmeraldDB ruling)
+        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.defendersChosen) {
             return;
         }
 
@@ -479,43 +481,26 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        let events: Event[] = [];
-
+        // one instance per covert character: Finger of Jade cancels only one of them (EmeraldDB ruling)
+        let events: Event[] = this.covert.map(
+            (context) =>
+                new InitiateCardAbilityEvent(
+                    { card: context.source, context: context },
+                    () => {
+                        if(context.target) {
+                            context.target.covert = true;
+                        }
+                    }
+                )
+        );
         if(this.game.rules.covertUnified) {
-            let goodContext: AbilityContext | undefined = undefined;
-            this.covert.forEach((context) => {
-                if(events.length === 0 && context.source && context.target) {
-                    events = [
-                        new InitiateCardAbilityEvent(
-                            { card: context.source, context: context },
-                            () => {
-                                if(context.target) {
-                                    context.target.covert = true;
-                                }
-                            }
-                        )
-                    ];
-                    goodContext = context;
-                }
-            });
             events = events.concat(
                 this.game.getEvent(EventName.OnCovertResolved, {
                     card: this.covert.map((a: AbilityContext) => a.source),
-                    context: goodContext
+                    context: this.covert[0]
                 })
             );
         } else {
-            events = this.covert.map(
-                (context) =>
-                    new InitiateCardAbilityEvent(
-                        { card: context.source, context: context },
-                        () => {
-                            if(context.target) {
-                                context.target.covert = true;
-                            }
-                        }
-                    )
-            );
             events = events.concat(
                 this.covert.map((context: AbilityContext) =>
                     this.game.getEvent(EventName.OnCovertResolved, { card: context.source, context: context })

@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration, Phase } from '../../Constants.js';
 import { restartDynastyPhase } from '../../effects.js';
-import { discardCard, playerLastingEffect, refillFaceup, sequential } from '../../GameActions/GameActions.js';
+import { discardCard, handler, playerLastingEffect, refillFaceup, sequential } from '../../GameActions/GameActions.js';
 
 class ASeasonOfWar extends DrawCard {
     static id = 'a-season-of-war';
@@ -13,6 +13,8 @@ class ASeasonOfWar extends DrawCard {
                     target: context.player.getDynastyCardsInProvince(Location.Provinces).concat(context.player.opponent ?
                         context.player.opponent.getDynastyCardsInProvince(Location.Provinces) : [])
                 })),
+                // both players refill simultaneously: if both decks run out and both would lose, the first player wins (EmeraldDB ruling)
+                handler({ handler: (context) => context.game.suspendWinCheck() }),
                 refillFaceup((context) => ({
                     target: context.player,
                     location: [Location.StrongholdProvince, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]
@@ -21,6 +23,7 @@ class ASeasonOfWar extends DrawCard {
                     target: context.player.opponent,
                     location: [Location.StrongholdProvince, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]
                 })),
+                handler({ handler: (context) => context.game.resumeWinCheck() }),
                 playerLastingEffect((context) => ({
                     duration: Duration.Custom,
                     until: {

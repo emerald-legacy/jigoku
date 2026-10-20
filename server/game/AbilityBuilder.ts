@@ -146,6 +146,7 @@ interface AbilityDraft {
     location?: Location | Location[];
     cannotBeMirrored?: boolean;
     cannotTargetFirst?: boolean;
+    firstPlayerChoosesFirst?: boolean;
     then?: (context: AbilityContext) => ThenAbilityProperties | undefined;
     /** From `onResolve()`: runs when the ability starts resolving its effects. */
     onResolve?: (context: AbilityContext) => void;
@@ -180,7 +181,7 @@ interface AbilityDraft {
 }
 
 /** Settings of the ability itself: a then step can't have them. */
-const ABILITY_ONLY = ['condition', 'ifCondition', 'limit', 'max', 'location', 'cannotBeMirrored', 'cannotTargetFirst', 'initiateDuel', 'phase', 'evenDuringDynasty',
+const ABILITY_ONLY = ['condition', 'ifCondition', 'limit', 'max', 'location', 'cannotBeMirrored', 'cannotTargetFirst', 'firstPlayerChoosesFirst', 'initiateDuel', 'phase', 'evenDuringDynasty',
     'conflictProvinceCondition', 'canTriggerOutsideConflict', 'notPrinted', 'anyPlayer', 'collectiveTrigger', 'playCondition'] as const;
 
 /** What only an action's context has; a trigger's or a step's `ability` isn't a `CardAction`. */
@@ -1367,6 +1368,12 @@ export class AbilityBuilder<
         return this;
     }
 
+    /** Both players choose: the first player chooses first (developer rulings, e.g. Called to War, Heresy). */
+    firstPlayerChoosesFirst(): this {
+        this.#once('firstPlayerChoosesFirst', true, 'firstPlayerChoosesFirst()');
+        return this;
+    }
+
     /** Not printed on the card, so effects that copy or count printed abilities skip it. */
     notPrinted(): this {
         this.#once('notPrinted', true, 'notPrinted()');
@@ -1511,6 +1518,7 @@ function commonProperties(ability: AbilityDraft) {
         ...(draft.cannotBeMirrored ? { cannotBeMirrored: true } : {}),
         ...(draft.ifCondition ? { ifCondition: draft.ifCondition } : {}),
         ...(draft.cannotTargetFirst ? { cannotTargetFirst: true } : {}),
+        ...(draft.firstPlayerChoosesFirst ? { firstPlayerChoosesFirst: true } : {}),
         ...thenProperties(draft),
         ...(draft.initiateDuel ? { initiateDuel: draft.initiateDuel } : {}),
         ...(draft.notPrinted ? { printedAbility: false } : {})

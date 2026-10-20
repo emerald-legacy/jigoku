@@ -12,25 +12,32 @@ describe('SincerityAbility', function() {
     });
 
     describe('the onCardLeavesPlay trigger', function() {
-        let source, context;
+        let source, leftPlay, context, event;
 
         beforeEach(function() {
-            source = jasmine.createSpyObj('source', ['hasSincerity']);
-            source.hasSincerity.and.returnValue(true);
-            context = { source: source, player: { name: 'self' } };
+            const player = { name: 'self' };
+            source = {};
+            leftPlay = jasmine.createSpyObj('leftPlay', ['hasSincerity'], { controller: player });
+            leftPlay.hasSincerity.and.returnValue(true);
+            context = { source: source, player: player };
+            event = { card: source, cardStateWhenLeftPlay: leftPlay };
         });
 
-        it('triggers when the leaving card is the source and it has sincerity', function() {
-            expect(ability.when.onCardLeavesPlay({ card: source }, context)).toBe(true);
+        it('triggers when the leaving card is the source and it had sincerity as it left play', function() {
+            expect(ability.when.onCardLeavesPlay(event, context)).toBe(true);
         });
 
         it('does not trigger when a different card leaves play', function() {
-            expect(ability.when.onCardLeavesPlay({ card: { other: true } }, context)).toBeFalsy();
+            expect(ability.when.onCardLeavesPlay({ ...event, card: { other: true } }, context)).toBeFalsy();
         });
 
-        it('does not trigger when the source lacks sincerity', function() {
-            source.hasSincerity.and.returnValue(false);
-            expect(ability.when.onCardLeavesPlay({ card: source }, context)).toBeFalsy();
+        it('does not trigger when the source lacked sincerity as it left play', function() {
+            leftPlay.hasSincerity.and.returnValue(false);
+            expect(ability.when.onCardLeavesPlay(event, context)).toBeFalsy();
+        });
+
+        it('only triggers for the player who controlled the card as it left play', function() {
+            expect(ability.when.onCardLeavesPlay(event, { ...context, player: { name: 'other' } })).toBeFalsy();
         });
     });
 

@@ -291,6 +291,7 @@ export class ActionWindow extends UiPrompt {
 
     override complete() {
         this.teardownBonusActions();
+        this.game.effectEngine.onActionWindowClosed();
         super.complete();
     }
 

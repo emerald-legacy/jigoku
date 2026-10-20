@@ -26,6 +26,22 @@ describe('Heresy', function() {
             this.challenger.fate = 0;
         });
 
+        it('lets the first player choose first (EmeraldDB ruling)', function() {
+            this.game.setFirstPlayer(this.player2.player);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger, this.yakamo],
+                defenders: [this.yoshi, this.toshimoko],
+                type: 'political'
+            });
+            this.player2.clickCard(this.heresy);
+            expect(this.player2).toHavePrompt('Choose a character');
+            this.player2.clickCard(this.challenger);
+            expect(this.player1).toHavePrompt('Choose a character');
+            this.player1.clickCard(this.yoshi);
+            expect(this.player1).toHavePrompt('Honor Bid');
+        });
+
         it('should let each player choose their opponent\'s duelist', function() {
             this.noMoreActions();
             this.initiateConflict({

@@ -29,6 +29,21 @@ describe('Agasha Prodigy', function () {
             this.player2.reduceDeckToNumber('conflict deck', 0);
         });
 
+        it('lets the opponent choose first when they are the first player (EmeraldDB ruling)', function () {
+            this.player1.moveCard(this.katana, 'conflict deck');
+            this.player2.moveCard(this.katana2, 'conflict deck');
+            this.game.setFirstPlayer(this.player2.player);
+            this.player1.clickCard(this.agashaProdigy);
+            expect(this.player2).toHavePrompt('Give an honor to your opponent?');
+            this.player2.clickPrompt('Yes');
+            expect(this.player2).toHavePrompt('Choose a character');
+            this.player2.clickCard(this.magistrate);
+            expect(this.player1).toHavePrompt('Choose a character');
+            this.player1.clickCard(this.agashaProdigy);
+            expect(this.katana.parent).toBe(this.agashaProdigy);
+            expect(this.katana2.parent).toBe(this.magistrate);
+        });
+
         it('should allow each player to choose a character', function () {
             this.player1.moveCard(this.katana, 'conflict deck');
             this.player2.moveCard(this.katana2, 'conflict deck');

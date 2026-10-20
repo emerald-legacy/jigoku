@@ -33,6 +33,20 @@ describe('Roadside Inn', function() {
             this.player2.passConflict();
         });
 
+        it('lets the opponent choose first when they are the first player (EmeraldDB ruling)', function() {
+            this.game.setFirstPlayer(this.player2.player);
+            this.noMoreActions();
+            this.player1.clickCard(this.inn);
+            expect(this.player2).toHavePrompt('Give an honor to your opponent?');
+            this.player2.clickPrompt('Yes');
+            expect(this.player2).toHavePrompt('Choose a character');
+            this.player2.clickCard(this.dojiWhisperer);
+            expect(this.player1).toHavePrompt('Choose a character');
+            this.player1.clickCard(this.matsuBerserker);
+            expect(this.matsuBerserker.fate).toBe(1);
+            expect(this.dojiWhisperer.fate).toBe(1);
+        });
+
         it('should react when the fate phase starts, before characters are discarded', function() {
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Triggered Abilities');

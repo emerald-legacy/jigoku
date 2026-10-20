@@ -6,6 +6,7 @@ import { AbilityTargetSelect } from './AbilityTargets/AbilityTargetSelect.js';
 import { AbilityTargetToken } from './AbilityTargets/AbilityTargetToken.js';
 import { AbilityTargetElementSymbol } from './AbilityTargets/AbilityTargetElementSymbol.js';
 import { Stage, TargetMode, AbilityType, type Players, EventName, Blocker } from './Constants.js';
+import type Player from './Player.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
@@ -42,6 +43,7 @@ interface AbilityTarget extends DependentTarget {
     checkTarget(context: AbilityContext): boolean;
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean;
     getGameAction(context: AbilityContext): HeldAction[];
+    getChoosingPlayer(context: AbilityContext): Player | undefined;
 }
 
 /**
@@ -97,6 +99,8 @@ export class BaseAbility {
     max?: AbilityLimit;
     maxIdentifier?: string;
     cannotTargetFirst?: boolean;
+    /** Both players choose, the first player first (developer rulings). */
+    firstPlayerChoosesFirst?: boolean;
     cannotBeCancelled?: boolean;
     cannotBeMirrored?: boolean;
     printedAbility?: boolean;
@@ -207,7 +211,27 @@ export class BaseAbility {
             costs = costs.filter((cost) => !cost.isPlayCost);
         }
 
+        if(this.opponentChoosesFirst(context)) {
+            costs = [...costs.filter((cost) => cost.chosenByOpponent), ...costs.filter((cost) => !cost.chosenByOpponent)];
+        }
+
         return costs;
+    }
+
+    private opponentChoosesFirst(context: AbilityContext): boolean {
+        return !!this.firstPlayerChoosesFirst && !!context.player.opponent?.firstPlayer;
+    }
+
+    /** The targets in the order they're chosen: the first player's first if the ability says so. */
+    private targetsInOrder(context: AbilityContext): AbilityTarget[] {
+        if(!this.firstPlayerChoosesFirst) {
+            return this.targets;
+        }
+        const firstPlayer = context.game.getFirstPlayer();
+        return [
+            ...this.targets.filter((target) => target.getChoosingPlayer(context) === firstPlayer),
+            ...this.targets.filter((target) => target.getChoosingPlayer(context) !== firstPlayer)
+        ];
     }
 
     resolveCosts(context: AbilityContext, results: TargetResults): void {
@@ -256,15 +280,15 @@ export class BaseAbility {
             payCostsFirst: false,
             delayTargeting: null
         };
-        for(const target of this.targets) {
+        for(const target of this.targetsInOrder(context)) {
             context.game.queueSimpleStep(() => target.resolve(context, targetResults));
         }
         return targetResults;
     }
 
     resolveRemainingTargets(context: AbilityContext, nextTarget: AbilityTarget): TargetResults {
-        const index = this.targets.indexOf(nextTarget);
-        let targets = this.targets.slice();
+        let targets = this.targetsInOrder(context);
+        const index = targets.indexOf(nextTarget);
         if(targets.slice(0, index).every((target) => target.checkTarget(context))) {
             targets = targets.slice(index);
         }

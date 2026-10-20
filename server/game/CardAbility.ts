@@ -21,6 +21,7 @@ export interface CardAbilityProperties<Context extends AbilityContext = AbilityC
     printedAbility?: boolean;
     cannotBeCancelled?: boolean;
     cannotTargetFirst?: boolean;
+    firstPlayerChoosesFirst?: boolean;
     cannotBeMirrored?: boolean;
     max?: IAbilityLimit;
     abilityIdentifier?: string;
@@ -101,6 +102,7 @@ export class CardAbility extends ThenAbility {
         this.printedAbility = properties.printedAbility === false ? false : true;
         this.cannotBeCancelled = properties.cannotBeCancelled;
         this.cannotTargetFirst = !!properties.cannotTargetFirst;
+        this.firstPlayerChoosesFirst = !!properties.firstPlayerChoosesFirst;
         this.cannotBeMirrored = !!properties.cannotBeMirrored;
         this.max = properties.max;
         this.abilityIdentifier = properties.abilityIdentifier || '';

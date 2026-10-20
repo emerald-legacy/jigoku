@@ -1083,6 +1083,7 @@ this.action('Draw a card')
       <li>Always payable. The opponent is not asked when <code>canPayFunc</code> is false, there is no opponent, the opponent can't lose honor or the player can't gain it.</li>
       <li>The honor moves when the costs are paid, before the opponent's targets: a later target can depend on it (<code>cardCondition: (_card, context) =&gt; Boolean(context.costs.honorTakenFromOpponent)</code>).</li>
       <li>Records <code>honorTakenFromOpponent</code>: whether they gave it. No cost text; on Yes the chat says "<em>player2 chooses to give player1 1 honor</em>".</li>
+      <li>Marked <code>chosenByOpponent</code>: with <a href="builder.html#b-firstPlayerChoosesFirst"><code>firstPlayerChoosesFirst()</code></a>, an opponent who is the first player is asked, and chooses their target, before you choose yours.</li>
     </ul>
     <pre><code>// Roadside Inn: Reaction: After the fate phase begins, choose a character. Each opponent may give you 1 honor and choose a character - each player who chose a character in this way moves 1 fate from their fate pool to their chosen character, if able.
 this.reaction('Place a fate on a character')

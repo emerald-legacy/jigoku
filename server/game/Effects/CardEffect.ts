@@ -40,10 +40,21 @@ export class CardEffect extends ActiveEffect<BaseCard> {
         }
         const sourceController = this.source.getEffectController();
         return (
+            this.isInTargetLocation(target) &&
             (this.printedSkillBonus || target.checkRestrictions(RestrictionType.ApplyEffect, this.context)) &&
             (this.targetController !== Players.Self || target.controller === sourceController) &&
             (this.targetController !== Players.Opponent || target.controller !== sourceController)
         );
+    }
+
+    /** A target that left the effect's location loses it (Kuni Wasteland's restrictions on a character that left play). */
+    private isInTargetLocation(card: BaseCard): boolean {
+        if(this.targetLocation === Location.Any) {
+            return true;
+        } else if(this.targetLocation === Location.Provinces) {
+            return card.isInProvince();
+        }
+        return card.location === this.targetLocation;
     }
 
     override getTargets(matchFn: EffectMatchFn<BaseCard>): BaseCard[] {

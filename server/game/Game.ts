@@ -136,6 +136,10 @@ export class Game {
     router?: GameRouter;
     allCards: BaseCard[];
     private cardsByUuid = new Map<string, BaseCard>();
+    /** Effects both players resolve simultaneously: the game is won only once they're done (`suspendWinCheck`). */
+    private winCheckSuspended = false;
+    /** Status-token honor events of characters leaving play in the same step (`changeStatusTokenHonor`). */
+    private statusTokenHonorEvents: Event[] | null = null;
     provinceCards: BaseCard[];
     winner?: Player;
     finishedAt?: Date;
@@ -509,6 +513,9 @@ export class Game {
      * function doesn't check to see if a conquest victory has been achieved)
      */
     checkWinCondition(): void {
+        if(this.winCheckSuspended) {
+            return;
+        }
         const honorRequiredToWin = this.rules.winConRequiredHonorForWin;
         for(const player of this.getPlayersInFirstPlayerOrder()) {
             if(player.honor >= honorRequiredToWin) {
@@ -517,6 +524,17 @@ export class Game {
                 this.recordWinner(player, 'dishonor');
             }
         }
+    }
+
+    /** Until `resumeWinCheck`, honor changes don't win the game: both players' effects resolve simultaneously (A Season of War). */
+    suspendWinCheck(): void {
+        this.winCheckSuspended = true;
+    }
+
+    /** Checks for a winner after simultaneous effects; if both players would lose, the first player wins (EmeraldDB ruling). */
+    resumeWinCheck(): void {
+        this.winCheckSuspended = false;
+        this.checkWinCondition();
     }
 
     /**
@@ -830,6 +848,26 @@ export class Game {
 
     openThenEventWindow(events: Event | Event[]): EventWindow | ThenEventWindow {
         return this.events.openThenEventWindow(events);
+    }
+
+    /**
+     * Honor from the status token of a character leaving play. Characters leaving play together change it at once
+     * (EmeraldDB ruling): one window with gains before losses, so only the net change can make a player lose.
+     */
+    changeStatusTokenHonor(event: Event, gain: boolean): void {
+        if(!this.statusTokenHonorEvents) {
+            const events: Event[] = [];
+            this.statusTokenHonorEvents = events;
+            this.queueSimpleStep(() => {
+                this.statusTokenHonorEvents = null;
+                this.openThenEventWindow(events);
+            });
+        }
+        if(gain) {
+            this.statusTokenHonorEvents.unshift(event);
+        } else {
+            this.statusTokenHonorEvents.push(event);
+        }
     }
 
     /**

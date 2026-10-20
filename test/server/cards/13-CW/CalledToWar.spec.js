@@ -23,6 +23,19 @@ describe('Called to War', function() {
             this.magistrate = this.player2.findCardByName('righteous-magistrate');
         });
 
+        it('lets the opponent choose first when they are the first player (EmeraldDB ruling)', function() {
+            this.game.setFirstPlayer(this.player2.player);
+            this.player1.clickCard(this.calledToWar);
+            expect(this.player2).toHavePrompt('Give an honor to your opponent?');
+            this.player2.clickPrompt('Yes');
+            expect(this.player2).toHavePrompt('Choose a character');
+            this.player2.clickCard(this.shibaTsukune);
+            expect(this.player1).toHavePrompt('Choose a character');
+            this.player1.clickCard(this.matsuBerserker);
+            expect(this.matsuBerserker.fate).toBe(1);
+            expect(this.shibaTsukune.fate).toBe(1);
+        });
+
         it('should allow each player to choose a bushi', function() {
             this.player1.clickCard(this.calledToWar);
             expect(this.player1).toHavePrompt('Choose a character');

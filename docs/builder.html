@@ -107,7 +107,7 @@ this.conflictAction('Force opponent to discard card or dishonor a character', { 
     <li>the <a href="#b-then">next steps</a> of the ability that raised the event;</li>
     <li>forced reactions, duel reactions, reactions.</li>
   </ol>
-  <p>Keyword abilities (Courtesy, Sincerity, Thriving before the event; Pride, Rally, Tutored after it) have windows of their own. The full order is under <a href="types.html#ev-section-events">Events</a>.</p>
+  <p>Keyword abilities (Thriving before the event; Courtesy, Sincerity, Pride, Rally, Tutored after it) have windows of their own. The full order is under <a href="types.html#ev-section-events">Events</a>.</p>
   <p>On a province card the trigger methods return a builder whose <code>context.event</code> is optional: Countryside Trader resolves a province's triggered ability without its event.</p>
 
   <div class="ref" id="cm-forcedInterrupt" data-name="forcedInterrupt">
@@ -1583,6 +1583,23 @@ this.action('Discard cards to dishonor attackers')
     .chatText((context) =&gt; msg`discard ${context.costs.discardCardsUpToVariableX} and dishonor ${context.targets.target}`)
     .cannotTargetFirst();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.2-BoB/DishonorableAssault.ts">Dishonorable Assault</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Rebuild.ts">Rebuild</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ChancellorsAide.ts">Chancellor's Aide</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ExpertBartering.ts">Expert Bartering</a></p>
+  </div>
+
+  <div class="ref" id="b-firstPlayerChoosesFirst" data-name="firstPlayerChoosesFirst">
+    <h3><code>firstPlayerChoosesFirst()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-firstPlayerChoosesFirst">#</a></h3>
+    <p>Both players choose ("Choose a character. Each opponent may give you 1 honor and choose a character"): the first player chooses first (developer rulings; RRG: without other direction the first player acts first). When the opponent is the first player, their targets come before yours, and costs they choose (<code>chosenByOpponent</code> on the cost, as in <code>costs.optionalTakeHonorFromOpponent()</code>) before your other costs.</p>
+    <ul class="edge">
+      <li>Without it, an opponent's target always waits until the costs are paid, after your own.</li>
+      <li>Duels between a character of each player chosen by the other (Heresy) work too: each target goes by who chooses it.</li>
+    </ul>
+    <pre><code>// Called to War: Action: Choose a Bushi character. Each opponent may give you 1 honor and choose a Bushi character - place 1 fate on each chosen character.
+this.action('Place a fate on a bushi')
+    .cost(costs.optionalTakeHonorFromOpponent())
+    .target({ name: 'myCharacter', cardType: CardType.Character, cardCondition: (card) =&gt; card.hasTrait(Trait.Bushi) }, placeFate())
+    .target({ name: 'oppCharacter', player: Players.Opponent, cardType: CardType.Character, optional: true, hideIfNoLegalTargets: true,
+        cardCondition: (card, context) =&gt; Boolean(card.hasTrait(Trait.Bushi) &amp;&amp; context.costs.honorTakenFromOpponent) }, placeFate())
+    .firstPlayerChoosesFirst()</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/MerchantOfCuriosities.ts">Merchant of Curiosities</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/Heresy.ts">Heresy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ChancellorsAide.ts">Chancellor's Aide</a> (8 card files)</p>
   </div>
 
   <div class="ref" id="b-limit" data-name="limit">

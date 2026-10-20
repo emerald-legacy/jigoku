@@ -468,6 +468,7 @@ export function optionalOpponentLoseHonor(
 export function optionalTakeHonorFromOpponent(canPayFunc = (_context: AbilityContext) => true): Cost<{ honorTakenFromOpponent: boolean }> {
     return {
         promptsPlayer: true,
+        chosenByOpponent: true,
         canPay() {
             return true;
         },

@@ -37,3 +37,36 @@ describe('Prayers to Ebisu', function() {
         });
     });
 });
+
+describe('Prayers to Ebisu with an empty conflict deck', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 5,
+                    hand: ['prayers-to-ebisu'],
+                    conflictDiscard: ['fine-katana']
+                },
+                player2: {
+                    honor: 10
+                }
+            });
+            this.prayersToEbisu = this.player1.findCardByName('prayers-to-ebisu');
+            this.player1.reduceDeckToNumber('conflict deck', 0);
+        });
+
+        it('loses the deck-out honor before gaining 4 honor (EmeraldDB ruling)', function() {
+            this.player1.clickCard(this.prayersToEbisu);
+            expect(this.player1.honor).toBe(0);
+            expect(this.game.winner).toBe(this.player2.player);
+        });
+
+        it('gains 4 honor if the deck-out took the player to 6 or fewer', function() {
+            this.player1.player.honor = 8;
+            this.player1.clickCard(this.prayersToEbisu);
+            expect(this.player1.honor).toBe(7);
+            expect(this.game.winner).toBeUndefined();
+        });
+    });
+});

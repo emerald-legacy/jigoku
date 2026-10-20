@@ -151,9 +151,9 @@ describe('Superior Authority', function() {
             expect(this.game.currentConflict.attackerSkill).toBe(0);
             expect(this.game.currentConflict.defenderSkill).toBe(0);
             this.player2.clickCard(this.calledToWar);
-            this.player2.clickCard(this.hotaru);
             this.player1.clickPrompt('Yes');
             this.player1.clickCard(this.challenger);
+            this.player2.clickCard(this.hotaru);
             expect(this.game.currentConflict.attackerSkill).toBe(3);
             expect(this.game.currentConflict.defenderSkill).toBe(3);
         });

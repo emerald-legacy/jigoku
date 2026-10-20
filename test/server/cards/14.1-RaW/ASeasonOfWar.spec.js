@@ -206,6 +206,17 @@ describe('A Season of War', function() {
                 expect(this.getChatLogs(10)).toContain('A Season of War has started a new dynasty phase!');
             });
 
+            it('lets the first player win if both players lose all honor by decking (EmeraldDB ruling)', function() {
+                this.player1.player.honor = 5;
+                this.player2.player.honor = 5;
+                this.player1.reduceDeckToNumber('dynasty deck', 1);
+                this.player2.reduceDeckToNumber('dynasty deck', 1);
+                this.player1.clickCard(this.season);
+                expect(this.player1.honor).toBe(0);
+                expect(this.player2.honor).toBe(0);
+                expect(this.game.winner).toBe(this.player1.player);
+            });
+
             it('decking yourself should not cause multiple honor losses', function() {
                 this.player1.reduceDeckToNumber('dynasty deck', 1);
                 this.player1.clickCard(this.season);

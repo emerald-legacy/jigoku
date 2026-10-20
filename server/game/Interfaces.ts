@@ -178,6 +178,7 @@ interface AbilityProps<Context> {
     ifCondition?: (context: AbilityContext) => boolean;
     printedAbility?: boolean;
     cannotTargetFirst?: boolean;
+    firstPlayerChoosesFirst?: boolean;
     /** `undefined` from the function: the game actions' own text. */
     chatText?: string | OwnContextCallback<[context: Context], MessageArgs | undefined>;
     evenDuringDynasty?: boolean;

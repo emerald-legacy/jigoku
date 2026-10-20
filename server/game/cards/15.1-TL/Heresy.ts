@@ -15,7 +15,8 @@ class Heresy extends DrawCard {
                 gameAction: (duel) => removeFate({
                     target: duel.loser
                 })
-            }));
+            }))
+            .firstPlayerChoosesFirst();
     }
 }
 

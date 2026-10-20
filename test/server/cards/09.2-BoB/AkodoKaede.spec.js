@@ -91,3 +91,32 @@ describe('Akodo Kaede', function() {
     });
 });
 
+describe('Akodo Kaede in the fate phase', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-guardian']
+                },
+                player2: {
+                    inPlay: ['akodo-kaede']
+                }
+            });
+            this.hidaGuardian = this.player1.findCardByName('hida-guardian');
+            this.kaede = this.player2.findCardByName('akodo-kaede');
+            this.kaede.fate = 1;
+            this.flow.finishConflictPhase();
+        });
+
+        it('isn\'t discarded after removing her last fate to save a character in that step (EmeraldDB ruling)', function() {
+            this.player1.clickCard(this.hidaGuardian);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.kaede);
+            expect(this.hidaGuardian.location).toBe('play area');
+            expect(this.kaede.fate).toBe(0);
+            expect(this.player2).not.toHavePrompt('Choose character to discard\n(or click Done to discard all characters with no fate)');
+            expect(this.kaede.location).toBe('play area');
+        });
+    });
+});

@@ -46,6 +46,7 @@ class AgashaProdigy extends DrawCard {
                     otherwiseGameAction: discardFromPlay({ target: [] })
                 }))
             ]))
+            .firstPlayerChoosesFirst()
             .chatText((context) => msg`discard the top card of their deck and attempt to attach it to ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) => msg`discard the top card of their deck and attempt to attach it to ${card}`)}`);
     }
 

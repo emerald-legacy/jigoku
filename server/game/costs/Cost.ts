@@ -24,6 +24,8 @@ export interface Cost<Results extends object = object, Context extends AbilityCo
     dependsOn?: string;
     isPrintedFateCost?: boolean;
     isPlayCost?: boolean;
+    /** The opponent makes this choice: it comes first when they're the first player and the ability says so (`firstPlayerChoosesFirst`). */
+    chosenByOpponent?: boolean;
 
     getActionName?(context: AbilityContext): string;
     getCostMessage?(context: CostContext<Results, Context>): CostMessage;

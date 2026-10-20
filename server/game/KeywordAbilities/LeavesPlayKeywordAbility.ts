@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
 import * as AbilityLimit from '../AbilityLimit.js';
-import { AbilityType, type EventName } from '../Constants.js';
+import { AbilityType, type EventName, Location } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import type { GameAction } from '../GameActions/GameAction.js';
@@ -15,14 +15,25 @@ interface LeavesPlayKeyword {
     gameAction(context: TriggeredAbilityContext): GameAction;
 }
 
-/** A keyword whose interrupt gives its controller something when the card leaves play (Courtesy, Sincerity). */
+/** Where a card can go when it leaves play. */
+const OUT_OF_PLAY = [Location.Hand, Location.ConflictDeck, Location.DynastyDeck, Location.ConflictDiscardPile, Location.DynastyDiscardPile,
+    Location.RemovedFromGame, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour, Location.StrongholdProvince];
+
+/**
+ * A keyword that gives its controller something when the card leaves play (Courtesy, Sincerity).
+ * It resolves after the card has left play, before reactions (RRG Courtesy, Sincerity), so it uses the card as it left play:
+ * its keywords and controller then, and no in-play restriction stops it (Kuni Wasteland; ruling #780).
+ */
 export class LeavesPlayKeywordAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard, keyword: LeavesPlayKeyword) {
-        super(card, AbilityType.KeywordInterrupt, {
+        super(card, AbilityType.KeywordReaction, {
             when: {
                 onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context: TriggeredAbilityContext<DrawCard>) =>
-                    event.card === context.source && keyword.hasKeyword(context.source)
+                    event.card === context.source && !!event.cardStateWhenLeftPlay &&
+                    keyword.hasKeyword(event.cardStateWhenLeftPlay) && context.player === event.cardStateWhenLeftPlay.controller
             },
+            location: OUT_OF_PLAY,
+            anyPlayer: true,
             limit: AbilityLimit.unlimited(),
             title: card.name + '\'s ' + keyword.name,
             printedAbility: false,

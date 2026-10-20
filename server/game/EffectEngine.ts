@@ -180,6 +180,12 @@ export class EffectEngine {
         }
     }
 
+    /** The window's last action opportunity has passed: effects lasting until an opportunity ends expire (Graceful Guardian). */
+    onActionWindowClosed() {
+        const opportunityDurations = new Set([Duration.UntilPassPriority, Duration.UntilOpponentPassPriority, Duration.UntilSelfPassPriority, Duration.UntilNextPassPriority]);
+        this.newEffect = this.unapplyAndRemove((effect) => !!effect.duration && opportunityDurations.has(effect.duration)) || this.newEffect;
+    }
+
     registerCustomDurationEvents(effect: ActiveEffect) {
         if(!effect.until) {
             return;

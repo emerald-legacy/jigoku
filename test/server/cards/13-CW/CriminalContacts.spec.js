@@ -29,6 +29,19 @@ describe('Criminal Contacts', function() {
             this.shibaTsukune.fate = 1;
         });
 
+        it('lets the opponent choose first when they are the first player (EmeraldDB ruling)', function() {
+            this.game.setFirstPlayer(this.player2.player);
+            this.player1.clickCard(this.contacts);
+            expect(this.player2).toHavePrompt('Give an honor to your opponent?');
+            this.player2.clickPrompt('Yes');
+            expect(this.player2).toHavePrompt('Choose a character');
+            this.player2.clickCard(this.shibaTsukune);
+            expect(this.player1).toHavePrompt('Choose a character');
+            this.player1.clickCard(this.matsuBerserker);
+            expect(this.matsuBerserker.fate).toBe(0);
+            expect(this.shibaTsukune.fate).toBe(0);
+        });
+
         it('should allow each player to choose a character with fate', function() {
             this.player1.clickCard(this.contacts);
             expect(this.player1).toHavePrompt('Choose a character');

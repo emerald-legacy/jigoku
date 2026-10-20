@@ -670,12 +670,14 @@ export class DrawCard extends BaseCard {
             if(this.isDishonored) {
                 this.applyPersonalHonor(
                     loseHonor({ amount: 1, dueToStatusToken: true }),
-                    msg`${this.controller} loses 1 honor due to ${this}'s personal honor`
+                    msg`${this.controller} loses 1 honor due to ${this}'s personal honor`,
+                    false
                 );
             } else if(this.isHonored) {
                 this.applyPersonalHonor(
                     gainHonor({ amount: 1, dueToStatusToken: true }),
-                    msg`${this.controller} gains 1 honor due to ${this}'s personal honor`
+                    msg`${this.controller} gains 1 honor due to ${this}'s personal honor`,
+                    true
                 );
             }
         }
@@ -689,12 +691,12 @@ export class DrawCard extends BaseCard {
         super.leavesPlay();
     }
 
-    private applyPersonalHonor(action: GameAction, message: MessageArgs): void {
+    private applyPersonalHonor(action: GameAction, message: MessageArgs, gain: boolean): void {
         const frameworkContext = this.game.getFrameworkContext(this.controller);
         if(action.canAffect(this.controller, frameworkContext)) {
             this.game.addMessage(message);
         }
-        this.game.openThenEventWindow(action.getEvent(this.controller, frameworkContext));
+        this.game.changeStatusTokenHonor(action.getEvent(this.controller, frameworkContext), gain);
     }
 
     resetForConflict(): void {

@@ -24,6 +24,7 @@ class CriminalContacts extends DrawCard {
                 hideIfNoLegalTargets: true,
                 cardCondition: (_card, context) => Boolean(context.costs.honorTakenFromOpponent)
             }, removeFate())
+            .firstPlayerChoosesFirst()
             .chatText((context) => msg`discard a fate from ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) => msg`discard a fate from ${card}`)}`);
     }
 }
