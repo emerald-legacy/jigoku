@@ -18,6 +18,7 @@ export default class DrawingTheVoid extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Gaze into the void')
+            .condition((context) => (context.player.opponent?.hand.length ?? 0) > 0)
             .ifCondition((context) => controlsShugenja(context.player))
             .gameAction(sequential((context) => {
                 const revealedCards = randomHandCards(context.player.opponent, 2);
@@ -35,7 +36,7 @@ export default class DrawingTheVoid extends DrawCard {
                         gameAction: moveCard({ destination: Location.RemovedFromGame })
                     })),
                     conditional((context) => ({
-                        condition: context.player.hasAffinity(Trait.Void, context),
+                        condition: context.player.hasAffinity(Trait.Void, context) && revealedCards.some((card) => card.location === Location.RemovedFromGame),
                         trueGameAction: draw()
                     }))
                 ];

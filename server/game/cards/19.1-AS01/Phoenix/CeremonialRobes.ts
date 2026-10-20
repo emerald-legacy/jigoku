@@ -35,7 +35,7 @@ export default class CeremonialRobes extends DrawCard {
                     'discard': sequential([
                         discardCard(),
                         conditional({
-                            condition: (_context, properties) => targetList(properties.target).some((card) => card.isCard() && card.hasTrait(Trait.Spirit)),
+                            condition: (_context, properties) => targetList(properties.target).some((card) => card.isCard() && card.hasTrait(Trait.Spirit) && card.location === Location.DynastyDiscardPile),
                             trueGameAction: sequential([
                                 chatMessage((context, [card]) => msg`${card} was a Spirit! ${context.player} and ${context.player.opponent} lose 1 honor`),
                                 loseHonor((context) => ({ target: context.game.getPlayers() }))

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { discardCard, playCard, selectCard, sequential } from '../../../GameActions/GameActions.js';
+import { playCard, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode, Blocker, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
@@ -17,26 +17,23 @@ export default class ToConnectThePeople extends DrawCard {
                 context.player.cardsInPlay.some(
                     (card) => card.type === CardType.Character && card.hasTrait(Trait.Merchant)
                 ))
-            .gameAction(sequential([
-                discardCard((context) => ({
-                    target: this.topThreeCards(context)
-                })),
-                selectCard({
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
-                    targets: true,
-                    cardCondition: (card, context) => !card.isUnique() && card.glory <= this.maxMerchantGlory(context),
-                    mode: TargetMode.Single,
-                    subActionProperties: (card) => ({
-                        target: card,
-                        playAction: [new PlayCharacterAsIfFromHand(card), new PlayDisguisedCharacterAsIfFromHand(card)]
-                    }),
-                    gameAction: playCard({ ignoredBlockers: [Blocker.WrongLocation] })
-                })
-            ]))
+            .discardCard((context) => ({ target: this.topThreeCards(context) }))
             .chatText((context) => msg`discard ${this.topThreeCards(context)} from the top of ${context.player.opponent}'s dynasty deck`)
-            .max(perRound(1));
+            .max(perRound(1))
+            .then()
+            .gameAction(selectCard({
+                cardType: CardType.Character,
+                controller: Players.Opponent,
+                location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
+                targets: true,
+                cardCondition: (card, context) => !card.isUnique() && card.glory <= this.maxMerchantGlory(context),
+                mode: TargetMode.Single,
+                subActionProperties: (card) => ({
+                    target: card,
+                    playAction: [new PlayCharacterAsIfFromHand(card), new PlayDisguisedCharacterAsIfFromHand(card)]
+                }),
+                gameAction: playCard({ ignoredBlockers: [Blocker.WrongLocation] })
+            }));
     }
 
     private topThreeCards(context: AbilityContext) {

@@ -868,16 +868,15 @@ this.reaction('Make opponent discard 2 cards')
     <pre><code>// Keen Warrior: Reaction: After you look at 1 or more cards in an opponent's hand (or those are revealed) - draw 2 cards, then place 1 card from your hand on the bottom of your conflict deck.
 this.reaction('Draw 2 cards and return 1')
     .when({ … })
-    .gameAction(sequential([
-        draw((context) =&gt; ({ target: context.player, amount: 2 })),
-        chosenReturnToDeck((context) =&gt; ({
-            target: context.player,
-            targets: false,
-            shuffle: false,
-            bottom: true
-        }))
-    ]))
-    .chatText('draw 2 cards, then place a card on the bottom of their deck');</code></pre>
+    .draw(2)
+    .chatText('draw 2 cards, then place a card on the bottom of their deck')
+    .then()
+    .gameAction(chosenReturnToDeck((context) =&gt; ({
+        target: context.player,
+        targets: false,
+        shuffle: false,
+        bottom: true
+    })));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/KeenWarrior.ts">Keen Warrior</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/EndlessArchives.ts">Endless Archives</a></p>
   </div>
 <div class="ref" id="ga-deckSearch" data-name="deckSearch">
@@ -1946,6 +1945,7 @@ this.reaction('Resolve the ring effect')
     </table>
     <ul class="edge">
       <li>Several rings: one event opens a window where the effects resolve one at a time. They are ordered by the rings' priority (reversed when the ability's player is not the first player), unless <code>enforceOrderedResolution</code> keeps the given order. The action's own <code>optional</code> applies to each of them.</li>
+      <li>Several rings: the event counts as resolved in full (for <code>then()</code>) unless one of the ring effects was cancelled; a replaced one counts as resolved (Enlightenment).</li>
       <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled</code>. Raises <code>onResolveRingElement</code>.</li>
       <li>Chat: <code>resolve {0} effect</code>.</li>
       <li>Builder shortcut: <code>.resolveRingEffect(…)</code>.</li>
@@ -2888,7 +2888,7 @@ this.action('Remove a ring from the unclaimed ring pool')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Legal when the nested action is. With <code>Players.Opponent</code> in a solo game nobody is asked and nothing happens.</li>
+      <li>Legal when the nested action is; without a legal nested action nobody is asked (also in a step). With <code>Players.Opponent</code> in a solo game nobody is asked and nothing happens.</li>
       <li>A <code>then()</code> step after it runs only if the player said Yes and the action resolved.</li>
       <li>Chat: the nested action's message; <code>acceptMessage</code> and <code>declineMessage</code> add lines for the answer.</li>
       <li>Builder shortcut: <code>.optional(…)</code>.</li>

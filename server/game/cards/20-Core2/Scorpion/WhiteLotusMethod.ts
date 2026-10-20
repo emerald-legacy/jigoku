@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, CharacterStatus, Players, Trait } from '../../../Constants.js';
-import { conditional, draw, moveStatusToken, sequential } from '../../../GameActions/GameActions.js';
+import { moveStatusToken } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const TOKEN = 'token';
@@ -30,18 +30,12 @@ export default class WhiteLotusMethod extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isOrdinary()
-            }, sequential((context) => [
-                moveStatusToken({
-                    target: context.tokens[TOKEN],
-                    recipient: context.targets[RECIPIENT]
-                }),
-                conditional({
-                    condition: () => doesCardDraw(context.targets[RECIPIENT], context.source),
-                    trueGameAction: draw({
-                        target: context.targets[RECIPIENT].controller
-                    })
-                })
-            ]))
-            .chatText((context) => msg`move a status token to ${context.targets[RECIPIENT]}${doesCardDraw(context.targets[RECIPIENT], context.source) ? ', their controller draws a card' : ''}`);
+            }, moveStatusToken((context) => ({
+                target: context.tokens[TOKEN],
+                recipient: context.targets[RECIPIENT]
+            })))
+            .chatText((context) => msg`move a status token to ${context.targets[RECIPIENT]}${doesCardDraw(context.targets[RECIPIENT], context.source) ? ', their controller draws a card' : ''}`)
+            .thenIf((context) => doesCardDraw(context.targets[RECIPIENT], context.source))
+            .draw((context) => ({ target: context.targets[RECIPIENT].controller }));
     }
 }

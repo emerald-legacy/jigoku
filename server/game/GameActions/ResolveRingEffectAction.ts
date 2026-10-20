@@ -47,13 +47,19 @@ export class ResolveRingEffectAction<Context extends AbilityContext = AbilityCon
                     (ring) => RingAbilities.contextFor(context.player, ring.element).ability.defaultPriority
                 );
             const ringProperties = { ...additionalProperties, optional: false };
+            const ringEvents: Event[] = [];
             const effectObjects = sortedRings.map((ring) => ({
                 title: RingAbilities.getRingName(ring.element) + ' Effect',
-                handler: () => context.game.openEventWindow(this.getEvent(ring, context, ringProperties))
+                handler: () => {
+                    const ringEvent = this.getEvent(ring, context, ringProperties);
+                    ringEvents.push(ringEvent);
+                    context.game.openEventWindow(ringEvent);
+                }
             }));
-            events.push(
-                new Event(EventName.Unnamed, {}, () => context.game.openSimultaneousEffectWindow(effectObjects))
-            );
+            const event = new Event(EventName.Unnamed, { context }, () => context.game.openSimultaneousEffectWindow(effectObjects));
+            // resolved in full unless a ring effect was cancelled (a replaced one counts)
+            event.checkFullyResolved = (wrapper) => !wrapper.cancelled && ringEvents.every((ringEvent) => !ringEvent.getResolutionEvent().cancelled);
+            events.push(event);
         }
     }
 

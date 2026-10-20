@@ -1,12 +1,10 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import {
     atEndOfConflict,
-    discardCard,
     multiple,
     putIntoConflict,
     returnToDeck,
-    selectCard,
-    sequential
+    selectCard
 } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -21,26 +19,22 @@ export default class SecondWind extends DrawCard {
 
     public override setupCardAbilities() {
         this.conflictAction('put a character from your discard pile into play')
-            .gameAction(sequential([
-                discardCard((context) => ({
-                    target: cardsToDiscard(context)
-                })),
-                selectCard({
-                    location: Location.DynastyDiscardPile,
-                    cardType: CardType.Character,
-                    cardCondition: (card) => !card.isUnique(),
-                    controller: Players.Self,
-                    targets: true,
-                    gameAction: multiple([
-                        putIntoConflict(),
-                        atEndOfConflict(() => ({
-                            gameAction: returnToDeck({ bottom: true })
-                        }))
-                    ]),
-                    message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the conflict`
-                })
-            ]))
+            .discardCard((context) => ({ target: cardsToDiscard(context) }))
             .chatText((context) => msg`find a character to put into play. ${context.player} discards ${cardsToDiscard(context)}`)
-            .cannotTargetFirst();
+            .then()
+            .gameAction(selectCard({
+                location: Location.DynastyDiscardPile,
+                cardType: CardType.Character,
+                cardCondition: (card) => !card.isUnique(),
+                controller: Players.Self,
+                targets: true,
+                gameAction: multiple([
+                    putIntoConflict(),
+                    atEndOfConflict(() => ({
+                        gameAction: returnToDeck({ bottom: true })
+                    }))
+                ]),
+                message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the conflict`
+            }));
     }
 }

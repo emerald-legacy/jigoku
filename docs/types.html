@@ -2827,10 +2827,11 @@ this.wouldInterrupt('Lose fate instead of honor')
     .when({
         onModifyHonor: (event, context) =&gt; event.dueToUnopposed &amp;&amp; event.player === context.player
     })
-    .gameAction(sequential([
-        cancel(),
-        loseFate((context) =&gt; ({ target: context.player }))
-    ]))</code></pre>
+    .gameAction(cancel())
+    .chatText('lose 1 fate rather than 1 honor for not defending the conflict')
+    .limit(unlimited())
+    .then()
+    .loseFate((context) =&gt; ({ target: context.player }));</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/IkebanaArtisan.ts">Ikebana Artisan</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/HeartlessIntimidator.ts">Heartless Intimidator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/Duty.ts">Duty</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/ShiotomeHeroine.ts">Shiotome Heroine</a></p>
 </div>
 <div class="ref" id="ev-onMoveFate" data-name="onMoveFate OnMoveFate">

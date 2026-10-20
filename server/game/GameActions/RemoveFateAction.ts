@@ -61,11 +61,10 @@ export class RemoveFateAction<Context extends AbilityContext = AbilityContext> e
     }
 
     override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        const { amount, recipient } = this.getProperties(context, additionalProperties);
+        const { recipient } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&
-            event.fate === amount &&
             event.origin === card &&
             event.recipient === recipient
         );

@@ -1,6 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { bow, optional, sendHome, sequential } from '../../GameActions/GameActions.js';
+import { bow, sendHome } from '../../GameActions/GameActions.js';
 import { CardType, ConflictType } from '../../Constants.js';
 
 class BayushiKachiko extends DrawCard {
@@ -12,14 +12,13 @@ class BayushiKachiko extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.politicalSkill < context.source.politicalSkill && card.isParticipating()
-            }, sequential([
-                sendHome(),
-                optional((context) => ({
-                    activePromptTitle: 'Do you want to bow ' + context.target.name + '?',
-                    gameAction: bow(),
-                    acceptMessage: () => msg`${context.player} chooses to bow ${context.target} due to ${context.source}'s ability`
-                }))
-            ]));
+            }, sendHome())
+            .then()
+            .optional((context) => ({
+                activePromptTitle: 'Do you want to bow ' + context.target.name + '?',
+                gameAction: bow({ target: context.target }),
+                acceptMessage: () => msg`${context.player} chooses to bow ${context.target} due to ${context.source}'s ability`
+            }));
     }
 }
 

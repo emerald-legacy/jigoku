@@ -1,7 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { cannotDeclareRing } from '../../../effects.js';
-import { chosenDiscard, draw, ringLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import { Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -37,18 +36,17 @@ export default class DayOfBrotherHorse extends DrawCard {
             .ringTarget({
                 ringCondition: () => true
             })
-            .gameAction(sequential((context) => [
-                ringLastingEffect({
-                    duration: Duration.UntilEndOfPhase,
-                    target: context.ring.getElements().map((element) => context.game.rings[element]),
-                    effect: cannotDeclareRing(
-                        (player) => player === context.player.opponent
-                    )
-                }),
-                draw({ target: context.player, amount: 3 }),
-                chosenDiscard({ target: context.player })
-            ]))
+            .ringLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                target: context.ring.getElements().map((element) => context.game.rings[element]),
+                effect: cannotDeclareRing(
+                    (player) => player === context.player.opponent
+                )
+            }))
+            .draw(3)
             .chatText((context) => msg`prevent ${context.player.opponent ?? ''} from declaring ${context.chatTarget()} conflicts, draw 3 cards, and discard 1 card - ${fluff(context.ring.element)}`)
-            .max(perRound(1));
+            .max(perRound(1))
+            .then()
+            .chosenDiscard((context) => ({ target: context.player }));
     }
 }

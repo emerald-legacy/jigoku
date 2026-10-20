@@ -48,3 +48,27 @@ describe('Invocation of Ash', function () {
         });
     });
 });
+
+describe('Invocation of Ash and a character it can\'t move to', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic', 'bayushi-s-whisperers'],
+                    hand: ['invocation-of-ash']
+                }
+            });
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.whisperers = this.player1.findCardByName('bayushi-s-whisperers');
+            this.whisperers.modifyFate(1);
+            this.ash = this.player1.playAttachment('invocation-of-ash', this.mystic);
+            this.player2.pass();
+        });
+
+        it('can\'t choose a character with "No attachments"', function () {
+            this.player1.clickCard(this.ash);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperers);
+        });
+    });
+});

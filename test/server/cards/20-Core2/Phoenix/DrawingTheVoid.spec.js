@@ -95,3 +95,27 @@ describe('Drawing the Void with only an attached Shugenja', function () {
         });
     });
 });
+
+describe('Drawing the Void with an empty opponent hand', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-kaede', 'miya-mystic'],
+                    hand: ['drawing-the-void']
+                },
+                player2: {
+                    hand: []
+                }
+            });
+            this.drawingTheVoid = this.player1.findCardByName('drawing-the-void');
+        });
+
+        it('cannot be played (nothing to reveal, so nothing to draw for)', function () {
+            this.player1.clickCard(this.drawingTheVoid);
+            expect(this.drawingTheVoid.location).toBe('hand');
+            expect(this.player1).toHavePrompt('Action Window');
+        });
+    });
+});

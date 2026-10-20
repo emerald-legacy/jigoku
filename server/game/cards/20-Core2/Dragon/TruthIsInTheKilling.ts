@@ -18,26 +18,17 @@ export default class TruthIsInTheKilling extends DrawCard {
                 challengerCondition: (card) => card.hasTrait(Trait.Bushi) && card.isParticipating(),
                 gameAction: (duel) =>
                     duel.loser ?
-                        sequential(
-                            duel.loser.flatMap((loser) =>
-                                applyFullEffect(duel)
-                                    ? [
-                                        removeFate({
-                                            target: loser,
-                                            amount: loser.getFate(),
-                                            recipient: loser.owner
-                                        }),
-                                        discardFromPlay({ target: loser })
-                                    ]
-                                    : [
-                                        removeFate({
-                                            target: loser,
-                                            amount: loser.getFate(),
-                                            recipient: loser.owner
-                                        })
-                                    ]
-                            )
-                        ) : noAction(),
+                        sequential([
+                            ...duel.loser.map((loser) => removeFate({
+                                target: loser,
+                                amount: loser.getFate(),
+                                recipient: loser.owner
+                            })),
+                            // each loser whose fate was all returned
+                            discardFromPlay(() => ({
+                                target: applyFullEffect(duel) ? (duel.loser ?? []).filter((loser) => loser.getFate() === 0) : []
+                            }))
+                        ]) : noAction(),
                 chatText: (_context, duel) => msg`return all fate on ${duel.loser} to ${duel.loser?.[0]?.owner}'s fate pool${applyFullEffect(duel) ? ' and discard them' : ''}`
             }));
     }

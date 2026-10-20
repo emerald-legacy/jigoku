@@ -64,11 +64,10 @@ export class PlaceFateOnRingAction<Context extends AbilityContext = AbilityConte
     }
 
     override isEventFullyResolved(event: AnyEvent, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        const { amount, origin } = this.getProperties(context, additionalProperties);
+        const { origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&
-            event.fate === amount &&
             event.origin === origin &&
             event.recipient === ring
         );

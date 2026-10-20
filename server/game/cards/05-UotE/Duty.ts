@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { cancel, gainHonor, sequential } from '../../GameActions/GameActions.js';
+import { cancel } from '../../GameActions/GameActions.js';
 import { Stage } from '../../Constants.js';
 
 class Duty extends DrawCard {
@@ -13,12 +13,11 @@ class Duty extends DrawCard {
                 onTransferHonor: (event, context) =>
                     event.player === context.player && event.amount >= context.player.honor && event.context?.stage === Stage.Effect
             })
-            .gameAction(sequential([
-                cancel(),
-                gainHonor((context) => ({ target: context.player }))
-            ]))
+            .gameAction(cancel())
             .chatText('cancel their honor loss, then gain 1 honor')
-            .cannotBeMirrored();
+            .cannotBeMirrored()
+            .then()
+            .gainHonor((context) => ({ target: context.player }));
     }
 }
 

@@ -35,9 +35,9 @@ describe('Bayushi Kachiko', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.borderlandsDefender);
             });
 
-            it('should be able to target a character who cannot be sent home but can be bowed', function() {
+            it('should not be able to target a character who cannot be sent home ("then" needs the move home)', function() {
                 this.protector = this.player2.findCardByName('kaito-temple-protector');
-                expect(this.player1).toBeAbleToSelect(this.protector);
+                expect(this.player1).not.toBeAbleToSelect(this.protector);
             });
 
             it('should send an defender home if able', function() {
@@ -75,7 +75,7 @@ describe('Bayushi Kachiko', function() {
         });
 
         describe('if her ability is used and the target is not sent home', function() {
-            it('her controller should still be prompted to bow the target', function() {
+            it('her controller is not prompted to bow the target', function() {
                 this.initiateConflict({
                     type: 'political',
                     attackers: ['bayushi-kachiko'],
@@ -101,7 +101,7 @@ describe('Bayushi Kachiko', function() {
 
                 expect(this.shrewdYasuki.inConflict).toBe(true);
                 expect(this.game.currentConflict.defenders).toContain(this.shrewdYasuki);
-                expect(this.player1).toHavePrompt('Do you want to bow Shrewd Yasuki?');
+                expect(this.player1).not.toHavePrompt('Do you want to bow Shrewd Yasuki?');
             });
         });
 

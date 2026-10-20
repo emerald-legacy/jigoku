@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType, Trait } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
-import { cardLastingEffect, honor, multiple } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../../copyBaseSkills.js';
 
 export default class CloudHands extends DrawCard {
@@ -24,16 +24,13 @@ export default class CloudHands extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
-            }, multiple([
-                cardLastingEffect((context) => ({
-                    target: context.targets.myCharacter,
-                    effect: copyBaseSkillEffects(context.targets.oppCharacter, { base: true })
-                })),
-                honor((context) => ({
-                    target: context.targets.myCharacter
-                }))
-            ]))
+            }, cardLastingEffect((context) => ({
+                target: context.targets.myCharacter,
+                effect: copyBaseSkillEffects(context.targets.oppCharacter, { base: true })
+            })))
             .chatText((context) => msg`honor ${context.targets.myCharacter} and set their base skills to equal ${context.targets.oppCharacter}'s base skills`)
-            .max(perConflict(1));
+            .max(perConflict(1))
+            .then()
+            .honor((context) => ({ target: context.targets.myCharacter }));
     }
 }

@@ -31,7 +31,7 @@ export class OptionalAction<Context extends AbilityContext = AbilityContext> ext
     override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const { properties, overrides } = this.getCompositeProperties(context, additionalProperties);
         const chooser = resolveChoosingPlayer(context, properties.player);
-        if(!chooser) {
+        if(!chooser || !properties.gameAction.hasLegalTarget(context, overrides)) {
             return;
         }
         const accept = () => {

@@ -62,11 +62,10 @@ export class PlaceFateAction<Context extends AbilityContext = AbilityContext> ex
     }
 
     override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        const { amount, origin } = this.getProperties(context, additionalProperties);
+        const { origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&
-            event.fate === amount &&
             event.origin === origin &&
             event.recipient === card
         );

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { chosenReturnToDeck, draw, sequential } from '../../GameActions/GameActions.js';
+import { chosenReturnToDeck } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class KeenWarrior extends DrawCard {
@@ -14,16 +14,15 @@ class KeenWarrior extends DrawCard {
                     event.stateBeforeResolution.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent)
             })
             .collectiveTrigger()
-            .gameAction(sequential([
-                draw((context) => ({ target: context.player, amount: 2 })),
-                chosenReturnToDeck((context) => ({
-                    target: context.player,
-                    targets: false,
-                    shuffle: false,
-                    bottom: true
-                }))
-            ]))
-            .chatText('draw 2 cards, then place a card on the bottom of their deck');
+            .draw(2)
+            .chatText('draw 2 cards, then place a card on the bottom of their deck')
+            .then()
+            .gameAction(chosenReturnToDeck((context) => ({
+                target: context.player,
+                targets: false,
+                shuffle: false,
+                bottom: true
+            })));
     }
 }
 

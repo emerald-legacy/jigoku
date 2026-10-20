@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import { attach, removeFate, sequential } from '../../GameActions/GameActions.js';
+import { attach } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class InvocationOfAsh extends DrawCard {
@@ -14,11 +14,10 @@ class InvocationOfAsh extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source.parentCharacter
-            }, sequential([
-                attach((context) => ({ attachment: context.source })),
-                removeFate()
-            ]))
-            .chatText((context) => msg`move ${context.source} to ${context.chatTarget()}, then remove a fate from ${context.chatTarget()}`);
+            }, attach((context) => ({ attachment: context.source })))
+            .chatText((context) => msg`move ${context.source} to ${context.chatTarget()}, then remove a fate from ${context.chatTarget()}`)
+            .then()
+            .removeFate((context) => ({ target: context.target }));
     }
 }
 
