@@ -117,3 +117,36 @@ describe('Daikyu', function() {
         });
     });
 });
+
+describe('Daikyu when no defenders are declared', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-hotaru', 'togashi-initiate'],
+                    hand: ['daikyu']
+                },
+                player2: {
+                    inPlay: ['akodo-toturi']
+                }
+            });
+            this.hotaru = this.player1.findCardByName('doji-hotaru');
+            this.initiate = this.player1.findCardByName('togashi-initiate');
+            this.daikyu = this.player1.findCardByName('daikyu');
+            this.player1.playAttachment(this.daikyu, this.hotaru);
+            this.noMoreActions();
+        });
+
+        it('doesn\'t react: no character committed', function() {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.hotaru, this.initiate]
+            });
+            this.player1.clickPrompt('Pass');
+            this.player2.clickPrompt('Done');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

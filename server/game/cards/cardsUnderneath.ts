@@ -7,7 +7,7 @@ export function playableFromUnderneath(card: BaseCard, match: (underneath: BaseC
     return {
         location: Location.PlayArea,
         targetLocation: card.uuid,
-        targetController: Players.Self,
+        targetController: Players.Any,
         match: (underneath: BaseCard) => underneath.location === card.uuid && match(underneath),
         effect: [
             canPlayFromOutOfPlay((player) => player === card.controller, PlayType.PlayFromHand),

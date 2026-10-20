@@ -19,6 +19,12 @@ describe('Invocation of Ash', function () {
                 this.player2.pass();
             });
 
+            it('can\'t move to the character it is attached to (RRG Move)', function () {
+                this.player1.clickCard(this.ash);
+                expect(this.player1).not.toBeAbleToSelect(this.mystic);
+                expect(this.player1).toBeAbleToSelect(this.rider);
+            });
+
             it('should cost the player 1 honor to use', function () {
                 this.initHonor = this.player1.honor;
                 this.player1.clickCard(this.ash);

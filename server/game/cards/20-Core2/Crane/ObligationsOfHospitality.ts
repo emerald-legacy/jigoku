@@ -15,7 +15,7 @@ export default class ObligationsOfHospitality extends DrawCard {
         });
 
         this.conflictAction('Take control of a character')
-            .playOnlyIf((context) => !!context.player.opponent && context.player.isMoreHonorable())
+            .ifCondition((context) => !!context.player.opponent && context.player.isMoreHonorable())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

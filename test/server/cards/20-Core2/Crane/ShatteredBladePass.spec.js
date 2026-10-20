@@ -107,3 +107,37 @@ describe('Shattered Blade Pass with Contested Countryside', function () {
         });
     });
 });
+
+describe('Shattered Blade Pass and characters it can\'t affect', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['aggressive-moto']
+                },
+                player2: {
+                    inPlay: ['asahina-purifier', 'togashi-initiate'],
+                    provinces: ['shattered-blade-pass']
+                }
+            });
+            this.aggressiveMoto = this.player1.findCardByName('aggressive-moto');
+            this.purifier = this.player2.findCardByName('asahina-purifier');
+            this.initiate = this.player2.findCardByName('togashi-initiate');
+            this.shatteredBladePass = this.player2.findCardByName('shattered-blade-pass', 'province 1');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.aggressiveMoto],
+                defenders: [],
+                province: this.shatteredBladePass
+            });
+        });
+
+        it('can\'t choose a ready character that can\'t join this conflict ("Then, take another action" doesn\'t count)', function () {
+            this.player2.clickCard(this.shatteredBladePass);
+            expect(this.player2).not.toBeAbleToSelect(this.purifier);
+            expect(this.player2).toBeAbleToSelect(this.initiate);
+        });
+    });
+});

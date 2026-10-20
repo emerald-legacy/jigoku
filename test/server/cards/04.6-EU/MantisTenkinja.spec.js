@@ -41,15 +41,14 @@ describe('Mantis Tenkinja', function() {
                 expect(this.player1.fate).toBe(4);
             });
 
-            it('should not trigger when the cost cannot be reduced', function() {
+            it('can be triggered for a 0-cost event (EmeraldDB ruling)', function() {
+                const honor = this.player1.honor;
                 this.player1.clickCard('banzai');
-                expect(this.player1).toHavePrompt('Banzai!');
+                this.player1.clickCard(this.mantisTenkinja);
+                expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.mantisTenkinja);
                 this.player1.clickCard(this.mantisTenkinja);
-                expect(this.player1).toHavePrompt('Banzai!');
-                this.player1.clickPrompt('Done');
-                expect(this.mantisTenkinja.militarySkill).toBe(3);
-                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.player1.honor).toBe(honor - 1);
             });
 
             it('should offer the player the option to cancel and cancel when that is clicked', function() {

@@ -17,8 +17,8 @@ class Daikyu extends DrawCard {
                 .when({
                     onConflictDeclared: (_event, context) =>
                         context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
-                    onDefendersDeclared: (_event, context) =>
-                        context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
+                    onDefendersDeclared: (event, context) =>
+                        event.defenders.length > 0 && context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military),
                     onMoveToConflict: (_event, context) =>
                         context.source.isParticipating() && context.game.isDuringConflict(ConflictType.Military)
                 })

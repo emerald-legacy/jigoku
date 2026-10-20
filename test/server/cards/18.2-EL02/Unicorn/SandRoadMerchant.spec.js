@@ -153,3 +153,44 @@ describe('Sand Road Merchant', function() {
         });
     });
 });
+
+describe('Sand Road Merchant after a change of control', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['sand-road-merchant', 'kakita-yoshi'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    honor: 8,
+                    inPlay: ['doji-whisperer'],
+                    hand: ['blackmail']
+                }
+            });
+            this.merchant = this.player1.findCardByName('sand-road-merchant');
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.player1.player.placeUnderneath(this.katana, this.merchant);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.yoshi],
+                defenders: [this.whisperer]
+            });
+            this.player2.clickCard('blackmail');
+            this.player2.clickCard(this.merchant);
+            this.player1.pass();
+        });
+
+        it('lets its new controller play the cards under it', function () {
+            expect(this.merchant.controller).toBe(this.player2.player);
+            this.player2.clickCard(this.katana);
+            this.player2.clickCard(this.whisperer);
+            expect(this.katana.parent).toBe(this.whisperer);
+        });
+    });
+});

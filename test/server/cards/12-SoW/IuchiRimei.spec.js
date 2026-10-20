@@ -55,7 +55,6 @@ describe('Iuchi Rimei', function () {
             expect(this.player2).not.toBeAbleToSelect(this.fan);
             expect(this.player2).toBeAbleToSelect(this.katana);
             expect(this.player2).not.toBeAbleToSelect(this.fashion);
-            expect(this.player2).not.toBeAbleToSelect(this.river);
         });
 
         it('should not allow targeting an attachment that has changed control', function () {
@@ -116,10 +115,12 @@ describe('Iuchi Rimei', function () {
             expect(this.doomed.attachments).not.toContain(this.katana);
         });
 
-        it('should not offer an attachment with no legal destination', function () {
+        it('may move an attachment where it can\'t be attached: it is then discarded (EmeraldDB ruling)', function () {
             this.player2.clickCard(this.rimei);
-            expect(this.player2).not.toBeAbleToSelect(this.river);
-            expect(this.river.location).toBe('play area');
+            this.player2.clickCard(this.river);
+            this.player2.clickCard(this.kuwanan);
+            expect(this.river.location).toBe('conflict discard pile');
+            expect(this.getChatLogs(5)).toContain('Force of the River is discarded from Doji Kuwanan as it is no longer legally attached');
         });
 
         it('should not discard a unique attachment controlled by both players (moving from opponent character)', function () {
@@ -165,11 +166,13 @@ describe('Iuchi Rimei and attachment restrictions', function () {
             this.player2.playAttachment(this.tattoo, this.disciple);
         });
 
-        it('only offers characters the attachment can move to', function () {
+        it('also offers characters the attachment can\'t be attached to, then discards it (EmeraldDB ruling)', function () {
             this.player1.clickCard(this.rimei);
             this.player1.clickCard(this.tattoo);
             expect(this.player1).toBeAbleToSelect(this.wanderer);
-            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            this.player1.clickCard(this.whisperer);
+            expect(this.tattoo.location).toBe('conflict discard pile');
         });
     });
 });

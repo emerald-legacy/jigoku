@@ -17,7 +17,8 @@ class IuchiRimei extends DrawCard {
                 message: (context, card) => msg`${context.player} moves ${context.target} to ${card}`,
                 gameAction: attach({
                     attachment: context.target,
-                    ignoreUniqueness: true
+                    ignoreUniqueness: true,
+                    evenIfIllegal: true
                 })
             })))
             .chatText('move {0} to another character');

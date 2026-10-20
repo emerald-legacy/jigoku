@@ -10,9 +10,7 @@ class MantisTenkinja extends DrawCard {
         this.interrupt('Reduce cost of next event')
             .when({
                 onCardPlayed: (event, context) =>
-                    event.card.type === CardType.Event && event.player === context.player &&
-                    !!event.context &&
-                    event.context.ability.getReducedCost(event.context) > 0
+                    event.card.type === CardType.Event && event.player === context.player
             })
             .cost(costs.payHonor(1))
             .playerLastingEffect((context) => ({

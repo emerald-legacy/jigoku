@@ -15,7 +15,7 @@ export default class IncessantMoto extends DrawCard {
 
         this.reaction('Move to conflict')
             .when({
-                onCardPlayed: (event, context) => event.card.type === CardType.Event && event.card.controller === context.player
+                onCardPlayed: (event, context) => event.card.type === CardType.Event && event.player === context.player
             })
             .moveToConflict();
     }

@@ -71,3 +71,38 @@ describe('Steadfast Orator', function () {
         });
     });
 });
+
+describe('Steadfast Orator and costs', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['steadfast-orator', 'shinjo-archer'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['togashi-yokuni']
+                }
+            });
+            this.orator = this.player1.findCardByName('steadfast-orator');
+            this.archer = this.player1.findCardByName('shinjo-archer');
+            this.yokuni = this.player2.findCardByName('togashi-yokuni');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.orator, this.archer],
+                defenders: [this.yokuni]
+            });
+            this.player2.pass();
+        });
+
+        it('doesn\'t react to a character moved home by a cost (only card effects)', function () {
+            this.player1.clickCard(this.archer);
+            this.player1.clickCard(this.yokuni);
+            expect(this.archer.isParticipating()).toBe(false);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

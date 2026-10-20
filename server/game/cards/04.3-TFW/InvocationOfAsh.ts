@@ -12,7 +12,8 @@ class InvocationOfAsh extends DrawCard {
             .cost(costs.payHonor(1))
             .target({
                 cardType: CardType.Character,
-                controller: Players.Self
+                controller: Players.Self,
+                cardCondition: (card, context) => card !== context.source.parentCharacter
             }, sequential([
                 attach((context) => ({ attachment: context.source })),
                 removeFate()

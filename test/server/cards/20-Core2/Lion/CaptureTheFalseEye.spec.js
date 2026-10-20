@@ -88,3 +88,37 @@ describe('Capture the False Eye and events from the discard pile', function () {
         });
     });
 });
+
+describe('Capture the False Eye and bowed characters', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker'],
+                    hand: ['capture-the-false-eye']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'kakita-yoshi']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: [this.whisperer, this.yoshi]
+            });
+            this.whisperer.bowed = true;
+            this.player2.pass();
+        });
+
+        it('can\'t choose a character that is already bowed (RRG Target)', function () {
+            this.player1.clickCard('capture-the-false-eye');
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.yoshi);
+        });
+    });
+});

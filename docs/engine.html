@@ -158,6 +158,14 @@ eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType
     <li>Not fixed (decision, 2026-10-20): nobody would use the Action that way. Letting <code>afterwards()</code> steps count would also need an exception for replacement effects. A replacement that can't change the game state can't be initiated (RRG Replacement Effects), whatever follows it, as with Shiba Yohana when she is already tainted.</li>
 </ul>
 
+<h3 id="eng-limit-side-control">"Characters you control" is read as "characters on your side"</h3>
+<p>In a conflict a character is normally on its controller's side. Cards say either "on your side" / "the enemy side" or "you control" / "your opponent controls". The engine reads both as the side: <code>conflict.getCharacters(player)</code>, <code>hasMoreParticipants</code> and <code>getNumberOfParticipantsFor</code> all go by side.</p>
+<ul>
+    <li>They differ only when a character is on the other side than its controller: Endless Plains Skirmisher ("move this character to the conflict on that player's side. You still control this character") or Join the Fray moving a character to the opponent's side. Then, for example, Misinformation ("each participating character your opponent controls") misses that character, and "if you control more participating characters" counts it for the wrong player.</li>
+    <li>Affected wording: Arrows from the Woods, Void Fist, Ramparts of Stone, Wildfire Kick, Warrior Poet, Fearsome Mystic, Isawa Atsuko, Capture the False Eye, Misinformation, Shinjo Shono, Menacing Iron Warrior, Subdue the Spirits, Overhear, Show Me Your Stance; the counts of Press of Battle, Even the Odds, Flank the Enemy, Moment of Perfect Beauty.</li>
+    <li>Not fixed (decision, 2026-10-20): putting a character on the opponent's side is a rare choice (mostly multiplayer, where Join the Fray targets you or your partner).</li>
+</ul>
+
 </main>
 </div>
 <div class="jump" id="jump" role="listbox" aria-label="Matches" hidden></div>

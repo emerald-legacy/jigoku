@@ -11,7 +11,8 @@ class FeralNingyo extends DrawCard {
     override setupCardAbilities() {
         this.action('Put into play')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
-            .location(Location.Hand)
+            // also while in play, when it was played normally: then it only returns at the end of the conflict (EmeraldDB ruling)
+            .location([Location.Hand, Location.PlayArea])
             .gameAction(sequential([
                 putIntoConflict((context) => ({
                     target: context.source
@@ -22,7 +23,9 @@ class FeralNingyo extends DrawCard {
                     gameAction: returnToDeck({ shuffle: true })
                 }))
             ]))
-            .chatText((context) => msg`put ${context.source} into play into the conflict and return ${context.chatTarget()} to the deck at the end of the conflict`);
+            .chatText((context) => context.source.location === Location.PlayArea
+                ? msg`return ${context.source} to the deck at the end of the conflict`
+                : msg`put ${context.source} into play into the conflict and return ${context.chatTarget()} to the deck at the end of the conflict`);
     }
 
     override getPrintedElementSymbols() {

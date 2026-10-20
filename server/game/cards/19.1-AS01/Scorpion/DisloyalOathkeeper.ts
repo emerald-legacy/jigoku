@@ -1,6 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { playableFromUnderneath } from '../../cardsUnderneath.js';
+import { countCardsUnderneath, playableFromUnderneath } from '../../cardsUnderneath.js';
 
 export default class DisloyalOathkeeper extends DrawCard {
     static id = 'disloyal-oathkeeper';
@@ -14,7 +14,7 @@ export default class DisloyalOathkeeper extends DrawCard {
                     event.player === context.player.opponent &&
                     event.card.type === CardType.Event &&
                     !event.card.hasEphemeral() &&
-                    context.source.controller.getSourceList(this.uuid).length === 0
+                    countCardsUnderneath(this) === 0
             })
             .placeCardUnderneath((context) => ({
                 target: context.event.card,

@@ -76,7 +76,6 @@ describe('Unquestioned Heritage', function () {
             expect(this.player1).not.toBeAbleToSelect(this.katana);
             expect(this.player1).not.toBeAbleToSelect(this.jade2);
             expect(this.player1).toBeAbleToSelect(this.fashion);
-            expect(this.player1).not.toBeAbleToSelect(this.river);
         });
 
         it('should allow moving the attachment to any other character', function () {
@@ -122,18 +121,22 @@ describe('Unquestioned Heritage', function () {
             expect(this.doomed.attachments).not.toContain(this.fan);
         });
 
-        it('should not offer an attachment with no legal destination', function () {
+        it('may move an attachment where it can\'t be attached: it is then discarded (as Iuchi Rimei)', function () {
             this.player1.claimRing('air');
             this.player1.clickCard(this.heritage);
-            expect(this.player1).not.toBeAbleToSelect(this.river);
+            this.player1.clickCard(this.river);
+            this.player1.clickCard(this.kuwanan);
+            expect(this.river.location).toBe('conflict discard pile');
         });
 
-        it('should only offer characters the attachment can legally move to (Finger of Jade)', function () {
+        it('may move Finger of Jade to an opponent\'s character: it is then discarded', function () {
             this.player1.claimRing('air');
             this.player1.clickCard(this.heritage);
             this.player1.clickCard(this.finger);
             expect(this.player1).toBeAbleToSelect(this.doomed);
-            expect(this.player1).not.toBeAbleToSelect(this.rimei);
+            expect(this.player1).toBeAbleToSelect(this.rimei);
+            this.player1.clickCard(this.rimei);
+            expect(this.finger.location).toBe('conflict discard pile');
         });
     });
 });
@@ -159,11 +162,13 @@ describe('Unquestioned Heritage and attachment restrictions', function () {
             this.player2.pass();
         });
 
-        it('only offers characters the attachment can move to', function () {
+        it('also offers characters the attachment can\'t be attached to, then discards it', function () {
             this.player1.clickCard(this.heritage);
             this.player1.clickCard(this.tattoo);
             expect(this.player1).toBeAbleToSelect(this.wanderer);
-            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            this.player1.clickCard(this.whisperer);
+            expect(this.tattoo.location).toBe('conflict discard pile');
         });
     });
 });

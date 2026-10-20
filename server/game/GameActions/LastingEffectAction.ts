@@ -1,3 +1,4 @@
+import type BaseCard from '../BaseCard.js';
 import type { GameObject } from '../GameObject.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -22,7 +23,10 @@ export interface LastingEffectFields<Context extends AbilityContext = AbilityCon
     endingMessage?: string;
 }
 
-export interface LastingEffectGeneralProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties, LastingEffectFields<Context> {}
+export interface LastingEffectGeneralProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties, LastingEffectFields<Context> {
+    /** For card effects: the cards it applies to, checked while it lasts, so also cards that enter play later (Grasp of Earth). */
+    match?: (card: BaseCard, context?: AbilityContext) => boolean;
+}
 
 /** A single effect factory becomes a one-element list; a missing one becomes an empty list. */
 export function toEffectList(effect: EffectFactory | EffectFactory[] | undefined): EffectFactory[] {

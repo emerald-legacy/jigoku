@@ -18,7 +18,8 @@ class UnquestionedHeritage extends DrawCard {
                 cardCondition: (card) => card !== context.target.parentCharacter,
                 message: (context, card) => msg`${context.player} moves ${context.target} to ${card}`,
                 gameAction: attach({
-                    attachment: context.target
+                    attachment: context.target,
+                    evenIfIllegal: true
                 })
             })))
             .chatText('move {0} to another character');

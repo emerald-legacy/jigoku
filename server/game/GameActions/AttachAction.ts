@@ -19,13 +19,15 @@ export interface AttachProperties extends CardActionProperties {
     giveControl?: boolean;
     ignoreUniqueness?: boolean;
     viaDisguised?: boolean;
+    /** Moves it even where it can't be attached; the game then discards it as not legally attached (Iuchi Rimei; EmeraldDB ruling). */
+    evenIfIllegal?: boolean;
 }
 
 export class AttachAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<
     AttachProperties,
     EventName.OnCardAttached,
     Context,
-    'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised'
+    'ignoreType' | 'takeControl' | 'giveControl' | 'ignoreUniqueness' | 'viaDisguised' | 'evenIfIllegal'
 > {
     override name = 'attach';
     override restriction = RestrictionType.Attach;
@@ -36,7 +38,8 @@ export class AttachAction<Context extends AbilityContext = AbilityContext> exten
         takeControl: false,
         giveControl: false,
         ignoreUniqueness: false,
-        viaDisguised: false
+        viaDisguised: false,
+        evenIfIllegal: false
     };
 
     protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
@@ -60,10 +63,11 @@ export class AttachAction<Context extends AbilityContext = AbilityContext> exten
             return false;
         }
         const controller = this.getFinalController(properties, context) ?? attachment.controller;
+        const legallyAttached = attachment.canAttach(card, { ignoreType: properties.ignoreType, controller }) &&
+            !card.hasCopyOfAttachment(attachment, controller) && card.allowAttachment(attachment);
         if(
             (!properties.ignoreUniqueness && attachment.anotherUniqueInPlay(context.player)) ||
-            !attachment.canAttach(card, { ignoreType: properties.ignoreType, controller }) ||
-            card.hasCopyOfAttachment(attachment, controller)
+            (!legallyAttached && !properties.evenIfIllegal)
         ) {
             return false;
         } else if(properties.takeControl && attachment.controller === context.player) {
@@ -71,7 +75,7 @@ export class AttachAction<Context extends AbilityContext = AbilityContext> exten
         } else if(properties.giveControl && attachment.controller !== context.player) {
             return false;
         }
-        return card.allowAttachment(attachment) && super.canAffect(card, context);
+        return super.canAffect(card, context);
     }
 
     getFinalController(properties: AttachProperties, context: Context): Player | undefined {
