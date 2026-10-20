@@ -16,7 +16,7 @@ class ShadowStep extends DrawCard {
                 target: context.target
             })))
             .chatText('remove {0} from the game, then put it back into play')
-            .afterwards()
+            .then()
             .if((context) => !!context.target?.hasTrait(Trait.Shadow))
             .putIntoPlay((context) => ({ target: context.target, controller: this.ownerSide(context) }))
             .otherwise()

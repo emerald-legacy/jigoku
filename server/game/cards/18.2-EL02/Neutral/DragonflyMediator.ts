@@ -14,7 +14,7 @@ class DragonflyMediator extends DrawCard {
                 controller: Players.Self
             }, reveal({ chatMessage: true }))
             .chatText('have each player reveal cards from their hand')
-            .afterwards()
+            .then()
             .targetCards({
                 name: 'oppCard',
                 activePromptTitle: 'Choose three cards to reveal',

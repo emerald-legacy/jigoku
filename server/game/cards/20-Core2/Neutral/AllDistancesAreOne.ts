@@ -23,7 +23,7 @@ export default class AllDistancesAreOne extends DrawCard {
                 message: (context, card) => msg`${context.player} moves the conflict to ${card}`
             })
             .chatText('move the conflict to another eligible province')
-            .afterwardsIf((context) => !context.costs.originalProvince?.isBroken)
+            .thenIf((context) => !context.costs.originalProvince?.isBroken)
             .onAffinity(Trait.Water, {
                 activePromptTitle: 'Flip the original province facedown?',
                 chatText: (context) => msg`flip ${context.costs.originalProvince} facedown`

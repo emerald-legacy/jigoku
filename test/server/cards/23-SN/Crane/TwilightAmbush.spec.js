@@ -89,3 +89,35 @@ describe('Twilight Ambush', function () {
         });
     });
 });
+
+describe('Twilight Ambush and Shiba Yohana', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['adept-of-shadows'],
+                    hand: ['twilight-ambush']
+                },
+                player2: {
+                    inPlay: ['shiba-yohana']
+                }
+            });
+            this.adept = this.player1.findCardByName('adept-of-shadows');
+            this.ambush = this.player1.findCardByName('twilight-ambush');
+            this.yohana = this.player2.findCardByName('shiba-yohana');
+            this.adept.dishonor();
+            this.yohana.dishonor();
+        });
+
+        it('does not injure again when the first injury was replaced', function () {
+            this.player1.clickCard(this.ambush);
+            this.player1.clickCard(this.adept);
+            this.player1.clickCard(this.yohana);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.yohana);
+            expect(this.yohana.isTainted).toBe(true);
+            expect(this.yohana.location).toBe('play area');
+        });
+    });
+});

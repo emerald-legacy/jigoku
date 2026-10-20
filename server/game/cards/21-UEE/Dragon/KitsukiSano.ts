@@ -22,7 +22,7 @@ export default class KitsukiSano extends DrawCard {
             .condition((context) =>
                 context.source.isAttacking() && context.game.requireConflict().defenders.length === 0)
             .draw(2)
-            .afterwards()
+            .then()
             .chosenDiscard((context) => ({ targets: false, target: context.player, amount: 2 }));
     }
 }

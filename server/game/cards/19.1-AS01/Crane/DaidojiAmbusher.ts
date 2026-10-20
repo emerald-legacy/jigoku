@@ -22,7 +22,7 @@ export default class DaidojiAmbusher extends DrawCard {
                 effect: modifyMilitarySkill(-2)
             }))
             .chatText((context) => msg`give ${context.chatTarget()} -2${'military'}${this.triggerKickerEffect(context, Timing.BEFORE_PENALTY) ? ` and ${this.shouldDiscardTarget(context) ? 'discard them' : 'remove a fate from them'}` : ''}`)
-            .afterwardsIf((context) => this.triggerKickerEffect(context, Timing.AFTER_PENALTY))
+            .thenIf((context) => this.triggerKickerEffect(context, Timing.AFTER_PENALTY))
             .injure((context) => ({ target: context.target }));
     }
 

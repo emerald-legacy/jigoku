@@ -151,13 +151,6 @@ eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType
 <h2 id="eng-limitations">Technical Limitations And Known Issues</h2>
 <p>Where the engine knowingly differs from the rules, because fixing it would cost more than the case is worth.</p>
 
-<h3 id="eng-limit-later-steps">Only the first step decides whether an ability can be used</h3>
-<p>Without targets, an ability is usable only if one of its <em>first</em> step's game actions has a legal target (see <a href="#eng-checks">How an ability is checked</a>). A later step from <code>afterwards()</code>, a plain "Then" that follows anyway, isn't considered.</p>
-<ul>
-    <li><strong>Kitsuki Sano under Jealous Ancestor</strong>: "Conflict Action: If this character is attacking unopposed – draw 2 cards, then discard 2 cards." While Jealous Ancestor stops its controller from adding cards to their hand, the draw can't happen. By the rules the Action may still be used just to discard 2 cards; the engine doesn't offer it.</li>
-    <li>Not fixed (decision, 2026-10-20): nobody would use the Action that way. Letting <code>afterwards()</code> steps count would also need an exception for replacement effects. A replacement that can't change the game state can't be initiated (RRG Replacement Effects), whatever follows it, as with Shiba Yohana when she is already tainted.</li>
-</ul>
-
 <h3 id="eng-limit-side-control">"Characters you control" is read as "characters on your side"</h3>
 <p>In a conflict a character is normally on its controller's side. Cards say either "on your side" / "the enemy side" or "you control" / "your opponent controls". The engine reads both as the side: <code>conflict.getCharacters(player)</code>, <code>hasMoreParticipants</code> and <code>getNumberOfParticipantsFor</code> all go by side.</p>
 <ul>

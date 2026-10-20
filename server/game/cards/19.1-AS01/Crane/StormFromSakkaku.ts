@@ -12,7 +12,7 @@ export default class StormFromSakkaku extends DrawCard {
         new EventRegistrar(this.game).registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
 
         moveHoldingAction(this)
-            .afterwards()
+            .then()
             .discardCard((context) => ({ target: otherHoldingsInSameProvince(context) }))
             .message((context) => {
                 const mood = otherHoldingsInSameProvince(context).length > 0

@@ -12,7 +12,7 @@ class KeeperInitiate extends DrawCard {
             })
             .location([Location.Provinces, Location.DynastyDiscardPile])
             .putIntoPlay()
-            .afterwards()
+            .then()
             .placeFate();
     }
 }

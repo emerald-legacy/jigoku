@@ -87,12 +87,13 @@ describe('Kitsuki Sano when its draw is replaced', function() {
             this.player2.pass();
         });
 
-        it('still discards 2 cards', function() {
+        it('does not discard ("then" needs the draw)', function() {
             this.player1.clickCard(this.kitsukiSano);
             expect(this.player2).toBeAbleToSelect(this.subterfuge);
             this.player2.clickCard(this.subterfuge);
             this.player2.clickPrompt('2');
-            expect(this.player1).toHavePrompt('Choose 2 cards to discard');
+            expect(this.player1).not.toHavePrompt('Choose 2 cards to discard');
+            expect(this.player1.hand.length).toBe(3);
         });
     });
 });

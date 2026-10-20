@@ -946,7 +946,7 @@ this.action('Gain 2 fate or 2 honor')
     .refillFaceup((context) =&gt; ({ location: context.cardStateWhenInitiated?.location ?? [] }));
 
 // Distinguished Dōjō: … Then, you may sacrifice this holding to gain honor equal to the number of honor tokens on this holding. …
-    .afterwards()
+    .then()
     .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {
         Yes: sacrifice(),
         No: () =&gt; true
@@ -1219,10 +1219,10 @@ this.action('Initiate a Military duel')
     <ul class="edge">
       <li>It covers every own game action of the ability or step, wherever they are in the chain, but not a target's game actions. Without own game actions it throws at registration <code>"onAffinity() covers the ability's or step's own game actions, and there are none (a target's aren't covered)"</code>. When the affinity part affects the chosen card, put the <code>onAffinity({ trait, gameAction })</code> game action among the target's actions instead.</li>
       <li>Once per ability or step; not with <code>handler()</code>.</li>
-      <li>Without the affinity the covered actions have no legal target: an ability with no target and only covered actions can't be used. In a step after <a href="#b-afterwards"><code>afterwards()</code></a> it simply does nothing.</li>
+      <li>Without the affinity the covered actions have no legal target: an ability with no target and only covered actions can't be used. In a later step (after <a href="#b-then"><code>then()</code></a> or <a href="#b-afterwards"><code>afterwards()</code></a>) it simply does nothing.</li>
     </ul>
     <pre><code>// Counsel from Yume-do: … Then, with Water affinity, draw a card.
-    .afterwards()
+    .then()
     .onAffinity(Trait.Water, { chatText: () =&gt; msg`draw a card` })
     .draw();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/CounselFromYumeDo.ts">Counsel from Yume-do</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/AllDistancesAreOne.ts">All Distances Are One</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/WingsOfThePhoenix.ts">Wings of the Phoenix</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Unicorn/TheRushingWave.ts">The Rushing Wave</a></p>
@@ -1260,43 +1260,41 @@ this.action('Initiate a Military duel')
     <li>A step is resolved by its own resolver, but it is not a new use of the card: it raises no <code>onCardAbilityInitiated</code> (Kamayari reacts once per ability). When one of the step's targets has no legal choice, the step doesn't resolve, without a chat line (RRG Target).</li>
   </ul>
   <div class="note">
-    <p><strong>"Then" or "if you do"?</strong> <code>then()</code> follows only when the step before resolved in full; <code>afterwards()</code> follows regardless. Card text "if you do" is <code>then()</code>. A plain "Then" only sets the order, so it is <code>afterwards()</code>. The RRG has a success rule only for "to" (quoted below), and its errata turn conditional "Then"s into "If you do". The same holds for <code>thenIf()</code> and <code>afterwardsIf()</code>.</p>
+    <p><strong>"Then" or "if you do"?</strong> <code>then()</code> follows only when the step before resolved in full; <code>afterwards()</code> follows regardless. Card text "then" and "if you do" are both <code>then()</code>: the text after "then" resolves only if the text before it did (designer ruling, 2026-10-20; the RRG has the same rule for "to", quoted below). <code>afterwards()</code> is for a sentence without "then" that still comes after the effect ("Shuffle.", "If it is now in …"), and for the few cards whose rulings let the post-then part resolve anyway. The same holds for <code>thenIf()</code> and <code>afterwardsIf()</code>.</p>
   </div>
   <div class="rule"><blockquote>If the effect text of a card ability includes the word "to," then the text that follows the word "to" can only be resolved if the preceding text was successfully resolved in full.</blockquote><cite>The word "To"</cite></div>
 
   <div class="ref" id="b-afterwards" data-name="afterwards">
     <h3><code>afterwards()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-afterwards">#</a></h3>
-    <p>Starts the next step, read after this one: a plain "Then, …", or a sentence that follows the effect ("Shuffle."). It follows whether or not this step resolved in full, also when it raised no events. Returns a builder for the step.</p>
+    <p>Starts the next step, read after this one: a sentence without "then" that follows the effect ("Shuffle."), or a "then" that a ruling lets resolve anyway. It follows whether or not this step resolved in full, also when it raised no events. Returns a builder for the step.</p>
     <ul class="edge">
       <li>The step resolves after this step's events, before reactions to them.</li>
     </ul>
-    <pre><code>// Keeper Initiate: Reaction: After you claim a ring that matches the element of your role – put this character into play from your dynasty discard pile or provinces. Then, put 1 fate on this character.
-this.reaction('Put this into play')
+    <pre><code>// Emperor's Summons: Reaction: After this province is revealed - search your dynasty deck for a character card and put it faceup into a non-stronghold province you control, discarding each other card in that province. Shuffle.
+this.reaction('Search for a character')
     .when({ … })
-    .location([Location.Provinces, Location.DynastyDiscardPile])
-    .putIntoPlay()
+    .cardMenu((context) =&gt; ({ … }))
+    .chatText('choose a character to place in a province')
     .afterwards()
-    .placeFate();</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KeeperInitiate.ts">Keeper Initiate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/EmperorsSummons.ts">Emperor's Summons</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SageOfGiseiToshi.ts">Sage of Gisei Toshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/Aranat.ts">Aranat</a></p>
+    .shuffleDeck({ deck: Location.DynastyDeck });</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/EmperorsSummons.ts">Emperor's Summons</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/Aranat.ts">Aranat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/IchigoKun.ts">Ichigo-kun</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DaimyosGunbai.ts">Daimyō's Gunbai</a></p>
   </div>
 
   <div class="ref" id="b-afterwardsIf" data-name="afterwardsIf">
     <h3><code>afterwardsIf(condition)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-afterwardsIf">#</a></h3>
-    <p>"Then, if …" or "If …" read after this step: the next step follows when <code>condition</code> holds, whether or not this step resolved in full.</p>
+    <p>"If …" read after this step: the next step follows when <code>condition</code> holds, whether or not this step resolved in full. For "Then, if …" use <a href="#b-thenIf"><code>thenIf()</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>required</td><td>Read after this step resolved, with this step's context (its targets are set).</td></tr>
       </tbody>
     </table>
-    <pre><code>// Magistrate's Intervention: … Choose an attacking character - dishonor that character. Then, if that character's controller has declared two or more conflicts against you this phase, dishonor it again.
-    .target({ … }, dishonor())
-    .chatText(…)
-    .afterwardsIf((context) =&gt; !!(
-        context.player.opponent &amp;&amp; context.target?.controller === context.player.opponent &amp;&amp;
-            context.game.getDeclaredConflictCount(context.player.opponent) &gt; 1))
-    .dishonor((context) =&gt; ({ target: context.target }));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DaidojiAmbusher.ts">Daidōji Ambusher</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/RelentlessGloryseeker.ts">Relentless Gloryseeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/TheEmptyCity.ts">The Empty City</a></p>
+    <pre><code>// Relentless Gloryseeker: Reaction: During the conflict phase, after this character leaves play, if it is in your discard pile - put it into play (at home). The next time this character would leave play this round, remove it from the game instead.
+    .putIntoPlay()
+    .chatText('return to play - {0} is ready for more')
+    .afterwardsIf((context) =&gt; context.source.location === Location.PlayArea)
+    .cardLastingEffect((context) =&gt; ({ … }));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/RelentlessGloryseeker.ts">Relentless Gloryseeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/TheEmptyCity.ts">The Empty City</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Scorpion/ShosuroIsa.ts">Shosuro Isa</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumaHajime.ts">Hiruma Hajime</a></p>
   </div>
 
   <div class="ref" id="b-if" data-name="if">
@@ -1446,7 +1444,7 @@ this.action('Move this character to the conflict or home from the conflict')
       <li>If this step raised no events (nothing it could do), the step doesn't follow.</li>
       <li>The step resolves after this step's events, before reactions to them. Its targets are chosen then.</li>
       <li>In the step, <code>chatText()</code> throws <code>"a then step prints its message with message()"</code>, and the ability's own settings throw <code>"… belongs to the ability, before then()"</code>. A step prints only its <a href="#b-message"><code>message()</code></a>.</li>
-      <li>For a plain "Then" use <a href="#b-afterwards"><code>afterwards()</code></a> (see the note above).</li>
+      <li>For a sentence that follows even if this step didn't resolve use <a href="#b-afterwards"><code>afterwards()</code></a> (see the note above).</li>
     </ul>
     <pre><code>// Ujiaki's Offer: Action: During a [conflict-political] conflict, choose a participating character … - place 1 fate on the chosen character. If you do, bow it, move it home, and dishonor it.
 this.action('Place a fate on a participating character, bow it, move it home, and dishonor it')
@@ -1462,7 +1460,7 @@ this.action('Place a fate on a participating character, bow it, move it home, an
 
   <div class="ref" id="b-thenIf" data-name="thenIf">
     <h3><code>thenIf(condition)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-thenIf">#</a></h3>
-    <p>"If you do, and if …": the next step follows when this step resolved in full and <code>condition</code> holds.</p>
+    <p>"Then, if …" or "If you do, and if …": the next step follows when this step resolved in full and <code>condition</code> holds.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1471,13 +1469,16 @@ this.action('Place a fate on a participating character, bow it, move it home, an
     </table>
     <ul class="edge">
       <li>If this step raised no events, the step doesn't follow, whatever the condition.</li>
-      <li>For "Then, if …" use <a href="#b-afterwardsIf"><code>afterwardsIf()</code></a>.</li>
+      <li>For an "If …" that follows anyway use <a href="#b-afterwardsIf"><code>afterwardsIf()</code></a>.</li>
     </ul>
-    <pre><code>// No card uses thenIf() yet; a sketch for "… place 1 fate on it. If you do, and it is participating, move it home."
-.target({ … }, placeFate())
-.thenIf((context) =&gt; context.target.isParticipating())
-.sendHome((context) =&gt; ({ target: context.target }));</code></pre>
-    <p class="seen">Not used by any card yet.</p>
+    <pre><code>// Magistrate's Intervention: … Choose an attacking character - dishonor that character. Then, if that character's controller has declared two or more conflicts against you this phase, dishonor it again.
+    .target({ … }, dishonor())
+    .chatText(…)
+    .thenIf((context) =&gt; !!(
+        context.player.opponent &amp;&amp; context.target?.controller === context.player.opponent &amp;&amp;
+            context.game.getDeclaredConflictCount(context.player.opponent) &gt; 1))
+    .dishonor((context) =&gt; ({ target: context.target }));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DaidojiAmbusher.ts">Daidōji Ambusher</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crane/TwilightAmbush.ts">Twilight Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/CampfireCounsel.ts">Campfire Counsel</a></p>
   </div>
 </section>
 
@@ -1545,7 +1546,7 @@ this.action('Place a fate on a participating character, bow it, move it home, an
       <li>On the ability itself it throws <code>"the ability's own message is its chatText()"</code>. Once per step.</li>
     </ul>
     <pre><code>// Propitious Market: … Then, you may sacrifice this holding to gain fate equal to the number of honor tokens on this holding.
-    .afterwards()
+    .then()
     .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {
         Yes: sacrifice(),
         No: () =&gt; true

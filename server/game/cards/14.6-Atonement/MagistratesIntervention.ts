@@ -14,7 +14,7 @@ class MagistratesIntervention extends DrawCard {
                 cardCondition: (card) => card.isAttacking()
             }, dishonor())
             .chatText((context) => msg`dishonor ${context.chatTarget()}${context.player.opponent && context.game.getDeclaredConflictCount(context.player.opponent) > 1 ? ', then dishonor it again' : ''}`)
-            .afterwardsIf((context) => !!(
+            .thenIf((context) => !!(
                 context.player.opponent && context.target?.controller === context.player.opponent &&
                     context.game.getDeclaredConflictCount(context.player.opponent) > 1))
             .dishonor((context) => ({ target: context.target }));

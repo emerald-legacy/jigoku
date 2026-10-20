@@ -27,7 +27,7 @@ export default class AsakoShun extends DrawCard {
                 effect: modifyBothSkills(penalty(context))
             })))
             .chatText((context) => msg`give ${context.target} ${penalty(context)}${'military'} and ${penalty(context)}${'political'}`)
-            .afterwardsIf((context) => {
+            .thenIf((context) => {
                 const conflict = context.game.currentConflict;
                 return !!conflict && conflict.calculateSkillFor([context.target]) === 0;
             })

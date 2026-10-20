@@ -467,7 +467,7 @@ moveCardInProvinceAction(this)
     <pre><code>// Song of the Empty City: Action: Choose a non-stronghold province you control - move this card to that province.
 // Then, discard each other holding in that province.
 moveHoldingAction(this)
-    .afterwardsIf((context) =&gt; otherHoldingsInSameProvince(context).length &gt; 0)
+    .thenIf((context) =&gt; otherHoldingsInSameProvince(context).length &gt; 0)
     .discardCard((context) =&gt; ({ target: otherHoldingsInSameProvince(context) }))
     .message((context) =&gt; msg`${context.source} discards the other holdings in the province`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/StormFromSakkaku.ts">Storm from Sakkaku</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/SongOftheEmptyCity.ts">Song of the Empty City</a></p>
@@ -917,7 +917,7 @@ private getNumberOfLegalTargets(context: AbilityContext) {
       <li>Returns <code>BaseCard[]</code>; the holding's location is read when you call it, so after a move it is the new province.</li>
     </ul>
     <pre><code>// Song of the Empty City: … Then, discard each other holding in that province.
-.afterwardsIf((context) =&gt; otherHoldingsInSameProvince(context).length &gt; 0)
+.thenIf((context) =&gt; otherHoldingsInSameProvince(context).length &gt; 0)
 .discardCard((context) =&gt; ({ target: otherHoldingsInSameProvince(context) }))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/StormFromSakkaku.ts">Storm from Sakkaku</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/SongOftheEmptyCity.ts">Song of the Empty City</a></p>
   </div>

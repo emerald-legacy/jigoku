@@ -92,3 +92,49 @@ describe('Greater Understanding 2', function () {
         });
     });
 });
+
+describe('Greater Understanding 2 and a cancelled ring effect', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-yokuni'],
+                    hand: ['greater-understanding-2']
+                },
+                player2: {
+                    stronghold: 'temple-of-the-fivefold-path',
+                    provinces: ['manicured-garden'],
+                    dynastyDiscard: ['storm-from-sakkaku']
+                }
+            });
+            this.greaterUnderstanding = this.player1.findCardByName('greater-understanding-2');
+            this.togashiYokuni = this.player1.findCardByName('togashi-yokuni');
+            this.t5p = this.player2.findCardByName('temple-of-the-fivefold-path');
+            this.storm = this.player2.findCardByName('storm-from-sakkaku');
+            this.garden = this.player2.findCardByName('manicured-garden');
+            this.player2.placeCardInProvince(this.storm, this.garden.location);
+            this.storm.facedown = false;
+            this.game.rings.fire.fate = 0;
+
+            this.player1.clickCard(this.greaterUnderstanding);
+            this.player1.clickRing('fire');
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'air',
+                province: this.garden,
+                attackers: [this.togashiYokuni],
+                defenders: []
+            });
+        });
+
+        it('stays on the ring when Storm from Sakkaku cancels the ring effect', function () {
+            this.player2.clickCard(this.t5p);
+            this.player2.clickRing('fire');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.greaterUnderstanding);
+            expect(this.player2).not.toHavePrompt('Choose a ring to attach Greater Understanding');
+            expect(this.greaterUnderstanding.parent).toBe(this.game.rings.fire);
+        });
+    });
+});

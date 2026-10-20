@@ -29,7 +29,7 @@ class DistinguishedDojo extends DrawCard {
             })
             .addToken()
             .limit(perRound(3))
-            .afterwards()
+            .then()
             .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {
                 Yes: sacrifice(),
                 No: () => true

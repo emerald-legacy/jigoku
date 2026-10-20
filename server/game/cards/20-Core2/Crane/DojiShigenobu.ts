@@ -18,7 +18,7 @@ export default class DojiShigenobu extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, bow())
-            .afterwards()
+            .then()
             .optional({
                 activePromptTitle: 'Do you want to move home?',
                 gameAction: sendHome(),

@@ -146,9 +146,9 @@ export default Assassination;</code></pre>
 
 <h3 id="start-then">Then, if you do, afterwards</h3>
 <ul>
-    <li><strong>"If you do, …"</strong> is <code>then()</code>: the next step runs only if the step before it resolved in full.</li>
-    <li><strong>A plain "Then, …"</strong> only sets the order: <code>afterwards()</code>, which runs either way. (The Emerald Legacy rules have a success rule only for "to"; their errata turn conditional "Then"s into "If you do".)</li>
-    <li><strong>"Then, if …"</strong> is <code>afterwardsIf((context) =&gt; …)</code>: only the condition counts. <strong>"If you do, and …"</strong> is <code>thenIf((context) =&gt; …)</code>: the step before must have resolved in full, and the condition must hold.</li>
+    <li><strong>"Then, …" and "If you do, …"</strong> are <code>then()</code>: the next step runs only if the step before it resolved in full (designer ruling, 2026-10-20).</li>
+    <li><strong>"Then, if …" and "If you do, and …"</strong> are <code>thenIf((context) =&gt; …)</code>: the step before must have resolved in full, and the condition must hold.</li>
+    <li><strong>A sentence without "then"</strong> that must come after the effect ("Shuffle.", "If it is now …") is <code>afterwards()</code> or <code>afterwardsIf()</code>, which run either way. Otherwise the effects of an ability are simultaneous (RRG).</li>
     <li>A step's context holds the targets chosen so far, so <code>context.target</code> still names the card chosen in the first step.</li>
 </ul>
 
@@ -376,7 +376,7 @@ this.whileAttached({
     <li><strong>A <code>handler()</code> where a game action exists.</strong> A handler is the last resort for one-off logic. It raises no event of its own, so the engine can't check whether it would change anything, it has no default chat text, and no step can follow it.</li>
     <li><strong><code>.gameAction(x(…))</code> where a shortcut exists:</strong> write <code>.x(…)</code>.</li>
     <li><strong>A choice after the dash written as a target</strong> (or the other way round). See <a href="#start-timing">timing</a>.</li>
-    <li><strong>"Then" as <code>then()</code></strong> when the card has no "if you do": that's <code>afterwards()</code>.</li>
+    <li><strong>"Then" as <code>afterwards()</code></strong>: "then" is <code>then()</code>, unless a ruling lets the rest resolve anyway.</li>
     <li><strong>Repeating a default:</strong> <code>{ target: context.source }</code> on a card game action that isn't under a target (card game actions default to the source), or <code>player: Players.Self</code> on a target.</li>
     <li><strong>Reading <code>context.costs</code> in a condition</strong> without handling <code>undefined</code>: it is only set once the costs are paid.</li>
     <li><strong><code>this.game</code> or <code>this.x</code> inside a callback</strong> instead of <code>context.game</code> and <code>context.source</code>: the context is the ability being resolved, which matters for copies and gained abilities. Calling a helper method of the card's own class (<code>this.countBushi(context)</code>) is fine.</li>

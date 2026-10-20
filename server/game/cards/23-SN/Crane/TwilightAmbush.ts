@@ -20,7 +20,7 @@ export default class TwilightAmbush extends DrawCard {
             }, injure())
             .max(perRound(1))
             .cannotTargetFirst()
-            .afterwardsIf((context) => !!context.costs.sacrificeStateWhenChosen?.hasTrait(Trait.Shinobi))
+            .thenIf((context) => !!context.costs.sacrificeStateWhenChosen?.hasTrait(Trait.Shinobi))
             .injure((context) => ({ target: context.target }))
             .message((context) => msg`${context.target} is injured again because ${context.costs.sacrificeStateWhenChosen} is a Shinobi`);
     }

@@ -545,7 +545,7 @@ this.reaction('Put this into play')
     .when({ … })
     .location([Location.Provinces, Location.DynastyDiscardPile])
     .putIntoPlay()
-    .afterwards()
+    .then()
     .placeFate();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KeeperInitiate.ts">Keeper Initiate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/GoodOmen.ts">Good Omen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/MantraOfFire.ts">Mantra of Fire</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/Aranat.ts">Aranat</a></p>
   </div>
@@ -734,7 +734,7 @@ this.action('Remove a character from the game and put it into play')
         controller: Players.Self
     }, removeFromGame((context) =&gt; ({ target: context.target })))
     .chatText('remove {0} from the game, then put it back into play')
-    .afterwards()
+    .then()
     …</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/ShadowStep.ts">Shadow Step</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Neutral/PrayersOnTheEveOfBattle.ts">Prayers on the Eve of Battle</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/IsawaUjina.ts">Isawa Ujina</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/ChampionsOfYomi.ts">Champions of Yomi</a></p>
   </div>
@@ -1514,7 +1514,7 @@ this.action('Take control of an attachment')
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// Greater Understanding: Reaction: After fate is placed on attached ring - resolve that ring's effect. Then, your opponent moves this attachment to another ring without fate on it.
-    .afterwards()
+    .then()
     .selectRing((context) =&gt; ({
         activePromptTitle: 'Choose a ring to attach Greater Understanding',
         player: Players.Opponent,
@@ -1699,7 +1699,7 @@ this.action('Restore a province')
         cardType: CardType.Province,
         cardCondition: (card) =&gt; card.isBroken
     }, restoreProvince())
-    .afterwards()
+    .then()
     .playerLastingEffect({ … });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/HidaHonoka.ts">Hida Honoka</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/EtherealAlignment.ts">Ethereal Alignment</a></p>
   </div>

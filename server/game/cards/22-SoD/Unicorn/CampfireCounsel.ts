@@ -15,7 +15,7 @@ export default class CampfireCounsel extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => (card.printedCost ?? 0) <= 3
             }, ready())
-            .afterwardsIf((context) => !context.player.isCharacterTraitInPlay(Trait.Storyteller))
+            .thenIf((context) => !context.player.isCharacterTraitInPlay(Trait.Storyteller))
             .dishonor((context) => ({ target: context.target }))
             .message((context) => msg`${context.target} is dishonored`);
     }

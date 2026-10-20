@@ -16,7 +16,7 @@ class EndlessArchives extends DrawCard {
             .addToken()
             .chatText((context) => msg`place an honor token on ${context.source} and exchange cards from their hand`)
             .limit(unlimited())
-            .afterwards()
+            .then()
             .gameAction(sequential([
                 chosenReturnToDeck((context) => ({
                     target: context.player,

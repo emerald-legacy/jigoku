@@ -18,7 +18,7 @@ export default class CounselFromYumeDo extends DrawCard {
                 cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Self
             }, returnToDeck({ location: Location.ConflictDiscardPile, shuffle: true }))
-            .afterwards()
+            .then()
             .onAffinity(Trait.Water, { chatText: () => msg`draw a card` })
             .draw();
     }
