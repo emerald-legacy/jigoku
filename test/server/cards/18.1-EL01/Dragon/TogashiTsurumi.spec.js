@@ -115,11 +115,10 @@ describe('Togashi Tsurumi with an empty hand', function () {
             this.tsurumi = this.player1.findCardByName('togashi-tsurumi');
         });
 
-        it('still draws a card ("Place a card from your hand" isn\'t a target)', function () {
-            expect(this.player1.hand.length).toBe(0);
+        it('cannot be used ("then" needs a card placed)', function () {
             this.player1.clickCard(this.tsurumi);
-            expect(this.player1.hand.length).toBe(1);
-            expect(this.getChatLogs(3)).toContain('player1 uses Togashi Tsurumi to draw a card');
+            expect(this.player1.hand.length).toBe(0);
+            expect(this.player1).toHavePrompt('Action Window');
         });
     });
 });

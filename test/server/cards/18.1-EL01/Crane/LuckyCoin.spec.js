@@ -163,6 +163,20 @@ describe('Lucky Coin', function () {
                         expect(card.facedown).toBe(false);
                     }
                 });
+
+                it('does not refill with the set-aside cards when the deck runs short', function () {
+                    const setAside = [...this.kuwanansInDiscard, ...this.mystics];
+                    while(this.player1.player.dynastyDeck.length > 3) {
+                        this.player1.moveCard(this.player1.player.dynastyDeck[0], 'dynasty discard pile');
+                    }
+                    this.player1.clickCard(this.coin);
+                    for(const loc of ['province 1', 'province 2', 'province 3', 'province 4']) {
+                        expect(setAside).not.toContain(this.player1.player.getDynastyCardInProvince(loc));
+                    }
+                    for(const card of setAside) {
+                        expect(card.location).toBe('dynasty deck');
+                    }
+                });
             });
         });
 

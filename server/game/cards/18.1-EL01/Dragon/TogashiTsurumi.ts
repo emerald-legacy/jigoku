@@ -1,5 +1,5 @@
 import { modifyBothSkills } from '../../../effects.js';
-import { draw, multiple, placeCardUnderneath, selectCard } from '../../../GameActions/GameActions.js';
+import { placeCardUnderneath, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { countCardsUnderneath, playableFromUnderneath } from '../../cardsUnderneath.js';
@@ -17,21 +17,16 @@ export default class TogashiTsurumi extends DrawCard {
 
         // "Place a card from your hand" isn't a target: with an empty hand it still draws
         this.action('Place a card underneath self')
-            .gameAction(multiple([
-                selectCard({
-                    activePromptTitle: 'Choose a card',
-                    location: Location.Hand,
-                    controller: Players.Self,
-                    cardType: [CardType.Event, CardType.Attachment, CardType.Character],
-                    targets: false,
-                    gameAction: placeCardUnderneath({ destination: this })
-                }),
-                draw((context) => ({
-                    target: context.player
-                }))
-            ]))
-            .chatText((context) => context.player.hand.length > 0
-                ? msg`place a card from their hand beneath ${context.source} and draw a card`
-                : msg`draw a card`);
+            .gameAction(selectCard({
+                activePromptTitle: 'Choose a card',
+                location: Location.Hand,
+                controller: Players.Self,
+                cardType: [CardType.Event, CardType.Attachment, CardType.Character],
+                targets: false,
+                gameAction: placeCardUnderneath({ destination: this })
+            }))
+            .chatText((context) => msg`place a card from their hand beneath ${context.source} and draw a card`)
+            .then()
+            .draw((context) => ({ target: context.player }));
     }
 }

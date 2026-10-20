@@ -23,16 +23,17 @@ class WayfarersCamp extends DrawCard {
                     location: Location.Provinces,
                     controller: Players.Self,
                     gameAction: playCard({ resetOnCancel: true, source: this, playType: PlayType.PlayFromProvince })
-                }),
-                selectCard({
-                    activePromptTitle: 'Choose a card to turn faceup',
-                    location: Location.Provinces,
-                    controller: Players.Self,
-                    gameAction: flipDynasty(),
-                    message: (_context, card, player) => msg`${player} turns ${card} faceup`
                 })
             ]))
-            .chatText('play two cards from their provinces');
+            .chatText('play two cards from their provinces')
+            .then()
+            .gameAction(selectCard({
+                activePromptTitle: 'Choose a card to turn faceup',
+                location: Location.Provinces,
+                controller: Players.Self,
+                gameAction: flipDynasty(),
+                message: (_context, card, player) => msg`${player} turns ${card} faceup`
+            }));
     }
 }
 

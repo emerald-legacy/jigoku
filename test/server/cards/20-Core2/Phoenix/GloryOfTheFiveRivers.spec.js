@@ -68,3 +68,36 @@ describe('Glory of the Five Rivers', function () {
         });
     });
 });
+
+describe('Glory of the Five Rivers when no character can be dishonored', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['glory-of-the-five-rivers'],
+                    inPlay: ['solemn-scholar', 'seppun-truthseeker']
+                },
+                player2: {
+                    inPlay: ['brash-samurai']
+                }
+            });
+            this.glory = this.player1.findCardByName('glory-of-the-five-rivers');
+            this.solemn = this.player1.findCardByName('solemn-scholar');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.truthseeker = this.player1.findCardByName('seppun-truthseeker');
+            this.truthseeker.dishonor();
+            this.solemn.dishonor();
+            this.brash.dishonor();
+        });
+
+        it('honors nothing', function () {
+            this.player1.clickCard(this.glory);
+            this.player1.clickPrompt('0');
+            this.player2.clickPrompt('1');
+            expect(this.player2).not.toHavePrompt('Choose a character');
+            expect(this.solemn.isDishonored).toBe(true);
+            expect(this.brash.isDishonored).toBe(true);
+        });
+    });
+});

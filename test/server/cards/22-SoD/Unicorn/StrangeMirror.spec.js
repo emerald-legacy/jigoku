@@ -61,6 +61,15 @@ describe('Strange Mirror', function () {
                 expect(this.banzai.location).toBe(this.outrider.uuid);
             });
 
+            it('neither sacrifices nor injures when the play is cancelled', function () {
+                this.player1.clickCard(this.mirror);
+                this.player1.clickCard(this.banzai);
+                this.player1.clickPrompt('Cancel');
+                expect(this.player1).not.toHavePrompt('Choose a cost for Strange Mirror');
+                expect(this.mirror.location).toBe('play area');
+                expect(this.banzai.location).toBe(this.outrider.uuid);
+            });
+
             it('plays the event from underneath and then sacrifices the attachment', function () {
                 this.player1.clickCard(this.mirror);
                 this.player1.clickCard(this.banzai);

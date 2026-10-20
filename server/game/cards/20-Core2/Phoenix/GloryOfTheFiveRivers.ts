@@ -6,17 +6,16 @@ import DrawCard from '../../../DrawCard.js';
 import { FateBidPrompt, type Result } from '../../../gamesteps/FateBidPrompt.js';
 import { SimpleStep } from '../../../gamesteps/SimpleStep.js';
 import type Player from '../../../Player.js';
+import type { Event } from '../../../Events/Event.js';
 
-function resolveActionOnSelection(context: AbilityContext, player: Player, action: 'honor' | 'dishonor') {
-    const playerEnum = player === context.player ? Players.Self : Players.Opponent;
-    selectCard({
-        player: playerEnum,
+function selection(context: AbilityContext, player: Player, action: 'honor' | 'dishonor') {
+    return selectCard({
+        player: player === context.player ? Players.Self : Players.Opponent,
         controller: Players.Any,
         cardType: CardType.Character,
         gameAction: action === 'honor' ? honor() : dishonor(),
         message: (_context, card, chooser) => msg`${chooser} ${action}s ${card}`
-    })
-        .resolve(player, context);
+    });
 }
 
 export default class GloryOfTheFiveRivers extends DrawCard {
@@ -43,8 +42,14 @@ export default class GloryOfTheFiveRivers extends DrawCard {
                         new SimpleStep(context.game, () => {
                             if(bidResult.highest.players.size === 1) {
                                 for(const winner of bidResult.highest.players) {
-                                    resolveActionOnSelection(context, winner, 'dishonor');
-                                    resolveActionOnSelection(context, winner, 'honor');
+                                    const dishonorEvents: Event[] = [];
+                                    selection(context, winner, 'dishonor').addEventsToArray(dishonorEvents, context, { target: winner });
+                                    context.game.queueSimpleStep(() => context.game.openEventWindow(dishonorEvents));
+                                    context.game.queueSimpleStep(() => {
+                                        if(dishonorEvents.length > 0 && dishonorEvents.every((event) => event.isFullyResolved())) {
+                                            selection(context, winner, 'honor').resolve(winner, context);
+                                        }
+                                    });
                                 }
                             }
                         })

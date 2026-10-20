@@ -109,11 +109,10 @@ describe('Sage of Gisei Toshi at home', function() {
             this.player2.pass();
         });
 
-        it('does not move the chosen character home ("If you do" needs Sage to move home)', function() {
+        it('cannot be used ("If you do" needs Sage to move home)', function() {
             this.player1.clickCard(this.sage);
-            this.player1.clickCard(this.whisperer);
-            expect(this.sage.isParticipating()).toBe(false);
-            expect(this.challenger.isParticipating()).toBe(true);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
             expect(this.whisperer.isParticipating()).toBe(true);
         });
     });

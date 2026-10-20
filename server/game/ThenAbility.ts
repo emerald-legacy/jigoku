@@ -112,10 +112,19 @@ export class ThenAbility extends BaseCardAbility {
                 if(then) {
                     window.addThenAbility(new ThenAbility(this.card, then), context, then.thenCondition);
                 }
-            } else if(then?.thenCondition?.(context)) {
+            } else if(then && this.followsResolvedEvents(context, then)) {
                 this.game.resolveAbility(new ThenAbility(this.card, then).createThenContext(context));
             }
         });
+    }
+
+    /** Whether `then` follows when this step's events already resolved (e.g. in a `sequential`), as an event window decides. */
+    private followsResolvedEvents(context: AbilityContext, then: ThenAbilityProperties): boolean {
+        if(context.events.length === 0) {
+            return !!then.thenCondition?.(context);
+        }
+        const condition = then.thenCondition ?? ((event: Event) => event.isFullyResolved());
+        return context.events.every((event) => condition(event));
     }
 
     openEventWindow(events: Event[]): EventWindow | ThenEventWindow {

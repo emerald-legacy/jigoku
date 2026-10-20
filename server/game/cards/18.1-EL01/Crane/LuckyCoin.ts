@@ -26,17 +26,22 @@ export default class LuckyCoin extends DrawCard {
             .cost(costs.removeSelfFromGame({ location: ACTIVE_LOCATIONS }))
             .gameAction(handler({
                 handler: ({ player, game }) => {
-                    const cardsToMulligan = player.getDynastyCardsInProvince(Location.Provinces);
-
-                    for(const card of cardsToMulligan) {
-                        player.moveCard(card, Location.DynastyDeck, { bottom: true });
+                    // set aside out of the deck, so the refill can't draw them back
+                    const setAside = player.getDynastyCardsInProvince(Location.Provinces);
+                    for(const card of setAside) {
+                        player.moveCard(card, Location.RemovedFromGame);
                     }
 
                     for(const location of game.getProvinceArray(false)) {
                         player.putTopDynastyCardInProvince(location, false);
                     }
 
-                    player.shuffleDynastyDeck();
+                    game.queueSimpleStep(() => {
+                        for(const card of setAside) {
+                            player.moveCard(card, Location.DynastyDeck);
+                        }
+                        player.shuffleDynastyDeck();
+                    });
                 }
             }))
             .chatText('replace all cards in their provinces');

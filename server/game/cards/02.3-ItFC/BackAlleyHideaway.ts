@@ -40,7 +40,7 @@ export default class BackAlleyHideaway extends DrawCard {
                 cardCondition: (card) => card.location === this.uuid
             }, playCard({ playType: PlayType.PlayFromProvince, ignoredBlockers: [Blocker.Facedown], source: this }))
             .chatText('play {0} from hiding')
-            .then()
+            .thenIf((context) => context.target.location !== this.uuid)
             .sacrifice({ target: this });
     }
 

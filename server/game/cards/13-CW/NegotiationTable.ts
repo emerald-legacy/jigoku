@@ -5,6 +5,8 @@ import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { HandlerMenuOption } from '../../gamesteps/HandlerMenuPrompt.js';
 import type Player from '../../Player.js';
+import type { Event } from '../../Events/Event.js';
+import type { GameAction } from '../../GameActions/GameAction.js';
 
 export default class NegotiationTable extends DrawCard {
     static id = 'negotiation-table';
@@ -47,36 +49,20 @@ export default class NegotiationTable extends DrawCard {
 
     private eachPlayerDraws(context: AbilityContext, opponent: Player) {
         this.game.addMessage(msg`${opponent} chooses to have each player draw a card`);
-
-        draw((ctx) => ({
-            target: ctx.player.opponent
-        }))
-            .resolve(opponent, context);
-        draw((ctx) => ({
-            target: ctx.player
-        }))
-            .resolve(context.player, context);
+        this.opponentThenYou(context, draw({ target: opponent }), draw({ target: context.player }));
     }
 
     private eachPlayerReadies(context: AbilityContext, opponent: Player) {
         this.game.addMessage(msg`${opponent} chooses to have each player ready a character`);
-        const bowedCharacters =
-            context.player.cardsInPlay.filter((a) => a.type === CardType.Character && a.bowed).length +
-            opponent.cardsInPlay.filter((a) => a.type === CardType.Character && a.bowed).length;
-
-        if(bowedCharacters > 0) {
+        this.opponentThenYou(
+            context,
             selectCard((ctx) => ({
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 targets: true,
                 message: (_context, card) => msg`${ctx.player.opponent} chooses to ready ${card}`,
                 gameAction: ready()
-            }))
-                .resolve(opponent, context);
-        }
-
-        //This is ugly, but it's needed to not deadlock the game
-        if(bowedCharacters > 1) {
+            })),
             selectCard((ctx) => ({
                 player: Players.Self,
                 cardType: CardType.Character,
@@ -84,20 +70,26 @@ export default class NegotiationTable extends DrawCard {
                 message: (_context, card) => msg`${ctx.player} chooses to ready ${card}`,
                 gameAction: ready()
             }))
-                .resolve(context.player, context);
-        }
+        );
     }
 
     private eachPlayerGainsFate(context: AbilityContext, opponent: Player) {
         this.game.addMessage(msg`${opponent} chooses to have each player gain a fate`);
+        this.opponentThenYou(context, gainFate({ target: opponent }), gainFate({ target: context.player }));
+    }
 
-        gainFate((ctx) => ({
-            target: ctx.player.opponent
-        }))
-            .resolve(opponent, context);
-        gainFate((ctx) => ({
-            target: ctx.player
-        }))
-            .resolve(context.player, context);
+    /** You do the option only if the opponent's same option resolved. */
+    private opponentThenYou(context: AbilityContext, theirs: GameAction, yours: GameAction) {
+        if(!theirs.hasLegalTarget(context)) {
+            return;
+        }
+        const events: Event[] = [];
+        theirs.addEventsToArray(events, context);
+        this.game.queueSimpleStep(() => this.game.openEventWindow(events));
+        this.game.queueSimpleStep(() => {
+            if(events.length > 0 && events.every((event) => event.isFullyResolved()) && yours.hasLegalTarget(context)) {
+                yours.resolve(undefined, context);
+            }
+        });
     }
 }

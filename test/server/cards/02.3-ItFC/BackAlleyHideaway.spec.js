@@ -210,6 +210,15 @@ describe('Back-Alley Hideaway', function() {
                 expect(this.ibuki.parent).toBeFalsy();
             });
 
+            it('stays in play when the play is cancelled', function() {
+                advanceToDynasty(this.flow);
+                this.player2.clickCard(this.ibuki);
+                this.player2.clickCard(this.ibuki);
+                this.player2.clickPrompt('Cancel');
+                expect(this.ibuki.parent).toBe(this.backAlley);
+                expect(this.backAlley.location).toBe('province 1');
+            });
+
             it('gets Toshi Ranbo\'s extra fate when played in the dynasty phase (EmeraldDB ruling)', function() {
                 advanceToDynasty(this.flow);
                 this.player2.clickCard(this.ibuki);

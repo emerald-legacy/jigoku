@@ -141,3 +141,38 @@ describe('Shattered Blade Pass and characters it can\'t affect', function () {
         });
     });
 });
+
+describe('Shattered Blade Pass and a character that can\'t move in', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['aggressive-moto']
+                },
+                player2: {
+                    inPlay: ['bayushi-liar', 'togashi-yokuni'],
+                    provinces: ['shattered-blade-pass']
+                }
+            });
+            this.aggressiveMoto = this.player1.findCardByName('aggressive-moto');
+            this.liar = this.player2.findCardByName('bayushi-liar');
+            this.yokuni = this.player2.findCardByName('togashi-yokuni');
+            this.shatteredBladePass = this.player2.findCardByName('shattered-blade-pass', 'province 1');
+            this.liar.bow();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.aggressiveMoto],
+                defenders: [],
+                province: this.shatteredBladePass
+            });
+        });
+
+        it('can\'t choose a character that can\'t participate', function () {
+            this.player2.clickCard(this.shatteredBladePass);
+            expect(this.player2).not.toBeAbleToSelect(this.liar);
+            expect(this.player2).toBeAbleToSelect(this.yokuni);
+        });
+    });
+});

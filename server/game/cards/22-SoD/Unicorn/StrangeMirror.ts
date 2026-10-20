@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, PlayType, Players, Blocker } from '../../../Constants.js';
-import { chooseAction, injure, playCard, sacrifice, selectCard, sequential } from '../../../GameActions/GameActions.js';
+import { chooseAction, injure, playCard, sacrifice, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -38,35 +38,35 @@ export default class StrangeMirror extends DrawCard {
                 ignoredBlockers: [Blocker.WrongLocation],
                 destination: Location.ConflictDiscardPile,
                 // a played event returns to its owner's discard pile, not the pile of
-                // whoever played it out from underneath
-                postHandler: (playedContext) =>
-                    playedContext.source.owner.moveCard(
-                        playedContext.source,
-                        Location.ConflictDiscardPile
-                    )
+                // whoever played it out from underneath; an aborted play leaves it underneath
+                postHandler: (playedContext) => {
+                    if(playedContext.source.location === Location.ConflictDiscardPile) {
+                        playedContext.source.owner.moveCard(playedContext.source, Location.ConflictDiscardPile);
+                    }
+                }
             })
         }));
 
         // only while an event underneath can be played: otherwise the cost would be paid for nothing
         this.action('Play an event from underneath attached character')
             .condition((context) => chooseEvent.hasLegalTarget(context))
-            .gameAction(sequential([
-                chooseEvent,
-                chooseAction((context) => ({
-                    activePromptTitle: 'Choose a cost for Strange Mirror',
-                    choices: {
-                        'Sacrifice Strange Mirror': {
-                            action: sacrifice({ target: context.source }),
-                            message: (context, _target, player) => msg`${player} sacrifices ${context.source}`
-                        },
-                        'Injure attached character': {
-                            action: injure({ target: context.source.parentCharacter ?? [] }),
-                            message: (context, _target, player) => msg`${player} injures ${context.source.parentCharacter}`
-                        }
+            .gameAction(chooseEvent)
+            .chatText((context) => msg`play an event from underneath ${context.source.parentCharacter}`)
+            // only once the event was played, not when its play was aborted
+            .thenIf((context) => context.events.some((event) => !!event.card && !this.eventsUnderneath(context).some((card) => card === event.card)))
+            .gameAction(chooseAction((context) => ({
+                activePromptTitle: 'Choose a cost for Strange Mirror',
+                choices: {
+                    'Sacrifice Strange Mirror': {
+                        action: sacrifice({ target: context.source }),
+                        message: (context, _target, player) => msg`${player} sacrifices ${context.source}`
+                    },
+                    'Injure attached character': {
+                        action: injure({ target: context.source.parentCharacter ?? [] }),
+                        message: (context, _target, player) => msg`${player} injures ${context.source.parentCharacter}`
                     }
-                }))
-            ]))
-            .chatText((context) => msg`play an event from underneath ${context.source.parentCharacter}`);
+                }
+            })));
     }
 
     private eventsUnderneath(context: AbilityContext<this>): DrawCard[] {

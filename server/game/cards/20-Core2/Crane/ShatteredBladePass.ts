@@ -11,13 +11,15 @@ export default class ShatteredBladePass extends ProvinceCard {
             .condition((context) => !context.player.cardsInPlay.some((card) => card.isParticipating()))
             .target({
                 cardType: CardType.Character,
-                controller: Players.Self
+                controller: Players.Self,
+                cardCondition: (card, context) => moveToConflict().canAffect(card, context)
             }, multiple([
                 ready(),
                 moveToConflict()
             ]))
             .chatText('ready {0} and move it into the conflict, taking an additional action')
-            .afterwards()
+            // readied or moved in (or both)
+            .afterwardsIf((context) => context.events.some((event) => event.isFullyResolved()))
             .playerLastingEffect({
                 target: Players.Self,
                 duration: Duration.UntilPassPriority,
