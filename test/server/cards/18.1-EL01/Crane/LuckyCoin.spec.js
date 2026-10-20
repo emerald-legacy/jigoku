@@ -164,6 +164,19 @@ describe('Lucky Coin', function () {
                     }
                 });
 
+                it('runs out of the dynasty deck once when it empties during the refill', function () {
+                    const honor = this.player1.honor;
+                    while(this.player1.player.dynastyDeck.length > 2) {
+                        this.player1.moveCard(this.player1.player.dynastyDeck[0], 'dynasty discard pile');
+                    }
+                    this.player1.clickCard(this.coin);
+                    expect(this.player1.honor).toBe(honor - 5);
+                    expect(this.getChatLogs(10).filter((line) => line.includes('dynasty deck has run out of cards')).length).toBe(1);
+                    for(const loc of ['province 1', 'province 2', 'province 3', 'province 4']) {
+                        expect(this.player1.player.getDynastyCardInProvince(loc)).not.toBeNull();
+                    }
+                });
+
                 it('does not refill with the set-aside cards when the deck runs short', function () {
                     const setAside = [...this.kuwanansInDiscard, ...this.mystics];
                     while(this.player1.player.dynastyDeck.length > 3) {

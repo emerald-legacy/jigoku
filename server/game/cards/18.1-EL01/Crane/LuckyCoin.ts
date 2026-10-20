@@ -32,8 +32,11 @@ export default class LuckyCoin extends DrawCard {
                         player.moveCard(card, Location.RemovedFromGame);
                     }
 
+                    // one province per step: a deck-out reshuffles before the next one
                     for(const location of game.getProvinceArray(false)) {
-                        player.putTopDynastyCardInProvince(location, false);
+                        game.queueSimpleStep(() => {
+                            player.putTopDynastyCardInProvince(location, false);
+                        });
                     }
 
                     game.queueSimpleStep(() => {
