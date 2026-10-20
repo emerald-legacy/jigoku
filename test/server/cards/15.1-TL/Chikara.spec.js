@@ -280,3 +280,42 @@ describe('Chikara on a character its owner does not control', function() {
         });
     });
 });
+
+describe('Chikara and In Harmony', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-kisada'],
+                    hand: ['chikara']
+                },
+                player2: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['in-harmony']
+                }
+            });
+            this.kisada = this.player1.findCardByName('hida-kisada');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.challenger.fate = 2;
+            this.player1.playAttachment('chikara', this.kisada);
+            this.player2.claimRing('void');
+            this.player2.playAttachment('in-harmony', this.challenger);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kisada],
+                defenders: [this.challenger]
+            });
+            this.noMoreActions();
+        });
+
+        it('cannot choose a character whose fate cannot be moved', function() {
+            this.player1.clickCard(this.kisada);
+            expect(this.player1).toBeAbleToSelect(this.kisada);
+            expect(this.player1).not.toBeAbleToSelect(this.challenger);
+            expect(this.challenger.fate).toBe(2);
+            expect(this.challenger.location).toBe('play area');
+        });
+    });
+});

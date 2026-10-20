@@ -137,6 +137,8 @@ interface EventPayloadMap {
         card: BaseCard;
         cardTargets: BaseCard[];
         ringTargets: Ring[];
+        /** The ability is resolved by another one, not triggered. */
+        resolvedWithoutTriggering?: boolean;
     };
     [EventName.OnMoveToConflict]: BaseEventPayload & { card: DrawCard; side: Player };
     [EventName.OnDefendersDeclared]: BaseEventPayload & { conflict: Conflict; defenders: DrawCard[] };

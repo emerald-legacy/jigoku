@@ -74,7 +74,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         cardAbility.displayMessage(this.context, 'resolves');
         this.game.openEventWindow(
             new InitiateCardAbilityEvent(
-                { card: this.context.source, context: this.context },
+                { card: this.context.source, context: this.context, resolvedWithoutTriggering: true },
                 () => (this.initiateAbility = true)
             )
         );

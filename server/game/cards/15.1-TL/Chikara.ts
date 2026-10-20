@@ -30,7 +30,7 @@ class Chikara extends DrawCard {
                         recipient: context.target?.controller
                     })),
                     sacrifice((context) => ({
-                        target: context.target
+                        target: context.target?.getFate() === 0 ? context.target : []
                     }))
                 ]))
                 .chatText((context) => msg`force ${context.target?.controller} to sacrifice ${context.chatTarget()}, returning all its fate to ${context.target?.controller}'s fate pool`))

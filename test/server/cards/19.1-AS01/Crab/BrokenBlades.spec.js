@@ -82,3 +82,43 @@ describe('Broken Blades', function () {
         });
     });
 });
+
+describe('Broken Blades and In Harmony', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['one-of-the-forgotten', 'kaiu-envoy'],
+                    hand: ['broken-blades']
+                },
+                player2: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['in-harmony']
+                }
+            });
+            this.oneOfTheForgotten = this.player1.findCardByName('one-of-the-forgotten');
+            this.kaiuEnvoy = this.player1.findCardByName('kaiu-envoy');
+            this.dojiChallenger = this.player2.findCardByName('doji-challenger');
+            this.dojiChallenger.fate = 2;
+            this.brokenBlades = this.player1.findCardByName('broken-blades');
+            this.player2.claimRing('void');
+            this.player1.pass();
+            this.player2.playAttachment('in-harmony', this.dojiChallenger);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.oneOfTheForgotten, this.kaiuEnvoy],
+                defenders: [this.dojiChallenger]
+            });
+            this.player2.pass();
+            this.player1.pass();
+        });
+
+        it('cannot choose a character whose fate cannot be returned', function () {
+            expect(this.player1).not.toBeAbleToSelect(this.brokenBlades);
+            expect(this.dojiChallenger.fate).toBe(2);
+            expect(this.dojiChallenger.location).toBe('play area');
+        });
+    });
+});

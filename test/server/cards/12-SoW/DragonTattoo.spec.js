@@ -744,3 +744,47 @@ describe('Dragon Tattoo with an opponent\'s event', function() {
     });
 });
 
+describe('Dragon Tattoo when the replay is cancelled', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-kazue', 'doji-challenger'],
+                    hand: ['way-of-the-scorpion', 'dragon-tattoo']
+                },
+                player2: {
+                    inPlay: ['doji-kuwanan'],
+                    hand: ['voice-of-honor']
+                }
+            });
+            this.kazue = this.player1.findCardByName('togashi-kazue');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.scorpion = this.player1.findCardByName('way-of-the-scorpion');
+            this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+            this.voice = this.player2.findCardByName('voice-of-honor');
+            this.tattoo = this.player1.playAttachment('dragon-tattoo', this.kazue);
+            this.kuwanan.honor();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kazue, this.challenger],
+                defenders: [this.kuwanan],
+                type: 'military'
+            });
+            this.player2.pass();
+        });
+
+        it('removes the event from the game when the second play is cancelled', function() {
+            this.player1.clickCard(this.scorpion);
+            this.player1.clickCard(this.kazue);
+            expect(this.player2).toBeAbleToSelect(this.voice);
+            this.player2.pass();
+            this.player1.clickCard(this.tattoo);
+            this.player1.clickCard(this.challenger);
+            expect(this.player2).toBeAbleToSelect(this.voice);
+            this.player2.clickCard(this.voice);
+            expect(this.challenger.isDishonored).toBe(false);
+            expect(this.scorpion.location).toBe('removed from game');
+        });
+    });
+});

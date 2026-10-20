@@ -29,7 +29,7 @@ export default class BrokenBlades extends DrawCard {
                     amount: context.target.getFate(),
                     recipient: context.target.owner
                 })),
-                discardFromPlay()
+                discardFromPlay((context) => ({ target: context.target.getFate() === 0 ? context.target : [] }))
             ]))
             .chatText((context) => {
                 const target = context.target;

@@ -21,6 +21,7 @@ export default class HidaKisada extends DrawCard {
 
     public onInitiateAbilityEffectsWouldInterrupt(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
         if(
+            !event.resolvedWithoutTriggering &&
             !this.firstActionEvent.has(event.context.player.uuid) &&
             this.game.isDuringConflict() &&
             event.context.ability.abilityType === AbilityType.Action &&

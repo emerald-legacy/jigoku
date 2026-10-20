@@ -69,3 +69,39 @@ describe('KireiKo', function() {
         });
     });
 });
+
+describe('Kirei-ko and resolved abilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-kuwanan', 'matsu-berserker'],
+                    hand: ['kirei-ko']
+                },
+                player2: {
+                    inPlay: ['beloved-advisor'],
+                    hand: ['battlefield-orders']
+                }
+            });
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.advisor = this.player2.findCardByName('beloved-advisor');
+            this.orders = this.player2.findCardByName('battlefield-orders');
+            this.kireiKo = this.player1.findCardByName('kirei-ko');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kuwanan],
+                defenders: [this.advisor]
+            });
+        });
+
+        it('does not react to an ability resolved by Battlefield Orders', function() {
+            this.player2.clickCard(this.orders);
+            this.player2.clickCard(this.advisor);
+            expect(this.player1).not.toBeAbleToSelect(this.kireiKo);
+            expect(this.advisor.bowed).toBe(false);
+        });
+    });
+});

@@ -237,3 +237,50 @@ describe('Hida Kisada', function() {
         });
     });
 });
+
+describe('Hida Kisada and resolved abilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-kisada', 'brash-samurai'],
+                    hand: ['banzai']
+                },
+                player2: {
+                    honor: 11,
+                    inPlay: ['asahina-storyteller', 'seppun-guardsman'],
+                    hand: ['the-mirror-s-gaze', 'assassination']
+                }
+            });
+            this.hidaKisada = this.player1.findCardByName('hida-kisada');
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.storyteller = this.player2.findCardByName('asahina-storyteller');
+            this.guardsman = this.player2.findCardByName('seppun-guardsman');
+            this.assassination = this.player2.findCardByName('assassination');
+            this.player1.pass();
+            this.gaze = this.player2.playAttachment('the-mirror-s-gaze', this.storyteller);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.hidaKisada, this.brash],
+                defenders: [this.guardsman]
+            });
+            this.player2.pass();
+        });
+
+        it('does not cancel a copy (resolved, not triggered), but the opponent\'s first triggered action', function() {
+            const mil = this.guardsman.getMilitarySkill();
+            this.player1.clickCard('banzai');
+            this.player1.clickCard(this.brash);
+            this.player1.clickPrompt('Done');
+            this.player2.clickCard(this.gaze);
+            this.player2.clickCard(this.guardsman);
+            this.player2.clickPrompt('Done');
+            expect(this.guardsman.getMilitarySkill()).toBe(mil + 2);
+            this.player2.clickCard(this.assassination);
+            this.player2.clickCard(this.brash);
+            expect(this.brash.location).toBe('play area');
+            expect(this.getChatLogs(5)).toContain('player2 attempts to initiate Assassination, but Hida Kisada cancels it');
+        });
+    });
+});

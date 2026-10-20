@@ -3,7 +3,7 @@ import { addTrait } from '../../effects.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, type EventName, Location, PlayType, Trait } from '../../Constants.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { playCard } from '../../GameActions/GameActions.js';
+import { moveCard, playCard, sequential } from '../../GameActions/GameActions.js';
 import type { PlayCardProperties } from '../../GameActions/PlayCardAction.js';
 import DrawCard from '../../DrawCard.js';
 import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
@@ -29,7 +29,14 @@ export default class DragonTattoo extends DrawCard {
                         this.isValidTargetForTattoo(card, context))
             })
             .ifAble()
-            .playCard((context) => this.getPlayAgainProperties(context.event))
+            .gameAction(sequential((context) => [
+                playCard(this.getPlayAgainProperties(context.event)),
+                // also when the replay was cancelled or backed out
+                moveCard(() => ({
+                    target: [Location.ConflictDiscardPile, Location.DynastyDiscardPile].includes(context.event.card.location) ? context.event.card : [],
+                    destination: Location.RemovedFromGame
+                }))
+            ]))
             .otherwise()
             .moveCard((context) => ({
                 target: context.event.card,

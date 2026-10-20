@@ -77,3 +77,39 @@ describe('Kamayari and keyword abilities', function() {
         });
     });
 });
+
+describe('Kamayari and resolved abilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-kuwanan', 'matsu-berserker'],
+                    hand: ['kamayari']
+                },
+                player2: {
+                    inPlay: ['beloved-advisor'],
+                    hand: ['battlefield-orders']
+                }
+            });
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.advisor = this.player2.findCardByName('beloved-advisor');
+            this.orders = this.player2.findCardByName('battlefield-orders');
+            this.kamayari = this.player1.playAttachment('kamayari', this.berserker);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: [this.advisor]
+            });
+        });
+
+        it('does not react to an ability resolved by Battlefield Orders', function() {
+            this.player2.clickCard(this.orders);
+            this.player2.clickCard(this.advisor);
+            expect(this.player1).not.toBeAbleToSelect(this.kamayari);
+            expect(this.advisor.bowed).toBe(false);
+        });
+    });
+});
