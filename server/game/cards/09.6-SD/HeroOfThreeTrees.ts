@@ -8,9 +8,8 @@ class HeroOfThreeTrees extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Gain 1 honor or reduce the attacked province strength')
-            .condition((context) => !!(context.source.isParticipating()
-                && context.player.opponent
-                && context.player.hand.length < context.player.opponent.hand.length))
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => !!context.player.opponent && context.player.hand.length < context.player.opponent.hand.length)
             .select({
                 'Gain 1 honor': {
                     action: gainHonor(),

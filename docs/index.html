@@ -261,9 +261,8 @@ this.action('Take control of an attachment')
 // in your hand than your opponent, select one - either gain 1 honor, or the attacked province gets -1 strength until
 // the end of the conflict (to a minimum of 0).
 this.action('Gain 1 honor or reduce the attacked province strength')
-    .condition((context) =&gt; !!(context.source.isParticipating()
-        &amp;&amp; context.player.opponent
-        &amp;&amp; context.player.hand.length &lt; context.player.opponent.hand.length))
+    .condition((context) =&gt; context.source.isParticipating())
+    .ifCondition((context) =&gt; !!context.player.opponent &amp;&amp; context.player.hand.length &lt; context.player.opponent.hand.length)
     .select({
         'Gain 1 honor': {
             action: gainHonor(),
@@ -279,7 +278,7 @@ this.action('Gain 1 honor or reduce the attacked province strength')
             chatText: 'reduce the strength of an attacked province by 1'
         }
     });</code></pre>
-<p>"Select one" before the dash is a <code>select()</code>; each choice brings the chat line for when it's chosen. The card says "Action: During a conflict in which this character is participating", not "Conflict Action:", so it is an <code>action()</code> with that condition written out. <code>context.player.opponent</code> is checked because a solo game has no opponent.</p>
+<p>"Select one" before the dash is a <code>select()</code>; each choice brings the chat line for when it's chosen. The card says "Action: During a conflict in which this character is participating", not "Conflict Action:", so it is an <code>action()</code> with that condition written out. The "if you have fewer cards …" is a triggering condition, so it goes into <code>ifCondition()</code>. <code>context.player.opponent</code> is checked because a solo game has no opponent.</p>
 
 <h3 id="start-example-gained">A granted ability: Kagi-Nawa</h3>
 <pre><code>// Kagi-Nawa: If attached character has the Shinobi trait, it gains: “Conflict Action: Choose a character with
