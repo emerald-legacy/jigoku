@@ -1565,7 +1565,7 @@ this.action('Place a fate on a participating character, bow it, move it home, an
 
   <div class="ref" id="b-cannotBeMirrored" data-name="cannotBeMirrored">
     <h3><code>cannotBeMirrored()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-cannotBeMirrored">#</a></h3>
-    <p>The Mirror's Gaze can't copy this event's ability. Only The Mirror's Gaze reads the flag.</p>
+    <p>The Mirror's Gaze can't copy this event's ability. Only The Mirror's Gaze reads the flag. Duel Challenge, Focus and Strike abilities are never copied, without the flag.</p>
     <pre><code>// Voice of Honor: Interrupt: When the effects of an event would initiate, … – cancel those effects.
     .cancel()
     .cannotBeMirrored();</code></pre>

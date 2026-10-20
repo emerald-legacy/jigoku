@@ -1233,6 +1233,7 @@ this.reaction('Bow character who triggered ability')
 this.reaction('Mirror an opponent\'s event')
     .when({
         onCardAbilityTriggered: (event, context) =&gt; event.card.type === CardType.Event &amp;&amp; !event.ability.cannotBeMirrored &amp;&amp;
+            event.ability.abilityType !== AbilityType.DuelReaction &amp;&amp;
             event.context.player === context.player.opponent &amp;&amp; !event.cancelled &amp;&amp;
             event.context.stage === Stage.Effect
     })</code></pre>

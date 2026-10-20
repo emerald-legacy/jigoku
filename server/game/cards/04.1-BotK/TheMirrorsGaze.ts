@@ -1,6 +1,6 @@
 import { resolveAbility } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Blocker, Stage, Trait } from '../../Constants.js';
+import { AbilityType, CardType, Blocker, Stage, Trait } from '../../Constants.js';
 import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 class TheMirrorsGaze extends DrawCard {
@@ -15,6 +15,7 @@ class TheMirrorsGaze extends DrawCard {
         this.reaction('Mirror an opponent\'s event')
             .when({
                 onCardAbilityTriggered: (event, context) => event.card.type === CardType.Event && !event.ability.cannotBeMirrored &&
+                    event.ability.abilityType !== AbilityType.DuelReaction &&
                     event.context.player === context.player.opponent && !event.cancelled &&
                     // a cancelled event's effects never initiate, so they never resolve
                     event.context.stage === Stage.Effect
