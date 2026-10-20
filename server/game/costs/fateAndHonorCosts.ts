@@ -30,10 +30,10 @@ export function payTargetDependentFateCost(targetName: string, ignoreType = fals
  * Cost in which the player must pay a fixed, non-reduceable amount of fate.
  */
 export function payFate(amount: number | ((context: AbilityContext) => number) = 1): Cost {
-    return new GameActionCost(
-        typeof amount === 'function'
-            ? GameActions.loseFate((context) => ({ target: context.player, amount: amount(context), spend: true }))
-            : GameActions.loseFate((context) => ({ target: context.player, amount, spend: true }))
+    const amountFor = (context: AbilityContext) => typeof amount === 'function' ? amount(context) : amount;
+    return Object.assign(
+        new GameActionCost(GameActions.loseFate((context) => ({ target: context.player, amount: amountFor(context), spend: true }))),
+        { fateSpent: amountFor }
     );
 }
 

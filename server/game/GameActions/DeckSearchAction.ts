@@ -5,7 +5,7 @@ import { DeckType, EventName, Location, RemainingCards, TargetMode } from '../Co
 import { shuffle } from '../utils/random.js';
 import type DrawCard from '../DrawCard.js';
 import { targetList, type GameAction, type ActionEvent, type WithDefaults } from './GameAction.js';
-import { resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
+import { isChosenByAbilityPlayer, resolveChoosingPlayer, type Chooser } from './resolveChoosingPlayer.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type Player from '../Player.js';
 import type { Event } from '../Events/Event.js';
@@ -31,6 +31,8 @@ export interface DeckSearchProperties<Context extends AbilityContext = AbilityCo
     selectedCardsHandler?(context: Context, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
     remainingCardsHandler?(context: Context, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
     cardCondition?(card: DrawCard, context: Context): boolean;
+    /** The card is chosen ("choose"), so Hantei XXXVIII may make the choice; he can't see the cards, so he chooses none. */
+    targets?: boolean;
     takesNothingGameAction?: GameAction;
     /** The button that ends the choice; by default "Take nothing", or "Done" once a card is taken. */
     doneButtonText?: string;
@@ -74,6 +76,11 @@ export class DeckSearchAction<Context extends AbilityContext = AbilityContext> e
         }
         const player = this.#searched(properties, context);
         return this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
+    }
+
+    override hasTargetsChosenByInitiatingPlayer(context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
+        return !!properties.targets && isChosenByAbilityPlayer(context, properties.player);
     }
 
     protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
@@ -173,7 +180,8 @@ export class DeckSearchAction<Context extends AbilityContext = AbilityContext> e
             properties.cardCondition(card, context) &&
             (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
             (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties));
-        if((properties.hideIfNoLegalTargets || !canCancel) && !cards.some(cardCondition)) {
+        const blindChoice = properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== choosingPlayer;
+        if(blindChoice || (properties.hideIfNoLegalTargets || !canCancel) && !cards.some(cardCondition)) {
             this.#handleDone(properties, context, event, selectedCards, cards);
             return;
         }

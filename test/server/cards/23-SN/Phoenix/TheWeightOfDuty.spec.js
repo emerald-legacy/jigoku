@@ -183,3 +183,45 @@ describe('The Weight of Duty - sub-resolutions', function () {
         });
     });
 });
+
+describe('The Weight of Duty and The Mirror\'s Gaze', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['solemn-scholar', 'doji-challenger'],
+                    hand: ['the-weight-of-duty', 'way-of-the-scorpion']
+                },
+                player2: {
+                    inPlay: ['miya-mystic', 'doji-kuwanan'],
+                    hand: ['the-mirror-s-gaze']
+                }
+            });
+            this.scholar = this.player1.findCardByName('solemn-scholar');
+            this.dojiChallenger = this.player1.findCardByName('doji-challenger');
+            this.duty = this.player1.findCardByName('the-weight-of-duty');
+            this.wayOfTheScorpion = this.player1.findCardByName('way-of-the-scorpion');
+            this.mystic = this.player2.findCardByName('miya-mystic');
+            this.dojiKuwanan = this.player2.findCardByName('doji-kuwanan');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.scholar, this.dojiChallenger],
+                defenders: [this.mystic, this.dojiKuwanan]
+            });
+            this.gaze = this.player2.playAttachment('the-mirror-s-gaze', this.mystic);
+        });
+
+        it('does not react to a copy, which is resolved, not triggered', function () {
+            this.player1.clickCard(this.wayOfTheScorpion);
+            this.player1.clickCard(this.dojiKuwanan);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.gaze);
+            this.player2.clickCard(this.scholar);
+            expect(this.scholar.isDishonored).toBe(true);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

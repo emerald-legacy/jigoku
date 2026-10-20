@@ -404,11 +404,13 @@ export class Duel extends GameObject {
     }
 
     onCardAbilityTriggered({
-        context: { event, player }
+        context: { event, player },
+        resolvedWithoutTriggering
     }: {
         context: { event?: { duel?: Duel; name: EventName }; player: Player };
+        resolvedWithoutTriggering?: boolean;
     }): void {
-        if(event?.duel !== this) {
+        if(resolvedWithoutTriggering || event?.duel !== this) {
             return;
         }
 

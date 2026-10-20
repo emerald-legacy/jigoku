@@ -24,6 +24,8 @@ export interface Cost<Results extends object = object, Context extends AbilityCo
     dependsOn?: string;
     isPrintedFateCost?: boolean;
     isPlayCost?: boolean;
+    /** The fate its player spends paying it (`payFate`): a targeting cost checked before costs are paid needs what's left. */
+    fateSpent?(context: AbilityContext): number;
     /** The opponent makes this choice: it comes first when they're the first player and the ability says so (`firstPlayerChoosesFirst`). */
     chosenByOpponent?: boolean;
 

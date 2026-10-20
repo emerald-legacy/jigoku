@@ -32,11 +32,14 @@ export class DrawPhase extends PhaseStep {
     }
 
     drawConflictCards() {
+        // simultaneously: if both decks run out and both players reach 0 honor, the first player wins (RRG Winning the Game)
+        this.game.suspendWinCheck();
         for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             const min = player.honorBid === 0 ? 0 : 1;
             const amount = Math.max(player.honorBid + player.sumEffects(EffectName.ModifyCardsDrawnInDrawPhase), min);
             this.game.addMessage(msg`${player} draws ${amount} card${amount === 1 ? '' : 's'} for the draw phase`);
             draw({ amount }).resolve(player, this.game.getFrameworkContext(player));
         }
+        this.game.queueSimpleStep(() => this.game.resumeWinCheck());
     }
 }

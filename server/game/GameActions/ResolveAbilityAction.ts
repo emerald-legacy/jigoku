@@ -52,7 +52,8 @@ class ResolveAbilityActionResolver extends AbilityResolver {
                     player: this.context.player,
                     card: this.context.source,
                     ability,
-                    context: this.context
+                    context: this.context,
+                    resolvedWithoutTriggering: true
                 })
             );
         }

@@ -300,3 +300,29 @@ describe('Togashi Hoshi and a "+X" attachment', function () {
         });
     });
 });
+
+describe('Togashi Hoshi and the old host', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-hoshi', { card: 'mirumoto-raitsugu', attachments: ['fine-katana'] }]
+                }
+            });
+            this.hoshi = this.player1.findCardByName('togashi-hoshi');
+            this.raitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+            this.katana = this.player1.findCardByName('fine-katana');
+        });
+
+        it('takes the detached card\'s skill bonus off its old host', function () {
+            const mil = this.raitsugu.militarySkill;
+            this.player1.clickCard(this.hoshi);
+            this.player1.clickCard(this.katana);
+            expect(this.katana.type).toBe('character');
+            expect(this.katana.parent).toBeNull();
+            expect(this.raitsugu.militarySkill).toBe(mil - 2);
+        });
+    });
+});
+

@@ -14,6 +14,7 @@ class MiyaLibrary extends DrawCard {
                 cardsToLookAt: 4,
                 deck: DeckType.Dynasty,
                 cardCondition: (card) => card.hasTrait(Trait.Imperial) && card.type === CardType.Character,
+                targets: true,
                 doneButtonText: 'Do not replace Miya Library',
                 remainingCards: RemainingCards.TopAnyOrder,
                 selectedCardsHandler: (context, _event, [card]) => {

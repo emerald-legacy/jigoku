@@ -43,35 +43,7 @@ export class LeavesPlayAction<
                 }
             }
         };
-        event.createContingentEvents = () => {
-            const contingentEvents: Event[] = [];
-            const evCard = event.card;
-            // Add an imminent triggering condition for all attachments leaving play
-
-            for(const attachment of evCard.attachments) {
-                // we only need to add events for attachments that are in play.
-                if(attachment.location === Location.PlayArea) {
-                    const attachmentEvent = new DiscardFromPlayAction({})
-                        .getEvent(attachment, context.game.getGameContext());
-                    attachmentEvent.order = event.order - 1;
-                    const previousCondition = attachmentEvent.condition;
-                    attachmentEvent.condition = (attachmentEvent) =>
-                        previousCondition(attachmentEvent) && attachment.parent === evCard;
-                    attachmentEvent.isContingent = true;
-                    contingentEvents.push(attachmentEvent);
-                }
-            }
-
-            // Add an imminent triggering condition for removing fate
-            if(evCard.allowGameAction('removeFate', context.game.getGameContext())) {
-                const fateEvent = new RemoveFateAction({ amount: evCard.getFate() })
-                    .getEvent(evCard, context.game.getGameContext());
-                fateEvent.order = event.order - 1;
-                fateEvent.isContingent = true;
-                contingentEvents.push(fateEvent);
-            }
-            return contingentEvents;
-        };
+        event.createContingentEvents = () => leavesPlayContingentEvents(event, context);
     }
 
     override eventHandler(event: LeavesPlayEvent<Context>, additionalProperties: ActionOverrides = {}): void {
@@ -83,6 +55,36 @@ export class LeavesPlayAction<
         }
         card.owner.moveCard(card, event.destination, event.options || {});
     }
+}
+
+/**
+ * What leaves play with a card (RRG Leaves Play): its attachments are discarded (Ancestral ones return to hand) and its fate is removed.
+ * An attachment that already leaves play in the same window (Master of Many Lifetimes returns them to hand) keeps that.
+ */
+export function leavesPlayContingentEvents(event: Event & { card: BaseCard }, context: AbilityContext): Event[] {
+    const contingentEvents: Event[] = [];
+    const card = event.card;
+    const order = event.order;
+    for(const attachment of card.attachments) {
+        if(attachment.location === Location.PlayArea && !event.window?.events.some((other) => other.card === attachment)) {
+            const attachmentEvent = new DiscardFromPlayAction({})
+                .getEvent(attachment, context.game.getGameContext());
+            attachmentEvent.order = order - 1;
+            const previousCondition = attachmentEvent.condition;
+            attachmentEvent.condition = (attachmentEvent) =>
+                previousCondition(attachmentEvent) && attachment.parent === card;
+            attachmentEvent.isContingent = true;
+            contingentEvents.push(attachmentEvent);
+        }
+    }
+    if(card.allowGameAction('removeFate', context.game.getGameContext())) {
+        const fateEvent = new RemoveFateAction({ amount: card.getFate() })
+            .getEvent(card, context.game.getGameContext());
+        fateEvent.order = order - 1;
+        fateEvent.isContingent = true;
+        contingentEvents.push(fateEvent);
+    }
+    return contingentEvents;
 }
 
 // next to LeavesPlayAction, which discards attachments with it: in a module of its own, each would import the other

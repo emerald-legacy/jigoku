@@ -100,3 +100,41 @@ describe('Miya Library', function () {
         });
     });
 });
+
+describe('Miya Library and Hantei XXXVIII', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    inPlay: ['miya-library', 'kanjo-district', 'miya-satoshi', 'adept-of-the-waves', 'kudaka'],
+                    dynastyDeck: []
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.miyaLibrary = this.player1.findCardByName('miya-library');
+            this.miyaSatoshi = this.player1.findCardByName('miya-satoshi');
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.player1.placeCardInProvince(this.miyaLibrary, 'province 1');
+            for(const name of ['miya-satoshi', 'kanjo-district', 'adept-of-the-waves', 'kudaka']) {
+                this.player1.moveCard(this.player1.findCardByName(name), 'dynasty deck');
+            }
+        });
+
+        it('chooses no card; the cards are put back in any order', function () {
+            this.player1.clickCard(this.miyaLibrary);
+            expect(this.player2).toBeAbleToSelect(this.hantei);
+            this.player2.clickCard(this.hantei);
+            expect(this.player2).not.toHavePrompt('Select an Imperial character to replace Miya Library');
+            expect(this.player1).toHavePrompt('Select the card you would like to place on top of your dynasty deck');
+            this.player1.clickPrompt('Miya Satoshi');
+            this.player1.clickPrompt('Kudaka');
+            this.player1.clickPrompt('Kanjo District');
+            expect(this.player1.dynastyDeck[0]).toBe(this.miyaSatoshi);
+            expect(this.miyaLibrary.location).toBe('province 1');
+            expect(this.player2).toHavePrompt('Play cards from provinces');
+        });
+    });
+});

@@ -29,6 +29,7 @@ export class DetachAction<Context extends AbilityContext = AbilityContext> exten
     override eventHandler(event: ActionEvent<EventName.OnCardDetached, Context>): void {
         const card = event.card;
         card.parent?.removeAttachment(card);
+        card.parent = null;
         card.controller.cardsInPlay.push(card);
     }
 }

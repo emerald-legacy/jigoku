@@ -32,6 +32,36 @@ describe('Yasuki Procurer', function() {
                 expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
             });
 
+            it('reduces the cost again each time it is used', function() {
+                this.player1.clickCard(this.yasukiProcurer);
+                this.player2.pass();
+                let fate = this.player1.fate;
+                this.player1.clickCard(this.watchCommander);
+                this.player1.clickCard(this.yasukiProcurer);
+                expect(this.player1.fate).toBe(fate);
+                this.yasukiProcurer.honor();
+                this.yasukiProcurer.fate = 3;
+                this.noMoreActions();
+                this.flow.finishConflictPhase();
+                this.player2.clickPrompt('Done');
+                this.player1.clickPrompt('Done');
+                this.player2.clickPrompt('Done');
+                this.player2.clickPrompt('End Round');
+                this.player1.clickPrompt('End Round');
+                this.player2.clickPrompt('Pass');
+                this.player1.clickPrompt('Pass');
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                this.player2.clickPrompt('Pass');
+                this.player1.clickCard(this.yasukiProcurer);
+                expect(this.yasukiProcurer.isDishonored).toBe(true);
+                this.player2.pass();
+                fate = this.player1.fate;
+                this.player1.clickCard(this.masterOfTheSpear);
+                this.player1.clickPrompt('0');
+                expect(this.player1.fate).toBe(fate - this.masterOfTheSpear.getCost() + 1);
+            });
+
             it('should not carry over after the phase ends', function() {
                 this.player1.clickCard(this.yasukiProcurer);
                 expect(this.yasukiProcurer.isDishonored).toBe(true);

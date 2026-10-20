@@ -182,3 +182,33 @@ describe('(2) Draw Phase', function() {
         });
     });
 });
+
+describe('(2.5) Draw cards with both conflict decks empty', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    honor: 5,
+                    conflictDiscard: ['fine-katana']
+                },
+                player2: {
+                    honor: 5,
+                    conflictDiscard: ['fine-katana']
+                }
+            });
+            this.player1.reduceDeckToNumber('conflict deck', 0);
+            this.player2.reduceDeckToNumber('conflict deck', 0);
+            this.flow.nextPhase();
+        });
+
+        it('draws simultaneously: if both players lose, the first player wins (RRG Winning the Game)', function() {
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            expect(this.player1.honor).toBe(0);
+            expect(this.player2.honor).toBe(0);
+            expect(this.game.winner).toBe(this.player1.player);
+        });
+    });
+});
+

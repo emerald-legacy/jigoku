@@ -78,7 +78,11 @@ export class FatePhase extends PhaseStep {
             },
             onCancel: () => {
                 for(const character of cardsToDiscard) {
-                    this.game.resolveActions([discardFromPlay({ target: character })]);
+                    this.game.queueSimpleStep(() => {
+                        if(characterShouldBeDiscarded(character)) {
+                            this.game.resolveActions([discardFromPlay({ target: character })]);
+                        }
+                    });
                 }
             }
         });

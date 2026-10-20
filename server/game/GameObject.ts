@@ -158,7 +158,8 @@ export class GameObject {
         if(context.stage === Stage.PreTarget || context.stage === Stage.Cost) {
             //We haven't paid the cost yet, so figure out what it will cost to play this so we can know how much fate we'll have available for targeting
             //we only want to consider the ability cost, not the card cost
-            const fateCost = context.ability.getReducedCost(context);
+            const fateCost = context.ability.getReducedCost(context) +
+                context.ability.cost.reduce((sum, cost) => sum + (cost.fateSpent?.(context) ?? 0), 0);
             const alternateFate = context.player.getAvailableAlternateFate(context);
             const availableFate = Math.max(context.player.fate - Math.max(fateCost - alternateFate, 0), 0);
 

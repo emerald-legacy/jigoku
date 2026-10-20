@@ -127,3 +127,46 @@ describe('Breach of Etiquette', function() {
         });
     });
 });
+
+describe('Breach of Etiquette and resolved abilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    inPlay: ['diplomat-of-the-steppes', 'bayushi-yunako']
+                },
+                player2: {
+                    honor: 10,
+                    fate: 10,
+                    inPlay: ['brash-samurai'],
+                    hand: ['breach-of-etiquette', 'battlefield-orders']
+                }
+            });
+            this.diplomat = this.player1.findCardByName('diplomat-of-the-steppes');
+            this.yunako = this.player1.findCardByName('bayushi-yunako');
+            this.brashSamurai = this.player2.findCardByName('brash-samurai');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.diplomat, this.yunako],
+                defenders: []
+            });
+            this.player2.clickCard('breach-of-etiquette');
+            this.player1.clickCard(this.diplomat);
+        });
+
+        it('does not make a player lose honor for an ability resolved by Battlefield Orders', function() {
+            expect(this.game.currentConflict.conflictType).toBe('military');
+            expect(this.player1.honor).toBe(8);
+            this.player2.clickCard('battlefield-orders');
+            this.player2.clickCard(this.yunako);
+            expect(this.player1).toHavePrompt('Choose a character');
+            this.player1.clickCard(this.brashSamurai);
+            expect(this.brashSamurai.getMilitarySkill()).toBe(1);
+            expect(this.player1.honor).toBe(8);
+            expect(this.player2.honor).toBe(10);
+        });
+    });
+});

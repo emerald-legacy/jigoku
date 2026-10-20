@@ -167,3 +167,36 @@ describe('To Show the Path', function () {
         });
     });
 });
+
+describe('To Show the Path and an ability that also costs fate', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doomed-shugenja', 'doji-whisperer'],
+                    hand: ['to-show-the-path']
+                },
+                player2: {
+                    fate: 1,
+                    inPlay: ['soshi-illusionist', 'kakita-yoshi']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.illusionist = this.player2.findCardByName('soshi-illusionist');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.whisperer.honor();
+            this.yoshi.honor();
+            this.player1.clickCard('to-show-the-path');
+            this.player1.clickCard(this.whisperer);
+        });
+
+        it('doesn\'t offer its character when the ability\'s own fate cost leaves no fate for it', function () {
+            expect(this.player2.fate).toBe(1);
+            this.player2.clickCard(this.illusionist);
+            expect(this.player2).not.toBeAbleToSelect(this.whisperer);
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+        });
+    });
+});
+

@@ -10,13 +10,13 @@ class YasukiProcurer extends DrawCard {
     override setupCardAbilities() {
         this.action('Reduce the cost of the next attachment or character')
             .cost(costs.dishonorSelf())
-            .playerLastingEffect({
+            .playerLastingEffect(() => ({
                 duration: Duration.UntilEndOfPhase,
                 effect: reduceCost({
                     match: (card) => card.type === CardType.Attachment || card.type === CardType.Character,
                     limit: fixed(1)
                 })
-            })
+            }))
             .chatText('reduce the cost of their next attachment or character played this phase by 1');
     }
 }

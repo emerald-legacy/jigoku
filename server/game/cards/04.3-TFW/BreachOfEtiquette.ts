@@ -15,7 +15,7 @@ class BreachOfEtiquette extends DrawCard {
                 target: Players.Self,
                 effect: playerDelayedEffect({
                     when: {
-                        onCardAbilityTriggered: (event) =>
+                        onCardAbilityTriggered: (event) => !event.resolvedWithoutTriggering &&
                             event.player === context.player && event.card.type === CardType.Character && !event.card.hasTrait(Trait.Courtier)
                     },
                     message: () => msg`${context.player} loses 1 honor due to ${context.source}`,
@@ -27,7 +27,7 @@ class BreachOfEtiquette extends DrawCard {
                 target: context.player.opponent,
                 effect: playerDelayedEffect({
                     when: {
-                        onCardAbilityTriggered: (event) =>
+                        onCardAbilityTriggered: (event) => !event.resolvedWithoutTriggering &&
                             event.player === context.player.opponent && event.card.type === CardType.Character && !event.card.hasTrait(Trait.Courtier)
                     },
                     message: () => msg`${context.player.opponent} loses 1 honor due to ${context.source}`,

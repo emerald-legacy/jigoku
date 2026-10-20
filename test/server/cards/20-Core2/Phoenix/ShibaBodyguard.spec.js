@@ -74,6 +74,17 @@ describe('Shiba Bodyguard', function () {
             expect(this.player1).toHavePrompt('Fate Phase');
         });
 
+        it('saves a fateless character also when its controller clicks Done (RRG 4.2)', function () {
+            this.flow.finishConflictPhase();
+            expect(this.player1).toHavePrompt('Fate Phase');
+            this.player1.clickPrompt('Done');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.shibaBodyguard);
+            this.player1.clickCard(this.solemnScholar);
+            expect(this.shibaBodyguard.location).toBe('dynasty discard pile');
+            expect(this.solemnScholar.location).toBe('play area');
+        });
+
         it('saves a fateless non-bushi', function () {
             this.flow.finishConflictPhase();
             expect(this.player1).toHavePrompt('Fate Phase');

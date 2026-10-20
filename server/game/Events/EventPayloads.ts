@@ -196,6 +196,8 @@ interface EventPayloadMap {
         card: BaseCard;
         ability: CardAbility;
         context: AbilityContext;
+        /** Raised for an ability resolved by another one, so The Mirror's Gaze can copy a copy; it isn't triggered (Breach of Etiquette). */
+        resolvedWithoutTriggering?: boolean;
     };
     [EventName.OnAbilityResolved]: BaseEventPayload;
     [EventName.OnReturnHome]: BaseEventPayload & {

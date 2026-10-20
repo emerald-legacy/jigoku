@@ -6,6 +6,7 @@ import { CardType, EventName, Location, RestrictionType } from '../Constants.js'
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
+import { leavesPlayContingentEvents } from './LeavesPlayAction.js';
 
 export interface PutInProvinceProperties extends CardActionProperties {
     destination?: Location;
@@ -62,6 +63,7 @@ export class PutIntoProvinceAction<Context extends AbilityContext = AbilityConte
         event.preResolutionEffect = () => {
             event.cardStateWhenLeftPlay = event.card.createSnapshot();
         };
+        event.createContingentEvents = () => leavesPlayContingentEvents(event, context);
     }
 
     override eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, additionalProperties: ActionOverrides = {}): void {

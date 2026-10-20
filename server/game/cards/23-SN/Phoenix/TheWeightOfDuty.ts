@@ -11,7 +11,7 @@ export default class TheWeightOfDuty extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Honor a character')
             .when({
-                onCardAbilityTriggered: (event, context) =>
+                onCardAbilityTriggered: (event, context) => !event.resolvedWithoutTriggering &&
                     event.player === context.player.opponent &&
                     // chosenCardTargets covers every resolution of the triggering, sub-resolutions included
                     event.context.triggeringContext.chosenCardTargets.some((card) =>
