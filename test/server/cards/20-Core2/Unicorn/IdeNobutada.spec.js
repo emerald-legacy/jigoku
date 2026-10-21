@@ -46,3 +46,32 @@ describe('Ide Nobutada', function () {
         });
     });
 });
+
+describe('Ide Nobutada while Shinjo Takame is in play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['fine-katana'],
+                    inPlay: ['ide-nobutada', 'shinjo-takame'],
+                    dynastyDiscard: ['shinjo-takame']
+                }
+            });
+            this.fineKatana = this.player1.findCardByName('fine-katana');
+            this.ideNobutada = this.player1.findCardByName('ide-nobutada');
+            this.takameInDeck = this.player1.moveCard(this.player1.findCardByName('shinjo-takame', 'dynasty discard pile'), 'dynasty deck');
+            this.player1.playAttachment(this.fineKatana, this.ideNobutada);
+            this.player2.pass();
+        });
+
+        it('cannot choose a copy that can\'t enter play (unique)', function () {
+            this.player1.clickCard(this.ideNobutada);
+            expect(this.player1).not.toHavePromptButton('Shinjo Takame');
+            this.player1.clickPrompt('Take nothing');
+            expect(this.ideNobutada.location).toBe('play area');
+            expect(this.ideNobutada.attachments).toContain(this.fineKatana);
+            expect(this.takameInDeck.location).toBe('dynasty deck');
+        });
+    });
+});

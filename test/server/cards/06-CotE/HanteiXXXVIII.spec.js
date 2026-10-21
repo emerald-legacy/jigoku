@@ -512,3 +512,43 @@ describe('Hantei XXXVII', function() {
         });
     });
 });
+
+describe('Hantei XXXVIII and the Pass button', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['mantis-tenkinja'],
+                    dynastyDiscard: ['awakened-tsukumogami'],
+                    hand: ['charge']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.tenkinja = this.player1.findCardByName('mantis-tenkinja');
+            this.tsukumogami = this.player1.placeCardInProvince('awakened-tsukumogami', 'province 2');
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.tenkinja],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.player.firstPlayer = false;
+            this.player2.player.firstPlayer = true;
+            this.player1.fate = 0;
+        });
+
+        it('lets the opponent pass while the player still needs a cost reduction', function() {
+            this.player1.clickCard('charge');
+            this.player1.clickCard(this.tsukumogami);
+            expect(this.player2).toBeAbleToSelect(this.hantei);
+            expect(this.player2).toHavePromptButton('Pass');
+            this.player2.clickPrompt('Pass');
+            expect(this.player1).toBeAbleToSelect(this.tenkinja);
+        });
+    });
+});

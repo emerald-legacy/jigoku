@@ -12,9 +12,14 @@ import {
     returnToDeck,
     sequential
 } from '../../../GameActions/GameActions.js';
-import { DeckType, Duration, RemainingCards } from '../../../Constants.js';
+import { DeckType, Duration, Location, RemainingCards } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
+
+function intoPlay(character: DrawCard) {
+    return character.isParticipating() ? putIntoConflict() : putIntoPlay();
+}
 
 export function makeTwin(id: string, opt: { siblingName: string; title: string; chatText: string }) {
     return class Twin extends DrawCard {
@@ -23,7 +28,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
         override setupCardAbilities() {
             this.action(opt.title)
                 .deckSearch({
-                    cardCondition: (card) => card.name === opt.siblingName,
+                    cardCondition: (card, context) => card.name === opt.siblingName && intoPlay(context.source).canAffect(card, context),
                     deck: DeckType.Dynasty,
                     remainingCards: RemainingCards.Top,
                     activePromptTitle: `Find a copy of ${opt.siblingName}`,
@@ -40,45 +45,49 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                         if(!replacedCharacter.isDrawCard()) {
                             return;
                         }
-                        const intoPlayAction = replacedCharacter.isParticipating()
-                            ? putIntoConflict({ target: newCharacter })
-                            : putIntoPlay({ target: newCharacter });
-                        intoPlayAction.resolve(newCharacter, context);
-
-                        const sequence: GameAction[] = replacedCharacter.attachments.map((attachment) =>
-                            ifAble({
-                                ifAbleGameAction: attach({ attachment, target: newCharacter }),
-                                otherwiseGameAction: discardFromPlay({ target: attachment })
-                            })
-                        );
-                        sequence.push(
-                            placeFate({
-                                target: newCharacter,
-                                origin: replacedCharacter,
-                                amount: replacedCharacter.fate
-                            })
-                        );
-                        for(const token of replacedCharacter.statusTokens) {
-                            sequence.push(
-                                moveStatusToken({ target: token, recipient: newCharacter })
-                            );
-                        }
-                        sequential(sequence).resolve(newCharacter, context);
-
-                        cardLastingEffect({
-                            effect: blank(),
-                            duration: Duration.UntilEndOfRound,
-                            target: newCharacter
-                        })
-                            .resolve(newCharacter, context);
-
-                        returnToDeck({ target: replacedCharacter, shuffle: true })
-                            .resolve(replacedCharacter, context);
-
-                        context.game.addMessage(msg`${event.player} replaces ${replacedCharacter} with ${newCharacter}`);
+                        intoPlay(replacedCharacter).resolve(newCharacter, context);
+                        context.game.queueSimpleStep(() => {
+                            if(newCharacter.location !== Location.PlayArea) {
+                                return;
+                            }
+                            this.replace(context, replacedCharacter, newCharacter);
+                            context.game.addMessage(msg`${event.player} replaces ${replacedCharacter} with ${newCharacter}`);
+                        });
                     }
                 })
                 .chatText(opt.chatText);
+        }
+
+        private replace(context: AbilityContext, replacedCharacter: DrawCard, newCharacter: DrawCard): void {
+            const sequence: GameAction[] = replacedCharacter.attachments.map((attachment) =>
+                ifAble({
+                    ifAbleGameAction: attach({ attachment, target: newCharacter }),
+                    otherwiseGameAction: discardFromPlay({ target: attachment })
+                })
+            );
+            sequence.push(
+                placeFate({
+                    target: newCharacter,
+                    origin: replacedCharacter,
+                    amount: replacedCharacter.fate
+                })
+            );
+            for(const token of replacedCharacter.statusTokens) {
+                sequence.push(
+                    moveStatusToken({ target: token, recipient: newCharacter })
+                );
+            }
+            sequential(sequence).resolve(newCharacter, context);
+
+            cardLastingEffect({
+                effect: blank(),
+                duration: Duration.UntilEndOfRound,
+                target: newCharacter
+            })
+                .resolve(newCharacter, context);
+
+            returnToDeck({ target: replacedCharacter, shuffle: true })
+                .resolve(replacedCharacter, context);
         }
     };
 }

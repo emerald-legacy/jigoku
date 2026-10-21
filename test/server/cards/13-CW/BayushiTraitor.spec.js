@@ -204,3 +204,39 @@ describe('Bayushi Traitor', function() {
         });
     });
 });
+
+describe('Bayushi Traitor put into a conflict by its owner', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kitsu-spiritcaller', 'doji-challenger'],
+                    conflictDiscard: ['bayushi-traitor']
+                },
+                player2: {
+                    inPlay: ['miya-mystic']
+                }
+            });
+            this.spiritcaller = this.player1.findCardByName('kitsu-spiritcaller');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.traitor = this.player1.findCardByName('bayushi-traitor');
+            this.mystic = this.player2.findCardByName('miya-mystic');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.mystic]
+            });
+            this.player2.pass();
+        });
+
+        it('can be put into the conflict on its owner\'s side', function() {
+            this.player1.clickCard(this.spiritcaller);
+            expect(this.player1).toBeAbleToSelect(this.traitor);
+            this.player1.clickCard(this.traitor);
+            expect(this.traitor.controller).toBe(this.player1.player);
+            expect(this.game.currentConflict.attackers).toContain(this.traitor);
+        });
+    });
+});

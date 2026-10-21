@@ -13,12 +13,11 @@ export default class PerfectGuest extends DrawCard {
                 effect: takeControl(context.player.opponent),
                 duration: Duration.Custom
             }))
-            .chatText((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`)
-            .then()
             .playerLastingEffect((context) => ({
                 target: context.player.opponent,
                 duration: Duration.UntilEndOfRound,
-                effect: playerCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo: RestrictionScope.Source })
-            }));
+                effect: playerCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo: RestrictionScope.ThisAbility })
+            }))
+            .chatText((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`);
     }
 }

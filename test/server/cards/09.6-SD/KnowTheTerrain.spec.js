@@ -335,6 +335,8 @@ describe('Know the Terrain', function() {
 
                 expect(this.getChatLogs(3)).toContain('player1 has failed to initiate a conflict because they no longer have any legal attackers');
                 expect(this.rally.facedown).toBe(true);
+                expect(this.game.rings.void.contested).toBe(false);
+                expect(this.game.rings.void.isUnclaimed()).toBe(true);
             });
 
             it('if the conflict fizzles should not allow reactions to declaration (mantra test)', function() {

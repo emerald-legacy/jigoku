@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, RestrictionType } from '../../Constants.js';
+import { Location, RestrictionScope, RestrictionType } from '../../Constants.js';
 import {
     cannotParticipateAsAttacker,
     cannotParticipateAsDefender,
@@ -23,7 +23,7 @@ class BayushiTraitor extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetLocation: Location.Any,
-            effect: cardCannot(RestrictionType.PutIntoConflict)
+            effect: cardCannot({ cannot: RestrictionType.PutIntoConflict, appliesTo: RestrictionScope.AllButOwnCardEffects })
         });
 
         this.persistentEffect({

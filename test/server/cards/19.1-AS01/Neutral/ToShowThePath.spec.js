@@ -200,3 +200,42 @@ describe('To Show the Path and an ability that also costs fate', function () {
     });
 });
 
+describe('To Show the Path and a resolved ability', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doomed-shugenja', 'doji-challenger'],
+                    hand: ['to-show-the-path']
+                },
+                player2: {
+                    fate: 10,
+                    inPlay: ['doji-kuwanan'],
+                    hand: ['battlefield-orders']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+            this.orders = this.player2.findCardByName('battlefield-orders');
+            this.player1.clickCard('to-show-the-path');
+            this.player1.clickCard(this.challenger);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.kuwanan]
+            });
+        });
+
+        it('makes the opponent pay the extra fate when an ability resolved by Battlefield Orders chooses that character', function () {
+            const fate = this.player2.fate;
+            this.player2.clickCard(this.orders);
+            this.player2.clickCard(this.kuwanan);
+            expect(this.player2).toBeAbleToSelect(this.challenger);
+            this.player2.clickCard(this.challenger);
+            expect(this.challenger.bowed).toBe(true);
+            expect(this.player2.fate).toBe(fate - this.orders.printedCost - 1);
+        });
+    });
+});

@@ -35,8 +35,12 @@ export enum RestrictionScope {
     OpponentsTriggeredAbilities = 'opponentsTriggeredAbilities',
     OpponentsTriggeredActionAbilities = 'opponentsTriggeredActionAbilities',
     OwnCardEffects = 'ownCardEffects',
+    /** Everything except the applying player's own card effects (also playing the card). */
+    AllButOwnCardEffects = 'allButOwnCardEffects',
     Reactions = 'reactions',
     RingEffects = 'ringEffects',
     Source = 'source',
+    /** The ability that created the effect ("cannot trigger this ability"). */
+    ThisAbility = 'thisAbility',
     UnlessMeishodo = 'unlessMeishodo'
 }

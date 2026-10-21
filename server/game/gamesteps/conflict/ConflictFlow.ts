@@ -789,6 +789,10 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     claimRing(): void {
+        if(this.conflict.conflictFailedToInitiate) {
+            this.conflict.ring?.resetRing();
+            return;
+        }
         if(this.conflictCancelled) {
             return;
         }

@@ -75,6 +75,8 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.ability.abilityType === AbilityType.Action,
     [RestrictionScope.OwnCardEffects]: (context, effect) =>
         context.player === getApplyingPlayer(effect) && isCardEffect(context),
+    [RestrictionScope.AllButOwnCardEffects]: (context, effect) =>
+        !checkRestrictions[RestrictionScope.OwnCardEffects](context, effect),
     [RestrictionScope.OpponentsCardAbilities]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && context.ability.isCardAbility(),
     [RestrictionScope.OpponentsCharacters]: (context, effect) =>
@@ -90,6 +92,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.ability instanceof BaseCardAbility &&
         context.ability.card.type === CardType.Event && context.ability.abilityType === AbilityType.Action,
     [RestrictionScope.Source]: (context, effect) => context.source === effect.context?.source,
+    [RestrictionScope.ThisAbility]: (context, effect) => context.ability === effect.context?.ability,
     [RestrictionScope.KeywordAbilities]: (context) => context.ability.isKeywordAbility(),
     [RestrictionScope.NonKeywordAbilities]: (context) => !context.ability.isKeywordAbility(),
     [RestrictionScope.NonForcedAbilities]: (context) =>

@@ -20,7 +20,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
         if(this.playEvent && this.currentPlayer === this.playEvent.player && this.playEvent.resolver?.canCancel) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
         }
-        if(this.getMinCostReduction() === 0) {
+        if(this.getMinCostReduction() === 0 || this.currentPlayer !== this.playEvent?.player) {
             buttons.push({ text: 'Pass', arg: 'pass' });
         }
         return Object.assign(super.getPromptForSelectProperties(), {

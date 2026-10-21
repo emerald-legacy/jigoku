@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { CardAbility } from '../CardAbility.js';
 import { EventName, Blocker } from '../Constants.js';
@@ -10,6 +10,7 @@ import { InitiateCardAbilityEvent } from '../Events/InitiateCardAbilityEvent.js'
 import type Game from '../Game.js';
 import { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
+import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from './targetingCosts.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -67,11 +68,18 @@ class ResolveAbilityActionResolver extends AbilityResolver {
             }
             return;
         }
+        const costsToTarget = this.ignoreCosts ? [] : targetingCosts(this.context, Object.values(this.context.targets).flat());
+        if(!canPayTargetingCosts(this.context, costsToTarget)) {
+            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
+            this.cancelled = true;
+            return;
+        }
         const cardAbility = this.ability;
         if(cardAbility.max && !this.context.subResolution) {
             this.context.player.incrementAbilityMax(cardAbility.maxIdentifier);
         }
         cardAbility.displayMessage(this.context, 'resolves');
+        payTargetingCosts(this.context, costsToTarget);
         this.game.openEventWindow(
             new InitiateCardAbilityEvent(
                 { card: this.context.source, context: this.context, resolvedWithoutTriggering: true },
