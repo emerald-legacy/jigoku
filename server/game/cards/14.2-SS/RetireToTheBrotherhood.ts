@@ -53,7 +53,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                 ]),
                 chatMessage((context) => this.enteredPlayMessage(context, context.player)),
                 chatMessage((context) => this.enteredPlayMessage(context, context.player.opponent)),
-                // a player who discarded nothing revealed nothing, so their deck isn't shuffled (EmeraldDB ruling)
+                // a player who discarded nothing revealed nothing, so their deck isn't shuffled
                 multiple([
                     shuffleDeck((context) => ({
                         deck: Location.DynastyDeck,

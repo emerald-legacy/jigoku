@@ -13,7 +13,7 @@ export default class ToshiRanbo extends ProvinceCard {
             effect: cardCannot(RestrictionType.TurnFacedown)
         });
 
-        // also characters played from a Back-Alley Hideaway in this province, as if from it (EmeraldDB ruling)
+        // also characters played from a Back-Alley Hideaway in this province, as if from it
         this.persistentEffect({
             targetLocation: Location.Any,
             match: (card) => card.isDynasty && this.isPlayedFromHere(card),

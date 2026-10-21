@@ -29,11 +29,11 @@ class TheSkinOfFuLeng extends DrawCard {
             effect: canBeTriggeredByOpponent()
         });
 
-        // as the ability is initiated, the character's controller is the player using the Skin (EmeraldDB ruling)
+        // as the ability is initiated, the character's controller is the player using the Skin
         new EventRegistrar(this.game).registerTriggerWindow(EventName.OnCardAbilityInitiated, AbilityType.WouldInterrupt, (event) => this.discardAttachmentsNoLongerLegal(event));
     }
 
-    /** "Attach to a character you control" attachments of the character's controller fall off while the Skin's player uses it (EmeraldDB ruling). */
+    /** "Attach to a character you control" attachments of the character's controller fall off while the Skin's player uses it. */
     private discardAttachmentsNoLongerLegal(event: GameEvent<EventName.OnCardAbilityInitiated>): void {
         const player = event.context.player;
         const character = event.card;

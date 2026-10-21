@@ -53,7 +53,7 @@ class TradingOnTheSandRoad extends DrawCard {
                 destination: Location.RemovedFromGame
             }))
             .chatText('remove the top 4 cards from each player\'s deck and make them playable by both players until the end of the round')
-            // its effects use its triggering condition (developer ruling on The Mirror's Gaze)
+            // its effects use its triggering condition
             .cannotBeMirrored();
     }
 }

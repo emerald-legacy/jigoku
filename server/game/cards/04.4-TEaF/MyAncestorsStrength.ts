@@ -25,7 +25,7 @@ class MyAncestorsStrength extends DrawCard {
                 controller: Players.Self
             }, cardLastingEffect((context) => ({
                 target: context.targets.shugenja,
-                // a dash stays a dash (ruling #484)
+                // a dash stays a dash
                 effect: copyBaseSkillEffects(context.targets.ancestor, {
                     skills: [SkillType.Military, SkillType.Political].filter((type) => !context.targets.shugenja.hasDash(type))
                 })

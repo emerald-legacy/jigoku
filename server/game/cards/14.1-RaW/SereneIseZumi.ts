@@ -23,7 +23,7 @@ export default class SereneIseZumi extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            // played as an attachment: it stays without sincerity if it becomes a character again (Togashi Hoshi; EmeraldDB ruling)
+            // played as an attachment: it stays without sincerity if it becomes a character again (Togashi Hoshi)
             condition: (context) => context.source.getEffects(EffectName.ChangeType).includes(CardType.Attachment),
             effect: loseKeyword('sincerity')
         });
@@ -38,7 +38,7 @@ export default class SereneIseZumi extends DrawCard {
         });
     }
 
-    /** "On a character you control" only applies when playing it: it stays attached if you lose control (EmeraldDB ruling). */
+    /** "On a character you control" only applies when playing it: it stays attached if you lose control. */
     override canPlayOn(card: BaseCard | Ring): boolean {
         return 'controller' in card && card.controller === this.controller && super.canPlayOn(card);
     }

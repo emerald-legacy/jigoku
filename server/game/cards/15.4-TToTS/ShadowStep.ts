@@ -23,7 +23,7 @@ class ShadowStep extends DrawCard {
             .putIntoPlay((context) => ({ target: context.target, status: CharacterStatus.Dishonored, controller: this.ownerSide(context) }));
     }
 
-    /** It enters play under its owner's control, also after you took control of it (EmeraldDB ruling). */
+    /** It enters play under its owner's control, also after you took control of it. */
     private ownerSide(context: AbilityContext): Players {
         return context.target?.owner === context.player ? Players.Self : Players.Opponent;
     }

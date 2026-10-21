@@ -24,7 +24,7 @@ interface LimitedPlaysOptions<Card extends DrawCard> {
 
 /**
  * "You may play … as if it were in your hand. You cannot play more than N cards per round this way": counts the plays this card allowed.
- * A play counts once initiated, even if its costs aren't paid (EmeraldDB ruling on Bayushi Kachiko).
+ * A play counts once initiated, even if its costs aren't paid.
  * The count starts again at the end of the round and when the card enters play.
  */
 export class LimitedPlaysFromOutOfPlay<Card extends DrawCard> {

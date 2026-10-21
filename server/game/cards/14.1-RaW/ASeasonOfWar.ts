@@ -13,7 +13,7 @@ class ASeasonOfWar extends DrawCard {
                     target: context.player.getDynastyCardsInProvince(Location.Provinces).concat(context.player.opponent ?
                         context.player.opponent.getDynastyCardsInProvince(Location.Provinces) : [])
                 })),
-                // both players refill simultaneously: if both decks run out and both would lose, the first player wins (EmeraldDB ruling)
+                // both players refill simultaneously: if both decks run out and both would lose, the first player wins
                 handler({ handler: (context) => context.game.suspendWinCheck() }),
                 refillFaceup((context) => ({
                     target: context.player,

@@ -37,7 +37,7 @@ export function nameCardType(): Cost<{ namedCardType: CardType }> {
 
 /**
  * The player adds up to 2 of the revealed cards of the named type to their hand, and the rest are discarded.
- * Only the revealed cards still on top of the deck: a card played from the top of the deck was revealed but has left it (EmeraldDB ruling).
+ * Only the revealed cards still on top of the deck: a card played from the top of the deck was revealed but has left it.
  */
 export function takeUpToTwoOfNamedType(context: AbilityContext & { costs: { namedCardType?: CardType; reveal?: BaseCard[] } }, trait: Trait): DeckSearchProperties {
     const revealed = context.costs.reveal;

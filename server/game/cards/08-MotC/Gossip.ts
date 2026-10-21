@@ -8,7 +8,7 @@ class Gossip extends DrawCard {
     static id = 'gossip';
 
     override setupCardAbilities() {
-        // naming is the effect, so it happens after the event could be cancelled (EmeraldDB ruling)
+        // naming is the effect, so it happens after the event could be cancelled
         this.action('Name a card that your opponent cannot play for the phase')
             .gameAction(nameCard({
                 message: (_context, cardName, player) =>
