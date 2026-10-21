@@ -31,9 +31,6 @@ export abstract class MulliganPrompt extends AllPlayerPrompt {
 
     protected abstract keptMessage(player: Player): MessageArgs;
 
-    /** After the player is done, whether or not they mulliganed. */
-    protected afterDecision(_player: Player): void {}
-
     override completionCondition(player: Player): boolean {
         return this.hasDecided(player);
     }
@@ -78,7 +75,6 @@ export abstract class MulliganPrompt extends AllPlayerPrompt {
         }
         const cards = this.selectedCards[player.name];
         this.#decisions.set(player, cards.length > 0 ? this.mulligan(player, cards) : this.keptMessage(player));
-        this.afterDecision(player);
         player.clearSelectedCards();
         player.clearSelectableCards();
         this.markDecided(player);

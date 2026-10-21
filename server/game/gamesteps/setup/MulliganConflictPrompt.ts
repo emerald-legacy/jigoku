@@ -31,13 +31,4 @@ export class MulliganConflictPrompt extends MulliganPrompt {
     protected override keptMessage(player: Player): MessageArgs {
         return msg`${player} has kept all conflict cards`;
     }
-
-    // the provinces' cards turn facedown once the player is done (RRG: no looking after this step)
-    protected override afterDecision(player: Player): void {
-        this.game.getProvinceArray(false).forEach((location: Location) => {
-            player.getDynastyCardsInProvince(location).forEach((card) => {
-                card.facedown = true;
-            });
-        });
-    }
 }

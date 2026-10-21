@@ -20,6 +20,7 @@ export class SetupPhase extends PhaseStep {
             new MulliganDynastyPrompt(game),
             new SimpleStep(game, () => this.drawStartingHands()),
             new MulliganConflictPrompt(game),
+            new SimpleStep(game, () => this.turnProvinceCardsFacedown()),
             new SimpleStep(game, () => this.startGame())
         ]);
     }
@@ -122,6 +123,17 @@ export class SetupPhase extends PhaseStep {
     drawStartingHands() {
         for(const player of this.game.getPlayers()) {
             player.drawCardsToHand(this.game.rules.setupStartingHandSize);
+        }
+    }
+
+    // each player looks at their province cards (and the mulligan's replacements) until both conflict mulligans are done
+    turnProvinceCardsFacedown() {
+        for(const player of this.game.getPlayers()) {
+            for(const location of this.game.getProvinceArray(false)) {
+                player.getDynastyCardsInProvince(location).forEach((card) => {
+                    card.facedown = true;
+                });
+            }
         }
     }
 
