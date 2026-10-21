@@ -13,7 +13,7 @@ export default class KakitaRusumi extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Put a character into play', { evenFromHome: true })
-            .condition((context) => context.player.isDefendingPlayer())
+            .ifCondition((context) => context.player.isDefendingPlayer())
             .deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
                 cardsToLookAt: 4,

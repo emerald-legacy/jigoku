@@ -12,7 +12,7 @@ export default class VengefulKami extends DrawCard {
         const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
 
         this.conflictAction('Resolve Ring Effect', { evenFromHome: true })
-            .condition((context) => context.player.isDefendingPlayer() &&
+            .ifCondition((context) => context.player.isDefendingPlayer() &&
                 context.game.requireConflict()
                     .getConflictProvinces()
                     .some((province) => declaredConflicts.wasAttackedBefore(province, context.game.currentConflict)))

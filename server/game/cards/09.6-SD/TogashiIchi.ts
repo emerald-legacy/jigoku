@@ -8,12 +8,12 @@ export default class TogashiIchi extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Break the province')
-            .condition((context) => {
-                const conflict = this.game.currentConflict;
+            .condition((context) => context.source.isAttacking())
+            .ifCondition((context) => {
+                const conflict = context.game.currentConflict;
                 const opponent = context.player.opponent;
-                return !!conflict && !!opponent && context.source.isAttacking() &&
-                    conflict.getNumberOfCardsPlayed(context.player) +
-                        conflict.getNumberOfCardsPlayed(opponent) >= 10 &&
+                return !!conflict && !!opponent &&
+                    conflict.getNumberOfCardsPlayed(context.player) + conflict.getNumberOfCardsPlayed(opponent) >= 10 &&
                     conflict.getConflictProvinces().some((p) => p.location !== Location.StrongholdProvince);
             })
             .selectAttackedProvince({

@@ -7,7 +7,7 @@ class AlibiArtist extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Look at top 2 cards of conflict deck')
-            .condition((context) => context.player.honor <= 6)
+            .ifCondition((context) => context.player.honor <= 6)
             .deckSearch({
                 cardsToLookAt: 2,
                 mode: TargetMode.Exactly,

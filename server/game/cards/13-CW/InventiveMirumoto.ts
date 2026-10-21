@@ -11,7 +11,7 @@ class InventiveMirumoto extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Play attachment onto this character')
-            .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
+            .ifCondition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .target({
                 cardCondition: (card) => card.type === CardType.Attachment,
                 location: Location.ConflictDiscardPile,

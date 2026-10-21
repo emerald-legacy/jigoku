@@ -13,9 +13,8 @@ class IsawaTsuke2 extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Lose honor to discard fate')
-            .condition((context) =>
-                context.game.isDuringConflict() &&
-                context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed())
+            .condition((context) => context.game.isDuringConflict())
+            .ifCondition((context) => context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed())
             .cost(costs.payVariableHonor((context) => this.getNumberOfLegalTargets(context)))
             .targetCards({
                 mode: TargetMode.ExactlyVariable,

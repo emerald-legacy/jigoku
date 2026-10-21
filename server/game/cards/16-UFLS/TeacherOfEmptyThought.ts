@@ -5,7 +5,8 @@ class TeacherOfEmptyThought extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Draw a card')
-            .condition((context) => !!(context.source.isParticipating() && context.game.currentConflict && context.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 3))
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => (context.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 3)
             .draw();
     }
 }

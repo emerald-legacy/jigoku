@@ -11,7 +11,7 @@ export default class AkodoCho extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Bow a character')
-            .condition((context) =>
+            .ifCondition((context) =>
                 context.source.attachments.some((attachment) => attachment.hasTrait(Trait.Follower)))
             .target({
                 name: CHARACTER,

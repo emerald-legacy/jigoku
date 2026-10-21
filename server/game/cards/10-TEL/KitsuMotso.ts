@@ -7,10 +7,8 @@ class KitsuMotso extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Move a character in')
-            .condition((context) =>
-                !!(context.source.isParticipating() &&
-                context.player.opponent &&
-                context.player.hand.length < context.player.opponent.hand.length))
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => !!context.player.opponent && context.player.hand.length < context.player.opponent.hand.length)
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent

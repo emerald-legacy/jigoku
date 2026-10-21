@@ -10,7 +10,7 @@ export default class SolemnScholar extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Bow an attacking character', { evenFromHome: true })
-            .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
+            .ifCondition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()

@@ -8,7 +8,8 @@ class MatsuAgetoki extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Move the conflict to another eligible province')
-            .condition((context) => context.player.isMoreHonorable() && context.source.isAttacking())
+            .condition((context) => context.source.isAttacking())
+            .ifCondition((context) => context.player.isMoreHonorable())
             .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,

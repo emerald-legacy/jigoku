@@ -41,7 +41,7 @@ export default class LoyalWarhound extends DrawCard {
                         blank(true),
                         changeType(CardType.Attachment),
                         gainAbility.action('Detach', (ability) => ability
-                            .condition((context) => {
+                            .ifCondition((context) => {
                                 const flags = context.source.getEffects(EffectName.AddFlag);
                                 return !flags.includes('wasAttachedThisRound');
                             })

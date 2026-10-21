@@ -12,7 +12,7 @@ class ShadowSteed extends DrawCard {
         });
 
         this.action('Ready attached character')
-            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.getFate() === 0))
+            .ifCondition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.getFate() === 0))
             .cost(costs.payHonor(1))
             .ready((context) => ({target: context.source.parentCharacter ?? []}));
     }

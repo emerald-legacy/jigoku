@@ -5,7 +5,7 @@ class OtomoSycophant extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Honor Self')
-            .condition((context) => context.player.imperialFavor !== '')
+            .ifCondition((context) => context.player.imperialFavor !== '')
             .honor();
     }
 }

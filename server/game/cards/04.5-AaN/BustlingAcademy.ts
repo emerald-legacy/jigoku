@@ -7,7 +7,7 @@ export default class BustlingAcademy extends DrawCard {
 
     public override setupCardAbilities() {
         this.action('Discard a card in a province and refill it faceup')
-            .condition((context) =>
+            .ifCondition((context) =>
                 context.player.cardsInPlay.some((card) => card.hasTrait(Trait.Scholar)) &&
                 context.player.opponent !== undefined)
             .target({

@@ -8,7 +8,8 @@ class RadiantOrator extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Send a character home')
-            .condition((context) => context.source.isParticipating() && hasMoreParticipatingGlory(context.player))
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => hasMoreParticipatingGlory(context.player))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent

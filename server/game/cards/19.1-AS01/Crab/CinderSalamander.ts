@@ -23,7 +23,7 @@ export default class CinderSalamander extends DrawCard {
             });
 
         this.action('Search other copies of this character and put them into play')
-            .condition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
+            .ifCondition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .deckSearch({
                 activePromptTitle: 'Select characters to put into play from your deck',
                 deck: DeckType.Dynasty,

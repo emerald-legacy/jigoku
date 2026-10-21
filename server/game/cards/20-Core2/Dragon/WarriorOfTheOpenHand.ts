@@ -6,7 +6,7 @@ export default class WarriorOfTheOpenHand extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Return to hand')
-            .condition((context) =>
+            .ifCondition((context) =>
                 !!(context.source.isAttacking() &&
                 context.player.opponent &&
                 context.game.currentConflict &&

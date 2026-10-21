@@ -16,7 +16,8 @@ class TogashiMitsu2 extends DrawCard {
         });
 
         this.action('Resolve a ring effect')
-            .condition((context) => context.source.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 5)
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => (context.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 5)
             .ringTarget({
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,

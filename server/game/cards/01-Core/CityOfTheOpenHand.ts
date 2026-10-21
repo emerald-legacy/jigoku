@@ -6,7 +6,7 @@ export default class CityOfTheOpenHand extends StrongholdCard {
 
     override setupCardAbilities() {
         this.action('Gain an honor')
-            .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
+            .ifCondition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
             .cost(costs.bowSelf())
             .gainHonor();
     }

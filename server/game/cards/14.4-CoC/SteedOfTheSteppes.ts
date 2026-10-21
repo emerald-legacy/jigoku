@@ -13,7 +13,7 @@ class SteedOfTheSteppes extends DrawCard {
         });
 
         this.action('Ready attached character')
-            .condition((context) => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3))
+            .ifCondition((context) => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3))
             .cost(captureParentCost())
             .cost(costs.sacrificeSelf())
             //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.captureParentCost is for the actual stand

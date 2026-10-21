@@ -16,7 +16,7 @@ export default class KuniJuurou extends DrawCard {
         });
 
         this.action('Taint a character')
-            .condition((context) =>
+            .ifCondition((context) =>
                 !!(context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length))
             .phase(Phase.Conflict)
             .target({

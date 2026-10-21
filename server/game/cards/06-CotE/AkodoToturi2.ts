@@ -7,7 +7,8 @@ class AkodoToturi2 extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Prevent each player playing cards from hand')
-            .condition((context) => context.source.isParticipating() && context.player.imperialFavor !== '')
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => context.player.imperialFavor !== '')
             .playerLastingEffect({
                 target: Players.Any,
                 effect: playerCannot({

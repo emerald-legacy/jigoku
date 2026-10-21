@@ -7,8 +7,8 @@ class ShinjoShono extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Increase skill of friendly cavalry')
-            .condition((context) => context.source.isParticipating() &&
-                                  (context.game.currentConflict?.hasMoreParticipants(context.player) ?? false))
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => context.game.currentConflict?.hasMoreParticipants(context.player) ?? false)
             .cardLastingEffect((context) => ({
                 target: this.game.currentConflict?.getCharacters(context.player).filter((card) => card.hasTrait(Trait.Cavalry)) ?? [],
                 effect: modifyBothSkills(1)

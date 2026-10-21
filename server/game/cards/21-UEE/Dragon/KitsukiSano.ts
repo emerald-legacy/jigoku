@@ -19,7 +19,7 @@ export default class KitsukiSano extends DrawCard {
             .chatText('add 2 to their duel total');
 
         this.conflictAction('Draw 2 cards, discard 2 cards')
-            .condition((context) =>
+            .ifCondition((context) =>
                 context.source.isAttacking() && context.game.requireConflict().defenders.length === 0)
             .draw(2)
             .then()

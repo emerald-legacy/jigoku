@@ -7,7 +7,7 @@ export default class MeddlingMediator extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Take 1 fate or 1 honor')
-            .condition((context) =>
+            .ifCondition((context) =>
                 context.player.opponent !== undefined &&
                 this.game.getDeclaredConflictCount(context.player.opponent) > 1)
             .phase(Phase.Conflict)

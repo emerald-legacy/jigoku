@@ -542,7 +542,7 @@ this.wouldInterrupt('Replace a void effect with another ring effect')
   </ul>
   <pre><code>// Kuni Juurou: … Action: During the conflict phase, if you have equal or fewer cards in your hand than your opponent, choose a character - taint that character.
 this.action('Taint a character')
-    .condition((context) =&gt;
+    .ifCondition((context) =&gt;
         !!(context.player.opponent &amp;&amp; context.player.hand.length &lt;= context.player.opponent.hand.length))
     .phase(Phase.Conflict)
     .target({

@@ -8,7 +8,7 @@ export default class RenownedSinger extends DrawCard {
 
     public override setupCardAbilities() {
         this.action('Pick two cards in your discard pile')
-            .condition((context) =>
+            .ifCondition((context) =>
                 context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2 &&
                 context.player.opponent !== undefined)
             .targetCards({

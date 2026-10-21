@@ -7,7 +7,7 @@ class ShiotomeEncampment extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Ready a Cavalry character')
-            .condition((context) =>
+            .ifCondition((context) =>
                 Object.values(this.game.rings).some(
                     (ring) =>
                         ring.isConsideredClaimed(context.player) &&

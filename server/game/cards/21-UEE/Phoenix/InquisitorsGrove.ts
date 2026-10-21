@@ -8,7 +8,8 @@ export default class InquisitorsGrove extends StrongholdCard {
 
     override setupCardAbilities() {
         this.action('Attacker moves a character home')
-            .condition((context) => context.player.honor >= 9 && context.player.isDefendingPlayer())
+            .condition((context) => context.player.isDefendingPlayer())
+            .ifCondition((context) => context.player.honor >= 9)
             .cost(costs.bowSelf())
             .target({
                 cardType: CardType.Character,

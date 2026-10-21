@@ -461,7 +461,7 @@ this.forcedReaction('Reap your rewards')
     </ul>
     <pre><code>// City of the Open Hand: Action: If you are less honorable than an opponent, bow this stronghold – gain 1 honor.
 this.action('Gain an honor')
-    .condition((context) =&gt; !!(context.player.opponent &amp;&amp; context.player.isLessHonorable()))
+    .ifCondition((context) =&gt; !!(context.player.opponent &amp;&amp; context.player.isLessHonorable()))
     .cost(costs.bowSelf())
     .gainHonor();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CityOfTheOpenHand.ts">City of the Open Hand</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HonoredBlade.ts">Honored Blade</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/KakitaBlade.ts">Kakita Blade</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DesperateAide.ts">Desperate Aide</a></p>
@@ -620,7 +620,8 @@ this.reaction('Take a fate from your opponent')
     </ul>
     <pre><code>// Kakita Asami: Action: While this character is participating in a [conflict-political] conflict, if you count more current [conflict-political] skill in the conflict than your opponent – take 1 honor from that opponent.
 this.action('Take one honor from your opponent')
-    .condition((context) =&gt; { … })
+    .condition((context) =&gt; context.source.isParticipating(ConflictType.Political))
+    .ifCondition((context) =&gt; { … })
     .takeHonor();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KakitaAsami.ts">Kakita Asami</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BlackmailArtist.ts">Blackmail Artist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/WayWithWords.ts">Way With Words</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Levy.ts">Levy</a></p>
   </div>

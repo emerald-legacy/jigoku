@@ -7,12 +7,14 @@ class CrisisBreaker extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Ready and bring into play')
-            .condition((context) => {
-                if(this.game.isDuringConflict(ConflictType.Military) && this.game.currentConflict) {
-                    const diff = this.game.currentConflict.attackerSkill - this.game.currentConflict.defenderSkill;
-                    return context.player.isAttackingPlayer() ? diff < 0 : diff > 0;
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .ifCondition((context) => {
+                const conflict = context.game.currentConflict;
+                if(!conflict) {
+                    return false;
                 }
-                return false;
+                const diff = conflict.attackerSkill - conflict.defenderSkill;
+                return context.player.isAttackingPlayer() ? diff < 0 : diff > 0;
             })
             .target({
                 cardType: CardType.Character,

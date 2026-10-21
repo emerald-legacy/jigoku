@@ -10,7 +10,8 @@ class AsakoMaezawa extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Double a character\'s base political skill')
-            .condition((context) => context.source.isParticipating() && hasMoreParticipatingGlory(context.player))
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => hasMoreParticipatingGlory(context.player))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

@@ -7,7 +7,7 @@ export default class ICanSwim extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Discard a dishonored character')
-            .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
+            .ifCondition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

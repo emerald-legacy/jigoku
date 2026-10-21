@@ -5,7 +5,8 @@ class VenerableHistorian extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Honor this character')
-            .condition((context) => !!(context.source.isParticipating() && context.player.opponent && context.player.isMoreHonorable()))
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => !!context.player.opponent && context.player.isMoreHonorable())
             .honor();
     }
 }

@@ -7,7 +7,8 @@ class SageOfGiseiToshi extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Move home, then move character home')
-            .condition((context) => context.player.isMoreHonorable() && context.source.isParticipating())
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => context.player.isMoreHonorable())
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,

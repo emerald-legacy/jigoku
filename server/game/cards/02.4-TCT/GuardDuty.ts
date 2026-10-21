@@ -5,7 +5,7 @@ class GuardDuty extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Honor this character')
-            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isDefending()))
+            .ifCondition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isDefending()))
             .honor((context) => ({ target: context.source.parentCharacter ?? [] }));
     }
 }

@@ -6,9 +6,8 @@ export default class EmpressFavorite extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Take 1 honor', { conflictType: ConflictType.Political })
-            .condition((context) => context.source.isDefending() &&
-                !!context.player.opponent &&
-                !context.player.opponent.hasDeclaredConflictOfType(context, ConflictType.Military))
+            .condition((context) => context.source.isDefending())
+            .ifCondition((context) => !!context.player.opponent && !context.player.opponent.hasDeclaredConflictOfType(context, ConflictType.Military))
             .takeHonor();
     }
 }

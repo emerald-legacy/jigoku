@@ -6,7 +6,7 @@ class MantisBootlegger extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Gain 1 fate')
-            .condition((context) => context.player.cardsInPlay.filter(
+            .ifCondition((context) => context.player.cardsInPlay.filter(
                 (card) => card.type === CardType.Character && card.attachments.length > 0
             ).length >= 3)
             .gainFate();

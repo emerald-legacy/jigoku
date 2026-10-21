@@ -8,7 +8,7 @@ export default class DiplomatOfTheSteppes extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Change the conflict to military', { conflictType: ConflictType.Political })
-            .condition((context) => {
+            .ifCondition((context) => {
                 const conflict = this.game.currentConflict;
                 if(!conflict) {
                     return false;

@@ -7,7 +7,7 @@ export default class NitenAdept extends DrawCard {
 
     override setupCardAbilities() {
         this.conflictAction('Bow character')
-            .condition((context) => context.source.attachments.some((attachment) => attachment.controller === context.player))
+            .ifCondition((context) => context.source.attachments.some((attachment) => attachment.controller === context.player))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length === 0

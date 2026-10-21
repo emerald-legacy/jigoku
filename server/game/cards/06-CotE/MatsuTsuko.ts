@@ -6,7 +6,8 @@ export default class MatsuTsuko extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Reduce the cost of the next card')
-            .condition((context) => context.source.isAttacking() && context.player.isMoreHonorable())
+            .condition((context) => context.source.isAttacking())
+            .ifCondition((context) => context.player.isMoreHonorable())
             .playerLastingEffect({
                 effect: reduceNextPlayedCardCost(2)
             })

@@ -938,7 +938,8 @@ private getNumberOfLegalTargets(context: AbilityContext) {
     </ul>
     <pre><code>// Radiant Orator: Action: While this character is participating in a conflict, if you count more current glory than your opponent
 // among ready participating characters, choose an enemy character – move that character home.
-.condition((context) =&gt; context.source.isParticipating() &amp;&amp; hasMoreParticipatingGlory(context.player))</code></pre>
+.condition((context) =&gt; context.source.isParticipating())
+.ifCondition((context) =&gt; hasMoreParticipatingGlory(context.player))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/RadiantOrator.ts">Radiant Orator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/AsakoMaezawa.ts">Asako Maezawa</a></p>
   </div>
 
@@ -1836,7 +1837,7 @@ context.player.areLocationsAdjacent(context.source.location, card.location),</co
     <h3><code>player.getClaimedRings()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getClaimedRings">#</a></h3>
     <p>The rings in the player's claimed ring pool (<code>Ring[]</code>), including rings an effect makes count as claimed by the player.</p>
     <pre><code>// Heroic Resolve: Action: If you have 2 or more rings in your claimed ring pool – ready attached character.
-.condition((context) =&gt; context.player.getClaimedRings().length &gt;= 2)</code></pre>
+.ifCondition((context) =&gt; context.player.getClaimedRings().length &gt;= 2)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/BeastmasterMatriarch.ts">Beastmaster Matriarch</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/HonorInBattle.ts">Honor in Battle</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/InsightfulGatekeeper.ts">Insightful Gatekeeper</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/InHarmony.ts">In Harmony</a> (12 card files)</p>
   </div>
 
@@ -1933,7 +1934,7 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
       </tbody>
     </table>
     <pre><code>// Revered Ikoma: … Action: If you have gained 2 or more honor this phase - gain 1 fate.
-.condition((context) =&gt; context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) &gt;= 2)</code></pre>
+.ifCondition((context) =&gt; context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) &gt;= 2)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/RenownedSinger.ts">Renowned Singer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/ReveredIkoma.ts">Revered Ikoma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/MeticulousScout.ts">Meticulous Scout</a></p>
   </div>
 
@@ -2032,7 +2033,7 @@ condition: (context) =&gt; context.game.conflictRecord.filter((record) =&gt; rec
       <li>Use <code>requireConflict()</code> only where a conflict is certain (a conflict action's target condition, an effect that only applies during a conflict). In a condition that can be checked at any time it throws.</li>
     </ul>
     <pre><code>// Vengeful Kami: … if you are defending and the attacked province has had a previous conflict declared against it this round - …
-.condition((context) =&gt; context.player.isDefendingPlayer() &amp;&amp;
+.ifCondition((context) =&gt; context.player.isDefendingPlayer() &amp;&amp;
     context.game.requireConflict()
         .getConflictProvinces()
         .some((province) =&gt; declaredConflicts.wasAttackedBefore(province, context.game.currentConflict)))</code></pre>

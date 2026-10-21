@@ -7,9 +7,8 @@ class MotoAriq extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Move a ready character to the conflict')
-            .condition((context) => !!(context.source.isParticipating()
-                && context.player.opponent
-                && context.player.opponent.isMoreHonorable()))
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => !!context.player.opponent?.isMoreHonorable())
             .target({
                 player: Players.Opponent,
                 cardCondition: (card) => !card.bowed,

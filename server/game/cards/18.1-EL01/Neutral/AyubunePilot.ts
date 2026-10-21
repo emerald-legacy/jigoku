@@ -11,7 +11,7 @@ class AyubunePilot extends DrawCard {
         });
 
         this.conflictAction('Move attached character into the conflict', { evenFromHome: true })
-            .condition((context) => !!(context.source.parentCharacter && !context.source.parentCharacter.bowed))
+            .ifCondition((context) => !!(context.source.parentCharacter && !context.source.parentCharacter.bowed))
             .cost(captureParentCost())
             .cost(costs.sacrificeSelf())
             .moveToConflict((context) => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) }));
