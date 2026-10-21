@@ -605,3 +605,71 @@ describe('Hantei XXXVIII and choices from the hand', function() {
         });
     });
 });
+
+describe('Hantei XXXVIII and targets after "then"', function() {
+    integration(function() {
+        it('chooses the target of the step after "then" (Cornering Maneuver)', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker', 'doji-whisperer'],
+                    hand: ['cornering-maneuver']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.player2.pass();
+
+            this.player1.clickCard('cornering-maneuver');
+            this.player1.clickCard(this.berserker);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.hantei);
+            this.player2.clickCard(this.berserker);
+
+            expect(this.player2).toHavePrompt('Choose a character to move');
+            expect(this.player1).not.toHavePrompt('Choose a character to move');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.isParticipating()).toBe(true);
+        });
+
+        it('can interrupt an ability whose only choice comes after "then" (Second Wind)', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker'],
+                    hand: ['second-wind'],
+                    dynastyDiscard: ['doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.player2.pass();
+
+            this.player1.clickCard('second-wind');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.hantei);
+            this.player2.clickCard(this.hantei);
+            expect(this.player2).toHavePrompt('Choose a character');
+            expect(this.player1).not.toHavePrompt('Choose a character');
+        });
+    });
+});

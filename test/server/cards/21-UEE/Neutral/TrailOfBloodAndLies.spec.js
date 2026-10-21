@@ -53,6 +53,20 @@ describe('Trail of Blood and Lies', function () {
             expect(this.player2).toHavePrompt('Action Window');
         });
 
+        it('may resolve twice although its fate cost can\'t be paid again', function () {
+            setup.call(this, ['doji-whisperer', 'cunning-magistrate']);
+            this.player1.fate = 4;
+            this.player1.clickCard(this.monoNoAware);
+            this.player1.clickCard(this.trail);
+            expect(this.player1.fate).toBe(0);
+            this.player2.clickCard(this.challenger);
+
+            expect(this.player1).toHavePrompt('Resolve this ability again?');
+            this.player1.clickPrompt('Yes');
+            this.player2.clickCard(this.yoshi);
+            expect(this.yoshi.isDishonored).toBe(true);
+        });
+
         it('resolves once when you decline', function () {
             setup.call(this, ['doji-whisperer', 'cunning-magistrate']);
             this.player1.clickCard(this.monoNoAware);

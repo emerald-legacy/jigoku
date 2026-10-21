@@ -1,4 +1,4 @@
-import { Blocker } from '../Constants.js';
+import { Blocker, Stage } from '../Constants.js';
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -55,7 +55,14 @@ export function canResolveAbility(properties: AbilityToResolve, context: Ability
     }
     // a sub-resolution doesn't count toward the ability's max, nor is it stopped by it
     const ignored = properties.subResolution ? ignoredBlockers.concat(Blocker.MaxReached) : ignoredBlockers;
-    return ability.meetsRequirements(abilityContext(properties, context), ignored) === Blocker.None;
+    const resolutionContext = abilityContext(properties, context);
+    if(ability.meetsRequirements(resolutionContext, ignored.concat(Blocker.CannotPayCost)) !== Blocker.None) {
+        return false;
+    }
+    // resolving pays neither the costs to play nor to trigger (RRG Resolve an Ability), only the ability's own
+    const costContext = resolutionContext.copy({ stage: Stage.Cost });
+    return ignored.includes(Blocker.CannotPayCost) ||
+        ability.getCosts(resolutionContext, false, false).every((cost) => cost.canPay(costContext));
 }
 
 export class TriggerAbilityAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<TriggerAbilityProperties, EventName.Unnamed, Context, 'ignoredBlockers' | 'subResolution'> {

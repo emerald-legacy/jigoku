@@ -3312,7 +3312,7 @@ this.action('Gain 2 fate or 2 honor')
   <h3><code>context.choosingPlayerOverride</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-choosingPlayerOverride">#</a></h3>
   <p>A player who chooses this ability's targets instead of their usual chooser. An interrupt to the ability's <code>onCardAbilityInitiated</code> sets it on <code>event.context</code>.</p>
   <ul class="edge">
-    <li><code>null</code> by default; copied into contexts made with <code>copy()</code>.</li>
+    <li><code>null</code> by default; copied into contexts made with <code>copy()</code> and into the context of every following step (<code>then()</code>), whose targets the same player chooses (ruling #926). A step's targets also let Hantei interrupt the ability.</li>
     <li>When every legal target of a card target is in a hand the chooser can't see, nothing is prompted: a random card is chosen, or none if the target has a <code>cardCondition</code> (ruling #926: Dragonfly Mediator, Laughing Thunder).</li>
     <li>Hantei can interrupt such a target only if the blind choice changes something: not for an "up to" target with a <code>cardCondition</code> (ruling #1010: Ambush).</li>
   </ul>

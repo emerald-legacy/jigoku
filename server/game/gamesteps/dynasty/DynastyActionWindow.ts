@@ -36,9 +36,9 @@ export class DynastyActionWindow extends ActionWindow {
     override nextPlayer() {
         this.#checkPhaseRestart();
 
-        const otherPlayer = this.currentPlayer.opponent;
-        if(otherPlayer && !otherPlayer.passedDynasty) {
-            this.currentPlayer = otherPlayer;
+        if(this.currentPlayer.opponent && !this.currentPlayer.opponent.passedDynasty) {
+            // passes priority like any action window: resets the action count, ends "until you pass" effects
+            super.nextPlayer();
         }
     }
 

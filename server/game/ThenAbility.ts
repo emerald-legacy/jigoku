@@ -51,11 +51,26 @@ export class ThenAbility extends BaseCardAbility {
         return false;
     }
 
+    /** Also the targets of a following step ("Then, choose …"), which Hantei XXXVIII chooses too (ruling #926). */
+    override hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
+        if(super.hasTargetsChosenByInitiatingPlayer(context)) {
+            return true;
+        }
+        const then = this.properties.then;
+        if(!then || typeof then === 'function') {
+            return false;
+        }
+        const thenAbility = new ThenAbility(this.card, then);
+        return thenAbility.hasTargetsChosenByInitiatingPlayer(thenAbility.createThenContext(context));
+    }
+
     /** The context of this `then`, continuing `parent`. */
     createThenContext(parent: AbilityContext): AbilityContext {
         const context = this.createContext(parent.player);
         // a `then` continues the same triggering, so keep the link for chosenCardTargets
         context.originatingContext = parent.triggeringContext;
+        // whoever chooses the targets instead (Hantei XXXVIII) chooses them in every step
+        context.choosingPlayerOverride = parent.choosingPlayerOverride;
         if(this.properties.inheritTargets) {
             context.targets = { ...parent.targets };
             context.selects = { ...parent.selects };

@@ -172,3 +172,35 @@ describe('Battlefield Orders', function() {
         });
     });
 });
+
+describe('Battlefield Orders and an ability that can\'t resolve', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    inPlay: [{ card: 'matsu-agetoki', attachments: ['true-strike-kenjutsu'] }],
+                    hand: ['battlefield-orders']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.agetoki = this.player2.findCardByName('matsu-agetoki');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: [this.agetoki]
+            });
+        });
+
+        it('only offers the abilities that can resolve', function() {
+            this.player2.clickCard('battlefield-orders');
+            this.player2.clickCard(this.agetoki);
+            expect(this.player2).not.toHavePrompt('Choose an ability');
+            expect(this.player2).toBeAbleToSelect(this.berserker);
+        });
+    });
+});

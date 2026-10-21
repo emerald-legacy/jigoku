@@ -85,3 +85,45 @@ describe('Zealous Inspector', function () {
         });
     });
 });
+
+describe('Zealous Inspector in the dynasty phase', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    inPlay: ['zealous-inspector'],
+                    dynastyDiscard: ['beguiling-maiko', 'doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['asahina-artisan'],
+                    dynastyDiscard: ['doji-challenger']
+                }
+            });
+            this.inspector = this.player1.findCardByName('zealous-inspector');
+            this.maiko = this.player1.placeCardInProvince('beguiling-maiko', 'province 1');
+            this.whisperer = this.player1.placeCardInProvince('doji-whisperer', 'province 2');
+            this.challenger = this.player2.placeCardInProvince('doji-challenger', 'province 1');
+            this.artisan = this.player2.findCardByName('asahina-artisan');
+            this.player2.player.imperialFavor = 'political';
+        });
+
+        it('takes another action also after the first action of the phase', function () {
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickPrompt('0');
+            this.player2.clickCard(this.challenger);
+            this.player2.clickPrompt('0');
+
+            this.player1.clickCard(this.maiko);
+            this.player1.clickPrompt('0');
+            this.player1.clickCard(this.maiko);
+            this.player2.clickCard(this.artisan);
+            expect(this.artisan.isDishonored).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.inspector);
+
+            expect(this.player1).toHavePrompt('Play cards from provinces');
+            expect(this.player2).not.toHavePrompt('Play cards from provinces');
+        });
+    });
+});

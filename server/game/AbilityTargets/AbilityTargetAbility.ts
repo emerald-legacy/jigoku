@@ -30,20 +30,23 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
     }
 
     getSelector(properties: AbilityTargetAbilityProperties): CardSelectorInstance {
-        const cardCondition = (card: BaseCard, context: AbilityContext) => {
-            const abilities = [...card.getCardActions(), ...card.getReactions()].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
-            return abilities.some((ability) => {
-                const contextCopy = context.copy({});
-                contextCopy.targetAbility = ability;
-                if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
-                    return false;
-                }
-                return (!properties.cardCondition || properties.cardCondition(card, contextCopy)) &&
-                       (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
-                       properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy));
-            });
-        };
+        const cardCondition = (card: BaseCard, context: AbilityContext) => this.legalAbilities(card, context).length > 0;
         return CardSelector.for(Object.assign({}, properties, { cardCondition: cardCondition, targets: false }));
+    }
+
+    /** The abilities of `card` that can be chosen: their game actions have a legal target. */
+    private legalAbilities(card: BaseCard, context: AbilityContext) {
+        const abilities = [...card.getCardActions(), ...card.getReactions()].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
+        return abilities.filter((ability) => {
+            const contextCopy = context.copy({});
+            contextCopy.targetAbility = ability;
+            if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
+                return false;
+            }
+            return (!this.properties.cardCondition || this.properties.cardCondition(card, contextCopy)) &&
+                   (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
+                   this.properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy));
+        });
     }
 
     hasLegalTarget(context: AbilityContext): boolean {
@@ -71,7 +74,7 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
                 if(Array.isArray(card)) {
                     return true;
                 }
-                const abilities = [...card.getCardActions(), ...card.getReactions()].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
+                const abilities = this.legalAbilities(card, context);
                 if(abilities.length === 1) {
                     context.targetAbility = abilities[0];
                 } else if(abilities.length > 1) {
@@ -103,8 +106,7 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
             return false;
         }
         return this.properties.cardType === context.targetAbility.card.type &&
-               (!this.properties.cardCondition || this.properties.cardCondition(context.targetAbility.card, context)) &&
-               this.abilityCondition(context.targetAbility);
+               this.legalAbilities(context.targetAbility.card, context).some((ability) => ability === context.targetAbility);
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
