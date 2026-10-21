@@ -9,7 +9,7 @@ describe('Tsangusuri Ward', function () {
                 },
                 player2: {
                     inPlay: ['doji-challenger', 'asahina-artisan'],
-                    hand: ['fine-katana']
+                    hand: ['fine-katana', 'tattooed-wanderer']
                 }
             });
 
@@ -57,6 +57,15 @@ describe('Tsangusuri Ward', function () {
             this.player2.clickCard(this.yoshi);
 
             expect(this.yoshi.attachments).not.toContain(this.katana);
+        });
+
+        it('should block opponent characters played as attachments on the character', function () {
+            this.player1.clickCard(this.ward);
+            this.player1.clickCard(this.yoshi);
+            this.player2.clickCard('tattooed-wanderer');
+            this.player2.clickPrompt('Play Tattooed Wanderer as an attachment');
+            expect(this.player2).toBeAbleToSelect(this.challenger);
+            expect(this.player2).not.toBeAbleToSelect(this.yoshi);
         });
 
         it('should not block your attachments on the character', function () {

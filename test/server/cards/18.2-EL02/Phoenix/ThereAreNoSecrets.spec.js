@@ -84,7 +84,7 @@ describe('There Are No Secrets', function () {
             });
         });
 
-        describe('Embrace the Void/Assassination interaction', function () {
+        describe('Assassination interaction', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
@@ -107,13 +107,12 @@ describe('There Are No Secrets', function () {
                 });
             });
 
-            it('should give Embrace the Void\'s controller all fate when the character is assassinated', function () {
+            it('should not react to the fate leaving with the assassinated character', function () {
+                const fate = this.player1.fate;
                 this.player2.clickCard('assassination');
                 this.player2.clickCard(this.adeptOfTheWaves);
-                expect(this.player1).toHavePrompt('Triggered Abilities');
-                expect(this.player1).toBeAbleToSelect(this.embraceTheVoid);
-                this.player1.clickCard(this.embraceTheVoid);
-                expect(this.player1.fate).toBe(2);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1.fate).toBe(fate);
                 expect(this.adeptOfTheWaves.location).toBe('dynasty discard pile');
                 expect(this.embraceTheVoid.location).toBe('conflict discard pile');
                 expect(this.player1).toHavePrompt('Conflict Action Window');

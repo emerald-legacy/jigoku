@@ -48,6 +48,7 @@ describe('Storied Defeat', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.storiedDefeat);
                 this.player1.clickCard(this.dojiWhisperer);
+                this.player1.clickPrompt('No');
                 expect(this.dojiWhisperer.bowed).toBe(true);
                 expect(this.dojiWhisperer.isDishonored).toBe(false);
             });
@@ -222,6 +223,48 @@ describe('Storied Defeat', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
         });
+
+        describe('Storied Defeat and Voice of Honor', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['mirumoto-raitsugu'],
+                        hand: ['storied-defeat']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer', 'doji-challenger'],
+                        hand: ['voice-of-honor']
+                    }
+                });
+                this.raitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+                this.whisperer.fate = 1;
+                this.challenger.honor();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.raitsugu],
+                    defenders: [this.whisperer, this.challenger]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.raitsugu);
+                this.player1.clickCard(this.whisperer);
+                this.player1.clickPrompt('5');
+                this.player2.clickPrompt('1');
+                this.player2.pass();
+            });
+
+            it('decides on the fate after the cancel window, then bows and dishonors together', function() {
+                this.player1.clickCard('storied-defeat');
+                this.player1.clickCard(this.whisperer);
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                this.player2.clickPrompt('Pass');
+                this.player1.clickPrompt('Yes');
+                expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.whisperer.bowed).toBe(true);
+                expect(this.whisperer.isDishonored).toBe(true);
+            });
+        });
     });
 });
-

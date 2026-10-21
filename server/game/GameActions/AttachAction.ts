@@ -19,7 +19,7 @@ export interface AttachProperties extends CardActionProperties {
     giveControl?: boolean;
     ignoreUniqueness?: boolean;
     viaDisguised?: boolean;
-    /** Moves it even where it can't be attached; the game then discards it as not legally attached (Iuchi Rimei; EmeraldDB ruling). */
+    /** Moves it even where the attachment's own conditions aren't met; the game then discards it (Iuchi Rimei). Never onto a "No attachments" card. */
     evenIfIllegal?: boolean;
 }
 
@@ -63,11 +63,13 @@ export class AttachAction<Context extends AbilityContext = AbilityContext> exten
             return false;
         }
         const controller = this.getFinalController(properties, context) ?? attachment.controller;
+        const allowed = card.allowAttachment(attachment);
         const legallyAttached = attachment.canAttach(card, { ignoreType: properties.ignoreType, controller }) &&
-            !card.hasCopyOfAttachment(attachment, controller) && card.allowAttachment(attachment);
+            !card.hasCopyOfAttachment(attachment, controller) && allowed;
         if(
             (!properties.ignoreUniqueness && attachment.anotherUniqueInPlay(context.player)) ||
-            (!legallyAttached && !properties.evenIfIllegal)
+            (!legallyAttached && !properties.evenIfIllegal) ||
+            !allowed
         ) {
             return false;
         } else if(properties.takeControl && attachment.controller === context.player) {

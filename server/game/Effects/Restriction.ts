@@ -22,7 +22,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.player.areLocationsAdjacent(context.source.location, effect.requireContext().source.location),
     [RestrictionScope.AttachmentsWithSameClan]: (context, _effect, card) =>
         context.ability.isCardPlayed() &&
-        context.source.type === CardType.Attachment &&
+        isAttachment(context) &&
         context.source.getPrintedFaction() !== 'neutral' &&
         !!card && card.isFaction(context.source.getPrintedFaction()),
     [RestrictionScope.AttackedProvinceNonForced]: (context) =>
@@ -52,7 +52,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.OpponentsAttachments]: (context, effect) =>
         context.player &&
         context.player === getApplyingPlayer(effect).opponent &&
-        context.source.type === CardType.Attachment,
+        isAttachment(context),
     [RestrictionScope.OpponentsCardEffects]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && isCardEffect(context),
     [RestrictionScope.OpponentsProvinceEffects]: (context, effect) =>
@@ -132,6 +132,8 @@ const getApplyingPlayer = (effect: Restriction): Player => {
     return effect.applyingPlayer || effect.requireContext().player;
 };
 
+/** An attachment, or a character played as an attachment (Tattooed Wanderer, Jealous Ancestor). */
+const isAttachment = (context: AbilityContext) => context.source.type === CardType.Attachment || !!context.ability?.isCharacterPlayedAsAttachment();
 const printedCostOf = (card: BaseCard) => (card.isDrawCard() ? card.printedCost ?? 0 : 0);
 
 /** What an immunity (a restriction naming no type) doesn't stop (RRG Immune): peripheral entities such as fate and attachments aren't immune. */

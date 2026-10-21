@@ -10,7 +10,7 @@ export default class ThereAreNoSecrets extends DrawCard {
         this.interrupt('Gain 1 fate')
             .when({
                 onMoveFate: (event, context) =>
-                    context.source.parentCharacter && event.origin === context.source.parentCharacter && (event.fate ?? 0) > 0
+                    context.source.parentCharacter && event.origin === context.source.parentCharacter && (event.fate ?? 0) > 0 && !event.isContingent
             })
             .gainFate();
     }

@@ -1463,7 +1463,7 @@ this.reaction('Put this character into play')
         <tr><td><code>ignoreType</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Allow a card that isn't an attachment.</td></tr>
         <tr><td><code>ignoreUniqueness</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Skip the check for another copy of a unique attachment in play.</td></tr>
         <tr><td><code>viaDisguised</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Skip every check. The framework uses it to move attachments onto a Disguised character.</td></tr>
-        <tr><td><code>evenIfIllegal</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Move the attachment even where it can't be attached; the game then discards it (Iuchi Rimei, ruling #838).</td></tr>
+        <tr><td><code>evenIfIllegal</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Move the attachment even where its own conditions aren't met; the game then discards it (Iuchi Rimei, ruling #838). Never onto a card with "No attachments" (RRG: it cannot have an attachment attached).</td></tr>
       </tbody>
     </table>
     <ul class="edge">

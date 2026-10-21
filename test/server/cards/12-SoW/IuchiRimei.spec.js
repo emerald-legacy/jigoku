@@ -176,3 +176,28 @@ describe('Iuchi Rimei and attachment restrictions', function () {
         });
     });
 });
+
+describe('Iuchi Rimei and a character with "No attachments"', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'doji-kuwanan', attachments: ['fine-katana'] }, 'kaiu-siege-force', 'doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['iuchi-rimei']
+                }
+            });
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.player1.pass();
+        });
+
+        it('can\'t move an attachment onto it', function () {
+            this.player2.clickCard('iuchi-rimei');
+            this.player2.clickCard(this.katana);
+            expect(this.player2).toBeAbleToSelect(this.player1.findCardByName('doji-whisperer'));
+            expect(this.player2).not.toBeAbleToSelect(this.player1.findCardByName('kaiu-siege-force'));
+        });
+    });
+});

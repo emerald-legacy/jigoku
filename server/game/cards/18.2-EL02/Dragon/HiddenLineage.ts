@@ -17,7 +17,9 @@ class HiddenLineage extends DrawCard {
                 cardCondition: (card) => card !== context.target.parentCharacter && card.controller === context.player,
                 message: (context, card) => msg`${context.player} moves ${context.target} to ${card}`,
                 gameAction: attach({
-                    attachment: context.target
+                    attachment: context.target,
+                    ignoreUniqueness: true,
+                    evenIfIllegal: true
                 })
             })))
             .chatText('move {0} to another character they control');

@@ -116,7 +116,8 @@ describe('Broken Blades and In Harmony', function () {
         });
 
         it('cannot choose a character whose fate cannot be returned', function () {
-            expect(this.player1).not.toBeAbleToSelect(this.brokenBlades);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Choose an effect to resolve');
             expect(this.dojiChallenger.fate).toBe(2);
             expect(this.dojiChallenger.location).toBe('play area');
         });

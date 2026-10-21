@@ -70,5 +70,44 @@ describe('Akodo Reserve Company', function() {
                 expect(this.player1).toHavePrompt('conflict action window');
             });
         });
+
+        describe('Akodo Reserve Company and a would-interrupt to its move', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['akodo-reserve-company', 'shinjo-shono'],
+                        hand: ['total-warfare']
+                    },
+                    player2: {
+                        inPlay: ['venerable-historian', { card: 'solemn-scholar', attachments: ['grasp-of-earth-2'] }],
+                        provinces: ['fertile-fields']
+                    }
+                });
+
+                this.company = this.player1.findCardByName('akodo-reserve-company');
+                this.shono = this.player1.findCardByName('shinjo-shono');
+                this.player1.playAttachment('total-warfare', this.player2.findCardByName('fertile-fields'));
+                this.scholar = this.player2.findCardByName('solemn-scholar');
+                this.grasp = this.player2.findCardByName('grasp-of-earth-2');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.shono],
+                    defenders: [this.scholar]
+                });
+            });
+
+            it('does not send the chosen character home if the company doesn\'t move', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.company);
+                this.player1.clickCard(this.shono);
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                this.player2.clickCard(this.scholar);
+                expect(this.company.isParticipating()).toBe(false);
+                expect(this.shono.isParticipating()).toBe(true);
+            });
+        });
     });
 });
