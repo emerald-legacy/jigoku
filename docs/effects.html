@@ -434,7 +434,7 @@ this.reaction('Double military skill')
       <li>Cards don't call it directly: <code>copyBaseSkillEffects(card, { base?, skills? })</code> in <code>server/game/cards/copyBaseSkills.ts</code> returns <code>setBaseDash</code> for a dash and <code>setBaseMilitarySkill</code>/<code>setBasePoliticalSkill</code> otherwise.</li>
     </ul>
     <pre><code>// copyBaseSkills.ts: sets a character's base skills to another card's, keeping a dash as a dash.
-export function copyBaseSkillEffects(card: DrawCard, { base = false, skills = [SkillType.Military, SkillType.Political] } = {}) {
+export function copyBaseSkillEffects(card: DrawCard, { base = false, skills = [SkillType.Military, SkillType.Political] }: { base?: boolean; skills?: SkillType[] } = {}) {
     return skills.map((type) =&gt; {
         if(card.hasDash(type)) {
             return setBaseDash(type);

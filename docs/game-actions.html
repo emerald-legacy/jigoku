@@ -2789,10 +2789,12 @@ trueGameAction: sequential([
     </ul>
     <pre><code>// Akodo Zentarō: Action: During a conflict in which this character is attacking, choose a non-unique holding in the attacked province - gain control of that holding and move it to one of your unbroken provinces, if able, discarding each other card in the province. Otherwise, discard it.
     .ifAble()
-    .selectCard((context) =&gt; ({ … }))
+    .gameAction(moveToProvince)
     .otherwise()
     .discardCard((context) =&gt; ({ target: context.target }))
-    .chatText('take control of {0} and move it one of their provinces');</code></pre>
+    .chatText((context) =&gt; moveToProvince.hasLegalTarget(context)
+        ? msg`take control of ${context.target} and move it to one of their provinces`
+        : msg`discard ${context.target}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/AkodoZentaro.ts">Akodo Zentarō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/CallingInFavors.ts">Calling in Favors</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KaradaDistrict.ts">Karada District</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/AgashaProdigy.ts">Agasha Prodigy</a></p>
   </div>
 <div class="ref" id="ga-joint" data-name="joint">
@@ -2928,7 +2930,7 @@ moveCardInProvinceAction(this)
         acceptMessage: (_context, chooser) =&gt; msg`${chooser} chooses to turn ${context.targets.cardInProvince} facedown`,
         declineMessage: (_context, chooser) =&gt; msg`${chooser} chooses not to turn ${context.targets.cardInProvince} facedown`
     }));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumaHajime.ts">Hiruma Hajime</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/YogoHiroue.ts">Yogo Hiroue</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/CunningNegotiator.ts">Cunning Negotiator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/BayushiKachiko2.ts">Bayushi Kachiko</a> (13 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumaHajime.ts">Hiruma Hajime</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/YogoHiroue.ts">Yogo Hiroue</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/CunningNegotiator.ts">Cunning Negotiator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BayushiKachiko.ts">Bayushi Kachiko</a> (13 card files)</p>
   </div>
 <div class="ref" id="ga-sequential" data-name="sequential">
     <h3><code>sequential(gameActions)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-sequential">#</a></h3>

@@ -1207,7 +1207,7 @@ this.interrupt('Reduce cost of next attachment')
   <pre><code>// Kamayari: … Reaction: After a character triggers an ability during a conflict in which attached character is participating – bow that character.
 this.reaction('Bow character who triggered ability')
     .when({
-        onCardAbilityInitiated: (event, context) =&gt; event.card.type === CardType.Character &amp;&amp; event.ability.isTriggeredAbility() &amp;&amp;
+        onCardAbilityInitiated: (event, context) =&gt; !event.resolvedWithoutTriggering &amp;&amp; event.card.type === CardType.Character &amp;&amp; event.ability.isTriggeredAbility() &amp;&amp;
             !!context.source.parentCharacter &amp;&amp; context.source.parentCharacter.isParticipating()
     })
     .bow((context) =&gt; ({ target: context.event.card }));</code></pre>

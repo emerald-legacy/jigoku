@@ -1037,7 +1037,7 @@ super(card, [payTargetDependentFateCost('target', ignoreType)], { … });</code>
     </ul>
     <pre><code>// Exemplary Negotiator: Action: If you control a dishonored character, discard up to 2 cards from your hand - for each card discarded, each opponent discards 1 random card from their hand.
 this.action('Discard cards to cause opponent to discard')
-    .condition((context) =&gt; context.player.anyCardsInPlay((card) =&gt; card.isDishonored))
+    .ifCondition((context) =&gt; context.player.anyCardsInPlay((card) =&gt; card.isDishonored))
     .cost(costs.discardCardsUpToVariableX(() =&gt; 2))
     .discardAtRandom((context) =&gt; ({
         amount: context.costs.discardCardsUpToVariableX?.length || 1
