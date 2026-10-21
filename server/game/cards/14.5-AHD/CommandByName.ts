@@ -14,12 +14,12 @@ class CommandByName extends DrawCard {
             .cost(costs.payHonor(1))
             .cost(costs.discardCard({ location: Location.Hand }))
             .selectAttackedProvince({
-                message: (context, cards) => msg`${context.player} reduces the strength of ${cards} to 0`,
+                message: (context, cards) => msg`${context.player} sets the base strength of ${cards} to 0`,
                 gameAction: cardLastingEffect(() => ({
                     effect: setBaseProvinceStrength(0)
                 }))
             })
-            .chatText('reduce the strength of an attacked province to 0');
+            .chatText('set the base strength of an attacked province to 0');
     }
 }
 

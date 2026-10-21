@@ -14,7 +14,7 @@ export default class RiftToToshigoku extends ProvinceCard {
     public override setupCardAbilities() {
         new EventRegistrar(this.game).registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
 
-        this.reaction('Force opponent to remove all fate from a character and resolve the conflict')
+        this.reaction('Break this province to discard an attacker')
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })

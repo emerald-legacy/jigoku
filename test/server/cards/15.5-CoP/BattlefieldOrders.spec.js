@@ -90,7 +90,7 @@ describe('Battlefield Orders', function() {
             this.player1.clickCard(this.advisor);
             expect(this.advisor.bowed).toBe(true);
 
-            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to trigger Doji Kuwanan\'s \'Bow a participating character with lower military skill\' ability');
+            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to resolve Doji Kuwanan\'s \'Bow a participating character with lower military skill\' ability');
             expect(this.getChatLogs(10)).toContain('player1 resolves Doji Kuwanan to bow Beloved Advisor');
         });
 
@@ -111,7 +111,7 @@ describe('Battlefield Orders', function() {
             expect(this.player1.hand.length).toBe(hand1 + 1);
             expect(this.player2.hand.length).toBe(hand2); //-1 from orders
 
-            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to trigger Beloved Advisor\'s \'Each player draws 1 card\' ability');
+            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to resolve Beloved Advisor\'s \'Each player draws 1 card\' ability');
             expect(this.getChatLogs(10)).toContain('player2 resolves Beloved Advisor to make player1 and player2 draw 1 card');
         });
 
@@ -167,7 +167,7 @@ describe('Battlefield Orders', function() {
             expect(this.warrior.location).toBe('dynasty discard pile');
             expect(this.kuwanan.fate).toBe(fate + 1);
 
-            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to trigger Vanguard Warrior\'s \'Sacrifice to put fate on one character\' ability');
+            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to resolve Vanguard Warrior\'s \'Sacrifice to put fate on one character\' ability');
             expect(this.getChatLogs(10)).toContain('player1 resolves Vanguard Warrior, sacrificing Vanguard Warrior to place 1 fate on Doji Kuwanan');
         });
     });

@@ -49,6 +49,7 @@ describe('Asako Maezawa 2', function () {
             this.player1.clickCard(this.adept);
             expect(this.adept.isDishonored).toBe(true);
             expect(this.adept.bowed).toBe(true);
+            expect(this.getChatLogs(10)).toContain('player1 uses Asako Maezawa to bow Adept of the Waves and dishonor Adept of the Waves');
         });
 
         it('should not be allowed to bow a character with fate on it', function () {

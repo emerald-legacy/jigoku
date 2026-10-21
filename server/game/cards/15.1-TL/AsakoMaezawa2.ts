@@ -17,7 +17,6 @@ export default class AsakoMaezawa2 extends DrawCard {
                 cardCondition: (card) => card.getFate() === 0
             }, bow())
             .if((context) => !!context.target?.isFaction('phoenix'))
-            .dishonor()
-            .chatText('bow {0}');
+            .dishonor();
     }
 }
