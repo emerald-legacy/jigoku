@@ -6,7 +6,7 @@ class ProvingGround extends DrawCard {
 
     override setupCardAbilities() {
         this.reaction('Draw a card after winning a duel')
-            // once per winning character you control (EmeraldDB ruling)
+            // once per winning character you control
             .when({
                 onCharacterWinsDuel: (event, context) => event.card.controller === context.player
             })

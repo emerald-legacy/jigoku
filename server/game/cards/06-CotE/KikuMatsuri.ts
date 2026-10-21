@@ -8,7 +8,7 @@ export default class KikuMatsuri extends ProvinceCard {
     static id = 'kiku-matsuri';
 
     override setupCardAbilities() {
-        // "each player": a player with no participating character gets no target (EmeraldDB ruling)
+        // "each player": a player with no participating character gets no target
         this.action('Honor a character home from each side')
             .skippableTarget({
                 name: 'myCharacter',

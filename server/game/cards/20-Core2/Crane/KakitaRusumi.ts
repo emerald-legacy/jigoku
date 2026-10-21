@@ -24,7 +24,7 @@ export default class KakitaRusumi extends DrawCard {
                 gameAction: putIntoConflict((context) => ({ status: statusOfIntern(context) }))
             })
             .chatText('search their dynasty deck for a character to put into play')
-            .then()
+            .afterwards()
             .atEndOfConflict((context) => {
                 const target = context.deckSearchSelected[0] ?? [];
                 return {

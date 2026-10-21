@@ -31,7 +31,7 @@ export default class BackAlleyHideaway extends DrawCard {
             .handler((context) => context.event.replaceHandler(() => this.hide(context.event.card)))
             .chatText((context) => msg`move ${context.event.card} into hiding`);
 
-        // "as if it were in this province": played from a province in the dynasty phase, or using Disguised in the conflict phase (EmeraldDB ruling)
+        // "as if it were in this province": played from a province in the dynasty phase, or using Disguised in the conflict phase
         this.action('Play a character from hiding')
             .target({
                 cardType: CardType.Character,

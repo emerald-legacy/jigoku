@@ -6,7 +6,7 @@ class PrayersToEbisu extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Re-balance honor and draw a card')
-            // the effects resolve together, so an empty deck is reshuffled for the draw, losing honor, before any of them (EmeraldDB ruling)
+            // the effects resolve together, so an empty deck is reshuffled for the draw, losing honor, before any of them
             .onResolve((context) => {
                 if(context.player.conflictDeck.length === 0 && context.player.conflictDiscardPile.length > 0) {
                     context.player.deckRanOutOfCards(DeckType.Conflict);

@@ -19,7 +19,7 @@ class KnowTheWorld extends DrawCard {
                     activePromptTitle: 'Choose a ring to take',
                     ringCondition: (ring) => ring.isUnclaimed(),
                     message: (context, ring) => msg`${context.player} takes ${ring}`,
-                    // the taken ring keeps the returned ring's conflict type (EmeraldDB ruling)
+                    // the taken ring keeps the returned ring's conflict type
                     gameAction: takeRing((context) => ({
                         takeFate: true,
                         conflictType: context.events.find((event) => event.is(EventName.OnReturnRing))?.ring?.conflictType

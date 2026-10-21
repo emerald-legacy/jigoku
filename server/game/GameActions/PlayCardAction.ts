@@ -94,7 +94,6 @@ export interface PlayCardProperties extends CardActionProperties {
     postHandler?: (context: AbilityContext) => void;
     playType?: PlayType;
     playCardTarget?: (context: AbilityContext, properties: PlayCardProperties) => void;
-    location?: Location;
     destination?: Location;
     destinationOptions?: { bottom?: boolean };
     payCosts?: boolean;

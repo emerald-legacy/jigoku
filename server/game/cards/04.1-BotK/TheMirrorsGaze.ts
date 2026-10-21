@@ -23,7 +23,7 @@ class TheMirrorsGaze extends DrawCard {
             .gameAction(resolveAbility((context) => ({
                 target: context.event.card,
                 ability: context.event.ability,
-                // costs and triggering conditions ("If …") are ignored; "During/While" play restrictions must be met (developer ruling)
+                // costs and triggering conditions ("If …") are ignored; "During/While" play restrictions must be met
                 ignoredBlockers: [Blocker.CannotPayCost, Blocker.IfConditionNotMet, Blocker.LimitReached],
                 event: context.event.context instanceof TriggeredAbilityContext ? context.event.context.event : undefined
             })));

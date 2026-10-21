@@ -15,7 +15,7 @@ export default class GraspOfEarth extends DrawCard {
         this.action('Opponent\'s cards cannot join this conflict')
             .condition((context) => this.game.isDuringConflict() && context.player.opponent !== undefined)
             .cost(costs.bowSelf())
-            // also characters that enter play or change control later (EmeraldDB ruling)
+            // also characters that enter play or change control later
             .conflictLastingEffect({
                 targetController: Players.Opponent,
                 match: (card) => card.type === CardType.Character,

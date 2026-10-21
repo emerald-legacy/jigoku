@@ -9,7 +9,7 @@ export default class MirumotoHitori extends DrawCard {
     static id = 'mirumoto-hitori';
 
     public override setupCardAbilities() {
-        this.interrupt('A new incarnation awaits')
+        this.wouldInterrupt('A new incarnation awaits')
             .when({
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && context.game.currentPhase === Phase.Fate
