@@ -2088,12 +2088,12 @@ this.action('Change the conflict to military')
     <pre><code>// Togashi Yoshi: Reaction: After this character wins a conflict - gain 1 fate from an unclaimed ring.
 this.reaction('Gain 1 fate from an unclaimed ring')
     .when({ … })
-    .selectRing((context) =&gt; ({
+    .selectRing({
         ringCondition: (ring) =&gt; ring.fate &gt;= 1 &amp;&amp; ring.isUnclaimed(),
-        target: context.ring,
+        message: (context, ring) =&gt; msg`${context.player} takes 1 fate from ${ring}`,
         gameAction: takeFateFromRing()
-    }))
-    .chatText((context) =&gt; msg`gain 1 fate from the ${context.ring}`);</code></pre>
+    })
+    .chatText('gain 1 fate from an unclaimed ring');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/TogashiYoshi.ts">Togashi Yoshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/WrittenInTheStars.ts">Written in the Stars</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Phoenix/CommuneWithTheSpirits.ts">Commune with the Spirits</a></p>
   </div>
 <div class="ref" id="ga-takeRing" data-name="takeRing">

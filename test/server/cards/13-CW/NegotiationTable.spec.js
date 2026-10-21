@@ -187,7 +187,7 @@ describe('Negotiation Table', function() {
             expect(this.player2).toHavePromptButton('Done');
 
             this.player2.clickPrompt('Done');
-            expect(this.getChatLogs(1)).toContain('player2 chooses not to do an action');
+            expect(this.getChatLogs(10)).not.toContain('player2 chooses not to do an action');
         });
 
         it('should not make you choose a character to ready if there are no bowed characters', function() {

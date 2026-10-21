@@ -117,6 +117,7 @@
                 this.player1.clickCard(this.imperialStorehouse);
                 this.player1.clickCard(this.shamefulDisplay3);
                 expect(this.imperialStorehouse.controller).toBe(this.player1.player);
+                expect(this.getChatLogs(5)).toContain('player1 uses Akodo Zentarō to take control of Imperial Storehouse and move it to one of their provinces');
             });
 
             it('should move the chosen holding to the chosen province and remove all other cards there', function() {
@@ -157,6 +158,7 @@
                 this.player1.clickCard(this.akodoZentaro);
                 this.player1.clickCard(this.imperialStorehouse);
                 expect(this.imperialStorehouse.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(5)).toContain('player1 uses Akodo Zentarō to discard Imperial Storehouse');
             });
         });
 

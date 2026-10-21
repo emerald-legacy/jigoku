@@ -1,6 +1,22 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { discardCard, moveCard, multiple } from '../../GameActions/GameActions.js';
+import { discardCard, moveCard, multiple, selectCard } from '../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../Constants.js';
+
+const moveToProvince = selectCard((context) => ({
+    cardType: CardType.Province,
+    location: Location.Provinces,
+    controller: Players.Self,
+    cardCondition: (card) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
+    subActionProperties: (card) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
+    gameAction: multiple([
+        moveCard({
+            target: context.target,
+            changePlayer: true
+        }),
+        discardCard()
+    ])
+}));
 
 class AkodoZentaro extends DrawCard {
     static id = 'akodo-zentaro';
@@ -15,23 +31,12 @@ class AkodoZentaro extends DrawCard {
                 cardCondition: (card) => card.isInConflictProvince() && !card.isUnique() && card.isFaceup()
             })
             .ifAble()
-            .selectCard((context) => ({
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                controller: Players.Self,
-                cardCondition: (card) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
-                subActionProperties: (card) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
-                gameAction: multiple([
-                    moveCard({
-                        target: context.target,
-                        changePlayer: true
-                    }),
-                    discardCard()
-                ])
-            }))
+            .gameAction(moveToProvince)
             .otherwise()
             .discardCard((context) => ({ target: context.target }))
-            .chatText('take control of {0} and move it one of their provinces');
+            .chatText((context) => moveToProvince.hasLegalTarget(context)
+                ? msg`take control of ${context.target} and move it to one of their provinces`
+                : msg`discard ${context.target}`);
     }
 }
 

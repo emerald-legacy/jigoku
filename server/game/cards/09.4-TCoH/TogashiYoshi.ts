@@ -10,12 +10,12 @@ class TogashiYoshi extends DrawCard {
             .when({
                 afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source)
             })
-            .selectRing((context) => ({
-                ringCondition:  (ring) => ring.fate >= 1 && ring.isUnclaimed(),
-                target: context.ring,
+            .selectRing({
+                ringCondition: (ring) => ring.fate >= 1 && ring.isUnclaimed(),
+                message: (context, ring) => msg`${context.player} takes 1 fate from ${ring}`,
                 gameAction: takeFateFromRing()
-            }))
-            .chatText((context) => msg`gain 1 fate from the ${context.ring}`);
+            })
+            .chatText('gain 1 fate from an unclaimed ring');
     }
 }
 

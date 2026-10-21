@@ -41,7 +41,11 @@ export default class NegotiationTable extends DrawCard {
                     once('Draw 1 card', () => this.eachPlayerDraws(context, opponent)),
                     once('Choose and ready a character', () => this.eachPlayerReadies(context, opponent)),
                     once('Gain 1 fate', () => this.eachPlayerGainsFate(context, opponent)),
-                    { text: 'Done', handler: () => this.game.addMessage(msg`${opponent} chooses not to do an action`) }
+                    { text: 'Done', handler: () => {
+                        if(options.length === 4) {
+                            this.game.addMessage(msg`${opponent} chooses not to do an action`);
+                        }
+                    } }
                 );
                 prompt();
             });

@@ -33,7 +33,7 @@ class YasukiFuzake extends DrawCard {
             }, discardStatusToken((context) => ({
                 target: statusTokensOf(context.targets.second)
             })))
-            .chatText((context) => msg`discard all status tokens from ${context.targets.first}${!Array.isArray(context.targets.second) ? ' and ' : ''}${context.targets.second}`);
+            .chatText((context) => msg`discard all status tokens from ${[context.targets.first, context.targets.second].flat()}`);
     }
 }
 
