@@ -771,6 +771,7 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>AbilitiesTriggeredByOpponents</code></td><td><code>'abilitiesTriggeredByOpponents'</code></td><td>Non-forced triggered abilities of the applying player's opponent.</td></tr>
           <tr><td><code>ActionEvents</code></td><td><code>'actionEvents'</code></td><td>Action abilities of event cards.</td></tr>
           <tr><td><code>AdjacentCharacters</code></td><td><code>'adjacentCharacters'</code></td><td>Characters in a location adjacent to the effect source's location.</td></tr>
+          <tr><td><code>AllButOwnCardEffects</code></td><td><code>'allButOwnCardEffects'</code></td><td>Every attempt that is not <code>OwnCardEffects</code>: the opponent's effects, framework steps, costs and playing the card. Bayushi Traitor: it can't be put into a conflict except by its owner's card effects.</td></tr>
           <tr><td><code>AttachmentsWithSameClan</code></td><td><code>'attachmentsWithSameClan'</code></td><td>Playing a non-neutral attachment whose printed clan the restricted card has (the attachment's own abilities are not restricted).</td></tr>
           <tr><td><code>AttackedProvinceNonForced</code></td><td><code>'attackedProvinceNonForced'</code></td><td>Non-forced triggered abilities of an attacked province.</td></tr>
           <tr><td><code>CardAndRingEffects</code></td><td><code>'cardAndRingEffects'</code></td><td><code>CardEffects</code> or <code>RingEffects</code>.</td></tr>
@@ -806,6 +807,7 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>Reactions</code></td><td><code>'reactions'</code></td><td>Reaction abilities.</td></tr>
           <tr><td><code>RingEffects</code></td><td><code>'ringEffects'</code></td><td>Ring effects (the source is a ring).</td></tr>
           <tr><td><code>Source</code></td><td><code>'source'</code></td><td>Attempts whose source is the effect's source.</td></tr>
+          <tr><td><code>ThisAbility</code></td><td><code>'thisAbility'</code></td><td>The ability that created the effect, not other abilities of the same card ("cannot trigger this ability": Perfect Guest).</td></tr>
           <tr><td><code>UnlessMeishodo</code></td><td><code>'unlessMeishodo'</code></td><td>Spells without the Meishodo trait.</td></tr>
         </tbody>
       </table>
@@ -1194,7 +1196,7 @@ this.interrupt('Reduce cost of next attachment')
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The ability's source.</td></tr>
           <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>The ability.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
-          <tr><td><code>resolvedWithoutTriggering</code></td><td><code>boolean?</code></td><td><code>true</code> when another ability resolves it (<code>resolveAbility</code>): it isn't triggered, so Hantei XXXVIII can't interrupt it.</td></tr>
+          <tr><td><code>resolvedWithoutTriggering</code></td><td><code>boolean?</code></td><td><code>true</code> when another ability resolves it (<code>resolveAbility</code>): it isn't triggered, so "triggers" cards (Hantei XXXVIII, Kamayari, Kirei-ko) ignore it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1272,6 +1274,7 @@ if(!parent || !event.matches || !event.matches.includes(parent)) {
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The ability's source.</td></tr>
           <tr><td><code>cardTargets</code></td><td><code>BaseCard[]</code></td><td>Every card in <code>context.targets</code>.</td></tr>
           <tr><td><code>ringTargets</code></td><td><code>Ring[]</code></td><td>Every ring in <code>context.rings</code>.</td></tr>
+          <tr><td><code>resolvedWithoutTriggering</code></td><td><code>boolean?</code></td><td><code>true</code> when another ability resolves it (<code>resolveAbility</code>): it isn't triggered, so "triggers" cards (Hida Kisada) ignore it.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -2859,6 +2862,7 @@ this.wouldInterrupt('Lose fate instead of honor')
     <li>An interrupt can change <code>recipient</code> before the handler (Embrace the Void).</li>
     <li>The condition cancels it when the origin has no fate, or a character origin or recipient cannot have fate removed or placed.</li>
     <li>The handler moves at most the fate the origin has, and updates <code>fate</code> to that.</li>
+    <li>The fate that leaves with a character leaving play raises a contingent one (<code>isContingent</code>). "Fate is removed from a character" triggers ignore it (ruling #1087: Shadowed Village, Kami of Ancient Wisdom, Darkflame Purifier); Trail of Blood and Lies counts it, as its text says.</li>
   </ul>
   <pre><code>// Embrace the Void: … Interrupt: When 1 or more fate would be removed from attached character – instead, move that fate to your fate pool.
 this.wouldInterrupt('Take Fate')
@@ -3309,6 +3313,8 @@ this.action('Gain 2 fate or 2 honor')
   <p>A player who chooses this ability's targets instead of their usual chooser. An interrupt to the ability's <code>onCardAbilityInitiated</code> sets it on <code>event.context</code>.</p>
   <ul class="edge">
     <li><code>null</code> by default; copied into contexts made with <code>copy()</code>.</li>
+    <li>When every legal target of a card target is in a hand the chooser can't see, nothing is prompted: a random card is chosen, or none if the target has a <code>cardCondition</code> (ruling #926: Dragonfly Mediator, Laughing Thunder).</li>
+    <li>Hantei can interrupt such a target only if the blind choice changes something: not for an "up to" target with a <code>cardCondition</code> (ruling #1010: Ambush).</li>
   </ul>
   <pre><code>// Hantei XXXVIII: … Interrupt: When an opponent triggers an ability that chooses 1 or more targets - you choose those targets instead.
 .handler((context) =&gt; {

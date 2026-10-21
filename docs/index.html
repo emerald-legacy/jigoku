@@ -149,7 +149,7 @@ export default Assassination;</code></pre>
     <li><strong>"Then, …" and "If you do, …"</strong> are <code>then()</code>: the next step runs only if the step before it resolved in full (designer ruling, 2026-10-20).</li>
     <li><strong>"Then, if …" and "If you do, and …"</strong> are <code>thenIf((context) =&gt; …)</code>: the step before must have resolved in full, and the condition must hold.</li>
     <li><strong>A sentence without "then"</strong> that must come after the effect ("Shuffle.", "If it is now …") is <code>afterwards()</code> or <code>afterwardsIf()</code>, which run either way. Otherwise the effects of an ability are simultaneous (RRG), and a "may" (<code>optional()</code>, <code>onAffinity()</code> with a prompt, <code>chooseAction()</code>) is asked before any of them applies. Keep them in one step.</li>
-    <li>A few cards keep <code>afterwards()</code> for a "then" because a ruling or decision lets the rest resolve anyway (Mark of Shame, Soul Beyond Reproach, Test of Courage, Tranquil Philosopher, Warriors of the Wind, Yogo Hiroue, Ichigo-kun, Aranat).</li>
+    <li>A few cards resolve the rest of a "then" anyway, because a ruling or decision says so: Mark of Shame, Soul Beyond Reproach, Test of Courage, Tranquil Philosopher, Warriors of the Wind and Yogo Hiroue resolve both parts in one <code>sequential()</code>; Ichigo-kun and Aranat use <code>afterwards()</code>.</li>
     <li>A step's context holds the targets chosen so far, so <code>context.target</code> still names the card chosen in the first step.</li>
 </ul>
 

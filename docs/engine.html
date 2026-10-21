@@ -105,9 +105,10 @@
     </li>
     <li><code>refillProvinces()</code>.</li>
 </ol>
-<p>An ability resolved by another one (<code>resolveAbility</code>) runs <code>ResolveAbilityActionResolver</code>: no early targets, no play or trigger costs (its own costs are paid unless <code>CannotPayCost</code> is ignored), <code>onCardAbilityInitiated</code> with <code>resolvedWithoutTriggering: true</code>, and, unless it is a sub-resolution, <code>onCardAbilityTriggered</code> with the same flag. It counts the max but not the limit.</p>
+<p>An ability resolved by another one (<code>resolveAbility</code>) runs <code>ResolveAbilityActionResolver</code>: no early targets, no play or trigger costs (its own costs and the costs of targeting are paid unless <code>CannotPayCost</code> is ignored), <code>onCardAbilityInitiated</code> and <code>onInitiateAbilityEffects</code> with <code>resolvedWithoutTriggering: true</code>, and, unless it is a sub-resolution, <code>onCardAbilityTriggered</code> with the same flag. It counts the max but not the limit.</p>
 <ul>
     <li>A reaction to <code>onCardAbilityInitiated</code> fires after the early targets were chosen: a select before the dash is answered before the reaction's window opens.</li>
+    <li>In the interrupt window when a card is played, the player playing it gets no Pass button while they still need a cost reduction to afford it (<code>getMinCostReduction()</code> above 0). Their opponent always gets one.</li>
     <li><code>isTriggeredAbility()</code> is true for every card ability, actions included. It is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), for steps and for a bare <code>BaseAbility</code>. So a reaction that filters on <code>event.ability.isTriggeredAbility()</code> also reacts to actions.</li>
     <li><code>isTriggeredAbilityInstance()</code> is true only for a <code>TriggeredAbility</code>: reactions and interrupts, forced ones and duel triggers included. The keyword abilities built on it (Pride, Rally, Tutored, Thriving, Courtesy, Sincerity) are instances too; Covert is not.</li>
     <li><code>isCardAbility()</code> is true for every <code>ThenAbility</code> (card abilities, keyword abilities and steps) and for Covert. A step after <code>then()</code> or <code>afterwards()</code> runs through its own <code>AbilityResolver</code>; <code>isStep()</code> tells it apart. A step raises <code>onAbilityResolverInitiated</code>, not <code>onCardAbilityInitiated</code>, and a step without a legal target ends without the "insufficient legal targets" line.</li>
@@ -115,7 +116,7 @@
 
 <h2 id="eng-game-actions">Running game actions from engine code</h2>
 <p>A game action doesn't change the game by itself. It first collects its events with <code>action.addEventsToArray(events, context)</code>. Most actions add one event per legal target. A card game action adds one for every target, and the event window cancels the events whose target it can't affect (events without a name skip that check). Then the event window resolves them. Open that window one step later, as the entry points below do: some actions add their events only after a prompt.</p>
-<p>Engine code that acts for a player, outside any card ability, uses <code>game.getFrameworkContext(player)</code> as its context. A rule that acts for no player uses <code>game.getGameContext()</code>; its <code>player</code> is missing.</p>
+<p>Engine code that acts for a player, outside any card ability, uses <code>game.getFrameworkContext(player)</code> as its context. A cost the rules charge, such as the honor to declare an attacker or defender, uses <code>game.getFrameworkCostContext(player)</code>: a framework context at <code>Stage.Cost</code>, so "cannot lose honor to pay costs" (Kuni Juurou) stops it and effect-only restrictions don't. Declaring is refused when that honor can't be paid; for attackers the cost is summed over all of them. A rule that acts for no player uses <code>game.getGameContext()</code>; its <code>player</code> is missing.</p>
 <table>
     <thead><tr><th>Entry point</th><th>Use</th></tr></thead>
     <tbody>

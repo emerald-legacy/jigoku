@@ -1247,7 +1247,7 @@ this.action('Initiate a Military duel')
             context.game.addMessage(msg`${context.targets[TARGET_TO_BOW]} cannot ready until the end of the conflict - …`);
         }
     })</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/PalmStrike.ts">Palm Strike</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DevelopingMasterpiece.ts">Developing Masterpiece</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/RiftToToshigoku.ts">Rift to Toshigoku</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/PalmStrike.ts">Palm Strike</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DevelopingMasterpiece.ts">Developing Masterpiece</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/RiftToToshigoku.ts">Rift to Toshigoku</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/PrayersToEbisu.ts">Prayers to Ebisu</a></p>
   </div>
 </section>
 
@@ -1885,7 +1885,7 @@ this.action('Steal a fate')
 .discardStatusToken((context) =&gt; ({
     target: context.game.findAnyCardsInAnyList((card) =&gt; card.hasStatusTokens).flatMap((card) =&gt; card.statusTokens)
 }))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/PerfectLandEthos.ts">Perfect Land Ethos</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/Untainted.ts">Untainted</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/PerfectLandEthos.ts">Perfect Land Ethos</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/Untainted.ts">Untainted</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ForcedRetirement.ts">Forced Retirement</a></p>
   </div>
   <div class="ref" id="b-dishonor" data-name="dishonor">
     <h3><code>dishonor(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-dishonor">#</a></h3>
@@ -2357,7 +2357,7 @@ this.action('Steal a fate')
         cannot: RestrictionType.TriggerAbilities
     })
 })</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/ExemplaryEtiquette.ts">Exemplary Etiquette</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/SuperiorAuthority.ts">Superior Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Crab/AshenFlamePlateau.ts">Ashen Flame Plateau</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/ExemplaryEtiquette.ts">Exemplary Etiquette</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/SuperiorAuthority.ts">Superior Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Crab/AshenFlamePlateau.ts">Ashen Flame Plateau</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/GraspOfEarth.ts">Grasp of Earth</a></p>
   </div>
   <div class="ref" id="b-duelLastingEffect" data-name="duelLastingEffect">
     <h3><code>duelLastingEffect(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-duelLastingEffect">#</a></h3>
@@ -2499,7 +2499,7 @@ this.action('Steal a fate')
     gameAction: placeFate({ origin: context.player.opponent }),
     declineMessage: (context, chooser) =&gt; msg`${chooser} chooses not to hire ${context.source}`
 }))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/MercenaryCompany.ts">Mercenary Company</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/DojiShigenobu.ts">Dōji Shigenobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumaHajime.ts">Hiruma Hajime</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/MercenaryCompany.ts">Mercenary Company</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/DojiShigenobu.ts">Dōji Shigenobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumaHajime.ts">Hiruma Hajime</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/BayushiKachiko2.ts">Bayushi Kachiko</a> (5 card files)</p>
   </div>
   <div class="ref" id="b-selectAttackedProvince" data-name="selectAttackedProvince">
     <h3><code>selectAttackedProvince(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-selectAttackedProvince">#</a></h3>

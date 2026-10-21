@@ -785,7 +785,7 @@ this.action('Select a player to lose an honor and draw a card')
     </ul>
     <pre><code>// Bayushi Yunako: Action: While this character is participating in a conflict, choose a character – switch that character's base [conflict-military] and [conflict-political] skill until the end of the conflict.
 cardCondition: (card) =&gt; canSwitchSkills(card)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a>, and through <code>canSwitchSkills</code> and <code>copyBaseSkills</code></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BayushiYunako.ts">Bayushi Yunako</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/IsawaHeiko.ts">Isawa Heiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/FurtiveSympathizer.ts">Furtive Sympathizer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/PathOfReflection.ts">Path of Reflection</a> (7 card files)</p>
   </div>
 
   <div class="ref" id="he-controlsShugenja" data-name="controlsShugenja">
@@ -835,7 +835,7 @@ return controlsParticipating(context.player, Trait.Scout, Trait.Shinobi) ? -2 : 
 this.persistentEffect({
     effect: modifyBothSkills(() =&gt; countCardsUnderneath(this))
 });</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Dragon/TogashiTsurumi.ts">Togashi Tsurumi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Neutral/Stowaway.ts">Stowaway</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Dragon/TogashiTsurumi.ts">Togashi Tsurumi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Neutral/Stowaway.ts">Stowaway</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Scorpion/DisloyalOathkeeper.ts">Disloyal Oathkeeper</a></p>
   </div>
 
   <div class="ref" id="he-countTargetable" data-name="countTargetable">
@@ -1582,7 +1582,7 @@ statistic: (card) =&gt; card.getMilitarySkillExcludingModifiers([EffectName.Atta
     <pre><code>// Spiderweb Passage: … choose a character on the enemy side with 0[conflict-military] or 0[conflict-political]. …
 (!card.hasDash(SkillType.Political) &amp;&amp; card.politicalSkill === 0) ||
     (!card.hasDash(SkillType.Military) &amp;&amp; card.militarySkill === 0)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BayushiYunako.ts">Bayushi Yunako</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/IsawaHeiko.ts">Isawa Heiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/FurtiveSympathizer.ts">Furtive Sympathizer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a> (8 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a>, and through <code>canSwitchSkills</code> and <code>copyBaseSkills</code></p>
   </div>
 
   <div class="ref" id="q-bowed" data-name="bowed">
