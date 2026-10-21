@@ -1025,6 +1025,11 @@ export class Player extends GameObject {
         return this.sumEffects(EffectName.ChangePlayerSkillModifier);
     }
 
+    /** Skill added "during this conflict's resolution" (Disguised Protector). */
+    get resolutionSkillModifier(): number {
+        return this.sumEffects(EffectName.ChangePlayerResolutionSkillModifier);
+    }
+
     honorGained(round: number | null = null, phase: string | null = null, onlyPositive: boolean = false): number {
         return this.honorTracker.honorGained(round, phase, onlyPositive);
     }

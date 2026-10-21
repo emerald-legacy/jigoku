@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { DuelType, ConflictType } from '../../../Constants.js';
-import { changePlayerSkillModifier, modifyDuelTotal } from '../../../effects.js';
+import { changePlayerResolutionSkillModifier, modifyDuelTotal } from '../../../effects.js';
 import { conditional, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,13 +20,13 @@ export default class DaidojiAkikore extends DrawCard {
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 chatText: (_context, duel) =>
-                    duel.winningPlayer === context.player ? msg`add 3 to ${context.player}'s side for this conflict` : msg`no effect`,
+                    duel.winningPlayer === context.player ? msg`add 3 to ${context.player}'s side during this conflict's resolution` : msg`no effect`,
                 gameAction: (duel) =>
                     conditional({
                         condition: duel.winningPlayer === context.player,
                         trueGameAction: playerLastingEffect({
                             target: duel.winningPlayer,
-                            effect: changePlayerSkillModifier(3)
+                            effect: changePlayerResolutionSkillModifier(3)
                         })
                     })
             }));

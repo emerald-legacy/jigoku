@@ -1,6 +1,6 @@
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, CardType, Trait } from '../../Constants.js';
+import { Location, Players, CardType, Trait, SkillType } from '../../Constants.js';
 import { copyBaseSkillEffects } from '../copyBaseSkills.js';
 import { msg } from '../../GameChat.js';
 
@@ -25,7 +25,10 @@ class MyAncestorsStrength extends DrawCard {
                 controller: Players.Self
             }, cardLastingEffect((context) => ({
                 target: context.targets.shugenja,
-                effect: copyBaseSkillEffects(context.targets.ancestor)
+                // a dash stays a dash (ruling #484)
+                effect: copyBaseSkillEffects(context.targets.ancestor, {
+                    skills: [SkillType.Military, SkillType.Political].filter((type) => !context.targets.shugenja.hasDash(type))
+                })
             })))
             .chatText((context) => msg`set ${context.targets.shugenja}'s base skills to those of ${context.targets.ancestor}`);
     }

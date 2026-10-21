@@ -206,6 +206,7 @@ export interface EffectValueMap {
     [EffectName.CannotResolveRings]: boolean;
     [EffectName.ChangePlayerGloryModifier]: number;
     [EffectName.ChangePlayerSkillModifier]: number;
+    [EffectName.ChangePlayerResolutionSkillModifier]: number;
     [EffectName.GainActionPhasePriority]: boolean;
     [EffectName.CostReducer]: boolean;
     [EffectName.ModifyCardsDrawnInDrawPhase]: number;

@@ -750,7 +750,7 @@ this.persistentEffect({
   </div>
 <div class="ref" id="ef-changePlayerSkillModifier" data-name="changePlayerSkillModifier">
     <h3><code>changePlayerSkillModifier(value)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-changePlayerSkillModifier">#</a></h3>
-    <p>"Add +3 to your skill during conflict resolution": changes the player's total, not a character's skill.</p>
+    <p>Adds to the player's skill total in the conflict, not to a character's skill, all conflict long. For "add X to your skill during this conflict's resolution" use <a href="#ef-changePlayerResolutionSkillModifier"><code>changePlayerResolutionSkillModifier</code></a>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -760,6 +760,31 @@ this.persistentEffect({
     <ul class="edge">
       <li>All copies add up (<code>Player.skillModifier</code>), on top of the characters' skill and the imperial favor bonus.</li>
       <li>Ignored while the player has <code>setConflictTotalSkill</code>.</li>
+    </ul>
+    <pre><code>// Cantor of Gales: During conflicts in which your side has at least 1 honored character, if this character is in your home area it contributes its base skill to your side.
+this.persistentEffect({
+    condition: (context) =&gt;
+        context.source.isAtHome() &amp;&amp;
+        context.player.cardsInPlay.some((card) =&gt; card.isParticipating() &amp;&amp; card.isHonored),
+    effect: changePlayerSkillModifier((_player, context) =&gt;
+        context.game.currentConflict?.conflictType === ConflictType.Military
+            ? this.getBaseMilitarySkill()
+            : this.getBasePoliticalSkill())
+});</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/CantorOfGales.ts">Cantor of Gales</a></p>
+  </div>
+
+  <div class="ref" id="ef-changePlayerResolutionSkillModifier" data-name="changePlayerResolutionSkillModifier">
+    <h3><code>changePlayerResolutionSkillModifier(value)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-changePlayerResolutionSkillModifier">#</a></h3>
+    <p>"Add +3 to your skill during conflict resolution": added to the player's total only when the winner is determined (<code>Conflict.determineWinner()</code>). Until then the conflict's totals, "current skill" checks and the status line leave it out.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>value</code></td><td><code>number | (player, context) =&gt; number</code></td><td>required</td><td>The amount added to the player's side, fixed or recalculated when the conflict resolves (a later bid counts).</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>All copies add up (<code>Player.resolutionSkillModifier</code>). Ignored while the player has <code>setConflictTotalSkill</code>.</li>
     </ul>
     <pre><code>// Daidōji Akikore: … Conflict Action: Initiate a [conflict-military] duel against a character your opponent
 // controls of their choice - resolve the duel. If this character wins the duel, add +3 to your skill during
@@ -773,11 +798,11 @@ this.conflictAction('Military duel to add skill')
                 condition: duel.winningPlayer === context.player,
                 trueGameAction: playerLastingEffect({
                     target: duel.winningPlayer,
-                    effect: changePlayerSkillModifier(3)
+                    effect: changePlayerResolutionSkillModifier(3)
                 })
             })
     }));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/DaidojiAkikore.ts">Daidōji Akikore</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/DisguisedProtector.ts">Disguised Protector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MarvelousBeings.ts">Marvelous Beings</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/CantorOfGales.ts">Cantor of Gales</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/DaidojiAkikore.ts">Daidōji Akikore</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/DisguisedProtector.ts">Disguised Protector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MarvelousBeings.ts">Marvelous Beings</a></p>
   </div>
 <div class="ref" id="ef-contributeToConflict" data-name="contributeToConflict">
     <h3><code>contributeToConflict(player)</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-contributeToConflict">#</a></h3>

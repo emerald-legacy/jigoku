@@ -243,3 +243,49 @@ describe('Breakthrough copied by The Mirror\'s Gaze', function () {
     });
 });
 
+describe('Breakthrough copied by a player who passed their first conflict', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asahina-storyteller'],
+                    hand: ['the-mirror-s-gaze']
+                },
+                player2: {
+                    inPlay: ['moto-horde', 'aggressive-moto'],
+                    hand: ['breakthrough']
+                }
+            });
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
+            this.motoHorde = this.player2.findCardByName('moto-horde');
+            this.mirror = this.player1.playAttachment('the-mirror-s-gaze', this.storyteller);
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+        });
+
+        it('may copy it: they passed exactly one conflict (EmeraldDB ruling)', function () {
+            this.initiateConflict({
+                attackers: [this.motoHorde],
+                defenders: []
+            });
+            this.player1.pass();
+            this.player2.pass();
+            this.player2.clickPrompt('Yes');
+            this.player2.clickPrompt('Gain 2 Honor');
+            this.player2.clickCard('breakthrough');
+            this.initiateConflict({
+                type: 'political',
+                ring: 'void',
+                province: this.player1.findCardByName('shameful-display', 'province 2'),
+                attackers: ['aggressive-moto'],
+                defenders: []
+            });
+            this.player1.pass();
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.mirror);
+        });
+    });
+});

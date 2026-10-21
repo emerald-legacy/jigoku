@@ -514,3 +514,74 @@ describe('The Mirror\'s Gaze and Hantei XXXVIII', function () {
     });
 });
 
+
+describe('The Mirror\'s Gaze and events ruling #376 doesn\'t exclude', function () {
+    integration(function () {
+        it('copies Gift of Amaterasu, ignoring its triggering condition', function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'asahina-storyteller', attachments: ['the-mirror-s-gaze'] }]
+                },
+                player2: {
+                    inPlay: ['akodo-toturi'],
+                    hand: ['gift-of-amaterasu']
+                }
+            });
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
+            this.gaze = this.player1.findCardByName('the-mirror-s-gaze');
+            this.toturi = this.player2.findCardByName('akodo-toturi');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.toturi],
+                defenders: []
+            });
+            this.noMoreActions();
+
+            this.player2.clickCard('gift-of-amaterasu');
+            this.player2.clickCard(this.toturi);
+            expect(this.toturi.isHonored).toBe(true);
+            expect(this.player1).toBeAbleToSelect(this.gaze);
+            this.player1.clickCard(this.gaze);
+            this.player1.clickCard(this.storyteller);
+            expect(this.storyteller.isHonored).toBe(true);
+        });
+
+        it('copies Try Again Tomorrow when its player meets the play restriction', function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'asahina-storyteller', attachments: ['the-mirror-s-gaze'] }, 'matsu-berserker', 'akodo-toturi']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['try-again-tomorrow']
+                }
+            });
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
+            this.gaze = this.player1.findCardByName('the-mirror-s-gaze');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.toturi = this.player1.findCardByName('akodo-toturi');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.storyteller.honor();
+            this.whisperer.honor();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.storyteller, this.berserker, this.toturi],
+                defenders: [this.whisperer]
+            });
+
+            this.player2.clickCard('try-again-tomorrow');
+            this.player2.clickCard(this.berserker);
+            expect(this.berserker.isParticipating()).toBe(false);
+            expect(this.player1).toBeAbleToSelect(this.gaze);
+            this.player1.clickCard(this.gaze);
+            this.player1.clickCard(this.toturi);
+            expect(this.toturi.isParticipating()).toBe(false);
+        });
+    });
+});

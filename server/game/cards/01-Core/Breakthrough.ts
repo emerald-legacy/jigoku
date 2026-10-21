@@ -10,8 +10,8 @@ class Breakthrough extends DrawCard {
                     event.conflict.attackingPlayer === context.player &&
                     event.conflict.getConflictProvinces().some((a) => a.isBroken)
             })
-            // "your second conflict": a copy (The Mirror's Gaze) needs it too (developer ruling)
-            .condition((context) => this.game.getDeclaredConflictCount(context.player) === 1)
+            // "your second conflict": exactly one conflict declared or passed so far, also for a copy (The Mirror's Gaze)
+            .condition((context) => context.game.getConflicts(context.player).length === 1)
             .initiateConflict({ canPass: false });
     }
 }

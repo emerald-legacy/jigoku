@@ -1,4 +1,4 @@
-import { changePlayerSkillModifier } from '../../effects.js';
+import { changePlayerResolutionSkillModifier } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class DisguisedProtector extends DrawCard {
@@ -9,14 +9,14 @@ class DisguisedProtector extends DrawCard {
             .condition((context) => context.source.isParticipating())
             // read when the conflict resolves: a later bid (Regal Bearing, a duel) counts
             .playerLastingEffect({
-                effect: changePlayerSkillModifier((player) => player.showBid)
+                effect: changePlayerResolutionSkillModifier((player) => player.showBid)
             })
             .playerLastingEffect((context) => ({
                 condition: (context) => !!context.player.opponent,
                 target: context.player.opponent,
-                effect: changePlayerSkillModifier((player) => player.showBid)
+                effect: changePlayerResolutionSkillModifier((player) => player.showBid)
             }))
-            .chatText('add the bid on each players dial to their skill total');
+            .chatText('add the bid on each player\'s dial to their skill total during this conflict\'s resolution');
     }
 }
 

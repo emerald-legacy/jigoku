@@ -1,4 +1,5 @@
 import { msg } from '../../GameChat.js';
+import type Player from '../../Player.js';
 import { ActionWindow } from '../ActionWindow.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
@@ -17,6 +18,15 @@ export class ConflictActionWindow extends ActionWindow {
         this.displayTotals = true;
     }
 
+    /** "Attacker: 5 (+3 at resolution) Defender: 4". */
+    private skillText(): string {
+        const bonus = (player: Player) => {
+            const value = this.conflict.resolutionBonus(player);
+            return value !== 0 ? ` (${value > 0 ? '+' : ''}${value} at resolution)` : '';
+        };
+        return `Attacker: ${this.conflict.attackerSkill}${bonus(this.conflict.attackingPlayer)} Defender: ${this.conflict.defenderSkill}${bonus(this.conflict.defendingPlayer)}`;
+    }
+
     private conflictText(): string {
         return capitalize(this.conflict.conflictType ?? '') + ' ' + capitalize(this.conflict.element ?? '') + ' conflict';
     }
@@ -25,10 +35,12 @@ export class ConflictActionWindow extends ActionWindow {
         const completed = super.continue();
         if(!completed && this.displayTotals) {
             const conflictText = this.conflictText();
-            this.game.addMessage(msg`${conflictText} - Attacker: ${this.conflict.attackerSkill} Defender: ${this.conflict.defenderSkill}`);
+            this.game.addMessage(msg`${conflictText} - ${this.skillText()}`);
             let winnerText = 'Attacker is winning the conflict';
             const breakingProvinces: ProvinceCard[] = [];
-            const winner = this.conflict.getWinningPlayer();
+            // as the conflict would resolve now, so a player sees the province would break
+            const { attackerSkill, defenderSkill } = this.conflict.getResolutionSkills();
+            const winner = this.conflict.getWinningPlayer(attackerSkill, defenderSkill);
             if(!winner) {
                 winnerText = 'No-one is winning the conflict';
             } else if(winner === this.conflict.defendingPlayer) {
@@ -36,7 +48,7 @@ export class ConflictActionWindow extends ActionWindow {
             } else {
                 const provinces = this.conflict.getConflictProvinces();
                 provinces.forEach((province: ProvinceCard) => {
-                    if(!province.isBroken && province.checkRestrictions(RestrictionType.Break, this.game.getFrameworkContext(this.conflict.attackingPlayer)) && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
+                    if(!province.isBroken && province.checkRestrictions(RestrictionType.Break, this.game.getFrameworkContext(this.conflict.attackingPlayer)) && attackerSkill >= defenderSkill + province.getStrength()) {
                         breakingProvinces.push(province);
                     }
                 });
@@ -56,7 +68,7 @@ export class ConflictActionWindow extends ActionWindow {
         const props = super.activePrompt();
 
         const conflictText = this.conflictText();
-        const skillText = 'Attacker: ' + this.conflict.attackerSkill + ' Defender: ' + this.conflict.defenderSkill;
+        const skillText = this.skillText();
         return {
             menuTitle: [conflictText, skillText].join('\n'),
             buttons: props.buttons,

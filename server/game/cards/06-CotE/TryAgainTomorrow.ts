@@ -13,8 +13,7 @@ class TryAgainTomorrow extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
-            }, sendHome())
-            .cannotBeMirrored();
+            }, sendHome());
     }
 }
 

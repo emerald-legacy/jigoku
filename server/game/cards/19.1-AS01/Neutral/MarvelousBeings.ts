@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import { perConflict } from '../../../AbilityLimit.js';
-import { changePlayerSkillModifier } from '../../../effects.js';
+import { changePlayerResolutionSkillModifier } from '../../../effects.js';
 import { CardType, ConflictType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,9 +17,9 @@ export default class MarvelousBeings extends DrawCard {
             }))
             .playerLastingEffect((context) => ({
                 target: Players.Self,
-                effect: changePlayerSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict))
+                effect: changePlayerResolutionSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict))
             }))
-            .chatText((context) => msg`entrance the court, giving their side an extra ${this.marvelousSkillBonus(context.costs.moveToConflict)}${'political'} this conflict`)
+            .chatText((context) => msg`entrance the court, giving their side an extra ${this.marvelousSkillBonus(context.costs.moveToConflict)}${'political'} during this conflict's resolution`)
             .max(perConflict(1));
     }
 

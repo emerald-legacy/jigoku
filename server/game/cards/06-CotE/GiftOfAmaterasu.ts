@@ -14,8 +14,7 @@ class GiftofAmaterasu extends DrawCard {
                 cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to honor',
                 controller: Players.Self
-            }, honor())
-            .cannotBeMirrored();
+            }, honor());
     }
 }
 

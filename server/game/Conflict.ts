@@ -122,6 +122,8 @@ export class Conflict extends GameObject {
     getSummary() {
         const effects = this.getEffects(EffectName.ForceConflictUnopposed);
         const forcedUnopposed = effects.length !== 0;
+        // whether the attacker would win and break, counting what is added during resolution
+        const { attackerSkill, defenderSkill } = this.getResolutionSkills();
         return {
             attackingPlayerId: this.attackingPlayer.id,
             defendingPlayerId: this.defendingPlayer.id,
@@ -129,11 +131,11 @@ export class Conflict extends GameObject {
             defenderSkill: this.defenderSkill,
             type: this.conflictType,
             elements: this.elements,
-            attackerWins: this.#attackers.size > 0 && this.attackerSkill >= this.defenderSkill,
+            attackerWins: this.#attackers.size > 0 && attackerSkill >= defenderSkill,
             breaking:
                 this.conflictProvince &&
                 this.getConflictProvinces().some(
-                    (p) => p.getStrength() - (this.attackerSkill - this.defenderSkill) <= 0
+                    (p) => p.getStrength() - (attackerSkill - defenderSkill) <= 0
                 ),
             unopposed: !(this.#defenders && this.#defenders.size > 0 && !forcedUnopposed),
             declarationComplete: this.#declarationComplete,
@@ -396,7 +398,8 @@ export class Conflict extends GameObject {
         return player.sumEffects(EffectName.AdditionalCardPlayed) + this.getCardsPlayed(player).length;
     }
 
-    calculateSkill(prevStateChanged = false) {
+    /** `atResolution`: when the winner is determined, which also counts the skill added "during this conflict's resolution" (Disguised Protector). */
+    calculateSkill(prevStateChanged = false, atResolution = false) {
         const stateChanged = this.game.effectEngine.checkEffects(prevStateChanged);
 
         if(this.winnerDetermined) {
@@ -409,7 +412,7 @@ export class Conflict extends GameObject {
         } else {
             this.attackerSkill =
                 this.calculateSkillFor(this.getAttackers().concat(this.getAdditionalContributors(this.attackingPlayer))) +
-                this.attackingPlayer.skillModifier;
+                this.attackingPlayer.skillModifier + (atResolution ? this.resolutionBonus(this.attackingPlayer) : 0);
             if(favorAppliesTo(this.attackingPlayer.imperialFavor, this.conflictType) && this.#attackers.size > 0) {
                 this.attackerSkill++;
             }
@@ -421,7 +424,7 @@ export class Conflict extends GameObject {
         } else {
             this.defenderSkill =
                 this.calculateSkillFor(this.getDefenders().concat(this.getAdditionalContributors(this.defendingPlayer))) +
-                this.defendingPlayer.skillModifier;
+                this.defendingPlayer.skillModifier + (atResolution ? this.resolutionBonus(this.defendingPlayer) : 0);
             if(favorAppliesTo(this.defendingPlayer.imperialFavor, this.conflictType) && this.#defenders.size > 0) {
                 this.defenderSkill++;
             }
@@ -485,7 +488,7 @@ export class Conflict extends GameObject {
     }
 
     determineWinner() {
-        this.calculateSkill();
+        this.calculateSkill(false, true);
         this.winnerDetermined = true;
         this.attackersAtResolution = this.getAttackers().slice();
         this.defendersAtResolution = this.getDefenders().slice();
@@ -515,11 +518,24 @@ export class Conflict extends GameObject {
         this.skillDifference = Math.max(0, this.winnerSkill - this.loserSkill);
     }
 
-    /** Who wins now. RRG "Winning a Conflict": a side needs at least 1 skill and a participating character; a tie goes to the attacker. */
-    getWinningPlayer(): Player | undefined {
-        const attackerCanWin = this.attackerSkill > 0 && this.getAttackers().length > 0;
-        const defenderCanWin = this.defenderSkill > 0 && this.getDefenders().length > 0;
-        if(attackerCanWin && (!defenderCanWin || this.attackerSkill >= this.defenderSkill)) {
+    /** Skill `player`'s side adds during this conflict's resolution (Disguised Protector), as it stands now; none while its total is set. */
+    resolutionBonus(player: Player): number {
+        return player.mostRecentEffect(EffectName.SetConflictTotalSkill) !== undefined || this.winnerDetermined ? 0 : player.resolutionSkillModifier;
+    }
+
+    /** The totals the conflict would resolve with now: the current totals plus what is added during resolution. */
+    getResolutionSkills(): { attackerSkill: number; defenderSkill: number } {
+        return {
+            attackerSkill: this.attackerSkill + this.resolutionBonus(this.attackingPlayer),
+            defenderSkill: this.defenderSkill + this.resolutionBonus(this.defendingPlayer)
+        };
+    }
+
+    /** Who wins with these totals (the current ones by default). RRG "Winning a Conflict": a side needs at least 1 skill and a participating character; a tie goes to the attacker. */
+    getWinningPlayer(attackerSkill = this.attackerSkill, defenderSkill = this.defenderSkill): Player | undefined {
+        const attackerCanWin = attackerSkill > 0 && this.getAttackers().length > 0;
+        const defenderCanWin = defenderSkill > 0 && this.getDefenders().length > 0;
+        if(attackerCanWin && (!defenderCanWin || attackerSkill >= defenderSkill)) {
             return this.attackingPlayer;
         }
         return defenderCanWin ? this.defendingPlayer : undefined;

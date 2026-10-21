@@ -119,6 +119,7 @@ export enum EffectName {
     CannotResolveRings = 'cannotResolveRings',
     ChangePlayerGloryModifier = 'changePlayerGloryModifier',
     ChangePlayerSkillModifier = 'changePlayerSkillModifier',
+    ChangePlayerResolutionSkillModifier = 'changePlayerResolutionSkillModifier',
     GainActionPhasePriority = 'gainActionPhasePriority',
     CostReducer = 'costReducer',
     ModifyCardsDrawnInDrawPhase = 'modifyCardsDrawnInDrawPhase',

@@ -79,9 +79,12 @@ describe('Marvelous Beings', function () {
                 expect(this.guardianKami.politicalSkill).toBe(1);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Marvelous Beings, moving Guardian Kami into the conflict to entrance the court, giving their side an extra 2political this conflict'
+                    'player1 plays Marvelous Beings, moving Guardian Kami into the conflict to entrance the court, giving their side an extra 2political during this conflict\'s resolution'
                 );
-                expect(this.getChatLogs(5)).toContain('Political Air conflict - Attacker: 5 Defender: 0'); //2 printed cost + 2 prodigy + 1 kami itself
+                expect(this.getChatLogs(5)).toContain('Political Air conflict - Attacker: 3 (+2 at resolution) Defender: 0'); // 2 prodigy + 1 kami itself
+                this.player2.pass();
+                this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 5 vs 0'); // + 2 printed cost at resolution
             });
 
             it('gives a max bonus of 3', function () {
@@ -100,9 +103,12 @@ describe('Marvelous Beings', function () {
                 expect(this.aranat.politicalSkill).toBe(6);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Marvelous Beings, moving Aranat into the conflict to entrance the court, giving their side an extra 3political this conflict'
+                    'player1 plays Marvelous Beings, moving Aranat into the conflict to entrance the court, giving their side an extra 3political during this conflict\'s resolution'
                 );
-                expect(this.getChatLogs(5)).toContain('Political Air conflict - Attacker: 11 Defender: 0'); // 2 prodigy + 6 aranat itself + 3 bonus from Marvelous
+                expect(this.getChatLogs(5)).toContain('Political Air conflict - Attacker: 8 (+3 at resolution) Defender: 0'); // 2 prodigy + 6 aranat itself
+                this.player2.pass();
+                this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 11 vs 0'); // + 3 bonus at resolution
             });
         });
     });

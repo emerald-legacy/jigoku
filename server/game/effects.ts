@@ -244,6 +244,8 @@ export const canPlayFromOpponents = (location: Location, cards: DrawCard[], sour
 export const limitHonorGainPerPhase = (amount: number) => EffectBuilder.player.static(EffectName.LimitHonorGainPerPhase, amount);
 export const cannotResolveRings = () => EffectBuilder.player.static(EffectName.CannotResolveRings, true);
 export const changePlayerSkillModifier = (value: FlexibleValue<number, Player>) => EffectBuilder.player.flexible(EffectName.ChangePlayerSkillModifier, value);
+/** "Add X to your skill during this conflict's resolution": counted only when the winner is determined. */
+export const changePlayerResolutionSkillModifier = (value: FlexibleValue<number, Player>) => EffectBuilder.player.flexible(EffectName.ChangePlayerResolutionSkillModifier, value);
 export const gainActionPhasePriority = () =>
     EffectBuilder.player.detached(EffectName.GainActionPhasePriority, {
         apply: (player) => (player.actionPhasePriority = true),
