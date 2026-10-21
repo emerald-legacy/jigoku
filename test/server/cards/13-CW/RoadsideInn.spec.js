@@ -167,6 +167,27 @@ describe('Roadside Inn', function() {
             expect(this.player2.fate).toBe(0);
         });
 
+        it('can be triggered with no fate in your pool, when the opponent can move one', function() {
+            this.player1.fate = 0;
+            this.noMoreActions();
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.inn);
+            this.player1.clickCard(this.matsuBerserker);
+            this.player2.clickPrompt('Yes');
+            this.player2.clickCard(this.dojiWhisperer);
+            expect(this.getChatLogs(1)).toContain('player1 uses Roadside Inn to choose Matsu Berserker. player2 gives player1 1 honor to place a fate from their pool on Doji Whisperer');
+            expect(this.matsuBerserker.fate).toBe(0);
+            expect(this.dojiWhisperer.fate).toBe(1);
+            expect(this.player2.fate).toBe(9);
+        });
+
+        it('can\'t be triggered when neither player has fate', function() {
+            this.player1.fate = 0;
+            this.player2.fate = 0;
+            this.noMoreActions();
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+
         it('should allow opponent to choose not to select a character', function() {
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Triggered Abilities');

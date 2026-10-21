@@ -43,9 +43,9 @@ export class MulliganConflictPrompt extends MulliganDynastyPrompt {
                 }
                 player.drawCardsToHand(this.selectedCards[player.name].length);
                 player.shuffleConflictDeck();
-                this.game.addMessage(msg`${player} has mulliganed ${this.selectedCards[player.name].length} cards from the conflict deck`);
+                this.reportDecision(player, msg`${player} has mulliganed ${this.selectedCards[player.name].length} cards from the conflict deck`);
             } else {
-                this.game.addMessage(msg`${player} has kept all conflict cards`);
+                this.reportDecision(player, msg`${player} has kept all conflict cards`);
             }
             this.game.getProvinceArray(false).forEach((location: Location) => {
                 const cards = player.getDynastyCardsInProvince(location);
@@ -57,6 +57,7 @@ export class MulliganConflictPrompt extends MulliganDynastyPrompt {
             player.clearSelectableCards();
             player.takenConflictMulligan = true;
             this.readyToStart = true;
+            this.postDecisions();
             return true;
         }
         return false;

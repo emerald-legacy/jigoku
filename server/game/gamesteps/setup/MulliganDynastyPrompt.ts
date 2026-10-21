@@ -1,4 +1,4 @@
-import { msg } from '../../GameChat.js';
+import { msg, type MessageArgs } from '../../GameChat.js';
 import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
 import { Location } from '../../Constants.js';
 import type BaseCard from '../../BaseCard.js';
@@ -9,6 +9,8 @@ import type Player from '../../Player.js';
 export class MulliganDynastyPrompt extends AllPlayerPrompt {
     selectedCards: Record<string, DrawCard[]>;
     selectableCards: Record<string, DrawCard[]>;
+    // posted once every player has decided, so no one decides after seeing the other's choice (RRG Mulligan)
+    #decisions = new Map<Player, MessageArgs>();
 
     constructor(game: Game) {
         super(game);
@@ -90,16 +92,33 @@ export class MulliganDynastyPrompt extends AllPlayerPrompt {
                     player.replaceDynastyCard(location);
                 }
                 player.shuffleDynastyDeck();
-                this.game.addMessage(msg`${player} has mulliganed ${this.selectedCards[player.name].length} cards from the dynasty deck`);
+                this.reportDecision(player, msg`${player} has mulliganed ${this.selectedCards[player.name].length} cards from the dynasty deck`);
             } else {
-                this.game.addMessage(msg`${player} has kept all dynasty cards`);
+                this.reportDecision(player, msg`${player} has kept all dynasty cards`);
             }
             player.clearSelectedCards();
             player.clearSelectableCards();
             player.takenDynastyMulligan = true;
+            this.postDecisions();
             return true;
         }
         return false;
     }
-}
 
+    protected reportDecision(player: Player, message: MessageArgs): void {
+        this.#decisions.set(player, message);
+    }
+
+    protected postDecisions(): void {
+        const players = this.game.getPlayersInFirstPlayerOrder();
+        if(!players.every((player) => this.completionCondition(player))) {
+            return;
+        }
+        for(const player of players) {
+            const message = this.#decisions.get(player);
+            if(message) {
+                this.game.addMessage(message);
+            }
+        }
+    }
+}

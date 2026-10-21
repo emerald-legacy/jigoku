@@ -92,3 +92,33 @@ describe('Normal Gameplay Setup Phase', function() {
         });
     });
 });
+
+describe('Mulligan chat', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'setup',
+                player1: {
+                    inPlay: []
+                },
+                player2: {
+                    inPlay: []
+                }
+            });
+        });
+
+        it('posts each player\'s decision only after both have decided', function() {
+            this.player2.clickPrompt('Done');
+            expect(this.getChatLogs(3)).not.toContain('player2 has kept all dynasty cards');
+            this.player1.clickPrompt('Done');
+            expect(this.getChatLogs(3)).toContain('player1 has kept all dynasty cards');
+            expect(this.getChatLogs(3)).toContain('player2 has kept all dynasty cards');
+
+            this.player2.clickPrompt('Done');
+            expect(this.getChatLogs(3)).not.toContain('player2 has kept all conflict cards');
+            this.player1.clickPrompt('Done');
+            expect(this.getChatLogs(5)).toContain('player1 has kept all conflict cards');
+            expect(this.getChatLogs(5)).toContain('player2 has kept all conflict cards');
+        });
+    });
+});
