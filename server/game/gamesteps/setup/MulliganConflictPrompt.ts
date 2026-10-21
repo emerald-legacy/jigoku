@@ -1,66 +1,43 @@
-import { msg } from '../../GameChat.js';
-import { MulliganDynastyPrompt } from './MulliganDynastyPrompt.js';
+import { msg, type MessageArgs } from '../../GameChat.js';
 import { Location } from '../../Constants.js';
+import type DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import type BaseCard from '../../BaseCard.js';
+import { MulliganPrompt } from './MulliganPrompt.js';
 
-export class MulliganConflictPrompt extends MulliganDynastyPrompt {
-    readyToStart?: boolean;
+export class MulliganConflictPrompt extends MulliganPrompt {
+    protected override readonly deckName = 'Conflict';
 
-    override completionCondition(player: Player): boolean {
+    protected override hasDecided(player: Player): boolean {
         return !!player.takenConflictMulligan;
     }
 
-    override activePrompt() {
-        return Object.assign(super.activePrompt(), {
-            menuTitle: 'Select conflict cards to mulligan',
-            promptTitle: 'Conflict Mulligan'
-        });
+    protected override markDecided(player: Player): void {
+        player.takenConflictMulligan = true;
     }
 
-    override highlightSelectableCards(): void {
-        this.game.getPlayers().forEach((player: Player) => {
-            if(!this.selectableCards[player.name]) {
-                this.selectableCards[player.name] = player.hand.slice();
-            }
-            player.setSelectableCards(this.selectableCards[player.name]);
-        });
+    protected override mulliganableCards(player: Player): DrawCard[] {
+        return player.hand.slice();
     }
 
-    override cardCondition(card: BaseCard): boolean {
-        return card.location === Location.Hand;
-    }
-
-    override waitingPrompt() {
-        return { menuTitle: 'Waiting for opponent to mulligan conflict cards' };
-    }
-
-    override menuCommand(player: Player, arg: string): boolean {
-        if(arg === 'done') {
-            if(this.selectedCards[player.name].length > 0) {
-                for(const card of this.selectedCards[player.name]) {
-                    player.moveCard(card, Location.ConflictDeck, { bottom: true });
-                }
-                player.drawCardsToHand(this.selectedCards[player.name].length);
-                player.shuffleConflictDeck();
-                this.reportDecision(player, msg`${player} has mulliganed ${this.selectedCards[player.name].length} cards from the conflict deck`);
-            } else {
-                this.reportDecision(player, msg`${player} has kept all conflict cards`);
-            }
-            this.game.getProvinceArray(false).forEach((location: Location) => {
-                const cards = player.getDynastyCardsInProvince(location);
-                cards.forEach((card) => {
-                    card.facedown = true;
-                });
-            });
-            player.clearSelectedCards();
-            player.clearSelectableCards();
-            player.takenConflictMulligan = true;
-            this.readyToStart = true;
-            this.postDecisions();
-            return true;
+    protected override mulligan(player: Player, cards: DrawCard[]): MessageArgs {
+        for(const card of cards) {
+            player.moveCard(card, Location.ConflictDeck, { bottom: true });
         }
-        return false;
+        player.drawCardsToHand(cards.length);
+        player.shuffleConflictDeck();
+        return msg`${player} has mulliganed ${cards.length} cards from the conflict deck`;
+    }
+
+    protected override keptMessage(player: Player): MessageArgs {
+        return msg`${player} has kept all conflict cards`;
+    }
+
+    // the provinces' cards turn facedown once the player is done (RRG: no looking after this step)
+    protected override afterDecision(player: Player): void {
+        this.game.getProvinceArray(false).forEach((location: Location) => {
+            player.getDynastyCardsInProvince(location).forEach((card) => {
+                card.facedown = true;
+            });
+        });
     }
 }
-
