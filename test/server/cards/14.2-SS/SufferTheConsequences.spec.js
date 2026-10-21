@@ -5,7 +5,7 @@ describe('Suffer the Consequences', function() {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['soshi-aoi', 'palace-guard', 'bayushi-liar', 'keeper-initiate'],
-                    hand: ['suffer-the-consequences']
+                    hand: ['suffer-the-consequences', 'a-new-name']
                 },
                 player2: {
                     inPlay: ['matsu-berserker']
@@ -45,6 +45,16 @@ describe('Suffer the Consequences', function() {
             expect(this.player1).toBeAbleToSelect(this.shugenja);
             expect(this.player1).not.toBeAbleToSelect(this.monk);
             expect(this.player1).toBeAbleToSelect(this.courtier);
+        });
+
+        it('should count a gained trait', function() {
+            this.newName = this.player1.playAttachment('a-new-name', this.monk);
+            this.monk.bowed = true;
+
+            this.player2.pass();
+            this.player1.clickCard(this.suffer);
+
+            expect(this.player1).toBeAbleToSelect(this.monk);
         });
 
         it('should grant you an additional political conflict', function() {

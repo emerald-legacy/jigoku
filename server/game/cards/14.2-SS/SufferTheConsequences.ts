@@ -1,11 +1,9 @@
 import DrawCard from '../../DrawCard.js';
-import { Phase, CardType, ConflictType, Duration } from '../../Constants.js';
+import { Phase, CardType, ConflictType, Duration, Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { perPhase } from '../../AbilityLimit.js';
 import { additionalConflict } from '../../effects.js';
 import { msg } from '../../GameChat.js';
-
-const validSacrificeTraits = ['courtier', 'bushi', 'shugenja'];
 
 class SufferTheConsequences extends DrawCard {
     static id = 'suffer-the-consequences';
@@ -15,7 +13,7 @@ class SufferTheConsequences extends DrawCard {
             .condition((context) => context.game.currentPhase === Phase.Conflict)
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.traits.some((trait) => validSacrificeTraits.includes(trait)) && card.bowed
+                cardCondition: (card) => card.hasSomeTrait(Trait.Courtier, Trait.Bushi, Trait.Shugenja) && card.bowed
             }))
             .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,

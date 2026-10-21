@@ -15,7 +15,6 @@ export default class TogashiTsurumi extends DrawCard {
 
         this.persistentEffect(playableFromUnderneath(this, (card) => card.hasTrait(Trait.Kiho)));
 
-        // "Place a card from your hand" isn't a target: with an empty hand it still draws
         this.action('Place a card underneath self')
             .gameAction(selectCard({
                 activePromptTitle: 'Choose a card',

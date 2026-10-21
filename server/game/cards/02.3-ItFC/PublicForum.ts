@@ -1,5 +1,6 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { addToken } from '../../GameActions/GameActions.js';
+import { TokenType } from '../../Constants.js';
 
 export default class PublicForum extends ProvinceCard {
     static id = 'public-forum';
@@ -7,7 +8,7 @@ export default class PublicForum extends ProvinceCard {
     override setupCardAbilities() {
         this.wouldInterrupt('Prevent break and add Honor token')
             .when({
-                onBreakProvince: (event, context) => event.card === context.source && !event.card.hasToken('honor')
+                onBreakProvince: (event, context) => event.card === context.source && !event.card.hasToken(TokenType.Honor)
             })
             .cancel((context) => ({
                 replacementGameAction: addToken({ target: context.source })

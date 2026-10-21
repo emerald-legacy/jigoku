@@ -1,25 +1,13 @@
 import { msg } from '../../../GameChat.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, Element, elementTrait } from '../../../Constants.js';
 import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 function bonusBase(context: AbilityContext) {
-    const elementalTraits = new Set();
-    context.player.cardsInPlay.forEach((character) => {
-        for(const trait of character.getTraits()) {
-            switch(trait) {
-                case 'air':
-                case 'earth':
-                case 'fire':
-                case 'void':
-                case 'water':
-                    elementalTraits.add(trait);
-            }
-        }
-    });
-    return elementalTraits.size;
+    return Object.values(Element).filter((element) =>
+        context.player.cardsInPlay.some((character) => character.hasTrait(elementTrait(element)))).length;
 }
 
 export default class AgashaJianyu extends DrawCard {

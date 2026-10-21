@@ -1,25 +1,21 @@
 import { msg } from '../../../GameChat.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { cannotDeclareRing } from '../../../effects.js';
-import { Duration } from '../../../Constants.js';
+import { Duration, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-
-type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
 
 function fluff(element: Element): string {
     switch(element) {
-        case 'air':
+        case Element.Air:
             return 'with a glorious race they celebrate. A day of games and friendly competition, the herd and the samurai in communion';
-        case 'earth':
+        case Element.Earth:
             return 'high in the mountains they celebrate. Around a fire, close to the stars, sharing some tasty kumis';
-        case 'fire':
+        case Element.Fire:
             return 'it\'s a sunny day filled with celebration. The Moto share tales of the desert';
-        case 'water':
+        case Element.Water:
             return 'they celebrate at the beach. A day of joyful play for the riders, and the first sight of the sea for a few foals';
-        case 'void':
+        case Element.Void:
             return 'with offerings at an open air shrine they celebrate. The Iuchi pay respect to Shinjo-kami, and herd is blessed for a good year';
-        default:
-            return '';
     }
 }
 

@@ -6,7 +6,7 @@ export default class UtakuTomoe extends DrawCard {
     override setupCardAbilities() {
         // "After the resolution of a conflict" is onConflictFinished, not onReturnHome:
         // until-end-of-conflict effects (e.g. Palm Strike's cannot-ready) expire only
-        // once the conflict ends. It must still be defending as the conflict finishes (EmeraldDB ruling on Ivory Kingdoms Unicorn; you, 2026-10-20).
+        // once the conflict ends. It must still be defending as the conflict finishes.
         this.reaction('Ready a character or gain honor')
             .when({
                 onConflictFinished: (event, context) => event.conflict.defendersAtEnd.includes(context.source)
