@@ -1377,7 +1377,7 @@ this.action('Take control of an attachment')
     </table>
     <ul class="edge">
       <li>A <code>cost</code> without <code>label</code> throws <code>"mayResolveAgain() with a cost needs a label"</code>.</li>
-      <li>It takes the step's next-step slot: not with <code>then()</code> or <code>afterwards()</code> on the same step. Like <code>then()</code>, it is offered only when the ability resolved in full.</li>
+      <li>It takes the step's next-step slot: not with <code>then()</code> or <code>afterwards()</code> on the same step. Unlike <code>then()</code>, it is offered whenever the effects initiated, also when the first resolution was changed (a redirected dishonor); not when they were cancelled. <code>opponentMayResolveAgain()</code> keeps the <code>then()</code> rule.</li>
       <li>The ability resolves again only when the payment's event resolved and wasn't cancelled (an effect that changes the payment still counts).</li>
       <li>The second resolution doesn't count toward the ability's <code>max</code>. With a cost it offers "{label} for no effect" instead of asking again; without a cost it doesn't ask again.</li>
       <li>Without a cost, Yes and No are offered only when the ability can resolve again. When it can't, nothing is asked.</li>

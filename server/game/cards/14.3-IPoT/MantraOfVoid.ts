@@ -8,12 +8,12 @@ export default makeMantra(
     Element.Void,
     'Reduce the cost to attach to a monk by 1',
     playerLastingEffect((context) => ({
-        target: Players.Self,
+        target: Players.Any,
         effect: reduceCost({
             amount: 1,
             cardType: CardType.Attachment,
             targetCondition: (target) => target === context.target
         })
     })),
-    'reduce the cost of attachments they play on {0} this conflict by 1 and draw a card'
+    'reduce the cost of attachments played on {0} this conflict by 1 and draw a card'
 );

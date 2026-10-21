@@ -10,6 +10,7 @@ export default class DarkflamePurifier extends DrawCard {
             .when({
                 onMoveFate: (event, context) =>
                     context.game.currentPhase !== Phase.Fate &&
+                    !event.isContingent &&
                     event.origin?.type === CardType.Character &&
                     'controller' in event.origin &&
                     event.origin.controller === context.player.opponent &&

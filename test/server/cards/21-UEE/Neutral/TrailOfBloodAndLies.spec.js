@@ -1,6 +1,6 @@
 describe('Trail of Blood and Lies', function () {
     integration(function () {
-        function setup(inPlay) {
+        function setup(inPlay, opponentInPlay = ['doji-challenger', 'kakita-yoshi']) {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
@@ -8,7 +8,7 @@ describe('Trail of Blood and Lies', function () {
                     hand: ['mono-no-aware', 'trail-of-blood-and-lies']
                 },
                 player2: {
-                    inPlay: ['doji-challenger', 'kakita-yoshi']
+                    inPlay: opponentInPlay
                 }
             });
 
@@ -63,6 +63,22 @@ describe('Trail of Blood and Lies', function () {
             expect(this.yoshi.isDishonored).toBe(false);
             expect(this.getChatLogs(5)).toContain('player1 chooses not to resolve Trail of Blood and Lies again');
             expect(this.player2).toHavePrompt('Action Window');
+        });
+
+        it('may resolve twice when the dishonor was redirected', function () {
+            setup.call(this, ['doji-whisperer', 'cunning-magistrate'], ['doji-challenger', 'kakita-yoshi', 'kitsuki-shomon']);
+            this.shomon = this.player2.findCardByName('kitsuki-shomon');
+            this.player1.clickCard(this.monoNoAware);
+            this.player1.clickCard(this.trail);
+            this.player2.clickCard(this.challenger);
+            this.player2.clickCard(this.shomon);
+            expect(this.shomon.isDishonored).toBe(true);
+            expect(this.challenger.isDishonored).toBe(false);
+
+            expect(this.player1).toHavePrompt('Resolve this ability again?');
+            this.player1.clickPrompt('Yes');
+            this.player2.clickCard(this.yoshi);
+            expect(this.yoshi.isDishonored).toBe(true);
         });
     });
 });

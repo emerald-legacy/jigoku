@@ -552,3 +552,56 @@ describe('Hantei XXXVIII and the Pass button', function() {
         });
     });
 });
+
+describe('Hantei XXXVIII and choices from the hand', function() {
+    integration(function() {
+        it('chooses a random card for Dragonfly Mediator', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['dragonfly-mediator'],
+                    hand: ['i-can-swim']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii'],
+                    hand: ['way-of-the-crane', 'let-go', 'fine-katana']
+                }
+            });
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+
+            this.player1.clickCard('dragonfly-mediator');
+            this.player1.clickCard('i-can-swim');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.hantei);
+
+            expect(this.player2).not.toHavePrompt('Choose a card to reveal');
+            expect(this.getChatLogs(10)).toContain('player1 reveals I Can Swim due to Dragonfly Mediator');
+            expect(this.player2).toHavePrompt('Choose three cards to reveal');
+        });
+
+        it('chooses no Kihō for Laughing Thunder', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['laughing-thunder'],
+                    hand: ['centered-breath']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii'],
+                    hand: ['fine-katana']
+                }
+            });
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.breath = this.player1.findCardByName('centered-breath');
+
+            this.player1.clickCard('laughing-thunder');
+            this.player1.clickCard(this.breath);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.hantei);
+
+            expect(this.breath.location).toBe('hand');
+            expect(this.player1.findCardByName('laughing-thunder').attachments).toEqual([]);
+            expect(this.player2).toHavePrompt('Action Window');
+        });
+    });
+});

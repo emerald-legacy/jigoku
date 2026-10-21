@@ -1,12 +1,13 @@
 import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { CardSelector } from '../CardSelector.js';
-import { Stage, type Players, EffectName, type TargetMode, RestrictionType } from '../Constants.js';
+import { Stage, type Players, EffectName, Location, TargetMode, RestrictionType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { CardSelectorInstance } from './TargetPrompt.js';
+import { randomItem } from '../utils/random.js';
 
 interface AbilityTargetCardProperties {
     gameAction: GameAction[];
@@ -79,6 +80,16 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
             return;
         }
         const { player } = chooser;
+        const hidden = player === context.choosingPlayerOverride ? this.cardsHiddenFrom(player, context) : [];
+        if(hidden.length > 0) {
+            // Hantei XXXVIII doesn't see the hand: a random card, or none if it needs certain traits (ruling #926)
+            const card = this.properties.cardCondition ? undefined : randomItem(hidden);
+            context.targets[this.name] = card ?? [];
+            if(this.name === 'target') {
+                context.target = card;
+            }
+            return;
+        }
         const { cardCondition: _cardCondition, player: _playerProp, skipIf: _skipIf, ...otherProperties } = this.properties;
 
         const mustSelect = this.selector.getAllLegalTargets(context, player).filter((card: BaseCard) =>
@@ -103,6 +114,21 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
         context.game.promptForSelect(player, Object.assign(promptProperties, otherProperties));
     }
 
+    /** For a choice taken over (Hantei XXXVIII): the legal targets, when all are in a hand `player` can't see. */
+    private cardsHiddenFrom(player: Player | undefined, context: AbilityContext): BaseCard[] {
+        if(!player || player === this.getChoosingPlayer(context)) {
+            return [];
+        }
+        const cards = this.selector.getAllLegalTargets(context, this.getChoosingPlayer(context));
+        return cards.every((card) => card.location === Location.Hand && card.controller !== player) ? cards : [];
+    }
+
+    /** Whether the opponent could choose blindly: a random card, or none where one must be chosen ("up to" can't choose none, ruling #1010). */
+    private canChooseBlindly(context: AbilityContext): boolean {
+        const upTo = [TargetMode.UpTo, TargetMode.UpToVariable, TargetMode.MaxStat, TargetMode.Unlimited].includes(this.properties.mode ?? TargetMode.Single);
+        return this.cardsHiddenFrom(context.player.opponent, context).length > 0 && (!this.properties.cardCondition || !upTo);
+    }
+
     checkTarget(context: AbilityContext): boolean {
         if(this.isSkipped(context)) {
             return true;
@@ -119,7 +145,7 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
-        if(this.getChoosingPlayer(context) === context.player && (this.selector.optional || this.selector.hasEnoughTargets(context, context.player.opponent))) {
+        if(this.getChoosingPlayer(context) === context.player && (this.selector.optional || this.selector.hasEnoughTargets(context, context.player.opponent) || this.canChooseBlindly(context))) {
             return true;
         }
         return !this.properties.dependsOn && this.checkGameActionsForTargetsChosenByInitiatingPlayer(context);

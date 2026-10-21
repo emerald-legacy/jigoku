@@ -1235,33 +1235,10 @@ export class AbilityBuilder<
             throw new Error(`${this.draft.title}: mayResolveAgain() with a cost needs a label`);
         }
         const condition = options.condition && this.#checked(options.condition, this.draft.specs);
+        // offered whenever the effects initiated, also when the first resolution was changed (no "then")
         return this.#resolveAgain((context) => {
-            if(condition && !condition(context)) {
-                return undefined;
-            }
-            if(!cost || !label) {
-                return context.subResolution ? undefined : resolveAgainPrompt(context, 'Resolve this ability again?', Players.Self);
-            }
-            const verb = label.charAt(0).toLowerCase() + label.slice(1);
-            if(context.subResolution) {
-                return {
-                    inheritTargets: true,
-                    target: { mode: TargetMode.Select, choices: { [`${label} for no effect`]: cost, Done: () => true } },
-                    message: (choiceContext: AbilityContext) =>
-                        msg`${choiceContext.player} chooses ${choiceContext.select === 'Done' ? 'not ' : ''}to ${verb} for no effect`
-                };
-            }
-            return {
-                inheritTargets: true,
-                target: { mode: TargetMode.Select, choices: { [`${label} to resolve this ability again`]: cost, Done: () => true } },
-                message: (choiceContext: AbilityContext) =>
-                    msg`${choiceContext.player} chooses ${choiceContext.select === 'Done' ? 'not ' : ''}to ${verb} to resolve ${choiceContext.source} again`,
-                // paid even when changed on the way (Embrace the Void takes the fate), but not when cancelled or declined
-                then: {
-                    thenCondition: (contextOrEvent: AbilityContext | Event) => contextOrEvent instanceof Event && !contextOrEvent.cancelled,
-                    gameAction: resolveAgain(context)
-                }
-            };
+            const offer = resolveAgainOffer(context, cost, label, condition);
+            return offer && { ...offer, thenCondition: () => true };
         });
     }
 
@@ -1561,6 +1538,41 @@ function resolveAgainPrompt(context: AbilityContext, activePromptTitle: string, 
             return opponent
                 ? msg`${player} chooses ${not}to resolve ${choiceContext.source}'s ability again`
                 : msg`${choiceContext.player} chooses ${not}to resolve ${choiceContext.source} again`;
+        }
+    };
+}
+
+/** The offer to resolve the ability again: on the first resolution to pay `cost`, on the second to pay it for no effect. */
+function resolveAgainOffer(
+    context: AbilityContext,
+    cost: GameAction | undefined,
+    label: string | undefined,
+    condition: ((context: AbilityContext) => boolean) | undefined
+): ThenAbilityProperties | undefined {
+    if(condition && !condition(context)) {
+        return undefined;
+    }
+    if(!cost || !label) {
+        return context.subResolution ? undefined : resolveAgainPrompt(context, 'Resolve this ability again?', Players.Self);
+    }
+    const verb = label.charAt(0).toLowerCase() + label.slice(1);
+    if(context.subResolution) {
+        return {
+            inheritTargets: true,
+            target: { mode: TargetMode.Select, choices: { [`${label} for no effect`]: cost, Done: () => true } },
+            message: (choiceContext: AbilityContext) =>
+                msg`${choiceContext.player} chooses ${choiceContext.select === 'Done' ? 'not ' : ''}to ${verb} for no effect`
+        };
+    }
+    return {
+        inheritTargets: true,
+        target: { mode: TargetMode.Select, choices: { [`${label} to resolve this ability again`]: cost, Done: () => true } },
+        message: (choiceContext: AbilityContext) =>
+            msg`${choiceContext.player} chooses ${choiceContext.select === 'Done' ? 'not ' : ''}to ${verb} to resolve ${choiceContext.source} again`,
+        // paid even when changed on the way (Embrace the Void takes the fate), but not when cancelled or declined
+        then: {
+            thenCondition: (contextOrEvent: AbilityContext | Event) => contextOrEvent instanceof Event && !contextOrEvent.cancelled,
+            gameAction: resolveAgain(context)
         }
     };
 }

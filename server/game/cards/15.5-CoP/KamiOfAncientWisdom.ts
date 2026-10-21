@@ -8,7 +8,7 @@ class KamiOfAncientWisdom extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Give or take fate')
             .when({
-                onMoveFate: (event, context) => context.game.currentPhase !== Phase.Fate &&
+                onMoveFate: (event, context) => context.game.currentPhase !== Phase.Fate && !event.isContingent &&
                     event.origin && event.origin.type === CardType.Character && (event.fate ?? 0) > 0
             })
             .target({

@@ -97,3 +97,39 @@ describe('Kami of Ancient Wisdom', function() {
         });
     });
 });
+
+describe('Kami of Ancient Wisdom and a character leaving play with fate', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kami-of-ancient-wisdom', 'brash-samurai']
+                },
+                player2: {
+                    inPlay: ['bayushi-manipulator'],
+                    hand: ['assassination']
+                }
+            });
+            this.kami = this.player1.findCardByName('kami-of-ancient-wisdom');
+            this.challenger = this.player1.findCardByName('brash-samurai');
+            this.manipulator = this.player2.findCardByName('bayushi-manipulator');
+            this.assassination = this.player2.findCardByName('assassination');
+            this.challenger.fate = 2;
+            this.manipulator.fate = 2;
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.manipulator]
+            });
+        });
+
+        it('does not react to the fate leaving with a discarded character', function () {
+            this.player2.clickCard(this.assassination);
+            this.player2.clickCard(this.challenger);
+            expect(this.challenger.location).toBe('dynasty discard pile');
+            expect(this.player1).not.toBeAbleToSelect(this.kami);
+        });
+    });
+});

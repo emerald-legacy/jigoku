@@ -4,7 +4,8 @@ describe('Mantra of Void', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['solemn-scholar', 'isawa-kaede']
+                    inPlay: ['solemn-scholar', 'isawa-kaede'],
+                    hand: ['cloud-the-mind']
                 },
                 player2: {
                     inPlay: ['child-of-the-plains', 'togashi-mitsu', 'kakita-toshimoko'],
@@ -119,6 +120,14 @@ describe('Mantra of Void', function () {
                 expect(this.player2.fate).toBe(this.fate);
             });
 
+            it('it should reduce the opponent\'s costs to play attachments', function () {
+                const fate = this.player1.fate;
+                this.player2.pass();
+                this.player1.playAttachment('cloud-the-mind', this.mitsu);
+                expect(this.mitsu.attachments).toContain(this.player1.findCardByName('cloud-the-mind'));
+                expect(this.player1.fate).toBe(fate);
+            });
+
             it('it should not reduce the cost to play on other characters', function () {
                 this.player2.playAttachment(this.dragonTattoo, this.toshimoko);
                 expect(this.player2.fate).toBe(this.fate - 2);
@@ -168,7 +177,7 @@ describe('Mantra of Void', function () {
             this.player2.clickCard(this.mantra);
             this.player2.clickCard(this.mitsu);
 
-            expect(this.getChatLogs(10)).toContain('player2 plays Mantra of Void to reduce the cost of attachments they play on Togashi Mitsu this conflict by 1 and draw a card');
+            expect(this.getChatLogs(10)).toContain('player2 plays Mantra of Void to reduce the cost of attachments played on Togashi Mitsu this conflict by 1 and draw a card');
         });
     });
 });
