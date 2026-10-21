@@ -15,7 +15,7 @@ export default class AgashaAyako extends DrawCard {
             .deckSearch({
                 activePromptTitle: 'Choose a character to play',
                 deck: DeckType.Dynasty,
-                cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && !card.isUnique(),
+                cardCondition: (card) => card.type === CardType.Character && card.costAtMost(2) && !card.isUnique(),
                 gameAction: sequential([
                     playerLastingEffect((context) => ({
                         target: Players.Self,

@@ -139,3 +139,36 @@ describe('Liaison to the Ancestors discard piles', function () {
         });
     });
 });
+
+describe('Liaison to the Ancestors and a token', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['liaison-to-the-ancestors'],
+                    dynastyDiscard: ['ashigaru-encampment', 'ikoma-ujiaki']
+                },
+                player2: {
+                    hand: ['way-of-the-scorpion']
+                }
+            });
+            this.encampment = this.player1.placeCardInProvince('ashigaru-encampment');
+            this.encampment.facedown = false;
+            this.player1.clickCard(this.encampment);
+            this.ashigaru = this.player1.player.cardsInPlay.find((card) => card.name === 'Ashigaru Recruit');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.ashigaru],
+                defenders: []
+            });
+        });
+
+        it('does not honor a token, which has no printed cost', function () {
+            this.player2.clickCard('way-of-the-scorpion');
+            this.player2.clickCard(this.ashigaru);
+            expect(this.ashigaru.isDishonored).toBe(true);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

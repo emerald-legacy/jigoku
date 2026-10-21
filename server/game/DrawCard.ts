@@ -386,9 +386,22 @@ export class DrawCard extends BaseCard {
         return (this.isAttacking() && player.isAttackingPlayer()) || (this.isDefending() && player.isDefendingPlayer());
     }
 
-    costLessThan(num: number): boolean {
-        const cost = this.getCostValue(this.printedCost);
-        return !!num && cost !== null && cost < num;
+    /** "Printed cost lower than `num`": the copied character's cost for a copy; never for a token or holding, which have none. */
+    costLessThan(num: number | null): boolean {
+        const cost = this.getCost();
+        return num !== null && cost !== null && cost < num;
+    }
+
+    /** "Printed cost `num` or lower", read like `costLessThan()`. */
+    costAtMost(num: number | null): boolean {
+        const cost = this.getCost();
+        return num !== null && cost !== null && cost <= num;
+    }
+
+    /** "Printed cost `num` or higher", read like `costLessThan()`. */
+    costAtLeast(num: number | null): boolean {
+        const cost = this.getCost();
+        return num !== null && cost !== null && cost >= num;
     }
 
     anotherUniqueInPlay(player: Player): boolean {

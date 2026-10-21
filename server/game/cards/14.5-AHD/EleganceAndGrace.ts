@@ -15,7 +15,7 @@ class EleganceAndGrace extends DrawCard {
                 numCards: 2,
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isHonored
+                cardCondition: (card) => card.isHonored && card.getCost() !== null
             }, ready());
     }
 }

@@ -20,7 +20,7 @@ export default class KaitoYoshiaki extends DrawCard {
                     card.isParticipating() &&
                     context.game.requireConflict()
                         .getCharacters(context.player)
-                        .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))
+                        .some((myCard) => card.costAtMost(myCard.getCost()))
             }, cardLastingEffect({
                 effect: [
                     setBaseMilitarySkill(0),

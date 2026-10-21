@@ -21,7 +21,7 @@ export default class ArmorOfTheFallen extends DrawCard {
                 .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
-                        card.isParticipating() && (card.printedCost ?? 0) <= this.maxCostReachable(context)
+                        card.isParticipating() && card.costAtMost(this.maxCostReachable(context))
                 }, bow())
                 .cannotTargetFirst())
         });

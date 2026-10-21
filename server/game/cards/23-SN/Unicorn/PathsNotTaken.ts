@@ -17,7 +17,7 @@ export default class PathsNotTaken extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !!context.player.opponent &&
                     card.isParticipatingFor(context.player.opponent) &&
-                    (card.printedCost ?? 0) < this.getSkillThreshold(context)
+                    card.costLessThan(this.getSkillThreshold(context))
             }, sendHome())
             .max(perConflict(1));
     }

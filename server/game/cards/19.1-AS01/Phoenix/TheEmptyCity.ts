@@ -34,7 +34,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
-                cardCondition: (card) => card.hasTrait(Trait.Spirit) && (card.getCost() ?? 0) <= 3
+                cardCondition: (card) => card.hasTrait(Trait.Spirit) && card.costAtMost(3)
             }, joint([
                 putIntoPlay(),
                 cardLastingEffect((context) => ({

@@ -204,7 +204,7 @@ this.action('Place a fate on a participating character, bow it, move it home, an
     .target({
         cardType: CardType.Character,
         cardCondition: (card, context) =&gt; card.isParticipating() &amp;&amp; context.player.cardsInPlay.some((myCard) =&gt; (
-            myCard !== card &amp;&amp; myCard.isParticipating() &amp;&amp; (myCard.printedCost ?? 0) &gt;= (card.printedCost ?? 0)))
+            myCard !== card &amp;&amp; myCard.isParticipating() &amp;&amp; card.costAtMost(myCard.getCost())))
     }, placeFate())
     .chatText('place a fate on {0} then bow, dishonor, and move them home')
     .then()
@@ -290,7 +290,7 @@ this.whileAttached({
             cardType: CardType.Character,
             controller: Players.Any,
             activePromptTitle: 'Choose a character with printed cost 2 or lower to move in',
-            cardCondition: (card) =&gt; (card.printedCost ?? 0) &lt;= 2
+            cardCondition: (card) =&gt; card.costAtMost(2)
         }, moveToConflict())
         .chatText('hook {0} and drag them into the conflict'))
 });</code></pre>

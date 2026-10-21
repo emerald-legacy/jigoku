@@ -11,7 +11,7 @@ export default class LiaisonToTheAncestors extends DrawCard {
                     card.isCharacter() &&
                     card.controller === context.player &&
                     [...context.player.dynastyDiscardPile, ...context.player.conflictDiscardPile].some((discarded) =>
-                        discarded.type === CardType.Character && (card.printedCost ?? 0) < (discarded.printedCost ?? 0)
+                        discarded.type === CardType.Character && card.costLessThan(discarded.getCost())
                     )
             })
             .honor((context) => ({

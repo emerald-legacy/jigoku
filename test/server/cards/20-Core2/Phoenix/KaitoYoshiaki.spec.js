@@ -103,3 +103,39 @@ describe('Kaito Yoshiaki', function () {
         });
     });
 });
+
+describe('Kaito Yoshiaki and a token', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kaito-yoshiaki']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    dynastyDiscard: ['ashigaru-encampment']
+                }
+            });
+            this.kaito = this.player1.findCardByName('kaito-yoshiaki');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.encampment = this.player2.placeCardInProvince('ashigaru-encampment');
+            this.encampment.facedown = false;
+            this.player1.pass();
+            this.player2.clickCard(this.encampment);
+            this.ashigaru = this.player2.player.cardsInPlay.find((card) => card.name === 'Ashigaru Recruit');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kaito],
+                defenders: [this.ashigaru, this.whisperer]
+            });
+            this.player2.pass();
+        });
+
+        it('can\'t choose a token, which has no printed cost', function () {
+            this.player1.clickCard(this.kaito);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).not.toBeAbleToSelect(this.ashigaru);
+        });
+    });
+});

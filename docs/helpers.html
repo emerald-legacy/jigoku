@@ -1490,30 +1490,38 @@ cardCondition: (card) =&gt; card.isFaction('crane')</code></pre>
 
   <div class="ref" id="q-costLessThan" data-name="costLessThan">
     <h3><code>card.costLessThan(num)</code> <span class="kind">Query</span> <a class="anchor" href="#q-costLessThan">#</a></h3>
-    <p>True if the card's printed cost is lower than <code>num</code>. "printed cost 2 or lower" is <code>costLessThan(3)</code>.</p>
+    <p>True if the card's printed cost is lower than <code>num</code>, read through <a href="#q-getCost"><code>getCost()</code></a>: a copy has the copied character's cost (RRG Copy).</p>
     <ul class="edge">
-      <li>A dash cost counts as 0 (RRG Cost). <code>false</code> for a holding or a token (no cost), and always <code>false</code> for <code>num</code> 0.</li>
-      <li>Reads the printed cost, not the cost of a copied character; <code>getCost()</code> follows copies.</li>
+      <li>A dash cost counts as 0 (RRG Cost). <code>false</code> for a holding or a token (no cost, ruling #1116), and when <code>num</code> is <code>null</code> (comparing with a card that has no cost).</li>
+      <li>"Printed cost X or lower" is <a href="#q-costAtMost"><code>costAtMost(X)</code></a>; "X or higher" is <a href="#q-costAtMost"><code>costAtLeast(X)</code></a>.</li>
     </ul>
     <pre><code>// Assassination: Conflict Action: Lose 3 honor. Choose a character with printed cost 2 or lower – discard that character. …
 cardCondition: (card) =&gt; card.costLessThan(3)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/MountaintopStatuary.ts">Mountaintop Statuary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/HayakenNoShiro.ts">Hayaken no Shiro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crab/RamshackleFacade.ts">Ramshackle Façade</a> (36 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/MountaintopStatuary.ts">Mountaintop Statuary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/HayakenNoShiro.ts">Hayaken no Shiro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crab/RamshackleFacade.ts">Ramshackle Façade</a> (40 card files)</p>
+  </div>
+
+  <div class="ref" id="q-costAtMost" data-name="costAtMost costAtLeast">
+    <h3><code>card.costAtMost(num)</code>, <code>card.costAtLeast(num)</code> <span class="kind">Query</span> <a class="anchor" href="#q-costAtMost">#</a></h3>
+    <p>"Printed cost <code>num</code> or lower" and "<code>num</code> or higher", read like <a href="#q-costLessThan"><code>costLessThan()</code></a>: a copy's cost is the copied character's, a dash counts as 0, and a token or holding never matches. <code>num</code> may be another card's <code>getCost()</code>; <code>null</code> never matches.</p>
+    <pre><code>// Chronicler of Calamities: Conflict Action: Choose a character on the enemy side with equal or lower printed cost than a character on your side. …
+.some((myCard) =&gt; card.costAtMost(myCard.getCost()))</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/ChroniclerOfCalamities.ts">Chronicler of Calamities</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/GoodOmen.ts">Good Omen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/HumbleMagistrate.ts">Humble Magistrate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Scorpion/KagiNawa.ts">Kagi Nawa</a> (33 card files)</p>
   </div>
 
   <div class="ref" id="q-getCost" data-name="getCost">
     <h3><code>card.getCost()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getCost">#</a></h3>
-    <p>The card's printed cost, or the printed cost of the character it copies. <code>number | null</code>: a dash cost counts as 0 (RRG Cost), <code>null</code> only for a holding or a token (Soldier, Unleashed Hound, …), which print no cost. The field <code>printedCost</code> stays <code>null</code> for a dash on a non-event (it marks the card as unplayable; a dash-cost event gets 0), so read it with <code>?? 0</code>.</p>
-    <pre><code>// Audience Chamber: Reaction: After you play a character with printed cost 4 or higher - place 1 fate on it.
-(event.card.getCost() ?? 0) &gt;= 4</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/ElegantTessen.ts">Elegant Tessen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a> (23 card files)</p>
+    <p>The card's printed cost, or the printed cost of the character it copies. <code>number | null</code>: a dash cost counts as 0 (RRG Cost), <code>null</code> only for a holding or a token (Soldier, Unleashed Hound, …), which print no cost. Compare costs with <a href="#q-costLessThan"><code>costLessThan()</code></a>, <a href="#q-costAtMost"><code>costAtMost()</code></a> or <code>costAtLeast()</code>, which keep tokens out; read <code>getCost() ?? 0</code> only for a number (a sum, a count of cards).</p>
+    <pre><code>// Ambush: … choose up to two characters with total printed cost of 6 or less in your hand or provinces …
+cardStat: (card) =&gt; card.getCost() ?? 0,</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/ElegantTessen.ts">Elegant Tessen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a> (27 card files)</p>
   </div>
 
   <div class="ref" id="q-printedCost" data-name="printedCost">
     <h3><code>card.printedCost</code> <span class="kind">Field</span> <a class="anchor" href="#q-printedCost">#</a></h3>
-    <p>"Printed cost": the number on the card, ignoring copies and modifiers. <code>number | null</code>: <code>null</code> for a dash on a non-event and for cards that print no cost; a dash-cost event gets 0. Read it with <code>?? 0</code>; for the cost of a copied character use <a href="#q-getCost"><code>getCost()</code></a>.</p>
-    <pre><code>// Humble Magistrate: While this character is attacking, each character with printed cost 4 or higher does not count its skill towards the resolution of this conflict.
-(card) =&gt; (card.printedCost ?? 0) &gt;= 4</code></pre>
-    <p class="seen">Used by many cards, for example <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/HumbleMagistrate.ts">Humble Magistrate</a>. (38 card files)</p>
+    <p>"Printed cost": the number on the card, ignoring copies and modifiers. <code>number | null</code>: <code>null</code> for a dash on a non-event and for cards that print no cost; a dash-cost event gets 0. Card abilities read "printed cost" through <a href="#q-getCost"><code>getCost()</code></a> and the comparisons (a copy has the copied character's cost); the field is for the cost to play a card.</p>
+    <pre><code>// Root Out Heresy: … X is the printed cost of the discarded card (a card in a discard pile is never a copy).
+return -1 * (card.isDrawCard() ? card.printedCost ?? 0 : 0);</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/RootOutHeresy.ts">Root Out Heresy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crane/LuckyCoin.ts">Lucky Coin</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/DarkSecret.ts">Dark Secret</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MarvelousBeings.ts">Marvelous Beings</a> (7 card files)</p>
   </div>
 
   <div class="ref" id="q-getFate" data-name="getFate">

@@ -14,7 +14,7 @@ export default class ShinjoOyuun extends DrawCard {
                     if(!context.player.opponent) {
                         return false;
                     }
-                    return (card.printedCost ?? 0) <= context.player.opponent.getNumberOfFaceupProvinces();
+                    return card.costAtMost(context.player.opponent.getNumberOfFaceupProvinces());
                 }
             }, moveToConflict());
     }

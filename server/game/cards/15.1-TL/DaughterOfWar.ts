@@ -17,7 +17,7 @@ class DaughterOfWar extends DrawCard {
             .deckSearch((context) => ({
                 activePromptTitle: 'Choose a character to put into play',
                 deck: DeckType.Dynasty,
-                cardCondition: (card) => card.type === CardType.Character && card.costLessThan(context.source.parentCharacter?.getCost() ?? 0),
+                cardCondition: (card) => card.type === CardType.Character && card.costLessThan(context.source.parentCharacter?.getCost() ?? null),
                 gameAction: putIntoPlay()
             }))
             .chatText((context) => msg`search their deck for a character with cost less than ${context.source.parentCharacter?.getCost() ?? 0} to put into play`);

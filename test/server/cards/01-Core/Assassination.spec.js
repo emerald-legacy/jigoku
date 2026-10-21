@@ -86,3 +86,38 @@ describe('Assassination', function () {
         });
     });
 });
+
+describe('Assassination and a copy', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor']
+                },
+                player2: {
+                    inPlay: ['doji-challenger', 'doji-whisperer'],
+                    hand: ['assassination']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.actor],
+                defenders: [this.whisperer]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.challenger);
+        });
+
+        it('reads the printed cost of the copied character', function () {
+            expect(this.actor.name).toBe('Doji Challenger');
+            this.player2.clickCard('assassination');
+            expect(this.player2).toBeAbleToSelect(this.whisperer);
+            expect(this.player2).not.toBeAbleToSelect(this.actor);
+        });
+    });
+});

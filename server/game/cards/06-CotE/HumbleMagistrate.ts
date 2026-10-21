@@ -8,7 +8,7 @@ class HumbleMagistrate extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
             effect: cannotContribute(() => {
-                return (card) => (card.printedCost ?? 0) >= 4;
+                return (card) => card.costAtLeast(4);
             })
         });
     }

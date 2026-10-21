@@ -10,7 +10,7 @@ class AudienceChamber extends DrawCard {
                 onCardPlayed: (event, context) =>
                     event.player === context.player &&
                     event.card.type === CardType.Character &&
-                    (event.card.getCost() ?? 0) >= 4
+                    event.card.costAtLeast(4)
             })
             .placeFate((context) => ({
                 target: context.event.card

@@ -13,7 +13,7 @@ export default class EaglesRestPeak extends ProvinceCard {
             .target({
                 activePromptTitle: 'Choose a character to lead the investigation',
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isDefending() && (card.getCost() ?? 0) > 0
+                cardCondition: (card) => card.isDefending() && card.costAtLeast(1)
             })
             .gameAction(sequential((context) => {
                 const opponent = context.player.opponent;

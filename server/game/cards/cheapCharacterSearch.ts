@@ -9,7 +9,7 @@ export function cheapCharacterSearch(): DeckSearchProperties {
         activePromptTitle: 'Choose a character to put into play',
         cardsToLookAt: 5,
         deck: DeckType.Dynasty,
-        cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
+        cardCondition: (card) => card.type === CardType.Character && card.costAtMost(2),
         remainingCards: RemainingCards.Discard,
         message: (context, cards) => msg`${context.player} puts ${cards} into play`,
         gameAction: putIntoPlay()

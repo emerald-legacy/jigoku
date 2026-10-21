@@ -21,7 +21,7 @@ export default class IkomaYumikosDagger extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.isParticipating() && (card.printedCost ?? 0) <= (context.source.printedCost ?? 0)
+                cardCondition: (card, context) => card.isParticipating() && card.costAtMost(context.source.getCost())
             }, multiple([
                 injure(),
                 injure((context) => ({ target: context.source }))

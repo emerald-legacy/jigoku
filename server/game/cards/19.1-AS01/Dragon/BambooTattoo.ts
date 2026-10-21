@@ -17,7 +17,7 @@ export default class BambooTattoo extends DrawCard {
             targetController: Players.Any,
             effect: reduceCost({
                 amount: 1,
-                targetCondition: (target) => target.isCharacter() && (target.printedCost ?? 0) <= 3,
+                targetCondition: (target) => target.isCharacter() && target.costAtMost(3),
                 match: (card, source) => card === source
             })
         });

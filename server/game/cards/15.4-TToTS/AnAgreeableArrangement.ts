@@ -13,7 +13,7 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
     },
     canPay(context) {
         const opponent = context.player.opponent;
-        return !!opponent && context.player.cardsInPlay.some((card) => (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(opponent));
+        return !!opponent && context.player.cardsInPlay.some((card) => card.costAtLeast(2) && !card.bowed && !card.anotherUniqueInPlay(opponent));
     },
     resolve(context, result) {
         const opponent = context.player.opponent;
@@ -24,7 +24,7 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
             location: Location.PlayArea,
             cardType: CardType.Character,
             controller: Players.Self,
-            cardCondition: (card) => !!opponent && (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(opponent),
+            cardCondition: (card) => !!opponent && card.costAtLeast(2) && !card.bowed && !card.anotherUniqueInPlay(opponent),
             onSelect: (_player, card) => {
                 context.costs.agreeableArrangementCost = card;
                 return true;

@@ -14,7 +14,7 @@ class AsahinaTakamori extends DrawCard {
             .target({
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.costLessThan((context.event.card.getCost() ?? 0) + 1)
+                cardCondition: (card, context) => card.costAtMost(context.event.card.getCost())
             }, cardLastingEffect({
                 duration: Duration.UntilEndOfRound,
                 effect: [

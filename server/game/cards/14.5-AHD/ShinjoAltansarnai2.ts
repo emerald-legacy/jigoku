@@ -15,7 +15,7 @@ class ShinjoAltansarnai2 extends DrawCard {
                     cards: context.player.dynastyDeck.slice(0, 8),
                     cardCondition: (card) =>
                         card.type === CardType.Character &&
-                        (card.printedCost ?? 0) <= 3 &&
+                        card.costAtMost(3) &&
                         !card.isUnique() &&
                         putIntoConflict().canAffect(card, context),
                     options: [

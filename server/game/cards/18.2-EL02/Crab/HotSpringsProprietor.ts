@@ -13,7 +13,7 @@ class HotSpringsProprietor extends DrawCard {
             .deckSearch({
                 activePromptTitle: 'Choose a character to put into play',
                 deck: DeckType.Dynasty,
-                cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 1,
+                cardCondition: (card) => card.type === CardType.Character && card.costAtMost(1),
                 gameAction: putIntoPlay()
             })
             .chatText('search their dynasty deck for a character with printed cost 1 or less and put it into play');

@@ -10,7 +10,7 @@ class GoodOmen extends DrawCard {
             .ifCondition((context) => !!context.player.opponent && context.player.showBid < context.player.opponent.showBid)
             .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => (card.getCost() ?? 0) > 2
+                cardCondition: (card) => card.costAtLeast(3)
             }, placeFate());
     }
 }

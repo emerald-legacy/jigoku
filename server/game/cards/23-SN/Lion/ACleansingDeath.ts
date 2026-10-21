@@ -26,7 +26,7 @@ export default class ACleansingDeath extends DrawCard {
                     const faceupCharacters = cardsInProvinces.filter((a) => a.isFaceup() && a.type === CardType.Character);
 
                     const hasValidCharacters = faceupCharacters.some((a) => {
-                        return (a.printedCost || 0) <= (card.printedCost || 0) &&
+                        return a.costAtMost(card.getCost()) &&
                             putIntoPlay().canAffect(a, contextCopy);
                     });
                     return hasValidCharacters;
@@ -37,7 +37,7 @@ export default class ACleansingDeath extends DrawCard {
                 // before the sacrifice is chosen (legality check), any character up to cost 10 counts
                 cardCondition: (card, context) => {
                     const sacrificed = context.costs.sacrificeStateWhenChosen;
-                    return (card.printedCost ?? 0) <= (sacrificed ? (sacrificed.printedCost ?? 0) : 10);
+                    return card.costAtMost(sacrificed ? sacrificed.getCost() : 10);
                 },
                 location: Location.Provinces,
                 controller: Players.Self

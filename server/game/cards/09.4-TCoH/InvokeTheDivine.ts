@@ -10,7 +10,7 @@ class InvokeTheDivine extends DrawCard {
         const getSelectCardAction = (fate: number, spellsCast: number) => selectCard({
             location: Location.Hand,
             controller: Players.Self,
-            cardCondition: (card) => card.isDrawCard() && card.hasTrait(Trait.Spell) && (card.getCost() ?? 0) <= fate,
+            cardCondition: (card) => card.isDrawCard() && card.hasTrait(Trait.Spell) && card.costAtMost(fate),
             optional: spellsCast > 0,
             gameAction: playCard((invokeContext) => ({
                 resetOnCancel: true,

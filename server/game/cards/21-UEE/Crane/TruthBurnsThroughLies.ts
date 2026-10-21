@@ -16,8 +16,8 @@ export default class TruthBurnsThroughLies extends DrawCard {
                     cardCondition: (card, context) =>
                         card.isParticipating() &&
                         (context.source.hasTrait(Trait.Magistrate)
-                            ? (card.printedCost ?? 0) <= (context.source.printedCost ?? 0)
-                            : (card.printedCost ?? 0) < (context.source.printedCost ?? 0))
+                            ? card.costAtMost(context.source.getCost())
+                            : card.costLessThan(context.source.getCost()))
                 }, dishonor()))
         });
     }

@@ -1008,7 +1008,7 @@ this.whileAttached({
             cardType: CardType.Character,
             controller: Players.Any,
             activePromptTitle: 'Choose a character with printed cost 2 or lower to move in',
-            cardCondition: (card) =&gt; (card.printedCost ?? 0) &lt;= 2
+            cardCondition: (card) =&gt; card.costAtMost(2)
         }, moveToConflict())
         .chatText('hook {0} and drag them into the conflict'))
 });
@@ -2822,7 +2822,7 @@ this.persistentEffect({
     targetController: Players.Any,
     effect: reduceCost({
         amount: 1,
-        targetCondition: (target) =&gt; target.isCharacter() &amp;&amp; (target.printedCost ?? 0) &lt;= 3,
+        targetCondition: (target) =&gt; target.isCharacter() &amp;&amp; target.costAtMost(3),
         match: (card, source) =&gt; card === source
     })
 });</code></pre>

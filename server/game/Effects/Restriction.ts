@@ -102,11 +102,11 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.EqualOrMoreExpensiveCharacterTriggeredAbilities]: (context, _effect, card) =>
         context.source.type === CardType.Character &&
         !context.ability.isKeywordAbility() &&
-        !!card && printedCostOf(context.source) >= printedCostOf(card),
+        !!card && card.isDrawCard() && context.source.isDrawCard() && context.source.costAtLeast(card.getCost()),
     [RestrictionScope.EqualOrMoreExpensiveCharacterKeywords]: (context, _effect, card) =>
         context.source.type === CardType.Character &&
         context.ability.isKeywordAbility() &&
-        !!card && printedCostOf(context.source) >= printedCostOf(card),
+        !!card && card.isDrawCard() && context.source.isDrawCard() && context.source.costAtLeast(card.getCost()),
     [RestrictionScope.EventPlayedByHigherBidPlayer]: (context, _effect, card) =>
         context.source.type === CardType.Event && !!card && context.player.showBid > card.controller.showBid,
     [RestrictionScope.LoseHonorAsCost]: (context) => context.stage === Stage.Cost,
@@ -134,7 +134,6 @@ const getApplyingPlayer = (effect: Restriction): Player => {
 
 /** An attachment, or a character played as an attachment (Tattooed Wanderer, Jealous Ancestor). */
 const isAttachment = (context: AbilityContext) => context.source.type === CardType.Attachment || !!context.ability?.isCharacterPlayedAsAttachment();
-const printedCostOf = (card: BaseCard) => (card.isDrawCard() ? card.printedCost ?? 0 : 0);
 
 /** What an immunity (a restriction naming no type) doesn't stop (RRG Immune): peripheral entities such as fate and attachments aren't immune. */
 const immunityExemptTypes = new Set<RestrictionType | PlayType | undefined>([RestrictionType.RemoveFate, RestrictionType.Attach]);

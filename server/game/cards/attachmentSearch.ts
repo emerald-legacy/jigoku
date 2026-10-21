@@ -16,7 +16,7 @@ export function attachmentSearch({ controller, maxCost }: AttachmentSearchOption
         cardMenu((context) => ({
             activePromptTitle: 'Choose an attachment',
             cards: context.player.conflictDeck.slice(0, 5),
-            cardCondition: (card) => card.type === CardType.Attachment && (maxCost === undefined || (card.printedCost ?? 0) <= maxCost),
+            cardCondition: (card) => card.type === CardType.Attachment && (maxCost === undefined || card.costAtMost(maxCost)),
             options: [
                 {
                     text: 'Take nothing',

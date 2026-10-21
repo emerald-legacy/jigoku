@@ -13,7 +13,7 @@ export default class DevotionInAction extends DrawCard {
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait(Trait.Bushi) && (card.printedCost ?? 0) <= 3
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && card.costAtMost(3)
             }, putIntoConflict((context) => (context.target.hasTrait(Trait.Yojimbo) ? { status: CharacterStatus.Honored } : {})));
     }
 }
