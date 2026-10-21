@@ -1,9 +1,4 @@
-import {
-    cannotBeDeclaredAsAttacker,
-    cannotBeDeclaredAsDefender,
-    modifyBothSkills,
-    playerCannot
-} from '../../../effects.js';
+import { modifyBothSkills, playerCannot } from '../../../effects.js';
 import { taint } from '../../../GameActions/GameActions.js';
 import { CardType, Phase, Players, RestrictionType, RestrictionScope, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -33,20 +28,6 @@ export default class KuniJuurou extends DrawCard {
     private controllerCannotPayHonorCostsEffect() {
         this.persistentEffect({
             effect: playerCannot({ cannot: RestrictionType.LoseHonor, appliesTo: RestrictionScope.LoseHonorAsCost })
-        });
-
-        /**
-         * Shortcut to handle tainted characters.
-         * Ideally it would be integrated when generating the conflict matrix etc.
-         * Without this Tainted character get stopped from commiting into the conflict, but the declaration goes through
-         */
-        this.persistentEffect({
-            match: (card) => card.controller === this.controller && card.isTainted,
-            effect: cannotBeDeclaredAsAttacker()
-        });
-        this.persistentEffect({
-            match: (card) => card.controller === this.controller && card.isTainted,
-            effect: cannotBeDeclaredAsDefender()
         });
     }
 }

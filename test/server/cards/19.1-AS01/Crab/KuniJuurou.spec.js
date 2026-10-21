@@ -323,3 +323,51 @@ describe('Kuni Juurou', function () {
         });
     });
 });
+
+describe('Kuni Juurou and honor costs to declare', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kuni-juurou', 'unleashed-experiment', 'kaiu-envoy']
+                },
+                player2: {
+                    inPlay: ['bayushi-manipulator']
+                }
+            });
+            this.juurou = this.player1.findCardByName('kuni-juurou');
+            this.experiment = this.player1.findCardByName('unleashed-experiment');
+            this.envoy = this.player1.findCardByName('kaiu-envoy');
+            this.manipulator = this.player2.findCardByName('bayushi-manipulator');
+            this.experiment.fate = 1;
+        });
+
+        it('cannot declare Unleashed Experiment as an attacker', function () {
+            this.noMoreActions();
+            this.player1.clickCard(this.player2.provinces['province 1'].provinceCard);
+            this.player1.clickRing('fire');
+            this.player1.clickCard(this.experiment);
+            expect(this.player1).not.toHavePromptButton('Initiate Conflict');
+            this.player1.clickCard(this.envoy);
+            expect(this.player1).toHavePromptButton('Initiate Conflict');
+        });
+
+        it('cannot declare defenders at a tainted province', function () {
+            const honor = this.player1.honor;
+            this.player1.provinces['province 1'].provinceCard.taint();
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.player1.provinces['province 1'].provinceCard,
+                attackers: [this.manipulator],
+                defenders: [this.envoy]
+            });
+            expect(this.player1.honor).toBe(honor);
+            expect(this.game.currentConflict.defenders).not.toContain(this.envoy);
+            expect(this.envoy.isParticipating()).toBe(false);
+        });
+    });
+});

@@ -758,6 +758,9 @@ export class DrawCard extends BaseCard {
         if(sumOverAttackers(EffectName.FateCostToAttack) + fateCostToAttackProvince > this.controller.fate) {
             return false;
         }
+        if(!this.canPayHonorCostToDeclare(attackers)) {
+            return false;
+        }
         if(this.anyEffect(EffectName.CanOnlyBeDeclaredAsAttackerWithElement)) {
             for(const element of this.getEffects(EffectName.CanOnlyBeDeclaredAsAttackerWithElement)) {
                 // not decidable before a ring is chosen; choosing one checks the attackers again
@@ -799,11 +802,19 @@ export class DrawCard extends BaseCard {
     canDeclareAsDefender(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
         return (
             this.checkRestrictions(RestrictionType.DeclareAsDefender, this.game.getFrameworkContext(this.controller)) &&
+            this.canPayHonorCostToDeclare([this]) &&
             this.canParticipateAsDefender(conflictType) &&
             this.location === Location.PlayArea &&
             !this.bowed &&
             !this.covert
         );
+    }
+
+    /** The honor costs to declare these characters (tainted, Unleashed Experiment) can be paid. */
+    private canPayHonorCostToDeclare(characters: DrawCard[]): boolean {
+        const amount = characters.reduce((total, card) =>
+            total + card.getEffects(EffectName.HonorCostToDeclare).reduce((sum, effect) => sum + effect.amount, 0), 0);
+        return amount === 0 || loseHonor({ amount }).canAffect(this.controller, this.game.getFrameworkCostContext(this.controller));
     }
 
     canParticipateAsAttacker(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {

@@ -223,7 +223,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 this.game.addMessage(msg`${this.conflict.attackingPlayer} pays ${totalFateCost} fate to declare their attackers`);
                 payFate(totalFateCost).addEventsToArray?.(
                     costEvents,
-                    this.game.getFrameworkContext(this.conflict.attackingPlayer)
+                    this.game.getFrameworkCostContext(this.conflict.attackingPlayer)
                 );
             }
             if(!this.conflict.conflictPassed && totalHonorCost > 0) {
@@ -233,7 +233,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     effects.forEach((effect) => {
                         payHonor(effect.amount, effect.dueToStatusToken).addEventsToArray?.(
                             costEvents,
-                            this.game.getFrameworkContext(this.conflict.attackingPlayer)
+                            this.game.getFrameworkCostContext(this.conflict.attackingPlayer)
                         );
                     });
                 });
@@ -247,7 +247,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 };
                 discardCard(props).addEventsToArray?.(
                     costEvents,
-                    this.game.getFrameworkContext(this.conflict.attackingPlayer),
+                    this.game.getFrameworkCostContext(this.conflict.attackingPlayer),
                     {}
                 );
             }
@@ -562,7 +562,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             this.game.queueSimpleStep(() => {
                 const player = declaringPlayer();
                 const cost = typeof properties.cost === 'function' ? properties.cost(player) : properties.cost;
-                if(!payAdditionalCost(this.game.getFrameworkContext(player), player, cost, player, purpose, properties.chatText)) {
+                if(!payAdditionalCost(this.game.getFrameworkCostContext(player), player, cost, player, purpose, properties.chatText)) {
                     failed();
                 }
             });
@@ -592,7 +592,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     effects.forEach((effect) => {
                         payHonor(effect.amount, effect.dueToStatusToken).addEventsToArray?.(
                             costEvents,
-                            this.game.getFrameworkContext(this.conflict.defendingPlayer)
+                            this.game.getFrameworkCostContext(this.conflict.defendingPlayer)
                         );
                     });
                 });
@@ -607,6 +607,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         if(this.conflict.defenderDeclarationFailed) {
+            for(const card of this.conflict.defenders) {
+                this.conflict.removeFromConflict(card);
+            }
             this.conflict.defenders = [];
         }
 

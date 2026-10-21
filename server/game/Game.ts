@@ -45,7 +45,7 @@ import type { MenuArg, Step } from './gamesteps/Step.js';
 import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 
-import { type AbilityType, EventName, Location, ConflictType, Element, type Players, type Phase, RestrictionType, type Trait, type FavorType } from './Constants.js';
+import { type AbilityType, EventName, Location, ConflictType, Element, type Players, type Phase, RestrictionType, Stage, type Trait, type FavorType } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import type { ChoiceWindow } from './TriggeredAbility.js';
 import { rulesFor, type GameRules } from './GameRules.js';
@@ -892,6 +892,11 @@ export class Game {
     /** A context for the game's own rules acting for `player`, outside any card ability. */
     getFrameworkContext(player: Player): AbilityContext {
         return new AbilityContext({ game: this, player });
+    }
+
+    /** A framework context for paying a rules cost, such as the costs to declare attackers or defenders. */
+    getFrameworkCostContext(player: Player): AbilityContext {
+        return new AbilityContext({ game: this, player, stage: Stage.Cost });
     }
 
     /** A context for game-level rules that act for no player (the fate phase, the end of a conflict); its `player` is missing. */
