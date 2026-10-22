@@ -1,41 +1,23 @@
 import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
-import { delayedEffect, entersPlayWithStatus, takeControl } from '../../../effects.js';
+import { delayedEffect, takeControl } from '../../../effects.js';
 import {
     cardLastingEffect,
-    handler,
     loseHonor,
     multiple,
     playerLastingEffect
 } from '../../../GameActions/GameActions.js';
-import { CardType, Duration, Location, Players, EntersPlayStatus } from '../../../Constants.js';
+import { CardType, Duration, EntersPlayStatus, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class BayushiShinobu extends DrawCard {
     static id = 'bayushi-shinobu';
 
+    public override entersPlayStatus() {
+        return EntersPlayStatus.Dishonored;
+    }
+
     public override setupCardAbilities() {
-        this.persistentEffect({
-            location: Location.Any,
-            targetLocation: Location.Any,
-            effect: entersPlayWithStatus(EntersPlayStatus.Dishonored)
-        });
-
-        // entersPlayWithStatus only covers playing it; put into play by an effect, it is dishonored afterwards
-        this.persistentEffect({
-            effect: delayedEffect({
-                when: {
-                    onCharacterEntersPlay: (event, context) => event.card === context.source && !context.source.isDishonored
-                },
-                gameAction: handler({
-                    handler: (context) => {
-                        context.source.dishonor();
-                    }
-                }),
-                multipleTrigger: true
-            })
-        });
-
         this.action('Take control of a character')
             .cost(costs.bowSelf())
             .target({

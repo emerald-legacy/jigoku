@@ -3028,7 +3028,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Read when the character is played from a province and when it is played with Disguised. Playing it from hand or putting it into play by an effect ignores it (Bayushi Shinobu adds a delayed effect for that).</li>
+      <li>Read when the character is played from a province and when it is played with Disguised; playing it from hand (or as if from hand) and putting it into play by an effect ignore it. A card's own "This character enters play dishonored" is not this effect: the card overrides <code>entersPlayStatus()</code>, which <code>putIntoPlay</code> reads however the card enters play (Bayushi Shinobu).</li>
       <li>With several effects, the oldest one wins (<code>getEffects(…)[0]</code>).</li>
       <li>The effect must reach the card in its province: set <code>targetLocation</code> to <code>Location.Provinces</code> or <code>Location.Any</code>.</li>
     </ul>
@@ -3039,7 +3039,7 @@ this.persistentEffect({
     match: (card, context) =&gt; card.type === CardType.Character &amp;&amp; card.location === context?.source.location,
     effect: entersPlayWithStatus(CharacterStatus.Honored)
 });</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/Tsuma.ts">Tsuma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/ShinseisLastHope.ts">Shinsei's Last Hope</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/GuardianDojo.ts">Guardian Dōjō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Scorpion/BayushiShinobu.ts">Bayushi Shinobu</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/Tsuma.ts">Tsuma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/ShinseisLastHope.ts">Shinsei's Last Hope</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/GuardianDojo.ts">Guardian Dōjō</a></p>
   </div>
 <div class="ref" id="ef-eventsCannotBeCancelled" data-name="eventsCannotBeCancelled">
     <h3><code>eventsCannotBeCancelled()</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-eventsCannotBeCancelled">#</a></h3>

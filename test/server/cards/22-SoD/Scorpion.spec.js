@@ -737,3 +737,32 @@ describe('SoD - Scorpion', function () {
         });
     });
 });
+
+describe('SoD - Scorpion: Bayushi Shinobu put into play', function () {
+    integration(function () {
+        it('enters play dishonored', function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    dynastyDiscard: ['bayushi-shinobu'],
+                    provinces: ['spectral-visitation']
+                }
+            });
+            this.shinobu = this.player2.findCardByName('bayushi-shinobu');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['matsu-berserker'],
+                province: this.player2.findCardByName('spectral-visitation'),
+                type: 'military'
+            });
+            this.player2.clickCard('spectral-visitation');
+            this.player2.clickCard(this.shinobu);
+
+            expect(this.shinobu.location).toBe('play area');
+            expect(this.shinobu.isDishonored).toBe(true);
+        });
+    });
+});

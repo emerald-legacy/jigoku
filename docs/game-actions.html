@@ -1416,7 +1416,7 @@ this.action('Play an attachment')
       <tbody>
         <tr><td><code>target</code></td><td><code>BaseCard | BaseCard[]</code></td><td>the ability's source</td><td>The characters to put into play.</td></tr>
         <tr><td><code>fate</code></td><td><code>number</code></td><td><code>0</code></td><td>Fate the character enters play with. It sets the character's fate; it is not taken from anyone.</td></tr>
-        <tr><td><code>status</code></td><td><code>EntersPlayStatus</code></td><td><code>EntersPlayStatus.Ordinary</code></td><td><code>EntersPlayStatus.Honored</code> or <code>.Dishonored</code> to enter with that status.</td></tr>
+        <tr><td><code>status</code></td><td><code>EntersPlayStatus</code></td><td>the card's <code>entersPlayStatus()</code></td><td><code>EntersPlayStatus.Honored</code> or <code>.Dishonored</code> to enter with that status. <code>Ordinary</code> (the default) uses the card's own status: <code>Ordinary</code>, except a card that "enters play dishonored" (Bayushi Shinobu).</td></tr>
         <tr><td><code>controller</code></td><td><code>Players</code></td><td><code>Players.Self</code></td><td><code>Players.Opponent</code> gives control to the ability's player's opponent once in play.</td></tr>
         <tr><td><code>side</code></td><td><code>Player</code></td><td>the ability's player</td><td><code>putIntoConflict</code> only: whose side the character joins (attacking if that player attacks, else defending).</td></tr>
         <tr><td><code>overrideLocation</code></td><td><code>Location</code></td><td>the card's location</td><td>What the event reports as <code>originalLocation</code>.</td></tr>

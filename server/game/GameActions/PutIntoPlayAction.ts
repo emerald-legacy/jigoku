@@ -104,7 +104,7 @@ export class PutIntoPlayAction<Context extends AbilityContext = AbilityContext> 
         );
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.fate = fate;
-        event.status = status;
+        event.status = status === EntersPlayStatus.Ordinary ? card.entersPlayStatus() : status;
         event.controller = controller;
         event.intoConflict = this.intoConflict;
         event.originalLocation = overrideLocation || card.location;

@@ -17,7 +17,7 @@ import { CourtesyAbility } from './KeywordAbilities/CourtesyAbility.js';
 import { PrideAbility } from './KeywordAbilities/PrideAbility.js';
 import { SincerityAbility } from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType, RestrictionType } from './Constants.js';
+import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType, RestrictionType, EntersPlayStatus } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
 import { TutoredAbility } from './KeywordAbilities/TutoredAbility.js';
@@ -356,6 +356,11 @@ export class DrawCard extends BaseCard {
     // a dash cost counts as 0 for abilities (RRG Cost); holdings have no cost
     protected getCostValue(cost: number | null): number | null {
         return cost ?? (this.type === CardType.Holding ? null : 0);
+    }
+
+    /** "This character enters play dishonored": the status it has however it enters play, unless the effect putting it into play gives one. */
+    entersPlayStatus(): EntersPlayStatus {
+        return EntersPlayStatus.Ordinary;
     }
 
     override getFate(): number {
