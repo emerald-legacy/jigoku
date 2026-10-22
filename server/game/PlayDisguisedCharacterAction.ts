@@ -11,11 +11,16 @@ import type { Cost, Result } from './costs/Cost.js';
 import type { Event } from './Events/Event.js';
 import { attach, discardFromPlay, moveStatusToken, placeFate, putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 
-function ChooseDisguisedCharacterCost(intoConflictOnly: PlayIntoLocation) {
+/** A character played into the conflict can only replace a participating character. */
+function replacesParticipatingOnly(intoLocation: PlayIntoLocation): boolean {
+    return intoLocation === PlayIntoLocation.Conflict;
+}
+
+function ChooseDisguisedCharacterCost(intoLocation: PlayIntoLocation) {
     return {
         canPay(context: AbilityContext<DrawCard>) {
             return context.player.cardsInPlay.some((card) =>
-                context.source.canDisguise(card, context, !!intoConflictOnly)
+                context.source.canDisguise(card, context, replacesParticipatingOnly(intoLocation))
             );
         },
         resolve(context: AbilityContext<DrawCard>, results: Result) {
@@ -23,7 +28,7 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayIntoLocation) {
                 activePromptTitle: 'Choose a character to replace',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => context.source.canDisguise(card, context, !!intoConflictOnly),
+                cardCondition: (card) => context.source.canDisguise(card, context, replacesParticipatingOnly(intoLocation)),
                 context: context,
                 onSelect: (_player, card) => {
                     context.disguisedCharacter = card;
@@ -42,10 +47,14 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayIntoLocation) {
 }
 
 class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
+    constructor(private intoLocation: PlayIntoLocation) {
+        super(false);
+    }
+
     override canPay(context: AbilityContext<DrawCard>) {
         const maxCharacterCost = Math.max(
             ...context.player.cardsInPlay.map((card) =>
-                context.source.canDisguise(card, context, false) ? (card.getCost() ?? 0) : 0
+                context.source.canDisguise(card, context, replacesParticipatingOnly(this.intoLocation)) ? (card.getCost() ?? 0) : 0
             )
         );
         const minCost = Math.max(context.player.getMinimumCost(context.playType, context) - maxCharacterCost, 0);
@@ -70,7 +79,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         card: DrawCard,
         private intoLocation = PlayIntoLocation.Any
     ) {
-        super(card, [ChooseDisguisedCharacterCost(intoLocation), new DisguisedReduceableFateCost(false)]);
+        super(card, [ChooseDisguisedCharacterCost(intoLocation), new DisguisedReduceableFateCost(intoLocation)]);
     }
 
     public override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
