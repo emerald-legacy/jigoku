@@ -115,3 +115,27 @@ describe('The Receding Tide and attachments', function() {
     });
 });
 
+
+describe('The Receding Tide and "cannot leave play"', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker', 'callow-delegate'],
+                    hand: ['the-receding-tide']
+                },
+                player2: {
+                    inPlay: ['daidoji-netsu']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+        });
+
+        it('can\'t put a character that cannot leave play into a province', function() {
+            this.player1.clickCard('the-receding-tide');
+            expect(this.player1).not.toBeAbleToSelect(this.berserker);
+            expect(this.berserker.location).toBe('play area');
+        });
+    });
+});

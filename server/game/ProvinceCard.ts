@@ -5,6 +5,7 @@ import { cardCannot } from './effects.js';
 import BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
+import type Ring from './Ring.js';
 import { StatModifier, type StatModifierSummary } from './StatModifier.js';
 import type { CardData } from './types/CardData.js';
 import { isEffectOf } from './Effects/types.js';
@@ -207,9 +208,15 @@ export class ProvinceCard extends BaseCard {
         );
     }
 
-    canDeclare(type: string | undefined, _ring: unknown): boolean {
+    canDeclare(type: string | undefined, ring: Ring | undefined): boolean {
         const blockedTypes: readonly (string | undefined)[] = this.getEffects(EffectName.CannotHaveConflictsDeclaredOfType);
-        return this.canBeAttacked() && !blockedTypes.includes(type);
+        return this.canBeAttacked() && !blockedTypes.includes(type) && this.canPayFateToRingToAttack(ring);
+    }
+
+    /** "Spend fate to an unclaimed ring" to attack it (Foothills Keep) needs an unclaimed ring other than the one contested. */
+    private canPayFateToRingToAttack(contestedRing: Ring | undefined): boolean {
+        return this.getFateCostToAttack() === 0 ||
+            Object.values(this.game.rings).some((ring) => ring !== contestedRing && ring.isUnclaimed());
     }
 
     getFateCostToAttack() {

@@ -170,6 +170,7 @@ export class AbilityResolver extends BaseStepWithPipeline {
         this.cancelled = this.costResults.events.some((event: Event) => event.getResolutionEvent().cancelled);
         if(this.cancelled) {
             this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
+            this.discardStoppedEvent();
             const playEvent = this.events.find((event) => event.is(EventName.OnCardPlayed));
             if(playEvent?.is(EventName.OnCardPlayed)) {
                 this.game.emitEvent(EventName.OnCardPlayCostsNotPaid, { playEvent });
@@ -188,6 +189,7 @@ export class AbilityResolver extends BaseStepWithPipeline {
             if(!this.context.ability.isStep()) {
                 this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but there are insufficient legal targets`);
             }
+            this.discardStoppedEvent();
             this.cancelled = true;
         } else if(this.targetResults.delayTargeting) {
             // Targeting was delayed due to an opponent needing to choose targets (which shouldn't happen until costs have been paid), so continue
@@ -257,6 +259,14 @@ export class AbilityResolver extends BaseStepWithPipeline {
         }
         this.context.stage = Stage.Effect;
         this.context.ability.executeHandler(this.context);
+    }
+
+    /** RRG Event: an event whose costs were (partially) paid still goes to its discard pile when it stops. */
+    private discardStoppedEvent() {
+        const source = this.context.source;
+        if(this.context.ability.isCardPlayed() && source.type === CardType.Event && source.location === Location.Hand && this.costResults.events.length > 0) {
+            this.context.player.moveCard(source, source.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+        }
     }
 
     moveEventCardToDiscard() {

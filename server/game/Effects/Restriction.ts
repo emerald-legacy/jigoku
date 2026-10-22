@@ -143,7 +143,8 @@ const leavePlayTypes = new Set<RestrictionType | PlayType | undefined>([
     RestrictionType.Sacrifice,
     RestrictionType.ReturnToHand,
     RestrictionType.ReturnToDeck,
-    RestrictionType.RemoveFromGame
+    RestrictionType.RemoveFromGame,
+    RestrictionType.PutIntoProvince
 ]);
 
 export interface RestrictionProperties {

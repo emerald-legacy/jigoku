@@ -8,7 +8,7 @@ import type Game from './Game.js';
 import Player from './Player.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
-import { bow, sendHome } from './GameActions/GameActions.js';
+import { bow } from './GameActions/GameActions.js';
 
 type Predicate = (card: DrawCard) => boolean;
 
@@ -250,14 +250,16 @@ export class Conflict extends GameObject {
         this.ring = newRing;
     }
 
+    /** RRG Dash / Participating: such a character is removed from the conflict and placed at home bowed, a rule that "cannot be moved home" doesn't stop. */
     checkForIllegalParticipants() {
-        let illegal = this.getAttackers().filter((card) => !card.canParticipateAsAttacker(this.conflictType));
-        illegal = illegal.concat(
-            this.getDefenders().filter((card) => !card.canParticipateAsDefender(this.conflictType))
-        );
+        const illegal = [
+            ...this.getAttackers().filter((card) => !card.canParticipateAsAttacker(this.conflictType)),
+            ...this.getDefenders().filter((card) => !card.canParticipateAsDefender(this.conflictType))
+        ];
         if(illegal.length > 0) {
             this.game.addMessage(msg`${illegal} cannot participate in the conflict any more and ${illegal.length > 1 ? 'are' : 'is'} sent home bowed`);
-            this.game.resolveActions([sendHome({ target: illegal }), bow({ target: illegal })]);
+            illegal.forEach((card) => this.removeFromConflict(card));
+            this.game.resolveActions([bow({ target: illegal })]);
         }
     }
 

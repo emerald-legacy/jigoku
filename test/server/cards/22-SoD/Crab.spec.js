@@ -313,6 +313,40 @@ describe('SoD - Crab', function () {
             });
         });
 
+        describe('Dead Eyes and a switched conflict type', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['damned-hida'],
+                        hand: ['dead-eyes']
+                    },
+                    player2: {
+                        inPlay: [{ card: 'doji-kuwanan', attachments: ['shukujo'] }]
+                    }
+                });
+                this.hida = this.player1.findCardByName('damned-hida');
+                this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+                this.deadEyes = this.player1.playAttachment('dead-eyes', this.hida);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.hida],
+                    defenders: [this.kuwanan]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.deadEyes);
+            });
+
+            it('still sends a character home that can no longer participate', function () {
+                this.player2.clickCard(this.kuwanan);
+                expect(this.game.currentConflict.conflictType).toBe('political');
+                expect(this.hida.isParticipating()).toBe(false);
+                expect(this.hida.bowed).toBe(true);
+                expect(this.getChatLogs(5)).toContain('Damned Hida cannot participate in the conflict any more and is sent home bowed');
+            });
+        });
+
         describe('Dead Eyes at the end of the conflict', function () {
             beforeEach(function () {
                 this.setupTest({

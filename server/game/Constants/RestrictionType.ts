@@ -35,6 +35,7 @@ export enum RestrictionType {
     PlayCharacter = 'playCharacter',
     PreventedFromLeavingPlay = 'preventedFromLeavingPlay',
     PutIntoConflict = 'putIntoConflict',
+    PutIntoProvince = 'putIntoProvince',
     PutIntoPlay = 'putIntoPlay',
     Ready = 'ready',
     ReceiveDishonorToken = 'receiveDishonorToken',

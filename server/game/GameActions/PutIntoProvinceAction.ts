@@ -24,6 +24,7 @@ export class PutIntoProvinceAction<Context extends AbilityContext = AbilityConte
     'switch' | 'faceup' | 'changePlayer' | 'discardDestinationCards'
 > {
     override name = 'putIntoProvince';
+    override restriction = RestrictionType.PutIntoProvince;
     override eventName = EventName.OnCardLeavesPlay;
     override targetType = [CardType.Character, CardType.Attachment];
     override defaultProperties = {

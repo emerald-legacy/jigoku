@@ -277,20 +277,20 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
             const totalFateCost = province ? province.getFateCostToAttack() : 0;
             if(!this.conflict.conflictPassed && province && totalFateCost > 0) {
-                this.game.addMessage(msg`${this.conflict.attackingPlayer} pays ${totalFateCost} fate to declare a conflict at ${provinceName}`);
+                const attacker = this.conflict.attackingPlayer;
                 const costEvents: Event[] = [];
-                const costToRings = province.sumEffects(EffectName.FateCostToRingToDeclareConflictAgainst);
-                payFateToRing(costToRings).addEventsToArray?.(
-                    costEvents,
-                    this.game.getFrameworkContext(this.conflict.attackingPlayer),
-                    {}
-                );
+                payFateToRing(totalFateCost).addEventsToArray?.(costEvents, this.game.getFrameworkCostContext(attacker), {});
+                this.game.queueSimpleStep(() => this.game.openThenEventWindow(costEvents));
                 this.game.queueSimpleStep(() => {
-                    if(costEvents.length > 0) {
-                        const placeFateEvent: AnyEvent = costEvents[0];
-                        this.game.addMessage(msg`${this.conflict.attackingPlayer} places ${costToRings} fate on the ${placeFateEvent.recipient || 'ring'}`);
+                    const placeFateEvent: AnyEvent | undefined = costEvents[0];
+                    if(!placeFateEvent || costEvents.some((event) => event.cancelled || !event.resolved)) {
+                        this.game.addMessage(msg`${attacker} cannot pay the fate to declare a conflict at ${provinceName}`);
+                        this.conflict.attackerDeclarationFailed = true;
+                        this.conflict.conflictFailedToInitiate = true;
+                        return;
                     }
-                    this.game.openThenEventWindow(costEvents);
+                    this.game.addMessage(msg`${attacker} pays ${totalFateCost} fate to declare a conflict at ${provinceName}`);
+                    this.game.addMessage(msg`${attacker} places ${totalFateCost} fate on the ${placeFateEvent.recipient || 'ring'}`);
                 });
             }
         }
