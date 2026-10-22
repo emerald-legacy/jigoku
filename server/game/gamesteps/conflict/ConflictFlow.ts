@@ -167,7 +167,8 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     defenderChoosesRing(attackerMatrix: AttackersMatrix): void {
-        this.game.promptForRingSelect(this.conflict.defendingPlayer, {
+        // in a solo game the attacker chooses
+        this.game.promptForRingSelect(this.conflict.defendingPlayer ?? this.conflict.attackingPlayer, {
             activePromptTitle: 'Choose a ring for ' + this.conflict.attackingPlayer.name + '\'s conflict',
             source: 'Defender chooses conflict ring',
             waitingPromptTitle: 'Waiting for defender to choose conflict ring',
@@ -270,7 +271,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 ? this.conflict.conflictProvince.location
                 : Location.ProvinceOne;
             const province =
-                this.conflict.conflictProvince || this.conflict.defendingPlayer.getProvinceCardInProvince(provinceSlot);
+                this.conflict.conflictProvince || this.conflict.defendingPlayer?.getProvinceCardInProvince(provinceSlot);
             const provinceName =
                 this.conflict.conflictProvince && this.conflict.conflictProvince.isFacedown()
                     ? provinceSlot
@@ -357,11 +358,12 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
         this.covert = [];
         // defenders declared before attackers (Seven Stings Keep): too late for covert (EmeraldDB ruling)
-        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.defendersChosen) {
+        const defender = this.conflict.defendingPlayer;
+        if(this.conflict.conflictPassed || !defender || this.conflict.defendersChosen) {
             return;
         }
 
-        const targets = this.conflict.defendingPlayer.cardsInPlay.filter((card: DrawCard) => card.covert);
+        const targets = defender.cardsInPlay.filter((card: DrawCard) => card.covert);
         const contexts = covertContexts(this.game, this.conflict).filter((context) => context.source.canInitiateKeywords(context));
 
         for(const target of targets) {
@@ -418,11 +420,12 @@ export class ConflictFlow extends BaseStepWithPipeline {
     promptForCovertEmerald(): void {
         this.covert = [];
         // defenders declared before attackers (Seven Stings Keep): too late for covert (EmeraldDB ruling)
-        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.defendersChosen) {
+        const defender = this.conflict.defendingPlayer;
+        if(this.conflict.conflictPassed || !defender || this.conflict.defendersChosen) {
             return;
         }
 
-        const targets = this.conflict.defendingPlayer.cardsInPlay.filter((card: DrawCard) => card.covert);
+        const targets = defender.cardsInPlay.filter((card: DrawCard) => card.covert);
         const contexts = covertContexts(this.game, this.conflict).filter((context) => context.source.canInitiateKeywords(context));
 
         for(const target of targets) {
@@ -527,7 +530,8 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     promptForDefenders(beingChosenFirst = false): void {
-        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.conflictFailedToInitiate) {
+        const defender = this.conflict.defendingPlayer;
+        if(this.conflict.conflictPassed || !defender || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
@@ -538,7 +542,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        this.game.queueStep(new SelectDefendersPrompt(this.game, this.conflict.defendingPlayer, this.conflict));
+        this.game.queueStep(new SelectDefendersPrompt(this.game, defender, this.conflict));
     }
 
     /** The declaring player's additional costs to declare `side` (CostToDeclareAnyParticipants), each in its own step; `failed` when one can't be paid. */
@@ -558,9 +562,10 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     payDefendersCost(): void {
-        if(this.conflict.defenders.length > 0) {
+        const defender = this.conflict.defendingPlayer;
+        if(defender && this.conflict.defenders.length > 0) {
             this.conflict.defenderDeclarationFailed = false;
-            this.queueParticipantCosts('defenders', () => this.conflict.defendingPlayer, 'declare defending characters', () => {
+            this.queueParticipantCosts('defenders', () => defender, 'declare defending characters', () => {
                 this.conflict.defenderDeclarationFailed = true;
             });
 
@@ -574,13 +579,13 @@ export class ConflictFlow extends BaseStepWithPipeline {
             );
             if(!this.conflict.conflictPassed && totalHonorCost > 0) {
                 const costEvents: Event[] = [];
-                this.game.addMessage(msg`${this.conflict.defendingPlayer} pays ${totalHonorCost} honor to declare their defenders`);
+                this.game.addMessage(msg`${defender} pays ${totalHonorCost} honor to declare their defenders`);
                 this.conflict.defenders.forEach((card) => {
                     const effects = card.getEffects(EffectName.HonorCostToDeclare);
                     effects.forEach((effect) => {
                         payHonor(effect.amount, effect.dueToStatusToken).addEventsToArray?.(
                             costEvents,
-                            this.game.getFrameworkCostContext(this.conflict.defendingPlayer)
+                            this.game.getFrameworkCostContext(defender)
                         );
                     });
                 });
@@ -590,7 +595,8 @@ export class ConflictFlow extends BaseStepWithPipeline {
     }
 
     announceDefenderSkill(): void {
-        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.conflictFailedToInitiate) {
+        const defender = this.conflict.defendingPlayer;
+        if(this.conflict.conflictPassed || !defender || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
@@ -602,7 +608,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         this.conflict.defenders.forEach((card: DrawCard) => (card.inConflict = true));
-        this.conflict.defendingPlayer.cardsInPlay.forEach((card: DrawCard) => (card.covert = false));
+        defender.cardsInPlay.forEach((card: DrawCard) => (card.covert = false));
 
         if(this.conflict.defenders.length > 0) {
             this.game.addMessage(msg`${this.conflict.defendingPlayer} has defended with skill ${this.conflict.defenderSkill}`);

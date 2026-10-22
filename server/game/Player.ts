@@ -723,17 +723,13 @@ export class Player extends GameObject {
     }
 
     shuffleConflictDeck(): void {
-        if(this.name !== 'Dummy Player') {
-            this.game.addMessage(msg`${this} is shuffling their conflict deck`);
-        }
+        this.game.addMessage(msg`${this} is shuffling their conflict deck`);
         this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: DeckType.Conflict });
         this.conflictDeck = shuffle(this.conflictDeck);
     }
 
     shuffleDynastyDeck(): void {
-        if(this.name !== 'Dummy Player') {
-            this.game.addMessage(msg`${this} is shuffling their dynasty deck`);
-        }
+        this.game.addMessage(msg`${this} is shuffling their dynasty deck`);
         this.game.emitEvent(EventName.OnDeckShuffled, { player: this, deck: DeckType.Dynasty });
         this.dynastyDeck = shuffle(this.dynastyDeck);
     }

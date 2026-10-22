@@ -2218,7 +2218,7 @@ const ring = context.game.ringFor(trait);</code></pre>
 
 <section class="group">
   <h3 class="group-title" id="q-group-conflict">Conflict</h3>
-  <p>Methods of <code>Conflict</code>, on <code>context.game.currentConflict</code> (can be <code>null</code>) or <code>event.conflict</code>. The conflict also has the properties <code>attackingPlayer</code>, <code>defendingPlayer</code>, <code>winner</code>, <code>loser</code> (set when the winner is determined, <code>undefined</code> if nobody wins; see <a href="#q-getWinningPlayer"><code>getWinningPlayer()</code></a>), <code>conflictType</code>, <code>ring</code>, <code>elements</code>, <code>declaredProvince</code> and <code>conflictProvince</code>. In a solo game <code>defendingPlayer</code> is a placeholder player with no cards.</p>
+  <p>Methods of <code>Conflict</code>, on <code>context.game.currentConflict</code> (can be <code>null</code>) or <code>event.conflict</code>. The conflict also has the properties <code>attackingPlayer</code>, <code>defendingPlayer</code>, <code>winner</code>, <code>loser</code> (set when the winner is determined, <code>undefined</code> if nobody wins; see <a href="#q-getWinningPlayer"><code>getWinningPlayer()</code></a>), <code>conflictType</code>, <code>ring</code>, <code>elements</code>, <code>declaredProvince</code> and <code>conflictProvince</code>. In a solo game <code>defendingPlayer</code> is <code>undefined</code>.</p>
 
   <div class="ref" id="q-attackerSkill" data-name="attackerSkill defenderSkill skillDifference">
     <h3><code>conflict.attackerSkill</code>, <code>conflict.defenderSkill</code>, <code>conflict.skillDifference</code> <span class="kind">Field</span> <a class="anchor" href="#q-attackerSkill">#</a></h3>

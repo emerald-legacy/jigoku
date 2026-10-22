@@ -8,12 +8,9 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 const DISCARD = 'Discard all cards from your provinces';
 const FLIP = 'Flip all cards in your provinces facedown';
 
-function defender(context: AbilityContext): Player {
-    const conflict = context.game.currentConflict;
-    if(!conflict) {
-        throw new Error('BayushisSaboteurs: no current conflict');
-    }
-    return conflict.defendingPlayer;
+/** Missing in a solo game: then nothing can be discarded or flipped. */
+function defender(context: AbilityContext): Player | undefined {
+    return context.game.currentConflict?.defendingPlayer;
 }
 
 export default class BayushisSaboteurs extends DrawCard {
@@ -32,10 +29,10 @@ export default class BayushisSaboteurs extends DrawCard {
             }, {
                 [DISCARD]: sequential([
                     discardCard((context) => ({
-                        target: defender(context).getDynastyCardsInProvince(Location.Provinces)
+                        target: defender(context)?.getDynastyCardsInProvince(Location.Provinces) ?? []
                     })),
                     refillFaceup((context) => ({
-                        target: defender(context),
+                        target: defender(context) ?? [],
                         location: [
                             Location.StrongholdProvince,
                             Location.ProvinceOne,
@@ -46,7 +43,7 @@ export default class BayushisSaboteurs extends DrawCard {
                     }))
                 ]),
                 [FLIP]: turnFacedown((context) => ({
-                    target: defender(context).getDynastyCardsInProvince(Location.Provinces)
+                    target: defender(context)?.getDynastyCardsInProvince(Location.Provinces) ?? []
                 }))
             })
             .chatText((context) => msg`${context.select === DISCARD ? 'discard' : 'flip facedown'} all of ${defender(context)}'s dynasty cards`);

@@ -20,7 +20,7 @@ export class ConflictActionWindow extends ActionWindow {
 
     /** "Attacker: 5 (+3 at resolution) Defender: 4". */
     private skillText(): string {
-        const bonus = (player: Player) => {
+        const bonus = (player: Player | undefined) => {
             const value = this.conflict.resolutionBonus(player);
             return value !== 0 ? ` (${value > 0 ? '+' : ''}${value} at resolution)` : '';
         };

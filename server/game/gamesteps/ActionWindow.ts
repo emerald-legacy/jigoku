@@ -21,8 +21,9 @@ export class ActionWindow extends UiPrompt {
 
         this.title = title;
         this.windowName = windowName;
-        if(this.game.currentConflict && !this.game.currentConflict.isSinglePlayer) {
-            this.currentPlayer = this.game.currentConflict.defendingPlayer;
+        const defender = this.game.currentConflict?.defendingPlayer;
+        if(defender) {
+            this.currentPlayer = defender;
         } else {
             const firstPlayer = game.getFirstPlayer();
             if(!firstPlayer) {

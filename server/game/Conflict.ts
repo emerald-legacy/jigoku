@@ -1,11 +1,10 @@
 import { msg, type MessageArgs } from './GameChat.js';
-import * as Settings from '../settings.js';
 import { CardType, type ConflictType, EffectName, type Element, EventName, favorAppliesTo, Location, RestrictionType } from './Constants.js';
 import { GameObject } from './GameObject.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type BaseCard from './BaseCard.js';
 import type Game from './Game.js';
-import Player from './Player.js';
+import type Player from './Player.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
 import { bow } from './GameActions/GameActions.js';
@@ -33,7 +32,8 @@ export class Conflict extends GameObject {
     declaredType: ConflictType | null = null;
     defendersChosen = false;
     defenderSkill = 0;
-    defendingPlayer: Player;
+    /** Missing in a solo game. */
+    defendingPlayer: Player | undefined;
     isSinglePlayer: boolean;
     loser?: Player;
     loserSkill?: number;
@@ -61,7 +61,7 @@ export class Conflict extends GameObject {
     ) {
         super(game, 'Conflict');
         this.isSinglePlayer = !defendingPlayer;
-        this.defendingPlayer = defendingPlayer || this.singlePlayerDefender();
+        this.defendingPlayer = defendingPlayer;
         this.conflictProvince = conflictProvince;
         this.declaredRing = ring;
         this.declaredProvince = conflictProvince ?? null;
@@ -127,7 +127,7 @@ export class Conflict extends GameObject {
         const { attackerSkill, defenderSkill } = this.getResolutionSkills();
         return {
             attackingPlayerId: this.attackingPlayer.id,
-            defendingPlayerId: this.defendingPlayer.id,
+            defendingPlayerId: this.defendingPlayer?.id,
             attackerSkill: this.attackerSkill,
             defenderSkill: this.defenderSkill,
             type: this.conflictType,
@@ -152,20 +152,9 @@ export class Conflict extends GameObject {
         this.defendersChosen = value;
     }
 
-    private singlePlayerDefender() {
-        const dummyPlayer = new Player(
-            '',
-            Settings.getUserWithDefaultsSet({ username: 'Dummy Player' }),
-            false,
-            this.game
-        );
-        dummyPlayer.initialise();
-        return dummyPlayer;
-    }
-
     resetCards() {
         this.attackingPlayer.resetForConflict();
-        this.defendingPlayer.resetForConflict();
+        this.defendingPlayer?.resetForConflict();
         this.getConflictProvinces().forEach((a) => (a.inConflict = false));
     }
 
@@ -309,7 +298,7 @@ export class Conflict extends GameObject {
                 defendersArray.push(defender);
             }
         }
-        for(const card of this.defendingPlayer.cardsInPlay) {
+        for(const card of this.defendingPlayer?.cardsInPlay ?? []) {
             if(
                 card.anyEffect(EffectName.ParticipatesFromHome) &&
                 card.canParticipateAsDefender(this.conflictType) &&
@@ -407,14 +396,17 @@ export class Conflict extends GameObject {
             }
         }
 
-        const setDefenderSkill = this.defendingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
+        const defender = this.defendingPlayer;
+        const setDefenderSkill = defender?.mostRecentEffect(EffectName.SetConflictTotalSkill);
         if(setDefenderSkill !== undefined) {
             this.defenderSkill = setDefenderSkill;
+        } else if(!defender) {
+            this.defenderSkill = 0;
         } else {
             this.defenderSkill =
-                this.calculateSkillFor(this.getDefenders().concat(this.getAdditionalContributors(this.defendingPlayer))) +
-                this.defendingPlayer.skillModifier + (atResolution ? this.resolutionBonus(this.defendingPlayer) : 0);
-            if(favorAppliesTo(this.defendingPlayer.imperialFavor, this.conflictType) && this.#defenders.size > 0) {
+                this.calculateSkillFor(this.getDefenders().concat(this.getAdditionalContributors(defender))) +
+                defender.skillModifier + (atResolution ? this.resolutionBonus(defender) : 0);
+            if(favorAppliesTo(defender.imperialFavor, this.conflictType) && this.#defenders.size > 0) {
                 this.defenderSkill++;
             }
         }
@@ -508,7 +500,10 @@ export class Conflict extends GameObject {
     }
 
     /** Skill `player`'s side adds during this conflict's resolution (Disguised Protector), as it stands now; none while its total is set. */
-    resolutionBonus(player: Player): number {
+    resolutionBonus(player: Player | undefined): number {
+        if(!player) {
+            return 0;
+        }
         return player.mostRecentEffect(EffectName.SetConflictTotalSkill) !== undefined || this.winnerDetermined ? 0 : player.resolutionSkillModifier;
     }
 

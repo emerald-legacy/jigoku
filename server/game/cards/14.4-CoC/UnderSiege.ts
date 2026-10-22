@@ -23,9 +23,7 @@ class UnderSiege extends DrawCard {
             .when({
                 // RRG appendix: with no cards in the defender's hand it can't be played
                 onConflictDeclared: (_event, context) =>
-                    context.game.currentConflict !== null &&
-                    context.game.currentConflict.defendingPlayer !== null &&
-                    context.game.currentConflict.defendingPlayer.hand.length > 0
+                    (context.game.currentConflict?.defendingPlayer?.hand.length ?? 0) > 0
             })
             .gameAction(sequential((context) => {
                 const defender = context.game.currentConflict?.defendingPlayer ?? undefined;
