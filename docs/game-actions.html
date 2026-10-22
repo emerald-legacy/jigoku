@@ -1793,14 +1793,14 @@ this.action('Attacker moves a character home')
 <h3 class="group-title" id="ga-group-1-rings-conflicts">Rings and conflicts</h3>
 <p>Ring actions target rings; without a <code>target</code> they affect the ring of the current conflict, and outside a conflict they have no target. Choose another ring with a ring target (<code>.ringTarget(…)</code>) or <a href="#ga-selectRing"><code>selectRing</code></a>.</p>
 <div class="ref" id="ga-claimRing" data-name="claimRing">
-    <h3><code>claimRing(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-claimRing">#</a></h3>
+    <h3><code>claimRing(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-claimRing">#</a></h3>
     <p>The ability's player claims a ring.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>target</code></td><td><code>Ring | Ring[]</code></td><td>the ring of the current conflict</td><td>The rings to claim.</td></tr>
         <tr><td><code>takeFate</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Also take the fate on the ring.</td></tr>
-        <tr><td><code>type</code></td><td><code>ConflictType</code></td><td><code>ConflictType.Military</code></td><td>The conflict type the claimed ring shows.</td></tr>
+        <tr><td><code>conflictType</code></td><td><code>ConflictType</code></td><td>required</td><td>The conflict type the claimed ring shows.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1820,7 +1820,7 @@ this.reaction('Resolve the ring as if you were the attacker')
         ringCondition: (ring) =&gt; ring.isUnclaimed()
     }, multiple([
         resolveRingEffect((context) =&gt; ({ player: context.player })),
-        claimRing({ takeFate: true, type: ConflictType.Political })
+        claimRing({ takeFate: true, conflictType: ConflictType.Political })
     ]));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/OfferingsToTheKami.ts">Offerings to the Kami</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ShiroKitsuki.ts">Shiro Kitsuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Dragon/StrikeAsTheElements.ts">Strike as the Elements</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Phoenix/CommuneWithTheSpirits.ts">Commune with the Spirits</a></p>
   </div>

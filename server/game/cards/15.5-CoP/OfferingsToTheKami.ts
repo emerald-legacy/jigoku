@@ -16,7 +16,7 @@ export default class OfferingsToTheKami extends ProvinceCard {
                 ringCondition: (ring) => ring.isUnclaimed()
             }, multiple([
                 resolveRingEffect((context) => ({ player: context.player })),
-                claimRing({ takeFate: true, type: ConflictType.Political })
+                claimRing({ takeFate: true, conflictType: ConflictType.Political })
             ]));
     }
 }

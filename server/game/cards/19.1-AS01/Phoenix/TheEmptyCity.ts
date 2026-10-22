@@ -23,7 +23,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 ringCondition: (ring) => ring.isUnclaimed()
             }, claimRing({
                 takeFate: false,
-                type: ConflictType.Political
+                conflictType: ConflictType.Political
             }))
             .chatText('claim {0} as a political ring')
             .limit(sharedLimit);

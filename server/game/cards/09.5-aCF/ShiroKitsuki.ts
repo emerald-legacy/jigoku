@@ -28,7 +28,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                         activePromptTitle: 'Choose a ring to claim',
                         ringCondition: (ring) => ring.isUnclaimed(),
                         message: (context, ring) => msg`${context.player} claims the ${ring}`,
-                        gameAction: claimRing({ takeFate: true, type: ConflictType.Political })
+                        gameAction: claimRing({ takeFate: true, conflictType: ConflictType.Political })
                     })
                 })
             }))

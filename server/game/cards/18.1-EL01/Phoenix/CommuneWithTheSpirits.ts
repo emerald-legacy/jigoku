@@ -17,7 +17,7 @@ class CommuneWithTheSpirits extends DrawCard {
                     amount: context.ring?.fate,
                     removeOnly: true
                 })),
-                claimRing({ takeFate: false, type: ConflictType.Political})
+                claimRing({ takeFate: false, conflictType: ConflictType.Political})
             ]))
             .chatText('discard all fate from the {0} and claim it as a political ring')
             .max(perRound(1));

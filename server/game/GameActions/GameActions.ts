@@ -384,7 +384,7 @@ export function takeFateFromRing<Context extends AbilityContext = AbilityContext
 export function takeRing<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<TakeRingProperties, Context> = {}): TakeRingAction<Context> {
     return new TakeRingAction<Context>(propertyFactory);
 }
-export function claimRing<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ClaimRingProperties, Context> = {}): ClaimRingAction<Context> {
+export function claimRing<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ClaimRingProperties, Context>): ClaimRingAction<Context> {
     return new ClaimRingAction<Context>(propertyFactory);
 }
 export function removeRingFromPlay<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<RemoveRingFromPlayProperties, Context> = {}): RemoveRingFromPlayAction<Context> {
