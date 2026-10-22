@@ -114,8 +114,8 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         !!context.source && context.source.hasTrait(Trait.Spell) && !context.source.hasTrait(Trait.Meishodo)
 };
 
-// costs are not effects (RRG "Card effect")
-const isCardEffect = (context: AbilityContext) =>
+/** Whether `context` is a card effect: a card's ability resolving, not a cost and not playing a card (RRG "Card effect"). */
+export const isCardEffect = (context: AbilityContext) =>
     (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
     context.stage !== Stage.Cost &&
     [
