@@ -39,7 +39,7 @@ import type { ProvinceCard } from './ProvinceCard.js';
 import Ring from './Ring.js';
 import { ElementSymbol } from './ElementSymbol.js';
 import { StatusToken } from './StatusToken.js';
-import type { ThenAbilityProperties } from './ThenAbility.js';
+import type { ResolvableAbilityProperties } from './ResolvableAbility.js';
 import type { SelectChoice } from './AbilityTargets/SelectChoice.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from './types/CardOfType.js';
@@ -145,7 +145,7 @@ interface AbilityDraft {
     cannotBeMirrored?: boolean;
     cannotTargetFirst?: boolean;
     firstPlayerChoosesFirst?: boolean;
-    then?: (context: AbilityContext) => ThenAbilityProperties | undefined;
+    then?: (context: AbilityContext) => ResolvableAbilityProperties | undefined;
     /** From `onResolve()`: runs when the ability starts resolving its effects. */
     onResolve?: (context: AbilityContext) => void;
     /** The next step, from `then()`, `thenIf()`, `afterwards()` or `afterwardsIf()`. */
@@ -1239,7 +1239,7 @@ export class AbilityBuilder<
         return this.#resolveAgain((context) => resolveAgainPrompt(context, activePromptTitle, Players.Opponent));
     }
 
-    #resolveAgain(then: (context: AbilityContext) => ThenAbilityProperties | undefined): this {
+    #resolveAgain(then: (context: AbilityContext) => ResolvableAbilityProperties | undefined): this {
         if(this.draft.then || this.draft.thenStep) {
             throw new Error(`${this.draft.title}: a step has one next step`);
         }
@@ -1509,7 +1509,7 @@ function resolveAgain(context: AbilityContext, player?: Player): GameAction {
 }
 
 /** "May resolve this ability again": `chooser` (the opponent resolves it as theirs, or the player in a solo game) answers Yes or No; No is offered only when Yes can resolve. */
-function resolveAgainPrompt(context: AbilityContext, activePromptTitle: string, chooser: Players.Self | Players.Opponent): ThenAbilityProperties {
+function resolveAgainPrompt(context: AbilityContext, activePromptTitle: string, chooser: Players.Self | Players.Opponent): ResolvableAbilityProperties {
     const opponent = chooser === Players.Opponent ? context.player.opponent : undefined;
     const again = resolveAgain(context, opponent);
     const player = opponent ?? context.player;
@@ -1539,7 +1539,7 @@ function resolveAgainOffer(
     cost: GameAction | undefined,
     label: string | undefined,
     condition: ((context: AbilityContext) => boolean) | undefined
-): ThenAbilityProperties | undefined {
+): ResolvableAbilityProperties | undefined {
     if(condition && !condition(context)) {
         return undefined;
     }
@@ -1635,13 +1635,13 @@ function gameActionProperties(draft: AbilityDraft): { gameAction?: GameAction[] 
 }
 
 /** The next step. */
-function thenProperties(draft: AbilityDraft): { then?: ThenAbilityProperties | ((context: AbilityContext) => ThenAbilityProperties | undefined) } {
+function thenProperties(draft: AbilityDraft): { then?: ResolvableAbilityProperties | ((context: AbilityContext) => ResolvableAbilityProperties | undefined) } {
     const next = draft.thenStep ? stepProperties(draft.thenStep) : draft.then;
     return next ? { then: next } : {};
 }
 
 /** A step from `then()`, `thenIf()`, `afterwards()` or `afterwardsIf()`, built once. */
-function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
+function stepProperties(draft: AbilityDraft): ResolvableAbilityProperties {
     checkHandler(draft);
     const step = withBranches(draft);
     checkCombinations(step);
@@ -1666,7 +1666,7 @@ function stepProperties(draft: AbilityDraft): ThenAbilityProperties {
  * `thenIf()`: that, and its condition. `afterwards()`/`afterwardsIf()`: only the condition, also when the step
  * before raised no events. On the event path the condition gets each event, whose context is the step before.
  */
-function stepCondition(step: AbilityDraft): Pick<ThenAbilityProperties, 'thenCondition'> {
+function stepCondition(step: AbilityDraft): Pick<ResolvableAbilityProperties, 'thenCondition'> {
     const condition = step.thenCondition;
     if(step.afterwards) {
         return { thenCondition: (contextOrEvent: AbilityContext | Event) => {

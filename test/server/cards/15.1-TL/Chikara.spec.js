@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
 import { takeControl } from '../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Chikara', function() {
@@ -252,7 +252,7 @@ describe('Chikara on a character its owner does not control', function() {
             this.kisadaP2 = this.player2.findCardByName('hida-kisada');
             this.challenger = this.player2.findCardByName('doji-challenger');
 
-            const context = new ThenAbility(this.kisadaP1, {}).createContext(this.player1.player);
+            const context = new ResolvableAbility(this.kisadaP1, {}).createContext(this.player1.player);
             this.game.queueSimpleStep(() => takeControl().resolve(this.challenger, context));
             this.game.continue();
 

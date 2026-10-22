@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
 import { sacrifice } from '../../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Obstinate Witch Hunter', function () {
@@ -66,7 +66,7 @@ describe('Obstinate Witch Hunter and sacrifices', function () {
             this.advancePhases('fate');
             this.player2.clickPrompt('Done');
 
-            const context = new ThenAbility(this.tadaka, {}).createContext(this.player2.player);
+            const context = new ResolvableAbility(this.tadaka, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => sacrifice().resolve(this.hunter, context));
             this.game.continue();
             expect(this.hunter.location).toBe('play area');

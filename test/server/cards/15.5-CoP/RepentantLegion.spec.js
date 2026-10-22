@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
 import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Repentant Legion', function() {
@@ -87,7 +87,7 @@ describe('Repentant Legion', function() {
             });
 
             const attackersProvince = this.player2.findCardByName('shameful-display', 'province 1');
-            const context = new ThenAbility(this.dojiChallenger, {}).createContext(this.player2.player);
+            const context = new ResolvableAbility(this.dojiChallenger, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => breakProvince().resolve(attackersProvince, context));
             this.game.continue();
             this.player2.clickPrompt('No');

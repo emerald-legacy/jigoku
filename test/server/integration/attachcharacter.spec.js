@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../build/server/game/ResolvableAbility.js';
 import { attach, cardLastingEffect } from '../../../build/server/game/GameActions/GameActions.js';
 import { changeType } from '../../../build/server/game/effects.js';
 import { CardType, Duration } from '../../../build/server/game/Constants.js';
@@ -26,7 +26,7 @@ describe('a character becoming an attachment', function() {
             });
 
             this.resolve = (action, target) => {
-                const context = new ThenAbility(this.whisperer, {}).createContext(this.player1.player);
+                const context = new ResolvableAbility(this.whisperer, {}).createContext(this.player1.player);
                 this.game.queueSimpleStep(() => action.resolve(target, context));
                 this.game.continue();
             };

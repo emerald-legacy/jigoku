@@ -839,7 +839,7 @@ onEffectApplied: (event, context) =&gt; {
         </tbody>
       </table>
   <ul class="edge">
-    <li><code>OpponentsTriggeredAbilities</code> also matches action abilities: <code>isTriggeredAbility()</code> is true for every <code>CardAbility</code> (actions, triggered abilities, events). It does not match keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), nor a then-step, whose ability is a <code>ThenAbility</code>.</li>
+    <li><code>OpponentsTriggeredAbilities</code> also matches action abilities: <code>isTriggeredAbility()</code> is true for every <code>CardAbility</code> (actions, triggered abilities, events). It does not match keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), nor a then-step, whose ability is a <code>ResolvableAbility</code>.</li>
   </ul>
   <pre><code>// Master of the Blade: Duel Strike: For this conflict, this character cannot be bowed by opponents' card effects and does not bow as a result of conflict resolution.
 cardCannot({

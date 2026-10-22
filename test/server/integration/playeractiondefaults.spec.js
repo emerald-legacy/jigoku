@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../build/server/game/ResolvableAbility.js';
 import { claimImperialFavor, setHonorDial, takeHonor } from '../../../build/server/game/GameActions/GameActions.js';
 
 describe('Player action default targets', function () {
@@ -15,7 +15,7 @@ describe('Player action default targets', function () {
             });
             this.whisperer = this.player1.findCardByName('doji-whisperer');
             this.resolve = (action) => {
-                const context = new ThenAbility(this.whisperer, {}).createContext(this.player1.player);
+                const context = new ResolvableAbility(this.whisperer, {}).createContext(this.player1.player);
                 this.game.queueSimpleStep(() => action.resolve(undefined, context));
                 this.game.continue();
             };

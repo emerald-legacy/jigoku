@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../build/server/game/ResolvableAbility.js';
 import { placeInProvince } from '../../../build/server/game/GameActions/GameActions.js';
 
 describe('placing a card into a province', function() {
@@ -15,7 +15,7 @@ describe('placing a card into a province', function() {
             this.tempest = this.player1.findCardByName('sudden-tempest');
             this.ironMine = this.player1.findCardByName('iron-mine');
             this.place = (card, properties) => {
-                const context = new ThenAbility(this.whisperer, {}).createContext(this.player1.player);
+                const context = new ResolvableAbility(this.whisperer, {}).createContext(this.player1.player);
                 this.game.queueSimpleStep(() => placeInProvince(properties).resolve(card, context));
                 this.game.continue();
             };

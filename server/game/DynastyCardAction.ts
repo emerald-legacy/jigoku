@@ -1,5 +1,5 @@
 import { msg } from './GameChat.js';
-import { BaseAction } from './BaseAction.js';
+import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoPlay } from './GameActions/GameActions.js';
@@ -11,9 +11,8 @@ import { isEffectOf } from './Effects/types.js';
 import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
 import { getExtraFateWhenPlayed, getPlayBlocker } from './playActionHelpers.js';
 
-export class DynastyCardAction extends BaseAction {
+export class DynastyCardAction extends PlayCardSourceAction {
     override title = 'Play this character';
-    declare card: DrawCard;
 
     constructor(card: BaseCard) {
         super(card, [chooseFate(PlayType.PlayFromProvince), payReduceableFateCost()]);

@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
 import { takeControl } from '../../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Truth is in the Killing', function () {
@@ -207,7 +207,7 @@ describe('Truth is in the Killing against a character its owner does not control
             this.truth = this.player1.findCardByName('truth-is-in-the-killing');
             this.tsukune = this.player2.findCardByName('shiba-tsukune');
 
-            const context = new ThenAbility(this.tsukune, {}).createContext(this.player2.player);
+            const context = new ResolvableAbility(this.tsukune, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => takeControl().resolve(this.challenger, context));
             this.game.continue();
         });

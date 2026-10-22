@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
 import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Castle of the Forgotten', function() {
@@ -125,7 +125,7 @@ describe('Castle of the Forgotten other breaks', function() {
         });
 
         it('reacts when the opponent\'s province breaks outside a conflict, as you broke it', function() {
-            const context = new ThenAbility(this.rider, {}).createContext(this.player2.player);
+            const context = new ResolvableAbility(this.rider, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => breakProvince().resolve(this.opponentsProvince, context));
             this.game.continue();
             expect(this.opponentsProvince.isBroken).toBe(true);
@@ -134,7 +134,7 @@ describe('Castle of the Forgotten other breaks', function() {
 
         it('does not react when your own province breaks', function() {
             const ownProvince = this.player1.findCardByName('shameful-display', 'province 1');
-            const context = new ThenAbility(this.rider, {}).createContext(this.player2.player);
+            const context = new ResolvableAbility(this.rider, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => breakProvince().resolve(ownProvince, context));
             this.game.continue();
             expect(ownProvince.isBroken).toBe(true);

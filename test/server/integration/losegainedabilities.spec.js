@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../build/server/game/ResolvableAbility.js';
 import { cardLastingEffect, sacrifice } from '../../../build/server/game/GameActions/GameActions.js';
 import { gainAbility, loseGainedAbilities, modifyMilitarySkill } from '../../../build/server/game/effects.js';
 import { AbilityType } from '../../../build/server/game/Constants.js';
@@ -17,7 +17,7 @@ describe('Losing gained abilities', function () {
             this.liar = this.player1.findCardByName('bayushi-liar');
 
             this.applyEffect = (card, effect) => {
-                const context = new ThenAbility(card, {}).createContext(this.player1.player);
+                const context = new ResolvableAbility(card, {}).createContext(this.player1.player);
                 this.game.queueSimpleStep(() => cardLastingEffect({ duration: 'untilEndOfRound', effect }).resolve(card, context));
                 this.game.continue();
             };
@@ -39,7 +39,7 @@ describe('Losing gained abilities', function () {
         it('keeps printed keyword abilities working', function () {
             this.applyEffect(this.liar, loseGainedAbilities());
             const hand = this.player1.hand.length;
-            const context = new ThenAbility(this.berserker, {}).createContext(this.player1.player);
+            const context = new ResolvableAbility(this.berserker, {}).createContext(this.player1.player);
             this.game.queueSimpleStep(() => sacrifice().resolve(this.liar, context));
             this.game.continue();
             expect(this.liar.location).toBe('dynasty discard pile');

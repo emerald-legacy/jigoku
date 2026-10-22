@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../build/server/game/ResolvableAbility.js';
 import {
     bow, chooseAction, conditional, draw, ifAble, joint, multiple, noAction, onAffinity, optional, sequential
 } from '../../../build/server/game/GameActions/GameActions.js';
@@ -14,7 +14,7 @@ describe('composite game actions and default targets', function() {
             });
             this.whisperer = this.player1.findCardByName('doji-whisperer');
             this.brash = this.player1.findCardByName('brash-samurai');
-            this.context = new ThenAbility(this.whisperer, {}).createContext(this.player1.player);
+            this.context = new ResolvableAbility(this.whisperer, {}).createContext(this.player1.player);
 
             this.targetsPassed = (composite, actions, overrides = {}) => {
                 const spies = actions.map((action) => spyOn(action, 'hasTargetsChosenByInitiatingPlayer').and.callThrough());

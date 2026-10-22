@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../build/server/game/ResolvableAbility.js';
 import { attach } from '../../../build/server/game/GameActions/GameActions.js';
 
 describe('a gained ability with its own limit, gained again by the same character', function() {
@@ -16,7 +16,7 @@ describe('a gained ability with its own limit, gained again by the same characte
             this.tetsubo = this.player1.findCardByName('sturdy-tetsubo');
             this.player1.playAttachment(this.tetsubo, this.manipulator);
 
-            const context = new ThenAbility(this.liar, {}).createContext(this.player1.player);
+            const context = new ResolvableAbility(this.liar, {}).createContext(this.player1.player);
             this.move = (target) => {
                 this.game.queueSimpleStep(() => attach({ attachment: this.tetsubo }).resolve(target, context));
                 this.game.continue();

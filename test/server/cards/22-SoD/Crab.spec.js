@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
 import { sendHome } from '../../../../build/server/game/GameActions/GameActions.js';
 
 describe('SoD - Crab', function () {
@@ -288,7 +288,7 @@ describe('SoD - Crab', function () {
                 this.player2.pass();
                 this.player1.clickCard(this.deadeyes);
 
-                const context = new ThenAbility(this.swordsmith, {}).createContext(this.player1.player);
+                const context = new ResolvableAbility(this.swordsmith, {}).createContext(this.player1.player);
                 this.game.queueSimpleStep(() => sendHome().resolve(this.skirmisher, context));
                 this.game.continue();
                 expect(this.skirmisher.isParticipating()).toBe(true);

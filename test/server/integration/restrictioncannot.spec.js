@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../build/server/game/ResolvableAbility.js';
 import { bow, cardLastingEffect, honor } from '../../../build/server/game/GameActions/GameActions.js';
 import { immunity } from '../../../build/server/game/effects.js';
 
@@ -17,7 +17,7 @@ describe('A restriction with cannot', function () {
             this.whisperer = this.player1.findCardByName('doji-whisperer');
             this.adept = this.player2.findCardByName('adept-of-the-waves');
             this.resolve = (action, target, player) => {
-                const context = new ThenAbility(this.whisperer, {}).createContext(player);
+                const context = new ResolvableAbility(this.whisperer, {}).createContext(player);
                 this.game.queueSimpleStep(() => action.resolve(target, context));
                 this.game.continue();
             };

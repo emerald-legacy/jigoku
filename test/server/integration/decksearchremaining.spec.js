@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../build/server/game/ResolvableAbility.js';
 import { RemainingCards } from '../../../build/server/game/Constants.js';
 import { deckSearch, moveCard } from '../../../build/server/game/GameActions/GameActions.js';
 
@@ -21,7 +21,7 @@ describe('a deck search\'s remaining cards', function() {
             this.assassination = this.player1.moveCard('assassination', 'conflict deck');
 
             this.search = (remainingCards) => {
-                const context = new ThenAbility(this.whisperer, {}).createContext(this.player1.player);
+                const context = new ResolvableAbility(this.whisperer, {}).createContext(this.player1.player);
                 const action = deckSearch({ cardsToLookAt: 4, gameAction: moveCard({ destination: 'hand' }), remainingCards });
                 this.game.queueSimpleStep(() => action.resolve(this.player1.player, context));
                 this.game.continue();

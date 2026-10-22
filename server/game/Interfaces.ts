@@ -18,7 +18,7 @@ import type { DuelProperties } from './GameActions/DuelAction.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
 import type { Players, TargetMode, CardType, Location, EventName, Phase, Trait } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
-import type { ThenAbilityProperties } from './ThenAbility.js';
+import type { ResolvableAbilityProperties } from './ResolvableAbility.js';
 import type { MessageArgs } from './GameChat.js';
 
 interface BaseTarget {
@@ -169,7 +169,7 @@ interface AbilityProps<Context> {
     evenDuringDynasty?: boolean;
     gameAction?: NoInfer<DeclaredGameAction<Context> | DeclaredGameAction<Context>[]>;
     handler?: OwnContextCallback<[context: Context], void>;
-    then?: ThenAbilityProperties | OwnContextCallback<[context: Context], ThenAbilityProperties | undefined>;
+    then?: ResolvableAbilityProperties | OwnContextCallback<[context: Context], ResolvableAbilityProperties | undefined>;
 }
 
 export interface ActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
@@ -216,7 +216,7 @@ export interface TriggeredAbilityWhenProps<Source extends EffectSource = BaseCar
     target?: TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
     handler?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], void>;
-    then?: ThenAbilityProperties | OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], ThenAbilityProperties | undefined>;
+    then?: ResolvableAbilityProperties | OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], ResolvableAbilityProperties | undefined>;
 }
 
 export interface TriggeredAbilityAggregateWhenProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
@@ -226,7 +226,7 @@ export interface TriggeredAbilityAggregateWhenProps<Source extends EffectSource 
     target?: TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
     handler?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], void>;
-    then?: ThenAbilityProperties | OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], ThenAbilityProperties | undefined>;
+    then?: ResolvableAbilityProperties | OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], ResolvableAbilityProperties | undefined>;
 }
 
 export type TriggeredAbilityProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;

@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
 import { sacrifice } from '../../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Hojatsu Devotee', function () {
@@ -96,7 +96,7 @@ describe('Hojatsu Devotee sacrificed', function () {
         });
 
         it('does not react when an opponent\'s ability sacrifices it', function () {
-            const context = new ThenAbility(this.challenger, {}).createContext(this.player1.player);
+            const context = new ResolvableAbility(this.challenger, {}).createContext(this.player1.player);
             this.game.queueSimpleStep(() => sacrifice().resolve(this.hojatsuDevotee, context));
             this.game.continue();
             expect(this.hojatsuDevotee.location).toBe('dynasty discard pile');

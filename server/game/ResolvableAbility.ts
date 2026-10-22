@@ -10,12 +10,12 @@ import type { EventWindow } from './Events/EventWindow.js';
 import type { ThenEventWindow } from './Events/ThenEventWindow.js';
 import type { OwnContextCallback } from './Interfaces.js';
 
-export interface ThenAbilityProperties<Context extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
+export interface ResolvableAbilityProperties<Context extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
     gameAction?: DeclaredGameAction<Context> | DeclaredGameAction<Context>[];
     handler?: OwnContextCallback<[context: Context], void>;
     /** Runs when the ability starts resolving, before its handler or game actions. */
     onResolve?: OwnContextCallback<[context: Context], void>;
-    then?: ThenAbilityProperties | OwnContextCallback<[context: Context], ThenAbilityProperties | undefined>;
+    then?: ResolvableAbilityProperties | OwnContextCallback<[context: Context], ResolvableAbilityProperties | undefined>;
     // called with the context on the immediate path, with an Event via EventWindow.addThenAbility
     thenCondition?(contextOrEvent: Context | Event): boolean;
     /** The step's whole chat line; nothing when it returns undefined. */
@@ -24,12 +24,13 @@ export interface ThenAbilityProperties<Context extends AbilityContext = AbilityC
     inheritTargets?: boolean;
 }
 
-export class ThenAbility extends BaseCardAbility {
-    properties: ThenAbilityProperties;
+/** An ability that resolves its game actions or handler, then its following steps: card abilities extend it, and each step is one. */
+export class ResolvableAbility extends BaseCardAbility {
+    properties: ResolvableAbilityProperties;
     handler: (context: AbilityContext) => void;
     override cannotTargetFirst = true;
 
-    constructor(card: BaseCard, properties: ThenAbilityProperties) {
+    constructor(card: BaseCard, properties: ResolvableAbilityProperties) {
         super(card, properties);
 
         this.properties = properties;
@@ -49,7 +50,7 @@ export class ThenAbility extends BaseCardAbility {
             if(!then) {
                 return false;
             }
-            const thenAbility = new ThenAbility(this.card, then);
+            const thenAbility = new ResolvableAbility(this.card, then);
             return thenAbility.meetsRequirements(thenAbility.createThenContext(context)) === Blocker.None;
         }
         return false;
@@ -64,7 +65,7 @@ export class ThenAbility extends BaseCardAbility {
         if(!then || typeof then === 'function') {
             return false;
         }
-        const thenAbility = new ThenAbility(this.card, then);
+        const thenAbility = new ResolvableAbility(this.card, then);
         return thenAbility.hasTargetsChosenByInitiatingPlayer(thenAbility.createThenContext(context));
     }
 
@@ -129,16 +130,16 @@ export class ThenAbility extends BaseCardAbility {
             if(eventsToResolve.length > 0) {
                 const window = this.openEventWindow(eventsToResolve);
                 if(then) {
-                    window.addThenAbility(new ThenAbility(this.card, then), context, then.thenCondition);
+                    window.addThenAbility(new ResolvableAbility(this.card, then), context, then.thenCondition);
                 }
             } else if(then && this.followsResolvedEvents(context, then)) {
-                this.game.resolveAbility(new ThenAbility(this.card, then).createThenContext(context));
+                this.game.resolveAbility(new ResolvableAbility(this.card, then).createThenContext(context));
             }
         });
     }
 
     /** Whether `then` follows when this step's events already resolved (e.g. in a `sequential`), as an event window decides. */
-    private followsResolvedEvents(context: AbilityContext, then: ThenAbilityProperties): boolean {
+    private followsResolvedEvents(context: AbilityContext, then: ResolvableAbilityProperties): boolean {
         if(context.events.length === 0) {
             return !!then.thenCondition?.(context);
         }

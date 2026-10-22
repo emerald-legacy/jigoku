@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../build/server/game/ResolvableAbility.js';
 import { AbilityBuilder, toActionProps, createDraft } from '../../../build/server/game/AbilityBuilder.js';
 import { bow } from '../../../build/server/game/GameActions/GameActions.js';
 
@@ -14,7 +14,7 @@ describe('then step context', function() {
             this.whisperer = this.player1.findCardByName('doji-whisperer');
             this.brash = this.player1.findCardByName('brash-samurai');
 
-            this.parent = new ThenAbility(this.whisperer, {}).createContext(this.player1.player);
+            this.parent = new ResolvableAbility(this.whisperer, {}).createContext(this.player1.player);
             this.parent.targets.character = this.brash;
             this.parent.target = this.brash;
             this.parent.selects.choice = { choice: 'Honor' };
@@ -22,7 +22,7 @@ describe('then step context', function() {
         });
 
         it('starts with the chosen targets, selects and costs of the step before', function() {
-            const context = new ThenAbility(this.whisperer, { inheritTargets: true }).createThenContext(this.parent);
+            const context = new ResolvableAbility(this.whisperer, { inheritTargets: true }).createThenContext(this.parent);
 
             expect(context.targets.character).toBe(this.brash);
             expect(context.target).toBe(this.brash);
@@ -35,7 +35,7 @@ describe('then step context', function() {
             const event = this.game.getEvent('onTestEvent', {});
             this.parent.events.push(event);
             this.parent.deckSearchSelected = [this.brash];
-            const context = new ThenAbility(this.whisperer, { inheritTargets: true }).createThenContext(this.parent);
+            const context = new ResolvableAbility(this.whisperer, { inheritTargets: true }).createThenContext(this.parent);
 
             expect(context.previousEvents).toEqual([event]);
             expect(context.events).toEqual([]);
@@ -44,14 +44,14 @@ describe('then step context', function() {
         });
 
         it('copies the records, so its own targets stay in the step', function() {
-            const context = new ThenAbility(this.whisperer, { inheritTargets: true }).createThenContext(this.parent);
+            const context = new ResolvableAbility(this.whisperer, { inheritTargets: true }).createThenContext(this.parent);
             context.targets.other = this.whisperer;
 
             expect(this.parent.targets.other).toBeUndefined();
         });
 
         it('starts empty without inheritTargets', function() {
-            const context = new ThenAbility(this.whisperer, {}).createThenContext(this.parent);
+            const context = new ResolvableAbility(this.whisperer, {}).createThenContext(this.parent);
 
             expect(context.targets.character).toBeUndefined();
             expect(context.target).toBeUndefined();
@@ -116,7 +116,7 @@ describe('afterwards(), thenIf() and onResolve() in the ability builder', functi
         it('onResolve(): runs when the ability starts resolving, before a handler too', function() {
             const calls = [];
             this.builder.onResolve(() => calls.push('hook')).handler(() => calls.push('handler'));
-            const ability = new ThenAbility(this.player1.findCardByName('doji-whisperer'), toActionProps(this.draft));
+            const ability = new ResolvableAbility(this.player1.findCardByName('doji-whisperer'), toActionProps(this.draft));
 
             ability.executeHandler(this.context);
             expect(calls).toEqual(['hook', 'handler']);
@@ -125,7 +125,7 @@ describe('afterwards(), thenIf() and onResolve() in the ability builder', functi
         it('onResolve(): not run when the ability is only checked for legality', function() {
             const calls = [];
             this.builder.gameAction(bow({ target: [], optional: true })).onResolve(() => calls.push('hook')).then().gainHonor(1);
-            const ability = new ThenAbility(this.player1.findCardByName('doji-whisperer'), toActionProps(this.draft));
+            const ability = new ResolvableAbility(this.player1.findCardByName('doji-whisperer'), toActionProps(this.draft));
 
             expect(ability.checkGameActionsForPotential(this.context)).toBe(true);
             expect(calls).toEqual([]);

@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
 import { cardLastingEffect } from '../../../../../build/server/game/GameActions/GameActions.js';
 import { modifyBaseMilitarySkillMultiplier } from '../../../../../build/server/game/effects.js';
 
@@ -51,7 +51,7 @@ describe('Cantor of Gales', function () {
         });
 
         it('contributes its base skill, not a fixed 2', function () {
-            const context = new ThenAbility(this.cantor, {}).createContext(this.player1.player);
+            const context = new ResolvableAbility(this.cantor, {}).createContext(this.player1.player);
             this.game.queueSimpleStep(() => cardLastingEffect({
                 duration: 'untilEndOfRound',
                 effect: modifyBaseMilitarySkillMultiplier(2)

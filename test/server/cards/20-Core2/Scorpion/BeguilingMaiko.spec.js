@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
 import { putIntoPlay } from '../../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Beguiling Maiko', function () {
@@ -79,7 +79,7 @@ describe('Beguiling Maiko put into play', function () {
         });
 
         it('does not react when put into play', function () {
-            const context = new ThenAbility(this.whisperer, {}).createContext(this.player1.player);
+            const context = new ResolvableAbility(this.whisperer, {}).createContext(this.player1.player);
             this.game.queueSimpleStep(() => putIntoPlay().resolve(this.maiko, context));
             this.game.continue();
             expect(this.maiko.location).toBe('play area');

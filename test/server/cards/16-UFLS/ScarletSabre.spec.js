@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
 import { takeControl } from '../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Scarlet Sabre', function () {
@@ -86,7 +86,7 @@ describe('Scarlet Sabre on a character the opponent took control of', function (
             this.yogoHiroue = this.player2.findCardByName('yogo-hiroue');
             this.reactions = this.manipulator.getReactions().length;
             this.sabre = this.player1.playAttachment('scarlet-sabre', this.manipulator);
-            const context = new ThenAbility(this.yogoHiroue, {}).createContext(this.player2.player);
+            const context = new ResolvableAbility(this.yogoHiroue, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => takeControl().resolve(this.manipulator, context));
             this.game.continue();
         });

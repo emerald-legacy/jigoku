@@ -1,4 +1,4 @@
-import { ThenAbility } from '../../../../../build/server/game/ThenAbility.js';
+import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
 import { bow } from '../../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Kakita\'s First Kata', function() {
@@ -138,7 +138,7 @@ describe('Kakita\'s First Kata with a bow before the conflict', function() {
         });
 
         it('does not ready a character bowed before the conflict', function() {
-            const context = new ThenAbility(this.vice, {}).createContext(this.player1.player);
+            const context = new ResolvableAbility(this.vice, {}).createContext(this.player1.player);
             this.game.queueSimpleStep(() => bow().resolve(this.yoshi, context));
             this.game.continue();
             expect(this.yoshi.bowed).toBe(true);

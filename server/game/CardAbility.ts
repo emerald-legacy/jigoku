@@ -1,8 +1,8 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import type { AbilityLimit as IAbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
-import { ThenAbility } from './ThenAbility.js';
-import type { ThenAbilityProperties } from './ThenAbility.js';
+import { ResolvableAbility } from './ResolvableAbility.js';
+import type { ResolvableAbilityProperties } from './ResolvableAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { Location, CardType, EffectName, Phase, Blocker } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
@@ -14,7 +14,7 @@ import { msg, type MessageArgs, type MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
 import { joinEffectMessages } from './GameActions/GameAction.js';
 
-export interface CardAbilityProperties<Context extends AbilityContext = AbilityContext> extends ThenAbilityProperties<Context> {
+export interface CardAbilityProperties<Context extends AbilityContext = AbilityContext> extends ResolvableAbilityProperties<Context> {
     title?: string;
     limit?: IAbilityLimit;
     location?: Location | Location[];
@@ -66,7 +66,7 @@ function nextPrintedAbilityNumber(card: BaseCard): number {
     return number;
 }
 
-export class CardAbility extends ThenAbility {
+export class CardAbility extends ResolvableAbility {
     declare properties: CardAbilityProperties;
     override title?: string;
     override limit: IAbilityLimit;

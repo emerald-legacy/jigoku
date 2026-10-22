@@ -6,7 +6,7 @@ import type { GameObject } from '../GameObject.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { AnyEvent, TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
-import { ThenAbility } from '../ThenAbility.js';
+import { ResolvableAbility } from '../ResolvableAbility.js';
 
 export interface CancelProperties extends GameActionProperties {
     replacementGameAction?: GameAction;
@@ -95,7 +95,7 @@ export class CancelAction<Context extends CancellingContext = TriggeredAbilityCo
                 if(thenGameAction && eventWindow && events.length > 0) {
                     const thenContext = context.copy({});
                     thenContext.events = events;
-                    eventWindow.addThenAbility(new ThenAbility(context.source, { gameAction: thenGameAction }), thenContext);
+                    eventWindow.addThenAbility(new ResolvableAbility(context.source, { gameAction: thenGameAction }), thenContext);
                 }
             });
         }
