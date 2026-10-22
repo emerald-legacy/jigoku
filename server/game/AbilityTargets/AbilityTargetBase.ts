@@ -6,7 +6,7 @@ import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/Gam
 import type { PromptButton } from '../PlayerPromptState.js';
 import { waitingPromptTitle } from './TargetPrompt.js';
 
-export interface AbilityTargetBaseProperties {
+interface AbilityTargetBaseProperties {
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
 }

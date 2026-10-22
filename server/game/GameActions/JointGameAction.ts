@@ -5,7 +5,7 @@ import { CompositeGameAction } from './CompositeGameAction.js';
 import type { GameAction, GameActionProperties } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
-export interface JointGameProperties extends GameActionProperties {
+interface JointGameProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 

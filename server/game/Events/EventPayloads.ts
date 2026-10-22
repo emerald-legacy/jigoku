@@ -38,10 +38,6 @@ interface EventPayloadMap {
         player?: Player;
         ring?: Ring;
         cardStateWhenMoved?: DrawCard;
-        postBidAction?: GameAction;
-        message?: (context: AbilityContext) => MessageArgs;
-        duel?: Duel | null;
-        isHonorBid?: boolean;
     };
     [EventName.OnCardPlayed]: BaseEventPayload & {
         player: Player;
@@ -265,8 +261,6 @@ interface EventPayloadMap {
     [EventName.OnHonorBid]: BaseEventPayload & {
         player: Player;
         giveHonor?: boolean;
-        prohibitedBids?: number[];
-        players?: Players;
         postBidAction?: GameAction;
         message?: (context: AbilityContext) => MessageArgs;
     };

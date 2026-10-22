@@ -6,7 +6,7 @@ import type { EventName } from '../Constants.js';
 
 export type RingActionProperties = GameActionProperties;
 
-export type RingEvent<EventType extends EventName, Context extends AbilityContext> = ActionEvent<EventType, Context> & { ring: Ring };
+type RingEvent<EventType extends EventName, Context extends AbilityContext> = ActionEvent<EventType, Context> & { ring: Ring };
 
 export class RingAction<
     Properties extends RingActionProperties = RingActionProperties,

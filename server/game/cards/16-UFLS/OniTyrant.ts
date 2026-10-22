@@ -3,7 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { handler, putIntoConflict } from '../../GameActions/GameActions.js';
 import type { Event } from '../../Events/Event.js';
-import { createSummonedCopy, summonEffectArgs, summonEffectMessage } from '../summonCreature.js';
+import { createSummonedCopy, summonChatText } from '../summonCreature.js';
 
 const oniTyrantCost = function (): Cost<{ oniTyrantCostCreature: DrawCard | undefined }> {
     return {
@@ -56,7 +56,7 @@ class OniTyrant extends DrawCard {
             .gameAction(putIntoConflict((context) => ({
                 target: context.costs.oniTyrantCostCreature || context.player.outsideTheGameCards[1]
             })))
-            .chatText(summonEffectMessage, (context) => summonEffectArgs(context.costs.oniTyrantCostCreature));
+            .chatText((context) => summonChatText(context.costs.oniTyrantCostCreature));
     }
 }
 

@@ -715,7 +715,7 @@ this.action('Play this from the discard pile')
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>phase</code></td><td><code>Phase | 'any'</code></td><td><code>'any'</code></td><td>The phase.</td></tr>
+        <tr><td><code>phase</code></td><td><code>Phase</code></td><td>required</td><td>The phase.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1512,13 +1512,12 @@ this.action('Place a fate on a participating character, bow it, move it home, an
   </div>
 
   <div class="ref" id="b-chatText" data-name="chatText">
-    <h3><code>chatText(message, args?)</code> · <code>chatText(fn)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-chatText">#</a></h3>
+    <h3><code>chatText(message)</code> · <code>chatText(fn)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-chatText">#</a></h3>
     <p>What the chat says the ability does, after "… uses {card} to ".</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>message</code></td><td><code>string</code></td><td>required (first form)</td><td>A format: <code>{0}</code> is the target named <code>target</code> (a card, or the list of a <code>targetCards()</code>), else the ring target, else the source; <code>{1}</code> onwards are <code>args</code>' entries.</td></tr>
-        <tr><td><code>args</code></td><td><code>(context) =&gt; EffectArg</code></td><td>none</td><td>The further arguments: one value or an array.</td></tr>
         <tr><td><code>fn</code></td><td><code>(context) =&gt; msg…</code></td><td>required (second form)</td><td>A <code>msg</code> template; <code>context.chatTarget()</code> is what <code>{0}</code> would be.</td></tr>
       </tbody>
     </table>

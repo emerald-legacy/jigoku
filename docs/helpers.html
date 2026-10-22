@@ -1279,10 +1279,10 @@ private msgArticle(card: DrawCard): string {
 <section class="group">
   <h3 class="group-title" id="he-group-oni">Oni summoning (not used in Jigoku)</h3>
 
-  <div class="ref" id="he-createSummonedCopy" data-name="createSummonedCopy summonEffectMessage summonEffectArgs BaseOni">
-    <h3><code>createSummonedCopy</code>, <code>summonEffectMessage</code>, <code>summonEffectArgs</code>, <code>BaseOni</code> <span class="kind">Special mode</span> <a class="anchor" href="#he-createSummonedCopy">#</a></h3>
+  <div class="ref" id="he-createSummonedCopy" data-name="createSummonedCopy summonChatText BaseOni">
+    <h3><code>createSummonedCopy</code>, <code>summonChatText</code>, <code>BaseOni</code> <span class="kind">Special mode</span> <a class="anchor" href="#he-createSummonedCopy">#</a></h3>
     <p class="warn">The Oni cards (<code>16-UFLS-Oni/</code>) and the summon cards (Accursed Summoning, Oni Tyrant) belong to a special mode that Jigoku does not use. Don't build new cards on these helpers.</p>
-    <p><code>createSummonedCopy(context, creature)</code> makes a new copy of a creature from outside the game and adds it to <code>game.allCards</code>. <code>summonEffectMessage</code> (<code>'summon {2} {1} from the depths of the Shadowlands!'</code>) and <code>summonEffectArgs(creature)</code> are the chat text. <code>BaseOni</code> (in <code>16-UFLS-Oni/_BaseOni.ts</code>) removes the card from the game whenever it leaves play.</p>
+    <p><code>createSummonedCopy(context, creature)</code> makes a new copy of a creature from outside the game and adds it to <code>game.allCards</code>. <code>summonChatText(creature)</code> is the chat text ("summon a <em>creature</em> from the depths of the Shadowlands!"). <code>BaseOni</code> (in <code>16-UFLS-Oni/_BaseOni.ts</code>) removes the card from the game whenever it leaves play.</p>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/AccursedSummoning.ts">Accursed Summoning</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/OniTyrant.ts">Oni Tyrant</a>, the cards in <a href="https://github.com/emerald-legacy/jigoku/tree/main/server/game/cards/16-UFLS-Oni">16-UFLS-Oni</a></p>
   </div>
 </section>

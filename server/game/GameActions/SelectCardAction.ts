@@ -56,7 +56,7 @@ export interface SelectCardsProperties<Context extends AbilityContext = AbilityC
  * What the action works with: the card type is checked once, in `cardCondition`.
  * Callbacks taking the context use method syntax, so an action for a narrower context stays assignable.
  */
-export interface SelectCardActionProperties<Context extends AbilityContext = AbilityContext> extends Omit<SelectCardBase<Context, CardTypes>, 'cardType' | 'cardCondition' | 'chatText'> {
+interface SelectCardActionProperties<Context extends AbilityContext = AbilityContext> extends Omit<SelectCardBase<Context, CardTypes>, 'cardType' | 'cardCondition' | 'chatText'> {
     cardType?: CardType | CardType[];
     cardCondition?(card: BaseCard, context: Context): boolean;
     chatText?(context: Context): MessageArgs;
@@ -120,7 +120,7 @@ export function eraseSelectCardsProperties<Context extends AbilityContext, Types
     };
 }
 
-export function actionFor(gameAction: SelectCardActionProperties['gameAction'], cards: BaseCard | BaseCard[]): GameAction {
+function actionFor(gameAction: SelectCardActionProperties['gameAction'], cards: BaseCard | BaseCard[]): GameAction {
     return typeof gameAction === 'function' ? gameAction(cards) : gameAction;
 }
 

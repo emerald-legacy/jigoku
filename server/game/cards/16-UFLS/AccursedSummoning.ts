@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { loseHonor, putIntoConflict } from '../../GameActions/GameActions.js';
 import type { Event } from '../../Events/Event.js';
 import type { Cost } from '../../costs/Cost.js';
-import { createSummonedCopy, summonEffectArgs, summonEffectMessage } from '../summonCreature.js';
+import { createSummonedCopy, summonChatText } from '../summonCreature.js';
 
 const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature: DrawCard | undefined; accursedSummoningCost: number | null }> {
     return {
@@ -104,7 +104,7 @@ class AccursedSummoning extends DrawCard {
             .gameAction(putIntoConflict((context) => ({
                 target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
             })))
-            .chatText(summonEffectMessage, (context) => summonEffectArgs(context.costs.accursedSummoningCostCreature));
+            .chatText((context) => summonChatText(context.costs.accursedSummoningCostCreature));
     }
 
     override isTemptationsMaho() {

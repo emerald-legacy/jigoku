@@ -9,7 +9,7 @@ import { initiateDuel } from './DuelHelper.js';
 import type BaseCard from './BaseCard.js';
 import { GameObject } from './GameObject.js';
 import type { AbilityContext } from './AbilityContext.js';
-import type { EffectArg, InitiateDuel, OwnContextCallback } from './Interfaces.js';
+import type { InitiateDuel, OwnContextCallback } from './Interfaces.js';
 import { msg, type MessageArgs, type MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
 import { joinEffectMessages } from './GameActions/GameAction.js';
@@ -32,7 +32,6 @@ export interface CardAbilityProperties<Context extends AbilityContext = AbilityC
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     /** A format whose `{0}` is the target, or a message without positions (`msg` template). */
     chatText?: string | OwnContextCallback<[context: Context], MessageArgs | undefined>;
-    chatTextArgs?: EffectArg | OwnContextCallback<[context: Context], EffectArg>;
 }
 
 /** Cost results are open-ended; only those the chat can format are passed to it. */
@@ -71,7 +70,6 @@ export class CardAbility extends ThenAbility {
     declare properties: CardAbilityProperties;
     override title?: string;
     override limit: IAbilityLimit;
-    abilityCost: Cost[];
     location: Location[];
     override printedAbility: boolean;
     override cannotBeCancelled?: boolean;
@@ -97,7 +95,6 @@ export class CardAbility extends ThenAbility {
         this.limit = properties.limit || AbilityLimit.perRound(1);
         this.limit.registerEvents(card.game);
         this.limit.ability = this;
-        this.abilityCost = this.cost;
         this.location = this.buildLocation(card, properties.location);
         this.printedAbility = properties.printedAbility === false ? false : true;
         this.cannotBeCancelled = properties.cannotBeCancelled;
@@ -294,26 +291,17 @@ export class CardAbility extends ThenAbility {
         const effect = this.properties.chatText;
         let effectMessage: string | undefined;
         let effectArgs: MsgArg[] = [];
-        let extraArgs: MsgArg[] | EffectArg | ((context: AbilityContext) => EffectArg) | null | undefined = null;
         if(typeof effect === 'function') {
             [effectMessage, effectArgs] = effect(context) ?? [undefined, []];
         } else if(effect) {
             effectMessage = effect;
             effectArgs.push(context.chatTarget());
-            extraArgs = this.properties.chatTextArgs;
         }
         if(!effectMessage) {
             const gameActions = this.getGameActions(context).filter(({ action, overrides }) => action.hasLegalTarget(context, overrides));
             if(gameActions.length > 0) {
-                [effectMessage, extraArgs] = joinEffectMessages(context, gameActions);
+                [effectMessage, effectArgs] = joinEffectMessages(context, gameActions);
             }
-        }
-
-        if(extraArgs) {
-            if(typeof extraArgs === 'function') {
-                extraArgs = extraArgs(context);
-            }
-            effectArgs = effectArgs.concat(extraArgs);
         }
 
         if(effectMessage) {

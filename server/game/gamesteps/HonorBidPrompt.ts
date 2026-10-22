@@ -14,16 +14,14 @@ export class HonorBidPrompt extends AllPlayerPrompt {
     prohibitedBids: Record<string, string[]>;
     duel: Duel | null;
     bid: Record<string, number>;
-    raiseEvent: boolean;
 
-    constructor(game: Game, menuTitle: string, costHandler?: HonorBidCostHandler, prohibitedBids: Record<string, string[]> = {}, duel: Duel | null = null, raiseEvent = true) {
+    constructor(game: Game, menuTitle: string, costHandler?: HonorBidCostHandler, prohibitedBids: Record<string, string[]> = {}, duel: Duel | null = null) {
         super(game);
         this.menuTitle = menuTitle || 'Choose a bid';
         this.costHandler = costHandler;
         this.prohibitedBids = prohibitedBids;
         this.duel = duel;
         this.bid = {};
-        this.raiseEvent = raiseEvent;
     }
 
     override activeCondition(player: Player): boolean {
@@ -47,11 +45,7 @@ export class HonorBidPrompt extends AllPlayerPrompt {
                         .resolve(player, this.game.getFrameworkContext(player));
                 }
             };
-            if(this.raiseEvent) {
-                this.game.raiseEvent(EventName.OnHonorDialsRevealed, { duel: this.duel, isHonorBid }, revealDials);
-            } else {
-                this.game.raiseEvent(EventName.Unnamed, { duel: this.duel, isHonorBid }, revealDials);
-            }
+            this.game.raiseEvent(EventName.OnHonorDialsRevealed, { duel: this.duel, isHonorBid }, revealDials);
             if(this.duel) {
                 this.game.raiseEvent(EventName.OnDuelFocus, { duel: this.duel, isHonorBid });
             }

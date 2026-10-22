@@ -6,7 +6,7 @@ import type { GameActionList } from './MultipleGameAction.js';
 import type { GameAction, GameActionProperties } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 
-export interface SequentialProperties extends GameActionProperties {
+interface SequentialProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 

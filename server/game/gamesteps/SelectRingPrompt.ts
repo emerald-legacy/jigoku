@@ -51,7 +51,6 @@ export class SelectRingPrompt extends UiPrompt {
     choosingPlayer: Player;
     properties: ResolvedSelectRingPromptProperties;
     context: AbilityContext;
-    selectedRing: Ring | null;
 
     constructor(game: Game, choosingPlayer: Player, properties: SelectRingPromptProperties) {
         super(game);
@@ -71,7 +70,6 @@ export class SelectRingPrompt extends UiPrompt {
             hideIfNoLegalTargets: properties.hideIfNoLegalTargets ?? false
         };
         this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: source });
-        this.selectedRing = null;
     }
 
     override activeCondition(player: Player): boolean {

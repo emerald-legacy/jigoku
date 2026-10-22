@@ -12,13 +12,14 @@ export class CardAction extends CardAbility {
     anyPlayer: boolean;
     canTriggerOutsideConflict: boolean;
     conflictProvinceCondition: (province: ProvinceCard, context: AbilityContext) => boolean;
-    phase: Phase | 'any';
+    /** Usable only in this phase; any phase when not set. */
+    phase?: Phase;
     evenDuringDynasty: boolean;
 
     constructor(card: BaseCard, properties: ActionProps) {
         super(card, properties);
 
-        this.phase = properties.phase ?? 'any';
+        this.phase = properties.phase;
         this.evenDuringDynasty = properties.evenDuringDynasty ?? false;
         this.anyPlayer = properties.anyPlayer ?? false;
         this.conflictProvinceCondition = properties.conflictProvinceCondition ?? ((province) => province === this.card);
@@ -56,7 +57,7 @@ export class CardAction extends CardAbility {
             return Blocker.WrongProvince;
         }
 
-        if(!ignoredBlockers.includes(Blocker.WrongPhase) && this.phase !== 'any' && this.phase !== this.game.currentPhase) {
+        if(!ignoredBlockers.includes(Blocker.WrongPhase) && this.phase !== undefined && this.phase !== this.game.currentPhase) {
             return Blocker.WrongPhase;
         }
 

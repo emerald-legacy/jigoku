@@ -38,7 +38,7 @@ export function toEffectList(effect: EffectFactory | EffectFactory[] | undefined
 
 export type LastingEffectProperties<Context extends AbilityContext = AbilityContext> = LastingEffectGeneralProperties<Context>;
 
-export interface PlayerLastingEffectProperties<Context extends AbilityContext = AbilityContext> extends LastingEffectGeneralProperties<Context> {
+interface PlayerLastingEffectProperties<Context extends AbilityContext = AbilityContext> extends LastingEffectGeneralProperties<Context> {
     target?: Player | Player[];
 }
 

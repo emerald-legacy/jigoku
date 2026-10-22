@@ -6,7 +6,7 @@ import type { Event } from '../../Events/Event.js';
 import type Player from '../../Player.js';
 
 /** An ability that triggerAbility or resolveAbility resolves. */
-export interface AbilityToResolve {
+interface AbilityToResolve {
     ability: CardAbility;
     subResolution?: boolean;
     player?: Player;

@@ -4,7 +4,7 @@ import { msg, type MsgArg } from '../GameChat.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 
-export interface DeckChoiceOptions {
+interface DeckChoiceOptions {
     /** Whose piles: the ability's player's, their opponent's, or both. */
     players: Players.Self | Players.Opponent | Players.Any;
     pile: 'deck' | 'discard pile';

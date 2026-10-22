@@ -3,7 +3,7 @@ import type Player from '../Player.js';
 import type Game from '../Game.js';
 
 /** Called for a button or control naming it, with the button's `arg`; returning true completes the prompt. */
-export type MenuHandler = (player: Player, arg: string) => boolean;
+type MenuHandler = (player: Player, arg: string) => boolean;
 
 /** The handlers a prompt's buttons and controls name, by method name. */
 export type MenuHandlers = Record<string, MenuHandler>;

@@ -2311,24 +2311,6 @@ this.duelChallenge('Add a character to the duel', (duel, context) =&gt; duel.cha
 <section class="group">
 <h3 class="group-title" id="ga-group-1-bids">Bids</h3>
 <p>Fate and honor bids, and changing a bid after the dials are revealed. Abilities that read a bid read the dial (<code>player.showBid</code>); <code>modifyBid</code> adds a modifier on top of it.</p>
-<div class="ref" id="ga-fateBid" data-name="fateBid">
-    <h3><code>fateBid(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-fateBid">#</a></h3>
-    <p>Each player secretly chooses an amount of fate from their pool and loses it; then <code>postBidAction</code> resolves.</p>
-    <table>
-      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>target</code></td><td><code>Player | Player[]</code></td><td>the ability's player</td><td>Each target opens one bid for all players, so keep the default.</td></tr>
-        <tr><td><code>postBidAction</code></td><td><code>GameAction</code></td><td>none</td><td>Resolved after the bids, with the ability's player as its target unless it names its own.</td></tr>
-        <tr><td><code>message</code></td><td><code>(context) =&gt; MessageArgs</code></td><td><code>postBidAction</code>'s text</td><td>The chat line after the bids.</td></tr>
-      </tbody>
-    </table>
-    <ul class="edge">
-      <li>Each player can bid from 0 to their fate. Chat: "<em>player</em> spends <em>N</em> fate" for each; the ability's text: "have <em>both players</em> select an amount of fate from their pool".</li>
-      <li>Raises an unnamed event; the fate is lost through <code>loseFate</code>.</li>
-      <li>No builder shortcut.</li>
-    </ul>
-    <p class="seen">Not used by any card yet.</p>
-  </div>
 <div class="ref" id="ga-honorBid" data-name="honorBid">
     <h3><code>honorBid(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-honorBid">#</a></h3>
     <p>The players secretly choose a number on their honor dials and reveal them; then <code>postBidAction</code> resolves.</p>
@@ -2336,16 +2318,14 @@ this.duelChallenge('Add a character to the duel', (duel, context) =&gt; duel.cha
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>target</code></td><td><code>Player | Player[]</code></td><td>the ability's player</td><td>Each target opens one bid, so keep the default.</td></tr>
-        <tr><td><code>players</code></td><td><code>Players</code></td><td><code>Players.Any</code></td><td><code>Any</code>: both players bid. <code>Self</code> or <code>Opponent</code>: only that player sets their dial to 1–5 from a menu; there is no bid, and <code>prohibitedBids</code>, <code>postBidAction</code> and <code>message</code> are ignored. (<code>All</code> is treated as <code>Opponent</code>.)</td></tr>
         <tr><td><code>giveHonor</code></td><td><code>boolean</code></td><td><code>false</code></td><td>After the reveal, the higher bidder gives the difference in honor, as in the draw phase.</td></tr>
-        <tr><td><code>prohibitedBids</code></td><td><code>number[]</code></td><td><code>[]</code></td><td>Values neither player may choose.</td></tr>
         <tr><td><code>postBidAction</code></td><td><code>GameAction</code></td><td>none</td><td>Resolved after the reveal, with the ability's player as its target unless it names its own.</td></tr>
         <tr><td><code>message</code></td><td><code>(context) =&gt; MessageArgs</code></td><td><code>postBidAction</code>'s text</td><td>The chat line after the bid.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Raises <code>onHonorBid</code>, then <code>onHonorDialsRevealed</code> when the dials are revealed.</li>
-      <li>Chat: "bid honor" with <code>giveHonor</code>, otherwise "have <em>players</em> select a value on their honor dial".</li>
+      <li>Chat: "bid honor" with <code>giveHonor</code>, otherwise "have <em>both players</em> select a value on their honor dial".</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// Mischievous Tanuki: Action: During the conflict phase - you and another player secretly select a number on your honor dials. Then reveal your dials. If both players selected even or both players selected odd, you take 2 fate from the other player. Otherwise, the player who selected even gains 2 honor, and the player who selected odd draws 2 cards.

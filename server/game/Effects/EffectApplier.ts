@@ -22,15 +22,8 @@ const PoliticalModifiers = [
     EffectName.AttachmentPoliticalSkillModifier
 ] as const;
 
-const ProvinceStrengthModifiers = [
-    EffectName.ModifyProvinceStrength,
-    EffectName.ModifyProvinceStrengthMultiplier,
-    EffectName.SetBaseProvinceStrength
-] as const;
-
 type MilitaryModifierName = typeof MilitaryModifiers[number];
 type PoliticalModifierName = typeof PoliticalModifiers[number];
-type ProvinceStrengthModifierName = typeof ProvinceStrengthModifiers[number];
 
 const hasDash: Partial<Record<EffectName, (card: DrawCard, effect: EffectApplier<EffectName, GameObject, unknown>) => boolean>> = {
     [EffectName.ModifyBaseMilitarySkillMultiplier]: (card) => card.hasDash('military'),
@@ -106,9 +99,5 @@ export abstract class EffectApplier<EffectType extends EffectName = EffectName, 
 
     isSkillModifier(): this is EffectApplier<MilitaryModifierName | PoliticalModifierName> {
         return this.isMilitaryModifier() || this.isPoliticalModifier();
-    }
-
-    isProvinceStrengthModifier(): this is EffectApplier<ProvinceStrengthModifierName> {
-        return ProvinceStrengthModifiers.some((name) => name === this.type);
     }
 }

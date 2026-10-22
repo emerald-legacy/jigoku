@@ -19,7 +19,6 @@ import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
 import type { Players, TargetMode, CardType, Location, EventName, Phase, Trait } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
-import type Player from './Player.js';
 import type { MessageArgs } from './GameChat.js';
 
 interface BaseTarget {
@@ -142,20 +141,6 @@ export interface InitiateDuel extends DuelProperties {
     targetCondition?: (card: DrawCard, context: AbilityContext) => boolean;
 }
 
-export type EffectArg =
-    | number
-    | string
-    | Player
-    | BaseCard
-    | DrawCard
-    | ProvinceCard
-    | Ring
-    | StatusToken
-    | undefined
-    | null
-    | { id: string; label: string; name: string; facedown: boolean; type: CardType }
-    | EffectArg[];
-
 /**
  * A callback an ability calls with its own context. It's typed through a method, so it's
  * bivariant in its parameters: an ability declared for a narrower source (`AbilityContext<DrawCard>`)
@@ -182,7 +167,6 @@ interface AbilityProps<Context> {
     /** `undefined` from the function: the game actions' own text. */
     chatText?: string | OwnContextCallback<[context: Context], MessageArgs | undefined>;
     evenDuringDynasty?: boolean;
-    chatTextArgs?: EffectArg | OwnContextCallback<[context: Context], EffectArg>;
     gameAction?: NoInfer<DeclaredGameAction<Context> | DeclaredGameAction<Context>[]>;
     handler?: OwnContextCallback<[context: Context], void>;
     then?: ThenAbilityProperties | OwnContextCallback<[context: Context], ThenAbilityProperties | undefined>;
@@ -190,7 +174,7 @@ interface AbilityProps<Context> {
 
 export interface ActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
     condition?: OwnContextCallback<[context: AbilityContext<Source, Target>], boolean>;
-    phase?: Phase | 'any';
+    phase?: Phase;
     anyPlayer?: boolean;
     conflictProvinceCondition?: OwnContextCallback<[province: ProvinceCard, context: AbilityContext<Source, Target>], boolean>;
     canTriggerOutsideConflict?: boolean;

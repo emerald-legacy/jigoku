@@ -2,7 +2,7 @@ import type { GameAction } from './GameAction.js';
 import type * as GameActions from './GameActions.js';
 
 /** Looked up by a runtime name, so the argument types are unknown: callable with no args only. */
-export type GameActionFactory = (...args: never[]) => GameAction;
+type GameActionFactory = (...args: never[]) => GameAction;
 
 /** The names `allowGameAction` accepts: `GameActions` exports only factories. Keys only, so no factory type is resolved. */
 export type GameActionName = keyof typeof GameActions;

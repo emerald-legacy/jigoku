@@ -18,7 +18,6 @@ import type {
     ActionCardTarget,
     ActionProps,
     ActionRingTarget,
-    EffectArg,
     InitiateDuel,
     SubTarget,
     TargetAbility,
@@ -138,7 +137,6 @@ interface AbilityDraft {
     condition?: (context: AbilityContext) => boolean;
     ifCondition?: (context: AbilityContext) => boolean;
     chatText?: string | ((context: AbilityContext) => MessageArgs);
-    chatTextArgs?: (context: AbilityContext) => EffectArg;
     /** From a select's `{ action, chatText }` choices: the ability's chat line for the chosen label. */
     choiceChatText?: { select: string; texts: Record<string, string | ((context: AbilityContext) => MessageArgs)> };
     limit?: AbilityLimit;
@@ -170,7 +168,7 @@ interface AbilityDraft {
     /** The names of the card targets, in order. */
     cardTargets?: string[];
     initiateDuel?: (context: AbilityContext) => InitiateDuel;
-    phase?: Phase | 'any';
+    phase?: Phase;
     evenDuringDynasty?: boolean;
     conflictProvinceCondition?: (province: ProvinceCard, context: AbilityContext) => boolean;
     canTriggerOutsideConflict?: boolean;
@@ -1175,19 +1173,13 @@ export class AbilityBuilder<
 
     /**
      * What the chat says the ability does, after "{player} uses {card} to …": a format whose `{0}` is the target,
-     * with its later arguments; or a `msg` template.
+     * or a `msg` template.
      */
-    chatText(message: string, args?: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => EffectArg): this;
-    chatText(message: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => MessageArgs): this;
-    chatText(
-        message: string | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => MessageArgs),
-        args?: (context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => EffectArg
-    ): this {
+    chatText(message: string | ((context: BuilderContext<Base, Targets, Rings, Costs, Tokens>) => MessageArgs)): this {
         if(this.draft.isStep) {
             throw new Error(`${this.draft.title}: a then step prints its message with message()`);
         }
         this.#once('chatText', typeof message === 'string' ? message : this.#checked(message, this.draft.specs), 'chatText()');
-        this.draft.chatTextArgs = args && this.#checked(args, this.draft.specs);
         return this;
     }
 
@@ -1293,7 +1285,7 @@ export class AbilityBuilder<
     }
 
     /** Actions only: the phase the action can be used in. */
-    phase<Narrowed extends Base & ActionOnly>(this: AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames>, phase: Phase | 'any'): AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames> {
+    phase<Narrowed extends Base & ActionOnly>(this: AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames>, phase: Phase): AbilityBuilder<Narrowed, Targets, Rings, Costs, Tokens, SelectNames> {
         this.#once('phase', phase, 'phase()');
         return this;
     }
@@ -1370,7 +1362,7 @@ export class AbilityBuilder<
     }
 }
 
-export type TriggerBase<Source extends BaseCard, When, EventOptional extends boolean> =
+type TriggerBase<Source extends BaseCard, When, EventOptional extends boolean> =
     EventOptional extends true ? ProvinceTriggerContext<Source, When> : TriggerContext<Source, When>;
 
 type AggregateBase<Source extends BaseCard, EventOptional extends boolean> = EventOptional extends true
@@ -1488,7 +1480,6 @@ function commonProperties(ability: AbilityDraft) {
         ...(draft.handler ? { handler: draft.handler } : {}),
         ...(draft.onResolve ? { onResolve: draft.onResolve } : {}),
         ...chatTextProperties(draft),
-        ...(draft.chatTextArgs ? { chatTextArgs: draft.chatTextArgs } : {}),
         ...(draft.limit ? { limit: draft.limit } : {}),
         ...(draft.max ? { max: draft.max } : {}),
         ...(draft.location ? { location: draft.location } : {}),

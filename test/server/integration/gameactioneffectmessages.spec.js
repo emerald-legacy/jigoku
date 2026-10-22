@@ -24,18 +24,9 @@ describe('game action effect messages', function () {
             };
         });
 
-        it('names both bidders of a fate bid', function () {
-            expect(this.chatEffect(GameActions.fateBid())).toBe(
-                'have player1 and player2 select an amount of fate from their pool'
-            );
-        });
-
         it('names the honor bidders', function () {
             expect(this.chatEffect(GameActions.honorBid())).toBe(
                 'have player1 and player2 select a value on their honor dial'
-            );
-            expect(this.chatEffect(GameActions.honorBid({ players: 'self' }))).toBe(
-                'have player1 select a value on their honor dial'
             );
         });
 

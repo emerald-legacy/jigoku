@@ -2,7 +2,7 @@ import { EffectSource } from '../EffectSource.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Game from '../Game.js';
 
-export interface PromptSourceProperties {
+interface PromptSourceProperties {
     source?: EffectSource | string;
     context?: AbilityContext;
     waitingPromptTitle?: string;

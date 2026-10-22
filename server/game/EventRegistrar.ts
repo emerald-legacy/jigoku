@@ -5,7 +5,7 @@ import type { OwnContextCallback } from './Interfaces.js';
 import { eventNamesIn } from './utils/helpers.js';
 
 /** Handlers by game event, each getting its event typed; method syntax, so a narrower parameter fits. */
-export type EventHandlers = { [EventType in EventName]?: OwnContextCallback<[event: GameEvent<EventType>], void> };
+type EventHandlers = { [EventType in EventName]?: OwnContextCallback<[event: GameEvent<EventType>], void> };
 
 /** A card's listeners to game events and trigger windows, until `unregisterAll`. */
 export class EventRegistrar {

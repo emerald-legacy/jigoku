@@ -30,7 +30,6 @@ import { DishonorProvinceAction, type DishonorProvinceProperties } from './Disho
 import { DrawAction, type DrawProperties } from './DrawAction.js';
 import { DuelAction, type DuelProperties } from './DuelAction.js';
 import { DuelAddParticipantAction, type DuelAddParticipantProperties } from './DuelAddParticipantAction.js';
-import { FateBidAction, type FateBidProperties } from './FateBidAction.js';
 import { FillProvinceAction, type FillProvinceProperties } from './FillProvinceAction.js';
 import { FlipDynastyAction, type FlipDynastyProperties } from './FlipDynastyAction.js';
 import { FlipImperialFavorAction, type FlipFavorProperties } from './FlipImperialFavorAction.js';
@@ -144,7 +143,7 @@ export function atEndOfConflict<Context extends AbilityContext = AbilityContext>
         };
     });
 }
-export type AtEndOfConflictProperties<Context extends AbilityContext = AbilityContext> = Omit<LastingEffectCardProperties<Context>, 'duration' | 'until' | 'condition' | 'effect'> & {
+type AtEndOfConflictProperties<Context extends AbilityContext = AbilityContext> = Omit<LastingEffectCardProperties<Context>, 'duration' | 'until' | 'condition' | 'effect'> & {
     gameAction: GameAction;
     onlyIf?(context: Context): boolean;
     message?(context: Context, targets: GameObject[]): MessageArgs;
@@ -300,9 +299,6 @@ export function gainHonor<Context extends AbilityContext = AbilityContext>(prope
 }
 export function honorBid<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<HonorBidProperties<Context>, Context> = {}): HonorBidAction<Context> {
     return new HonorBidAction<Context>(propertyFactory);
-}
-export function fateBid<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<FateBidProperties<Context>, Context> = {}): FateBidAction<Context> {
-    return new FateBidAction<Context>(propertyFactory);
 }
 export function initiateConflict<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<InitiateConflictProperties, Context> = {}): InitiateConflictAction<Context> {
     return new InitiateConflictAction<Context>(propertyFactory);
@@ -487,7 +483,7 @@ export function selectAttackedProvince<Context extends AbilityContext = AbilityC
         ? (context) => withDefaults(propertyFactory(context))
         : withDefaults(propertyFactory));
 }
-export type AttackedProvinceProperties<Context extends AbilityContext = AbilityContext> = Omit<SelectCardProperties<Context, CardType.Province>, 'cardType' | 'location'>;
+type AttackedProvinceProperties<Context extends AbilityContext = AbilityContext> = Omit<SelectCardProperties<Context, CardType.Province>, 'cardType' | 'location'>;
 /** Several cards; `mode` says how many. */
 export function selectCards<Context extends AbilityContext = AbilityContext, const Types extends CardTypes = CardTypes>(propertyFactory: Derivable<SelectCardsProperties<Context, Types> & { mode: MultiCardMode }, Context>): SelectCardAction<Context> {
     return new SelectCardAction<Context>(typeof propertyFactory === 'function'

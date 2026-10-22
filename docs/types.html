@@ -178,7 +178,6 @@ this.reaction('Play this character')
     <li><code>targetController</code> of <code>persistentEffect</code>: whose cards, or which player, it affects. Default <code>Self</code>.</li>
     <li><code>target</code> of <code>playerLastingEffect</code>.</li>
     <li><code>controller</code> of <code>putIntoPlay</code>: who controls the card. Default <code>Self</code>.</li>
-    <li><code>players</code> of <code>honorBid</code>: who bids. Default <code>Any</code>.</li>
   </ul>
   <pre><code>// Shinjo Altansarnai: Reaction: After you break a province during a [conflict-military] conflict in which this character is participating, your opponent chooses a character he or she controls – discard that character.
 .target({
@@ -1348,7 +1347,7 @@ onSpendFate: (event, context) =&gt;
 </div>
 <div class="ref" id="ev-unnamedEvent" data-name="unnamedEvent Unnamed">
   <h3><code>unnamedEvent</code> <span class="kind">Event</span> <a class="anchor" href="#ev-unnamedEvent">#</a></h3>
-  <p>The event of game actions that have no event name of their own (<code>moveCard</code>, <code>handler</code>, <code>playCard</code>, <code>shuffleDeck</code>, <code>cancel</code>, <code>resolveAbility</code>, <code>fateBid</code>, …), and of a few framework steps (resolving several ring effects at once, playing a character with Disguise).</p>
+  <p>The event of game actions that have no event name of their own (<code>moveCard</code>, <code>handler</code>, <code>playCard</code>, <code>shuffleDeck</code>, <code>cancel</code>, <code>resolveAbility</code>, …), and of a few framework steps (resolving several ring effects at once, playing a character with Disguise).</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
@@ -1356,8 +1355,6 @@ onSpendFate: (event, context) =&gt;
           <tr><td><code>player</code></td><td><code>Player</code></td><td>Set by player actions.</td></tr>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>Set by ring actions.</td></tr>
           <tr><td><code>cardStateWhenMoved</code></td><td><code>DrawCard</code></td><td>Snapshot taken by some move actions.</td></tr>
-          <tr><td><code>postBidAction</code>, <code>message</code></td><td><code>GameAction</code>, <code>(context) =&gt; MessageArgs</code></td><td>Set by <code>fateBid</code>: what resolves after the bid, and its chat line.</td></tr>
-          <tr><td><code>duel</code>, <code>isHonorBid</code></td><td><code>Duel | null</code>, <code>boolean</code></td><td>Set by an honor bid prompt that reveals the dials without raising <code>onHonorDialsRevealed</code>: the duel (if any), and whether honor is transferred.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -2765,14 +2762,12 @@ this.reaction('Collect additional fate')
 </div>
 <div class="ref" id="ev-onHonorBid" data-name="onHonorBid OnHonorBid">
   <h3><code>onHonorBid</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onHonorBid">#</a></h3>
-  <p>The event of <code>honorBid</code>: an honor bid outside the draw phase. Its handler prompts the bidding players and queues <code>postBidAction</code>.</p>
+  <p>The event of <code>honorBid</code>: an honor bid outside the draw phase. Its handler prompts both players and queues <code>postBidAction</code>.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The ability's target player.</td></tr>
           <tr><td><code>giveHonor</code></td><td><code>boolean</code></td><td>Whether honor is transferred after the bid (default <code>false</code>).</td></tr>
-          <tr><td><code>prohibitedBids</code></td><td><code>number[]</code></td><td>Bids not offered.</td></tr>
-          <tr><td><code>players</code></td><td><code>Players</code></td><td>Who bids (default <code>Any</code>).</td></tr>
           <tr><td><code>postBidAction</code></td><td><code>GameAction</code></td><td>Resolved after the bid.</td></tr>
           <tr><td><code>message</code></td><td><code>(context) =&gt; MessageArgs</code></td><td>Chat message after the bid.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
@@ -3444,7 +3439,7 @@ this.reaction('Bow a character that just readied')
 
 <section class="group">
   <h3 class="group-title" id="ctx-group-typing">Typing</h3>
-<div class="ref" id="ctx-typing" data-name="ActionContext TriggerContext ResolvedAbilityContext">
+<div class="ref" id="ctx-typing" data-name="ActionContext TriggerContext">
   <h3><code>ActionContext&lt;Source&gt; / TriggerContext&lt;Source, When&gt;</code> <span class="kind">Type</span> <a class="anchor" href="#ctx-typing">#</a></h3>
   <p>The builder types the context of each callback from what the ability declared, so callbacks need no casts:</p>
   <table>
@@ -3455,7 +3450,6 @@ this.reaction('Bow a character that just readied')
           <tr><td>targets</td><td>after <code>.target()</code>, <code>.targetCards()</code>, <code>.ringTarget()</code>, <code>.tokenTarget()</code>, <code>.select()</code></td><td><code>targets.&lt;name&gt;</code>, <code>rings.&lt;name&gt;</code>, <code>tokens.&lt;name&gt;</code>, <code>selects.&lt;name&gt;</code>, and <code>target</code> / <code>ring</code> / <code>token</code> / <code>select</code> for the name <code>target</code>.</td></tr>
           <tr><td>costs</td><td>after <code>.cost()</code></td><td><code>costs</code> as <code>Partial</code> of what the costs record.</td></tr>
           <tr><td><code>StepContext</code></td><td>after <code>.then()</code>, <code>.thenIf()</code>, <code>.afterwards()</code>, <code>.afterwardsIf()</code></td><td>A plain <code>AbilityContext&lt;Source&gt;</code> with the earlier targets. It has no <code>event</code>, and <code>ability</code> is a plain <code>BaseAbility</code>, not <code>CardAction</code> or <code>TriggeredAbility</code>.</td></tr>
-          <tr><td><code>ResolvedAbilityContext&lt;Source, Target&gt;</code></td><td>object-form abilities (gained abilities written as objects)</td><td>An <code>AbilityContext&lt;Source, Target&gt;</code> whose <code>target</code> is not optional. Annotate a property factory with it only when the target is named <code>target</code>, is not optional and is a single card.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
