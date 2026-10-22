@@ -37,7 +37,7 @@ export abstract class MulliganPrompt extends AllPlayerPrompt {
 
     override continue(): boolean {
         if(!this.isComplete()) {
-            this.game.getPlayers().forEach((player: Player) => {
+            this.game.getPlayers().filter((player) => !this.hasDecided(player)).forEach((player: Player) => {
                 this.selectableCards[player.name] ??= this.mulliganableCards(player);
                 player.setSelectableCards(this.selectableCards[player.name]);
             });

@@ -143,6 +143,11 @@ describe('setup phase', function() {
                     expect(this.player1).toHavePrompt('Waiting for opponent to mulligan dynasty cards');
                 });
 
+                it('should leave no card selectable for the player who decided', function() {
+                    expect(this.player1.currentActionTargets).toEqual([]);
+                    expect(this.player2.currentActionTargets.length).toBeGreaterThan(0);
+                });
+
                 it('should not shuffle the dynasty deck', function() {
                     expect(this.spy).not.toHaveBeenCalled();
                 });
@@ -199,6 +204,11 @@ describe('setup phase', function() {
                 it('should prompt the second player', function() {
                     expect(this.player2).toHavePrompt('Select conflict cards to mulligan');
                     expect(this.player1).toHavePrompt('Waiting for opponent to mulligan conflict cards');
+                });
+
+                it('should leave no card selectable for the player who decided', function() {
+                    expect(this.player1.currentActionTargets).toEqual([]);
+                    expect(this.player2.currentActionTargets.length).toBeGreaterThan(0);
                 });
 
                 it('should not shuffle the conflict deck', function() {
