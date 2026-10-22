@@ -23,7 +23,8 @@ export default class CornerThePrey extends DrawCard {
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.costAtMost(this.getFollowerCount(context, context.costs.sacrifice))
             }, discardFromPlay())
-            .cannotTargetFirst();
+            .cannotTargetFirst()
+            .cannotBeMirrored();
     }
 
     private getFollowerCount(context: AbilityContext, sacrificed: BaseCard | BaseCard[] | undefined): number {

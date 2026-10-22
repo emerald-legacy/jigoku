@@ -106,6 +106,23 @@ describe('Whispers Of Power', function() {
             expect(this.kudaka.politicalSkill).toBe(initialPoliticalPower + 6);
             expect(this.getChatLogs(5)).toContain('player1 plays Whispers of Power, losing 1 honor to grant Kudaka +6 political until the end of the conflict');
         });
+
+        it('should not be playable when every opponent\'s character has fate', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kudaka],
+                defenders: [this.togashiYokuni]
+            });
+
+            this.togashiYokuni.fate = 1;
+            this.togashiInitiate.fate = 1;
+
+            this.player2.pass();
+            this.player1.clickCard(this.whispersOfPower);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.whispersOfPower.location).toBe('hand');
+        });
     });
 });
 

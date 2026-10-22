@@ -5,7 +5,7 @@ describe('Shrine Maiden', function() {
                 phase: 'conflict',
                 player1: {
                     hand: ['shrine-maiden'],
-                    conflictDiscard: ['against-the-waves', 'centered-breath', 'fine-katana', 'banzai', 'let-go']
+                    conflictDiscard: ['against-the-waves', 'centered-breath', 'cloud-the-mind', 'fine-katana', 'banzai', 'let-go']
                 }
             });
 
@@ -48,6 +48,7 @@ describe('Shrine Maiden', function() {
 
         it('should add everything when all are spells or kiho', function() {
             this.player1.moveCard(this.letGo, 'conflict discard pile');
+            this.cloud = this.player1.moveCard('cloud-the-mind', 'conflict deck');
             this.breath = this.player1.moveCard('centered-breath', 'conflict deck');
             this.waves = this.player1.moveCard('against-the-waves', 'conflict deck');
 
@@ -57,7 +58,19 @@ describe('Shrine Maiden', function() {
 
             expect(this.waves.location).toBe('hand');
             expect(this.breath.location).toBe('hand');
-            expect(this.getChatLogs(5)).toContain('player1 uses Shrine Maiden, revealing Against the Waves and Centered Breath to add Against the Waves and Centered Breath to their hand');
+            expect(this.cloud.location).toBe('hand');
+            expect(this.getChatLogs(5)).toContain('player1 uses Shrine Maiden, revealing Against the Waves, Centered Breath and Cloud the Mind to add Against the Waves, Centered Breath and Cloud the Mind to their hand');
+        });
+
+        it('should not trigger with fewer than 3 cards in the conflict deck', function() {
+            this.waves = this.player1.moveCard('against-the-waves', 'conflict deck');
+
+            this.player1.clickCard(this.maiden);
+            this.player1.clickPrompt('0');
+
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.waves.location).toBe('conflict deck');
+            expect(this.letGo.location).toBe('conflict deck');
         });
     });
 });

@@ -510,6 +510,39 @@ describe('SoD - Scorpion', function () {
             });
         });
 
+        describe('Kiss of the Sea and a doubled base skill', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['solemn-scholar'],
+                        hand: ['kiss-of-the-sea']
+                    },
+                    player2: {
+                        inPlay: ['asako-maezawa', 'brash-samurai']
+                    }
+                });
+                this.scholar = this.player1.findCardByName('solemn-scholar');
+                this.maezawa = this.player2.findCardByName('asako-maezawa');
+                this.brash = this.player2.findCardByName('brash-samurai');
+                this.sea = this.player1.playAttachment('kiss-of-the-sea', this.brash);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.scholar],
+                    defenders: [this.maezawa, this.brash]
+                });
+            });
+
+            it('bows the character when a triggered ability doubles its base skill', function () {
+                this.player2.clickCard(this.maezawa);
+                this.player2.clickCard(this.brash);
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                this.player1.clickCard(this.sea);
+                expect(this.brash.bowed).toBe(true);
+            });
+        });
+
         describe('Kiss of the Sea', function () {
             beforeEach(function () {
                 this.setupTest({

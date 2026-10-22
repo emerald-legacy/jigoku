@@ -57,6 +57,7 @@ describe('Mountain\'s Anvil Castle', function() {
                 expect(this.borderRider.militarySkill).toBe(mil + 1);
                 expect(this.borderRider.politicalSkill).toBe(pol + 1);
                 expect(this.mountainsAnvil.bowed).toBe(true);
+                expect(this.getChatLogs(5)).toContain('player1 uses Mountain\'s Anvil Castle, bowing Mountain\'s Anvil Castle to give Border Rider +1military/+1political');
             });
 
             it('should cap the bonus at +2/+2 when target has 3 attachments', function() {

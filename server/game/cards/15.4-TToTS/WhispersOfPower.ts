@@ -11,7 +11,7 @@ class WhispersOfPower extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Gain political power according to fateless characters')
-            .condition((context) => context.game.isDuringConflict())
+            .condition((context) => context.game.isDuringConflict() && this.getPoliticalPowerChange(context) > 0)
             .cost(costs.payHonor())
             .target({
                 cardType: CardType.Character,

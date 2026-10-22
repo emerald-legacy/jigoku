@@ -153,3 +153,43 @@ describe('Shachihoko Bay', function () {
         });
     });
 });
+
+describe('Shachihoko Bay broken by its own player while attacking', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker'],
+                    hand: ['raze-to-the-ground', 'levy'],
+                    provinces: ['shachihoko-bay']
+                },
+                player2: {
+                    hand: ['censure']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.bay = this.player1.findCardByName('shachihoko-bay');
+            this.bay.facedown = false;
+            this.player1.player.moveCard(this.player1.findCardByName('levy', 'hand'), 'conflict deck');
+            this.player2.player.moveCard(this.player2.findCardByName('censure', 'hand'), 'conflict deck');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.noMoreActions();
+        });
+
+        it('looks at the attacker\'s own deck', function () {
+            this.player1.clickCard('raze-to-the-ground');
+            this.player1.clickCard(this.berserker);
+            this.player1.clickCard(this.bay);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.bay);
+            expect(this.player1).toHavePromptButton('Levy');
+            expect(this.player1).not.toHavePromptButton('Censure');
+        });
+    });
+});

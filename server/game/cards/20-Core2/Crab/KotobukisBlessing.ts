@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { discardFromPlay, placeFate, selectCards, sequential } from '../../../GameActions/GameActions.js';
+import { discardFromPlay, multiple, placeFate, selectCards } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KotobukisBlessing extends DrawCard {
@@ -12,7 +12,7 @@ export default class KotobukisBlessing extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self
-            }, sequential([
+            }, multiple([
                 placeFate(),
                 selectCards((context) => ({
                     mode: TargetMode.UpTo,
@@ -26,6 +26,7 @@ export default class KotobukisBlessing extends DrawCard {
                     message: (context, cards) => msg`${context.player} chooses to discard ${cards.length === 0 ? 'no attachments' : cards} from ${context.target}`
                 }))
             ]))
+            .chatText('place 1 fate on {0}')
             .max(perRound(1));
     }
 }

@@ -18,6 +18,6 @@ export default class MountainsAnvilCastle extends StrongholdCard {
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(Math.min(context.target?.attachments.length ?? 0, 2))
             })))
-            .chatText((context) => msg`give ${context.chatTarget()} +${Math.min(context.target.attachments.length, 2)}${'military'}/${Math.min(context.target.attachments.length, 2)}${'political'}`);
+            .chatText((context) => msg`give ${context.chatTarget()} +${Math.min(context.target.attachments.length, 2)}${'military'}/+${Math.min(context.target.attachments.length, 2)}${'political'}`);
     }
 }

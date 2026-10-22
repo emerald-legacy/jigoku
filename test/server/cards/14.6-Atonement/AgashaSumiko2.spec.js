@@ -197,3 +197,48 @@ describe('Agasha Sumiko 2', function() {
         });
     });
 });
+
+describe('Agasha Sumiko 2 and an opponent considered less honorable', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['agasha-sumiko-2']
+                },
+                player2: {
+                    inPlay: ['loyal-oathbreaker'],
+                    hand: ['i-can-swim']
+                }
+            });
+            this.swim = this.player2.findCardByName('i-can-swim');
+            this.sumiko = this.player1.findCardByName('agasha-sumiko-2');
+
+            this.player1.player.showBid = 1;
+            this.player2.player.showBid = 5;
+            this.sumiko.dishonor();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.sumiko],
+                defenders: []
+            });
+        });
+
+        it('should not mention honor in the chat', function() {
+            this.player2.honor = 11;
+            this.player1.honor = 10;
+            this.player2.fate = 13;
+            this.player1.fate = 10;
+
+            this.player2.clickCard(this.swim);
+            this.player2.clickCard(this.sumiko);
+            this.player1.clickCard(this.sumiko);
+
+            expect(this.player2.honor).toBe(11);
+            expect(this.player2.fate).toBe(9);
+            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 lose 2 fate');
+        });
+    });
+});

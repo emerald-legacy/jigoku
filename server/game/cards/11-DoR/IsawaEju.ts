@@ -14,7 +14,9 @@ class IsawaEju extends DrawCard {
             .ifCondition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
             .target({
                 location: Location.Provinces,
-                cardType: CardType.Province
+                cardType: CardType.Province,
+                // the stronghold province is never refilled
+                cardCondition: (card) => card.location !== Location.StrongholdProvince && card.controller.getDynastyCardsInProvince(card.location).length > 0
             })
             .moveCard((context) => ({
                 destination: Location.DynastyDiscardPile,

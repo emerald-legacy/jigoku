@@ -113,3 +113,42 @@ describe('Marvelous Beings', function () {
         });
     });
 });
+
+describe('Marvelous Beings and a copy', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor', 'ikoma-prodigy'],
+                    hand: ['marvelous-beings']
+                },
+                player2: {
+                    inPlay: ['vengeful-kami']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.prodigy = this.player1.findCardByName('ikoma-prodigy');
+            this.kami = this.player2.findCardByName('vengeful-kami');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.actor, this.prodigy],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.kami);
+            this.game.currentConflict.removeFromConflict(this.actor);
+            this.player2.pass();
+        });
+
+        it('adds the copied character\'s printed cost', function () {
+            this.player1.clickCard('marvelous-beings');
+            this.player1.clickCard(this.actor);
+            expect(this.getChatLogs(5)).toContain(
+                'player1 plays Marvelous Beings, moving Vengeful Kami into the conflict to entrance the court, giving their side an extra 3political during this conflict\'s resolution'
+            );
+        });
+    });
+});

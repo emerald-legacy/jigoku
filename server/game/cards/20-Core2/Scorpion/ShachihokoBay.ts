@@ -12,11 +12,11 @@ export default class ShachihokoBay extends ProvinceCard {
         this.interrupt('Look at the top 6 cards of the attacker\'s deck and steal up to 3 of them')
             .when({
                 onBreakProvince: (event, context) =>
-                    event.card === context.source && context.game.currentConflict && Boolean(context.player.opponent)
+                    event.card === context.source && !!context.game.currentConflict
             })
             .deckSearch((context) => ({
                 activePromptTitle: 'Select up to 3 cards to take',
-                target: context.player.opponent,
+                target: context.game.currentConflict?.attackingPlayer,
                 player: Players.Self,
                 cardsToLookAt: 6,
                 mode: TargetMode.UpTo,
@@ -31,18 +31,18 @@ export default class ShachihokoBay extends ProvinceCard {
         setAside({
             target: cards,
             playableBy: context.player,
-            message: (context, cards) => msg`${context.player} takes ${cards} from ${context.player.opponent}'s deck`
+            message: (context, cards) => msg`${context.player} takes ${cards} from ${context.game.currentConflict?.attackingPlayer}'s deck`
         }).resolve(cards, context);
     }
 
     private returnToTop(context: AbilityContext, cards: DrawCard[]): void {
-        const opponent = context.player.opponent;
-        if(cards.length === 0 || !opponent) {
+        const attacker = context.game.currentConflict?.attackingPlayer;
+        if(cards.length === 0 || !attacker) {
             return;
         }
         rearrangeDeck({
             cards,
-            message: (context, ordered) => msg`${context.player} returns ${ordered.length} cards to the top of ${opponent}'s deck`
-        }).resolve(opponent, context);
+            message: (context, ordered) => msg`${context.player} returns ${ordered.length} cards to the top of ${attacker}'s deck`
+        }).resolve(attacker, context);
     }
 }

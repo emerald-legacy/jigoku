@@ -5,7 +5,7 @@ import { claimedRingSymbols, hasClaimedAnyRing } from '../claimedRings.js';
 
 const elementSymbols = [
     { key: 'impulsive-novice-fire', element: Element.Fire },
-    { key: 'impulsive-novice-water', element: Element.Void }
+    { key: 'impulsive-novice-void', element: Element.Void }
 ];
 
 class ImpulsiveNovice extends DrawCard {

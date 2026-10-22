@@ -38,7 +38,8 @@ describe('Kotobuki\'s Blessing', function () {
 
             this.player1.clickCard(this.brash);
 
-            expect(this.brash.fate).toBe(fate + 1);
+            // the discard is decided first; the fate is placed with it (no "then")
+            expect(this.brash.fate).toBe(fate);
             expect(this.player1).toHavePrompt('Choose up to 1 attachment');
             expect(this.player1).toBeAbleToSelect(this.katana);
             expect(this.player1).toBeAbleToSelect(this.ann);
@@ -48,6 +49,7 @@ describe('Kotobuki\'s Blessing', function () {
             this.player1.clickCard(this.katana);
             this.player1.clickPrompt('Done');
             expect(this.katana.location).toBe('conflict discard pile');
+            expect(this.brash.fate).toBe(fate + 1);
             expect(this.player2).toHavePrompt('Action Window');
             expect(this.getChatLogs(5)).toContain('player1 plays Kotobuki\'s Blessing to place 1 fate on Brash Samurai');
             expect(this.getChatLogs(5)).toContain('player1 chooses to discard Fine Katana from Brash Samurai');
@@ -63,7 +65,8 @@ describe('Kotobuki\'s Blessing', function () {
             this.player1.clickCard(this.blessing);
             this.player1.clickCard(this.brash);
 
-            expect(this.brash.fate).toBe(fate + 1);
+            // the discard is decided first; the fate is placed with it (no "then")
+            expect(this.brash.fate).toBe(fate);
             expect(this.player1).toHavePrompt('Choose up to 1 attachment');
             expect(this.player1).toBeAbleToSelect(this.katana);
             expect(this.player1).toBeAbleToSelect(this.ann);
@@ -71,6 +74,7 @@ describe('Kotobuki\'s Blessing', function () {
             expect(this.player1).toHavePromptButton('Done');
 
             this.player1.clickPrompt('Done');
+            expect(this.brash.fate).toBe(fate + 1);
             expect(this.player2).toHavePrompt('Action Window');
             expect(this.katana.parent).toBe(this.brash);
             expect(this.ann.parent).toBe(this.brash);

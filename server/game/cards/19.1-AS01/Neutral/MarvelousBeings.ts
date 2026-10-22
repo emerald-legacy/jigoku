@@ -27,7 +27,6 @@ export default class MarvelousBeings extends DrawCard {
         if(!movedCharacter) {
             return 0;
         }
-        const bonus = Math.min(movedCharacter.printedCost ?? NaN, 3);
-        return isNaN(bonus) ? 0 : bonus;
+        return Math.min(movedCharacter.getCost() ?? 0, 3);
     }
 }

@@ -14,6 +14,7 @@ class ShrineMaiden extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             })
+            .condition((context) => context.player.conflictDeck.length >= 3)
             .cost(costs.revealCardsOf((context) => this.revealed(context)))
             .moveCard((context) => ({ target: this.revealed(context).filter(isSpellOrKiho), destination: Location.Hand }))
             .discardCard((context) => ({ target: this.revealed(context).filter((card) => !isSpellOrKiho(card)) }))

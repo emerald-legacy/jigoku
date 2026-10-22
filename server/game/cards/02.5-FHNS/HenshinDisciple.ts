@@ -5,9 +5,9 @@ import type Player from '../../Player.js';
 import { hasClaimedRing } from '../claimedRings.js';
 
 const elementKeys = {
-    air: 'hallowed-ground-air',
-    earth: 'hallowed-ground-earth',
-    fire: 'hallowed-ground-fire'
+    air: 'henshin-disciple-air',
+    earth: 'henshin-disciple-earth',
+    fire: 'henshin-disciple-fire'
 };
 
 class HenshinDisciple extends DrawCard {
