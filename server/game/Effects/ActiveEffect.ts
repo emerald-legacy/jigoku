@@ -45,31 +45,8 @@ export interface EffectProperties<Target extends GameObject = GameObject> {
 }
 
 /**
- * An effect while it is active: which targets it reaches, for how long and under what condition;
+ * An effect while it is active: which targets it reaches, for how long and under what condition (`EffectProperties`);
  * its `effect` (an `EffectApplier`) applies it to each of them.
- *
- * Properties:
- * match            - function that takes a card/player/ring and context object
- *                    and returns a boolean about whether the passed object should
- *                    have the effect applied. Alternatively, a card/player/ring can
- *                    be passed as the match property to match that single object.
- *                    Doesn't apply to conflict effects.
- * duration         - string representing how long the effect lasts.
- * condition        - function that returns a boolean determining whether the
- *                    effect can be applied. Use with cards that have a
- *                    condition that must be met before applying a persistent
- *                    effect (e.g. "during a conflict").
- * location         - location where the source of this effect needs to be for
- *                    the effect to be active. Defaults to 'play area'.
- * targetController - string that determines which player's cards are targeted.
- *                    Can be 'self' (default), 'opponent' or 'any'. For player
- *                    effects it determines which player(s) are affected.
- * targetLocation   - string that determines the location of cards that can be
- *                    applied by the effect. Can be 'play area' (default),
- *                    'province', or a specific location (e.g. 'stronghold province'
- *                    or 'hand'). This has no effect if a specific card is passed
- *                    to match.  Card effects only.
- * effect           - object representing the effect to be applied.
  */
 export class ActiveEffect<Target extends GameObject = GameObject> {
     game: Game;

@@ -35,22 +35,7 @@ export interface HandlerMenuPromptProperties<Card extends BaseCard = BaseCard, C
 
 type ResolvedHandlerMenuPromptProperties<Card extends BaseCard, ChoiceType extends Choice> = HandlerMenuPromptProperties<Card, ChoiceType> & { source: EffectSource; choices: ChoiceType[] };
 
-/**
- * General purpose menu prompt.
- *
- * The properties option object may contain the following:
- * options            - the menu buttons, each with the handler it calls
- * choices            - titles for menu buttons computed at run time
- * choiceHandler      - handler which is called with the clicked choice
- * activePromptTitle  - the title that should be used in the prompt for the
- *                      choosing player.
- * waitingPromptTitle - the title to display for opponents.
- * source             - what is at the origin of the user prompt, usually a card;
- *                      used to provide a default waitingPromptTitle, if missing
- * cards              - a list of cards to display as buttons with mouseover support
- * cardCondition      - disables the prompt buttons for any cards which return false
- * cardHandler        - handler which is called when a card button is clicked
- */
+/** A menu of buttons, each calling its handler: `options`, `choices` computed at run time, or `cards` shown as buttons. */
 export class HandlerMenuPrompt<Card extends BaseCard = BaseCard, ChoiceType extends Choice = Choice> extends UiPrompt {
     player: Player;
     properties: ResolvedHandlerMenuPromptProperties<Card, ChoiceType>;

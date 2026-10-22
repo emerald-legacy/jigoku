@@ -13,18 +13,24 @@ import type { BaseCardSelector } from '../CardSelectors/BaseCardSelector.js';
 import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 
 interface PromptOptions {
+    /** Where the prompt comes from, usually a card; it gives the default waiting title. */
     source?: EffectSource | string;
     context?: AbilityContext;
     buttons?: PromptButton[];
     controls?: PromptControl[];
     selectCard?: boolean;
+    /** Shows the order of the selection. */
     ordered?: boolean;
     hideIfNoLegalTargets?: boolean;
     activePromptTitle?: string;
     waitingPromptTitle?: string;
+    /** Cards that must be among those selected. */
     mustSelect?: BaseCard[];
+    /** Only cards one of these can affect may be selected. */
     gameAction?: GameAction | GameAction[];
+    /** One of the extra `buttons` was clicked. */
     onMenuCommand?: (player: Player, arg: string) => boolean | void;
+    /** Done was clicked with nothing selected. */
     onCancel?: (player: Player) => boolean | void;
 }
 
@@ -37,7 +43,10 @@ interface CardChoice<Types extends CardTypes> extends PromptOptions, SelectorOpt
     onCardToggle?: (player: Player, card: CardOfType<Types>) => void;
 }
 
-/** One card, passed on its own. */
+/**
+ * One card, passed on its own: `onSelect` runs as soon as a legal card is clicked (for several cards, on Done).
+ * The prompt is complete only when `onSelect` returns true.
+ */
 export interface SingleCardChoice<Types extends CardTypes> extends CardChoice<Types> {
     mode?: SingleCardMode;
     numCards?: 1;
@@ -135,48 +144,7 @@ function single(selected: BaseCard | BaseCard[]): BaseCard {
     return selected;
 }
 
-/**
- * General purpose prompt that asks the user to select 1 or more cards.
- *
- * The properties option object has the following properties:
- * numCards           - an integer specifying the number of cards the player
- *                      must select. Set to 0 if there is no limit on the num
- *                      of cards that can be selected.
- * multiSelect        - boolean that ensures that the selected cards are sent as
- *                      an array, even if the numCards limit is 1.
- * buttons            - array of buttons for the prompt.
- * activePromptTitle  - the title that should be used in the prompt for the
- *                      choosing player.
- * waitingPromptTitle - the title that should be used in the prompt for the
- *                      opponent players.
- * maxStat            - a function that returns the maximum value that cards
- *                      selected by the prompt cannot exceed. If not specified,
- *                      then no stat limiting is done on the prompt.
- * cardStat           - a function that takes a card and returns a stat value.
- *                      Used for prompts that have a maximum stat value.
- * cardCondition      - a function that takes a card and should return a boolean
- *                      on whether that card is elligible to be selected.
- * cardType           - a string or array of strings listing which types of
- *                      cards can be selected. Defaults to the list of draw
- *                      card types.
- * onSelect           - a callback that is called once all cards have been
- *                      selected. On single card prompts this is called as soon
- *                      as an elligible card is clicked. On multi-select prompts
- *                      it is called when the done button is clicked. If the
- *                      callback does not return true, the prompt is not marked
- *                      as complete.
- * onMenuCommand      - a callback that is called when one of the additional
- *                      buttons is clicked.
- * onCancel           - a callback that is called when the player clicks the
- *                      done button without selecting any cards.
- * source             - what is at the origin of the user prompt, usually a card;
- *                      used to provide a default waitingPromptTitle, if missing
- * gameAction         - a GameAction object representing the game action to be checked on
- *                      target cards.
- * ordered            - an optional boolean indicating whether or not to display
- *                      the order of the selection during the prompt.
- * mustSelect         - an array of cards which must be selected
- */
+/** Asks a player to select one or more cards; what may be chosen and what happens is in `SelectCardPromptProperties`. */
 export class SelectCardPrompt<Types extends CardTypes = CardTypes> extends UiPrompt {
     choosingPlayer: Player;
     properties: ResolvedProperties;

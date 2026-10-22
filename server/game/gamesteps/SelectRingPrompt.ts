@@ -8,6 +8,7 @@ import type Game from '../Game.js';
 import type Ring from '../Ring.js';
 
 interface SelectRingPromptProperties {
+    /** Where the prompt comes from, usually a card; it gives the default waiting title. */
     source?: EffectSource | string;
     context?: AbilityContext;
     waitingPromptTitle?: string;
@@ -17,8 +18,11 @@ interface SelectRingPromptProperties {
     optional?: boolean;
     hideIfNoLegalTargets?: boolean;
     ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
+    /** Runs as soon as a legal ring is clicked; the prompt is complete only when it returns true. */
     onSelect?: (player: Player, ring: Ring) => boolean | void;
+    /** One of the extra `buttons` was clicked. */
     onMenuCommand?: (player: Player, arg: string) => boolean | void;
+    /** Done was clicked with no ring selected. */
     onCancel?: (player: Player) => boolean | void;
 }
 
@@ -26,27 +30,7 @@ type DefaultedProperties = 'buttons' | 'ringCondition' | 'onSelect' | 'onMenuCom
 
 type ResolvedSelectRingPromptProperties = SelectRingPromptProperties & Required<Pick<SelectRingPromptProperties, DefaultedProperties>> & { source: EffectSource };
 
-/**
- * General purpose prompt that asks the user to select a ring.
- *
- * The properties option object has the following properties:
- * buttons            - array of additional buttons for the prompt.
- * activePromptTitle  - the title that should be used in the prompt for the
- *                      choosing player.
- * waitingPromptTitle - the title that should be used in the prompt for the
- *                      opponent players.
- * ringCondition      - a function that takes a ring and should return a boolean
- *                      on whether that ring is elligible to be selected.
- * onSelect           - a callback that is called as soon as an elligible ring
- *                      is clicked. If the callback does not return true, the
- *                      prompt is not marked as complete.
- * onMenuCommand      - a callback that is called when one of the additional
- *                      buttons is clicked.
- * onCancel           - a callback that is called when the player clicks the
- *                      done button without selecting any rings.
- * source             - what is at the origin of the user prompt, usually a card;
- *                      used to provide a default waitingPromptTitle, if missing
- */
+/** Asks a player to select a ring; what may be chosen and what happens is in `SelectRingPromptProperties`. */
 export class SelectRingPrompt extends UiPrompt {
     choosingPlayer: Player;
     properties: ResolvedSelectRingPromptProperties;

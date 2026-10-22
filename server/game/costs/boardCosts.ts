@@ -18,29 +18,28 @@ import { MetaActionCost } from './MetaActionCost.js';
 export function bowSelf(): Cost {
     return new GameActionCost(GameActions.bow());
 }
-/**
- * Cost that will bow the card that the card that initiated the ability is attached to.
- */
 /** A cost is paid with what the player controls (RRG Cost): the parent only counts while it is theirs. */
 function ownParent(context: AbilityContext) {
     const parent = context.source.parentCharacter;
     return parent && parent.controller === context.player ? parent : [];
 }
 
+/**
+ * Cost that bows the character the source is attached to.
+ */
 export function bowParent(): Cost {
     return new GameActionCost(GameActions.bow((context) => ({ target: ownParent(context) })));
 }
 
 /**
- * Cost that requires bowing a card that matches the passed condition
- * predicate function.
+ * Cost that bows a card the player chooses.
  */
 export function bow<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: TypedSelectCostProperties<Types, Mode, Context>): Cost<SelectCostResult<'bow', Types, Mode>, Context> {
     return getSelectCost('bow', GameActions.bow(), properties, 'Select card to bow');
 }
 
 /**
- * Cost that will send the target to the conflict.
+ * Cost that moves a character the player chooses into the conflict.
  */
 export function moveToConflict<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: TypedSelectCostProperties<Types, Mode, Context>): Cost<SelectCostResult<'moveToConflict', Types, Mode>, Context> {
     return getSelectCost('moveToConflict', GameActions.moveToConflict(), properties, 'Select card to move to the conflict');
@@ -54,24 +53,21 @@ export function sacrificeSelf(): Cost {
 }
 
 /**
- * Cost that requires sacrificing a card that matches the passed condition
- * predicate function.
+ * Cost that sacrifices a card the player chooses.
  */
 export function sacrifice<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: TypedSelectCostProperties<Types, Mode, Context>): Cost<SelectCostResult<'sacrifice', Types, Mode>, Context> {
     return getSelectCost('sacrifice', GameActions.sacrifice(), properties, 'Select card to sacrifice');
 }
 
 /**
- * Cost that will return a selected card to hand which matches the passed
- * condition.
+ * Cost that returns a card the player chooses to its owner's hand.
  */
 export function returnToHand<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: TypedSelectCostProperties<Types, Mode, Context>): Cost<SelectCostResult<'returnToHand', Types, Mode>, Context> {
     return getSelectCost('returnToHand', GameActions.returnToHand(), properties, 'Select card to return to hand');
 }
 
 /**
- * Cost that will return a selected card to the appropriate deck which matches the passed
- * condition.
+ * Cost that returns a card the player chooses to its owner's deck.
  */
 export function returnToDeck<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: ReturnToDeckProperties & TypedSelectCostProperties<Types, Mode, Context>): Cost<SelectCostResult<'returnToDeck', Types, Mode>, Context> {
     return getSelectCost('returnToDeck', GameActions.returnToDeck(properties), properties, 'Select card to return to your deck');
@@ -97,7 +93,7 @@ export function shuffleIntoDeck<const Types extends CardTypes = undefined, const
 }
 
 /**
- * Cost that requires discarding a specific card.
+ * Cost that discards the given cards.
  */
 export function discardCardsOf(cardFunc: (context: AbilityContext) => DrawCard | DrawCard[] | undefined): Cost<{ discardCard: DrawCard[] }> {
     const action = GameActions.discardCard((context) => ({ target: cardFunc(context) }));
@@ -114,7 +110,7 @@ export function discardCardsOf(cardFunc: (context: AbilityContext) => DrawCard |
 }
 
 /**
- * Cost that requires discarding itself from hand.
+ * Cost that discards the source.
  */
 export function discardSelf(): Cost {
     return new GameActionCost(GameActions.discardCard((context) => ({ target: context.source })));
@@ -135,21 +131,21 @@ export function discardCard<const Types extends CardTypes = undefined, const Mod
 }
 
 /**
- * Cost that will discard a fate from the card
+ * Cost that removes a fate from the source.
  */
 export function removeFateFromSelf(): Cost {
     return new GameActionCost(GameActions.removeFate());
 }
 
 /**
- * Cost that will discard a fate from a selected card
+ * Cost that removes a fate from a card the player chooses.
  */
 export function removeFate<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: TypedSelectCostProperties<Types, Mode, Context>): Cost<SelectCostResult<'removeFate', Types, Mode>, Context> {
     return getSelectCost('removeFate', GameActions.removeFate(), properties, 'Select character to discard a fate from');
 }
 
 /**
- * Cost that will discard a fate from the card's parent
+ * Cost that removes a fate from the character the source is attached to.
  */
 export function removeFateFromParent(): Cost {
     return new GameActionCost(GameActions.removeFate((context) => ({ target: ownParent(context) })));
@@ -232,7 +228,7 @@ export function putSelfIntoPlay(): Cost {
 }
 
 /**
- * Cost that will prompt for a card
+ * Cost that reveals a card the player chooses.
  */
 export function reveal<const Types extends CardTypes = undefined, const Mode extends TargetMode | undefined = undefined, Context extends AbilityContext = AbilityContext>(properties: TypedSelectCostProperties<Types, Mode, Context>): Cost<SelectCostResult<'reveal', Types, Mode>, Context> {
     return getSelectCost('reveal', GameActions.reveal(), properties, `Select a ${properties.cardType || 'card'} to reveal`);
