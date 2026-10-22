@@ -16,7 +16,7 @@ export default class HiddenMoonDojo extends DrawCard {
                 card.isDynasty &&
                 card.isFaceup() &&
                 context.player.areLocationsAdjacent(context.source.location, card.location),
-            effect: gainPlayAction(PlayCharacterAsIfFromHand)
+            effect: gainPlayAction((card) => new PlayCharacterAsIfFromHand(card))
         });
 
         this.action('Turn an adjacent card face up')

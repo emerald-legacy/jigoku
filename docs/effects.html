@@ -1134,12 +1134,12 @@ this.persistentEffect({
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/ShosuroDeceiver.ts">Shosuro Deceiver</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Dragon/LaughingThunder.ts">Laughing Thunder</a></p>
   </div>
 <div class="ref" id="ef-gainPlayAction" data-name="gainPlayAction">
-    <h3><code>gainPlayAction(playActionClass)</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-gainPlayAction">#</a></h3>
+    <h3><code>gainPlayAction(createPlayAction)</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-gainPlayAction">#</a></h3>
     <p>Gives the card another way to be played: "You may play cards in adjacent provinces as if they were in your hand."</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>playActionClass</code></td><td><code>new (card: DrawCard) =&gt; BaseAction</code></td><td>required</td><td>A play action class, e.g. <code>PlayCharacterAsIfFromHand</code>, <code>PlayCharacterAsIfFromHandIntoConflict</code>, <code>PlayDisguisedCharacterAsIfFromHand</code>, <code>PlayFacedownCharacterAsIfFromHand</code>.</td></tr>
+        <tr><td><code>createPlayAction</code></td><td><code>(card: DrawCard) =&gt; BaseAction</code></td><td>required</td><td>Creates the play action for the card, e.g. <code>(card) =&gt; new PlayCharacterAsIfFromHand(card, { into: PlayIntoLocation.Conflict })</code>. <code>PlayCharacterAsIfFromHand</code> and <code>PlayDisguisedCharacterAsIfFromHand</code> take <code>{ into?: PlayIntoLocation, facedown?: boolean }</code>: where it may be played (anywhere by default), and whether a facedown card is turned face up as it is played.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1154,7 +1154,7 @@ this.persistentEffect({
         card.isDynasty &amp;&amp;
         card.isFaceup() &amp;&amp;
         context.player.areLocationsAdjacent(context.source.location, card.location),
-    effect: gainPlayAction(PlayCharacterAsIfFromHand)
+    effect: gainPlayAction((card) =&gt; new PlayCharacterAsIfFromHand(card))
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/HiddenMoonDojo.ts">Hidden Moon Dōjō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DaidojiUji.ts">Daidoji Uji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/GatewayToMeido.ts">Gateway to Meido</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/ThirdWhiskerWarrens.ts">Third Whisker Warrens</a></p>
   </div>

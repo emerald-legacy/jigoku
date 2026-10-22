@@ -1,7 +1,8 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, Duration, PlayType, Blocker, RemainingCards, Players } from '../../../Constants.js';
-import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
-import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
+import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
+import { PlayIntoLocation } from '../../../PlayCharacterAction.js';
+import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
 import { deckSearch, discardFromPlay, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
@@ -38,8 +39,8 @@ export default class AshalanLantern extends DrawCard {
                             playType: PlayType.PlayFromHand,
                             playAction: target
                                 ? [
-                                    new PlayCharacterAsIfFromHandIntoConflict(target),
-                                    new PlayDisguisedCharacterAsIfFromHandIntoConflict(target)
+                                    new PlayCharacterAsIfFromHand(target, { into: PlayIntoLocation.Conflict }),
+                                    new PlayDisguisedCharacterAsIfFromHand(target, { into: PlayIntoLocation.Conflict })
                                 ]
                                 : undefined,
                             ignoredBlockers: [Blocker.WrongPhase],

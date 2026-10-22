@@ -11,7 +11,7 @@ export default class DaidojiUji extends DrawCard {
             condition: (context) => context.source.isHonored,
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFaceup(),
-            effect: gainPlayAction(PlayCharacterAsIfFromHand)
+            effect: gainPlayAction((card) => new PlayCharacterAsIfFromHand(card))
         });
     }
 }

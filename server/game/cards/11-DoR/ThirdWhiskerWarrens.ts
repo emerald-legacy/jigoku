@@ -1,6 +1,6 @@
 import { Location, Players } from '../../Constants.js';
-import { PlayFacedownCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
-import { PlayFacedownDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
+import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
+import { PlayDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
 import { gainPlayAction, hideWhenFaceUp, showTopDynastyCard } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { defendingAtKaiuWall } from '../kaiuWall.js';
@@ -15,8 +15,8 @@ export default class ThirdWhiskerWarrens extends DrawCard {
             match: (card, context) => context !== undefined && card === context.player.dynastyDeck[0],
             effect: [
                 hideWhenFaceUp(),
-                gainPlayAction(PlayFacedownCharacterAsIfFromHand),
-                gainPlayAction(PlayFacedownDisguisedCharacterAsIfFromHand)
+                gainPlayAction((card) => new PlayCharacterAsIfFromHand(card, { facedown: true })),
+                gainPlayAction((card) => new PlayDisguisedCharacterAsIfFromHand(card, { facedown: true }))
             ]
         });
 

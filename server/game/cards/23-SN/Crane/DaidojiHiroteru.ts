@@ -1,5 +1,5 @@
 import { CardType, Duration, Location, Phase, Players, Trait } from '../../../Constants.js';
-import { PlayFacedownCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
+import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { addKeyword, canBeSeenWhenFacedown, gainPlayAction } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -19,7 +19,7 @@ export default class DaidojiHiroteru extends DrawCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card) => card.isDynasty && card.type === CardType.Character,
-            effect: gainPlayAction(PlayFacedownCharacterAsIfFromHand)
+            effect: gainPlayAction((card) => new PlayCharacterAsIfFromHand(card, { facedown: true }))
         });
 
         this.reaction('Give a Scout or Shinobi covert')

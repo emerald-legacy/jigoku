@@ -1,13 +1,15 @@
 import type { AbilityContext } from './AbilityContext.js';
-import { PlayType, Blocker } from './Constants.js';
+import { PlayType, type Blocker } from './Constants.js';
 import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
 import { PlayIntoLocation } from './PlayCharacterAction.js';
+import { asIfFromHandBlockers, type AsIfFromHandOptions } from './PlayCharacterAsIfFromHand.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
 
+/** Plays a character with Disguised from where it is "as if it were in your hand". */
 export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAction {
-    constructor(card: DrawCard, intoLocation = PlayIntoLocation.Any) {
-        super(card, intoLocation);
+    constructor(card: DrawCard, private options: AsIfFromHandOptions = {}) {
+        super(card, options.into ?? PlayIntoLocation.Any);
     }
 
     override createContext(player: Player = this.card.controller) {
@@ -17,29 +19,13 @@ export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAc
     }
 
     override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
-        const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation)
-            ? ignoredBlockers
-            : ignoredBlockers.concat(Blocker.WrongLocation);
-        return super.meetsRequirements(context, newIgnoredBlockers);
+        return super.meetsRequirements(context, asIfFromHandBlockers(ignoredBlockers));
     }
-}
 
-export class PlayDisguisedCharacterAsIfFromHandIntoConflict extends PlayDisguisedCharacterAsIfFromHand {
-    constructor(card: DrawCard) {
-        super(card, PlayIntoLocation.Conflict);
-    }
-}
-
-export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedCharacterAsIfFromHand {
-    constructor(card: DrawCard) {
-        super(card, PlayIntoLocation.Home);
-    }
-}
-
-// Like PlayFacedownCharacterAsIfFromHand: putIntoPlay refuses a facedown card.
-export class PlayFacedownDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAsIfFromHand {
     override executeHandler(context: AbilityContext<DrawCard>) {
-        context.source.facedown = false;
+        if(this.options.facedown) {
+            context.source.facedown = false;
+        }
         super.executeHandler(context);
     }
 }

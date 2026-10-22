@@ -133,10 +133,10 @@ export const fateCostToTarget = (properties: FlexibleValue<EffectValueMap[Effect
 export const gainAllAbilitiesDynamic = (match: DynamicMatch, printedAbilitiesOnly = false) =>
     EffectBuilder.card.static(EffectName.GainAllAbilitiesDynamic, new GainAllAbilitiesDynamic(match, printedAbilitiesOnly));
 export const gainExtraFateWhenPlayed = (amount: FlexibleValue<number> = 1) => EffectBuilder.card.flexible(EffectName.GainExtraFateWhenPlayed, amount);
-export const gainPlayAction = (playActionClass: new (card: DrawCard) => BaseAction) =>
+export const gainPlayAction = (createPlayAction: (card: DrawCard) => BaseAction) =>
     EffectBuilder.card.detached(EffectName.GainPlayAction, {
         apply: (card: DrawCard) => {
-            const action = new playActionClass(card);
+            const action = createPlayAction(card);
             card.abilities.playActions.push(action);
             return action;
         },

@@ -1,6 +1,7 @@
 import { Location, CardType } from '../../Constants.js';
-import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand.js';
-import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../PlayDisguisedCharacterAsIfFromHand.js';
+import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
+import { PlayIntoLocation } from '../../PlayCharacterAction.js';
+import { PlayDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { gainPlayAction } from '../../effects.js';
 
@@ -13,8 +14,8 @@ export default class GatewayToMeido extends ProvinceCard {
             targetLocation: Location.DynastyDiscardPile,
             match: (card) => card.type === CardType.Character,
             effect: [
-                gainPlayAction(PlayCharacterAsIfFromHandIntoConflict),
-                gainPlayAction(PlayDisguisedCharacterAsIfFromHandIntoConflict)
+                gainPlayAction((card) => new PlayCharacterAsIfFromHand(card, { into: PlayIntoLocation.Conflict })),
+                gainPlayAction((card) => new PlayDisguisedCharacterAsIfFromHand(card, { into: PlayIntoLocation.Conflict }))
             ]
         });
     }

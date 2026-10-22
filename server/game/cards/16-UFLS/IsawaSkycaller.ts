@@ -1,30 +1,10 @@
 import DrawCard from '../../DrawCard.js';
 import { gainPlayAction } from '../../effects.js';
-import { PlayIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
-import { Element, Location, PlayType, Blocker } from '../../Constants.js';
-import type Player from '../../Player.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { PlayIntoLocation } from '../../PlayCharacterAction.js';
+import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
+import { Element, Location } from '../../Constants.js';
 
 const elementKey = 'isawa-skycaller-air';
-
-class IsawaSkycallerPlayAction extends PlayCharacterAction {
-    static id = 'isawa-skycaller';
-
-    constructor(card: DrawCard) {
-        super(card, PlayIntoLocation.Conflict);
-    }
-
-    override createContext(player: Player = this.card.controller) {
-        const context = super.createContext(player);
-        context.playType = PlayType.PlayFromHand;
-        return context;
-    }
-
-    override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
-        const newIgnoredBlockers = ignoredBlockers.includes(Blocker.WrongLocation) ? ignoredBlockers : ignoredBlockers.concat(Blocker.WrongLocation);
-        return super.meetsRequirements(context, newIgnoredBlockers);
-    }
-}
 
 class IsawaSkycaller extends DrawCard {
     static id = 'isawa-skycaller';
@@ -34,7 +14,7 @@ class IsawaSkycaller extends DrawCard {
             condition: (context) => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFaceup(),
-            effect: gainPlayAction(IsawaSkycallerPlayAction)
+            effect: gainPlayAction((card) => new PlayCharacterAsIfFromHand(card, { into: PlayIntoLocation.Conflict }))
         });
     }
 
