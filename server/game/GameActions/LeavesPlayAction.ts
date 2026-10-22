@@ -68,7 +68,7 @@ export function leavesPlayContingentEvents(event: Event & { card: BaseCard }, co
     for(const attachment of card.attachments) {
         if(attachment.location === Location.PlayArea && !event.window?.events.some((other) => other.card === attachment)) {
             const attachmentEvent = new DiscardFromPlayAction({})
-                .getEvent(attachment, context.game.getGameContext());
+                .getEvent(attachment, context.game.getFrameworkContext(attachment.controller));
             attachmentEvent.order = order - 1;
             const previousCondition = attachmentEvent.condition;
             attachmentEvent.condition = (attachmentEvent) =>
@@ -77,9 +77,10 @@ export function leavesPlayContingentEvents(event: Event & { card: BaseCard }, co
             contingentEvents.push(attachmentEvent);
         }
     }
-    if(card.allowGameAction('removeFate', context.game.getGameContext())) {
+    const cardContext = context.game.getFrameworkContext(card.controller);
+    if(card.allowGameAction('removeFate', cardContext)) {
         const fateEvent = new RemoveFateAction({ amount: card.getFate() })
-            .getEvent(card, context.game.getGameContext());
+            .getEvent(card, cardContext);
         fateEvent.order = order - 1;
         fateEvent.isContingent = true;
         contingentEvents.push(fateEvent);

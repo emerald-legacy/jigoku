@@ -3,6 +3,7 @@ import type { CardSummary } from '../../../server/game/BaseCard.js';
 import type { CardData } from '../../../server/game/types/CardData.js';
 import { CardType, Location } from '../../../server/game/Constants.js';
 import type { GameActionName } from '../../../server/game/GameActions/GameActionRegistry.js';
+import type { AbilityContext } from '../../../server/game/AbilityContext.js';
 
 function makeGame() {
     const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext', 'getPlayers']);
@@ -83,6 +84,7 @@ describe('RoleCard', () => {
     });
 
     describe('allowGameAction()', () => {
+        const context = jasmine.createSpyObj<AbilityContext>('context', ['copy']);
         const illegalActions: GameActionName[] = [
             'bow', 'ready', 'dishonor', 'honor', 'sacrifice', 'discardFromPlay',
             'moveToConflict', 'sendHome', 'putIntoPlay', 'putIntoConflict',
@@ -91,19 +93,19 @@ describe('RoleCard', () => {
 
         illegalActions.forEach((action) => {
             it(`blocks the '${action}' action`, () => {
-                expect(card.allowGameAction(action)).toBe(false);
+                expect(card.allowGameAction(action, context)).toBe(false);
             });
         });
 
         it('asks the parent about an action that is not on the illegal list', () => {
             const parent = spyOn(Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(card))), 'allowGameAction').and.returnValue(true);
-            expect(card.allowGameAction('taint')).toBe(true);
-            expect(parent).toHaveBeenCalledWith('taint', undefined);
+            expect(card.allowGameAction('taint', context)).toBe(true);
+            expect(parent).toHaveBeenCalledWith('taint', context);
         });
 
         it('never delegates to the parent for illegal actions', () => {
             spyOn(Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(card))), 'allowGameAction').and.returnValue(true);
-            expect(card.allowGameAction('bow')).toBe(false);
+            expect(card.allowGameAction('bow', context)).toBe(false);
         });
     });
 

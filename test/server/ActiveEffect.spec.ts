@@ -3,7 +3,7 @@ import { EffectSource } from '../../server/game/EffectSource.js';
 import { StaticEffect } from '../../server/game/Effects/StaticEffect.js';
 import { Duration, EffectName } from '../../server/game/Constants.js';
 import type Game from '../../server/game/Game.js';
-import { createTestGame } from '../helpers/fixtures.js';
+import { createTestGame, testPlayer } from '../helpers/fixtures.js';
 
 describe('ActiveEffect', function() {
     let game: Game;
@@ -12,16 +12,16 @@ describe('ActiveEffect', function() {
     beforeEach(function() {
         game = createTestGame();
         spyOn(game, 'getFrameworkContext').and.callThrough();
-        spyOn(game, 'getGameContext').and.callThrough();
         staticEffect = new StaticEffect(EffectName.ModifyMilitarySkill, 1);
     });
 
     describe('when the source has no controller (e.g. a framework / ring source)', function() {
-        it('should use the game context, which has no player', function() {
+        it('should use a framework context of the first player', function() {
+            const first = testPlayer(game);
+            spyOn(game, 'getPlayersInFirstPlayerOrder').and.returnValue([first]);
             const source = new EffectSource(game, 'framework');
             new ActiveEffect(game, source, {}, staticEffect);
-            expect(game.getGameContext).toHaveBeenCalled();
-            expect(game.getFrameworkContext).not.toHaveBeenCalled();
+            expect(game.getFrameworkContext).toHaveBeenCalledWith(first);
         });
     });
 

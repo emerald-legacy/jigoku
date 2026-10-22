@@ -3077,7 +3077,7 @@ this.interrupt('Ready for Glory Count')
         <tbody>
           <tr><td><code>game</code></td><td><code>Game</code></td><td>Always.</td></tr>
           <tr><td><code>source</code></td><td><code>Source</code></td><td>Always; see <a href="#ctx-source">source</a>.</td></tr>
-          <tr><td><code>player</code></td><td><code>Player</code></td><td>Always, except the game context (<code>game.getGameContext()</code>).</td></tr>
+          <tr><td><code>player</code></td><td><code>Player</code></td><td>Always; a rule's framework context names the player it acts for.</td></tr>
           <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>Always; a blank <code>BaseAbility</code> for framework contexts.</td></tr>
           <tr><td><code>stage</code></td><td><code>Stage</code></td><td><code>PreTarget</code> when created for an ability, then <code>Cost</code>, <code>Target</code>, <code>Effect</code>.</td></tr>
           <tr><td><code>targets</code></td><td><code>Record&lt;string, BaseCard | BaseCard[]&gt;</code></td><td>When each card target is chosen.</td></tr>
@@ -3107,7 +3107,7 @@ this.interrupt('Ready for Glory Count')
         </tbody>
       </table>
   <ul class="edge">
-    <li>A context created by <code>game.getFrameworkContext(player)</code> or <code>game.getGameContext()</code> has a plain source named "Framework effect" and <code>stage</code> <code>Effect</code>; the game context has no <code>player</code>. Rules use them (bowing at the end of a conflict, fate phase steps), so <code>event.context.source</code> may not be a card.</li>
+    <li>A context created by <code>game.getFrameworkContext(player)</code> has a plain source named "Framework effect" and <code>stage</code> <code>Effect</code>. Rules use them (bowing at the end of a conflict, fate phase steps), so <code>event.context.source</code> may not be a card.</li>
     <li><code>copy(props)</code> makes a new context with the same choices; game actions use it to check a candidate.</li>
   </ul>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DuelistTraining.ts">Duelist Training</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/ShrineMaiden.ts">Shrine Maiden</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BackAlleyHideaway.ts">Back-Alley Hideaway</a></p>
@@ -3163,7 +3163,6 @@ if(
   <ul class="edge">
     <li>For a triggered ability, a context is created for each player in turn, and the <code>when</code> predicate runs with each. <code>meetsRequirements</code> then keeps only a player allowed to trigger it: the controller, unless <code>anyPlayer()</code> or <code>canBeTriggeredByOpponent</code> is set. So in the predicate <code>context.player</code> is not always the card's controller. When the text means the card or its controller, check <code>context.source</code>: its <code>controller</code>, or its side in the conflict, as Asako Diplomat does below.</li>
     <li>An event card can be played by a player who can play it from where it is, even if they do not own it.</li>
-    <li>The game context (<code>game.getGameContext()</code>) has no player, so <code>event.context.player</code> can be undefined.</li>
   </ul>
   <pre><code>// Asako Diplomat: Reaction: After this character wins a conflict, choose a character – honor or dishonor that character.
 afterConflict: (event, context) =&gt; event.conflict.isOnWinningSide(context.source)</code></pre>

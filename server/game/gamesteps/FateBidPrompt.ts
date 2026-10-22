@@ -1,5 +1,4 @@
 import { msg } from '../GameChat.js';
-import type { AbilityContext } from '../AbilityContext.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
@@ -16,7 +15,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
     constructor(
         game: Game,
         menuTitle: string,
-        private bidHandler: (result: Result, context: AbilityContext) => void,
+        private bidHandler: (result: Result) => void,
         private prohibitedBids: Record<string, Array<number>> = {}
     ) {
         super(game);
@@ -49,9 +48,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
             }
         }
 
-        const context = this.game.getGameContext();
-
-        this.game.queueSimpleStep(() => this.bidHandler(result, context));
+        this.game.queueSimpleStep(() => this.bidHandler(result));
 
         return true;
     }

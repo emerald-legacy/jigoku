@@ -35,7 +35,7 @@ export class TurnFacedownAction<Context extends AbilityContext = AbilityContext>
 
             context.game.raiseEvent(EventName.OnCardRevealed, {
                 card: card,
-                context: context.game.getGameContext()
+                context: context.game.getFrameworkContext(card.controller)
             });
         } else {
             card.facedown = true;

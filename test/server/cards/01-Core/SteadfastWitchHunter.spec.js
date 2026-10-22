@@ -18,7 +18,7 @@ describe('Steadfast Witch Hunter', function() {
         describe('Steadfast Witch Hunter\'s ability', function() {
             it('should be illegal when there are no legal targets', function() {
                 this.player1.pass();
-                expect(this.steadfastWitchHunter.allowGameAction('ready')).toBe(false);
+                expect(this.steadfastWitchHunter.allowGameAction('ready', this.game.getFrameworkContext(this.player2.player))).toBe(false);
                 this.player2.clickCard(this.steadfastWitchHunter);
                 expect(this.player2).toHavePrompt('Action Window');
             });

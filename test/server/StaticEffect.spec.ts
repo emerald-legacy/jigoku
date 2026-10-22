@@ -5,7 +5,7 @@ import { GameObject } from '../../server/game/GameObject.js';
 import { AbilityContext } from '../../server/game/AbilityContext.js';
 import type DrawCard from '../../server/game/DrawCard.js';
 import type Game from '../../server/game/Game.js';
-import { createTestCharacter, createTestGame } from '../helpers/fixtures.js';
+import { createTestCharacter, createTestGame, testPlayer } from '../helpers/fixtures.js';
 
 describe('StaticEffect', function() {
     let game: Game;
@@ -33,7 +33,7 @@ describe('StaticEffect', function() {
 
         it('should be assigned by setContext', function() {
             const effect = new StaticEffect(EffectName.ModifyMilitarySkill, 5);
-            const context = new AbilityContext({ game });
+            const context = new AbilityContext({ game, player: testPlayer(game) });
             effect.setContext(context);
             expect(effect.context).toBe(context);
         });

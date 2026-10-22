@@ -107,7 +107,7 @@ export class ActiveEffect<Target extends GameObject = GameObject> {
 
     refreshContext() {
         const controller = this.source.getEffectController();
-        this.context = controller ? this.game.getFrameworkContext(controller) : this.game.getGameContext();
+        this.context = this.game.getFrameworkContext(controller ?? this.game.getPlayersInFirstPlayerOrder()[0]);
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- an effect's source need not be a card (framework context)
         this.context.source = this.source as BaseCard;
         if(this.ability) {

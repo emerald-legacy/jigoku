@@ -16,7 +16,7 @@ import type { StatusToken } from './StatusToken.js';
 export interface AbilityContextProperties {
     game: Game;
     source?: EffectSource;
-    player?: Player;
+    player: Player;
     ability?: BaseAbility;
     costs?: Record<string, unknown>;
     targets?: Record<string, BaseCard | BaseCard[]>;
@@ -90,11 +90,10 @@ export class AbilityContext<Source extends EffectSource = BaseCard, Target exten
     }
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
-        // a framework context's source is a plain EffectSource and its player may be missing
+        // a framework context's source is a plain EffectSource
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
         this.source = (properties.source || new EffectSource(this.game)) as Source;
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
-        this.player = properties.player as Player;
+        this.player = properties.player;
         this.ability = properties.ability || new BaseAbility({});
         this.costs = properties.costs || {};
         this.targets = properties.targets || {};

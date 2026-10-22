@@ -15,7 +15,7 @@ class ReveredBonsho extends DrawCard {
     override setupCardAbilities() {
         this.persistentEffect({
             effect: customFatePhaseFateRemoval((player, fate) => {
-                const context = this.game.getGameContext();
+                const context = this.game.getFrameworkContext(player);
                 const ringsBase = [this.game.rings.air, this.game.rings.earth, this.game.rings.fire, this.game.rings.void, this.game.rings.water];
                 let rings = ringsBase.filter((a) => a.isUnclaimed());
                 if(rings.length <= 0) {

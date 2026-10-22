@@ -874,7 +874,7 @@ export class Game {
      * Resolves game actions together: their events on all legal targets open in one window, then emptied provinces refill.
      * A single action inside an ability uses `action.resolve()`; the ability refills at its end.
      */
-    resolveActions(actions: GameAction[], context: AbilityContext = this.getGameContext()): Event[] {
+    resolveActions(actions: GameAction[], context: AbilityContext): Event[] {
         const events: Event[] = [];
         for(const action of actions) {
             action.addEventsToArray(events, context);
@@ -900,10 +900,6 @@ export class Game {
     }
 
     /** A context for game-level rules that act for no player (the fate phase, the end of a conflict); its `player` is missing. */
-    getGameContext(): AbilityContext {
-        return new AbilityContext({ game: this });
-    }
-
     initiateConflict(
         player: Player,
         canPass: boolean,

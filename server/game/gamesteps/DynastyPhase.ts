@@ -52,7 +52,7 @@ export class DynastyPhase extends PhaseStep {
             for(const province of this.game.getProvinceArray()) {
                 for(const card of player.getDynastyCardsInProvince(province)) {
                     if(card.isFacedown()) {
-                        this.game.resolveActions([flipDynasty({ target: card })]);
+                        this.game.resolveActions([flipDynasty({ target: card })], this.game.getFrameworkContext(player));
                         revealedCards.add(card);
                         allRevealedCards.add(card);
                     }

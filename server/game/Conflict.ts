@@ -246,7 +246,7 @@ export class Conflict extends GameObject {
         if(illegal.length > 0) {
             this.game.addMessage(msg`${illegal} cannot participate in the conflict any more and ${illegal.length > 1 ? 'are' : 'is'} sent home bowed`);
             illegal.forEach((card) => this.removeFromConflict(card));
-            this.game.resolveActions([bow({ target: illegal })]);
+            this.game.resolveActions([bow({ target: illegal })], this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
         }
     }
 

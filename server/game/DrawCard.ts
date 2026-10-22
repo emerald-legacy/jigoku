@@ -788,7 +788,7 @@ export class DrawCard extends BaseCard {
             }
         }
 
-        const frameworkContext = this.game.getGameContext();
+        const frameworkContext = this.game.getFrameworkContext(this.controller);
 
         if(this.anyEffect(EffectName.CanOnlyBeDeclaredAsAttackerWithCondition)) {
             for(const condition of this.getEffects(EffectName.CanOnlyBeDeclaredAsAttackerWithCondition)) {

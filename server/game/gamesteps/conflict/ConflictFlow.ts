@@ -736,10 +736,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
             const honorLoss = Math.max(0, 1 + honorLossMods);
             this.game.addMessage(msg`${this.conflict.loser} loses ${honorLoss} honor for not defending the conflict`);
-            loseHonor({ dueToUnopposed: true, amount: honorLoss }).resolve(
-                this.conflict.loser,
-                this.conflict.loser ? this.game.getFrameworkContext(this.conflict.loser) : this.game.getGameContext()
-            );
+            if(this.conflict.loser) {
+                loseHonor({ dueToUnopposed: true, amount: honorLoss }).resolve(this.conflict.loser, this.game.getFrameworkContext(this.conflict.loser));
+            }
         }
     }
 
@@ -761,7 +760,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 this.conflict.skillDifference !== undefined && this.conflict.skillDifference >= strength &&
                 !province.isBroken
             ) {
-                this.game.resolveActions([breakProvince({ target: province })]);
+                this.game.resolveActions([breakProvince({ target: province })], this.game.getFrameworkContext(province.controller));
             }
         });
     }
@@ -823,14 +822,14 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
         // Create bow events for attackers
         const attackerBows = this.conflict.attackers.map((card: DrawCard) =>
-            ({ card, event: bow().getEvent(card, this.game.getGameContext()) })
+            ({ card, event: bow().getEvent(card, this.game.getFrameworkContext(card.controller)) })
         );
         // Cancel any events where attacker shouldn't bow
         attackerBows.forEach(({ card, event }) => (event.cancelled = !card.bowsOnReturnHome()));
 
         // Create bow events for defenders
         const defenderBows = this.conflict.defenders.map((card: DrawCard) =>
-            ({ card, event: bow().getEvent(card, this.game.getGameContext()) })
+            ({ card, event: bow().getEvent(card, this.game.getFrameworkContext(card.controller)) })
         );
         // Cancel any events where defender shouldn't bow
         defenderBows.forEach(({ card, event }) => (event.cancelled = !card.bowsOnReturnHome()));

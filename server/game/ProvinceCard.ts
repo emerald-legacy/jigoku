@@ -264,7 +264,7 @@ export class ProvinceCard extends BaseCard {
                         text: 'Yes',
                         handler: () => {
                             this.game.addMessage(msg`${choosingPlayer} chooses to discard ${cardLabel()}`);
-                            this.game.resolveActions([discardCard({ target: dynastyCard })]);
+                            this.game.resolveActions([discardCard({ target: dynastyCard })], this.game.getFrameworkContext(dynastyCard.controller));
                         }
                     },
                     { text: 'No', handler: () => this.game.addMessage(msg`${choosingPlayer} chooses not to discard ${cardLabel()}`) }

@@ -3,7 +3,7 @@ import { AbilityContext } from '../../server/game/AbilityContext.js';
 import type Game from '../../server/game/Game.js';
 import { setGameActionCatalog } from '../../server/game/GameActions/GameActionRegistry.js';
 import * as GameActions from '../../server/game/GameActions/GameActions.js';
-import { createTestGame } from '../helpers/fixtures.js';
+import { createTestGame, testPlayer } from '../helpers/fixtures.js';
 
 describe('GameObject', function() {
     let game: Game;
@@ -12,8 +12,7 @@ describe('GameObject', function() {
 
     beforeEach(function() {
         game = createTestGame();
-        frameworkContext = new AbilityContext({ game });
-        spyOn(game, 'getGameContext').and.returnValue(frameworkContext);
+        frameworkContext = new AbilityContext({ game, player: testPlayer(game) });
         gameObject = new GameObject(game, 'test object');
     });
 
@@ -34,17 +33,17 @@ describe('GameObject', function() {
             });
 
             it('should ask the produced game action whether it can affect this object', function() {
-                gameObject.allowGameAction('honor');
+                gameObject.allowGameAction('honor', frameworkContext);
                 expect(gameAction.canAffect).toHaveBeenCalledWith(gameObject, frameworkContext);
             });
 
             it('should return the game action canAffect result', function() {
                 gameAction.canAffect.and.returnValue(false);
-                expect(gameObject.allowGameAction('honor')).toBe(false);
+                expect(gameObject.allowGameAction('honor', frameworkContext)).toBe(false);
             });
 
-            it('should use a supplied context over the framework context', function() {
-                const otherContext = new AbilityContext({ game });
+            it('should pass the given context on', function() {
+                const otherContext = new AbilityContext({ game, player: testPlayer(game, 'player2') });
                 gameObject.allowGameAction('honor', otherContext);
                 expect(gameAction.canAffect).toHaveBeenCalledWith(gameObject, otherContext);
             });

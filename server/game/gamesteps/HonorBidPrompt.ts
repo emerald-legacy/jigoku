@@ -2,6 +2,7 @@ import { msg } from '../GameChat.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import type Game from '../Game.js';
 import type { Duel } from '../Duel.js';
 import { setHonorDial, takeHonor } from '../GameActions/GameActions.js';
@@ -60,7 +61,7 @@ export class HonorBidPrompt extends AllPlayerPrompt {
         return completed;
     }
 
-    transferHonorAfterBid(context = this.game.getGameContext()) {
+    transferHonorAfterBid(context?: AbilityContext) {
         const firstPlayer = this.game.getFirstPlayer();
         if(!firstPlayer || !firstPlayer.opponent) {
             return;
@@ -70,7 +71,7 @@ export class HonorBidPrompt extends AllPlayerPrompt {
             return;
         }
         const givingPlayer: Player = difference > 0 ? firstPlayer : firstPlayer.opponent;
-        takeHonor({ amount: Math.abs(difference), afterBid: true }).resolve(givingPlayer, context);
+        takeHonor({ amount: Math.abs(difference), afterBid: true }).resolve(givingPlayer, context ?? this.game.getFrameworkContext(givingPlayer));
     }
 
     override activePrompt(player: Player) {

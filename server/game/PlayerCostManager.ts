@@ -102,8 +102,8 @@ export class PlayerCostManager {
             );
         }
 
-        const rings = alternateFatePools.filter((a) => a.printedType === 'ring');
-        const cards = alternateFatePools.filter((a) => a.printedType !== 'ring');
+        const rings = alternateFatePools.filter((a) => a.isRing());
+        const cards = alternateFatePools.filter((a) => !a.isRing());
         if(
             !this.player.checkRestrictions(RestrictionType.TakeFateFromRings, context ?? this.player.game.getFrameworkContext(this.player)) ||
             maho
@@ -114,7 +114,7 @@ export class PlayerCostManager {
         }
 
         cards.forEach((card) => {
-            if(!card.allowGameAction('removeFate') && card.type !== CardType.Attachment) {
+            if(!card.allowGameAction('removeFate', this.player.game.getFrameworkContext(this.player)) && card.type !== CardType.Attachment) {
                 alternateFatePools = alternateFatePools.filter((a) => a !== card);
             }
         });

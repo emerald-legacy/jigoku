@@ -29,7 +29,7 @@ export default class GloryOfTheFiveRivers extends DrawCard {
                     let bidResult: Result;
 
                     context.game.queueStep(
-                        new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {
+                        new FateBidPrompt(context.game, 'Choose an amount of fate', (result) => {
                             bidResult = result;
                             for(const [player, amount] of result.bids) {
                                 context.game.addMessage(msg`${player} spends ${amount} fate`);

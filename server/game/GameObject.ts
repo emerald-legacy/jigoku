@@ -107,7 +107,7 @@ export class GameObject {
     }
 
     /** Whether the named game action, built with no properties, can affect this. Restrictions alone are `checkRestrictions`. */
-    public allowGameAction(actionType: GameActionName, context = this.game.getGameContext()) {
+    public allowGameAction(actionType: GameActionName, context: AbilityContext) {
         const gameActionFactory = getGameAction(actionType);
         if(!gameActionFactory) {
             throw new Error(`${actionType} is not a registered game action`);

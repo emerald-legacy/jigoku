@@ -3798,7 +3798,7 @@ private hasTriggered(context: AbilityContext): boolean {
 // unclaimed rings as evenly as possible.
 this.persistentEffect({
     effect: customFatePhaseFateRemoval((player, fate) =&gt; {
-        const context = this.game.getGameContext();
+        const context = this.game.getFrameworkContext(player);
         const ringsBase = [this.game.rings.air, this.game.rings.earth, this.game.rings.fire, this.game.rings.void, this.game.rings.water];
         let rings = ringsBase.filter((a) =&gt; a.isUnclaimed());
         if(rings.length &lt;= 0) {

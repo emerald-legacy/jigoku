@@ -9,7 +9,7 @@ import { ActionWindow } from './ActionWindow.js';
 import { discardCard, discardFromPlay, ready, removeFate, returnRing } from '../GameActions/GameActions.js';
 
 function characterShouldBeDiscarded(character: DrawCard) {
-    return character.fate === 0 && character.allowGameAction('discardFromPlay');
+    return character.fate === 0 && character.allowGameAction('discardFromPlay', character.game.getFrameworkContext(character.controller));
 }
 
 /**
@@ -69,7 +69,7 @@ export class FatePhase extends PhaseStep {
             controller: Players.Self,
             buttons: [{ text: 'Done', arg: 'cancel' }],
             onSelect: (player: Player, selectedCard: DrawCard) => {
-                this.game.resolveActions([discardFromPlay({ target: selectedCard })]);
+                this.game.resolveActions([discardFromPlay({ target: selectedCard })], this.game.getFrameworkContext(player));
 
                 cardsToDiscard.delete(selectedCard);
 
@@ -80,7 +80,7 @@ export class FatePhase extends PhaseStep {
                 for(const character of cardsToDiscard) {
                     this.game.queueSimpleStep(() => {
                         if(characterShouldBeDiscarded(character)) {
-                            this.game.resolveActions([discardFromPlay({ target: character })]);
+                            this.game.resolveActions([discardFromPlay({ target: character })], this.game.getFrameworkContext(player));
                         }
                     });
                 }
@@ -90,8 +90,8 @@ export class FatePhase extends PhaseStep {
 
     removeFateFromCharacters() {
         const events = this.game.resolveActions([
-            removeFate({ target: this.game.findAnyCardsInPlay((card) => card.allowGameAction('removeFate')) })
-        ]);
+            removeFate({ target: this.game.findAnyCardsInPlay((card) => card.allowGameAction('removeFate', this.game.getFrameworkContext(card.controller))) })
+        ], this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
         let processed = false;
         this.game.queueSimpleStep(() => {
             for(const player of this.game.getPlayersInFirstPlayerOrder()) {
@@ -155,21 +155,21 @@ export class FatePhase extends PhaseStep {
                     cardsToDiscard = cardsToDiscard.concat(cards.filter((card) => card.isDrawCard()));
                     if(cardsToDiscard.length > 0) {
                         this.game.addMessage(msg`${player} discards ${cardsToDiscard} from their provinces`);
-                        this.game.resolveActions([discardCard({ target: cardsToDiscard })]);
+                        this.game.resolveActions([discardCard({ target: cardsToDiscard })], this.game.getFrameworkContext(player));
                     }
                     return true;
                 },
                 onCancel: () => {
                     if(cardsToDiscard.length > 0) {
                         this.game.addMessage(msg`${player} discards ${cardsToDiscard} from their provinces`);
-                        this.game.resolveActions([discardCard({ target: cardsToDiscard })]);
+                        this.game.resolveActions([discardCard({ target: cardsToDiscard })], this.game.getFrameworkContext(player));
                     }
                     return true;
                 }
             });
         } else if(cardsToDiscard.length > 0) {
             this.game.addMessage(msg`${player} discards ${cardsToDiscard} from their provinces`);
-            this.game.resolveActions([discardCard({ target: cardsToDiscard })]);
+            this.game.resolveActions([discardCard({ target: cardsToDiscard })], this.game.getFrameworkContext(player));
         }
 
         this.game.queueSimpleStep(() => {
@@ -184,12 +184,12 @@ export class FatePhase extends PhaseStep {
 
     readyCards() {
         const cardsToReady = this.game.allCards.filter((card) => card.bowed && card.readiesDuringReadyPhase());
-        ready().resolve(cardsToReady, this.game.getGameContext());
+        ready().resolve(cardsToReady, this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
     }
 
     returnRings() {
         const claimedRings = Object.values(this.game.rings).filter((ring) => ring.claimed);
-        returnRing().resolve(claimedRings, this.game.getGameContext());
+        returnRing().resolve(claimedRings, this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
     }
 
     passFirstPlayer() {

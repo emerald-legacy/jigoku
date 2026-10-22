@@ -79,6 +79,6 @@ export class ConflictPhase extends PhaseStep {
             gameAction: (winner: Player | null) =>
                 winner ? claimImperialFavor({ target: winner }) : null
         })
-            .resolve(undefined, this.game.getGameContext());
+            .resolve(undefined, this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
     }
 }

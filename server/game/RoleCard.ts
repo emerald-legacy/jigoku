@@ -38,7 +38,7 @@ export class RoleCard extends BaseCard {
         };
     }
 
-    override allowGameAction(actionType: GameActionName, context?: AbilityContext): boolean {
+    override allowGameAction(actionType: GameActionName, context: AbilityContext): boolean {
         return !illegalActions.has(actionType) && super.allowGameAction(actionType, context);
     }
 

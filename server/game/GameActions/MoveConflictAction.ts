@@ -40,7 +40,7 @@ export class MoveConflictAction<Context extends AbilityContext = AbilityContext>
         conflict.conflictProvince = newProvince;
         if(newProvince.isFacedown()) {
             const revealEvent = new RevealAction({})
-                .getEvent(newProvince, context.game.getGameContext());
+                .getEvent(newProvince, context.game.getFrameworkContext(newProvince.controller));
             context.game.openThenEventWindow(revealEvent);
         }
     }
