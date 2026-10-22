@@ -1,10 +1,8 @@
 import { ExactlyXCardSelector } from './CardSelectors/ExactlyXCardSelector.js';
-import { ExactlyVariableXCardSelector } from './CardSelectors/ExactlyVariableXCardSelector.js';
 import { MaxStatCardSelector } from './CardSelectors/MaxStatCardSelector.js';
 import { SingleCardSelector } from './CardSelectors/SingleCardSelector.js';
 import { UnlimitedCardSelector } from './CardSelectors/UnlimitedCardSelector.js';
 import { UpToXCardSelector } from './CardSelectors/UpToXCardSelector.js';
-import { UpToVariableXCardSelector } from './CardSelectors/UpToVariableXCardSelector.js';
 import { TargetMode, CardType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { BaseCardSelectorProperties } from './CardSelectors/BaseCardSelector.js';
@@ -43,8 +41,7 @@ export function defaultMode({ numCards = 1, multiSelect = false, maxStat }: Pick
     return TargetMode.UpTo;
 }
 
-type BaseSelector = SingleCardSelector | ExactlyXCardSelector | ExactlyVariableXCardSelector |
-    MaxStatCardSelector | UnlimitedCardSelector | UpToXCardSelector | UpToVariableXCardSelector;
+type BaseSelector = SingleCardSelector | ExactlyXCardSelector | MaxStatCardSelector | UnlimitedCardSelector | UpToXCardSelector;
 
 const defaultProperties: CardSelectorProperties = {
     numCards: 1,
@@ -55,23 +52,23 @@ const defaultProperties: CardSelectorProperties = {
     sameDiscardPile: false
 };
 
-const ModeToSelector: Record<string, (p: CardSelectorProperties) => BaseSelector> = {
-    ability: (p) => new SingleCardSelector(p),
-    exactly: (p) => new ExactlyXCardSelector(p.numCards ?? 1, p),
-    exactlyVariable: (p) => new ExactlyVariableXCardSelector(p.numCardsFunc ?? (() => 1), p),
-    maxStat: (p) => {
+const ModeToSelector: Partial<Record<TargetMode, (p: CardSelectorProperties) => BaseSelector>> = {
+    [TargetMode.Ability]: (p) => new SingleCardSelector(p),
+    [TargetMode.Exactly]: (p) => new ExactlyXCardSelector(p.numCards ?? 1, p),
+    [TargetMode.ExactlyVariable]: (p) => new ExactlyXCardSelector(p.numCardsFunc ?? (() => 1), p),
+    [TargetMode.MaxStat]: (p) => {
         const { cardStat, maxStat } = p;
         if(!cardStat || !maxStat) {
             throw new Error('A maxStat card selector needs cardStat and maxStat');
         }
         return new MaxStatCardSelector({ ...p, cardStat, maxStat, numCards: p.numCards ?? 1 });
     },
-    single: (p) => new SingleCardSelector(p),
-    token: (p) => new SingleCardSelector(p),
-    elementSymbol: (p) => new SingleCardSelector(p),
-    unlimited: (p) => new UnlimitedCardSelector(p),
-    upTo: (p) => new UpToXCardSelector(p.numCards ?? 1, p),
-    upToVariable: (p) => new UpToVariableXCardSelector(p.numCardsFunc ?? (() => 1), p)
+    [TargetMode.Single]: (p) => new SingleCardSelector(p),
+    [TargetMode.Token]: (p) => new SingleCardSelector(p),
+    [TargetMode.ElementSymbol]: (p) => new SingleCardSelector(p),
+    [TargetMode.Unlimited]: (p) => new UnlimitedCardSelector(p),
+    [TargetMode.UpTo]: (p) => new UpToXCardSelector(p.numCards ?? 1, p),
+    [TargetMode.UpToVariable]: (p) => new UpToXCardSelector(p.numCardsFunc ?? (() => 1), p)
 };
 
 export class CardSelector {

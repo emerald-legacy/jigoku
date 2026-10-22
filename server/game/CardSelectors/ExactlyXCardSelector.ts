@@ -1,46 +1,50 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
-import { BaseCardSelector, type BaseCardSelectorProperties } from './BaseCardSelector.js';
+import { BaseCardSelector, type BaseCardSelectorProperties, type NumCardsFunc } from './BaseCardSelector.js';
+import { countPromptTitle } from './countPromptTitle.js';
 
+/** Exactly X cards: a fixed number (`Exactly`), or one the context decides (`ExactlyVariable`). */
 export class ExactlyXCardSelector extends BaseCardSelector {
-    override numCards: number;
+    count: NumCardsFunc;
 
-    constructor(numCards: number, properties: BaseCardSelectorProperties) {
+    constructor(numCards: number | NumCardsFunc, properties: BaseCardSelectorProperties) {
         super(properties);
-        this.numCards = numCards;
-    }
-
-    override defaultActivePromptTitle(): string {
-        if(this.cardType.length === 1) {
-            return this.numCards === 1 ? 'Choose a ' + this.cardType[0] : `Choose ${this.numCards} ${this.cardType[0]}s`;
+        if(typeof numCards === 'number') {
+            this.numCards = numCards;
+            this.count = () => numCards;
+        } else {
+            this.count = numCards;
         }
-        return this.numCards === 1 ? 'Select a card' : `Select ${this.numCards} cards`;
     }
 
-    override hasEnoughSelected(selectedCards: BaseCard[]): boolean {
-        return selectedCards.length === this.numCards;
+    override defaultActivePromptTitle(context: AbilityContext): string {
+        return countPromptTitle(this.cardType, this.count(context), false);
+    }
+
+    override hasEnoughSelected(selectedCards: BaseCard[], context: AbilityContext): boolean {
+        return selectedCards.length === this.count(context);
     }
 
     override hasEnoughTargets(context: AbilityContext, choosingPlayer?: Player): boolean {
         const matchedCards: BaseCard[] = [];
-        const numMatchingCards = context.game.allCards.reduce((total: number, card: BaseCard) => {
+        for(const card of context.game.allCards) {
             if(this.canTarget(card, context, choosingPlayer, matchedCards)) {
                 matchedCards.push(card);
-                return total + 1;
             }
-            return total;
-        }, 0);
-
-        return numMatchingCards >= this.numCards;
+        }
+        return matchedCards.length >= this.count(context);
     }
 
-    override hasReachedLimit(selectedCards: BaseCard[]): boolean {
-        return selectedCards.length >= this.numCards;
+    override hasReachedLimit(selectedCards: BaseCard[], context: AbilityContext): boolean {
+        return selectedCards.length >= this.count(context);
     }
 
-    override automaticFireOnSelect(): boolean {
-        return this.numCards === 1;
+    override hasExceededLimit(selectedCards: BaseCard[], context: AbilityContext): boolean {
+        return selectedCards.length > this.count(context);
+    }
+
+    override automaticFireOnSelect(context: AbilityContext): boolean {
+        return this.count(context) === 1;
     }
 }
-
