@@ -23,7 +23,7 @@ class Niten extends DrawCard {
                 cardCondition: (card, context) => card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.captureParentCost ?? undefined)
             })
             .attach((context) => ({
-                target: context.costs.captureParentCost ?? [],
+                target: context.costs.captureParentCost ?? context.source.parentCharacter ?? [],
                 attachment: context.target
             }))
             .max(perRound(1));

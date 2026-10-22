@@ -36,6 +36,10 @@ export class ThenAbility extends BaseCardAbility {
         this.handler = properties.handler || this.executeGameActions.bind(this);
     }
 
+    override hasFollowingStep(): boolean {
+        return !!this.properties.then;
+    }
+
     override checkGameActionsForPotential(context: AbilityContext): boolean {
         if(super.checkGameActionsForPotential(context)) {
             return true;

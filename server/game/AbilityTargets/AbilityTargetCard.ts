@@ -22,9 +22,27 @@ interface AbilityTargetCardProperties {
 export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProperties> {
     selector: CardSelectorInstance;
 
+    #owner: OwningAbility;
+
     constructor(name: string, properties: AbilityTargetCardProperties, ability: OwningAbility) {
         super(name, properties, ability);
+        this.#owner = ability;
         this.selector = this.getSelector(properties);
+    }
+
+    /**
+     * "Choose X – effect" whose effect is the ability's own (no action on the target): X must let that effect change something
+     * (RRG: an ability can't initiate without the potential to change the game state). Only for one single-card target and no
+     * following step: an action may read a target not chosen yet, and a step may change the game on its own.
+     */
+    #abilityEffectCanResolve(contextCopy: AbilityContext): boolean {
+        const actions = this.#owner.gameAction;
+        const singleCard = (this.properties.mode ?? TargetMode.Single) === TargetMode.Single;
+        if(this.properties.gameAction.length > 0 || this.dependentTarget || this.#owner.targets.length > 1 || actions.length === 0 ||
+            !singleCard || this.#owner.hasFollowingStep()) {
+            return true;
+        }
+        return actions.some((action) => action.hasLegalTarget(contextCopy));
     }
 
     getSelector(properties: AbilityTargetCardProperties): CardSelectorInstance {
@@ -35,7 +53,8 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
             }
             return (!properties.cardCondition || properties.cardCondition(card, contextCopy)) &&
                    (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
-                   (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy, this.actionOverrides(contextCopy))));
+                   (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy, this.actionOverrides(contextCopy)))) &&
+                   this.#abilityEffectCanResolve(contextCopy);
         };
         return CardSelector.for(Object.assign({}, properties, { cardCondition: cardCondition, targets: true }));
     }

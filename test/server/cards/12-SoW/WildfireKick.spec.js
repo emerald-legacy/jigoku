@@ -38,6 +38,25 @@ describe('Wildfire Kick', function() {
                 expect(this.player1).toBeAbleToSelect(this.initiate);
                 expect(this.player1).not.toBeAbleToSelect(this.ancient);
             });
+
+            it('can\'t be played when no opponent\'s character would be affected', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.initiate, this.challenger],
+                    defenders: [],
+                    type: 'military'
+                });
+
+                for(let i = 0; i < 3; i++) {
+                    this.player2.pass();
+                    this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
+                }
+
+                this.player2.pass();
+                this.player1.clickCard(this.wildfire);
+                expect(this.player1).not.toHavePrompt('Wildfire Kick');
+                expect(this.wildfire.location).toBe('hand');
+            });
         });
 
         describe('main', function() {

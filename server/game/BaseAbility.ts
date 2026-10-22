@@ -28,9 +28,12 @@ export interface DependentTarget {
     checkGameActionsForTargetsChosenByInitiatingPlayer?(context: AbilityContext): boolean;
 }
 
-/** The ability a target belongs to, as seen by the target: its sibling targets. */
+/** The ability a target belongs to, as seen by the target: its sibling targets, its own game actions and whether a step follows. */
 export interface OwningAbility {
     targets: { name: string; dependentTarget: DependentTarget | null }[];
+    /** The ability's own game actions (not its targets'). */
+    gameAction: GameAction[];
+    hasFollowingStep(): boolean;
 }
 
 interface AbilityTarget extends DependentTarget {
@@ -141,6 +144,11 @@ export class BaseAbility {
         }
 
         return cost;
+    }
+
+    /** Whether a step follows the ability (then()/afterwards()), which may change the game state on its own. */
+    hasFollowingStep(): boolean {
+        return false;
     }
 
     buildTargets(properties: BaseAbilityProperties): void {
