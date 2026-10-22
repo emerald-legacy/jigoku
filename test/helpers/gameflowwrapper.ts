@@ -211,11 +211,26 @@ class GameFlowWrapper {
         return phaseChange;
     }
 
-    advancePhases(endphase?: string): void {
+    /**
+     * Plays the game on to `endphase`. `passTriggers` (setupTest only) passes interrupts and reactions on the way: a card
+     * drawn at random into a starting hand may offer one, and the test sets the game up afterwards.
+     */
+    advancePhases(endphase?: string, passTriggers = false): void {
         if(!endphase) {
             return;
         }
+        let rounds = 0;
         while(this.game.currentPhase !== endphase) {
+            if(passTriggers) {
+                for(const player of this.allPlayers) {
+                    if(player.hasPrompt('Triggered Abilities') && player.hasPromptButton('Pass')) {
+                        player.clickPrompt('Pass');
+                    }
+                }
+            }
+            if(++rounds > 20) {
+                throw new Error(`The game is stuck before the ${endphase} phase:\n${this.player1.formatPrompt()}\n${this.player2.formatPrompt()}`);
+            }
             this.nextPhase();
         }
     }

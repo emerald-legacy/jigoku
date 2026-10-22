@@ -235,7 +235,7 @@ globalThis.integration = function (definitions: () => void): void {
 
                     flow.keepConflict();
 
-                    flow.advancePhases(options.phase);
+                    flow.advancePhases(options.phase, true);
                 } else {
                     flow.player1.dynastyDiscard = options.player1.dynastyDiscard;
                     flow.player2.dynastyDiscard = options.player2.dynastyDiscard;
