@@ -14,7 +14,7 @@ import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from './targe
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
-import { canResolveAbility, getResolutionContext } from './TriggerAbilityAction.js';
+import { canResolveAbility, getResolutionContext } from './Shared/abilityResolution.js';
 
 class ResolveAbilityActionResolver extends AbilityResolver {
     ignoreCosts: boolean;
