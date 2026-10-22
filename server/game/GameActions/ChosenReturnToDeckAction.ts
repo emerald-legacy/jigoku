@@ -6,8 +6,8 @@ import type BaseCard from '../BaseCard.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
-import { shuffle } from '../utils/random.js';
 import { targetList, type ActionEvent } from './GameAction.js';
+import { chooseBlindly, isBlindChoice } from './blindChoice.js';
 
 export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     amount?: number;
@@ -56,9 +56,9 @@ export class ChosenReturnToDeckAction<Context extends AbilityContext = AbilityCo
                     return;
                 }
 
-                if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
+                if(properties.targets && isBlindChoice(context, player.hand)) {
                     const event = this.getEvent(player, context, additionalProperties);
-                    event.cards = shuffle(player.hand).slice(0, amount);
+                    event.cards = chooseBlindly(player.hand, amount, false);
                     events.push(event);
                     return;
                 }

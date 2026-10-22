@@ -579,6 +579,35 @@ describe('Hantei XXXVIII and choices from the hand', function() {
             expect(this.player2).toHavePrompt('Choose three cards to reveal');
         });
 
+        it('discards a card at random for Day of Brother Horse', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic'],
+                    hand: ['day-of-brother-horse']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            const handSize = this.player1.hand.length;
+
+            this.noMoreActions();
+            this.player1.clickPrompt('Pass Conflict');
+            this.player1.clickPrompt('Yes');
+            this.player1.clickCard('day-of-brother-horse');
+            this.player1.clickRing('fire');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.hantei);
+            this.player2.clickRing('water');
+
+            expect(this.player1).not.toHavePrompt('Choose a card to discard');
+            expect(this.player2).not.toHavePrompt('Choose a card to discard');
+            expect(this.player1.hand.length).toBe(handSize + 1);
+            expect(this.player1.conflictDiscard.length).toBe(2);
+        });
+
         it('chooses no Kihō for Laughing Thunder', function() {
             this.setupTest({
                 phase: 'conflict',

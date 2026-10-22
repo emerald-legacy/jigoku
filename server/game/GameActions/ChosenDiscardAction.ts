@@ -7,6 +7,7 @@ import { EventName, Location, Players, TargetMode, RestrictionType } from '../Co
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
+import { chooseBlindly, isBlindChoice } from './blindChoice.js';
 
 export interface ChosenDiscardProperties<Context extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     amount?: number;
@@ -14,11 +15,10 @@ export interface ChosenDiscardProperties<Context extends AbilityContext = Abilit
     cardCondition?(card: BaseCard, context: Context): boolean;
 }
 
-export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand, Context, 'amount' | 'targets' | 'cardCondition'> {
+export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand, Context, 'amount' | 'targets'> {
     override defaultProperties = {
         amount: 1,
-        targets: true,
-        cardCondition: () => true
+        targets: true
     };
     override name = 'chosenDiscard';
     override restriction = RestrictionType.Discard;
@@ -35,7 +35,7 @@ export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext
 
     override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
+        const availableHand = this.#availableHand(player, context, properties);
 
         if(availableHand.length === 0 || properties.amount === 0) {
             return false;
@@ -46,7 +46,7 @@ export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext
     override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         for(const player of targetList(properties.target)) {
-            const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
+            const availableHand = this.#availableHand(player, context, properties);
             const amount = Math.min(availableHand.length, properties.amount);
             if(amount > 0) {
                 if(amount >= availableHand.length) {
@@ -56,10 +56,13 @@ export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext
                     continue;
                 }
 
-                if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
-                    const event = this.getEvent(player, context, additionalProperties);
-                    event.cards = availableHand.slice(0, amount);
-                    events.push(event);
+                if(properties.targets && isBlindChoice(context, availableHand)) {
+                    const cards = chooseBlindly(availableHand, amount, !!properties.cardCondition);
+                    if(cards.length > 0) {
+                        const event = this.getEvent(player, context, additionalProperties);
+                        event.cards = cards;
+                        events.push(event);
+                    }
                     continue;
                 }
                 context.game.promptForSelect(player, {
@@ -69,7 +72,7 @@ export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext
                     numCards: amount,
                     location: Location.Hand,
                     controller: player === context.player ? Players.Self : Players.Opponent,
-                    cardCondition: (card: BaseCard) => properties.cardCondition(card, context),
+                    cardCondition: (card: BaseCard) => availableHand.includes(card),
                     onSelect: (player: Player, cards: BaseCard[]) => {
                         const event = this.getEvent(player, context, additionalProperties);
                         event.cards = cards;
@@ -79,6 +82,10 @@ export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext
                 });
             }
         }
+    }
+
+    #availableHand(player: Player, context: Context, properties: ChosenDiscardProperties<Context>): BaseCard[] {
+        return player.hand.filter((card) => !properties.cardCondition || properties.cardCondition(card, context));
     }
 
     override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, Context>, player: Player, context: Context, additionalProperties: Record<string, unknown>): void {

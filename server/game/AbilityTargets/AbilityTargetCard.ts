@@ -1,13 +1,13 @@
 import { AbilityTargetBase } from './AbilityTargetBase.js';
 import { CardSelector } from '../CardSelector.js';
-import { Stage, type Players, EffectName, Location, TargetMode, RestrictionType } from '../Constants.js';
+import { Stage, type Players, EffectName, TargetMode, RestrictionType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { CardSelectorInstance } from './TargetPrompt.js';
-import { randomItem } from '../utils/random.js';
+import { isBlindChoice, selectBlindly } from '../GameActions/blindChoice.js';
 
 interface AbilityTargetCardProperties {
     gameAction: GameAction[];
@@ -101,11 +101,10 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
         const { player } = chooser;
         const hidden = player === context.choosingPlayerOverride ? this.cardsHiddenFrom(player, context) : [];
         if(hidden.length > 0) {
-            // Hantei XXXVIII doesn't see the hand: a random card, or none if it needs certain traits (ruling #926)
-            const card = this.properties.cardCondition ? undefined : randomItem(hidden);
-            context.targets[this.name] = card ?? [];
+            const chosen = this.selector.formatSelectParam(selectBlindly(this.selector, hidden, context, !!this.properties.cardCondition));
+            context.targets[this.name] = chosen;
             if(this.name === 'target') {
-                context.target = card;
+                context.target = Array.isArray(chosen) ? undefined : chosen;
             }
             return;
         }
@@ -133,13 +132,13 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
         context.game.promptForSelect(player, Object.assign(promptProperties, otherProperties));
     }
 
-    /** For a choice taken over (Hantei XXXVIII): the legal targets, when all are in a hand `player` can't see. */
+    /** For a choice taken over (Hantei XXXVIII): the legal targets, when all are hidden from `player`. */
     private cardsHiddenFrom(player: Player | undefined, context: AbilityContext): BaseCard[] {
         if(!player || player === this.getChoosingPlayer(context)) {
             return [];
         }
         const cards = this.selector.getAllLegalTargets(context, this.getChoosingPlayer(context));
-        return cards.every((card) => card.location === Location.Hand && card.controller !== player) ? cards : [];
+        return isBlindChoice(context, cards, player) ? cards : [];
     }
 
     /** Whether the opponent could choose blindly: a random card, or none where one must be chosen ("up to" can't choose none, ruling #1010). */

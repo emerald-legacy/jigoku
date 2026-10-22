@@ -3,10 +3,9 @@ import type BaseCard from '../BaseCard.js';
 import { Location, Players } from '../Constants.js';
 import type { Cost, CostMessage, Result } from './Cost.js';
 import type { Event } from '../Events/Event.js';
-import { actionFor, type SelectCardAction } from '../GameActions/SelectCardAction.js';
+import type { SelectCardAction } from '../GameActions/SelectCardAction.js';
 import type { SelectRingAction } from '../GameActions/SelectRingActions.js';
 import Ring from '../Ring.js';
-import { randomItem } from '../utils/random.js';
 import { GameActionCost } from './GameActionCost.js';
 
 /**
@@ -38,17 +37,6 @@ export class MetaActionCost extends GameActionCost implements Cost {
     override addEventsToArray(events: Event[], context: AbilityContext, result: Result): void {
         const properties = this.action.getProperties(context);
         const name = this.getActionName(context);
-        const chosen = properties.targets && context.choosingPlayerOverride && 'selector' in properties && properties.selector
-            ? randomItem(properties.selector.getAllLegalTargets(context, context.player))
-            : undefined;
-        if(chosen) {
-            context.costs[name] = chosen;
-            context.costs[name + 'StateWhenChosen'] = chosen.createSnapshot();
-            return actionFor(properties.gameAction, chosen).addEventsToArray(events, context, {
-                target: chosen
-            });
-        }
-
         const additionalProps = {
             activePromptTitle: this.activePromptTitle,
             location: ('location' in properties ? properties.location : undefined) || Location.Any,

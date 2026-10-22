@@ -12,6 +12,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
 import { isCardOfType, isCardTypeList, type CardOfType, type CardTypes } from '../types/CardOfType.js';
 import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from './targetingCosts.js';
+import { isBlindChoice, selectBlindly } from './blindChoice.js';
 
 /** `Types` is the declared `cardType`, which fixes the class of card the callbacks receive. */
 interface SelectCardBase<Context extends AbilityContext, Types extends CardTypes> extends CardActionProperties {
@@ -127,10 +128,9 @@ export class SelectCardAction<Context extends AbilityContext = AbilityContext> e
     SelectCardActionProperties<Context>,
     EventName,
     Context,
-    'cardCondition' | 'subActionProperties' | 'targets' | 'hidePromptIfSingleCard' | 'manuallyRaiseEvent'
+    'subActionProperties' | 'targets' | 'hidePromptIfSingleCard' | 'manuallyRaiseEvent'
 > {
     override defaultProperties = {
-        cardCondition: () => true,
         subActionProperties: (card: BaseCard | BaseCard[]) => ({ target: card }),
         targets: false,
         hidePromptIfSingleCard: false,
@@ -159,7 +159,7 @@ export class SelectCardAction<Context extends AbilityContext = AbilityContext> e
                 actionFor(properties.gameAction, card).allTargetsLegal(
                     context,
                     Object.assign({}, additionalProperties, subActionProperties(card))
-                ) && cardCondition(card, context);
+                ) && (!cardCondition || cardCondition(card, context));
             selector = CardSelector.for(Object.assign({}, properties, { cardCondition: selectorCardCondition }));
         }
         return Object.assign(properties, { selector });
@@ -193,7 +193,8 @@ export class SelectCardAction<Context extends AbilityContext = AbilityContext> e
                         .some((restriction) => restriction.isMatch(RestrictionType.Target, context))
                 );
         }
-        if(!properties.selector.hasEnoughTargets(context, player)) {
+        const blindChoice = this.#blindChoice(context, properties, player);
+        if(!blindChoice && !properties.selector.hasEnoughTargets(context, player)) {
             return;
         }
         const promptProperties = {
@@ -227,6 +228,12 @@ export class SelectCardAction<Context extends AbilityContext = AbilityContext> e
                 return true;
             }
         };
+        if(blindChoice) {
+            if(blindChoice.length > 0) {
+                promptProperties.onSelect(player, properties.selector.formatSelectParam(blindChoice));
+            }
+            return;
+        }
         if(properties.hidePromptIfSingleCard) {
             const cards = properties.selector.getAllLegalTargets(context);
             if(cards.length === 1) {
@@ -235,6 +242,16 @@ export class SelectCardAction<Context extends AbilityContext = AbilityContext> e
             }
         }
         context.game.promptForSelect(player, promptProperties);
+    }
+
+    /** The cards Hantei XXXVIII chooses without seeing them, when the choice he took over is blind. */
+    #blindChoice(context: Context, properties: ReturnType<SelectCardAction<Context>['getProperties']>, player: Player): BaseCard[] | undefined {
+        const usualChooser = resolveChoosingPlayer(context, properties.player);
+        if(!properties.targets || !usualChooser || usualChooser === player) {
+            return undefined;
+        }
+        const cards = properties.selector.getAllLegalTargets(context, usualChooser);
+        return isBlindChoice(context, cards, player) ? selectBlindly(properties.selector, cards, context, !!properties.cardCondition) : undefined;
     }
 
     override hasTargetsChosenByInitiatingPlayer(context: Context, additionalProperties: ActionOverrides = {}): boolean {

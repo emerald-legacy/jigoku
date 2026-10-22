@@ -12,6 +12,7 @@ import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import { derive, type Derivable } from '../utils/helpers.js';
 import { RearrangeDeckAction } from './RearrangeDeckAction.js';
+import { chooseBlindly, isBlindChoice } from './blindChoice.js';
 
 export interface DeckSearchProperties<Context extends AbilityContext = AbilityContext> extends PlayerActionProperties {
     mode?: TargetMode;
@@ -49,8 +50,7 @@ type DeckSearchDefaults =
     | 'deck'
     | 'remainingCards'
     | 'reveal'
-    | 'uniqueNames'
-    | 'cardCondition';
+    | 'uniqueNames';
 
 type ResolvedDeckSearchProperties<Context extends AbilityContext> = WithDefaults<DeckSearchProperties<Context>, DeckSearchDefaults>;
 
@@ -65,8 +65,7 @@ export class DeckSearchAction<Context extends AbilityContext = AbilityContext> e
         deck: DeckType.Conflict,
         remainingCards: RemainingCards.Shuffle,
         reveal: true,
-        uniqueNames: false,
-        cardCondition: () => true
+        uniqueNames: false
     };
 
     override hasLegalTarget(context: Context, additionalProperties: ActionOverrides = {}): boolean {
@@ -117,7 +116,7 @@ export class DeckSearchAction<Context extends AbilityContext = AbilityContext> e
         const amount = event.amount > -1 ? event.amount : this.#getDeck(player, properties).length;
         let cards = this.#getDeck(player, properties).slice(0, amount);
         if(event.amount === -1) {
-            cards = cards.filter((card) => properties.cardCondition(card, context));
+            cards = cards.filter((card) => !properties.cardCondition || properties.cardCondition(card, context));
         }
         events.push(event);
         this.#selectCard(event, additionalProperties, cards, new Set());
@@ -177,11 +176,32 @@ export class DeckSearchAction<Context extends AbilityContext = AbilityContext> e
         }
 
         const cardCondition = (card: DrawCard) =>
-            properties.cardCondition(card, context) &&
+            (!properties.cardCondition || properties.cardCondition(card, context)) &&
             (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
             (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties));
-        const blindChoice = properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== choosingPlayer;
-        if(blindChoice || (properties.hideIfNoLegalTargets || !canCancel) && !cards.some(cardCondition)) {
+        const take = (card: DrawCard) => {
+            const newSelectedCards = new Set(selectedCards);
+            newSelectedCards.add(card);
+            const index = cards.indexOf(card, 0);
+            if(index > -1) {
+                cards.splice(index, 1);
+            }
+            if((selectAmount < 0 || newSelectedCards.size < selectAmount) && cards.length > 0) {
+                this.#selectCard(event, additionalProperties, cards, newSelectedCards);
+            } else {
+                this.#handleDone(properties, context, event, newSelectedCards, cards);
+            }
+        };
+        if(properties.targets && isBlindChoice(context, cards)) {
+            const [card] = chooseBlindly(cards.filter(cardCondition), 1, !!properties.cardCondition);
+            if(card) {
+                take(card);
+            } else {
+                this.#handleDone(properties, context, event, selectedCards, cards);
+            }
+            return;
+        }
+        if((properties.hideIfNoLegalTargets || !canCancel) && !cards.some(cardCondition)) {
             this.#handleDone(properties, context, event, selectedCards, cards);
             return;
         }
@@ -192,19 +212,7 @@ export class DeckSearchAction<Context extends AbilityContext = AbilityContext> e
             cards: cards,
             cardCondition,
             options: canCancel ? [{ text: properties.doneButtonText ?? (selectedCards.size > 0 ? 'Done' : 'Take nothing'), handler: () => this.#handleDone(properties, context, event, selectedCards, cards) }] : [],
-            cardHandler: (card: DrawCard) => {
-                const newSelectedCards = new Set(selectedCards);
-                newSelectedCards.add(card);
-                const index = cards.indexOf(card, 0);
-                if(index > -1) {
-                    cards.splice(index, 1);
-                }
-                if((selectAmount < 0 || newSelectedCards.size < selectAmount) && cards.length > 0) {
-                    this.#selectCard(event, additionalProperties, cards, newSelectedCards);
-                } else {
-                    this.#handleDone(properties, context, event, newSelectedCards, cards);
-                }
-            }
+            cardHandler: take
         });
     }
 
