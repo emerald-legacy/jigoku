@@ -780,3 +780,38 @@ describe('SoD - Phoenix', function () {
         });
     });
 });
+
+describe('SoD - Phoenix: Appeasing the Restless at Blood of Onnotangu', function () {
+    integration(function () {
+        it('moves fate from the fate pool, as moving fate isn\'t spending it', function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['isawa-tadaka', 'kami-unleashed'],
+                    hand: ['appeasing-the-restless']
+                },
+                player2: {
+                    provinces: ['blood-of-onnotangu']
+                }
+            });
+            this.tadaka = this.player1.findCardByName('isawa-tadaka');
+            this.kami = this.player1.findCardByName('kami-unleashed');
+            const fate = this.player1.fate;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kami],
+                defenders: [],
+                province: this.player2.findCardByName('blood-of-onnotangu')
+            });
+            this.player2.pass();
+            this.player1.clickCard('appeasing-the-restless');
+            this.player1.clickCard(this.tadaka);
+            this.player1.clickCard(this.kami);
+            this.player1.clickPrompt('Done');
+
+            expect(this.kami.fate).toBe(1);
+            expect(this.player1.fate).toBe(fate - 1);
+        });
+    });
+});

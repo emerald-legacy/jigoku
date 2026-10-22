@@ -4,14 +4,17 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
-import Ring from '../Ring.js';
+import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
+import { canMoveFateFrom } from './Shared/FateOrigin.js';
 
 export interface PlaceFateRingProperties extends RingActionProperties {
     amount?: number;
     origin?: DrawCard | Player | Ring;
+    /** The fate is spent from the origin's fate pool. */
+    spend?: boolean;
 }
 
 export class PlaceFateOnRingAction<Context extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, Context, 'amount'> {
@@ -34,27 +37,14 @@ export class PlaceFateOnRingAction<Context extends AbilityContext = AbilityConte
 
     override canAffect(ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        if(
-            properties.origin &&
-            (!properties.origin.checkRestrictions(RestrictionType.SpendFate, context) || properties.origin.fate === 0)
-        ) {
-            return false;
-        }
-        // moving fate off a character removes it from that character (Student of War "cannot lose fate")
-        if(properties.origin && !(properties.origin instanceof Ring) && !properties.origin.checkRestrictions(RestrictionType.RemoveFate, context)) {
-            return false;
-        }
-        // moving fate off a ring removes it from that ring (The Stone of Sorrows)
-        if(properties.origin instanceof Ring && !context.player.checkRestrictions(RestrictionType.TakeFateFromRings, context)) {
-            return false;
-        }
-        return properties.amount > 0 && super.canAffect(ring, context);
+        return properties.amount > 0 && canMoveFateFrom(properties.origin, context, { spend: properties.spend }) && super.canAffect(ring, context);
     }
 
     override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, Context>, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): void {
-        const { amount, origin } = this.getProperties(context, additionalProperties);
+        const { amount, origin, spend } = this.getProperties(context, additionalProperties);
         event.fate = amount;
         event.origin = origin;
+        event.spend = spend;
         event.context = context;
         event.recipient = ring;
     }

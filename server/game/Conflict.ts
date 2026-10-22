@@ -9,6 +9,7 @@ import Player from './Player.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
 import { bow } from './GameActions/GameActions.js';
+import { takeAllFateFromRing } from './GameActions/TakeFateFromRingAction.js';
 
 type Predicate = (card: DrawCard) => boolean;
 
@@ -217,21 +218,7 @@ export class Conflict extends GameObject {
         if(!newRing) {
             throw new Error('switchElement called for non-existant element');
         }
-        if(this.attackingPlayer.checkRestrictions(RestrictionType.TakeFateFromRings, this.game.getFrameworkContext(this.attackingPlayer)) && newRing.fate > 0) {
-            this.game.addMessage(msg`${this.attackingPlayer} takes ${newRing.fate} fate from ${newRing}`);
-            const fate = newRing.fate;
-            this.attackingPlayer.modifyFate(newRing.fate);
-            newRing.fate = 0;
-            if(fate > 0) {
-                const context = this.game.getFrameworkContext(this.attackingPlayer);
-                this.game.raiseEvent(EventName.OnMoveFate, {
-                    fate: fate,
-                    origin: newRing,
-                    context: context,
-                    recipient: this.attackingPlayer
-                });
-            }
-        }
+        this.game.openThenEventWindow(takeAllFateFromRing(newRing, this.game.getFrameworkContext(this.attackingPlayer)));
         if(newRing.conflictType !== this.conflictType) {
             newRing.flipConflictType();
         }

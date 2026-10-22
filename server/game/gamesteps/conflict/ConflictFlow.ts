@@ -6,7 +6,8 @@ import { discardCard } from '../../costs/boardCosts.js';
 import type BaseCard from '../../BaseCard.js';
 import { payFate, payFateToRing, payHonor } from '../../costs/fateAndHonorCosts.js';
 import { covertContexts } from './covertContexts.js';
-import { bow, breakProvince, loseHonor, resolveConflictRing, reveal, takeFateFromRing } from '../../GameActions/GameActions.js';
+import { bow, breakProvince, loseHonor, resolveConflictRing, reveal } from '../../GameActions/GameActions.js';
+import { takeAllFateFromRing } from '../../GameActions/TakeFateFromRingAction.js';
 import { SimpleStep } from '../SimpleStep.js';
 import { ConflictActionWindow } from './ConflictActionWindow.js';
 import { InitiateConflictPrompt } from './InitiateConflictPrompt.js';
@@ -328,22 +329,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     }
                     this.conflict.attackers.forEach((card: DrawCard) => (card.inConflict = true));
                     this.game.recordConflict(this.conflict);
-                    const events: Event[] = [];
-                    if(
-                        this.conflict.ring &&
-                        this.conflict.ring.fate > 0 &&
-                        this.conflict.attackingPlayer.checkRestrictions(
-                            RestrictionType.TakeFateFromRings,
-                            this.game.getFrameworkContext(this.conflict.attackingPlayer)
-                        )
-                    ) {
-                        this.game.addMessage(msg`${this.conflict.attackingPlayer} takes ${this.conflict.ring.fate} fate from ${this.conflict.ring}`);
-                        takeFateFromRing({
-                            target: this.conflict.ring,
-                            amount: this.conflict.ring.fate
-                        })
-                            .addEventsToArray(events, this.game.getFrameworkContext(this.conflict.attackingPlayer));
-                    }
+                    const events: Event[] = this.conflict.ring
+                        ? takeAllFateFromRing(this.conflict.ring, this.game.getFrameworkContext(this.conflict.attackingPlayer))
+                        : [];
                     events.push(
                         this.game.getEvent(EventName.Unnamed, {}, () => {
                             this.game.queueSimpleStep(() => this.promptForCovert());

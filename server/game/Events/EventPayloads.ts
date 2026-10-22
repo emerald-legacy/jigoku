@@ -174,6 +174,8 @@ interface EventPayloadMap {
         fate?: number;
         amount?: number;
         origin?: Ring | DrawCard | Player;
+        /** Fate spent from the origin's fate pool. */
+        spend?: boolean;
         recipient?: Player | DrawCard | Ring;
         context?: AbilityContext;
     };

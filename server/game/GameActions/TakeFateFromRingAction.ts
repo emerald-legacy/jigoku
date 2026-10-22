@@ -1,11 +1,12 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs } from '../GameChat.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, RestrictionType } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
+import type { Event } from '../Events/Event.js';
 
 export interface TakeFateRingProperties extends RingActionProperties {
     amount?: number;
@@ -55,4 +56,17 @@ export class TakeFateFromRingAction<Context extends AbilityContext = AbilityCont
     override eventHandler(event: ActionEvent<EventName.OnMoveFate, Context>): void {
         this.moveFateEventHandler(event);
     }
+}
+
+/**
+ * The player of `context` takes all the fate on the ring (claiming or taking it, declaring a conflict at it, switching to it):
+ * the events to open, none if they can't.
+ */
+export function takeAllFateFromRing(ring: Ring, context: AbilityContext): Event[] {
+    const action = new TakeFateFromRingAction({ target: ring, amount: ring.fate });
+    if(!action.hasLegalTarget(context)) {
+        return [];
+    }
+    context.game.addMessage(msg`${context.player} takes ${ring.fate} fate from ${ring}`);
+    return action.getEventArray(context);
 }

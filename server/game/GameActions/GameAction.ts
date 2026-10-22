@@ -10,6 +10,7 @@ import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { Duel } from '../Duel.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
+import { canMoveFateFrom } from './Shared/FateOrigin.js';
 
 export type GameActionTarget = Player | Ring | BaseCard | StatusToken | Duel;
 type TargetValue = unknown;
@@ -251,15 +252,8 @@ export class GameAction<
     }
 
     moveFateEventCondition(event: GameEvent<EventName.OnMoveFate>): boolean {
-        if(event.origin) {
-            if(event.origin.getFate() === 0) {
-                return false;
-            } else if(
-                event.origin.type === CardType.Character &&
-                !event.origin.allowGameAction('removeFate', event.context)
-            ) {
-                return false;
-            }
+        if(event.origin && !canMoveFateFrom(event.origin, event.context, { spend: event.spend })) {
+            return false;
         }
         if(event.recipient) {
             if(

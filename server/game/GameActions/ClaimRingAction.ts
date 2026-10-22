@@ -4,7 +4,7 @@ import { ConflictType, EventName, RestrictionType } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
-import { takeFateFromRing } from './Shared/RingFate.js';
+import { takeAllFateFromRing } from './TakeFateFromRingAction.js';
 
 export interface ClaimRingProperties extends RingActionProperties {
     takeFate?: boolean;
@@ -32,7 +32,7 @@ export class ClaimRingAction<Context extends AbilityContext = AbilityContext> ex
         ring.contested = false;
         ring.conflictType = type;
         if(takeFate) {
-            takeFateFromRing(ring, context);
+            context.game.openThenEventWindow(takeAllFateFromRing(ring, context));
         }
         event.player = context.player;
         event.conflict = context.game.currentConflict ?? undefined;

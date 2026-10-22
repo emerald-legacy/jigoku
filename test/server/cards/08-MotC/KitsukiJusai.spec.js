@@ -85,3 +85,44 @@ describe('Kitsuki Jusai', function() {
         });
     });
 });
+
+describe('Kitsuki Jusai at Blood of Onnotangu', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kitsuki-jusai', 'mirumoto-raitsugu']
+                },
+                player2: {
+                    fate: 2,
+                    inPlay: ['doji-whisperer'],
+                    provinces: ['blood-of-onnotangu']
+                }
+            });
+            this.raitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.blood = this.player2.findCardByName('blood-of-onnotangu');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.raitsugu],
+                defenders: [this.whisperer],
+                province: this.blood
+            });
+            this.player2.pass();
+        });
+
+        it('moves fate from the opponent\'s fate pool, as moving fate isn\'t spending it', function() {
+            const earthFate = this.game.rings.earth.fate;
+            this.player1.clickCard(this.raitsugu);
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard('kitsuki-jusai');
+            this.player1.clickRing('earth');
+            expect(this.game.rings.earth.fate).toBe(earthFate + 1);
+            expect(this.player2.fate).toBe(1);
+        });
+    });
+});

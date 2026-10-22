@@ -5,14 +5,17 @@ import type BaseCard from '../BaseCard.js';
 import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
-import Ring from '../Ring.js';
+import type Ring from '../Ring.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
+import { canMoveFateFrom } from './Shared/FateOrigin.js';
 
 export interface PlaceFateProperties extends CardActionProperties {
     amount?: number;
     origin?: DrawCard | Player | Ring;
+    /** The fate is spent from the origin's fate pool. */
+    spend?: boolean;
 }
 
 export class PlaceFateAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName.OnMoveFate, Context, 'amount'> {
@@ -26,33 +29,18 @@ export class PlaceFateAction<Context extends AbilityContext = AbilityContext> ex
     }
 
     override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        const { amount, origin } = this.getProperties(context, additionalProperties);
+        const { amount, origin, spend } = this.getProperties(context, additionalProperties);
         if(amount === 0 || card.location !== Location.PlayArea) {
             return false;
         }
-
-        if(origin instanceof Ring && !context.player.checkRestrictions(RestrictionType.TakeFateFromRings, context)) {
-            return false;
-        }
-
-        return super.canAffect(card, context) && this.checkOrigin(context, origin) && card !== origin;
-    }
-
-    checkOrigin(context: Context, origin?: Player | Ring | DrawCard): boolean {
-        if(!origin) {
-            return true;
-        }
-
-        return (
-            origin.fate > 0 &&
-            (origin.type === 'player' || origin.type === 'ring' || origin.allowGameAction('removeFate', context))
-        );
+        return super.canAffect(card, context) && canMoveFateFrom(origin, context, { spend }) && card !== origin;
     }
 
     override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, Context>, card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): void {
-        const { amount, origin } = this.getProperties(context, additionalProperties);
+        const { amount, origin, spend } = this.getProperties(context, additionalProperties);
         event.fate = amount;
         event.origin = origin;
+        event.spend = spend;
         event.context = context;
         event.recipient = card;
     }

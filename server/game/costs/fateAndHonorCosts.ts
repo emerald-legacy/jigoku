@@ -55,7 +55,7 @@ export function payFateToRing(amount = 1, ringCondition = (ring: Ring) => ring.i
     return new MetaActionCost(
         GameActions.selectRing({
             ringCondition,
-            gameAction: GameActions.placeFateOnRing((context) => ({ amount, origin: context.player }))
+            gameAction: GameActions.placeFateOnRing((context) => ({ amount, origin: context.player, spend: true }))
         }),
         'Select a ring to place fate on',
         'ringPaidFateTo'
