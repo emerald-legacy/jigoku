@@ -132,7 +132,7 @@
     <li>Engine code imports the factories by name. Files whose own names clash with them (the costs, <code>AbilityBuilder</code>) use <code>import * as GameActions</code>.</li>
     <li>The modules in <code>GameActions/</code> and <code>AbilityResolver</code> construct the action classes instead (<code>new MoveCardAction(…)</code>). The factory module imports them, so importing it back closes an import cycle that only breaks when such a module happens to load first.</li>
     <li>A class must not share an import cycle with the class it extends: <code>class DrawCard extends BaseCard</code> needs <code>BaseCard</code> loaded, so nothing that <code>BaseCard</code>, <code>CardAbility</code> or <code>ReduceableFateCost</code> imports may import their subclasses as values.</li>
-    <li>Engine code tells cards and abilities apart with the guards (<code>isCard()</code>, <code>isDrawCard()</code>, <code>isTriggeredAbilityInstance()</code>; <code>value instanceof GameObject &amp;&amp; value.isCard()</code> for an <code>unknown</code>), not with <code>instanceof</code> on the class.</li>
+    <li>Engine code tells cards and abilities apart with the guards (<code>isCard()</code>, <code>isDrawCard()</code>, <code>isRing()</code>, <code>isPlayer()</code>, <code>isToken()</code>, <code>isTriggeredAbilityInstance()</code>; <code>value instanceof GameObject &amp;&amp; value.isCard()</code> for an <code>unknown</code>), not with <code>instanceof</code> on the class.</li>
     <li>The modules in <code>GameActions/</code> import their effects from <code>Effects/Library/</code>, not the <code>effects</code> index, which pulls in the ability builder.</li>
 </ul>
 

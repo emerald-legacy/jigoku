@@ -1,5 +1,5 @@
 import { EffectSource } from './EffectSource.js';
-import { ConflictType, EffectName, type Element } from './Constants.js';
+import { ConflictType, EffectName, type Element, ObjectType } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
@@ -17,7 +17,7 @@ export class Ring extends EffectSource {
         { command: 'conflict', text: 'Initiate Conflict' }
     ];
 
-    override printedType = 'ring';
+    override printedType = ObjectType.Ring;
     claimed = false;
     claimedBy = '';
     conflictType: ConflictType;

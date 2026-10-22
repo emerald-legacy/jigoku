@@ -6,7 +6,7 @@ import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import type Player from '../../../Player.js';
-import Ring from '../../../Ring.js';
+import type Ring from '../../../Ring.js';
 
 const ELEMENT_KEY = 'kitsuki-seiji-water';
 
@@ -55,7 +55,7 @@ export default class KitsukiSeiji extends DrawCard {
 
     private fateRecipientIsSeijisRing(recipient?: Player | BaseCard | Ring) {
         return (
-            recipient instanceof Ring && recipient.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY))
+            !!recipient?.isRing() && recipient.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY))
         );
     }
 

@@ -23,7 +23,7 @@ export class TokenAction<
     }
 
     override canAffect(target: StatusToken, _context: Context, _additionalProperties = {}): boolean {
-        return target.type === 'token';
+        return target.isToken();
     }
 
     override checkEventCondition(event: TokenEvent<EventType, Context>, additionalProperties: ActionOverrides = {}): boolean {

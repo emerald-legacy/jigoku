@@ -12,7 +12,7 @@ export default class KitsukiYuikimi extends DrawCard {
                 onMoveFate: (event, context) =>
                     context.source.isParticipating() &&
                     event.origin &&
-                    event.origin.type === 'ring' &&
+                    event.origin.isRing() &&
                     event.recipient === context.player &&
                     context.player.opponent !== undefined
             })

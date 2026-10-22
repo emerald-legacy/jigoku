@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 
 import type { AbilityContext } from './AbilityContext.js';
-import { type CardType, EffectName, type PlayType, RestrictionType, Stage } from './Constants.js';
+import { type CardType, EffectName, type ObjectType, type PlayType, RestrictionType, Stage } from './Constants.js';
 import { isEffectOf } from './Effects/types.js';
 import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { EffectValueMap, NumericEffectName } from './Effects/EffectValueMap.js';
@@ -10,6 +10,8 @@ import type { GameAction } from './GameActions/GameAction.js';
 import { type GameActionName, getGameAction } from './GameActions/GameActionRegistry.js';
 import type BaseCard from './BaseCard.js';
 import type Ring from './Ring.js';
+import type Player from './Player.js';
+import type { StatusToken } from './StatusToken.js';
 import type { StateViewer } from './types/StateViewer.js';
 
 interface ShortSummary {
@@ -22,7 +24,7 @@ export class GameObject {
     private _name!: string;
     public uuid: string = randomUUID();
     protected id: string;
-    public printedType = '';
+    public printedType: CardType | ObjectType | '' = '';
     public facedown = false;
     protected effects: EffectApplier[] = [];
     protected effectsByType = new Map<EffectName, EffectApplier[]>();
@@ -125,6 +127,14 @@ export class GameObject {
     }
 
     public isRing(): this is Ring {
+        return false;
+    }
+
+    public isPlayer(): this is Player {
+        return false;
+    }
+
+    public isToken(): this is StatusToken {
         return false;
     }
 

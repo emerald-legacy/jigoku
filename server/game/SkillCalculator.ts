@@ -1,6 +1,6 @@
 import { StatModifier } from './StatModifier.js';
 import { CharacterStatus, EffectName } from './Constants.js';
-import { StatusToken } from './StatusToken.js';
+import type { EffectSource } from './EffectSource.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf, isEffectOfAny } from './Effects/types.js';
 import type { EffectApplier } from './Effects/EffectApplier.js';
@@ -33,8 +33,8 @@ export class SkillCalculator {
 
     private getModifier(value: number, effect: EffectApplier): StatModifier {
         const modifier = StatModifier.fromEffect(value, effect);
-        const source = effect.context?.source;
-        if(source instanceof StatusToken) {
+        const source: EffectSource | undefined = effect.context?.source;
+        if(source?.isToken()) {
             modifier.status = source.grantedStatus;
         }
         return modifier;

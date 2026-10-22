@@ -100,7 +100,7 @@ class InventiveButtressing extends ProvinceAttachment {
     <h3><code>class X extends RingAttachment</code> <span class="kind">Base class</span> <a class="anchor" href="#he-RingAttachment">#</a></h3>
     <p>An attachment played on and attached to a ring: "Attach to a ring." <code>canPlayOn</code> and <code>canAttach</code> accept only a ring, and <code>mustAttachToRing()</code> returns <code>true</code>, all while the card is an attachment.</p>
     <ul class="edge">
-      <li>The ring is <code>this.parent</code> (a <code>Ring</code>, not a card); check it with <code>parent instanceof Ring</code> or <code>parent?.isRing()</code> before using ring methods.</li>
+      <li>The ring is <code>this.parent</code> (a <code>Ring</code>, not a card); check it with <code>parent?.isRing()</code> before using ring methods.</li>
       <li>The checks look at the card's current type, so a card that only becomes an attachment through an effect (Crafty Tsukumogami uses <code>changeType(CardType.Attachment)</code>) behaves as a ring attachment only while it is one.</li>
     </ul>
     <pre><code>// Greater Understanding: Attach to a ring.

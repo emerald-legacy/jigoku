@@ -40,7 +40,7 @@ export class RemoveFateAction<Context extends AbilityContext = AbilityContext> e
 
     checkRecipient(origin: Player | Ring | DrawCard | undefined, context: Context): boolean {
         if(origin) {
-            if(['player', 'ring'].includes(origin.type)) {
+            if(origin.isPlayer() || origin.isRing()) {
                 return true;
             }
             return origin.allowGameAction('placeFate', context);

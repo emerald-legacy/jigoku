@@ -2,7 +2,6 @@ import { msg } from '../../../GameChat.js';
 import { immunity } from '../../../effects.js';
 import { attachToRing } from '../../../GameActions/GameActions.js';
 import { Location, Players, RestrictionScope } from '../../../Constants.js';
-import Ring from '../../../Ring.js';
 import { RingAttachment } from '../../RingAttachment.js';
 
 export default class GreaterUnderstanding2 extends RingAttachment {
@@ -19,7 +18,7 @@ export default class GreaterUnderstanding2 extends RingAttachment {
         this.reaction('Resolve the attached ring\'s effect')
             .when({
                 onMoveFate: (event, context) => event.recipient === context.source.parent,
-                onPlaceFateOnUnclaimedRings: (_event, context) => context.source.parent instanceof Ring && context.source.parent.isUnclaimed()
+                onPlaceFateOnUnclaimedRings: (_event, context) => context.source.parent?.isRing() && context.source.parent.isUnclaimed()
             })
             .resolveRingEffect((context) => ({ target: context.source.parent ?? [] }))
             .then()

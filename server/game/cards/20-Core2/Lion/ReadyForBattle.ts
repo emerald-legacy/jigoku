@@ -1,5 +1,4 @@
 import DrawCard from '../../../DrawCard.js';
-import Ring from '../../../Ring.js';
 
 export default class ReadyForBattle extends DrawCard {
     static id = 'ready-for-battle';
@@ -9,7 +8,7 @@ export default class ReadyForBattle extends DrawCard {
             .when({
                 onCardBowed: (event, context) =>
                     event.card.controller === context.player &&
-                    (event.context?.source instanceof Ring ||
+                    (event.context?.source.isRing() ||
                         (context.player.opponent && event.context?.player === context.player.opponent))
             })
             .ready((context) => ({ target: context.event.card }))

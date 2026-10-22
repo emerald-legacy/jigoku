@@ -9,7 +9,7 @@ export default class TattooedMan extends DrawCard {
             .when({
                 onMoveFate: (event, context) =>
                     (event.fate ?? 0) > 0 &&
-                    event.recipient?.type === 'ring' &&
+                    event.recipient?.isRing() &&
                     !!event.context &&
                     context.player === event.context.player &&
                     event.context.ability.isCardAbility() &&

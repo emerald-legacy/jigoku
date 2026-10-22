@@ -4,8 +4,8 @@ import { buildPlayerHarness, buildGameSpy, buildGameActionSpy, lastPromptArgs, l
 
 describe('SelectTokenAction', function() {
     beforeEach(function() {
-        this.tokenA = { name: 'token-a', type: 'token' };
-        this.tokenB = { name: 'token-b', type: 'token' };
+        this.tokenA = { name: 'token-a', type: 'token', isToken: () => true };
+        this.tokenB = { name: 'token-b', type: 'token', isToken: () => true };
         this.card = { name: 'host', statusTokens: [this.tokenA, this.tokenB] };
         this.game = buildGameSpy(['promptWithHandlerMenu', 'addMessage']);
         ({ player: this.player, opponent: this.opponent } = buildPlayerHarness());

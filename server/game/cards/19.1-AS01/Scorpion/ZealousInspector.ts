@@ -1,7 +1,6 @@
 import { CardType, Duration } from '../../../Constants.js';
 import { additionalAction } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
-import Ring from '../../../Ring.js';
 
 export default class ZealousInspector extends DrawCard {
     static id = 'zealous-inspector';
@@ -16,7 +15,7 @@ export default class ZealousInspector extends DrawCard {
                     event.card.controller === context.player.opponent &&
                     // dishonored by your card effect
                     context.player === event.context?.player &&
-                    !(event.context?.source instanceof Ring)
+                    !(event.context?.source.isRing())
             })
             .playerLastingEffect({
                 duration: Duration.UntilPassPriority,

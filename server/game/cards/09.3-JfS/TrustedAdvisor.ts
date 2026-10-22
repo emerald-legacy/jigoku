@@ -7,7 +7,7 @@ class TrustedAdvisor extends DrawCard {
         this.reaction('Draw a card')
             .when({
                 onMoveFate: (event, context) => context.source.isParticipating() &&
-                    event.origin && event.origin.type === 'ring' &&
+                    event.origin && event.origin.isRing() &&
                     event.recipient === context.player
             })
             .draw()

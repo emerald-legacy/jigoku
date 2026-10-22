@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
-import Ring from '../../Ring.js';
 import { msg } from '../../GameChat.js';
 
 class JadeTalisman extends DrawCard {
@@ -13,11 +12,11 @@ class JadeTalisman extends DrawCard {
 
         this.wouldInterrupt('Cancel a ring effect')
             .when({
-                onMoveFate: (event, context) => event.context?.source instanceof Ring && event.origin === context.source.parentCharacter && (event.fate ?? 0) > 0,
-                onCardHonored: (event, context) => event.card === context.source.parentCharacter && event.context?.source instanceof Ring,
-                onCardDishonored: (event, context) => event.card === context.source.parentCharacter && event.context?.source instanceof Ring,
-                onCardBowed: (event, context) => event.card === context.source.parentCharacter && event.context?.source instanceof Ring,
-                onCardReadied: (event, context) => event.card === context.source.parentCharacter && event.context?.source instanceof Ring
+                onMoveFate: (event, context) => event.context?.source.isRing() && event.origin === context.source.parentCharacter && (event.fate ?? 0) > 0,
+                onCardHonored: (event, context) => event.card === context.source.parentCharacter && event.context?.source.isRing(),
+                onCardDishonored: (event, context) => event.card === context.source.parentCharacter && event.context?.source.isRing(),
+                onCardBowed: (event, context) => event.card === context.source.parentCharacter && event.context?.source.isRing(),
+                onCardReadied: (event, context) => event.card === context.source.parentCharacter && event.context?.source.isRing()
             })
             .cost(costs.sacrificeSelf())
             .cancel()

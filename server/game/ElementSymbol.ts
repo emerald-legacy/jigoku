@@ -1,4 +1,4 @@
-import type { Element } from './Constants.js';
+import { type Element, ObjectType } from './Constants.js';
 import { EffectSource } from './EffectSource.js';
 import type BaseCard from './BaseCard.js';
 import type Game from './Game.js';
@@ -10,7 +10,7 @@ export type ElementSymbolInfo = {
 };
 
 export class ElementSymbol extends EffectSource {
-    override printedType = 'elementSymbol';
+    override printedType = ObjectType.ElementSymbol;
     element: Element;
     key: string;
     prettyName: string;

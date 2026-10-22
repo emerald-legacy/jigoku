@@ -4,7 +4,6 @@ import BaseCard from '../../../BaseCard.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import Ring from '../../../Ring.js';
 
 export default class DaidojiAhma extends DrawCard {
     static id = 'daidoji-ahma';
@@ -27,11 +26,11 @@ export default class DaidojiAhma extends DrawCard {
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context)
             })
             .cancel()
-            .chatText((context) => msg`cancel the effects of ${context.event.context.source instanceof Ring ? 'the ' : ''}${context.event.context.source}`);
+            .chatText((context) => msg`cancel the effects of ${context.event.context.source.isRing() ? 'the ' : ''}${context.event.context.source}`);
     }
 
     private isRingEffect(event: { context?: AbilityContext }): boolean {
-        return event.context?.source instanceof Ring;
+        return !!event.context?.source.isRing();
     }
 
     private targetIsDishonoredCrane(card: BaseCard, context: TriggeredAbilityContext<this>): boolean {

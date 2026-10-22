@@ -1,7 +1,6 @@
 import { CardType } from '../../../Constants.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
-import Ring from '../../../Ring.js';
 import { isOpponentsRingOrCardEffect } from '../../effectSource.js';
 
 export default class KeeperOfInnerPeace extends DrawCard {
@@ -16,7 +15,7 @@ export default class KeeperOfInnerPeace extends DrawCard {
                     event.origin?.type === CardType.Character &&
                     'controller' in event.origin &&
                     event.origin.controller === context.player &&
-                    (event.context?.source instanceof Ring || isOpponentsRingOrCardEffect(context.player, event.context))
+                    (event.context?.source.isRing() || isOpponentsRingOrCardEffect(context.player, event.context))
             })
             .placeFate((context) => ({ target: context.event.origin instanceof BaseCard ? context.event.origin : [] }));
     }

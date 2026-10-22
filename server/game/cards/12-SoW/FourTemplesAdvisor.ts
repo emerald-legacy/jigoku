@@ -7,7 +7,7 @@ class FourTemplesAdvisor extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Draw a card')
             .when({
-                onMoveFate: (event, context) => event.origin && event.origin.type === 'ring' && event.recipient === context.player
+                onMoveFate: (event, context) => event.origin && event.origin.isRing() && event.recipient === context.player
             })
             .draw()
             .chatText('draw a card')

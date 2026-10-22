@@ -6,7 +6,7 @@ import type { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import Ring from '../Ring.js';
+import type Ring from '../Ring.js';
 import { waitingPromptTitle } from '../AbilityTargets/TargetPrompt.js';
 
 const CANCELLED = 'CANCELLED';
@@ -63,7 +63,7 @@ export class ReduceableFateCost implements Cost {
         const cardPool = new Set<BaseCard>();
         let alternatePoolTotal = 0;
         for(const pool of alternatePools) {
-            if(pool instanceof Ring) {
+            if(pool.isRing()) {
                 ringPool.add(pool);
             } else {
                 cardPool.add(pool);

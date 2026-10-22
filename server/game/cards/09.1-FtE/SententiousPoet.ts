@@ -19,7 +19,7 @@ class SententiousPoet extends DrawCard {
                     (event.fate ?? 0) > 0 &&
                     context.source.isParticipating() &&
                     event.context?.stage === Stage.Cost &&
-                    event.recipient?.type === 'ring'
+                    event.recipient?.isRing()
             })
             .gainFate();
     }

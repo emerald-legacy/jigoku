@@ -4,7 +4,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
-import Ring from '../Ring.js';
+import type Ring from '../Ring.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
@@ -38,7 +38,7 @@ export class AttachToRingAction<Context extends AbilityContext = AbilityContext>
 
     override checkEventCondition(event: ActionEvent<EventName.OnCardAttached, Context>, additionalProperties: ActionOverrides = {}): boolean {
         const parent = event.parent;
-        return parent instanceof Ring && this.canAffect(parent, event.context, additionalProperties);
+        return parent.isRing() && this.canAffect(parent, event.context, additionalProperties);
     }
 
     override isEventFullyResolved(event: AnyEvent, card: BaseCard | Ring, context: Context, additionalProperties: ActionOverrides = {}): boolean {

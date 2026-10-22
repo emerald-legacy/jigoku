@@ -28,6 +28,7 @@ import {
     EventName,
     FavorType,
     Location,
+    ObjectType,
     Players,
     type PlayType,
     RestrictionType,
@@ -140,7 +141,7 @@ export class Player extends GameObject {
     emailHash: string;
     declare id: string;
     owner: boolean;
-    declare printedType: string;
+    declare printedType: ObjectType;
     socket: Socket | null | undefined;
     disconnected: boolean;
     left: boolean;
@@ -186,13 +187,17 @@ export class Player extends GameObject {
     showDynasty: boolean = false;
     noTimer: boolean = false;
 
+    override isPlayer(): this is Player {
+        return true;
+    }
+
     constructor(id: string, user: GamePlayerUser, owner: boolean, game: Game, clockdetails?: ClockConfig) {
         super(game, user.username);
         this.user = user;
         this.emailHash = this.user.emailHash ?? '';
         this.id = id;
         this.owner = owner;
-        this.printedType = 'player';
+        this.printedType = ObjectType.Player;
         this.socket = null;
         this.disconnected = false;
         this.left = false;

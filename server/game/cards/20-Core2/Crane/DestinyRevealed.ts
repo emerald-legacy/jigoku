@@ -4,7 +4,6 @@ import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
-import Ring from '../../../Ring.js';
 import { msg } from '../../../GameChat.js';
 export default class DestinyRevealed extends DrawCard {
     static id = 'destiny-revealed';
@@ -26,7 +25,7 @@ export default class DestinyRevealed extends DrawCard {
         this.wouldInterrupt('Cancel a ring effect')
             .when({
                 onMoveFate: (event, context) =>
-                    event.context?.source instanceof Ring &&
+                    event.context?.source.isRing() &&
                     event.context.player === context.player.opponent &&
                     !!event.origin && 'controller' in event.origin &&
                     event.origin.controller === context.player &&
@@ -48,5 +47,5 @@ type CardStatusEvent =
     | EventPayload<EventName.OnCardReadied>;
 
 function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext) {
-    return event.card.controller === context.player && event.context?.source instanceof Ring && event.context.player === context.player.opponent;
+    return event.card.controller === context.player && event.context?.source.isRing() && event.context.player === context.player.opponent;
 }

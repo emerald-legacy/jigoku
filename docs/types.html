@@ -213,6 +213,21 @@ this.conflictAction('Search your conflict deck', { evenFromHome: true })
         …</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Crane/KakitaTaneharu.ts">Kakita Taneharu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShrewdYasuki.ts">Shrewd Yasuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/AlibiArtist.ts">Alibi Artist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/StolenSecrets.ts">Stolen Secrets</a></p>
 </div>
+<div class="ref" id="en-ObjectType" data-name="ObjectType">
+  <h3><code>ObjectType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-ObjectType">#</a></h3>
+  <p>The <code>printedType</code> (and <code>type</code>) of a game object that is not a card. To tell objects apart, use the guards <code>isCard()</code>, <code>isRing()</code>, <code>isPlayer()</code> and <code>isToken()</code> on any game object rather than comparing types.</p>
+  <table>
+        <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>ElementSymbol</code></td><td><code>'elementSymbol'</code></td><td>An element symbol of a card.</td></tr>
+          <tr><td><code>Player</code></td><td><code>'player'</code></td><td>A player.</td></tr>
+          <tr><td><code>Ring</code></td><td><code>'ring'</code></td><td>A ring.</td></tr>
+          <tr><td><code>Token</code></td><td><code>'token'</code></td><td>A status token.</td></tr>
+        </tbody>
+      </table>
+  <pre><code>// Four Temples Advisor: Reaction: After you gain fate from a ring - draw 1 card. (Unlimited.)
+onMoveFate: (event, context) =&gt; event.origin &amp;&amp; event.origin.isRing() &amp;&amp; event.recipient === context.player</code></pre>
+</div>
 <div class="ref" id="en-TokenType" data-name="TokenType">
   <h3><code>TokenType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-TokenType">#</a></h3>
   <p>Tokens placed on cards other than status tokens and fate.</p>

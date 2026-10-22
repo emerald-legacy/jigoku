@@ -1,5 +1,5 @@
 import { msg } from './GameChat.js';
-import { CardType, CharacterStatus, EffectName } from './Constants.js';
+import { CardType, CharacterStatus, EffectName, ObjectType } from './Constants.js';
 import { EffectSource } from './EffectSource.js';
 import { loseHonor } from './GameActions/GameActions.js';
 import { costToDeclareAnyParticipants, honorCostToDeclare, modifyBothSkills, modifyProvinceStrength } from './effects.js';
@@ -19,8 +19,12 @@ interface StatusTokenEffect {
 
 export class StatusToken extends EffectSource {
     persistentEffects: StatusTokenEffect[] = [];
-    override printedType = 'token';
+    override printedType = ObjectType.Token;
     overrideStatus?: CharacterStatus;
+
+    override isToken(): this is StatusToken {
+        return true;
+    }
 
     constructor(
         public override game: Game,
