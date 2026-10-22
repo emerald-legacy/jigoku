@@ -16,8 +16,8 @@ export function getPlayBlocker(card: DrawCard, context: AbilityContext, ignoredB
     if(!ignoredBlockers.includes(Blocker.WrongLocation) && !context.player.isCardInPlayableLocation(card, playType)) {
         return Blocker.WrongLocation;
     }
-    if(!ignoredBlockers.includes(Blocker.CannotTrigger) && !card.canPlay(context, playType)) {
-        return Blocker.CannotTrigger;
+    if(!ignoredBlockers.includes(Blocker.CannotPlay) && !card.canPlay(context, playType)) {
+        return Blocker.CannotPlay;
     }
     return card.anotherUniqueInPlay(context.player) ? Blocker.DuplicateUnique : undefined;
 }

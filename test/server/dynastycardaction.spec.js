@@ -84,8 +84,8 @@ describe('DynastyCardAction', function () {
                 this.cardSpy.canPlay.and.returnValue(false);
             });
 
-            it('should return \'cannotTrigger\'', function() {
-                expect(this.action.meetsRequirements(this.context)).toBe('cannotTrigger');
+            it('should return \'cannotPlay\'', function() {
+                expect(this.action.meetsRequirements(this.context)).toBe('cannotPlay');
             });
         });
     });

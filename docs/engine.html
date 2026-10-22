@@ -86,7 +86,7 @@
     </tbody>
 </table>
 <p><code>resolveAbility</code> always ignores <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>TriggeringRestricted</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> (resolving isn't playing); a sub-resolution also ignores <code>MaxReached</code>.</p>
-<p><code>Blanked</code>, <code>CannotInitiate</code> and <code>NoLegalTarget</code> always apply. <code>CannotTrigger</code> always applies to abilities; the play actions for characters and attachments would skip their play-restriction check for it, but no caller passes it. <code>DuplicateUnique</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities.</p>
+<p><code>Blanked</code>, <code>CannotInitiate</code> and <code>NoLegalTarget</code> always apply. <code>CannotTrigger</code> always applies to abilities. The play actions report a play restriction as <code>CannotPlay</code>, like events do. <code>DuplicateUnique</code>, <code>EnterPlayRestricted</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities.</p>
 
 <h2 id="eng-resolver">How an ability resolves</h2>
 <p><code>AbilityResolver</code> runs these steps:</p>

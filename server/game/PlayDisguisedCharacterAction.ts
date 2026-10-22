@@ -91,7 +91,7 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
             return blocker;
         }
         if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
-            return Blocker.CannotPlaceFate;
+            return Blocker.EnterPlayRestricted;
         }
         return super.meetsRequirements(context, ignoredBlockers);
     }

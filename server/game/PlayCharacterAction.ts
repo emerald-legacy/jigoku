@@ -35,11 +35,11 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         if(blocker) {
             return blocker;
         }
-        if(
-            !context.player.checkRestrictions(RestrictionType.PlayCharacter, context) ||
-            !context.player.checkRestrictions(RestrictionType.EnterPlay, context)
-        ) {
-            return Blocker.CannotPlaceFate;
+        if(!context.player.checkRestrictions(RestrictionType.PlayCharacter, context)) {
+            return Blocker.CannotPlay;
+        }
+        if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
+            return Blocker.EnterPlayRestricted;
         }
         return super.meetsRequirements(context, ignoredBlockers);
     }
