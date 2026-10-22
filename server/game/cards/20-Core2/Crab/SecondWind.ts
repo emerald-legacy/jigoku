@@ -3,8 +3,7 @@ import {
     atEndOfConflict,
     multiple,
     putIntoConflict,
-    returnToDeck,
-    selectCard
+    returnToDeck
 } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -22,7 +21,7 @@ export default class SecondWind extends DrawCard {
             .discardCard((context) => ({ target: cardsToDiscard(context) }))
             .chatText((context) => msg`find a character to put into play. ${context.player} discards ${cardsToDiscard(context)}`)
             .then()
-            .gameAction(selectCard({
+            .selectCard({
                 location: Location.DynastyDiscardPile,
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isUnique(),
@@ -35,6 +34,6 @@ export default class SecondWind extends DrawCard {
                     }))
                 ]),
                 message: (context, card) => msg`${context.player} puts ${card} into play. ${card} will be put on the bottom of the deck if it's still in play by the end of the conflict`
-            }));
+            });
     }
 }

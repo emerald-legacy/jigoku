@@ -27,13 +27,13 @@ class WayfarersCamp extends DrawCard {
             ]))
             .chatText('play two cards from their provinces')
             .then()
-            .gameAction(selectCard({
+            .selectCard({
                 activePromptTitle: 'Choose a card to turn faceup',
                 location: Location.Provinces,
                 controller: Players.Self,
                 gameAction: flipDynasty(),
                 message: (_context, card, player) => msg`${player} turns ${card} faceup`
-            }));
+            });
     }
 }
 

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { playCard, selectCard } from '../../../GameActions/GameActions.js';
+import { playCard } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode, Blocker, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
@@ -21,7 +21,7 @@ export default class ToConnectThePeople extends DrawCard {
             .chatText((context) => msg`discard ${this.topThreeCards(context)} from the top of ${context.player.opponent}'s dynasty deck`)
             .max(perRound(1))
             .then()
-            .gameAction(selectCard({
+            .selectCard({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
@@ -33,7 +33,7 @@ export default class ToConnectThePeople extends DrawCard {
                     playAction: [new PlayCharacterAsIfFromHand(card), new PlayDisguisedCharacterAsIfFromHand(card)]
                 }),
                 gameAction: playCard({ ignoredBlockers: [Blocker.WrongLocation] })
-            }));
+            });
     }
 
     private topThreeCards(context: AbilityContext) {

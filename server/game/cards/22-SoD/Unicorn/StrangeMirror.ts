@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, PlayType, Players, Blocker } from '../../../Constants.js';
-import { chooseAction, injure, playCard, sacrifice, selectCard } from '../../../GameActions/GameActions.js';
+import { injure, playCard, sacrifice, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 
@@ -54,7 +54,7 @@ export default class StrangeMirror extends DrawCard {
             .chatText((context) => msg`play an event from underneath ${context.source.parentCharacter}`)
             // only once the event was played, not when its play was aborted
             .thenIf((context) => context.events.some((event) => !!event.card && !this.eventsUnderneath(context).some((card) => card === event.card)))
-            .gameAction(chooseAction((context) => ({
+            .chooseAction((context) => ({
                 activePromptTitle: 'Choose a cost for Strange Mirror',
                 choices: {
                     'Sacrifice Strange Mirror': {
@@ -66,7 +66,7 @@ export default class StrangeMirror extends DrawCard {
                         message: (context, _target, player) => msg`${player} injures ${context.source.parentCharacter}`
                     }
                 }
-            })));
+            }));
     }
 
     private eventsUnderneath(context: AbilityContext<this>): DrawCard[] {

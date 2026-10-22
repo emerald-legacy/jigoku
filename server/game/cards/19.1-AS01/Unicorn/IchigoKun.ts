@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyGlory, modifyMilitarySkill, setBaseMilitarySkill } from '../../../effects.js';
-import { cardLastingEffect, chooseAction, multiple } from '../../../GameActions/GameActions.js';
+import { cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
 import { CardType, Element, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -30,7 +30,7 @@ export default class IchigoKun extends DrawCard {
             .moveToConflict()
             .chatText((context) => msg`move ${context.source} to the conflict`)
             .afterwards()
-            .gameAction(chooseAction((context) => ({
+            .chooseAction((context) => ({
                 choices: {
                     [MORE_MIL_LESS_GLORY]: {
                         action: this.getModifiers(context, { military: +2, glory: -2 }),
@@ -43,7 +43,7 @@ export default class IchigoKun extends DrawCard {
                             msg`${player} chooses to give ${context.source} -2 ${'military'} and ${context.targets.otherCharacter} +2 glory - ${context.source} is well-behaved. Impressive`
                     }
                 }
-            })));
+            }));
     }
 
     public override getPrintedElementSymbols() {

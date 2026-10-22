@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
-import { dishonor, optional, sacrifice, selectCard, sendHome, sequential } from '../../../GameActions/GameActions.js';
+import { dishonor, sacrifice, selectCard, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const DISHONOR = 'Dishonor it';
@@ -34,7 +34,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                     chatText: 'send {0} home'
                 }
             })
-            .gameAction(optional((context) => {
+            .optional((context) => {
                 const dishonorChosen = context.selects.select?.choice === DISHONOR;
                 return {
                     activePromptTitle: dishonorChosen ? 'Sacrifice a character to also move it home?' : 'Sacrifice a character to also dishonor it?',
@@ -53,7 +53,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                         ? msg`${chooser} chooses to sacrifice a character to also send ${context.target} home`
                         : msg`${chooser} chooses to sacrifice a character to also dishonor ${context.target}`
                 };
-            }))
+            })
             .max(perConflict(1));
     }
 }
