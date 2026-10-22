@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, CharacterStatus, Players, Trait } from '../../Constants.js';
+import { CardType, Players, Trait, EntersPlayStatus } from '../../Constants.js';
 import { removeFromGame } from '../../GameActions/GameActions.js';
 
 class ShadowStep extends DrawCard {
@@ -20,7 +20,7 @@ class ShadowStep extends DrawCard {
             .if((context) => !!context.target?.hasTrait(Trait.Shadow))
             .putIntoPlay((context) => ({ target: context.target, controller: this.ownerSide(context) }))
             .otherwise()
-            .putIntoPlay((context) => ({ target: context.target, status: CharacterStatus.Dishonored, controller: this.ownerSide(context) }));
+            .putIntoPlay((context) => ({ target: context.target, status: EntersPlayStatus.Dishonored, controller: this.ownerSide(context) }));
     }
 
     /** It enters play under its owner's control, also after you took control of it. */

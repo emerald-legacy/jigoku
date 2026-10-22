@@ -1,11 +1,11 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, DeckType } from '../../../Constants.js';
+import { CardType, DeckType, EntersPlayStatus } from '../../../Constants.js';
 import { discardFromPlay, putIntoConflict } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 function statusOfIntern(context: AbilityContext) {
-    return context.source.isHonored ? 'honored' : 'ordinary';
+    return context.source.isHonored ? EntersPlayStatus.Honored : EntersPlayStatus.Ordinary;
 }
 
 export default class KakitaRusumi extends DrawCard {

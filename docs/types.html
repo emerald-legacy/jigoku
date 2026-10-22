@@ -65,7 +65,7 @@ this.reaction('Disable a character')
 </div>
 <div class="ref" id="en-CharacterStatus" data-name="CharacterStatus">
   <h3><code>CharacterStatus</code> <span class="kind">Enum</span> <a class="anchor" href="#en-CharacterStatus">#</a></h3>
-  <p>The three status tokens. Cards pass it as <code>token</code> to <code>gainStatusToken()</code>, compare it with a token's <code>grantedStatus</code>, and use it with <code>treatStatusTokenAs()</code>. <code>Constants.ts</code> also exports the type <code>EntersPlayStatus</code> (<code>'honored' | 'dishonored' | 'ordinary'</code>), the <code>status</code> a character enters play with (<code>putIntoPlay({ status })</code>, default <code>'ordinary'</code>).</p>
+  <p>The three status tokens. Cards pass it as <code>token</code> to <code>gainStatusToken()</code>, compare it with a token's <code>grantedStatus</code>, and use it with <code>treatStatusTokenAs()</code>. The status a character enters play with is the separate <code>EntersPlayStatus</code>.</p>
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
@@ -83,6 +83,18 @@ this.reaction('Disable a character')
     token: context.event.token instanceof StatusToken ? context.event.token.grantedStatus : context.event.token
     …</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/FinalWhisper.ts">Final Whisper</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/OrigamiMaster.ts">Origami Master</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/BayushiCollector.ts">Bayushi Collector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/CourtOfDeception.ts">Court of Deception</a></p>
+</div>
+<div class="ref" id="en-EntersPlayStatus" data-name="EntersPlayStatus">
+  <h3><code>EntersPlayStatus</code> <span class="kind">Enum</span> <a class="anchor" href="#en-EntersPlayStatus">#</a></h3>
+  <p>The status a character enters play with: the <code>status</code> of <code>putIntoPlay</code>, <code>putIntoConflict</code> and <code>opponentPutIntoPlay</code> (default <code>Ordinary</code>), and the value of <code>entersPlayWithStatus()</code>.</p>
+  <table>
+        <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>Ordinary</code></td><td><code>'ordinary'</code></td><td>Neither honored nor dishonored.</td></tr>
+          <tr><td><code>Honored</code></td><td><code>'honored'</code></td><td>Enters play honored.</td></tr>
+          <tr><td><code>Dishonored</code></td><td><code>'dishonored'</code></td><td>Enters play dishonored.</td></tr>
+        </tbody>
+      </table>
 </div>
 <div class="ref" id="en-DeckType" data-name="DeckType">
   <h3><code>DeckType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-DeckType">#</a></h3>
@@ -1466,7 +1478,7 @@ this.reaction('Opponent discards or dishonors')
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The character.</td></tr>
           <tr><td><code>originalLocation</code></td><td><code>Location</code></td><td>Where it came from (<code>overrideLocation</code> if given).</td></tr>
           <tr><td><code>fate</code></td><td><code>number</code></td><td>Fate placed on it.</td></tr>
-          <tr><td><code>status</code></td><td><code>EntersPlayStatus</code></td><td><code>'honored'</code>, <code>'dishonored'</code> or <code>'ordinary'</code>.</td></tr>
+          <tr><td><code>status</code></td><td><code>EntersPlayStatus</code></td><td>The status it enters play with.</td></tr>
           <tr><td><code>controller</code></td><td><code>Players</code></td><td>Who will control it, relative to the ability's player.</td></tr>
           <tr><td><code>intoConflict</code></td><td><code>boolean</code></td><td>Whether it enters the conflict.</td></tr>
           <tr><td><code>side</code></td><td><code>Player</code></td><td>Whose side of the conflict it joins.</td></tr>

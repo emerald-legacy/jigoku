@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { Players } from '../Constants.js';
+import { EntersPlayStatus, Players } from '../Constants.js';
 import type Player from '../Player.js';
 import { PutIntoPlayAction, type PutIntoPlayDefaults, type PutIntoPlayProperties } from './PutIntoPlayAction.js';
 import type { Defaults } from './GameAction.js';
@@ -9,7 +9,7 @@ export type OpponentPutIntoPlayProperties = PutIntoPlayProperties;
 export class OpponentPutIntoPlayAction<Context extends AbilityContext = AbilityContext> extends PutIntoPlayAction<Context> {
     override defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
-        status: 'ordinary',
+        status: EntersPlayStatus.Ordinary,
         controller: Players.Opponent
     };
 

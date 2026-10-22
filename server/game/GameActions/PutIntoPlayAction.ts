@@ -1,8 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { EntersPlayStatus } from '../Constants.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName, Location, Players, RestrictionType } from '../Constants.js';
+import { CardType, EntersPlayStatus, EventName, Location, Players, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -32,15 +31,18 @@ export class PutIntoPlayAction<Context extends AbilityContext = AbilityContext> 
     intoConflict: boolean;
     override defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
-        status: 'ordinary',
+        status: EntersPlayStatus.Ordinary,
         controller: Players.Self
     };
     constructor(
         properties: ((context: Context) => PutIntoPlayProperties) | PutIntoPlayProperties,
-        intoConflict = true
+        intoConflict: boolean
     ) {
         super(properties);
         this.intoConflict = intoConflict;
+        if(intoConflict) {
+            this.name = 'putIntoConflict';
+        }
     }
 
     getDefaultSide(context: AbilityContext) {
@@ -126,9 +128,9 @@ export class PutIntoPlayAction<Context extends AbilityContext = AbilityContext> 
 
         const targetSide = event.side;
 
-        if(event.status === 'honored') {
+        if(event.status === EntersPlayStatus.Honored) {
             card.honor();
-        } else if(event.status === 'dishonored') {
+        } else if(event.status === EntersPlayStatus.Dishonored) {
             card.dishonor();
         }
         if(card.hasPrintedKeyword('corrupted')) {

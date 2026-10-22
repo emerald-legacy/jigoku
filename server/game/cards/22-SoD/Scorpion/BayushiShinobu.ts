@@ -8,7 +8,7 @@ import {
     multiple,
     playerLastingEffect
 } from '../../../GameActions/GameActions.js';
-import { CardType, CharacterStatus, Duration, Location, Players } from '../../../Constants.js';
+import { CardType, Duration, Location, Players, EntersPlayStatus } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class BayushiShinobu extends DrawCard {
@@ -18,7 +18,7 @@ export default class BayushiShinobu extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetLocation: Location.Any,
-            effect: entersPlayWithStatus(CharacterStatus.Dishonored)
+            effect: entersPlayWithStatus(EntersPlayStatus.Dishonored)
         });
 
         // entersPlayWithStatus only covers playing it; put into play by an effect, it is dishonored afterwards

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Players, TargetMode, CardType, CharacterStatus, ConflictType } from '../../Constants.js';
+import { Location, Players, TargetMode, CardType, ConflictType, EntersPlayStatus } from '../../Constants.js';
 import { putIntoConflict } from '../../GameActions/GameActions.js';
 
 class DarkResurrection extends DrawCard {
@@ -16,7 +16,7 @@ class DarkResurrection extends DrawCard {
                 location: [Location.DynastyDiscardPile],
                 controller: Players.Self,
                 cardCondition: (card) => card.type === CardType.Character && card.costAtMost(3)
-            }, putIntoConflict({ status: CharacterStatus.Dishonored }));
+            }, putIntoConflict({ status: EntersPlayStatus.Dishonored }));
     }
 
     override isTemptationsMaho() {

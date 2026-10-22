@@ -1,4 +1,4 @@
-import { PlayType, Location, Players, CardType, CharacterStatus } from '../../Constants.js';
+import { PlayType, Location, Players, CardType, EntersPlayStatus } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { entersPlayWithStatus, reduceCost } from '../../effects.js';
 
@@ -19,7 +19,7 @@ export default class ShinseisLastHope extends ProvinceCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card, context) => card.type === CardType.Character && card.location === context?.source.location,
-            effect: entersPlayWithStatus(CharacterStatus.Dishonored)
+            effect: entersPlayWithStatus(EntersPlayStatus.Dishonored)
         });
     }
 }

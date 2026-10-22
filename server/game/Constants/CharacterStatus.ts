@@ -5,4 +5,8 @@ export enum CharacterStatus {
 }
 
 /** The status a character enters play with: honored, dishonored, or neither. */
-export type EntersPlayStatus = `${CharacterStatus.Honored}` | `${CharacterStatus.Dishonored}` | 'ordinary';
+export enum EntersPlayStatus {
+    Ordinary = 'ordinary',
+    Honored = 'honored',
+    Dishonored = 'dishonored'
+}

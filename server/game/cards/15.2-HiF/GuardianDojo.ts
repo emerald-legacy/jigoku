@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { entersPlayWithStatus, playerCannot } from '../../effects.js';
-import { Location, CharacterStatus, CardType, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { Location, CardType, RestrictionType, RestrictionScope, EntersPlayStatus } from '../../Constants.js';
 
 class GuardianDojo extends DrawCard {
     static id = 'guardian-dojo';
@@ -12,7 +12,7 @@ class GuardianDojo extends DrawCard {
                 && card.isFaceup()
                 && !!context && context.player.areLocationsAdjacent(context.source.location, card.location),
             effect: [
-                entersPlayWithStatus(CharacterStatus.Honored)
+                entersPlayWithStatus(EntersPlayStatus.Honored)
             ]
         });
 

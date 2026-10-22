@@ -208,7 +208,7 @@ export function performGloryCount<Context extends AbilityContext = AbilityContex
     return new PerformGloryCountAction<Context>(propertyFactory);
 }
 export function putIntoConflict<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PutIntoPlayProperties, Context> = {}): PutIntoPlayAction<Context> {
-    return new PutIntoPlayAction<Context>(propertyFactory);
+    return new PutIntoPlayAction<Context>(propertyFactory, true);
 }
 export function putIntoPlay<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<PutIntoPlayProperties, Context> = {}): PutIntoPlayAction<Context> {
     return new PutIntoPlayAction<Context>(propertyFactory, false);
