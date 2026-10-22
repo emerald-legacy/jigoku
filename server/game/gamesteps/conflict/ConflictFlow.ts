@@ -504,7 +504,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     revealProvince(): void {
         if(
             !this.game.currentConflict ||
-            this.conflict.isSinglePlayer ||
+            !this.conflict.defendingPlayer ||
             this.conflict.conflictPassed ||
             this.conflict.conflictFailedToInitiate
         ) {
@@ -630,7 +630,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        if(this.game.manualMode && !this.conflict.isSinglePlayer) {
+        if(this.game.manualMode && this.conflict.defendingPlayer) {
             this.game.promptWithMenu(this.conflict.attackingPlayer, {
                 manuallyDetermineWinner: (player, choice) => this.manuallyDetermineWinner(player, choice)
             }, {
@@ -719,7 +719,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         if(
             this.conflict.conflictPassed ||
             this.game.manualMode ||
-            this.conflict.isSinglePlayer ||
+            !this.conflict.defendingPlayer ||
             this.conflict.conflictFailedToInitiate
         ) {
             return;
@@ -751,7 +751,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     checkBreakProvince(): void {
         if(
             this.conflict.conflictPassed ||
-            this.conflict.isSinglePlayer ||
+            !this.conflict.defendingPlayer ||
             this.game.manualMode ||
             this.conflict.conflictFailedToInitiate
         ) {

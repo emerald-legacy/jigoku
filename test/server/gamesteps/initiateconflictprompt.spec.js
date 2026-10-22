@@ -18,6 +18,7 @@ describe('InitateConflictPrompt: ', function() {
         this.conflictSpy = jasmine.createSpyObj('conflict', ['calculateSkill', 'removeFromConflict', 'addAttacker', 'setDeclarationComplete']);
         this.conflictSpy.attackers = [];
         this.conflictSpy.conflictProvince = null;
+        this.conflictSpy.defendingPlayer = {};
         this.playerSpy.getEffects.and.returnValue([]);
         this.prompt = new InitateConflictPrompt(this.gameSpy, this.conflictSpy, this.playerSpy);
     });

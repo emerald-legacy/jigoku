@@ -34,7 +34,6 @@ export class Conflict extends GameObject {
     defenderSkill = 0;
     /** Missing in a solo game. */
     defendingPlayer: Player | undefined;
-    isSinglePlayer: boolean;
     loser?: Player;
     loserSkill?: number;
     /** The provinces broken while this conflict was the current one. */
@@ -60,7 +59,6 @@ export class Conflict extends GameObject {
         public forcedDeclaredType?: ConflictType
     ) {
         super(game, 'Conflict');
-        this.isSinglePlayer = !defendingPlayer;
         this.defendingPlayer = defendingPlayer;
         this.conflictProvince = conflictProvince;
         this.declaredRing = ring;

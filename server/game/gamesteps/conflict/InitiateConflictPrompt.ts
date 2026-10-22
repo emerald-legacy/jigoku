@@ -95,7 +95,7 @@ export class InitiateConflictPrompt extends UiPrompt {
             promptTitle = 'Initiate Conflict';
         } else {
             promptTitle = capitalize(ring.conflictType) + ' ' + capitalize(ring.element) + ' Conflict';
-            if(!this.conflict.conflictProvince && !this.conflict.isSinglePlayer) {
+            if(!this.conflict.conflictProvince && this.conflict.defendingPlayer) {
                 menuTitle = 'Choose province to attack';
             } else if(this.conflict.attackers.length === 0) {
                 menuTitle = 'Choose attackers';
@@ -314,7 +314,7 @@ export class InitiateConflictPrompt extends UiPrompt {
     override menuCommand(_player: Player, arg: string): boolean {
         if(arg === 'done') {
             if(!this.conflict.ring || this.game.rings[this.conflict.ring.element] !== this.conflict.ring ||
-                (!this.conflict.isSinglePlayer && !this.conflict.conflictProvince) || this.conflict.attackers.length === 0) {
+                (this.conflict.defendingPlayer && !this.conflict.conflictProvince) || this.conflict.attackers.length === 0) {
                 return false;
             }
             this.conflict.setDeclarationComplete(true);

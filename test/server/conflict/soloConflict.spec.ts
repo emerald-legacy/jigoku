@@ -16,7 +16,6 @@ describe('A conflict in a solo game', function () {
 
     it('has no defending player', function () {
         expect(conflict.defendingPlayer).toBeUndefined();
-        expect(conflict.isSinglePlayer).toBe(true);
         expect(conflict.getSummary().defendingPlayerId).toBeUndefined();
     });
 
