@@ -1,6 +1,6 @@
-import { AbilityTargetBase } from './AbilityTargetBase.js';
+import { AbilityTargetBase, type AbilityTargetBaseProperties } from './AbilityTargetBase.js';
 import { SelectChoice } from './SelectChoice.js';
-import { Stage, type Players } from '../Constants.js';
+import { Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { ChoicesInput, ChoicesInterface } from '../Interfaces.js';
@@ -11,14 +11,12 @@ import { waitingPromptTitle } from './TargetPrompt.js';
 
 type ChoiceValue = ((context: AbilityContext) => unknown) | GameAction | GameAction[];
 
-interface AbilityTargetSelectProperties {
+interface AbilityTargetSelectProperties extends AbilityTargetBaseProperties {
     choices: ChoicesInput | ((context: AbilityContext) => ChoicesInput);
     condition?: (context: AbilityContext) => boolean;
     targets?: boolean;
     activePromptTitle?: string;
     source?: EffectSource | string;
-    dependsOn?: string;
-    player?: ((context: AbilityContext) => Players) | Players;
 }
 
 export class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectProperties> {

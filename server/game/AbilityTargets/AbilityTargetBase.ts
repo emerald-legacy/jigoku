@@ -5,8 +5,10 @@ import type Player from '../Player.js';
 import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { PromptButton } from '../PlayerPromptState.js';
 import { waitingPromptTitle } from './TargetPrompt.js';
+import { resolveChoosingPlayer } from '../GameActions/resolveChoosingPlayer.js';
 
-interface AbilityTargetBaseProperties {
+/** What every kind of target declares: the target it depends on, and who chooses it (the ability's player by default). */
+export interface AbilityTargetBaseProperties {
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
 }
@@ -42,11 +44,8 @@ export abstract class AbilityTargetBase<Properties extends AbilityTargetBaseProp
     }
 
     getChoosingPlayer(context: AbilityContext): Player | undefined {
-        let playerProp = this.properties.player;
-        if(typeof playerProp === 'function') {
-            playerProp = playerProp(context);
-        }
-        return playerProp === Players.Opponent ? context.player.opponent : context.player;
+        const player = typeof this.properties.player === 'function' ? this.properties.player(context) : this.properties.player;
+        return resolveChoosingPlayer(context, player === Players.Opponent ? Players.Opponent : Players.Self);
     }
 
     /** The game actions that can resolve now, each with what was chosen for this target. */

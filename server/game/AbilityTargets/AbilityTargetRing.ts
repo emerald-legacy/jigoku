@@ -1,17 +1,15 @@
-import { AbilityTargetBase } from './AbilityTargetBase.js';
-import { Stage, type Players } from '../Constants.js';
+import { AbilityTargetBase, type AbilityTargetBaseProperties } from './AbilityTargetBase.js';
+import { Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
 import type Player from '../Player.js';
 import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 
-interface AbilityTargetRingProperties {
+interface AbilityTargetRingProperties extends AbilityTargetBaseProperties {
     gameAction: GameAction[];
     ringCondition: (ring: Ring, context: AbilityContext) => boolean;
     optional?: boolean;
-    dependsOn?: string;
-    player?: ((context: AbilityContext) => Players) | Players;
 }
 
 export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProperties> {

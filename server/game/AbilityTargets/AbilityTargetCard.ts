@@ -1,6 +1,6 @@
-import { AbilityTargetBase } from './AbilityTargetBase.js';
+import { AbilityTargetBase, type AbilityTargetBaseProperties } from './AbilityTargetBase.js';
 import { CardSelector } from '../CardSelector.js';
-import { Stage, type Players, EffectName, TargetMode, RestrictionType } from '../Constants.js';
+import { Stage, EffectName, TargetMode, RestrictionType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
@@ -9,14 +9,12 @@ import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { CardSelectorInstance } from './TargetPrompt.js';
 import { isBlindChoice, selectBlindly } from '../GameActions/blindChoice.js';
 
-interface AbilityTargetCardProperties {
+interface AbilityTargetCardProperties extends AbilityTargetBaseProperties {
     gameAction: GameAction[];
-    dependsOn?: string;
     mode?: TargetMode;
     optional?: boolean;
     skipIf?: (context: AbilityContext) => boolean;
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
-    player?: ((context: AbilityContext) => Players) | Players;
 }
 
 export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProperties> {

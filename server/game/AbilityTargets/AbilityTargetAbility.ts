@@ -1,6 +1,6 @@
-import { AbilityTargetBase } from './AbilityTargetBase.js';
+import { AbilityTargetBase, type AbilityTargetBaseProperties } from './AbilityTargetBase.js';
 import { CardSelector } from '../CardSelector.js';
-import { Stage, type Players } from '../Constants.js';
+import { Stage } from '../Constants.js';
 import type { CardType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -10,13 +10,11 @@ import type { GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { CardSelectorInstance } from './TargetPrompt.js';
 
-interface AbilityTargetAbilityProperties {
+interface AbilityTargetAbilityProperties extends AbilityTargetBaseProperties {
     gameAction: GameAction[];
     cardType?: CardType | CardType[];
     abilityCondition?: (ability: CardAbility) => boolean;
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
-    dependsOn?: string;
-    player?: ((context: AbilityContext) => Players) | Players;
 }
 
 export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbilityProperties> {
