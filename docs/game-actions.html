@@ -530,11 +530,12 @@ this.forcedReaction('After the conflict phase begins')
         <tr><td><code>target</code></td><td><code>BaseCard | BaseCard[]</code></td><td>the ability's source</td><td>The characters to place fate on.</td></tr>
         <tr><td><code>amount</code></td><td><code>number</code></td><td><code>1</code></td><td>How much fate.</td></tr>
         <tr><td><code>origin</code></td><td><code>DrawCard | Player | Ring</code></td><td>none (the general pool)</td><td>Where the fate comes from.</td></tr>
+        <tr><td><code>spend</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The fate is spent from the origin's fate pool ("spend 1 fate to …", a fate cost): the player must be allowed to spend fate (Blood of Onnotangu). Moving fate from a pool is not spending it.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Only characters in play. Illegal with <code>amount</code> 0, or when the origin is the target itself.</li>
-      <li>An origin must have fate; a character origin must allow fate to be removed from it; a ring origin needs the ability's player to be allowed to take fate from rings.</li>
+      <li>An origin must have fate; a card origin must not be restricted from losing fate (<code>RestrictionType.RemoveFate</code>); a ring origin needs the ability's player to be allowed to take fate from rings; with <code>spend</code>, a player origin must be allowed to spend fate. The same check (<code>canMoveFateFrom</code> in <code>GameActions/Shared/FateOrigin.ts</code>) runs again when the event resolves.</li>
       <li>At most the origin's fate moves. Moving less than <code>amount</code> still counts as resolved in full; only a cancelled or redirected event doesn't.</li>
       <li>Checks <code>RestrictionType.PlaceFate</code>. Raises <code>onMoveFate</code>.</li>
       <li>Chat: <code>place {1} fate on {0}</code> ({1} is the amount).</li>
@@ -1044,7 +1045,7 @@ this.reaction('Look at 3 random cards of the opponent\'s hand')
     .when({ … })
     .lookAt((context) =&gt; ({
         target: shuffle(context.player.opponent?.hand ?? []).slice(0, 3),
-        message: (context, cards) =&gt; msg`reveals ${cards} from ${context.player.opponent}'s hand`
+        message: (context, cards) =&gt; msg`${context.player} sees ${cards} from ${context.player.opponent}'s hand`
     }))
     .chatText((context) =&gt; msg`look at 3 random cards from ${context.player.opponent}'s hand`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/CourtOfJustice.ts">Court of Justice</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/SceneOfTheCrime.ts">Scene of the Crime</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/DaidojiHarrier.ts">Daidoji Harrier</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/UpholdingAuthority.ts">Upholding Authority</a></p>
@@ -1856,10 +1857,11 @@ this.reaction('Declare a new conflict')
         <tr><td><code>target</code></td><td><code>Ring | Ring[]</code></td><td>the conflict's ring</td><td>The rings to place fate on.</td></tr>
         <tr><td><code>amount</code></td><td><code>number</code></td><td><code>1</code></td><td>How much fate.</td></tr>
         <tr><td><code>origin</code></td><td><code>DrawCard | Player | Ring</code></td><td>none (the general pool)</td><td>Where the fate comes from.</td></tr>
+        <tr><td><code>spend</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The fate is spent from the origin's fate pool ("spend 1 fate to …", a fate cost): the player must be allowed to spend fate (Blood of Onnotangu). Moving fate from a pool is not spending it.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>amount</code> must be positive. An origin must have fate and must not be restricted from spending fate (<code>RestrictionType.SpendFate</code>). A character origin must be allowed to lose fate (<code>RestrictionType.RemoveFate</code>, Student of War). A ring origin also needs the ability's player to be allowed to take fate from rings (<code>RestrictionType.TakeFateFromRings</code>, The Stone of Sorrows). At most the origin's fate moves.</li>
+      <li><code>amount</code> must be positive. The origin is checked like <a href="#ga-placeFate"><code>placeFate</code></a>'s (<code>canMoveFateFrom</code>): it must have fate, a card origin must be allowed to lose fate (Student of War), a ring origin needs the player to be allowed to take fate from rings (The Stone of Sorrows), and only with <code>spend</code> must a player origin be allowed to spend fate (the fate cost to a ring, <code>costs.payFateToRing</code>, passes it).</li>
       <li>Checks <code>RestrictionType.PlaceFate</code> on the ring. Raises <code>onMoveFate</code>.</li>
       <li>Chat: <code>place {1} fate on {0}</code>, or <code>move {1} fate from {2} to {0}</code> with an origin.</li>
       <li>Builder shortcut: <code>.placeFateOnRing(…)</code>.</li>
@@ -1986,7 +1988,7 @@ this.action('Switch a claimed ring with an unclaimed one')
             activePromptTitle: 'Choose a ring to take',
             ringCondition: (ring) =&gt; ring.isUnclaimed(),
             message: (context, ring) =&gt; msg`${context.player} takes ${ring}`,
-            // the taken ring keeps the returned ring's conflict type (EmeraldDB ruling)
+            // the taken ring keeps the returned ring's conflict type
             gameAction: takeRing((context) =&gt; ({
                 takeFate: true,
                 conflictType: context.events.find((event) =&gt; event.is(EventName.OnReturnRing))?.ring?.conflictType
@@ -2750,7 +2752,7 @@ trueGameAction: sequential([
         amount: context.fateTaken
     }))
 ]),</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MischievousTanuki.ts">Mischievous Tanuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/KaiuScout.ts">Kaiu Scout</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Scorpion/BayushiShinobu.ts">Bayushi Shinobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/GloryOfTheFiveRivers.ts">Glory of the Five Rivers</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MischievousTanuki.ts">Mischievous Tanuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/KaiuScout.ts">Kaiu Scout</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/GloryOfTheFiveRivers.ts">Glory of the Five Rivers</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/GovernorsSpy.ts">Governor's Spy</a></p>
   </div>
 <div class="ref" id="ga-ifAble" data-name="ifAble">
     <h3><code>ifAble(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-ifAble">#</a></h3>
@@ -3379,6 +3381,7 @@ this.action('Discard status token from attached character')
     <ul class="edge">
       <li>Legal if the ability meets its requirements with these ignored: wrong player, wrong location, limit reached, triggering restrictions, play restrictions (<code>CannotPlay</code>) and the Limited rule (<code>LimitedAlreadyPlayed</code>), plus <code>ignoredBlockers</code>; and it is not at its max for the player (unless <code>subResolution</code>).</li>
       <li>It goes straight to costs and targets: no early targeting, and it can't be cancelled while choosing. Play costs (an event's fate cost) and costs added by effects (<code>additionalTriggerCost</code>, <code>additionalPlayCost</code>) are never paid.</li>
+      <li>Costs to choose a target ("as an additional cost to choose … as a target", <code>targetingCosts</code>) are paid when the effects start, after the targets are chosen; if they can't be paid, the resolution stops with "did not successfully pay the required costs". With <code>CannotPayCost</code> in <code>ignoredBlockers</code> (The Mirror's Gaze) neither they nor the ability's own costs are paid.</li>
       <li>Counts toward the ability's max unless <code>subResolution</code>. The resolved ability's own chat line reads <code>{player} resolves {card} …</code> instead of "uses" or "plays".</li>
       <li>The resolution raises <code>onCardAbilityInitiated</code>, and also <code>onCardAbilityTriggered</code> for a triggered card ability unless <code>subResolution</code> is set. Both carry <code>resolvedWithoutTriggering: true</code>: Breach of Etiquette, The Weight of Duty, Hantei XXXVIII and duel limits ignore them.</li>
       <li>No builder shortcut.</li>
@@ -3392,7 +3395,7 @@ this.reaction('Mirror an opponent\'s event')
         ignoredBlockers: [Blocker.CannotPayCost, Blocker.IfConditionNotMet, Blocker.LimitReached],
         event: context.event.context instanceof TriggeredAbilityContext ? context.event.context.event : undefined
     })));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/TheMirrorsGaze.ts">The Mirror's Gaze</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/StoriedDefeat.ts">Storied Defeat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/CaptivatingStory.ts">Captivating Story</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/BattlefieldOrders.ts">Battlefield Orders</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/TheMirrorsGaze.ts">The Mirror's Gaze</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/CaptivatingStory.ts">Captivating Story</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/BattlefieldOrders.ts">Battlefield Orders</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/CountrysideTrader.ts">Countryside Trader</a></p>
   </div>
 <div class="ref" id="ga-triggerAbility" data-name="triggerAbility">
     <h3><code>triggerAbility(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-triggerAbility">#</a></h3>

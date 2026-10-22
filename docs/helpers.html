@@ -261,7 +261,8 @@ this.action('Bow a character who lost a duel')
     .target({
         cardType: CardType.Character,
         cardCondition: (card) =&gt; duelLosers.has(card)
-    }, sequential([bow(), …]));</code></pre>
+    }, multiple([bow(), optional(…)]))
+    .chatText('bow {0}');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/MagnificentTriumph.ts">Magnificent Triumph</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/StoriedDefeat.ts">Storied Defeat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/RisingStarsKata.ts">Rising Stars Kata</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/KakitasFinalStance.ts">Kakita's Final Stance</a></p>
   </div>
 
@@ -1271,7 +1272,7 @@ private msgArticle(card: DrawCard): string {
       <li>It returns a nested message (<code>MsgArg</code>) to put inside the ability's <code>msg</code> chat text; the players and the chosen card show as links.</li>
     </ul>
     <pre><code>// Roadside Inn: Reaction: After the fate phase begins, choose a character. Each opponent may give you 1 honor and choose a character - …
-.chatText((context) =&gt; msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) =&gt; msg`place a fate from their pool on ${card}`)}`);</code></pre>
+.chatText((context) =&gt; msg`${context.player.fate &gt; 0 ? 'place a fate from their pool on' : 'choose'} ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) =&gt; msg`place a fate from their pool on ${card}`)}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/AgashaProdigy.ts">Agasha Prodigy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ExpertInterpreter.ts">Expert Interpreter</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/MerchantOfCuriosities.ts">Merchant of Curiosities</a> (6 card files)</p>
   </div>
 </section>
@@ -1331,7 +1332,7 @@ cardCondition: (card) =&gt; card.isAttacking()
 
 // Borderlands Defender: While this character is defending, opponents' card effects cannot bow it or move it.
 condition: (context) =&gt; context.source.isDefending(),</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsceticVisionary.ts">Ascetic Visionary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/MountaintopStatuary.ts">Mountaintop Statuary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/StrategicWeakpoint.ts">Strategic Weakpoint</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Scorpion/Stinger.ts">Stinger</a> (132 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsceticVisionary.ts">Ascetic Visionary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/MountaintopStatuary.ts">Mountaintop Statuary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/StrategicWeakpoint.ts">Strategic Weakpoint</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Scorpion/Stinger.ts">Stinger</a> (133 card files)</p>
   </div>
 
   <div class="ref" id="q-isParticipatingFor" data-name="isParticipatingFor">
@@ -1406,7 +1407,7 @@ cardCondition: (card) =&gt; !card.hasKeyword('covert')</code></pre>
     <p>True if the card has at least one of the traits ("a Scholar or Monk character"). Takes <code>Trait</code> values or one <code>Set&lt;Trait&gt;</code>.</p>
     <pre><code>// Henshin Seeker: Reaction: After the [element-fire] ring is claimed, choose a Scholar or Monk character - ready that character.
 cardCondition: (card) =&gt; card.hasSomeTrait(Trait.Scholar, Trait.Monk)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Phoenix/HenshinSeeker.ts">Henshin Seeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/ToStormAFortress.ts">To Storm a Fortress</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crane/DaidojiHiroteru.ts">Daidōji Hiroteru</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Dragon/MirumotoRikitaro.ts">Mirumoto Rikitaro</a> (7 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Phoenix/HenshinSeeker.ts">Henshin Seeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/ToStormAFortress.ts">To Storm a Fortress</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crane/DaidojiHiroteru.ts">Daidōji Hiroteru</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Dragon/MirumotoRikitaro.ts">Mirumoto Rikitaro</a> (8 card files)</p>
   </div>
 
   <div class="ref" id="q-hasTrait" data-name="hasTrait">
@@ -1423,7 +1424,7 @@ cardCondition: (card) =&gt; card.hasSomeTrait(Trait.Scholar, Trait.Monk)</code><
     </ul>
     <pre><code>// Shosuro Botanist: Action: Choose a non-Weapon attachment you control - return it to its owner's hand.
 cardCondition: (card) =&gt; !card.hasTrait(Trait.Weapon)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AgainstTheWaves.ts">Against the Waves</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/AkodoMakoto.ts">Akodo Makoto</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/ThirdTower.ts">Third Tower</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/MirumotoRei2.ts">Mirumoto Rei</a> (255 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AgainstTheWaves.ts">Against the Waves</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/AkodoMakoto.ts">Akodo Makoto</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/ThirdTower.ts">Third Tower</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/MirumotoRei2.ts">Mirumoto Rei</a> (256 card files)</p>
   </div>
 
   <div class="ref" id="q-getTraits" data-name="getTraits">
@@ -1445,7 +1446,7 @@ return defenders.filter((a) =&gt; a.sharesTrait(card));</code></pre>
     <p>True if the card's text box is treated as blank: a blank effect, or a copy effect (copy character, copy province). A province is also blank while it is broken or dishonored.</p>
     <pre><code>// Hida Kisada: While you have not lost a conflict this phase, cancel the effects of the first action ability your opponent triggers …
 !this.isBlank() &amp;&amp;</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HidaKisada.ts">Hida Kisada</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KitsukiYaruma.ts">Kitsuki Yaruma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/KitsukiChiari.ts">Kitsuki Chiari</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HidaKisada.ts">Hida Kisada</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KitsukiYaruma.ts">Kitsuki Yaruma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/KitsukiChiari.ts">Kitsuki Chiari</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/TheSkinOfFuLeng.ts">The Skin of Fu Leng</a></p>
   </div>
 
   <div class="ref" id="q-isCharacter" data-name="isCharacter isDrawCard isProvinceCard">
@@ -1513,7 +1514,7 @@ cardCondition: (card) =&gt; card.costLessThan(3)</code></pre>
     <p>The card's printed cost, or the printed cost of the character it copies. <code>number | null</code>: a dash cost counts as 0 (RRG Cost), <code>null</code> only for a holding or a token (Soldier, Unleashed Hound, …), which print no cost. Compare costs with <a href="#q-costLessThan"><code>costLessThan()</code></a>, <a href="#q-costAtMost"><code>costAtMost()</code></a> or <code>costAtLeast()</code>, which keep tokens out; read <code>getCost() ?? 0</code> only for a number (a sum, a count of cards).</p>
     <pre><code>// Ambush: … choose up to two characters with total printed cost of 6 or less in your hand or provinces …
 cardStat: (card) =&gt; card.getCost() ?? 0,</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/ElegantTessen.ts">Elegant Tessen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a> (27 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MarvelousBeings.ts">Marvelous Beings</a> (28 card files)</p>
   </div>
 
   <div class="ref" id="q-printedCost" data-name="printedCost">
@@ -1521,7 +1522,7 @@ cardStat: (card) =&gt; card.getCost() ?? 0,</code></pre>
     <p>"Printed cost": the number on the card, ignoring copies and modifiers. <code>number | null</code>: <code>null</code> for a dash on a non-event and for cards that print no cost; a dash-cost event gets 0. Card abilities read "printed cost" through <a href="#q-getCost"><code>getCost()</code></a> and the comparisons (a copy has the copied character's cost); the field is for the cost to play a card.</p>
     <pre><code>// Root Out Heresy: … X is the printed cost of the discarded card (a card in a discard pile is never a copy).
 return -1 * (card.isDrawCard() ? card.printedCost ?? 0 : 0);</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/RootOutHeresy.ts">Root Out Heresy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crane/LuckyCoin.ts">Lucky Coin</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/DarkSecret.ts">Dark Secret</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MarvelousBeings.ts">Marvelous Beings</a> (7 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/RootOutHeresy.ts">Root Out Heresy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crane/LuckyCoin.ts">Lucky Coin</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/DarkSecret.ts">Dark Secret</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/FavorableDealbroker.ts">Favorable Dealbroker</a> (7 card files)</p>
   </div>
 
   <div class="ref" id="q-getFate" data-name="getFate">
@@ -1529,7 +1530,7 @@ return -1 * (card.isDrawCard() ? card.printedCost ?? 0 : 0);</code></pre>
     <p>The fate on the card. On a draw card, an effect that sets its apparent fate wins over the real count; other cards always return 0.</p>
     <pre><code>// Dispatch to Nowhere: Action: Choose a character with no fate - discard that character.
 cardCondition: (card) =&gt; card.getFate() === 0</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Deathseeker.ts">Deathseeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/IsawaUjina.ts">Isawa Ujina</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/SuperiorAuthority.ts">Superior Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/HigashiKazeCompany.ts">Higashi Kaze Company</a> (39 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Deathseeker.ts">Deathseeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/IsawaUjina.ts">Isawa Ujina</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/SuperiorAuthority.ts">Superior Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/HigashiKazeCompany.ts">Higashi Kaze Company</a> (42 card files)</p>
   </div>
 
   <div class="ref" id="q-isDire" data-name="isDire">
@@ -1590,7 +1591,7 @@ statistic: (card) =&gt; card.getMilitarySkillExcludingModifiers([EffectName.Atta
     <pre><code>// Spiderweb Passage: … choose a character on the enemy side with 0[conflict-military] or 0[conflict-political]. …
 (!card.hasDash(SkillType.Political) &amp;&amp; card.politicalSkill === 0) ||
     (!card.hasDash(SkillType.Military) &amp;&amp; card.militarySkill === 0)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a>, and through <code>canSwitchSkills</code> and <code>copyBaseSkills</code></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/MyAncestorsStrength.ts">My Ancestor's Strength</a>, and through <code>canSwitchSkills</code> and <code>copyBaseSkills</code></p>
   </div>
 
   <div class="ref" id="q-bowed" data-name="bowed">
@@ -1757,7 +1758,7 @@ condition: (context) =&gt; context.source.isConflictProvince(),</code></pre>
     </ul>
     <pre><code>// Border Fortress: Action: During a conflict at this province, choose a facedown province – reveal that province.
 cardCondition: (card) =&gt; card.isFacedown()</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BorderlandsFortifications.ts">Borderlands Fortifications</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/AgashaTaiko.ts">Agasha Taiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/Kakudaira.ts">Kakudaira</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/StokeInsurrection.ts">Stoke Insurrection</a> (61 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BorderlandsFortifications.ts">Borderlands Fortifications</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/AgashaTaiko.ts">Agasha Taiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/Kakudaira.ts">Kakudaira</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/StokeInsurrection.ts">Stoke Insurrection</a> (60 card files)</p>
   </div>
 
   <div class="ref" id="q-isInConflictProvince" data-name="isInConflictProvince">
@@ -2056,7 +2057,7 @@ condition: (context) =&gt; context.game.conflictRecord.filter((record) =&gt; rec
     </ul>
     <pre><code>// Mono no Aware: Action: Remove 1 fate from each character. Draw 1 card. (Max 1 per round.)
 target: this.game.findAnyCardsInPlay((card) =&gt; card.getFate() &gt; 0)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/GuardiansOfSeikitsu.ts">Guardians of the Seikitsu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/KaitoNobukai.ts">Kaito Nobukai</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/LostPapers.ts">Lost Papers</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/DisplayOfLoyalty.ts">Display of Loyalty</a> (18 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/GuardiansOfSeikitsu.ts">Guardians of the Seikitsu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/KaitoNobukai.ts">Kaito Nobukai</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/LostPapers.ts">Lost Papers</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/DisplayOfLoyalty.ts">Display of Loyalty</a> (19 card files)</p>
   </div>
 
   <div class="ref" id="q-getConflicts" data-name="getConflicts">
@@ -2069,7 +2070,7 @@ target: this.game.findAnyCardsInPlay((card) =&gt; card.getFate() &gt; 0)</code><
     </ul>
     <pre><code>// Ikoma Anakazu: During each conflict in which this character is participating, it gets +3[conflict-military] and +3[conflict-political] if your opponent has broken one or more of your provinces this phase.
 context.game.getConflicts(context.player.opponent).some((record) =&gt; record.brokenProvinces.length &gt; 0)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IkomaAnakazu.ts">Ikoma Anakazu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/OutmaneuveredByForce.ts">Outmaneuvered by Force</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IkomaAnakazu.ts">Ikoma Anakazu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/OutmaneuveredByForce.ts">Outmaneuvered by Force</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a></p>
   </div>
 
   <div class="ref" id="q-getDeclaredConflictCount" data-name="getDeclaredConflictCount">
@@ -2083,7 +2084,7 @@ context.game.getConflicts(context.player.opponent).some((record) =&gt; record.br
 if(attacker === controller.opponent) {
     return this.game.getDeclaredConflictCount(attacker) === 2;
 }</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/CurryFavor.ts">Curry Favor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/ShibaPureheart.ts">Shiba Pureheart</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/MeddlingMediator.ts">Meddling Mediator</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/CurryFavor.ts">Curry Favor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/ShibaPureheart.ts">Shiba Pureheart</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/MeddlingMediator.ts">Meddling Mediator</a></p>
   </div>
 
   <div class="ref" id="q-getFavorSide" data-name="getFavorSide">
@@ -2158,7 +2159,7 @@ condition: () =&gt; this.game.isDuringConflict(ConflictType.Military),</code></p
     <p>"if there is a [Trait] in play": <code>player.isTraitInPlay(trait)</code> for any player.</p>
     <pre><code>// Forward Garrison: While there is a Battlefield in play, fate cannot be removed from characters you control by opponents' card or ring effects.
 condition: (context) =&gt; context.game.isTraitInPlay(Trait.Battlefield),</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/AkodoReserveCompany.ts">Akodo Reserve Company</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/ChroniclerOfConquests.ts">Chronicler of Conquests</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/Logistics.ts">Logistics</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/MasterTactician.ts">Master Tactician</a> (5 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/AkodoReserveCompany.ts">Akodo Reserve Company</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/ChroniclerOfConquests.ts">Chronicler of Conquests</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/Logistics.ts">Logistics</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/MasterTactician.ts">Master Tactician</a> (6 card files)</p>
   </div>
 
   <div class="ref" id="q-promptWithHandlerMenu" data-name="promptWithHandlerMenu promptForSelect promptForRingSelect">
@@ -2318,13 +2319,24 @@ onConflictFinished: (event, context) =&gt; event.conflict.defendersAtEnd.include
   </div>
 
   <div class="ref" id="q-getWinningPlayer" data-name="getWinningPlayer">
-    <h3><code>conflict.getWinningPlayer()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getWinningPlayer">#</a></h3>
-    <p>The player who wins the conflict at the current skills, or <code>undefined</code> if nobody does. <code>conflict.winner</code> is set from it when the conflict resolves.</p>
+    <h3><code>conflict.getWinningPlayer(attackerSkill?, defenderSkill?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getWinningPlayer">#</a></h3>
+    <p>The player who wins the conflict at the given totals (by default the current <code>attackerSkill</code> and <code>defenderSkill</code>), or <code>undefined</code> if nobody does. <code>conflict.winner</code> is set from it when the conflict resolves, with the resolution bonus added.</p>
     <ul class="edge">
       <li>RRG "Winning a Conflict": a side needs at least 1 skill and at least one participating character. A tie goes to the attacker.</li>
       <li>A player skill modifier (Disguised Protector) counts toward the total but does not make a side without characters win. Then <code>conflict.skillDifference</code> is 0, never negative.</li>
     </ul>
     <p class="seen">Used by the engine: the conflict result and the "is winning" chat line. No card reads it.</p>
+  </div>
+
+  <div class="ref" id="q-getResolutionSkills" data-name="getResolutionSkills resolutionBonus">
+    <h3><code>conflict.getResolutionSkills()</code>, <code>conflict.resolutionBonus(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getResolutionSkills">#</a></h3>
+    <p>The totals the conflict would resolve with now: <code>attackerSkill</code> and <code>defenderSkill</code> plus each side's skill added "during conflict resolution" (<code>changePlayerResolutionSkillModifier</code>). <code>resolutionBonus(player)</code> is that addition for one side.</p>
+    <ul class="edge">
+      <li><code>conflict.attackerSkill</code> and <code>conflict.defenderSkill</code> leave the resolution bonus out until the winner is determined; "current skill" checks read them.</li>
+      <li>The bonus is 0 for a player with <code>setConflictTotalSkill</code>, for a missing defender (solo game), and once the winner is determined (it is in the totals then).</li>
+      <li>The status line shows the bonus apart, and the "winning" and "breaking" hints use these totals.</li>
+    </ul>
+    <p class="seen">Used by the engine: the status line, the conflict panel and the "is winning" chat line. No card reads it.</p>
   </div>
 
   <div class="ref" id="q-getNumberOfCardsPlayed" data-name="getNumberOfCardsPlayed getCardsPlayed">
@@ -2362,7 +2374,7 @@ return conflict.getNumberOfCardsPlayed(opponent);</code></pre>
     <p>All participating characters, attackers then defenders, filtered by <code>predicate</code>; and how many match.</p>
     <pre><code>// Shosuro Takao: Action: While a dishonored character is participating in a conflict – move this character into or out of that conflict.
 .condition(() =&gt; (this.game.currentConflict?.getNumberOfParticipants((card) =&gt; card.isDishonored) ?? 0) &gt; 0)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KakitaKaezin.ts">Kakita Kaezin</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/IssueAChallenge.ts">Issue a Challenge</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/SolitaryHero.ts">Solitary Hero</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ToGovernTheLand.ts">To Govern the Land</a> (30 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KakitaKaezin.ts">Kakita Kaezin</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/IssueAChallenge.ts">Issue a Challenge</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/SolitaryHero.ts">Solitary Hero</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ToGovernTheLand.ts">To Govern the Land</a> (29 card files)</p>
   </div>
 
   <div class="ref" id="q-hasMoreParticipants" data-name="hasMoreParticipants">
@@ -2459,7 +2471,7 @@ ring.isConsideredClaimed(context.player) &amp;&amp;</code></pre>
     </ul>
     <pre><code>// Togashi Yoshi: Reaction: After this character wins a conflict - gain 1 fate from an unclaimed ring.
 ringCondition: (ring) =&gt; ring.fate &gt;= 1 &amp;&amp; ring.isUnclaimed(),</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BornInWar.ts">Born in War</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/WrittenInTheStars.ts">Written in the Stars</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ShiroKitsuki.ts">Shiro Kitsuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/TogashiDreamer.ts">Togashi Dreamer</a> (36 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BornInWar.ts">Born in War</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/WrittenInTheStars.ts">Written in the Stars</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ShiroKitsuki.ts">Shiro Kitsuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/TogashiDreamer.ts">Togashi Dreamer</a> (37 card files)</p>
   </div>
 
   <div class="ref" id="q-isClaimed" data-name="isClaimed isContested isRemovedFromGame">

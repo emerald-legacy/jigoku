@@ -648,7 +648,7 @@ this.action('Move attached character in or out of the conflict')
     <pre><code>// For Shame!: Conflict Action: If you control a participating Courtier character, choose a participating character controlled by your opponent. Your opponent must select one – dishonor the chosen character or bow it.
 this.action('Dishonor or bow a character')
     .ifCondition((context) =&gt; controlsParticipating(context.player, Trait.Courtier))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForShame.ts">For Shame!</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/ConsumedByFiveFires.ts">Consumed by Five Fires</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SubdueTheSpirits.ts">Subdue the Spirits</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/WisdomOfTheWind.ts">Wisdom of the Wind</a> (113 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForShame.ts">For Shame!</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/ConsumedByFiveFires.ts">Consumed by Five Fires</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SubdueTheSpirits.ts">Subdue the Spirits</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/WisdomOfTheWind.ts">Wisdom of the Wind</a> (114 card files)</p>
   </div>
 
   <div class="ref" id="b-conflictProvinceCondition" data-name="conflictProvinceCondition">
@@ -1043,7 +1043,7 @@ this.conflictAction('Bow a character')
       <li>Not the same as <code>optional: true</code>, which lets the player choose nothing.</li>
     </ul>
     <pre><code>// Kiku Matsuri: Action: During a conflict at this province, choose a participating character controlled by each player - honor each of those characters.
-// "each player": a player with no participating character gets no target (EmeraldDB ruling)
+// "each player": a player with no participating character gets no target
 .skippableTarget({
     name: 'oppCharacter',
     cardType: CardType.Character,

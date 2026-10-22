@@ -156,7 +156,8 @@ this.reaction('Play this character')
         onPassDuringDynasty: (event, context) =&gt; event.player === context.player
     })
     .location(Location.Provinces)
-    .playCard({ location: Location.ProvinceOne, source: this })</code></pre>
+    .playCard({ source: this })
+    .chatText('play {0}');</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/SneakyShinjo.ts">Sneaky Shinjo</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BorderlandsFortifications.ts">Borderlands Fortifications</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CautiousScout.ts">Cautious Scout</a></p>
 </div>
 <div class="ref" id="en-Players" data-name="Players">
@@ -591,7 +592,7 @@ this.action('Taint a character')
 effect: delayedEffect({
     condition: (context) =&gt; !!context.source.parentCharacter &amp;&amp; !context.source.parentCharacter.hasDash(SkillType.Political) &amp;&amp; context.source.parentCharacter.politicalSkill &lt; 1,
     …</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ByAnyMeans.ts">By Any Means</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ByAnyMeans.ts">By Any Means</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/MyAncestorsStrength.ts">My Ancestor's Strength</a></p>
 </div>
 </section>
 
@@ -725,6 +726,7 @@ effect: delayedEffect({
           <tr><td><code>CannotResolveRings</code></td><td><code>'cannotResolveRings'</code></td><td><code>cannotResolveRings</code></td></tr>
           <tr><td><code>ChangePlayerGloryModifier</code></td><td><code>'changePlayerGloryModifier'</code></td><td><code>changePlayerGloryModifier</code></td></tr>
           <tr><td><code>ChangePlayerSkillModifier</code></td><td><code>'changePlayerSkillModifier'</code></td><td><code>changePlayerSkillModifier</code></td></tr>
+          <tr><td><code>ChangePlayerResolutionSkillModifier</code></td><td><code>'changePlayerResolutionSkillModifier'</code></td><td><code>changePlayerResolutionSkillModifier</code></td></tr>
           <tr><td><code>GainActionPhasePriority</code></td><td><code>'gainActionPhasePriority'</code></td><td><code>gainActionPhasePriority</code></td></tr>
           <tr><td><code>CostReducer</code></td><td><code>'costReducer'</code></td><td><code>reduceCost</code>, <code>reduceNextPlayedCardCost</code></td></tr>
           <tr><td><code>ModifyCardsDrawnInDrawPhase</code></td><td><code>'modifyCardsDrawnInDrawPhase'</code></td><td><code>modifyCardsDrawnInDrawPhase</code></td></tr>
@@ -1786,7 +1788,7 @@ this.reaction('Ready a character')
                 (context.player.opponent &amp;&amp; event.context?.player === context.player.opponent))
     })
     .ready((context) =&gt; ({ target: context.event.card }))</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/ReadyForBattle.ts">Ready for Battle</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/BambooTattoo.ts">Bamboo Tattoo</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/StoriedDefeat.ts">Storied Defeat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/JadeTalisman.ts">Jade Talisman</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/ReadyForBattle.ts">Ready for Battle</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/BambooTattoo.ts">Bamboo Tattoo</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/JadeTalisman.ts">Jade Talisman</a></p>
 </div>
 <div class="ref" id="ev-onCardDishonored" data-name="onCardDishonored OnCardDishonored">
   <h3><code>onCardDishonored</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onCardDishonored">#</a></h3>
@@ -2107,8 +2109,8 @@ this.reaction('Declare a new conflict')
             event.conflict.attackingPlayer === context.player &amp;&amp;
             event.conflict.getConflictProvinces().some((a) =&gt; a.isBroken)
     })
-    // "your second conflict": a copy (The Mirror's Gaze) needs it too (developer ruling)
-    .condition((context) =&gt; this.game.getDeclaredConflictCount(context.player) === 1)
+    // "your second conflict": exactly one conflict declared or passed so far, also for a copy (The Mirror's Gaze)
+    .condition((context) =&gt; context.game.getConflicts(context.player).length === 1)
     .initiateConflict({ canPass: false });</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IvoryKingdomsUnicorn.ts">Ivory Kingdoms Unicorn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/UnderSiege.ts">Under Siege</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/Retribution.ts">Retribution!</a></p>
 </div>
@@ -2504,7 +2506,7 @@ this.wouldInterrupt('Keep a claimed ring')
         onReturnRing: (event, context) =&gt; event.ring.claimedBy === context.player.name
     })
     .cancel()</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/WholenessOfTheWorld.ts">Wholeness of the World</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/WholenessOfTheWorld.ts">Wholeness of the World</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KnowTheWorld.ts">Know the World</a></p>
 </div>
 <div class="ref" id="ev-onReturnRingToPlay" data-name="onReturnRingToPlay OnReturnRingToPlay">
   <h3><code>onReturnRingToPlay</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onReturnRingToPlay">#</a></h3>
@@ -2561,7 +2563,7 @@ this.reaction('Gain honor on duel win')
         afterDuel: (event, context) =&gt; event.winner?.some((card) =&gt; card === context.source.parentCharacter) ?? false
     })
     .gainHonor();</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/KakitaBlade.ts">Kakita Blade</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/InsultToInjury.ts">Insult to Injury</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/CourtlyChallenger.ts">Courtly Challenger</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/KakitaBlade.ts">Kakita Blade</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/InsultToInjury.ts">Insult to Injury</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/CourtlyChallenger.ts">Courtly Challenger</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DistinguishedDojo.ts">Distinguished Dōjō</a></p>
 </div>
 <div class="ref" id="ev-onCharacterWinsDuel" data-name="onCharacterWinsDuel OnCharacterWinsDuel">
   <h3><code>onCharacterWinsDuel</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onCharacterWinsDuel">#</a></h3>
@@ -2917,7 +2919,7 @@ this.reaction('Resolve the attached ring\'s effect')
         onMoveFate: (event) =&gt; event.recipient === this.parent,
         onPlaceFateOnUnclaimedRings: () =&gt; this.parent instanceof Ring &amp;&amp; this.parent.isUnclaimed()
     })</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/GreaterUnderstanding.ts">Greater Understanding</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiSeiji.ts">Kitsuki Seiji</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/GreaterUnderstanding.ts">Greater Understanding</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiSeiji.ts">Kitsuki Seiji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/GreaterUnderstanding2.ts">Greater Understanding</a></p>
 </div>
 <div class="ref" id="ev-onSetHonorDial" data-name="onSetHonorDial OnSetHonorDial">
   <h3><code>onSetHonorDial</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onSetHonorDial">#</a></h3>
@@ -3100,6 +3102,7 @@ this.interrupt('Ready for Glory Count')
           <tr><td><code>chosenCardTargets</code></td><td><code>BaseCard[]</code></td><td>Every card chosen as a target across this triggering.</td></tr>
           <tr><td><code>originatingContext</code>, <code>triggeringContext</code></td><td><code>AbilityContext | undefined</code>, <code>AbilityContext</code></td><td>In a sub-resolution or then-step: the context it continues.</td></tr>
           <tr><td><code>subResolution</code></td><td><code>boolean</code></td><td><code>true</code> when resolved again by <code>resolveAbility</code> with <code>subResolution</code>.</td></tr>
+          <tr><td><code>asIfConflictAt</code></td><td><code>BaseCard | undefined</code></td><td>The province the ability resolves "as if the conflict were at" (Keeper of Secret Names, through <code>resolveAbility</code>).</td></tr>
           <tr><td><code>choosingPlayerOverride</code></td><td><code>Player | null</code></td><td>Set by an effect that chooses the targets for another player (Hantei XXXVIII).</td></tr>
           <tr><td><code>provincesToRefill</code></td><td><code>{ player; location }[]</code></td><td>Provinces queued by <code>refillProvince()</code>; refilled when the ability finishes.</td></tr>
           <tr><td><code>gameActionsResolutionChain</code></td><td><code>GameAction[]</code></td><td>Internal: the <code>playCard</code> actions that led to this play. Such an action cannot affect anything in this context, which stops a play from recursing.</td></tr>
@@ -3141,6 +3144,7 @@ this.interrupt('Ready for Glory Count')
   </ul>
   <pre><code>// Hida Kisada: While you have not lost a conflict this phase, cancel the effects of the first action ability your opponent triggers from a card during each conflict.
 if(
+    !event.resolvedWithoutTriggering &amp;&amp;
     !this.firstActionEvent.has(event.context.player.uuid) &amp;&amp;
     this.game.isDuringConflict() &amp;&amp;
     event.context.ability.abilityType === AbilityType.Action &amp;&amp;
@@ -3356,7 +3360,7 @@ onCardAbilityTriggered: (event, context) =&gt;
     event.context.triggeringContext.chosenCardTargets.some((card) =&gt;
         this.isOwnShugenjaInPlay(card, context)
     )</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Phoenix/TheWeightOfDuty.ts">The Weight of Duty</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/StoriedDefeat.ts">Storied Defeat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/WithstandTheDarkness.ts">Withstand the Darkness</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/DragonTattoo.ts">Dragon Tattoo</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Phoenix/TheWeightOfDuty.ts">The Weight of Duty</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/WithstandTheDarkness.ts">Withstand the Darkness</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/DragonTattoo.ts">Dragon Tattoo</a></p>
 </div>
 <div class="ref" id="ctx-events" data-name="events previousEvents">
   <h3><code>context.events</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-events">#</a></h3>
@@ -3371,7 +3375,7 @@ onCardAbilityTriggered: (event, context) =&gt;
     const moveEvent = context.previousEvents[0];
     const discarded = moveEvent?.is(EventName.Unnamed) ? moveEvent.cardStateWhenMoved : undefined;
     …</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/BustlingAcademy.ts">Bustling Academy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/StoriedDefeat.ts">Storied Defeat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/IdeRyoma.ts">Ide Ryōma</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/BustlingAcademy.ts">Bustling Academy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/IdeRyoma.ts">Ide Ryōma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/RootOutHeresy.ts">Root Out Heresy</a></p>
 </div>
 <div class="ref" id="ctx-playType" data-name="playType chooseFate">
   <h3><code>context.playType</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-playType">#</a></h3>
@@ -3379,7 +3383,7 @@ onCardAbilityTriggered: (event, context) =&gt;
   <ul class="edge">
     <li><code>playType</code> is <code>undefined</code> when the source is not in a playable location.</li>
   </ul>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/IsawaSkycaller.ts">Isawa Skycaller</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/Infiltrator.ts">Infiltrator</a></p>
 </div>
 <div class="ref" id="ctx-stage" data-name="stage">
   <h3><code>context.stage</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-stage">#</a></h3>

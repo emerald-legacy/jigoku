@@ -776,7 +776,7 @@ this.persistentEffect({
 
   <div class="ref" id="ef-changePlayerResolutionSkillModifier" data-name="changePlayerResolutionSkillModifier">
     <h3><code>changePlayerResolutionSkillModifier(value)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-changePlayerResolutionSkillModifier">#</a></h3>
-    <p>"Add +3 to your skill during conflict resolution": added to the player's total only when the winner is determined (<code>Conflict.determineWinner()</code>). Until then the conflict's totals, "current skill" checks and the status line leave it out.</p>
+    <p>"Add +3 to your skill during conflict resolution": added to the player's total only when the winner is determined (<code>Conflict.determineWinner()</code>). Until then the conflict's totals and "current skill" checks leave it out. The status line shows it apart ("Attacker: 5 (+3 at resolution)"), and the "winning" and "breaking" hints, in the chat and on the conflict panel, count it (<code>Conflict.getResolutionSkills()</code>).</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2422,7 +2422,7 @@ this.action('Allow attacking the stronghold')
     </ul>
     <pre><code>// Isawa Kaede: … If this character wins the conflict as an attacker, instead of choosing an element to resolve, resolve each of that ring's effects.
 this.persistentEffect({
-    // fixed when the winner is determined: sent home afterwards (False Loyalties), she still won (EmeraldDB ruling)
+    // sent home after the winner was determined (False Loyalties), she still won as an attacker
     condition: (context) =&gt; !!this.game.currentConflict?.wonAsAttacker(context.source),
     effect: modifyConflictElementsToResolve(5)
 });</code></pre>

@@ -548,7 +548,8 @@ this.conflictAction('Move character to conflict and gain skill bonus', { conflic
         cardType: CardType.Character,
         cardCondition: (card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Spirit) || card.hasTrait(Trait.Creature))
     }))
-    .playerLastingEffect((context) =&gt; ({ target: Players.Self, effect: changePlayerSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict)) }))
+    .playerLastingEffect((context) =&gt; ({ target: Players.Self, effect: changePlayerResolutionSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict)) }))
+    .chatText((context) =&gt; msg`entrance the court, giving their side an extra ${this.marvelousSkillBonus(context.costs.moveToConflict)}${'political'} during this conflict's resolution`)
     .max(perConflict(1));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MarvelousBeings.ts">Marvelous Beings</a></p>
   </div>
@@ -1093,13 +1094,14 @@ this.reaction('Place a fate on a character')
     .when({
         onPhaseStarted: (event) =&gt; event.phase === Phase.Fate
     })
+    .condition((context) =&gt; context.player.fate &gt; 0 || (context.player.opponent?.fate ?? 0) &gt; 0)
     .cost(costs.optionalTakeHonorFromOpponent((context) =&gt; {
         return (context.player.opponent?.fate ?? 0) &gt; 0;
     }))
     .target({
         name: 'myCharacter',
         cardType: CardType.Character
-    }, placeFate((context) =&gt; ({ origin: context.player })))
+    })
     .target({
         name: 'oppCharacter',
         player: Players.Opponent,
@@ -1108,8 +1110,9 @@ this.reaction('Place a fate on a character')
         hideIfNoLegalTargets: true,
         cardCondition: (_card, context) =&gt; Boolean(context.costs.honorTakenFromOpponent)
     }, placeFate((context) =&gt; ({ origin: context.player.opponent })))
+    .placeFate((context) =&gt; ({ origin: context.player, target: context.targets.myCharacter }))
     .firstPlayerChoosesFirst()
-    .chatText((context) =&gt; msg`place a fate from their pool on ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) =&gt; msg`place a fate from their pool on ${card}`)}`);</code></pre>
+    .chatText((context) =&gt; msg`${context.player.fate &gt; 0 ? 'place a fate from their pool on' : 'choose'} ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) =&gt; msg`place a fate from their pool on ${card}`)}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/RoadsideInn.ts">Roadside Inn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ExpertInterpreter.ts">Expert Interpreter</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/AgashaProdigy.ts">Agasha Prodigy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a></p>
   </div>
 
