@@ -87,7 +87,7 @@
     </tbody>
 </table>
 <p><code>resolveAbility</code> always ignores <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>TriggeringRestricted</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> (resolving isn't playing); a sub-resolution also ignores <code>MaxReached</code>.</p>
-<p><code>Blanked</code>, <code>CannotInitiate</code> and <code>NoLegalTarget</code> always apply. <code>CannotTrigger</code> always applies to abilities. The play actions report a play restriction as <code>CannotPlay</code>, like events do. <code>DuplicateUnique</code>, <code>EnterPlayRestricted</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities.</p>
+<p><code>Blanked</code>, <code>CannotInitiate</code> and <code>NoLegalTarget</code> always apply. <code>CannotTrigger</code> always applies to abilities. The play actions report a play restriction as <code>CannotPlay</code>, like events do. <code>DuplicateUnique</code>, <code>EnterPlayRestricted</code>, <code>CannotEnterConflict</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities. <code>EnterPlayRestricted</code> checks the player and, for every play action, the card itself (Legendary can only enter play in the Dynasty phase). A play that may only go into the conflict is <code>CannotEnterConflict</code> when the character can't be put into it; it never falls back to playing at home.</p>
 
 <h2 id="eng-resolver">How an ability resolves</h2>
 <p><code>AbilityResolver</code> runs these steps:</p>

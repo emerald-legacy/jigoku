@@ -23,14 +23,20 @@ export class TokenFromTopCardAction<Context extends AbilityContext = AbilityCont
     }
 
 
+    /** Only when the token could be used: a token that can't enter play ("characters cannot enter play") leaves the card on the deck. */
     override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        return this.#deck(player, context, additionalProperties).length > 0 && super.canAffect(player, context, additionalProperties);
+        const { token, gameAction } = this.getProperties(context, additionalProperties);
+        const card = this.#deck(player, context, additionalProperties)[0];
+        return !!card && gameAction(new token(card)).hasLegalTarget(context) && super.canAffect(player, context, additionalProperties);
     }
 
     override eventHandler(event: PlayerEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const { token: tokenClass, gameAction } = this.getProperties(context, additionalProperties);
         const card = this.#deck(event.player, context, additionalProperties)[0];
+        if(!card) {
+            return;
+        }
         const token = context.game.createToken(card, tokenClass);
         card.owner.removeCardFromPile(card);
         card.moveTo(Location.RemovedFromGame);

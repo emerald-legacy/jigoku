@@ -100,7 +100,7 @@ export function chooseFate(type: PlayType): Cost {
             ) {
                 extrafate = 0;
             }
-            if(!context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
+            if(!context.player.checkRestrictions(RestrictionType.SpendFate, context) || !context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
                 extrafate = 0;
             }
 

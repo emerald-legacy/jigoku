@@ -71,7 +71,7 @@ export class PutIntoPlayAction<Context extends AbilityContext = AbilityContext> 
             return false;
         } else if(!card.checkRestrictions(RestrictionType.PutIntoPlay, context)) {
             return false;
-        } else if(!player.checkRestrictions(RestrictionType.EnterPlay, contextCopy)) {
+        } else if(!player.checkRestrictions(RestrictionType.EnterPlay, contextCopy) || !card.checkRestrictions(RestrictionType.EnterPlay, contextCopy)) {
             return false;
         } else if(this.intoConflict) {
             // There is no current conflict, or no context (cards must be put into play by a player, not a framework event)

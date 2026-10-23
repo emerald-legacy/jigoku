@@ -41,6 +41,9 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
             return Blocker.EnterPlayRestricted;
         }
+        if(this.intoLocation === PlayIntoLocation.Conflict && !context.source.allowGameAction('putIntoConflict', context)) {
+            return Blocker.CannotEnterConflict;
+        }
         return super.meetsRequirements(context, ignoredBlockers);
     }
 
@@ -67,14 +70,10 @@ export class PlayCharacterAction extends PlayCardSourceAction {
                 cardPlayedEvent
             ]);
         };
-        if(
-            context.source.allowGameAction('putIntoConflict', context) &&
-            this.intoLocation !== PlayIntoLocation.Home
-        ) {
-            if(this.intoLocation === PlayIntoLocation.Conflict) {
-                return intoConflictHandler();
-            }
-
+        if(this.intoLocation === PlayIntoLocation.Conflict) {
+            return intoConflictHandler();
+        }
+        if(this.intoLocation === PlayIntoLocation.Any && context.source.allowGameAction('putIntoConflict', context)) {
             return context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Where do you wish to play this character?',
                 source: context.source,

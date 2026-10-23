@@ -1116,7 +1116,7 @@ this.reaction('Search for a character card')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Illegal when the deck is empty. The nested action is not checked beforehand: the token doesn't exist yet.</li>
+      <li>Illegal when the deck is empty, or when the nested action would have no legal target for a token made from the top card (Ashigaru Encampment while characters cannot enter play). Then the card stays on the deck.</li>
       <li>The top card is taken out of the deck (its location becomes removed from game); the token stands in for it. The nested action resolves in a then-window, with only the targets it sets itself.</li>
       <li>Chat: <code>turn the top card of {0}'s {1} into a token</code>, {1} being the <code>DeckType</code> value ("conflict deck").</li>
       <li>Builder shortcut: <code>.tokenFromTopCard(…)</code>.</li>
@@ -1425,7 +1425,7 @@ this.action('Play an attachment')
     </table>
     <ul class="edge">
       <li>Only characters. A card already in play or facedown can't be put into play, nor a unique card when the ability's player already has another copy in play.</li>
-      <li>Checks <code>RestrictionType.PutIntoPlay</code> on the card and <code>RestrictionType.EnterPlay</code> on the ability's player.</li>
+      <li>Checks <code>RestrictionType.PutIntoPlay</code> on the card and <code>RestrictionType.EnterPlay</code> on the ability's player and on the card (Legendary).</li>
       <li><code>putIntoConflict</code> also needs a conflict, a character without a dash in the conflict's skill, no <code>RestrictionType.PutIntoConflict</code>, and a character that can attack or defend for <code>side</code>.</li>
       <li>A Corrupted character enters play tainted. A character that left a province refills it.</li>
       <li>Raises <code>onCharacterEntersPlay</code> (with <code>fate</code>, <code>status</code>, <code>intoConflict</code>, <code>originalLocation</code>, <code>side</code>).</li>
@@ -1604,6 +1604,7 @@ this.reaction('Break the attacked province')
     </table>
     <ul class="edge">
       <li>Only facedown characters, holdings or events in a province other than the stronghold province. The province is refilled.</li>
+      <li>Not while the card's owner can't have the token enter play (<code>RestrictionType.EnterPlay</code>, checked with the token as the source: Expert Interpreter).</li>
       <li>During a conflict the token joins it on the side of the ability's player: as an attacker when they attack, otherwise as a defender.</li>
       <li>The token gets a lasting effect until the end of the phase that discards it when a conflict finishes.</li>
       <li>Raises <code>onCreateTokenCharacter</code> (<code>event.tokenCharacter</code>). Chat: "create a token".</li>
@@ -2296,7 +2297,7 @@ this.action('Duel an opposing character')
     </table>
     <ul class="edge">
       <li>A character in play that may duel, isn't already in the duel, and isn't controlled by the challenging player. It must meet the duel's target condition, or be participating when the duel requires a conflict.</li>
-      <li>"May duel" is <code>allowGameAction('duel')</code>: the checks of <code>duel()</code>, including <code>RestrictionType.Duel</code> and restrictions that name no type.</li>
+      <li>"May duel": not "No duels", no dash in the duel's skill (a dash in the other skill doesn't matter: Matsu Berserker in a military duel) and no <code>RestrictionType.Duel</code>.</li>
       <li>Raises <code>onAddDuelParticipant</code>. Chat: "extend the duel challenge to <em>card</em>".</li>
       <li>No builder shortcut.</li>
     </ul>

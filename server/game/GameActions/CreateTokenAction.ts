@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { CardType, Duration, EventName, Location, ConflictType } from '../Constants.js';
+import { CardType, Duration, EventName, Location, ConflictType, RestrictionType } from '../Constants.js';
 import { delayedEffect } from '../Effects/Library/delayedEffect.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -31,9 +31,11 @@ export class CreateTokenAction<Context extends AbilityContext = AbilityContext> 
     };
 
     override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
-        const { canEnterConflict } = this.getProperties(context, additionalProperties);
+        const { canEnterConflict, token } = this.getProperties(context, additionalProperties);
 
-        if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince) {
+        if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince || !card.isDrawCard()) {
+            return false;
+        } else if(!card.owner.checkRestrictions(RestrictionType.EnterPlay, context.copy({ source: new token(card) }))) {
             return false;
         } else if(context.game.isDuringConflict(ConflictType.Military) && !canEnterConflict(ConflictType.Military)) {
             return false;

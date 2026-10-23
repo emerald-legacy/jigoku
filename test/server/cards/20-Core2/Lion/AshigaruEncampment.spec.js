@@ -30,3 +30,43 @@ describe('Ashigaru Encampment', function () {
         });
     });
 });
+
+describe('Ashigaru Encampment while characters cannot enter play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['expert-interpreter', 'doji-challenger']
+                },
+                player2: {
+                    inPlay: ['matsu-berserker'],
+                    dynastyDiscard: ['ashigaru-encampment']
+                }
+            });
+            this.interpreter = this.player1.findCardByName('expert-interpreter');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.encampment = this.player2.placeCardInProvince('ashigaru-encampment', 'province 1');
+            this.encampment.facedown = false;
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.interpreter);
+            this.player1.clickRing('air');
+            this.player2.clickPrompt('No');
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'air',
+                attackers: [this.challenger],
+                defenders: []
+            });
+        });
+
+        it('can\'t be used, and keeps the top card', function () {
+            const deck = this.player2.player.dynastyDeck.length;
+            this.player2.clickCard(this.encampment);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.player2.player.dynastyDeck.length).toBe(deck);
+        });
+    });
+});

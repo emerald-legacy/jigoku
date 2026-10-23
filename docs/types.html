@@ -307,6 +307,7 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
         <tbody>
           <tr><td><code>None</code></td><td><code>''</code></td><td>Nothing blocks the ability.</td><td>–</td></tr>
           <tr><td><code>Blanked</code></td><td><code>'blank'</code></td><td>A printed ability on a blank card, or a gained ability on a card with <code>loseGainedAbilities</code>.</td><td>no</td></tr>
+          <tr><td><code>CannotEnterConflict</code></td><td><code>'cannotEnterConflict'</code></td><td>A character that may only be played into the conflict (Isawa Skycaller, Prepared Ambush) can't be put into it now (no conflict, a dash in its skill, can't attack or defend).</td><td>no</td></tr>
           <tr><td><code>CannotInitiate</code></td><td><code>'cannotInitiate'</code></td><td>A keyword ability on a card that cannot initiate keywords.</td><td>no</td></tr>
           <tr><td><code>CannotPayCost</code></td><td><code>'cost'</code></td><td>The costs cannot be paid.</td><td>yes</td></tr>
           <tr><td><code>CannotPlay</code></td><td><code>'cannotPlay'</code></td><td>The card cannot be played: a play restriction, or not playable from there or for this player; also a character played while the player has a <code>PlayCharacter</code> restriction.</td><td>yes (resolving isn't playing)</td></tr>
@@ -314,7 +315,7 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
           <tr><td><code>CannotTrigger</code></td><td><code>'cannotTrigger'</code></td><td>The card cannot trigger abilities (facedown or <code>TriggerAbilities</code> restriction).</td><td>no</td></tr>
           <tr><td><code>ConditionNotMet</code></td><td><code>'condition'</code></td><td>The ability's <code>condition</code> is false; or the ability has no targets and none of its game actions has a legal target; or an event's "Play only if" (<code>meetsPlayConditions</code>) fails, which can't be ignored.</td><td>yes (not the play condition)</td></tr>
           <tr><td><code>DuplicateUnique</code></td><td><code>'unique'</code></td><td>Another copy of a unique card is in play (for a duplicate: no copy the player controls is).</td><td>no</td></tr>
-          <tr><td><code>EnterPlayRestricted</code></td><td><code>'enterPlay'</code></td><td>A character played while the player has an <code>EnterPlay</code> restriction.</td><td>no</td></tr>
+          <tr><td><code>EnterPlayRestricted</code></td><td><code>'enterPlay'</code></td><td>A character played while the player has an <code>EnterPlay</code> restriction, or a card that has one itself (Legendary outside the Dynasty phase).</td><td>no</td></tr>
           <tr><td><code>Facedown</code></td><td><code>'facedown'</code></td><td>The card is facedown: a dynasty card in a province, or a card used as a duplicate.</td><td>yes</td></tr>
           <tr><td><code>IfConditionNotMet</code></td><td><code>'ifCondition'</code></td><td>The ability's <code>ifCondition()</code> ("If …" triggering condition) is false.</td><td>yes</td></tr>
           <tr><td><code>LimitedAlreadyPlayed</code></td><td><code>'limited'</code></td><td>A Limited card when the player already played their Limited cards this round.</td><td>in card abilities (not play actions)</td></tr>

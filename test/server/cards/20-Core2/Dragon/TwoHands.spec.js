@@ -106,6 +106,23 @@ describe('Two Hands', function () {
                 expect(this.yoshi.location).toBe('dynasty discard pile');
             });
 
+            it('can add a character with a dash in the other skill', function () {
+                this.challenger.dishonor();
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.challenger, this.berserker],
+                    defenders: [this.toshimoko, this.tsukune]
+                });
+
+                this.player2.clickCard(this.dttd);
+                this.player2.clickCard(this.toshimoko);
+                this.player2.clickCard(this.challenger);
+                this.player2.clickCard(this.hands);
+                expect(this.player2).toBeAbleToSelect(this.berserker);
+            });
+
             it('disparaging challenge - another condition, no valid 2nd target', function () {
                 this.challenger.dishonor();
 

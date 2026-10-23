@@ -93,6 +93,9 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
             return Blocker.EnterPlayRestricted;
         }
+        if(this.intoLocation === PlayIntoLocation.Conflict && !context.source.allowGameAction('putIntoConflict', context)) {
+            return Blocker.CannotEnterConflict;
+        }
         return super.meetsRequirements(context, ignoredBlockers);
     }
 

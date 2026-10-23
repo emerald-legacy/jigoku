@@ -2,6 +2,7 @@
 export enum Blocker {
     None = '',
     Blanked = 'blank',
+    CannotEnterConflict = 'cannotEnterConflict',
     CannotInitiate = 'cannotInitiate',
     CannotPayCost = 'cost',
     CannotPlay = 'cannotPlay',

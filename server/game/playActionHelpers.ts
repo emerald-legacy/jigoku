@@ -11,13 +11,16 @@ export function getExtraFateWhenPlayed(card: DrawCard, context: AbilityContext, 
     return extraFate + card.sumEffects(EffectName.LegendaryFate);
 }
 
-/** What stops the card being played from where it is: the wrong location, a play restriction or a unique already in play. */
+/** What stops the card being played from where it is: the wrong location, a play restriction, a card that can't enter play now (Legendary outside the Dynasty phase) or a unique already in play. */
 export function getPlayBlocker(card: DrawCard, context: AbilityContext, ignoredBlockers: Blocker[], playType: PlayType | undefined): Blocker | undefined {
     if(!ignoredBlockers.includes(Blocker.WrongLocation) && !context.player.isCardInPlayableLocation(card, playType)) {
         return Blocker.WrongLocation;
     }
     if(!ignoredBlockers.includes(Blocker.CannotPlay) && !card.canPlay(context, playType)) {
         return Blocker.CannotPlay;
+    }
+    if(!card.checkRestrictions(RestrictionType.EnterPlay, context)) {
+        return Blocker.EnterPlayRestricted;
     }
     return card.anotherUniqueInPlay(context.player) ? Blocker.DuplicateUnique : undefined;
 }

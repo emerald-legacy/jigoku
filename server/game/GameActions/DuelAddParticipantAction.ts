@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -29,7 +29,7 @@ export class DuelAddParticipantAction<Context extends AbilityContext = AbilityCo
             return false;
         }
 
-        if(!card.allowGameAction('duel', context)) {
+        if(card.hasNoDuels() || card.hasDash(properties.duel.duelType) || !card.checkRestrictions(RestrictionType.Duel, context)) {
             return false;
         }
 

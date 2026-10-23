@@ -200,3 +200,43 @@ describe('Shinjo Sora', function () {
         });
     });
 });
+
+describe('Shinjo Sora while characters cannot enter play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['expert-interpreter', 'doji-challenger']
+                },
+                player2: {
+                    inPlay: ['shinjo-sora'],
+                    dynastyDiscard: ['doji-kuwanan']
+                }
+            });
+            this.interpreter = this.player1.findCardByName('expert-interpreter');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.sora = this.player2.findCardByName('shinjo-sora');
+            this.kuwanan = this.player2.placeCardInProvince('doji-kuwanan', 'province 1');
+            this.kuwanan.facedown = true;
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.interpreter);
+            this.player1.clickRing('air');
+            this.player2.clickPrompt('No');
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'air',
+                attackers: [this.challenger],
+                defenders: [this.sora]
+            });
+        });
+
+        it('can\'t release hounds', function () {
+            this.player2.clickCard(this.sora);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.kuwanan.location).toBe('province 1');
+        });
+    });
+});
