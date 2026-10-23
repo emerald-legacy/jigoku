@@ -65,7 +65,7 @@ class AncestralSight extends DrawCard {
                     cardType: CardType.Character,
                     cardCondition: (card, context) => {
                         const returned = context.costs.ancestralSightCost;
-                        return !returned || (returned instanceof DrawCard && card.name === returned.name);
+                        return !returned || (returned.isDrawCard() && card.name === returned.name);
                     }
                 }, placeFate((context) => ({ origin: context.player })))
                 .cannotTargetFirst())

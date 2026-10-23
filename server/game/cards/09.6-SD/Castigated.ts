@@ -22,7 +22,7 @@ class Castigated extends DrawCard {
     }
 
     override canPlayOn(card: BaseCard | Ring) {
-        return card instanceof DrawCard && card.isParticipating() && super.canPlayOn(card);
+        return card.isCard() && card.isDrawCard() && card.isParticipating() && super.canPlayOn(card);
     }
 }
 

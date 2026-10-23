@@ -35,7 +35,7 @@ export default class CornerThePrey extends DrawCard {
             (card) => card.controller === context.player && card.hasTrait(Trait.Follower)
         );
         return myFollowers.filter(
-            (card) => card instanceof DrawCard &&
+            (card) => card.isDrawCard() &&
                 (card.isParticipating() || !!card.parentCharacter?.isParticipating())
         ).length;
     }

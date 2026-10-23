@@ -3,7 +3,6 @@ import { Location, Players, TokenType } from '../../../Constants.js';
 import { modifyProvinceStrength } from '../../../effects.js';
 import { sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
 import { msg } from '../../../GameChat.js';
 import { stateWhenLeftPlay } from '../../stateWhenLeftPlay.js';
 
@@ -19,7 +18,7 @@ export default class PropitiousMarket extends DrawCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            match: (card, context) => !!context && card instanceof ProvinceCard && card.location === context.source.location,
+            match: (card, context) => !!context && card.isProvinceCard() && card.location === context.source.location,
             effect: modifyProvinceStrength(() => this.getTokenCount(TokenType.Honor))
         });
 

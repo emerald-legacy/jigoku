@@ -31,7 +31,7 @@ export default class WeKnow extends DrawCard {
                 const targetToken = context.tokens.token[0];
                 const targetCard = targetToken.card;
                 const choices: Record<string, GameAction> = {};
-                if(targetCard instanceof DrawCard) {
+                if(targetCard?.isDrawCard()) {
                     choices[`Dishonor ${targetCard.name}`] = joint([
                         discardStatusToken({ target: targetToken }),
                         gainStatusToken({ target: targetCard, token: CharacterStatus.Dishonored })

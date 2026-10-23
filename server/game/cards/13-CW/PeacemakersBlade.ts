@@ -2,7 +2,6 @@ import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
 import { cannotBeDeclaredAsAttacker } from '../../effects.js';
-import { CardType } from '../../Constants.js';
 
 class PeacemakersBlade extends DrawCard {
     static id = 'peacemaker-s-blade';
@@ -14,7 +13,7 @@ class PeacemakersBlade extends DrawCard {
     }
 
     override canPlayOn(card: BaseCard | Ring) {
-        return card instanceof DrawCard && card.type === CardType.Character && !card.isAttacking() && super.canPlayOn(card);
+        return card.isCard() && card.isCharacter() && !card.isAttacking() && super.canPlayOn(card);
     }
 }
 

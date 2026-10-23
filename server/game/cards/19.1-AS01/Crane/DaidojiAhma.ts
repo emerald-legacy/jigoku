@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import BaseCard from '../../../BaseCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -15,7 +15,7 @@ export default class DaidojiAhma extends DrawCard {
                     event.context.ability.isTriggeredAbility() &&
                     event.cardTargets.some((card) => this.targetIsDishonoredCrane(card, context)),
                 onMoveFate: (event, context) =>
-                    this.isRingEffect(event) && (event.fate ?? 0) > 0 && event.origin instanceof BaseCard && this.targetIsDishonoredCrane(event.origin, context),
+                    this.isRingEffect(event) && (event.fate ?? 0) > 0 && event.origin?.isCard() && this.targetIsDishonoredCrane(event.origin, context),
                 onCardHonored: (event, context) =>
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context),
                 onCardDishonored: (event, context) =>

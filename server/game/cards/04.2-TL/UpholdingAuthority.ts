@@ -5,7 +5,7 @@ import { modifyProvinceStrength } from '../../effects.js';
 import { cardMenu, chooseAmount, discardCard, lookAt, sequential } from '../../GameActions/GameActions.js';
 import { targetList, type GameActionTarget } from '../../GameActions/GameAction.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import DrawCard from '../../DrawCard.js';
+import type DrawCard from '../../DrawCard.js';
 
 export default class UpholdingAuthority extends ProvinceCard {
     static id = 'upholding-authority';
@@ -51,7 +51,7 @@ export default class UpholdingAuthority extends ProvinceCard {
 
     private copiesInHand(context: AbilityContext, target: GameActionTarget | GameActionTarget[] | undefined): DrawCard[] {
         const card = targetList(target)[0];
-        return card instanceof DrawCard
+        return card.isCard() && card.isDrawCard()
             ? context.game.currentConflict?.attackingPlayer.hand.filter((copy) => copy.name === card.name) ?? []
             : [];
     }

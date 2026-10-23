@@ -1,5 +1,4 @@
 import { msg } from '../../GameChat.js';
-import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Phase } from '../../Constants.js';
 
@@ -20,10 +19,10 @@ class ShadowedVillage extends DrawCard {
                     (event.fate ?? 0) > 0
             })
             .draw((context) => ({
-                amount: context.event.origin instanceof BaseCard && context.event.origin.isDishonored ? 2 : 1
+                amount: context.event.origin?.isCard() && context.event.origin.isDishonored ? 2 : 1
             }))
-            .chatText((context) => context.event.origin instanceof BaseCard && context.event.origin.isDishonored
-                ? msg`draw 2 card${'s'}`
+            .chatText((context) => context.event.origin?.isCard() && context.event.origin.isDishonored
+                ? msg`draw 2 cards`
                 : msg`draw a card`);
     }
 }

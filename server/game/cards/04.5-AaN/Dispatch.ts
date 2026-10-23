@@ -19,7 +19,7 @@ class Dispatch extends DrawCard {
                             return false;
                         }
                         const first = target[0];
-                        return first instanceof DrawCard && first.inConflict;
+                        return first.isCard() && first.isDrawCard() && first.inConflict;
                     },
                     trueGameAction: sendHome(),
                     falseGameAction: moveToConflict()

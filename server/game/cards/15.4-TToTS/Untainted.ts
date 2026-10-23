@@ -1,5 +1,4 @@
 import { msg } from '../../GameChat.js';
-import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
@@ -17,7 +16,7 @@ class Untainted extends ProvinceAttachment {
                 location: Location.Any,
                 tokenCondition: (token, context) => {
                     const parent = context && context.source.parent;
-                    return !!token.card && (token.card === parent || (token.card instanceof DrawCard && token.card.isParticipating()));
+                    return !!token.card && (token.card === parent || (token.card.isDrawCard() && token.card.isParticipating()));
                 }
             })
             .discardStatusToken((context) => ({

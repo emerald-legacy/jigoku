@@ -24,7 +24,7 @@ export default class AsakoKousuke extends DrawCard {
             }, (context) => {
                 const targetToken = context.tokens[ORIGINL_TOKEN][0];
                 const targetCard = targetToken.card;
-                if(!(targetCard instanceof DrawCard)) {
+                if(!targetCard?.isDrawCard()) {
                     return {};
                 }
 
