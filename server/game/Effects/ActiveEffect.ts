@@ -42,7 +42,7 @@ export interface EffectProperties<Target extends GameObject = GameObject> {
     target?: GameObject | GameObject[];
     /** A printed attachment skill bonus: not a card effect, so restrictions on card effects (Reclusive Zokujin's immunity) don't stop it. */
     printedSkillBonus?: boolean;
-    /** Whose effect it is when the source has no controller (a ring or the framework): the player whose ability created it. */
+    /** The player whose ability created it: whose effect a lasting effect is, and a persistent one's when the source has no controller (a ring or the framework). */
     controller?: Player;
 }
 
@@ -87,7 +87,7 @@ export class ActiveEffect<Target extends GameObject = GameObject> {
     }
 
     refreshContext() {
-        const controller = this.source.getEffectController() ?? this.creator;
+        const controller = (this.duration !== Duration.Persistent ? this.creator : undefined) ?? this.source.getEffectController() ?? this.creator;
         if(!controller) {
             throw new Error(`An effect from ${this.source.name} has no controller: pass the creating player as \`controller\``);
         }

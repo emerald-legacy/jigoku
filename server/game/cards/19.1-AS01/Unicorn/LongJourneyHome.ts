@@ -33,6 +33,6 @@ export default class LongJourneyHome extends DrawCard {
     }
 
     private affectedOpponentsCharacter(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext<this>) {
-        return event.card.type === CardType.Character && event.card.controller === context.source.controller.opponent;
+        return event.card.type === CardType.Character && event.card.controller === context.player.opponent;
     }
 }

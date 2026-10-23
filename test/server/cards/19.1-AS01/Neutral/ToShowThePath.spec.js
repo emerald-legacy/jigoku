@@ -239,3 +239,41 @@ describe('To Show the Path and a resolved ability', function () {
         });
     });
 });
+
+describe('To Show the Path played by its owner\'s opponent', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    inPlay: ['doomed-shugenja', 'doji-challenger'],
+                    hand: ['trading-on-the-sand-road']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    conflictDiscard: ['to-show-the-path']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.toShowThePath = this.player2.findCardByName('to-show-the-path');
+            this.player2.moveCard(this.toShowThePath, 'conflict deck');
+            this.noMoreActions();
+            this.player1.clickCard('trading-on-the-sand-road');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('names the opponent of the player who played it', function () {
+            this.player1.clickCard(this.toShowThePath);
+            this.player1.clickCard(this.challenger);
+            expect(this.getChatLogs(3)).toContain(
+                'player1 plays To Show the Path to make player2 pay 1 additional fate as a cost whenever they target Doji Challenger or its attachments with a card ability until the end of the phase'
+            );
+        });
+    });
+});

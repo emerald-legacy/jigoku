@@ -171,3 +171,51 @@ describe('Persuasive Counselor', function() {
         });
     });
 });
+
+describe('Persuasive Counselor and an event its controller plays from under Strange Mirror', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-outrider', 'persuasive-counselor'],
+                    hand: ['strange-mirror'],
+                    fate: 10
+                },
+                player2: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['banzai', 'voice-of-honor'],
+                    fate: 10
+                }
+            });
+            this.outrider = this.player1.findCardByName('shinjo-outrider');
+            this.counselor = this.player1.findCardByName('persuasive-counselor');
+            this.mirror = this.player1.findCardByName('strange-mirror');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.banzai = this.player2.findCardByName('banzai');
+            this.voice = this.player2.findCardByName('voice-of-honor');
+            this.challenger.honor();
+            this.player1.playAttachment(this.mirror, this.outrider);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.outrider, this.counselor],
+                defenders: [this.challenger]
+            });
+            this.player2.clickCard(this.banzai);
+            this.player2.clickCard(this.challenger);
+            this.player2.clickPrompt('Done');
+            this.player1.clickCard(this.mirror);
+            this.player1.clickCard(this.counselor);
+            this.player2.pass();
+        });
+
+        it('stops the opponent cancelling it', function() {
+            this.player1.clickCard(this.mirror);
+            this.player1.clickCard(this.banzai);
+            this.player1.clickCard(this.outrider);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePromptButton('Lose 1 honor to resolve this ability again');
+        });
+    });
+});

@@ -1193,6 +1193,8 @@ export class Player extends GameObject {
             return;
         } else if(card.type === CardType.Holding && toProvince) {
             card.controller = this;
+        } else if(targetLocation === Location.BeingPlayed) {
+            card.controller = this;
         } else {
             card.controller = card.owner;
         }

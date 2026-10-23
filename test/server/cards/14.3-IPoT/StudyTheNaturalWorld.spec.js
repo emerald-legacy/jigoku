@@ -368,3 +368,41 @@ describe('Study the Natural World', function() {
         });
     });
 });
+
+describe('Study the Natural World played by its owner\'s opponent', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['solemn-scholar'],
+                    hand: ['a-swallow-s-return'],
+                    fate: 10
+                },
+                player2: {
+                    conflictDiscard: ['study-the-natural-world'],
+                    provinces: ['shameful-display']
+                }
+            });
+            this.scholar = this.player1.findCardByName('solemn-scholar');
+            this.study = this.player2.findCardByName('study-the-natural-world');
+            this.player2.moveCard(this.study, 'conflict deck');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.scholar],
+                defenders: [],
+                ring: 'void'
+            });
+            this.player2.pass();
+            this.player1.clickCard('a-swallow-s-return');
+            this.player1.clickPrompt('Study the Natural World');
+        });
+
+        it('lets the player who played it resolve the ring effects', function() {
+            this.noMoreActions();
+            expect(this.player1).toHavePrompt('Resolve Ring Effects?');
+            expect(this.player2).not.toHavePrompt('Resolve Ring Effects?');
+        });
+    });
+});

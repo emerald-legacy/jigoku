@@ -38,10 +38,10 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                             gameAction: multiple([
                                 honor(),
                                 placeFate(),
-                                gainHonor({ target: context.source.controller }),
-                                draw({ target: context.source.controller })
+                                gainHonor({ target: context.player }),
+                                draw({ target: context.player })
                             ]),
-                            message: (context) => msg`${target} is honored and receives 1 fate, and ${context.source.controller} gains 1 honor and draws 1 card due to ${target} succeeding at ${context.source}`
+                            message: () => msg`${target} is honored and receives 1 fate, and ${context.player} gains 1 honor and draws 1 card due to ${target} succeeding at ${context.source}`
                         })
                     ]
                 };

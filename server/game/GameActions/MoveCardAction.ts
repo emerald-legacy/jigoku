@@ -80,7 +80,10 @@ export class MoveCardAction<Context extends AbilityContext = AbilityContext> ext
         } else {
             this.checkForRefillProvince(card, event, additionalProperties);
         }
-        const player = properties.changePlayer && card.controller.opponent ? card.controller.opponent : card.controller;
+        // a played event is controlled by the player playing it, its owner or not
+        const player = properties.destination === Location.BeingPlayed
+            ? context.player
+            : properties.changePlayer && card.controller.opponent ? card.controller.opponent : card.controller;
         if(
             properties.discardDestinationCards &&
             properties.destination &&

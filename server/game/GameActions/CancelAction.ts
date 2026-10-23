@@ -45,7 +45,7 @@ export class CancelAction<Context extends CancellingContext = TriggeredAbilityCo
         if(
             context.event.card &&
             context.event.card.getType() === CardType.Event &&
-            context.event.card.owner.eventsCannotBeCancelled()
+            context.event.card.controller.eventsCannotBeCancelled()
         ) {
             cannotBeCancelled = true;
         }

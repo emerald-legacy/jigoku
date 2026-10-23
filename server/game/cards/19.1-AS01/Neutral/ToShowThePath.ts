@@ -27,6 +27,6 @@ export default class ToShowThePath extends DrawCard {
                             context.target.attachments.some((attachment) => attachment === card)
                 })
             })))
-            .chatText((context) => msg`make ${context.source.controller.opponent} pay 1 additional fate as a cost whenever they target ${context.chatTarget()} or its attachments with a card ability until the end of the phase`);
+            .chatText((context) => msg`make ${context.player.opponent} pay 1 additional fate as a cost whenever they target ${context.chatTarget()} or its attachments with a card ability until the end of the phase`);
     }
 }
