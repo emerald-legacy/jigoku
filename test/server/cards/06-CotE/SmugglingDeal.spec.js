@@ -156,6 +156,31 @@ describe('Smuggling Deal', function () {
             });
         });
 
+        describe('Smuggling Deal when you cannot lose honor to pay costs', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kuni-juurou'],
+                        hand: ['smuggling-deal']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer']
+                    }
+                });
+                this.kuniJuurou = this.player1.findCardByName('kuni-juurou');
+                this.smugglingDeal = this.player1.findCardByName('smuggling-deal');
+            });
+
+            it('cannot be played, as giving honor means losing it', function () {
+                const honor = this.player1.honor;
+                this.player1.clickCard(this.smugglingDeal);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.smugglingDeal.location).toBe('hand');
+                expect(this.player1.honor).toBe(honor);
+            });
+        });
+
         describe('Smuggling Deal & Young Rumormonger & Kitsuki Shomon interaction', function () {
             beforeEach(function () {
                 this.setupTest({

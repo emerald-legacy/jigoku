@@ -171,7 +171,7 @@ export class PlayerCostManager {
     }
 
     getAvailableAlternateFate(context: AbilityContext): number {
-        const alternateFatePools = this.getAlternateFatePools(context.source);
+        const alternateFatePools = this.getAlternateFatePools(context.source, context);
         const alternateFate = alternateFatePools.reduce((total: number, pool: FatePool) => total + pool.fate, 0);
         return Math.max(alternateFate, 0);
     }
@@ -182,9 +182,7 @@ export class PlayerCostManager {
             return 0;
         }
 
-        const playerCostToTargetEffects = abilitySource.controller
-            ? abilitySource.controller.getEffects(EffectName.PlayerFateCostToTargetCard)
-            : [];
+        const playerCostToTargetEffects = this.player.getEffects(EffectName.PlayerFateCostToTargetCard);
 
         let targetCost = 0;
         for(const target of targetList) {
@@ -195,7 +193,7 @@ export class PlayerCostManager {
                     if(
                         (!cardCostToTarget.cardType || abilitySource.type === cardCostToTarget.cardType) &&
                         (!cardCostToTarget.targetPlayer ||
-                            abilitySource.controller ===
+                            this.player ===
                                 (cardCostToTarget.targetPlayer === Players.Self
                                     ? targetController
                                     : targetController?.opponent))

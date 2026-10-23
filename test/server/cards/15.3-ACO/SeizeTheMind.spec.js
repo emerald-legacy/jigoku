@@ -288,3 +288,44 @@ describe('Seize The Mind with apparent fate', function() {
         });
     });
 });
+
+describe('Seize The Mind - To Show the Path', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-manipulator', 'bayushi-liar'],
+                    hand: ['seize-the-mind']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'isawa-ujina', 'doji-challenger'],
+                    hand: ['to-show-the-path']
+                }
+            });
+            this.manipulator = this.player1.findCardByName('bayushi-manipulator');
+            this.liar = this.player1.findCardByName('bayushi-liar');
+            this.seize = this.player1.findCardByName('seize-the-mind');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.manipulator.fate = 2;
+            this.liar.fate = 2;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.manipulator],
+                defenders: [this.whisperer, this.challenger]
+            });
+            this.player2.clickCard('to-show-the-path');
+            this.player2.clickCard(this.whisperer);
+            this.player1.fate = 1;
+        });
+
+        it('can choose the character, as the fate pool only pays the additional fate', function() {
+            this.player1.clickCard(this.seize);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+        });
+    });
+});

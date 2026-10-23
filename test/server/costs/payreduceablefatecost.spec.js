@@ -19,7 +19,8 @@ describe('Costs.payReduceableFateCost', function () {
             game: this.gameSpy,
             player: this.playerSpy,
             source: this.cardSpy,
-            playType: 'playing-type'
+            playType: 'playing-type',
+            ability: { cost: [] }
         };
         this.cost = Costs.payReduceableFateCost();
     });

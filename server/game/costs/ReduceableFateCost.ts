@@ -44,7 +44,12 @@ export class ReduceableFateCost implements Cost {
             return false;
         }
 
-        return context.player.canSpendFate(minCost, context);
+        return context.player.canSpendFate(minCost + this.otherFateSpent(context), context);
+    }
+
+    /** The fate the ability's other costs take from the pool: all costs are paid in full together. */
+    protected otherFateSpent(context: AbilityContext): number {
+        return context.ability.cost.reduce((sum, cost) => cost === this ? sum : sum + (cost.fateSpent?.(context) ?? 0), 0);
     }
 
     /** "Can only be paid for with fate on characters you control": the fate pool pays nothing (Temptations Mahō cards). */
@@ -71,7 +76,7 @@ export class ReduceableFateCost implements Cost {
             alternatePoolTotal += pool.getFate();
         }
 
-        const maxPlayerFate = this.#getMaxPlayerFate(context);
+        const maxPlayerFate = Math.max(this.#getMaxPlayerFate(context) - this.otherFateSpent(context), 0);
         const reducedCost = this.getReducedCost(context);
         if(reducedCost > maxPlayerFate + alternatePoolTotal) {
             result.cancelled = true;
@@ -260,7 +265,9 @@ export class ReduceableFateCost implements Cost {
         const amount = this.getReducedCost(context);
         context.costs.fate = amount;
         return context.game.getEvent(EventName.OnSpendFate, { amount, context }, (event) => {
-            context.player.markUsedReducers(context.playType, context.source, undefined, this.ignoreType);
+            if(this.isPlayCost) {
+                context.player.markUsedReducers(context.playType, context.source, undefined, this.ignoreType);
+            }
             context.player.modifyFate(-this.getFinalFatecost(context, amount));
             this.afterPayHook(event);
         });

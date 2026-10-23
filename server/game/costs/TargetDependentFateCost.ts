@@ -34,7 +34,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             return false;
         }
 
-        return context.player.canSpendFate(reducedCost, context);
+        return reducedCost === 0 || context.player.canSpendFate(reducedCost + this.otherFateSpent(context), context);
     }
 
     public override payEvent(context: AbilityContext<DrawCard>): Event {

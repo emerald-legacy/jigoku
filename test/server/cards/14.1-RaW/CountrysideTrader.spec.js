@@ -302,3 +302,53 @@ describe('Countryside Trader - The Art of Peace', function() {
         });
     });
 });
+
+describe('Countryside Trader - To Show the Path', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['countryside-trader']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'isawa-ujina'],
+                    provinces: ['floating-world'],
+                    hand: ['to-show-the-path']
+                }
+            });
+            this.trader = this.player1.findCardByName('countryside-trader');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.floatingWorld = this.player2.findCardByName('floating-world');
+            this.floatingWorld.facedown = false;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.trader],
+                defenders: [this.whisperer],
+                province: this.floatingWorld,
+                type: 'political'
+            });
+            this.player2.clickCard('to-show-the-path');
+            this.player2.clickCard(this.whisperer);
+        });
+
+        it('makes the player resolving the province ability pay to target the chosen character', function() {
+            this.player1.fate = 1;
+            this.player1.clickCard(this.trader);
+            this.player1.clickCard(this.floatingWorld);
+            expect(this.player1).toHavePrompt('Choose a character to dishonor');
+            expect(this.player1).toBeAbleToSelect(this.trader);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+        });
+
+        it('lets them target it if they can pay the additional fate', function() {
+            this.player1.fate = 2;
+            this.player1.clickCard(this.trader);
+            this.player1.clickCard(this.floatingWorld);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+            expect(this.player1.fate).toBe(0);
+        });
+    });
+});

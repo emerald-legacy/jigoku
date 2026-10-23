@@ -45,7 +45,12 @@ export function payHonor(amount = 1, dueToStatusToken = false): Cost {
 }
 
 export function giveHonorToOpponent(amount = 1): Cost {
-    return new GameActionCost(GameActions.takeHonor((context) => ({ target: context.player, amount })));
+    const action = GameActions.takeHonor((context: AbilityContext) => ({ target: context.player, amount }));
+    return Object.assign(new GameActionCost(action), {
+        // if you cannot lose honor, you cannot give honor to an opponent
+        canPay: (context: AbilityContext) =>
+            action.hasLegalTarget(context) && GameActions.loseHonor({ amount }).canAffect(context.player, context)
+    });
 }
 
 /**

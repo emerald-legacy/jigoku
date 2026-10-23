@@ -94,3 +94,51 @@ describe('One With the Sea', function() {
         });
     });
 });
+
+describe('One With the Sea and cost increases', function() {
+    integration(function() {
+        describe('when events cost 1 more', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['doji-challenger', 'doji-kuwanan'],
+                        hand: ['one-with-the-sea']
+                    },
+                    player2: {
+                        inPlay: ['kakita-yoshi'],
+                        hand: ['into-the-storm']
+                    }
+                });
+                this.yoshi = this.player2.findCardByName('kakita-yoshi');
+                this.challenger = this.player1.findCardByName('doji-challenger');
+                this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+                this.sea = this.player1.findCardByName('one-with-the-sea');
+                this.player1.claimRing('water');
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.challenger],
+                    defenders: []
+                });
+                this.player2.clickCard('into-the-storm');
+            });
+
+            it('cannot spend 1 fate on top of the increased cost with only 1 fate', function() {
+                this.player1.fate = 1;
+                this.player1.clickCard(this.sea);
+                expect(this.player1).toHavePrompt('Choose a character');
+                expect(this.player1).toBeAbleToSelect(this.kuwanan);
+                expect(this.player1).not.toBeAbleToSelect(this.yoshi);
+            });
+
+            it('can spend 1 fate on top of the increased cost with 2 fate', function() {
+                this.player1.fate = 2;
+                this.player1.clickCard(this.sea);
+                this.player1.clickPrompt('Move any character to the conflict');
+                this.player1.clickCard(this.yoshi);
+                expect(this.yoshi.isParticipating()).toBe(true);
+                expect(this.player1.fate).toBe(0);
+            });
+        });
+    });
+});

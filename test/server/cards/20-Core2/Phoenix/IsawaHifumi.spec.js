@@ -147,3 +147,46 @@ describe('Isawa Hifumi', function () {
         });
     });
 });
+
+describe('Isawa Hifumi and cost reducers', function () {
+    integration(function () {
+        describe('with a "next card costs 1 less" reducer', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['isawa-hifumi', 'adept-of-the-waves'],
+                        hand: ['adorned-barcha'],
+                        conflictDiscard: ['against-the-waves']
+                    },
+                    player2: {
+                        inPlay: ['sake-house-smuggler']
+                    }
+                });
+                this.isawaHifumi = this.player1.findCardByName('isawa-hifumi');
+                this.adeptOfTheWaves = this.player1.findCardByName('adept-of-the-waves');
+                this.adeptOfTheWaves.bow();
+                this.barcha = this.player1.findCardByName('adorned-barcha');
+                this.againstTheWaves = this.player1.findCardByName('against-the-waves');
+                this.smuggler = this.player2.findCardByName('sake-house-smuggler');
+
+                this.player1.pass();
+                this.player2.clickCard(this.smuggler);
+            });
+
+            it('does not use up the reducer, as it plays no card itself', function () {
+                this.player1.clickCard(this.isawaHifumi);
+                this.player1.clickCard(this.againstTheWaves);
+                this.player1.clickCard(this.adeptOfTheWaves);
+                expect(this.againstTheWaves.location).toBe('removed from game');
+
+                this.player2.pass();
+                const fate = this.player1.fate;
+                this.player1.clickCard(this.barcha);
+                this.player1.clickCard(this.isawaHifumi);
+                expect(this.barcha.location).toBe('play area');
+                expect(this.player1.fate).toBe(fate - 1);
+            });
+        });
+    });
+});
