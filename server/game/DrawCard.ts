@@ -466,7 +466,7 @@ export class DrawCard extends BaseCard {
         return clone;
     }
 
-    hasDash(type: string = ''): boolean {
+    hasDash(type?: SkillType | ConflictType | DuelType): boolean {
         if(type === DuelType.Glory || this.printedType !== CardType.Character) {
             return false;
         }
@@ -482,7 +482,7 @@ export class DrawCard extends BaseCard {
         return isNaN(baseSkillModifiers.baseMilitarySkill) || isNaN(baseSkillModifiers.basePoliticalSkill);
     }
 
-    getContributionToConflict(type: string | undefined): number {
+    getContributionToConflict(type: SkillType | ConflictType | undefined): number {
         const skillFunction = this.mostRecentEffect(EffectName.ChangeContributionFunction);
         if(skillFunction) {
             return skillFunction(this);
@@ -495,7 +495,7 @@ export class DrawCard extends BaseCard {
      * @param type - The type of the skill; military or political
      * @return The chosen skill value
      */
-    getSkill(type: string | undefined): number {
+    getSkill(type: SkillType | ConflictType | DuelType | undefined): number {
         if(type === SkillType.Military) {
             return this.militarySkill;
         } else if(type === SkillType.Political) {
@@ -713,7 +713,7 @@ export class DrawCard extends BaseCard {
 
     /** The ring and type are undefined while attackers are picked before the ring. */
     canDeclareAsAttacker(
-        conflictType: string | undefined,
+        conflictType: ConflictType | undefined,
         ring: Ring | undefined,
         province?: ProvinceCard | null,
         incomingAttackers?: DrawCard[]
@@ -798,7 +798,7 @@ export class DrawCard extends BaseCard {
         );
     }
 
-    canDeclareAsDefender(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
+    canDeclareAsDefender(conflictType: ConflictType | undefined = this.game.currentConflict?.conflictType): boolean {
         return (
             this.checkRestrictions(RestrictionType.DeclareAsDefender, this.game.getFrameworkContext(this.controller)) &&
             this.canPayHonorCostToDeclare([this]) &&
@@ -815,12 +815,12 @@ export class DrawCard extends BaseCard {
         return amount === 0 || loseHonor({ amount }).canAffect(this.controller, this.game.getFrameworkCostContext(this.controller));
     }
 
-    canParticipateAsAttacker(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
+    canParticipateAsAttacker(conflictType: ConflictType | undefined = this.game.currentConflict?.conflictType): boolean {
         const effects = this.getEffects(EffectName.CannotParticipateAsAttacker);
         return !effects.some((value) => value === 'both' || value === conflictType) && !this.hasDash(conflictType);
     }
 
-    canParticipateAsDefender(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
+    canParticipateAsDefender(conflictType: ConflictType | undefined = this.game.currentConflict?.conflictType): boolean {
         const effects = this.getEffects(EffectName.CannotParticipateAsDefender);
         const hasDash = conflictType ? this.hasDash(conflictType) : false;
 

@@ -41,13 +41,13 @@ export class PlayerConflictManager {
         }
         const cards = properties.attacker ? [properties.attacker] : this.player.cardsInPlay.slice();
         if(!this.player.opponent) {
-            return conflictType.some((type: string) =>
+            return conflictType.some((type) =>
                 conflictRing.some((ring: Ring) => cards.some((card: DrawCard) => card.canDeclareAsAttacker(type, ring)))
             );
         }
         let conflictProvince = properties.province || (this.player.opponent && this.player.opponent.getProvinces());
         conflictProvince = Array.isArray(conflictProvince) ? conflictProvince : [conflictProvince];
-        return conflictType.some((type: string) =>
+        return conflictType.some((type) =>
             conflictRing.some((ring: Ring) =>
                 conflictProvince.some(
                     (province: ProvinceCard) =>
@@ -115,7 +115,7 @@ export class PlayerConflictManager {
         return Math.max(0, this.getMaxConflictOpportunitiesForPlayerByType(type) - this.declaredConflictOpportunities[type]);
     }
 
-    getLegalConflictTypes(properties: ConflictDeclarationProperties): string[] {
+    getLegalConflictTypes(properties: ConflictDeclarationProperties): ConflictType[] {
         let types = properties.type || [ConflictType.Military, ConflictType.Political];
         types = Array.isArray(types) ? types : [types];
         const forcedDeclaredType =

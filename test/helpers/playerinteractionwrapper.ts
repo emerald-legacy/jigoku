@@ -1,7 +1,8 @@
 import { matchCardByNameAndPack } from './cardutil.js';
 import { detectBinary } from '../../server/util.js';
 import { GameMode } from '../../server/GameMode.js';
-import { Location } from '../../server/game/Constants.js';
+import { ConflictType, Location } from '../../server/game/Constants.js';
+import { isEnumValue } from '../../server/game/utils/helpers.js';
 import type Game from '../../server/game/Game.js';
 import type Player from '../../server/game/Player.js';
 import type BaseCard from '../../server/game/BaseCard.js';
@@ -655,7 +656,7 @@ class PlayerInteractionWrapper {
         if(resolvedProvince.isProvinceCard() && resolvedProvince.isBroken) {
             throw new Error(`Cannot initiate conflict on ${resolvedProvince.name} because it is broken`);
         }
-        if(!conflictType || !['military', 'political'].includes(conflictType)) {
+        if(!isEnumValue(ConflictType, conflictType) || ![ConflictType.Military, ConflictType.Political].includes(conflictType)) {
             throw new Error(`${conflictType} is not a valid conflict type`);
         }
         let resolvedAttackers = this.mixedListToCardList(attackers, 'play area');
@@ -677,7 +678,7 @@ class PlayerInteractionWrapper {
 
     assignDefenders(defenders: CardLike[] = []): void {
         if(defenders.length !== 0) {
-            const conflictType = this.game.currentConflict?.conflictType ?? '';
+            const conflictType = this.game.currentConflict?.conflictType;
             let resolved = this.mixedListToCardList(defenders, 'play area');
             resolved = this.filterUnableToParticipate(resolved, conflictType);
             if(resolved.length === 0) {
@@ -706,7 +707,7 @@ class PlayerInteractionWrapper {
         return cardList;
     }
 
-    filterUnableToParticipate(cardList: BaseCard[], type: string): BaseCard[] {
+    filterUnableToParticipate(cardList: BaseCard[], type: ConflictType | undefined): BaseCard[] {
         return cardList.filter((card) => {
             if(!card) {
                 return false;

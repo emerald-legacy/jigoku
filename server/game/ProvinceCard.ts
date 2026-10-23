@@ -1,5 +1,5 @@
 import { msg } from './GameChat.js';
-import { CardType, EffectName, Element, Location, RestrictionType } from './Constants.js';
+import { CardType, type ConflictType, EffectName, Element, Location, RestrictionType } from './Constants.js';
 import type { ElementSymbolInfo } from './ElementSymbol.js';
 import { cardCannot } from './effects.js';
 import BaseCard from './BaseCard.js';
@@ -203,8 +203,8 @@ export class ProvinceCard extends BaseCard {
         );
     }
 
-    canDeclare(type: string | undefined, ring: Ring | undefined): boolean {
-        const blockedTypes: readonly (string | undefined)[] = this.getEffects(EffectName.CannotHaveConflictsDeclaredOfType);
+    canDeclare(type: ConflictType | undefined, ring: Ring | undefined): boolean {
+        const blockedTypes: readonly (ConflictType | undefined)[] = this.getEffects(EffectName.CannotHaveConflictsDeclaredOfType);
         return this.canBeAttacked() && !blockedTypes.includes(type) && this.canPayFateToRingToAttack(ring);
     }
 

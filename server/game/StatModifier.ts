@@ -1,8 +1,11 @@
 import type BaseCard from './BaseCard.js';
-import type { CardType, CharacterStatus } from './Constants.js';
+import type { CardType, CharacterStatus, ObjectType } from './Constants.js';
+
+/** The type of the card or object a modifier comes from. */
+type SourceType = CardType | ObjectType | '';
 
 interface EffectLike {
-    context?: { source?: { name?: string; type?: string } };
+    context?: { source?: { name?: string; type?: SourceType } };
 }
 
 /** A modifier as the client gets it: a dash (NaN) has no amount, so the client's sum is NaN, not 0. */
@@ -10,7 +13,7 @@ export interface StatModifierSummary {
     amount?: number;
     name: string;
     countsAsBase: boolean;
-    type: string | undefined;
+    type: SourceType | undefined;
     overrides: boolean;
 }
 
@@ -18,12 +21,12 @@ export class StatModifier {
     amount: number;
     name: string;
     countsAsBase: boolean = false;
-    type: string | undefined;
+    type: SourceType | undefined;
     overrides: boolean;
     /** For a status token's modifier: the status the token grants now (Disciple of Deception can change it). */
     status?: CharacterStatus;
 
-    constructor(amount: number, name: string, overrides: boolean, type?: string) {
+    constructor(amount: number, name: string, overrides: boolean, type?: SourceType) {
         this.amount = amount;
         this.name = name;
         this.overrides = overrides;
@@ -42,7 +45,7 @@ export class StatModifier {
         return 'Unknown';
     }
 
-    static getEffectType(effect: EffectLike | null | undefined): string | undefined {
+    static getEffectType(effect: EffectLike | null | undefined): SourceType | undefined {
         if(effect && effect.context && effect.context.source) {
             return effect.context.source.type;
         }
