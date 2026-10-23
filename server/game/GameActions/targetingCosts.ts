@@ -3,7 +3,7 @@ import type BaseCard from '../BaseCard.js';
 import { msg } from '../GameChat.js';
 import { LoseFateAction } from './LoseFateAction.js';
 
-interface TargetingCost {
+export interface TargetingCost {
     target: BaseCard;
     amount: number;
 }

@@ -151,8 +151,8 @@ export class PlayerZones {
         return Object.hasOwn(this.additionalPiles, name);
     }
 
-    createAdditionalPile(name: string, properties?: Record<string, unknown>): AdditionalPile {
-        this.additionalPiles[name] = Object.assign({ cards: [] }, properties);
+    createAdditionalPile(name: string): AdditionalPile {
+        this.additionalPiles[name] = { cards: [] };
         return this.additionalPiles[name];
     }
 

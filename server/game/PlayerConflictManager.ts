@@ -14,16 +14,18 @@ export interface ConflictDeclarationProperties {
 }
 
 export class PlayerConflictManager {
-    declaredConflictOpportunities: Record<string, number> = {
+    declaredConflictOpportunities: Record<ConflictType, number> = {
         military: 0,
         political: 0,
         passed: 0,
         forced: 0
     };
 
-    defaultAllowedConflicts: Record<string, number> = {
+    defaultAllowedConflicts: Record<ConflictType, number> = {
         military: 1,
-        political: 1
+        political: 1,
+        passed: 0,
+        forced: 0
     };
 
     constructor(private readonly player: Player, private readonly game: Game) { }
@@ -111,7 +113,7 @@ export class PlayerConflictManager {
         );
     }
 
-    getRemainingConflictOpportunitiesForType(type: string): number {
+    getRemainingConflictOpportunitiesForType(type: ConflictType): number {
         return Math.max(0, this.getMaxConflictOpportunitiesForPlayerByType(type) - this.declaredConflictOpportunities[type]);
     }
 
@@ -145,7 +147,7 @@ export class PlayerConflictManager {
         return Math.max(0, maxConflicts - this.game.getConflicts(this.player).length);
     }
 
-    getMaxConflictOpportunitiesForPlayerByType(type: string): number {
+    getMaxConflictOpportunitiesForPlayerByType(type: ConflictType): number {
         let setConflictType: ConflictType | undefined = this.player.mostRecentEffect(EffectName.SetConflictDeclarationType);
         let forceConflictType: ConflictType | undefined = this.player.mostRecentEffect(EffectName.ForceConflictDeclarationType);
         const provideConflictDeclarationType = this.player.mostRecentEffect(EffectName.ProvideConflictDeclarationType);

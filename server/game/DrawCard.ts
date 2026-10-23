@@ -53,7 +53,7 @@ const EPHEMERAL_TRIGGER: Partial<Record<string, EventName.OnCardPlayed | EventNa
 };
 
 /** Effects already shown in the skill summaries, so not repeated as effect markers. */
-const SKILL_EFFECTS: Set<string> = new Set([
+const SKILL_EFFECTS: Set<EffectName> = new Set([
     EffectName.ModifyMilitarySkill,
     EffectName.ModifyPoliticalSkill,
     EffectName.ModifyBaseMilitarySkillMultiplier,
@@ -641,7 +641,7 @@ export class DrawCard extends BaseCard {
      * the state of the card should be here. This is also called in some strange corner cases e.g. for attachments
      * which aren't actually in play themselves when their parent (which is in play) leaves play.
      */
-    override leavesPlay(_destination?: string): void {
+    override leavesPlay(_destination?: Location): void {
         // If this is an attachment and is attached to another card, we need to remove all links between them
         if(this.parent) {
             this.parent.removeAttachment(this);
@@ -740,7 +740,7 @@ export class DrawCard extends BaseCard {
         const elementsAdded = [this, ...this.attachments].flatMap((card) => card.getEffects(EffectName.AddElementAsAttacker)).flat();
 
         if(
-            elementsAdded.some((element: string) =>
+            elementsAdded.some((element) =>
                 this.game.ringFor(element)
                     ?.getEffects(EffectName.CannotDeclareRing)
                     .some((match) => match(this.controller))
@@ -855,31 +855,22 @@ export class DrawCard extends BaseCard {
     }
 
     getEffectMarkers(): Array<{ source: string; kind: 'delayed' | 'modifier' }> {
-        const engine = this.game?.effectEngine;
-        if(!engine || !Array.isArray(engine.effects)) {
-            return [];
-        }
         const seen = new Set<string>();
         const matching: Array<{ source: string; kind: 'delayed' | 'modifier' }> = [];
-        for(const e of engine.effects) {
-            if(!e || e.duration === Duration.Persistent) {
-                continue;
-            }
-            const targetsThis = (Array.isArray(e.targets) && e.targets.includes(this)) || e.match === this;
-            if(!targetsThis) {
+        for(const e of this.game.effectEngine.effects) {
+            if(e.duration === Duration.Persistent || (!e.targets.includes(this) && e.match !== this)) {
                 continue;
             }
             // status tokens are effect sources too
-            const sourceObj: GameObject | undefined = e.context?.source;
-            if(sourceObj?.printedType === ObjectType.Token) {
+            const sourceObj: GameObject = e.context.source;
+            if(sourceObj.printedType === ObjectType.Token) {
                 continue;
             }
-            const effectType: string = e.effect?.type || '';
-            const isDelayed = effectType === EffectName.DelayedEffect;
-            if(!isDelayed && SKILL_EFFECTS.has(effectType)) {
+            const isDelayed = e.effect.type === EffectName.DelayedEffect;
+            if(!isDelayed && SKILL_EFFECTS.has(e.effect.type)) {
                 continue;
             }
-            const source = sourceObj?.name || 'Unknown';
+            const source = sourceObj.name || 'Unknown';
             const kind = isDelayed ? 'delayed' : 'modifier';
             const key = `${source}|${kind}`;
             if(seen.has(key)) {

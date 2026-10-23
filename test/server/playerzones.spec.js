@@ -66,10 +66,9 @@ describe('PlayerZones', function () {
     });
 
     describe('createAdditionalPile', function () {
-        it('creates a pile with an empty card list and merges extra properties', function () {
-            this.zones.createAdditionalPile('customPile', { isPrivate: true });
+        it('creates a pile with an empty card list', function () {
+            this.zones.createAdditionalPile('customPile');
             expect(this.zones.additionalPiles.customPile.cards).toEqual([]);
-            expect(this.zones.additionalPiles.customPile.isPrivate).toBe(true);
         });
     });
 

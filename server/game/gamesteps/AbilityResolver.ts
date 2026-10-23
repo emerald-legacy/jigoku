@@ -10,7 +10,7 @@ import type { Event } from '../Events/Event.js';
 import type { BaseAbility } from '../BaseAbility.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { MoveCardAction } from '../GameActions/MoveCardAction.js';
-import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from '../GameActions/targetingCosts.js';
+import { canPayTargetingCosts, payTargetingCosts, type TargetingCost, targetingCosts } from '../GameActions/targetingCosts.js';
 
 type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
 
@@ -208,18 +208,25 @@ export class AbilityResolver extends BaseStepWithPipeline {
         }
     }
 
-    initiateAbilityEffects() {
+    /** Whether the effects can initiate: the ability wasn't cancelled (else its events are), and the costs of targeting can be paid (else it stops). */
+    protected canInitiateEffects(costsToTarget: TargetingCost[]): boolean {
         if(this.cancelled) {
             for(const event of this.events) {
                 event.cancel();
             }
-            return;
+            return false;
         }
-
-        // paid with the costs, so cancelling the effects doesn't undo it
-        const costsToTarget = targetingCosts(this.context, Object.values(this.context.targets).flat());
         if(!canPayTargetingCosts(this.context, costsToTarget)) {
             this.stopForUnpaidCosts();
+            return false;
+        }
+        return true;
+    }
+
+    initiateAbilityEffects() {
+        // paid with the costs, so cancelling the effects doesn't undo it
+        const costsToTarget = targetingCosts(this.context, Object.values(this.context.targets).flat());
+        if(!this.canInitiateEffects(costsToTarget)) {
             return;
         }
 

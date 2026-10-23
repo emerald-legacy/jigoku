@@ -89,12 +89,10 @@ export class PlayerStateBuilder {
             }
         };
 
-        if(player.additionalPiles && Object.keys(player.additionalPiles)) {
-            Object.keys(player.additionalPiles).forEach((key) => {
-                if(player.additionalPiles[key].cards.length > 0) {
-                    state.cardPiles[key] = this.getSummaryForCardList(player.additionalPiles[key].cards, activePlayer);
-                }
-            });
+        for(const [key, pile] of Object.entries(player.additionalPiles)) {
+            if(pile.cards.length > 0) {
+                state.cardPiles[key] = this.getSummaryForCardList(pile.cards, activePlayer);
+            }
         }
 
         if(player.showConflict) {

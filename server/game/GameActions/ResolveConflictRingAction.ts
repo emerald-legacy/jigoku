@@ -1,7 +1,8 @@
 import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EffectName, EventName } from '../Constants.js';
+import { EffectName, Element, EventName } from '../Constants.js';
+import { isEnumValue } from '../utils/helpers.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
@@ -53,9 +54,9 @@ export class ResolveConflictRingAction<Context extends AbilityContext = AbilityC
 
     chooseElementsToResolve(
         player: Player,
-        elements: string[],
+        elements: Element[],
         elementsToResolve: number,
-        chosenElements: string[] = []
+        chosenElements: Element[] = []
     ): void {
         if(elements.length === 0 || elementsToResolve === 0) {
             this.resolveRingEffects(player, chosenElements);
@@ -101,7 +102,7 @@ export class ResolveConflictRingAction<Context extends AbilityContext = AbilityC
             onMenuCommand: (menuPlayer: Player, arg: string) => {
                 if(arg === 'all') {
                     this.resolveRingEffects(menuPlayer, elements.concat(chosenElements));
-                } else if(elements.includes(arg)) {
+                } else if(isEnumValue(Element, arg) && elements.includes(arg)) {
                     elementsToResolve--;
                     chosenElements.push(arg);
                     this.chooseElementsToResolve(
@@ -118,7 +119,7 @@ export class ResolveConflictRingAction<Context extends AbilityContext = AbilityC
         });
     }
 
-    resolveRingEffects(player: Player, elements: string[], optional: boolean = true): void {
+    resolveRingEffects(player: Player, elements: Element[], optional: boolean = true): void {
         const rings = elements.flatMap((element) => player.game.ringFor(element) ?? []);
         const action = new ResolveRingEffectAction({
             target: rings,

@@ -522,19 +522,19 @@ export class Player extends GameObject {
         return this.conflictManager.getConflictOpportunities();
     }
 
-    getRemainingConflictOpportunitiesForType(type: string): number {
+    getRemainingConflictOpportunitiesForType(type: ConflictType): number {
         return this.conflictManager.getRemainingConflictOpportunitiesForType(type);
     }
 
-    getLegalConflictTypes(properties: ConflictDeclarationProperties): string[] {
+    getLegalConflictTypes(properties: ConflictDeclarationProperties): ConflictType[] {
         return this.conflictManager.getLegalConflictTypes(properties);
     }
 
-    get declaredConflictOpportunities(): Record<string, number> {
+    get declaredConflictOpportunities(): Record<ConflictType, number> {
         return this.conflictManager.declaredConflictOpportunities;
     }
 
-    get defaultAllowedConflicts(): Record<string, number> {
+    get defaultAllowedConflicts(): Record<ConflictType, number> {
         return this.conflictManager.defaultAllowedConflicts;
     }
 
@@ -932,12 +932,12 @@ export class Player extends GameObject {
         this.game.checkGameState(true);
     }
 
-    isLegalLocationForCard(card: BaseCard | undefined, location: string): boolean {
+    isLegalLocationForCard(card: BaseCard | undefined, location: Location): boolean {
         if(!card) {
             return false;
         }
 
-        if(location === Location.Underneath || this.zones.hasAdditionalPile(location)) {
+        if(location === Location.Underneath) {
             return true;
         }
 

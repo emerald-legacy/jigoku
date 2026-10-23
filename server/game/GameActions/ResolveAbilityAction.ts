@@ -10,7 +10,7 @@ import { InitiateCardAbilityEvent } from '../Events/InitiateCardAbilityEvent.js'
 import type Game from '../Game.js';
 import { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
-import { canPayTargetingCosts, payTargetingCosts, targetingCosts } from './targetingCosts.js';
+import { payTargetingCosts, targetingCosts } from './targetingCosts.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -43,12 +43,10 @@ class ResolveAbilityActionResolver extends AbilityResolver {
 
     override openInitiateAbilityEventWindow() {
         const params = { card: this.context.source, ability: this.context.ability, context: this.context, resolvedWithoutTriggering: true };
-        const events: Event[] = [
-            this.game.getEvent(EventName.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps())
-        ];
+        this.events.push(this.game.getEvent(EventName.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps()));
         const ability = this.context.ability;
         if(ability.isTriggeredAbility() && ability.isCardAbilityInstance() && !this.context.subResolution) {
-            events.push(
+            this.events.push(
                 this.game.getEvent(EventName.OnCardAbilityTriggered, {
                     player: this.context.player,
                     card: this.context.source,
@@ -58,19 +56,12 @@ class ResolveAbilityActionResolver extends AbilityResolver {
                 })
             );
         }
-        this.game.openEventWindow(events);
+        this.game.openEventWindow(this.events);
     }
 
     override initiateAbilityEffects() {
-        if(this.cancelled) {
-            for(const event of this.events) {
-                event.cancel();
-            }
-            return;
-        }
         const costsToTarget = this.ignoreCosts ? [] : targetingCosts(this.context, Object.values(this.context.targets).flat());
-        if(!canPayTargetingCosts(this.context, costsToTarget)) {
-            this.stopForUnpaidCosts();
+        if(!this.canInitiateEffects(costsToTarget)) {
             return;
         }
         const cardAbility = this.ability;
