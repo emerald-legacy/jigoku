@@ -1,11 +1,11 @@
-import { EffectName } from '../../Constants.js';
+import { EffectName, EventName } from '../../Constants.js';
 import type { Cost } from '../../costs/Cost.js';
 import { payHonor } from '../../costs/fateAndHonorCosts.js';
 import type DrawCard from '../../DrawCard.js';
 import type { Event } from '../../Events/Event.js';
 import type { MessageArgs } from '../../GameChat.js';
 
-/** A cost the rules charge to declare a conflict, attackers or defenders, and what the chat says once it is paid. */
+/** A cost the rules charge to declare a conflict, attackers or defenders, and what the chat says once it is paid (from its events that resolved). */
 export interface DeclarationCost {
     costs: Cost[];
     paidMessages?: (events: Event[]) => MessageArgs[];
@@ -21,4 +21,9 @@ export function honorCostToDeclare(characters: DrawCard[]): number {
 export function honorCostsToDeclare(characters: DrawCard[]): Cost[] {
     return characters.flatMap((card) =>
         card.getEffects(EffectName.HonorCostToDeclare).map((effect) => payHonor(effect.amount, effect.dueToStatusToken)));
+}
+
+/** The honor these resolved honor-cost events took. */
+export function honorPaid(events: Event[]): number {
+    return events.reduce((total, event) => total + (event.is(EventName.OnModifyHonor) ? Math.abs(event.amount) : 0), 0);
 }

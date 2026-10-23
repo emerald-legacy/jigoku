@@ -5,7 +5,7 @@ import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
 import { discardCard } from '../../costs/boardCosts.js';
 import type BaseCard from '../../BaseCard.js';
 import { payFate, payFateToRing } from '../../costs/fateAndHonorCosts.js';
-import { type DeclarationCost, honorCostToDeclare, honorCostsToDeclare } from './declarationCosts.js';
+import { type DeclarationCost, honorCostToDeclare, honorCostsToDeclare, honorPaid } from './declarationCosts.js';
 import { covertContexts } from './covertContexts.js';
 import { bow, breakProvince, claimRing, loseHonor, resolveConflictRing, reveal } from '../../GameActions/GameActions.js';
 import { takeAllFateFromRing } from '../../GameActions/TakeFateFromRingAction.js';
@@ -22,7 +22,8 @@ import type Game from '../../Game.js';
 import type Ring from '../../Ring.js';
 import type { Conflict } from '../../Conflict.js';
 import type { ParticipantCostEffect } from '../../Effects/EffectValueMap.js';
-import { payAdditionalCost } from '../../costs/additionalCost.js';
+import { addCostEvents } from '../../costs/addCostEvents.js';
+import { GameActionCost } from '../../costs/GameActionCost.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import type { Event } from '../../Events/Event.js';
 import type { AnyEvent } from '../../TriggeredAbilityContext.js';
@@ -219,7 +220,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             if(totalHonorCost > 0) {
                 costs.push({
                     costs: honorCostsToDeclare(attackers),
-                    paidMessages: () => [msg`${attacker} pays ${totalHonorCost} honor to declare their attackers`]
+                    paidMessages: (events) => [msg`${attacker} pays ${honorPaid(events)} honor to declare their attackers`]
                 });
             }
             if(totalCardCost > 0) {
@@ -232,11 +233,11 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 });
             }
             this.conflict.attackerDeclarationFailed = false;
-            this.payDeclarationCosts(attacker, costs);
-            this.queueParticipantCosts('attackers', () => this.conflict.attackingPlayer, 'declare attacking characters', () => {
+            costs.push(...this.participantCosts('attackers', attacker, 'declare attacking characters', () => {
                 this.conflict.attackerDeclarationFailed = true;
                 this.conflict.conflictFailedToInitiate = true;
-            });
+            }));
+            this.payDeclarationCosts(attacker, costs);
         }
     }
 
@@ -285,7 +286,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         const context = this.game.getFrameworkCostContext(player);
         const paying = declarationCosts.map((declarationCost) => {
             const events: Event[] = [];
-            declarationCost.costs.forEach((cost) => cost.addEventsToArray?.(events, context, {}));
+            declarationCost.costs.forEach((cost) => addCostEvents(cost, events, context, {}));
             return { declarationCost, events };
         });
         this.game.queueSimpleStep(() => {
@@ -297,7 +298,12 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 return;
             }
             for(const { declarationCost, events } of paying) {
-                for(const message of declarationCost.paidMessages?.(events) ?? []) {
+                // what an interrupt cancelled (Asahina Purifier) wasn't paid
+                const paid = events.filter((event) => !event.getResolutionEvent().cancelled);
+                if(events.length > 0 && paid.length === 0) {
+                    continue;
+                }
+                for(const message of declarationCost.paidMessages?.(paid) ?? []) {
                     this.game.addMessage(message);
                 }
             }
@@ -551,37 +557,42 @@ export class ConflictFlow extends BaseStepWithPipeline {
         this.game.queueStep(new SelectDefendersPrompt(this.game, defender, this.conflict));
     }
 
-    /** The declaring player's additional costs to declare `side` (CostToDeclareAnyParticipants), each in its own step; `failed` when one can't be paid. */
-    private queueParticipantCosts(side: 'attackers' | 'defenders', declaringPlayer: () => Player, purpose: string, failed: () => void): void {
-        const additionalCosts = declaringPlayer()
-            .getEffects(EffectName.CostToDeclareAnyParticipants)
-            .filter((properties: ParticipantCostEffect) => properties.type === side);
-        for(const properties of additionalCosts) {
-            this.game.queueSimpleStep(() => {
-                const player = declaringPlayer();
-                const cost = typeof properties.cost === 'function' ? properties.cost(player) : properties.cost;
-                if(!payAdditionalCost(this.game.getFrameworkCostContext(player), player, cost, player, purpose, properties.chatText)) {
-                    failed();
-                }
+    /** The declaring player's additional costs to declare `side` (CostToDeclareAnyParticipants); `failed` when one can't be paid. */
+    private participantCosts(side: 'attackers' | 'defenders', player: Player, purpose: string, failed: () => void): DeclarationCost[] {
+        const context = this.game.getFrameworkCostContext(player);
+        const costs: DeclarationCost[] = [];
+        for(const properties of player.getEffects(EffectName.CostToDeclareAnyParticipants).filter((effect: ParticipantCostEffect) => effect.type === side)) {
+            const action = typeof properties.cost === 'function' ? properties.cost(player) : properties.cost;
+            if(!action.hasLegalTarget(context)) {
+                this.game.addMessage(msg`${player} cannot pay the additional cost required to ${purpose}`);
+                failed();
+                continue;
+            }
+            const paid = properties.chatText ? properties.chatText(context) : action.getEffectMessage(context);
+            costs.push({
+                costs: [new GameActionCost(action)],
+                paidMessages: () => [msg`${player} ${this.game.gameChat.nested(paid)} in order to ${purpose}`]
             });
         }
+        return costs;
     }
 
     payDefendersCost(): void {
         const defender = this.conflict.defendingPlayer;
         if(defender && this.conflict.defenders.length > 0) {
             this.conflict.defenderDeclarationFailed = false;
-            this.queueParticipantCosts('defenders', () => defender, 'declare defending characters', () => {
+            const costs = this.participantCosts('defenders', defender, 'declare defending characters', () => {
                 this.conflict.defenderDeclarationFailed = true;
             });
 
             const totalHonorCost = honorCostToDeclare(this.conflict.defenders);
             if(!this.conflict.conflictPassed && totalHonorCost > 0) {
-                this.payDeclarationCosts(defender, [{
+                costs.push({
                     costs: honorCostsToDeclare(this.conflict.defenders),
-                    paidMessages: () => [msg`${defender} pays ${totalHonorCost} honor to declare their defenders`]
-                }]);
+                    paidMessages: (events) => [msg`${defender} pays ${honorPaid(events)} honor to declare their defenders`]
+                });
             }
+            this.payDeclarationCosts(defender, costs);
         }
     }
 
