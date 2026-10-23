@@ -186,7 +186,7 @@ export class Conflict extends GameObject {
         return this.elements.includes(element);
     }
 
-    get elements(): Array<'air' | 'earth' | 'fire' | 'void' | 'water'> {
+    get elements(): Element[] {
         return this.ring ? this.ring.getElements() : [];
     }
 
@@ -213,7 +213,7 @@ export class Conflict extends GameObject {
         }
         if(this.ring) {
             if(newRing.isClaimed()) {
-                const claimedPlayer = this.game.getPlayers().find((player) => newRing.claimedBy === player.name);
+                const claimedPlayer = this.game.getPlayerByName(newRing.claimedBy);
                 if(claimedPlayer) {
                     this.ring.contested = false;
                     this.ring.claimRing(claimedPlayer);

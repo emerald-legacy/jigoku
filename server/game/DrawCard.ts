@@ -16,7 +16,7 @@ import { CourtesyAbility } from './KeywordAbilities/CourtesyAbility.js';
 import { PrideAbility } from './KeywordAbilities/PrideAbility.js';
 import { SincerityAbility } from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType, RestrictionType, EntersPlayStatus, ObjectType, DuelType } from './Constants.js';
+import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType, RestrictionType, EntersPlayStatus, DuelType } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
 import { TutoredAbility } from './KeywordAbilities/TutoredAbility.js';
@@ -27,7 +27,6 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { Event } from './Events/Event.js';
 import type { ConflictActionProps, PersistentEffectProps, WhenType } from './Interfaces.js';
-import type { NumericEffectName } from './Effects/EffectValueMap.js';
 import type { GameObject } from './GameObject.js';
 import type { ActionContext, AbilityBuilder, TriggerContext } from './AbilityBuilder.js';
 import type { Duel } from './Duel.js';
@@ -35,7 +34,7 @@ import type { CardData } from './types/CardData.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { StateViewer } from './types/StateViewer.js';
 import { discardStatusToken, gainHonor, loseHonor, removeFate } from './GameActions/GameActions.js';
-import { honorCostToDeclare } from './gamesteps/conflict/declarationCosts.js';
+import { cardCostToDeclare, fateCostToDeclare, honorCostToDeclare } from './gamesteps/conflict/declarationCosts.js';
 
 interface MenuItem {
     command: string;
@@ -43,10 +42,11 @@ interface MenuItem {
 }
 
 type StatSummary = { stat?: string; modifiers?: StatModifierSummary[] };
+type EffectMarkerKind = 'delayed' | 'modifier';
 type DuelCondition = (duel: Duel, context: AbilityContext<DrawCard>) => boolean;
 export type ConflictActionOptions = Pick<ConflictActionProps, 'conflictType' | 'evenFromHome'>;
 
-const EPHEMERAL_TRIGGER: Partial<Record<string, EventName.OnCardPlayed | EventName.OnCardLeavesPlay>> = {
+const EPHEMERAL_TRIGGER: Partial<Record<CardType, EventName.OnCardPlayed | EventName.OnCardLeavesPlay>> = {
     [CardType.Event]: EventName.OnCardPlayed,
     [CardType.Attachment]: EventName.OnCardLeavesPlay,
     [CardType.Character]: EventName.OnCardLeavesPlay
@@ -734,7 +734,6 @@ export class DrawCard extends BaseCard {
         if(!attackers.includes(this)) {
             attackers = attackers.concat(this);
         }
-        const sumOverAttackers = (effect: NumericEffectName) => attackers.reduce((total, card) => total + card.sumEffects(effect), 0);
 
         // Check if I add an element that I can't attack with
         const elementsAdded = [this, ...this.attachments].flatMap((card) => card.getEffects(EffectName.AddElementAsAttacker)).flat();
@@ -749,12 +748,12 @@ export class DrawCard extends BaseCard {
             return false;
         }
 
-        if(conflictType === ConflictType.Military && sumOverAttackers(EffectName.CardCostToAttackMilitary) > this.controller.hand.length) {
+        if(conflictType === ConflictType.Military && cardCostToDeclare(attackers) > this.controller.hand.length) {
             return false;
         }
 
         const fateCostToAttackProvince = province ? province.getFateCostToAttack() : 0;
-        if(!this.controller.canSpendFate(sumOverAttackers(EffectName.FateCostToAttack) + fateCostToAttackProvince, this.game.getFrameworkCostContext(this.controller))) {
+        if(!this.controller.canSpendFate(fateCostToDeclare(attackers) + fateCostToAttackProvince, this.game.getFrameworkCostContext(this.controller))) {
             return false;
         }
         if(!this.canPayHonorCostToDeclare(attackers)) {
@@ -854,16 +853,16 @@ export class DrawCard extends BaseCard {
         );
     }
 
-    getEffectMarkers(): Array<{ source: string; kind: 'delayed' | 'modifier' }> {
+    getEffectMarkers(): Array<{ source: string; kind: EffectMarkerKind }> {
         const seen = new Set<string>();
-        const matching: Array<{ source: string; kind: 'delayed' | 'modifier' }> = [];
+        const matching: Array<{ source: string; kind: EffectMarkerKind }> = [];
         for(const e of this.game.effectEngine.effects) {
             if(e.duration === Duration.Persistent || (!e.targets.includes(this) && e.match !== this)) {
                 continue;
             }
             // status tokens are effect sources too
             const sourceObj: GameObject = e.context.source;
-            if(sourceObj.printedType === ObjectType.Token) {
+            if(sourceObj.isToken()) {
                 continue;
             }
             const isDelayed = e.effect.type === EffectName.DelayedEffect;

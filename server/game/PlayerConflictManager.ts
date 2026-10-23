@@ -15,17 +15,17 @@ export interface ConflictDeclarationProperties {
 
 export class PlayerConflictManager {
     declaredConflictOpportunities: Record<ConflictType, number> = {
-        military: 0,
-        political: 0,
-        passed: 0,
-        forced: 0
+        [ConflictType.Military]: 0,
+        [ConflictType.Political]: 0,
+        [ConflictType.Passed]: 0,
+        [ConflictType.Forced]: 0
     };
 
     defaultAllowedConflicts: Record<ConflictType, number> = {
-        military: 1,
-        political: 1,
-        passed: 0,
-        forced: 0
+        [ConflictType.Military]: 1,
+        [ConflictType.Political]: 1,
+        [ConflictType.Passed]: 0,
+        [ConflictType.Forced]: 0
     };
 
     constructor(private readonly player: Player, private readonly game: Game) { }
@@ -47,7 +47,7 @@ export class PlayerConflictManager {
                 conflictRing.some((ring: Ring) => cards.some((card: DrawCard) => card.canDeclareAsAttacker(type, ring)))
             );
         }
-        let conflictProvince = properties.province || (this.player.opponent && this.player.opponent.getProvinces());
+        let conflictProvince = properties.province || this.player.opponent.getProvinces();
         conflictProvince = Array.isArray(conflictProvince) ? conflictProvince : [conflictProvince];
         return conflictType.some((type) =>
             conflictRing.some((ring: Ring) =>
@@ -66,39 +66,24 @@ export class PlayerConflictManager {
         if(maxDeclared === undefined) {
             return opportunities;
         }
-        const declared = this.game.getConflicts(this.player).filter((record) => !record.passed).length;
+        const declared = this.game.getDeclaredConflictCount(this.player);
         return Math.min(opportunities, Math.max(0, maxDeclared - declared));
     }
 
     #getUncappedConflictOpportunities(): number {
-        const setConflictDeclarationType = this.player.mostRecentEffect(EffectName.SetConflictDeclarationType);
-        const forceConflictDeclarationType = this.player.mostRecentEffect(EffectName.ForceConflictDeclarationType);
-        const provideConflictDeclarationType = this.player.mostRecentEffect(EffectName.ProvideConflictDeclarationType);
         const maxConflicts = this.player.mostRecentEffect(EffectName.SetMaxConflicts);
         const skirmishModeRRGLimit = this.game.rules.conflictOneFewerOpportunity ? 1 : 0;
         if(maxConflicts) {
             return this.getConflictsWhenMaxIsSet(maxConflicts);
         }
 
-        if(provideConflictDeclarationType) {
+        const declarationType =
+            this.player.mostRecentEffect(EffectName.ProvideConflictDeclarationType) ??
+            this.player.mostRecentEffect(EffectName.ForceConflictDeclarationType) ??
+            this.player.mostRecentEffect(EffectName.SetConflictDeclarationType);
+        if(declarationType) {
             return (
-                this.getRemainingConflictOpportunitiesForType(provideConflictDeclarationType) -
-                this.declaredConflictOpportunities[ConflictType.Passed] -
-                this.declaredConflictOpportunities[ConflictType.Forced]
-            );
-        }
-
-        if(forceConflictDeclarationType) {
-            return (
-                this.getRemainingConflictOpportunitiesForType(forceConflictDeclarationType) -
-                this.declaredConflictOpportunities[ConflictType.Passed] -
-                this.declaredConflictOpportunities[ConflictType.Forced]
-            );
-        }
-
-        if(setConflictDeclarationType) {
-            return (
-                this.getRemainingConflictOpportunitiesForType(setConflictDeclarationType) -
+                this.getRemainingConflictOpportunitiesForType(declarationType) -
                 this.declaredConflictOpportunities[ConflictType.Passed] -
                 this.declaredConflictOpportunities[ConflictType.Forced]
             );
@@ -183,7 +168,7 @@ export class PlayerConflictManager {
             const declaredConflictsOfOtherType = this.declaredConflictOpportunities[type === ConflictType.Military ? ConflictType.Political : ConflictType.Military];
             const availableAll =
                 baselineAvailableConflicts +
-                this.player.getEffects(EffectName.AdditionalConflict).length -
+                additionalConflictEffects.length -
                 declaredConflictsOfOtherType;
             if(type === provideConflictDeclarationType) {
                 return availableAll;

@@ -36,7 +36,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.RingEffects]: (context) => context.source.isRing(),
     [RestrictionScope.CardAndRingEffects]: (context, effect) => checkRestrictions[RestrictionScope.CardEffects](context, effect) || checkRestrictions[RestrictionScope.RingEffects](context, effect),
     // a character played as an attachment is played as an attachment (EmeraldDB rulings on Grasp of Earth, Daimyō's Favor)
-    [RestrictionScope.Characters]: (context) => context.source.type === CardType.Character && !context.ability?.isCharacterPlayedAsAttachment(),
+    [RestrictionScope.Characters]: (context) => context.source.type === CardType.Character && !context.ability.isCharacterPlayedAsAttachment(),
     [RestrictionScope.CharactersWithNoFate]: (context) => context.source.type === CardType.Character && context.source.getFate() === 0,
     [RestrictionScope.CopiesOfDiscardEvents]: (context) =>
         context.source.type === CardType.Event &&
@@ -121,7 +121,7 @@ const getApplyingPlayer = (effect: Restriction): Player => {
 };
 
 /** An attachment, or a character played as an attachment (Tattooed Wanderer, Jealous Ancestor). */
-const isAttachment = (context: AbilityContext) => context.source.type === CardType.Attachment || !!context.ability?.isCharacterPlayedAsAttachment();
+const isAttachment = (context: AbilityContext) => context.source.type === CardType.Attachment || !!context.ability.isCharacterPlayedAsAttachment();
 
 /** What an immunity (a restriction naming no type) doesn't stop (RRG Immune): peripheral entities such as fate and attachments aren't immune. */
 const immunityExemptTypes = new Set<RestrictionType | PlayType | undefined>([RestrictionType.RemoveFate, RestrictionType.Attach]);

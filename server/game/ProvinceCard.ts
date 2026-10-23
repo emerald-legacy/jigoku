@@ -10,6 +10,7 @@ import { StatModifier, type StatModifierSummary } from './StatModifier.js';
 import type { CardData } from './types/CardData.js';
 import { isEffectOf } from './Effects/types.js';
 import type { EffectApplier } from './Effects/EffectApplier.js';
+import { fateCostToDeclare } from './gamesteps/conflict/declarationCosts.js';
 import type { NumericEffectName } from './Effects/EffectValueMap.js';
 import type { StateViewer } from './types/StateViewer.js';
 import { discardCard } from './GameActions/GameActions.js';
@@ -191,12 +192,11 @@ export class ProvinceCard extends BaseCard {
     canBeAttacked() {
         const fateCostToAttack = this.getFateCostToAttack();
         const attackers = this.game.isDuringConflict() && this.game.currentConflict ? this.game.currentConflict.attackers : [];
-        const fateToDeclareAttackers = attackers.reduce((total, card) => total + card.sumEffects(EffectName.FateCostToAttack), 0);
 
         return (
             !this.isBroken &&
             !this.anyEffect(EffectName.CannotBeAttacked) &&
-            (!this.controller.opponent || this.controller.opponent.canSpendFate(fateCostToAttack + fateToDeclareAttackers, this.game.getFrameworkCostContext(this.controller.opponent))) &&
+            (!this.controller.opponent || this.controller.opponent.canSpendFate(fateCostToAttack + fateCostToDeclare(attackers), this.game.getFrameworkCostContext(this.controller.opponent))) &&
             (this.location !== Location.StrongholdProvince ||
                 this.controller.getProvinces((card) => card.isBroken).length > 2 ||
                 this.controller.anyEffect(EffectName.StrongholdCanBeAttacked))

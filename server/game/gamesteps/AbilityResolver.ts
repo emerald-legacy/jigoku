@@ -32,7 +32,7 @@ interface AbilityResolverCostResults {
     triggerCosts: boolean;
 }
 
-const snapshotTypes: readonly string[] = [CardType.Character, CardType.Holding, CardType.Attachment];
+const snapshotTypes: CardType[] = [CardType.Character, CardType.Holding, CardType.Attachment];
 
 export class AbilityResolver extends BaseStepWithPipeline {
     context: AbilityContext;

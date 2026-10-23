@@ -5,7 +5,7 @@ import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
 import { discardCard } from '../../costs/boardCosts.js';
 import type BaseCard from '../../BaseCard.js';
 import { payFate, payFateToRing } from '../../costs/fateAndHonorCosts.js';
-import { type DeclarationCost, honorCostToDeclare, honorCostsToDeclare, honorPaid } from './declarationCosts.js';
+import { type DeclarationCost, cardCostToDeclare, fateCostToDeclare, honorCostToDeclare, honorCostsToDeclare, honorPaid } from './declarationCosts.js';
 import { covertContexts } from './covertContexts.js';
 import { bow, breakProvince, claimRing, loseHonor, resolveConflictRing, reveal } from '../../GameActions/GameActions.js';
 import { takeAllFateFromRing } from '../../GameActions/TakeFateFromRingAction.js';
@@ -92,7 +92,6 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 }
             });
             this.game.queueSimpleStep(() => this.payAttackerCosts());
-            this.game.queueSimpleStep(() => this.payProvinceCosts());
             this.game.queueSimpleStep(() => this.initiateConflict());
             this.game.queueSimpleStep(() => {
                 if(this.conflictCancelled) {
@@ -205,11 +204,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
         if(!this.conflict.conflictPassed) {
             const attacker = this.conflict.attackingPlayer;
             const attackers = this.conflict.attackers;
-            const totalFateCost = attackers.reduce((total: number, card: DrawCard) => total + card.sumEffects(EffectName.FateCostToAttack), 0);
+            const totalFateCost = fateCostToDeclare(attackers);
             const totalHonorCost = honorCostToDeclare(attackers);
-            const totalCardCost = this.conflict.conflictType === ConflictType.Military
-                ? attackers.reduce((total: number, card: DrawCard) => total + card.sumEffects(EffectName.CardCostToAttackMilitary), 0)
-                : 0;
+            const totalCardCost = this.conflict.conflictType === ConflictType.Military ? cardCostToDeclare(attackers) : 0;
             const costs: DeclarationCost[] = [];
             if(totalFateCost > 0) {
                 costs.push({
@@ -237,49 +234,48 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 this.conflict.attackerDeclarationFailed = true;
                 this.conflict.conflictFailedToInitiate = true;
             }));
+            costs.push(...this.provinceCosts(attacker));
             this.payDeclarationCosts(attacker, costs);
         }
     }
 
-    payProvinceCosts(): void {
-        this.game.updateCurrentConflict(null);
-        if(!this.conflict.conflictPassed) {
-            const provinceSlot = this.conflict.conflictProvince
-                ? this.conflict.conflictProvince.location
-                : Location.ProvinceOne;
-            const province =
-                this.conflict.conflictProvince || this.conflict.defendingPlayer?.getProvinceCardInProvince(provinceSlot);
-            const provinceName =
-                this.conflict.conflictProvince && this.conflict.conflictProvince.isFacedown()
-                    ? provinceSlot
-                    : this.conflict.conflictProvince;
-
-            const totalFateCost = province ? province.getFateCostToAttack() : 0;
-            if(province && totalFateCost > 0) {
-                const attacker = this.conflict.attackingPlayer;
-                this.payDeclarationCosts(attacker, [{
-                    costs: [payFateToRing(totalFateCost)],
-                    paidMessages: (events) => {
-                        const placeFateEvent: AnyEvent | undefined = events[0];
-                        return [
-                            msg`${attacker} pays ${totalFateCost} fate to declare a conflict at ${provinceName}`,
-                            msg`${attacker} places ${totalFateCost} fate on the ${placeFateEvent?.recipient || 'ring'}`
-                        ];
-                    }
-                }], () => {
-                    this.game.addMessage(msg`${attacker} cannot pay the fate to declare a conflict at ${provinceName}`);
-                    this.conflict.attackerDeclarationFailed = true;
-                    this.conflict.conflictFailedToInitiate = true;
-                });
-            }
+    /** The fate to a ring it costs to attack the province (Foothills Keep); unpaid, the conflict fails to initiate. */
+    private provinceCosts(attacker: Player): DeclarationCost[] {
+        const { slot, name } = this.declaredProvince;
+        const province = this.conflict.conflictProvince || this.conflict.defendingPlayer?.getProvinceCardInProvince(slot);
+        const totalFateCost = province ? province.getFateCostToAttack() : 0;
+        if(!province || totalFateCost === 0) {
+            return [];
         }
+        return [{
+            costs: [payFateToRing(totalFateCost)],
+            paidMessages: (events) => {
+                const placeFateEvent: AnyEvent | undefined = events[0];
+                return [
+                    msg`${attacker} pays ${totalFateCost} fate to declare a conflict at ${name}`,
+                    msg`${attacker} places ${totalFateCost} fate on the ${placeFateEvent?.recipient || 'ring'}`
+                ];
+            },
+            failed: () => {
+                this.game.addMessage(msg`${attacker} cannot pay the fate to declare a conflict at ${name}`);
+                this.conflict.attackerDeclarationFailed = true;
+                this.conflict.conflictFailedToInitiate = true;
+            }
+        }];
+    }
+
+    /** The declared province's slot, and how chat names it (the slot while it is facedown). */
+    private get declaredProvince(): { slot: Location; name: Location | ProvinceCard | null | undefined } {
+        const province = this.conflict.conflictProvince;
+        const slot = province ? province.location : Location.ProvinceOne;
+        return { slot, name: province && province.isFacedown() ? slot : province };
     }
 
     /**
      * Pays the rules' costs to declare in one window, once any choices they need are made (a ring, cards to discard), and
-     * says what was paid after it. With `failed`, a cost that wasn't paid stops the declaration (the fate to a ring).
+     * says what was paid after it. A cost with `failed` that wasn't paid stops the declaration (the fate to a ring).
      */
-    private payDeclarationCosts(player: Player, declarationCosts: DeclarationCost[], failed?: () => void): void {
+    private payDeclarationCosts(player: Player, declarationCosts: DeclarationCost[]): void {
         if(declarationCosts.length === 0) {
             return;
         }
@@ -293,11 +289,11 @@ export class ConflictFlow extends BaseStepWithPipeline {
             this.game.openEventWindow(paying.flatMap(({ events }) => events));
         });
         this.game.queueSimpleStep(() => {
-            if(failed && paying.some(({ events }) => events.length === 0 || events.some((event) => event.getResolutionEvent().cancelled))) {
-                failed();
-                return;
-            }
             for(const { declarationCost, events } of paying) {
+                if(declarationCost.failed && (events.length === 0 || events.some((event) => event.getResolutionEvent().cancelled))) {
+                    declarationCost.failed();
+                    continue;
+                }
                 // what an interrupt cancelled (Asahina Purifier) wasn't paid
                 const paid = events.filter((event) => !event.getResolutionEvent().cancelled);
                 if(events.length > 0 && paid.length === 0) {
@@ -315,14 +311,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        const provinceSlot = this.conflict.conflictProvince
-            ? this.conflict.conflictProvince.location
-            : Location.ProvinceOne;
-        const provinceName =
-            this.conflict.conflictProvince && this.conflict.conflictProvince.isFacedown()
-                ? provinceSlot
-                : this.conflict.conflictProvince;
-        this.game.addMessage(msg`${this.conflict.attackingPlayer} is initiating a ${this.conflict.conflictType} conflict at ${provinceName}, contesting ${this.conflict.ring}`);
+        this.game.addMessage(msg`${this.conflict.attackingPlayer} is initiating a ${this.conflict.conflictType} conflict at ${this.declaredProvince.name}, contesting ${this.conflict.ring}`);
 
         const params = {
             conflict: this.conflict,
@@ -586,7 +575,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             });
 
             const totalHonorCost = honorCostToDeclare(this.conflict.defenders);
-            if(!this.conflict.conflictPassed && totalHonorCost > 0) {
+            if(totalHonorCost > 0) {
                 costs.push({
                     costs: honorCostsToDeclare(this.conflict.defenders),
                     paidMessages: (events) => [msg`${defender} pays ${honorPaid(events)} honor to declare their defenders`]

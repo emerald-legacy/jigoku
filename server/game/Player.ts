@@ -29,6 +29,7 @@ import {
     FavorType,
     Location,
     ObjectType,
+    type Phase,
     Players,
     type PlayType,
     RestrictionType,
@@ -1033,7 +1034,7 @@ export class Player extends GameObject {
         return this.sumEffects(EffectName.ChangePlayerResolutionSkillModifier);
     }
 
-    honorGained(round: number | null = null, phase: string | null = null, onlyPositive: boolean = false): number {
+    honorGained(round: number | null = null, phase: Phase | '' | null = null, onlyPositive: boolean = false): number {
         return this.honorTracker.honorGained(round, phase, onlyPositive);
     }
 
@@ -1050,7 +1051,7 @@ export class Player extends GameObject {
         this.honorTracker.modifyHonor(amount, this.game.currentPhase, this.game.roundNumber);
     }
 
-    resetHonorEvents(round: number, phase: string): void {
+    resetHonorEvents(round: number, phase: Phase): void {
         this.honorTracker.resetHonorEvents(round, phase);
     }
 

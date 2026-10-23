@@ -6,6 +6,7 @@ import { isEnumValue } from '../utils/helpers.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
+import type { PromptButton } from '../PlayerPromptState.js';
 import { ResolveRingEffectAction } from './ResolveRingEffectAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -69,10 +70,8 @@ export class ResolveConflictRingAction<Context extends AbilityContext = AbilityC
                 activePromptTitle + '\nChosen elements:'
             );
         }
-        const buttons = [];
-
-        elements.map((element) =>
-            buttons.push({ text: element.slice(0, 1).toUpperCase() + element.slice(1) + ' Ring', arg: element })
+        const buttons: PromptButton[] = elements.map((element) =>
+            ({ text: element.slice(0, 1).toUpperCase() + element.slice(1) + ' Ring', arg: element })
         );
         if(chosenElements.length > 0) {
             buttons.push({ text: 'Done', arg: 'done' });
@@ -120,7 +119,7 @@ export class ResolveConflictRingAction<Context extends AbilityContext = AbilityC
     }
 
     resolveRingEffects(player: Player, elements: Element[], optional: boolean = true): void {
-        const rings = elements.flatMap((element) => player.game.ringFor(element) ?? []);
+        const rings = elements.map((element) => player.game.rings[element]);
         const action = new ResolveRingEffectAction({
             target: rings,
             optional: optional,

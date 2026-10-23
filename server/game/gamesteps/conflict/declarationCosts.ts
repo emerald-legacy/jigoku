@@ -9,6 +9,18 @@ import type { MessageArgs } from '../../GameChat.js';
 export interface DeclarationCost {
     costs: Cost[];
     paidMessages?: (events: Event[]) => MessageArgs[];
+    /** Called instead when the cost wasn't paid, which stops the declaration. */
+    failed?: () => void;
+}
+
+/** The fate it costs to declare these characters as attackers. */
+export function fateCostToDeclare(characters: DrawCard[]): number {
+    return characters.reduce((total, card) => total + card.sumEffects(EffectName.FateCostToAttack), 0);
+}
+
+/** The cards to discard to declare these characters as attackers in a military conflict. */
+export function cardCostToDeclare(characters: DrawCard[]): number {
+    return characters.reduce((total, card) => total + card.sumEffects(EffectName.CardCostToAttackMilitary), 0);
 }
 
 /** The honor it costs to declare these characters (tainted, Unleashed Experiment). */
