@@ -363,6 +363,34 @@ describe('A War on Two Fronts', function() {
                 expect(this.negotiator.fate).toBe(fate - 1);
             });
 
+            it('cunning negotiator - the duel winner chooses the province', function() {
+                this.noMoreActions();
+
+                this.initiateConflict({
+                    attackers: [this.negotiator],
+                    type: 'military',
+                    province: this.garden
+                });
+                this.player1.clickCard(this.war);
+                this.player1.clickCard(this.tao);
+
+                this.player2.clickCard(this.dojiWhisperer);
+                this.player2.clickPrompt('Done');
+
+                this.player2.pass();
+                this.player1.clickCard(this.negotiator);
+                this.player2.clickCard(this.dojiWhisperer);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('5');
+
+                expect(this.player2).toHavePrompt('Do you want to trigger a province ability?');
+                this.player2.clickPrompt('Yes');
+                expect(this.player2).toHavePrompt('Choose an attacked province');
+                expect(this.player2).toBeAbleToSelect(this.garden);
+                expect(this.player2).toBeAbleToSelect(this.tao);
+                expect(this.player1).not.toHavePrompt('Choose an attacked province');
+            });
+
             it('cunning negotiator - saying no', function() {
                 this.noMoreActions();
 

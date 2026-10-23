@@ -69,6 +69,22 @@ describe('Sand Road Merchant', function() {
             expect(this.player1).toHavePrompt('Policy Debate');
         });
 
+        it('doesn\'t ask the opponent about a second card when their deck had only one', function() {
+            this.player2.reduceDeckToNumber('conflict deck', 0);
+            this.player2.moveCard(this.policyDebate, 'conflict deck');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.merchant],
+                type: 'political'
+            });
+
+            this.player1.clickCard(this.merchant);
+            this.player1.clickPrompt('Policy Debate');
+            expect(this.policyDebate.isUnderneath(this.merchant)).toBe(true);
+            expect(this.player2).not.toHavePromptButton('Leave on top of your deck');
+            expect(this.player2).toHavePrompt('Choose Defenders');
+        });
+
         it('should react to declaring as an attacker and take a card (opponent chooses bottom)', function() {
             this.noMoreActions();
             this.initiateConflict({

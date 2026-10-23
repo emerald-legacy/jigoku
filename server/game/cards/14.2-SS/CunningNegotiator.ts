@@ -20,6 +20,7 @@ export default class CunningNegotiator extends DrawCard {
                         acceptMessage: (_context, chooser) => msg`${chooser} chooses to trigger a province ability`,
                         declineMessage: (_context, chooser) => msg`${chooser} chooses not to trigger a province ability`,
                         gameAction: selectAttackedProvince({
+                            player: duel.winnerController,
                             gameAction: (province) => triggerAbility({
                                 player: duel.winnerController,
                                 ability: province.abilities.actions[0],

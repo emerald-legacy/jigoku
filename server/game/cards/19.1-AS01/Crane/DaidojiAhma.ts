@@ -12,7 +12,7 @@ export default class DaidojiAhma extends DrawCard {
         this.wouldInterrupt('Cancel ability')
             .when({
                 onInitiateAbilityEffects: (event, context) =>
-                    event.context.ability.isTriggeredAbility() &&
+                    event.context.ability.isCardAbility() &&
                     event.cardTargets.some((card) => this.targetIsDishonoredCrane(card, context)),
                 onMoveFate: (event, context) =>
                     this.isRingEffect(event) && (event.fate ?? 0) > 0 && event.origin?.isCard() && this.targetIsDishonoredCrane(event.origin, context),

@@ -8,6 +8,7 @@ import {
     placeCardUnderneath,
     sequential
 } from '../../../GameActions/GameActions.js';
+import type { ChooseActionProperties } from '../../../GameActions/ChooseGameAction.js';
 import DrawCard from '../../../DrawCard.js';
 import { playableFromUnderneath } from '../../cardsUnderneath.js';
 
@@ -37,10 +38,14 @@ export default class SandRoadMerchant extends DrawCard {
                     remainingCards: RemainingCards.Top,
                     reveal: true
                 }),
-                chooseAction(() => {
+                chooseAction((): ChooseActionProperties => {
                     const topCard = context.player.opponent?.conflictDeck[0];
+                    // only 1 card was revealed: there is no other card to place
+                    if(!topCard) {
+                        return { choices: {} };
+                    }
                     return {
-                        activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
+                        activePromptTitle: 'Choose an action for ' + topCard.name,
                         player: Players.Opponent,
                         choices: {
                             'Leave on top of your deck': {
@@ -48,7 +53,7 @@ export default class SandRoadMerchant extends DrawCard {
                                 message: (_context, _target, player) => msg`${player} chooses to put ${topCard} on top of their deck`
                             },
                             'Put on the bottom of your deck': {
-                                action: moveCard({ target: topCard ?? [], destination: Location.ConflictDeck, bottom: true }),
+                                action: moveCard({ target: topCard, destination: Location.ConflictDeck, bottom: true }),
                                 message: (_context, _target, player) => msg`${player} chooses to put ${topCard} on the bottom of their deck`
                             }
                         }

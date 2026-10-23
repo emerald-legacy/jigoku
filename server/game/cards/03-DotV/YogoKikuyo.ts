@@ -10,7 +10,7 @@ class YogoKikuyo extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event, context) =>
                     this.game.isDuringConflict() && event.card.type === CardType.Event &&
-                    event.card.hasTrait(Trait.Spell) && event.card.controller === context.player.opponent
+                    event.card.hasTrait(Trait.Spell) && event.context.player === context.player.opponent
             })
             .location(Location.Hand)
             .cost(costs.putSelfIntoPlay())
