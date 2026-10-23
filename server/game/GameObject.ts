@@ -8,6 +8,7 @@ import type { EffectValueMap, NumericEffectName } from './Effects/EffectValueMap
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import { type GameActionName, getGameAction } from './GameActions/GameActionRegistry.js';
+import { targetingCosts, totalTargetingCost } from './GameActions/targetingCosts.js';
 import type BaseCard from './BaseCard.js';
 import type Ring from './Ring.js';
 import type Player from './Player.js';
@@ -163,7 +164,7 @@ export class GameObject {
         }
 
         targets = targets.concat(this);
-        const targetingCost = context.player.getTargetingCost(context.source, targets);
+        const targetingCost = totalTargetingCost(targetingCosts(context, targets.filter((target) => target.isCard())));
 
         if(context.stage === Stage.PreTarget || context.stage === Stage.Cost) {
             //We haven't paid the cost yet, so figure out what it will cost to play this so we can know how much fate we'll have available for targeting

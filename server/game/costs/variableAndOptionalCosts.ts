@@ -1,12 +1,12 @@
 import { msg } from '../GameChat.js';
-import { EventName, Location, Players, PlayType, TargetMode, RestrictionType } from '../Constants.js';
-import type { Event } from '../Events/Event.js';
+import { Location, Players, PlayType, TargetMode, RestrictionType } from '../Constants.js';
 import { type Derivable, derive } from '../utils/helpers.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { Cost, Result } from './Cost.js';
+import { addCostEvents } from './addCostEvents.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import * as GameActions from '../GameActions/GameActions.js';
 
@@ -226,62 +226,6 @@ export function discardHand(): Cost<{ discardHand: DrawCard[] }> {
     };
 }
 
-export function optional(cost: Cost): Cost {
-    const getActionName = (context: AbilityContext) =>
-        `optional${(cost.getActionName?.(context) ?? '').replace(/^./, (c) => c.toUpperCase())}`;
-
-    return {
-        promptsPlayer: true,
-        canPay: () => true,
-        getCostMessage: (context) =>
-            context.costs[getActionName(context)] ? (cost.getCostMessage?.(context) ?? []) : [],
-        getActionName: getActionName,
-        resolve: (context, result) => {
-            if(!cost.canPay(context)) {
-                return;
-            }
-            const actionName = getActionName(context);
-
-            const options: HandlerMenuOption[] = [
-                {
-                    text: 'Yes',
-                    handler: () => {
-                        context.costs[actionName] = true;
-                    }
-                },
-                { text: 'No', handler: () => { } }
-            ];
-
-            if(result.canCancel) {
-                options.push({
-                    text: 'Cancel',
-                    handler: () => {
-                        result.cancelled = true;
-                    }
-                });
-            }
-
-            context.game.promptWithHandlerMenu(context.player, {
-                activePromptTitle: 'Pay optional cost?',
-                source: context.source,
-                options
-            });
-        },
-
-        payEvent: (context) => {
-            const actionName = getActionName(context);
-            if(!context.costs[actionName]) {
-                const doNothing = GameActions.handler();
-                return doNothing.getEvent(context.player, context);
-            }
-
-            const events: Event[] = [];
-            cost.addEventsToArray?.(events, context, {});
-            return events;
-        }
-    };
-}
-
 /** "Pay X unless …": no cost while `condition` holds (decided when the costs are paid). */
 export function unless(condition: (context: AbilityContext) => boolean, cost: Cost): Cost {
     const skipped = new WeakMap<AbilityContext, boolean>();
@@ -289,22 +233,11 @@ export function unless(condition: (context: AbilityContext) => boolean, cost: Co
         canPay: (context) => condition(context) || cost.canPay(context),
         getActionName: (context) => cost.getActionName?.(context) ?? '',
         getCostMessage: (context) => (skipped.get(context) ?? condition(context)) ? [] : (cost.getCostMessage?.(context) ?? []),
-        resolve: (context, result) => {
+        addEventsToArray: (events, context, result = {}) => {
             skipped.set(context, condition(context));
-            if(!skipped.get(context) && !cost.addEventsToArray) {
-                cost.resolve?.(context, result);
+            if(!skipped.get(context)) {
+                addCostEvents(cost, events, context, result);
             }
-        },
-        payEvent: (context) => {
-            if(skipped.get(context)) {
-                return GameActions.handler().getEvent(context.player, context);
-            }
-            if(cost.addEventsToArray) {
-                const events: Event[] = [];
-                cost.addEventsToArray(events, context, {});
-                return events;
-            }
-            return cost.payEvent ? cost.payEvent(context) : context.game.getEvent(EventName.PayCost, {}, () => cost.pay?.(context));
         }
     };
 }
@@ -323,18 +256,7 @@ export function chooseOne(options: Record<string, Cost>): Cost<{ chosenCostLabel
         addEventsToArray(events, context, result = {}) {
             const pay = (label: string) => {
                 context.costs.chosenCostLabel = label;
-                const cost = options[label];
-                if(cost.addEventsToArray) {
-                    cost.addEventsToArray(events, context, result);
-                    return;
-                }
-                cost.resolve?.(context, result);
-                context.game.queueSimpleStep(() => {
-                    if(!result.cancelled) {
-                        const paid = cost.payEvent ? cost.payEvent(context) : context.game.getEvent(EventName.PayCost, {}, () => cost.pay?.(context));
-                        events.push(...(Array.isArray(paid) ? paid : [paid]));
-                    }
-                });
+                addCostEvents(options[label], events, context, result);
             };
             const payable = Object.keys(options).filter((label) => options[label].canPay(context));
             if(payable.length === 1) {

@@ -167,14 +167,22 @@ export class AbilityResolver extends BaseStepWithPipeline {
         if(this.cancelled) {
             return;
         }
-        this.cancelled = this.costResults.events.some((event: Event) => event.getResolutionEvent().cancelled);
-        if(this.cancelled) {
-            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
-            this.discardStoppedEvent();
-            const playEvent = this.events.find((event) => event.is(EventName.OnCardPlayed));
-            if(playEvent?.is(EventName.OnCardPlayed)) {
-                this.game.emitEvent(EventName.OnCardPlayCostsNotPaid, { playEvent });
-            }
+        if(this.costResults.events.some((event: Event) => event.getResolutionEvent().cancelled)) {
+            this.stopForUnpaidCosts();
+        }
+    }
+
+    /** The costs (or the costs of targeting) weren't paid: the ability stops, and a played event whose costs were paid in part goes to its discard pile. */
+    protected stopForUnpaidCosts(): void {
+        this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
+        this.cancelled = true;
+        this.discardStoppedEvent();
+        const playEvent = this.events.find((event) => event.is(EventName.OnCardPlayed));
+        if(playEvent?.is(EventName.OnCardPlayed)) {
+            this.game.emitEvent(EventName.OnCardPlayCostsNotPaid, { playEvent });
+        }
+        for(const event of this.events) {
+            event.cancel();
         }
     }
 
@@ -211,11 +219,7 @@ export class AbilityResolver extends BaseStepWithPipeline {
         // paid with the costs, so cancelling the effects doesn't undo it
         const costsToTarget = targetingCosts(this.context, Object.values(this.context.targets).flat());
         if(!canPayTargetingCosts(this.context, costsToTarget)) {
-            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
-            this.cancelled = true;
-            for(const event of this.events) {
-                event.cancel();
-            }
+            this.stopForUnpaidCosts();
             return;
         }
 

@@ -5,12 +5,13 @@ import { AbilityTargetRing } from './AbilityTargets/AbilityTargetRing.js';
 import { AbilityTargetSelect } from './AbilityTargets/AbilityTargetSelect.js';
 import { AbilityTargetToken } from './AbilityTargets/AbilityTargetToken.js';
 import { AbilityTargetElementSymbol } from './AbilityTargets/AbilityTargetElementSymbol.js';
-import { Stage, TargetMode, AbilityType, type Players, EventName, Blocker } from './Constants.js';
+import { Stage, TargetMode, AbilityType, type Players, Blocker } from './Constants.js';
 import type Player from './Player.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { Cost } from './costs/Cost.js';
+import { addCostEvents } from './costs/addCostEvents.js';
 import type { TargetPropertiesInput } from './Interfaces.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type BaseCard from './BaseCard.js';
@@ -246,27 +247,7 @@ export class BaseAbility {
         for(const cost of this.getCosts(context, results.playCosts, results.triggerCosts)) {
             context.game.queueSimpleStep(() => {
                 if(!results.cancelled) {
-                    if(cost.addEventsToArray) {
-                        cost.addEventsToArray(results.events ?? [], context, results);
-                    } else {
-                        if(cost.resolve) {
-                            cost.resolve(context, results);
-                        }
-                        context.game.queueSimpleStep(() => {
-                            if(!results.cancelled) {
-                                const newEvents = cost.payEvent
-                                    ? cost.payEvent(context)
-                                    : context.game.getEvent(EventName.PayCost, {}, () => cost.pay?.(context));
-                                if(Array.isArray(newEvents)) {
-                                    for(const event of newEvents) {
-                                        results.events?.push(event);
-                                    }
-                                } else {
-                                    results.events?.push(newEvents);
-                                }
-                            }
-                        });
-                    }
+                    addCostEvents(cost, results.events ?? [], context, results);
                 }
             });
         }

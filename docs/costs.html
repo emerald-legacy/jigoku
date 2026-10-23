@@ -96,7 +96,7 @@ this.conflictAction('Discard a character')
         <tr><td><code>canPay(context)</code></td><td>Required. Whether the cost can be paid now (also called before anything is chosen).</td></tr>
         <tr><td><code>addEventsToArray(events, context, result)</code></td><td>Collects the paying events in one go. When present, <code>resolve</code>, <code>payEvent</code> and <code>pay</code> are not used.</td></tr>
         <tr><td><code>resolve(context, result)</code></td><td>Asks the player and records the answer in <code>context.costs</code>. Set <code>result.cancelled = true</code> to cancel; offer Cancel only when <code>result.canCancel</code>.</td></tr>
-        <tr><td><code>payEvent(context)</code> / <code>pay(context)</code></td><td>The event(s) that pay it, or a plain function run inside a <code>PayCost</code> event.</td></tr>
+        <tr><td><code>payEvent(context)</code> / <code>pay(context)</code></td><td>The event(s) that pay it, or a plain function run inside a <code>PayCost</code> event. <code>addCostEvents(cost, events, context, result)</code> (<code>costs/addCostEvents.ts</code>) runs a cost this way for the ability and for <code>unless</code> and <code>chooseOne</code>: <code>addEventsToArray</code>, or <code>resolve</code> and, in a later step unless cancelled, <code>payEvent</code> / <code>pay</code>.</td></tr>
         <tr><td><code>getActionName(context)</code></td><td>The <code>context.costs</code> key the cost records under. Its value is <code>{0}</code> in the cost text.</td></tr>
         <tr><td><code>getCostMessage(context)</code></td><td>The cost text, as <code>[format, args]</code>; <code>args</code> become <code>{1}</code>, <code>{2}</code>, …</td></tr>
         <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something. If so, the action window skips its one-click confirmation menu and starts the ability directly.</td></tr>
@@ -1298,28 +1298,6 @@ this.conflictAction('Taint a character')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Lion/SteadfastOrator.ts">Steadfast Orator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Crane/EyesOfTheSerpent.ts">Eyes of the Serpent</a></p>
   </div>
 
-  <div class="ref" id="co-optional" data-name="optional">
-    <h3><code>optional(cost)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-optional">#</a></h3>
-    <p>"You may pay X": asks "Pay optional cost?" and pays the wrapped cost on Yes.</p>
-    <table>
-      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>cost</code></td><td><code>Cost</code></td><td>required</td><td>The cost to offer.</td></tr>
-      </tbody>
-    </table>
-    <ul class="edge">
-      <li>Always payable. When the wrapped cost can't be paid, the player is not asked and nothing is paid.</li>
-      <li>Records <code>optional&lt;Name&gt;</code> = <code>true</code> on Yes, where Name is the wrapped cost's key with a capital (<code>optional(costs.bowSelf())</code> records <code>optionalBow</code>); the result type is empty.</li>
-      <li>On Yes it pays the wrapped cost through its <code>addEventsToArray</code> only: a cost without one (the variable and optional costs here, <code>returnRings</code>, <code>nameCard</code>, …) pays nothing, and a selection cost's prompt answers too late for its card to be paid. Wrap a cost on the source or a fixed fate or honor cost.</li>
-      <li>Chat: the wrapped cost's text when paid. For texts with <code>{0}</code>, <code>{0}</code> is empty: it is the recorded <code>true</code>.</li>
-    </ul>
-    <pre><code>// Card text: "You may bow this character. …" (no card uses this cost yet)
-this.action('…')
-    .cost(costs.optional(costs.bowSelf()))
-    …</code></pre>
-    <p class="seen">Not used by any card yet.</p>
-  </div>
-
   <div class="ref" id="co-unless" data-name="unless">
     <h3><code>unless(condition, cost)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-unless">#</a></h3>
     <p>"Pay X unless …": nothing to pay while <code>condition</code> holds, otherwise the wrapped cost.</p>
@@ -1333,7 +1311,7 @@ this.action('…')
     <ul class="edge">
       <li>Payable when <code>condition</code> holds or the wrapped cost can be paid. Whether it is waived is decided once, when the costs are paid.</li>
       <li>Records what the wrapped cost records, under its key (nothing when waived).</li>
-      <li>A wrapped cost with <code>addEventsToArray</code> is paid from inside this cost's paying step; as with <code>optional</code>, a selection cost's prompt answers too late. Wrap a cost on the source or a fixed fate or honor cost.</li>
+      <li>The wrapped cost is paid like any other (<code>addCostEvents</code>), so a selection cost works too.</li>
       <li>Chat: the wrapped cost's text, nothing when waived.</li>
     </ul>
     <pre><code>// Conduit of Heroes: Action: During a conflict, bow this character unless you have at least 5 more honor than an opponent. Choose another character - until the end of the conflict, that character gets +3[conflict-military], +1[conflict-political] and +1 glory.

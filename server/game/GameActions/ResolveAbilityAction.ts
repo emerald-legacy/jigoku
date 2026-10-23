@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import { msg, type MessageArgs } from '../GameChat.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { CardAbility } from '../CardAbility.js';
 import { EventName, Blocker } from '../Constants.js';
@@ -70,8 +70,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         }
         const costsToTarget = this.ignoreCosts ? [] : targetingCosts(this.context, Object.values(this.context.targets).flat());
         if(!canPayTargetingCosts(this.context, costsToTarget)) {
-            this.game.addMessage(msg`${this.context.player} attempted to use ${this.context.source}, but did not successfully pay the required costs`);
-            this.cancelled = true;
+            this.stopForUnpaidCosts();
             return;
         }
         const cardAbility = this.ability;
