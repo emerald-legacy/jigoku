@@ -94,6 +94,7 @@ interface EventPayloadMap {
     [EventName.OnBreakProvince]: BaseEventPayload & {
         card: ProvinceCard;
         conflict: Conflict | null;
+        breaker: Player | undefined;
     };
     [EventName.OnCardLeavesPlay]: BaseEventPayload & {
         card: DrawCard;

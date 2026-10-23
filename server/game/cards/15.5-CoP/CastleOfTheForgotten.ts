@@ -10,8 +10,7 @@ export default class CastleOfTheForgotten extends StrongholdCard {
     override setupCardAbilities() {
         this.reaction('Make all conflicts military')
             .when({
-                // RRG: a province broken outside conflict resolution is broken by its controller's opponent
-                onBreakProvince: (event, context) => event.card.controller !== context.player
+                onBreakProvince: (event, context) => event.breaker === context.player
             })
             .cost(costs.bowSelf())
             .playerLastingEffect({

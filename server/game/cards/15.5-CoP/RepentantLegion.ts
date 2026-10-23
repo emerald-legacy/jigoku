@@ -7,8 +7,7 @@ class RepentantLegion extends DrawCard {
     override setupCardAbilities() {
         this.reaction('fill provinces with a card')
             .when({
-                // RRG: a province broken outside conflict resolution is broken by its controller's opponent
-                onBreakProvince: (event, context) => context.source.isParticipating() && event.card.controller !== context.player
+                onBreakProvince: (event, context) => context.source.isParticipating() && event.breaker === context.player
             })
             .gameAction(sequential((context) =>
                 context.game.getProvinceArray(false).map((location) => fillProvince({ location, amount: 1 }))

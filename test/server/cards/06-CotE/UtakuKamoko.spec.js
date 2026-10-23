@@ -165,6 +165,7 @@ describe('Utaku Kamoko and a province broken outside a conflict', function() {
             expect(this.game.currentConflict).toBeNull();
             this.game.queueSimpleStep(() => breakProvince().resolve(this.province, this.game.getFrameworkContext(this.player2.player)));
             this.game.continue();
+            this.player2.clickPrompt('No');
             expect(this.province.isBroken).toBe(true);
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.utakuKamoko);

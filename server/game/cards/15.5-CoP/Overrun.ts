@@ -8,7 +8,7 @@ class Overrun extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Blank and reveal a province')
             .when({
-                onBreakProvince: (event, context) => event.card.owner !== context.player
+                onBreakProvince: (event, context) => event.breaker === context.player
             })
             .target({
                 location: Location.Provinces,

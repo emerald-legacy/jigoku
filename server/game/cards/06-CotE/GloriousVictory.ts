@@ -8,7 +8,7 @@ class GloriousVictory extends DrawCard {
         this.reaction('Honor each character you control')
             .when({
                 onBreakProvince: (event, context) =>
-                    this.game.isDuringConflict(ConflictType.Military) && !!event.conflict && event.conflict.attackingPlayer === context.player
+                    this.game.isDuringConflict(ConflictType.Military) && event.breaker === context.player
             })
             .honor((context) => ({
                 target: context.player.filterCardsInPlay((card) => card.type === CardType.Character)

@@ -9,7 +9,7 @@ export default class ForGreaterGlory extends DrawCard {
         this.reaction('Put a fate on all your bushi in this conflict')
             .when({
                 onBreakProvince: (event, context) =>
-                    this.game.isDuringConflict(ConflictType.Military) && event.conflict?.attackingPlayer === context.player
+                    this.game.isDuringConflict(ConflictType.Military) && event.breaker === context.player
             })
             .placeFate((context) => ({
                 target: context.event.conflict

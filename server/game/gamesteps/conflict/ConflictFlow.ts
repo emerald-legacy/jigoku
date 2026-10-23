@@ -768,7 +768,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 this.conflict.skillDifference !== undefined && this.conflict.skillDifference >= strength &&
                 !province.isBroken
             ) {
-                this.game.resolveActions([breakProvince({ target: province })], this.game.getFrameworkContext(province.controller));
+                this.game.resolveActions([breakProvince({ target: province, breaker: this.conflict.attackingPlayer })], this.game.getFrameworkContext(province.controller));
             }
         });
     }

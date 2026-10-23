@@ -128,6 +128,7 @@ describe('Castle of the Forgotten other breaks', function() {
             const context = new ResolvableAbility(this.rider, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => breakProvince().resolve(this.opponentsProvince, context));
             this.game.continue();
+            this.player1.clickPrompt('No');
             expect(this.opponentsProvince.isBroken).toBe(true);
             expect(this.player1).toBeAbleToSelect(this.castle);
         });
@@ -137,6 +138,7 @@ describe('Castle of the Forgotten other breaks', function() {
             const context = new ResolvableAbility(this.rider, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => breakProvince().resolve(ownProvince, context));
             this.game.continue();
+            this.player2.clickPrompt('No');
             expect(ownProvince.isBroken).toBe(true);
             expect(this.player1).not.toBeAbleToSelect(this.castle);
         });
@@ -172,6 +174,8 @@ describe('Castle of the Forgotten after a break outside the conflict phase', fun
             this.player1.clickCard(this.ebonyBloodGarrison);
             this.player1.clickCard(this.manicuredGarden);
             this.player1.clickCard(this.entrenchedPosition);
+            this.player2.clickPrompt('No');
+            this.player1.clickPrompt('No');
             expect(this.player2).toHavePrompt('Triggered Abilities');
             this.player2.clickCard(this.castle);
             expect(this.getChatLogs(5)).toContain('player2 uses Castle of the Forgotten, bowing Castle of the Forgotten to make all future conflicts military for this round');

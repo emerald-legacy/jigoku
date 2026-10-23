@@ -230,39 +230,34 @@ export class ProvinceCard extends BaseCard {
         return this.isBroken || dishonored || this.anyEffect(EffectName.Blank);
     }
 
-    breakProvince(): void {
+    breakProvince(breaker: Player | undefined): void {
         this.isBroken = true;
         this.removeAllTokens();
-        if(!this.controller.opponent) {
+        if(!this.controller.opponent || !breaker) {
             return;
         }
 
-        this.game.addMessage(msg`${this.controller.opponent} has broken ${this}!`);
+        this.game.addMessage(msg`${breaker} has broken ${this}!`);
 
         if(this.game.rules.winConReachedConquestVictory(this)) {
             this.game.recordWinner(this.controller.opponent, 'conquest');
             return;
         }
 
-        if(!this.game.isDuringConflict()) {
-            return;
-        }
-
-        const choosingPlayer = this.game.currentConflict?.attackingPlayer ?? this.controller.opponent;
         for(const dynastyCard of this.cardsInSelf()) {
             const cardLabel = () => (dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard);
-            this.game.promptWithHandlerMenu(choosingPlayer, {
+            this.game.promptWithHandlerMenu(breaker, {
                 activePromptTitle: `Do you wish to discard ${dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard.name}?`,
                 source: `Break ${this.name}`,
                 options: [
                     {
                         text: 'Yes',
                         handler: () => {
-                            this.game.addMessage(msg`${choosingPlayer} chooses to discard ${cardLabel()}`);
+                            this.game.addMessage(msg`${breaker} chooses to discard ${cardLabel()}`);
                             this.game.resolveActions([discardCard({ target: dynastyCard })], this.game.getFrameworkContext(dynastyCard.controller));
                         }
                     },
-                    { text: 'No', handler: () => this.game.addMessage(msg`${choosingPlayer} chooses not to discard ${cardLabel()}`) }
+                    { text: 'No', handler: () => this.game.addMessage(msg`${breaker} chooses not to discard ${cardLabel()}`) }
                 ]
             });
         }

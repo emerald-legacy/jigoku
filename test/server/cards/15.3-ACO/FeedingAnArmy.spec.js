@@ -53,11 +53,16 @@ describe('Feeding an Army', function() {
 
             });
 
-            it('should break the province (no discard prompt outside of conflict)', function() {
+            it('should break the province and give the opponent the option to discard its card', function() {
+                const dynastyCard = this.player1.player.getDynastyCardsInProvince(this.garden.location)[0];
                 this.noMoreActions();
                 this.player1.clickCard(this.feeding);
                 this.player1.clickCard(this.garden);
                 expect(this.garden.isBroken).toBe(true);
+                expect(this.player2).toHavePrompt('Break Manicured Garden');
+                this.player2.clickPrompt('Yes');
+                expect(dynastyCard.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(5)).toContain('player2 has broken Manicured Garden!');
             });
 
 
@@ -73,12 +78,15 @@ describe('Feeding an Army', function() {
                 this.player1.clickCard(this.throne);
                 expect(this.player1.honor).toBe(p1Honor + 2);
                 expect(this.player2.honor).toBe(p2Honor - 2);
+                this.player2.clickPrompt('No');
+                expect(this.getChatLogs(5)).toContain('player1 plays Feeding an Army, breaking Before the Throne to place 1 fate on Ethereal Dreamer and Doji Challenger');
             });
 
             it('should give a fate to all characters with less than 1 fate', function() {
                 this.noMoreActions();
                 this.player1.clickCard(this.feeding);
                 this.player1.clickCard(this.garden);
+                this.player2.clickPrompt('No');
                 expect(this.dreamer.fate).toBe(1);
                 expect(this.challenger.fate).toBe(1);
                 expect(this.mitsu.fate).toBe(0);

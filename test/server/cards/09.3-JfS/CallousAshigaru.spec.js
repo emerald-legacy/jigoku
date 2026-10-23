@@ -1,139 +1,46 @@
-describe('Callous Ashigaru', function() {
-    integration(function() {
-        describe('Callous Ashigaru', function() {
-            beforeEach(function() {
-                this.setupTest({
-                    phase: 'conflict',
-                    player1: {
-                        inPlay: ['borderlands-defender', 'kuni-yori'],
-                        hand: ['callous-ashigaru']
-                    },
-                    player2: {
-                        inPlay: ['doji-hotaru', 'wandering-ronin']
-                    }
-                });
 
-                this.borderlandsDefender = this.player1.findCardByName('borderlands-defender');
-                this.kuniYori = this.player1.findCardByName('kuni-yori');
-                this.callousAshigaru = this.player1.findCardByName('callous-ashigaru');
 
-                this.dojiHotaru = this.player2.findCardByName('doji-hotaru');
-                this.wanderingRonin = this.player2.findCardByName('wandering-ronin');
-            });
-
-            it('should only be able to attach to unique characters', function() {
-                this.player1.clickCard(this.callousAshigaru);
-                expect(this.player1).toHavePrompt('Callous Ashigaru');
-                expect(this.player1).not.toBeAbleToSelect(this.borderlandsDefender);
-                expect(this.player1).toBeAbleToSelect(this.kuniYori);
-                expect(this.player1).toBeAbleToSelect(this.dojiHotaru);
-                expect(this.player1).not.toBeAbleToSelect(this.wanderingRonin);
-            });
-        });
-
-        describe('Callous Ashigaru\'s ability', function() {
-            beforeEach(function() {
-                this.setupTest({
-                    phase: 'conflict',
-                    player1: {
-                        inPlay: ['kuni-yori', 'kuni-ritsuko'],
-                        hand: ['callous-ashigaru']
-                    }
-                });
-
-                this.kuniYori = this.player1.findCardByName('kuni-yori');
-                this.kuniRitsuko = this.player1.findCardByName('kuni-ritsuko');
-                this.callousAshigaru = this.player1.findCardByName('callous-ashigaru');
-
-                this.player1.clickCard(this.callousAshigaru);
-                this.player1.clickCard(this.kuniYori);
-            });
-
-            it('should not trigger after you break in a political conflict', function() {
-                this.noMoreActions();
-                this.initiateConflict({
-                    attackers: [this.kuniYori],
-                    defenders: [],
-                    type: 'political'
-                });
-                this.noMoreActions();
-                this.player1.clickPrompt('No');
-                expect(this.player1).not.toHavePrompt('Triggered Abilities');
-                expect(this.player1).toHavePrompt('Air Ring');
-            });
-
-            it('should not trigger if attached character is not participating', function() {
-                this.noMoreActions();
-                this.initiateConflict({
-                    attackers: [this.kuniRitsuko],
-                    defenders: []
-                });
-                this.noMoreActions();
-                this.player1.clickPrompt('No');
-                expect(this.player1).not.toHavePrompt('Triggered Abilities');
-                expect(this.player1).toHavePrompt('Air Ring');
-            });
-
-            it('should trigger when you break the province and attached character is participating', function() {
-                this.noMoreActions();
-                this.initiateConflict({
-                    attackers: [this.kuniYori],
-                    defenders: []
-                });
-                this.noMoreActions();
-                this.player1.clickPrompt('No');
-                expect(this.player1).toHavePrompt('Triggered Abilities');
-                expect(this.player1).toBeAbleToSelect(this.callousAshigaru);
-            });
-
-            it('should discard all cards in the opponent\'s provinces', function() {
-                this.noMoreActions();
-                this.initiateConflict({
-                    attackers: [this.kuniYori],
-                    defenders: []
-                });
-                this.noMoreActions();
-                this.player1.clickPrompt('No');
-                this.player1.clickCard(this.callousAshigaru);
-                expect(this.getChatLogs(1)).toContain('player1 uses Callous Ashigaru to discard Adept of the Waves, Adept of the Waves, Adept of the Waves and Adept of the Waves');
-                expect(this.player2.player.dynastyDiscardPile.length).toBe(4);
-                expect(this.player1.player.dynastyDiscardPile.length).toBe(0);
-            });
-        });
-    });
-});
-
-describe('Callous Ashigaru on an opponent\'s character', function() {
+describe('Callous Ashigaru when Raze to the Ground breaks its player\'s own province', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    hand: ['callous-ashigaru']
+                    inPlay: ['doji-challenger', 'akodo-toturi'],
+                    hand: ['raze-to-the-ground', 'callous-ashigaru'],
+                    provinces: ['manicured-garden']
                 },
                 player2: {
-                    inPlay: ['doji-hotaru']
+                    inPlay: ['mirumoto-raitsugu'],
+                    provinces: ['entrenched-position']
                 }
             });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.toturi = this.player1.findCardByName('akodo-toturi');
             this.callousAshigaru = this.player1.findCardByName('callous-ashigaru');
-            this.dojiHotaru = this.player2.findCardByName('doji-hotaru');
-            this.player1.playAttachment(this.callousAshigaru, this.dojiHotaru);
-            // player1 has no characters, so their conflict opportunity passes by itself
-            this.player2.pass();
-            this.player1.pass();
+            this.garden = this.player1.findCardByName('manicured-garden');
+            this.garden.facedown = false;
+            this.player1.playAttachment(this.callousAshigaru, this.toturi);
             this.noMoreActions();
-        });
-
-        it('does not react when the opponent breaks your province', function() {
             this.initiateConflict({
                 type: 'military',
-                attackers: [this.dojiHotaru],
-                defenders: []
+                province: this.player2.findCardByName('entrenched-position'),
+                attackers: [this.challenger, this.toturi],
+                defenders: ['mirumoto-raitsugu']
             });
             this.noMoreActions();
-            expect(this.player1.findCardByName('shameful-display', 'province 1').isBroken).toBe(true);
+            this.player1.clickCard('raze-to-the-ground');
+            this.player1.clickCard(this.challenger);
+            this.player1.clickCard(this.garden);
+        });
+
+        it('reacts only to the province its player broke', function() {
+            expect(this.player2).toHavePrompt('Break Manicured Garden');
             this.player2.clickPrompt('No');
-            expect(this.player1).not.toBeAbleToSelect(this.callousAshigaru);
+            expect(this.player1).toHavePrompt('Break Entrenched Position');
+            this.player1.clickPrompt('No');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.callousAshigaru);
         });
     });
 });

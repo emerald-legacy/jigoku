@@ -90,7 +90,7 @@ describe('Repentant Legion', function() {
             const context = new ResolvableAbility(this.dojiChallenger, {}).createContext(this.player2.player);
             this.game.queueSimpleStep(() => breakProvince().resolve(attackersProvince, context));
             this.game.continue();
-            this.player2.clickPrompt('No');
+            this.player1.clickPrompt('No');
             expect(attackersProvince.isBroken).toBe(true);
             expect(this.player1).toBeAbleToSelect(this.repentantLegion);
         });

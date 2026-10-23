@@ -126,6 +126,7 @@ describe('Moto Chagatai', function() {
                 expect(this.game.currentConflict).toBeNull();
                 this.game.queueSimpleStep(() => breakProvince().resolve(this.endlessPlains, this.game.getFrameworkContext(this.player1.player)));
                 this.game.continue();
+                this.player1.clickPrompt('No');
                 expect(this.endlessPlains.isBroken).toBe(true);
 
                 this.noMoreActions();
@@ -214,7 +215,7 @@ describe('Moto Chagatai', function() {
                 });
                 this.game.queueSimpleStep(() => breakProvince().resolve(this.attackerProvince, this.game.getFrameworkContext(this.player1.player)));
                 this.game.continue();
-                this.player2.clickPrompt('No');
+                this.player1.clickPrompt('No');
                 expect(this.attackerProvince.isBroken).toBe(true);
 
                 this.noMoreActions();

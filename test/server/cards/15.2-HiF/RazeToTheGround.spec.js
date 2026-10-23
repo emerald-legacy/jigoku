@@ -146,7 +146,7 @@ describe('Raze to the Ground', function() {
             expect(this.garden.isBroken).toBe(true);
         });
 
-        it('should give you the option to discard cards in the province you broke', function() {
+        it('should give your opponent the option to discard cards in the province you broke', function() {
             this.initiateConflict({
                 attackers: [this.challenger],
                 defenders: [this.mirumotoRaitsugu],
@@ -158,9 +158,10 @@ describe('Raze to the Ground', function() {
             this.player1.clickCard(this.raze);
             this.player1.clickCard(this.challenger);
             this.player1.clickCard(this.garden);
-            expect(this.player1).toHavePrompt('Break Manicured Garden');
-            expect(this.player1).toHavePromptButton('Yes');
-            expect(this.player1).toHavePromptButton('No');
+            expect(this.player1).toHavePrompt('Waiting for opponent to use Break Manicured Garden');
+            expect(this.player2).toHavePrompt('Break Manicured Garden');
+            expect(this.player2).toHavePromptButton('Yes');
+            expect(this.player2).toHavePromptButton('No');
         });
 
         it('should break the province', function() {
@@ -175,7 +176,7 @@ describe('Raze to the Ground', function() {
             this.player1.clickCard(this.raze);
             this.player1.clickCard(this.challenger);
             this.player1.clickCard(this.garden);
-            this.player1.clickPrompt('No');
+            this.player2.clickPrompt('No');
             expect(this.entrenched.isBroken).toBe(true);
             expect(this.getChatLogs(10)).toContain('player1 plays Raze to the Ground, dishonoring Doji Challenger and breaking Manicured Garden to break an attacked province');
             expect(this.getChatLogs(10)).toContain('player1 breaks Entrenched Position');
@@ -202,7 +203,7 @@ describe('Raze to the Ground', function() {
             this.player1.clickCard(this.throne);
             expect(this.player1.honor).toBe(p1Honor + 2);
             expect(this.player2.honor).toBe(p2Honor - 2);
-            this.player1.clickPrompt('No');
+            this.player2.clickPrompt('No');
             expect(this.entrenched.isBroken).toBe(true);
         });
 
@@ -218,7 +219,7 @@ describe('Raze to the Ground', function() {
             this.player1.clickCard(this.raze);
             this.player1.clickCard(this.challenger);
             this.player1.clickCard(this.garden);
-            this.player1.clickPrompt('No');
+            this.player2.clickPrompt('No');
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.publicForum);
             this.player2.clickCard(this.publicForum);
