@@ -239,5 +239,49 @@ describe('Ancient Stone Guardian', function () {
                 );
             });
         });
+
+        describe('forced interrupt with a redirected dishonor', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shinjo-archer', 'kitsuki-shomon']
+                    },
+                    player2: {
+                        inPlay: ['solemn-scholar', 'ancient-stone-guardian'],
+                        hand: ['assassination']
+                    }
+                });
+
+                this.shinjoArcher = this.player1.findCardByName('shinjo-archer');
+                this.shomon = this.player1.findCardByName('kitsuki-shomon');
+                this.solemnScholar = this.player2.findCardByName('solemn-scholar');
+                this.stoneGuardian = this.player2.findCardByName('ancient-stone-guardian');
+                this.assassination = this.player2.findCardByName('assassination');
+            });
+
+            it('does not draw a card if Kitsuki Shomon is dishonored instead', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.shinjoArcher],
+                    defenders: [this.solemnScholar],
+                    type: 'military'
+                });
+
+                this.player2.clickCard(this.assassination);
+                this.player2.clickCard(this.stoneGuardian);
+
+                const p1HandSizeInit = this.player1.hand.length;
+                this.player1.clickCard(this.shinjoArcher);
+                this.player2.clickPrompt('Done');
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                this.player1.clickCard(this.shomon);
+
+                expect(this.shinjoArcher.isDishonored).toBe(false);
+                expect(this.shomon.isDishonored).toBe(true);
+                expect(this.player1.hand.length).toBe(p1HandSizeInit);
+                expect(this.getChatLogs(3)).toContain('player1 uses Kitsuki Shomon to dishonor Kitsuki Shomon instead of Shinjo Archer');
+            });
+        });
     });
 });

@@ -71,5 +71,41 @@ describe('Arbiter of Authority', function() {
                 expect(this.mirumotoRaitsugu.bowed).toBe(false);
             });
         });
+
+        describe('Arbiter of Authority refused with a redirected dishonor', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['arbiter-of-authority']
+                    },
+                    player2: {
+                        inPlay: ['mirumoto-raitsugu', 'kitsuki-shomon']
+                    }
+                });
+                this.arbiterOfAuthority = this.player1.findCardByName('arbiter-of-authority');
+                this.mirumotoRaitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+                this.shomon = this.player2.findCardByName('kitsuki-shomon');
+            });
+
+            it('should resolve the duel if Kitsuki Shomon is dishonored instead', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.arbiterOfAuthority],
+                    defenders: [this.mirumotoRaitsugu],
+                    type: 'political'
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.arbiterOfAuthority);
+                this.player1.clickCard(this.mirumotoRaitsugu);
+                this.player2.clickPrompt('Yes');
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                this.player2.clickCard(this.shomon);
+                expect(this.mirumotoRaitsugu.isDishonored).toBe(false);
+                expect(this.shomon.isDishonored).toBe(true);
+                expect(this.player1).toHavePrompt('Honor Bid');
+                expect(this.player2).toHavePrompt('Honor Bid');
+            });
+        });
     });
 });

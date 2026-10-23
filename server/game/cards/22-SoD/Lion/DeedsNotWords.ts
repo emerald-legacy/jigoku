@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, EventName, Players } from '../../../Constants.js';
 import { delayedEffect, modifyMilitarySkill } from '../../../effects.js';
 import {
     cardLastingEffect,
@@ -7,11 +7,11 @@ import {
     claimImperialFavor,
     conditional,
     honor,
-    joint,
     loseImperialFavor,
     multiple,
     noAction,
-    playerLastingEffect
+    playerLastingEffect,
+    sequential
 } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -44,9 +44,14 @@ export default class DeedsNotWords extends DrawCard {
                 condition: context.player.imperialFavor !== '',
                 trueGameAction: chooseAction({
                     choices: {
-                        'Discard the Imperial Favor': joint([
+                        'Discard the Imperial Favor': sequential([
                             loseImperialFavor({ target: context.player }),
-                            honor({ target: context.target })
+                            conditional({
+                                // "to": only if the favor was discarded (Ikoma Yumiko's Dagger can replace it)
+                                condition: (context) => context.events.some((event) =>
+                                    event.is(EventName.OnDiscardFavor) && event.isFullyResolved()),
+                                trueGameAction: honor({ target: context.target })
+                            })
                         ]),
                         Done: noAction()
                     }

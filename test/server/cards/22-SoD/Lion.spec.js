@@ -540,6 +540,47 @@ describe('SoD - Lion', function () {
             });
         });
 
+        describe('Deeds not Words with Ikoma Yumiko\'s Dagger', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['ancient-master']
+                    },
+                    player2: {
+                        inPlay: ['ikoma-natsuko', 'ikoma-yumiko-s-dagger'],
+                        hand: ['deeds-not-words']
+                    }
+                });
+
+                this.ancientMaster = this.player1.findCardByName('ancient-master');
+                this.natsuko = this.player2.findCardByName('ikoma-natsuko');
+                this.dagger = this.player2.findCardByName('ikoma-yumiko-s-dagger');
+                this.deeds = this.player2.findCardByName('deeds-not-words');
+            });
+
+            it('does not honor the character if the dagger is discarded instead of the favor', function () {
+                this.player2.player.imperialFavor = 'military';
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.ancientMaster],
+                    defenders: [this.natsuko]
+                });
+
+                this.player2.clickCard(this.deeds);
+                this.player2.clickCard(this.natsuko);
+                this.player2.clickPrompt('Discard the Imperial Favor');
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                this.player2.clickCard(this.dagger);
+
+                expect(this.player2.player.imperialFavor).toBe('military');
+                expect(this.dagger.location).toBe('dynasty discard pile');
+                expect(this.natsuko.isHonored).toBe(false);
+                expect(this.getChatLogs(5)).toContain('player2 uses Ikoma Yumiko\'s Dagger to discard itself instead of the Imperial Favor');
+            });
+        });
+
         describe('Deeds not Words played from an opponent\'s deck', function () {
             beforeEach(function () {
                 this.setupTest({

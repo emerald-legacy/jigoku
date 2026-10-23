@@ -1,8 +1,8 @@
 import { msg } from '../../../GameChat.js';
 import { cannotParticipateAsAttacker, cardCannot } from '../../../effects.js';
-import { dishonor, draw, sequential } from '../../../GameActions/GameActions.js';
+import { conditional, dishonor, draw, sequential } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
+import { CardType, EventName, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -58,7 +58,12 @@ export default class AncientStoneGuardian extends DrawCard {
         return target instanceof DrawCard
             ? [
                 dishonor({ target: target }),
-                draw({ target: target.controller })
+                conditional({
+                    // "to": only if this dishonor resolved (Kitsuki Shomon can redirect it)
+                    condition: (context) => context.events.some((event) =>
+                        event.is(EventName.OnCardDishonored) && event.card === target && event.isFullyResolved()),
+                    trueGameAction: draw({ target: target.controller })
+                })
             ]
             : [];
     }
