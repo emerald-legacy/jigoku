@@ -146,7 +146,7 @@ this.reaction('Disable a character')
           <tr><td><code>UnderneathStronghold</code></td><td><code>'underneath stronghold'</code></td><td>Facedown under the stronghold province (Kaiu Shihobu).</td></tr>
           <tr><td><code>Underneath</code></td><td><code>'underneath'</code></td><td>Under another card, <code>card.host</code> (<code>placeCardUnderneath</code>, Back-Alley Hideaway); <code>card.isUnderneath(host?)</code>. The pile is kept by the player who placed it, under the host's uuid (the client shows it on the host).</td></tr>
           <tr><td><code>OutsideTheGame</code></td><td><code>'outside the game'</code></td><td>Cards the deck lists as outside the game.</td></tr>
-          <tr><td><code>BeingPlayed</code></td><td><code>'being played'</code></td><td>An event while it resolves; it moves to its discard pile afterwards.</td></tr>
+          <tr><td><code>BeingPlayed</code></td><td><code>'being played'</code></td><td>An event while it resolves; the player playing it controls it there, its owner or not. It moves to its owner's discard pile afterwards.</td></tr>
           <tr><td><code>Role</code></td><td><code>'role'</code></td><td>The role card's place. Default ability location of roles.</td></tr>
         </tbody>
       </table>
@@ -979,7 +979,7 @@ cardCannot({
 <p><strong>Cancelling.</strong> An interrupt cancels its event with the <code>cancel()</code> step or game action. The handler does not run and no reactions follow. An event without a handler only loses its reactions. For a game action, a cancelled event means the action does not happen to that target; the entries below say where cancelling means something else. <code>cancel()</code> has no legal target when:</p>
 <ul>
     <li>the event has <code>cannotBeCancelled</code> (from a game action created with <code>cannotBeCancelled: true</code>);</li>
-    <li>the event's card is an event card whose owner has <code>eventsCannotBeCancelled()</code>;</li>
+    <li>the event's card is an event card whose controller (the player playing it) has <code>eventsCannotBeCancelled()</code>;</li>
     <li>the event is <code>onCardLeavesPlay</code> of a card that cannot be prevented from leaving play.</li>
 </ul>
 <p><strong>Fields.</strong> Every event has <code>name</code>, <code>context</code>, <code>cancelled</code>, <code>resolved</code>, <code>cannotBeCancelled</code>, <code>isContingent</code> (raised as a consequence of another event: the fate and attachments leaving with a character), <code>window</code> and <code>is(name)</code>; <code>event.is(EventName.OnCardHonored)</code> narrows the type. Events a game action creates always have a <code>context</code>. Events the game flow raises have <code>context: null</code>, which is why many predicates read <code>event.context?.player</code>. The payload tables list the other fields, typed as in <code>server/game/Events/EventPayloads.ts</code>.</p>
@@ -2024,6 +2024,7 @@ this.reaction('Take 1 honor')
         <tbody>
           <tr><td><code>card</code></td><td><code>ProvinceCard</code></td><td>The province.</td></tr>
           <tr><td><code>conflict</code></td><td><code>Conflict | null</code></td><td>The current conflict.</td></tr>
+          <tr><td><code>breaker</code></td><td><code>Player | undefined</code></td><td>The player who breaks it: the <code>breakProvince</code> <code>breaker</code>, by default the province controller's opponent (the attacking player when conflict resolution breaks it). "After you break a province" checks <code>event.breaker === context.player</code>.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -2104,7 +2105,7 @@ this.wouldInterrupt('Switch the attacked province with a facedown province')
         </tbody>
       </table>
   <ul class="edge">
-    <li>No handler. <code>UntilEndOfConflict</code> lasting effects end when it resolves, before its reactions.</li>
+    <li>No handler. <code>UntilEndOfConflict</code> lasting effects end when it resolves, before its reactions, so a province added by one (A War on Two Fronts) is no longer in <code>getConflictProvinces()</code>: read <a href="helpers.html#q-brokenProvinces"><code>event.conflict.provincesAtEnd</code></a>.</li>
     <li>Not raised for a passed conflict; raised for one that failed to initiate.</li>
   </ul>
   <pre><code>// Breakthrough: Reaction: After the resolution of your first conflict this phase as the attacking player, if that conflict broke a province – immediately declare your second conflict for this phase.
@@ -2112,7 +2113,7 @@ this.reaction('Declare a new conflict')
     .when({
         onConflictFinished: (event, context) =&gt;
             event.conflict.attackingPlayer === context.player &amp;&amp;
-            event.conflict.getConflictProvinces().some((a) =&gt; a.isBroken)
+            event.conflict.provincesAtEnd.some((province) =&gt; province.isBroken)
     })
     // "your second conflict": exactly one conflict declared or passed so far, also for a copy (The Mirror's Gaze)
     .condition((context) =&gt; context.game.getConflicts(context.player).length === 1)
@@ -2477,7 +2478,7 @@ this.reaction('Resolve ring effect')
         </tbody>
       </table>
   <ul class="edge">
-    <li>If the player has a <code>cannotResolveRings</code> effect, the handler cancels the event.</li>
+    <li>If the player has a <code>cannotResolveRings</code> effect, the event's condition cancels it before the would-interrupt window, so a cancelled ring effect can't be replaced (ruling #636: All and Nothing); the handler checks again.</li>
   </ul>
   <pre><code>// All and Nothing: Interrupt: When you would resolve the [element-void] ring effect, choose another ring – resolve that ring's effect instead. Draw 1 card.
 .when({
@@ -2884,13 +2885,14 @@ this.wouldInterrupt('Lose fate instead of honor')
           <tr><td><code>fate</code></td><td><code>number</code></td><td>How much fate.</td></tr>
           <tr><td><code>origin</code></td><td><code>Ring | DrawCard | Player</code></td><td>Where it comes from; none for fate from the general supply.</td></tr>
           <tr><td><code>recipient</code></td><td><code>Player | DrawCard | Ring</code></td><td>Where it goes; none for fate returned to the supply.</td></tr>
+          <tr><td><code>spend</code></td><td><code>boolean</code></td><td>Fate spent from the origin's fate pool (<code>payFate</code>, <code>payFateToRing</code>, texts that "spend" fate): the player must be allowed to spend it.</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>Only when paying a fate cost to the opponent (then <code>fate</code>, <code>origin</code> and <code>recipient</code> are not set).</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
     <li>An interrupt can change <code>recipient</code> before the handler (Embrace the Void).</li>
-    <li>The condition cancels it when the origin has no fate, or a character origin or recipient cannot have fate removed or placed.</li>
+    <li>The condition cancels it when fate can't move from the origin (<code>canMoveFateFrom</code>: the origin has no fate; a ring origin needs the player free of a <code>TakeFateFromRings</code> restriction, a card origin free of a <code>RemoveFate</code> restriction; with <code>spend</code>, a player origin must be able to spend fate, <code>canSpendFate</code>), or a character recipient cannot have fate placed.</li>
     <li>The handler moves at most the fate the origin has, and updates <code>fate</code> to that.</li>
     <li>The fate that leaves with a character leaving play raises a contingent one (<code>isContingent</code>). "Fate is removed from a character" triggers ignore it (ruling #1087: Shadowed Village, Kami of Ancient Wisdom, Darkflame Purifier); Trail of Blood and Lies counts it, as its text says.</li>
   </ul>

@@ -57,6 +57,7 @@
     <li><code>whileAttached</code> reaches the attached card, whoever controls it.</li>
     <li><code>conflictLastingEffect</code> with <code>match</code> reaches every matching card while it lasts, also cards that enter play later (Grasp of Earth).</li>
 </ul>
+<p>Whose effect it is (for "you", "opponent" and restriction scopes): a persistent effect is its source's controller's; a lasting effect is the player's whose ability created it, even when that player doesn't control the source (an opponent's event they played).</p>
 
 <h3 id="ef-values">Fixed and computed values</h3>
 <p>Some effects take a value or a function of the game state: <code>modifyMilitarySkill(2)</code> or <code>modifyMilitarySkill((card, context) =&gt; card.attachments.length)</code>. A function is recalculated at every state check. The parameter tables show which effects take a function; "A fixed value" means it doesn't.</p>
@@ -1968,12 +1969,13 @@ this.persistentEffect({
     <ul class="edge">
       <li>Each effect adds one opportunity of its type; copies add up.</li>
       <li>Always pass a type. An effect without one only counts while the player has a set, forced or provided conflict type; otherwise it adds nothing.</li>
-      <li>Usually a <code>playerLastingEffect</code> with <code>Duration.UntilEndOfPhase</code>.</li>
+      <li>Usually a <code>playerLastingEffect</code> with <code>Duration.UntilEndOfPhase</code>. Under <a href="#ef-setMaxConflicts"><code>setMaxConflicts</code></a> it changes nothing, so the abilities granting it check <a href="helpers.html#he-extraConflictPossible"><code>extraConflictPossible</code></a>.</li>
     </ul>
     <pre><code>// Hida O-Ushi: Reaction: After you win a conflict as the defending player - you may declare an additional
 // [conflict-military] conflict this phase. (Max 1 per phase.)
 this.reaction('Gain additional military conflict')
     .when({ afterConflict: (event, context) =&gt; context.player.isDefendingPlayer() &amp;&amp; event.conflict.winner === context.player })
+    .condition((context) =&gt; extraConflictPossible(context.player))
     .playerLastingEffect({
         duration: Duration.UntilEndOfPhase,
         effect: additionalConflict(ConflictType.Military)
@@ -2161,7 +2163,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Paid by the declaring player after attackers (or defenders) are declared, one honor loss per effect, in one window with the other costs to declare. Chat, once paid: "&lt;player&gt; pays N honor to declare their attackers" (or defenders), with N the total (<code>honorCostToDeclare(characters)</code>). An honor loss cancelled by an interrupt (Asahina Purifier) doesn't undo the declaration.</li>
+      <li>Paid by the declaring player after attackers (or defenders) are declared, one honor loss per effect, in one window with the other costs to declare. Chat, once paid: "&lt;player&gt; pays N honor to declare their attackers" (or defenders), with N the honor actually lost (<code>honorPaid(events)</code>): a loss an interrupt cancelled (Asahina Purifier) isn't counted, and doesn't undo the declaration. With every loss cancelled, nothing is said.</li>
       <li>The tainted status token is this effect with <code>{ amount: 1, dueToStatusToken: true }</code>; <code>taintedStatusDoesNotCostHonor()</code> switches that one off.</li>
     </ul>
     <pre><code>// Unleashed Experiment: … As an additional cost to declare this character as an attacker or defender, you lose 2 honor.
@@ -2687,8 +2689,8 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>All effects on the province add up (<code>province.getFateCostToAttack()</code>). The province can't be attacked while the opponent has less fate than that plus the attackers' <code>fateCostToAttack</code>.</li>
-      <li>Paid when the conflict is declared: "&lt;player&gt; pays N fate to declare a conflict at &lt;province&gt;", then the fate is placed on a ring.</li>
+      <li>All effects on the province add up (<code>province.getFateCostToAttack()</code>). The province can't be attacked while the opponent can't spend that plus the attackers' <code>fateCostToAttack</code> (<code>canSpendFate</code>: too little fate, or a <code>SpendFate</code> restriction), and a conflict can't be declared against it without an unclaimed ring other than the contested one (<code>canPayFateToRingToAttack</code>).</li>
+      <li>Paid when the conflict is declared, in the one window with the other costs to declare attackers (<code>payFateToRing</code>): "&lt;player&gt; pays N fate to declare a conflict at &lt;province&gt;", then "&lt;player&gt; places N fate on the &lt;ring&gt;". Unpaid (no ring can take it, or the move is cancelled), the conflict fails to initiate: "&lt;player&gt; cannot pay the fate to declare a conflict at &lt;province&gt;".</li>
     </ul>
     <pre><code>// Foothills Keep: Eminent. (…) As an additional cost to attack another province you control, your opponent must
 // spend 1 fate to an unclaimed ring.
@@ -2740,14 +2742,14 @@ this.persistentEffect({
     </table>
     <ul class="edge">
       <li>Read when the character is played from a province (also disguised); not when it is played "as if it were in your hand" from there, normally or using Disguised (Hidden Moon Dōjō, Prepared Ambush: EmeraldDB ruling on Toshi Ranbo), nor when it is put into play by an effect.</li>
-      <li>The effect must be on the card while it is in the hand or province, so set <code>targetLocation</code>.</li>
+      <li>The effect must be on the card while it is in the hand or province, so set <code>targetLocation</code>. Match with <a href="helpers.html#he-isPlayedFromProvince"><code>isPlayedFromProvince</code></a> so a character hidden in a holding in that province (Back-Alley Hideaway) counts too.</li>
       <li>Copies add up. A <code>cardCannot(RestrictionType.PlaceFate)</code> on the character cancels the extra fate.</li>
     </ul>
     <pre><code>// The Emerald Court: Characters played from this province enter play with 1 additional fate on them.
 this.persistentEffect({
-    targetLocation: Location.Provinces,
+    targetLocation: Location.Any,
     targetController: Players.Self,
-    match: (card, context) =&gt; card.type === CardType.Character &amp;&amp; card.location === context?.source.location,
+    match: (card, context) =&gt; card.type === CardType.Character &amp;&amp; !!context &amp;&amp; isPlayedFromProvince(card, context.source.location),
     effect: gainExtraFateWhenPlayed()
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Neutral/TheEmeraldCourt.ts">The Emerald Court</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/ToshiRanbo.ts">Toshi Ranbo</a></p>
@@ -3046,7 +3048,7 @@ this.persistentEffect({
     <h3><code>eventsCannotBeCancelled()</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-eventsCannotBeCancelled">#</a></h3>
     <p>"Each event you play during this conflict cannot be canceled."</p>
     <ul class="edge">
-      <li>A <code>cancel</code> has no legal target when the event it would cancel belongs to an Event card owned by the affected player.</li>
+      <li>A <code>cancel</code> has no legal target when the event it would cancel belongs to an Event card controlled by the affected player: one they are playing, also an opponent's card.</li>
     </ul>
     <pre><code>// Persuasive Counselor: Action: During a conflict in which this character is participating - each event you play
 // during this conflict cannot be canceled.

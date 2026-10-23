@@ -1569,12 +1569,13 @@ this.action('Turn attachment into character')
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>target</code></td><td><code>BaseCard | BaseCard[]</code></td><td>the ability's source</td><td>The provinces to break.</td></tr>
+        <tr><td><code>breaker</code></td><td><code>Player</code></td><td>the province controller's opponent</td><td>The player who breaks it (RRG: a province broken outside conflict resolution is broken by its controller's opponent). Conflict resolution passes the attacking player.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Only provinces that aren't broken. Restriction: <code>RestrictionType.Break</code>.</li>
-      <li>Breaking removes every token from the province, adds "<em>opponent</em> has broken <em>province</em>!" to the chat and checks for a conquest victory. During a conflict, the attacking player is then asked for each card in the province whether to discard it.</li>
-      <li>Raises <code>onBreakProvince</code> (<code>event.conflict</code>). Chat: "break <em>province</em>"; as a cost: "breaking <em>province</em>".</li>
+      <li>Breaking removes every token from the province, adds "<em>breaker</em> has broken <em>province</em>!" to the chat and checks for a conquest victory. The breaker is then asked for each card in the province whether to discard it, also outside a conflict. Without an opponent (no breaker) only the tokens are removed.</li>
+      <li>Raises <code>onBreakProvince</code> (<code>event.conflict</code>, <code>event.breaker</code>). Chat: "break <em>province</em>"; as a cost: "breaking <em>province</em>".</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// Raze to the Ground: Reaction: After you win a [conflict-military] conflict against a non-stronghold province, dishonor a participating (friendly) character and break a faceup (friendly) province - break the attacked province.
@@ -1953,7 +1954,7 @@ this.reaction('Resolve the ring effect')
     <ul class="edge">
       <li>Several rings: one event opens a window where the effects resolve one at a time. They are ordered by the rings' priority (reversed when the ability's player is not the first player), unless <code>enforceOrderedResolution</code> keeps the given order. The action's own <code>optional</code> applies to each of them.</li>
       <li>Several rings: the event counts as resolved in full (for <code>then()</code>) unless one of the ring effects was cancelled; a replaced one counts as resolved (Enlightenment).</li>
-      <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled</code>. Raises <code>onResolveRingElement</code>.</li>
+      <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled</code>, before its would-interrupt window (ruling #636: a cancelled ring effect can't be replaced). Raises <code>onResolveRingElement</code>.</li>
       <li>Chat: <code>resolve {0} effect</code>.</li>
       <li>Builder shortcut: <code>.resolveRingEffect(…)</code>.</li>
     </ul>
@@ -2250,13 +2251,14 @@ this.action('Return player\'s rings')
         <tr><td><code>gameAction</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>required</td><td>The duel's effect, resolved only when the duel has a winner. It gets no target from the duel: name it, e.g. <code>bow({ target: duel.loser })</code>.</td></tr>
         <tr><td><code>onTie</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>none</td><td>Resolved when the duel has no winner.</td></tr>
         <tr><td><code>chatText</code></td><td><code>(context, duel) =&gt; MessageArgs</code></td><td>the game action's own text</td><td>What the chat says after "Duel Effect: ".</td></tr>
-        <tr><td><code>statistic</code></td><td><code>(card, duelRules) =&gt; number</code></td><td>the duel type's skill</td><td>Replaces the value each participant duels with.</td></tr>
+        <tr><td><code>statistic</code></td><td><code>DuelStatistic</code>: <code>(card, duelRules) =&gt; number | { printed, bonus }</code></td><td>the duel type's skill</td><td>Replaces the value each participant duels with. Return <code>{ printed, bonus }</code> when part of it is a bonus that <code>duelIgnorePrintedSkill</code> keeps (Challenge on the Fields); a number counts as all printed.</td></tr>
         <tr><td><code>costHandler</code></td><td><code>(context, prompt) =&gt; void</code></td><td>none</td><td>Runs after the honor bid instead of the honor transfer (e.g. pay with cards).</td></tr>
         <tr><td><code>challengerEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>A lasting effect on the challenger until the duel ends.</td></tr>
         <tr><td><code>targetEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>A lasting effect on the targets until the duel ends.</td></tr>
-        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The opponent is asked "Do you wish to refuse the duel?" while it has a legal target; "Yes" resolves it instead of the duel.</td></tr>
+        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The opponent is asked "Do you wish to refuse the duel?" while it has a legal target; "Yes" resolves it first, in its own window, and the duel is refused only if it fully resolved ("to": a refusal an interrupt cancelled or redirected, Kitsuki Shomon, still starts the duel).</td></tr>
         <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; MessageArgs</code></td><td>"<em>refuser</em> chooses to refuse the duel and …"</td><td>The chat line when the duel is refused.</td></tr>
-        <tr><td><code>requiresConflict</code></td><td><code>boolean</code></td><td>unset (<code>.initiateDuel</code> sets <code>true</code>)</td><td>Characters added to the duel later must be participating.</td></tr>
+        <tr><td><code>requiresConflict</code></td><td><code>boolean</code></td><td>unset (<code>.initiateDuel</code> sets <code>true</code>)</td><td>Characters added to the duel later must be participating. Unset, that holds when the duel was initiated during a conflict (RRG D.1); <code>false</code> lifts it.</td></tr>
+        <tr><td><code>targetCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>Who can be added to the duel later (Two Hands); replaces the participation check.</td></tr>
         <tr><td><code>challengerCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>Read only by <code>.initiateDuel</code>, which uses it to choose the challenger.</td></tr>
       </tbody>
     </table>
@@ -2297,7 +2299,7 @@ this.action('Duel an opposing character')
       </tbody>
     </table>
     <ul class="edge">
-      <li>A character in play that may duel, isn't already in the duel, and isn't controlled by the challenging player. It must meet the duel's target condition, or be participating when the duel requires a conflict.</li>
+      <li>A character in play that may duel, isn't already in the duel, and isn't controlled by the challenging player. It must meet the duel's <code>targetCondition</code>, or else be participating when the duel has <code>requiresConflict</code> or, with it unset, was initiated during a conflict.</li>
       <li>"May duel": not "No duels", no dash in the duel's skill (a dash in the other skill doesn't matter: Matsu Berserker in a military duel) and no <code>RestrictionType.Duel</code>.</li>
       <li>Raises <code>onAddDuelParticipant</code>. Chat: "extend the duel challenge to <em>card</em>".</li>
       <li>No builder shortcut.</li>

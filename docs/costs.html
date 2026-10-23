@@ -102,7 +102,7 @@ this.conflictAction('Discard a character')
         <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something. If so, the action window skips its one-click confirmation menu and starts the ability directly.</td></tr>
         <tr><td><code>dependsOn</code></td><td>The name of a target the cost depends on: while that target is offered first, a candidate is legal only if the cost can be paid for it (<code>targetDependentFate</code>).</td></tr>
         <tr><td><code>hasTargetsChosenByInitiatingPlayer(context)</code></td><td>Whether paying makes the ability's player choose cards. It counts toward the ability's <code>hasTargetsChosenByInitiatingPlayer</code> (Hantei XXXVIII).</td></tr>
-        <tr><td><code>fateSpent(context)</code></td><td>The fate the player spends paying it (set by <code>payFate</code> and <code>payFateToRing</code>). Targeting costs checked before the costs are paid subtract it from the fate available.</td></tr>
+        <tr><td><code>fateSpent(context)</code></td><td>The fate the player spends paying it (set by <code>payFate</code> and <code>payFateToRing</code>). Targeting costs checked before the costs are paid subtract it from the fate available, and the reduceable fate costs add it to their own when checking they can be paid.</td></tr>
         <tr><td><code>chosenByOpponent</code></td><td>The opponent makes this choice (set by <code>optionalTakeHonorFromOpponent</code>). With <code>firstPlayerChoosesFirst()</code> and the opponent as first player, these costs are chosen first.</td></tr>
         <tr><td><code>isPrintedFateCost</code>, <code>isPlayCost</code>, <code>getReducedCost(context)</code></td><td>Engine-only, set by the fate and play costs: <code>playCard</code> with <code>ignoreFateCost</code> skips the first, a play without play costs skips the second, and the ability's fate cost after reductions comes from the third.</td></tr>
         <tr><td><code>action</code>, <code>activePromptTitle</code></td><td>Fields of some built-in costs. The engine does not read them through <code>Cost</code>.</td></tr>
@@ -881,7 +881,7 @@ this.action('Bow a character')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Can't be paid without an opponent, with an amount of 0, when an honor-gain limit leaves nothing to transfer, or when honor can't be taken from the player.</li>
+      <li>Can't be paid without an opponent, with an amount of 0, when an honor-gain limit leaves nothing to transfer, or when honor can't be taken from the player or the player can't lose honor (a restriction on losing honor blocks it).</li>
       <li>An honor-gain limit on the opponent (<a href="effects.html#ef-limitHonorGainPerPhase"><code>limitHonorGainPerPhase</code></a>) lowers the amount transferred. No other effect changes it.</li>
       <li>Chat: <code>giving {1} honor to {2}</code> (the amount actually transferred, the opponent).</li>
       <li>Also used as an added cost: Command Respect makes the opponent pay it with <code>additionalPlayCost</code>.</li>
@@ -933,7 +933,7 @@ this.conflictAction('Give attached character a skill bonus', { conflictType: Con
     </table>
     <ul class="edge">
       <li>Can't be paid when the player has no fate or can't spend fate, or no matching ring can receive fate.</li>
-      <li>Like <code>payFate</code>, it checks only that the player has some fate, not <code>amount</code>.</li>
+      <li>Unlike <code>payFate</code>, it checks only that the player can spend some fate (<code>canMoveFateFrom</code> with <code>spend</code>: <code>canSpendFate(1)</code>), not <code>amount</code>; the move then takes at most the fate the player has. Its <code>fateSpent</code> (<code>amount</code>) is counted by the ability's reduceable fate cost and the costs of targeting.</li>
       <li>Prompt: "Select a ring to place fate on". Records <code>ringPaidFateTo</code>: the ring (no snapshot). Chat: <code>placing {1} fate on the {0}</code>.</li>
     </ul>
     <pre><code>// Young Ise Zumi: Reaction: After this character wins a conflict, spend 1 fate to a ring - players cannot declare conflicts using that ring this phase.
@@ -981,9 +981,9 @@ this.conflictAction('Discard a character')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Can't be paid when the card has no printed cost (a dash), when its minimum cost is more than the player's fate, or when the player can't spend fate (and the cost isn't 0). A Temptations maho card ("can only be paid for with fate on characters you control") can only be played when its cost is reduced to 0: the fate on your characters reduces it, the fate pool pays nothing. A subclass sets this for its own cost by overriding <code>isCharacterFateOnly(context)</code> (Isawa Hifumi's cost).</li>
+      <li>Can't be paid when the card has no printed cost (a dash), or when its minimum cost isn't 0 and the player can't spend it plus the fate the ability's other costs spend (their <code>fateSpent</code>, e.g. <code>payFate</code>, <code>payFateToRing</code>): all costs are paid in full together. The fate pool offered when paying is lowered by those other costs too. A Temptations maho card ("can only be paid for with fate on characters you control") can only be played when its cost is reduced to 0: the fate on your characters reduces it, the fate pool pays nothing. A subclass sets this for its own cost by overriding <code>isCharacterFateOnly(context)</code> (Isawa Hifumi's cost).</li>
       <li>When fate on other cards or rings may pay for the card (alternate fate pools), the player is asked how much to take from each; the chat says "<em>player1 takes N fate from X to pay the cost of Y</em>".</li>
-      <li>Marks the reducers used. Skipped when <code>context.ignoreFateCost</code> is set, and when another card's effect resolves the ability.</li>
+      <li>Marks the reducers used (only while it is a play cost, <code>isPlayCost</code>; Isawa Hifumi's cost subclass turns that off). Skipped when <code>context.ignoreFateCost</code> is set, and when another card's effect resolves the ability.</li>
       <li>With <code>ignoreType</code>, a reducer limited to another card type also lowers the cost, and is marked used.</li>
       <li>Records <code>fate</code> (the reduced cost) and, with alternate pools, <code>alternateFate</code> (a map of pool to fate). No cost text.</li>
     </ul>
@@ -1005,7 +1005,7 @@ if(card.getType() === CardType.Event &amp;&amp; !this.isKeywordAbility()) {
       </tbody>
     </table>
     <ul class="edge">
-      <li>The target only offers cards the cost can be paid for. Before the target is chosen, the cost counts as payable.</li>
+      <li>The target only offers cards the cost can be paid for (a reduced cost of 0 always; otherwise it plus the other costs' <code>fateSpent</code> must be spendable). Before the target is chosen, the cost counts as payable.</li>
       <li>When the fate goes to the opponent (playing with <code>payFateToOpponent</code>), it can't be paid if the opponent can't gain fate.</li>
       <li>A Temptations Mahō card can only be paid for a target that reduces its cost to 0 (with the fate on your characters), as with <a href="#co-payReduceableFateCost"><code>payReduceableFateCost</code></a>.</li>
       <li>With <code>ignoreType</code>, a reducer limited to another card type also lowers the cost, and is marked used: a character played as an attachment uses up Daimyō's Favor's "next attachment" reduction.</li>

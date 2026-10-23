@@ -1175,16 +1175,16 @@ this.action('Ready a character')
       <tbody>
         <tr><td><code>type</code></td><td><code>DuelType</code></td><td>required</td><td><code>Military</code>, <code>Political</code> or <code>Glory</code>.</td></tr>
         <tr><td><code>gameAction</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>required</td><td>The duel's effect, resolved only when the duel has a winner (<code>duel.winner</code>; <code>duel.loser</code> may be unset).</td></tr>
-        <tr><td><code>requiresConflict</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Without its own conditions, the challenger and the target must be participating.</td></tr>
+        <tr><td><code>requiresConflict</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Without its own conditions, the challenger and the target must be participating. <code>false</code> lifts that, also for characters added to the duel later (otherwise those must be participating when the duel starts during a conflict).</td></tr>
         <tr><td><code>challengerCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>participating (with <code>requiresConflict</code>)</td><td>Who can be the challenger; replaces the default check.</td></tr>
         <tr><td><code>targetCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>participating (with <code>requiresConflict</code>)</td><td>Who can be dueled (an opposing character other than the challenger); replaces the default check.</td></tr>
         <tr><td><code>opponentChoosesDuelTarget</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The opponent chooses the duel target.</td></tr>
         <tr><td><code>opponentChoosesChallenger</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Not on a character: the opponent chooses the challenger.</td></tr>
         <tr><td><code>onTie</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>none</td><td>The effect on a tie; without it a tie does nothing.</td></tr>
         <tr><td><code>chatText</code></td><td><code>(context, duel) =&gt; msg…</code></td><td>the game action's text</td><td>The text after "Duel Effect: ".</td></tr>
-        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The effect when the opponent refuses the duel.</td></tr>
+        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The effect when the opponent refuses the duel; it resolves first and the duel is refused only if it fully resolved.</td></tr>
         <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; msg…</code></td><td>"… chooses to refuse the duel and …"</td><td>The chat line when refused.</td></tr>
-        <tr><td><code>statistic</code></td><td><code>(card, duelRules) =&gt; number</code></td><td>the duel type's skill</td><td>The value each character duels with.</td></tr>
+        <tr><td><code>statistic</code></td><td><code>(card, duelRules) =&gt; number | { printed, bonus }</code></td><td>the duel type's skill</td><td>The value each character duels with (<a href="game-actions.html#ga-duel"><code>DuelStatistic</code></a>).</td></tr>
         <tr><td><code>challengerEffect</code>, <code>targetEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>Effects on each side while the duel resolves.</td></tr>
         <tr><td><code>costHandler</code></td><td><code>(context, prompt) =&gt; void</code></td><td>none</td><td>Custom handling of the honor bid's cost.</td></tr>
       </tbody>

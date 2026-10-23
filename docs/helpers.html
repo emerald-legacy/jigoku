@@ -880,6 +880,26 @@ private getNumberOfLegalTargets(context: AbilityContext) {
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/RiverOfTheLastStand.ts">River of the Last Stand</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/SeventhTower.ts">Seventh Tower</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/ThirdWhiskerWarrens.ts">Third Whisker Warrens</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/WatchtowerOfValor.ts">Watchtower of Valor</a> (5 card files)</p>
   </div>
 
+  <div class="ref" id="he-extraConflictPossible" data-name="extraConflictPossible">
+    <h3><code>extraConflictPossible(player)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-extraConflictPossible">#</a></h3>
+    <p>For "you may declare an additional conflict this phase": false while the player is under a set conflict maximum (<a href="effects.html#ef-setMaxConflicts"><code>setMaxConflicts</code></a>, Waning Hostilities), where an additional conflict changes nothing.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>player</code></td><td><code>Player</code></td><td>required</td><td>The player who would gain the conflict, usually <code>context.player</code>.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Use it as the ability's <code>condition</code>, so the ability can't be triggered (and its costs paid) for nothing.</li>
+    </ul>
+    <pre><code>// Hida O-Ushi: Reaction: After you win a conflict as the defending player - you may declare an additional [conflict-military] conflict this phase. (Max 1 per phase.)
+this.reaction('Gain additional military conflict')
+    .when({ afterConflict: (event, context) =&gt; context.player.isDefendingPlayer() &amp;&amp; event.conflict.winner === context.player })
+    .condition((context) =&gt; extraConflictPossible(context.player))
+    .playerLastingEffect({ duration: Duration.UntilEndOfPhase, effect: additionalConflict(ConflictType.Military) })</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/HidaOUshi.ts">Hida O-Ushi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/HisuMoriToride.ts">Hisu Mori Toride</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Unicorn/TheSunWillRiseAgain.ts">The Sun Will Rise Again</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/YogoNorio.ts">Yogo Norio</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Unicorn/HeraldOfJustice.ts">Herald of Justice</a> (6 card files)</p>
+  </div>
+
   <div class="ref" id="he-isOpponentsRingOrCardEffect" data-name="isOpponentsRingOrCardEffect isOwnRingEffect">
     <h3><code>isOpponentsRingOrCardEffect(player, context)</code>, <code>isOwnRingEffect(player, context)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-isOpponentsRingOrCardEffect">#</a></h3>
     <p>Who caused an event: pass the event's <code>context</code>. <code>isOpponentsRingOrCardEffect</code> is true for "an opponent's card ability or ring effect"; <code>isOwnRingEffect</code> for "the effect of the ring" resolved by <code>player</code>.</p>
@@ -903,6 +923,29 @@ private getNumberOfLegalTargets(context: AbilityContext) {
         isOpponentsRingOrCardEffect(event.player, event.context)
 })</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/AkodoMotivator.ts">Akodo Motivator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/ArdentOmoidasu.ts">Ardent Omoidasu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/IsawaTsuke.ts">Isawa Tsuke</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/RighteousSamurai.ts">Righteous Samurai</a></p>
+  </div>
+
+  <div class="ref" id="he-isPlayedFromProvince" data-name="isPlayedFromProvince">
+    <h3><code>isPlayedFromProvince(card, location)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-isPlayedFromProvince">#</a></h3>
+    <p>"played from this province": whether <code>card</code> is in the province at <code>location</code>, or hidden in a holding there (Back-Alley Hideaway plays it as if from that province).</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>required</td><td>The card being played.</td></tr>
+        <tr><td><code>location</code></td><td><code>Location</code></td><td>required</td><td>The province, usually the source's <code>location</code>.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Reads the locations when called; use it in a <code>match</code> with <code>targetLocation: Location.Any</code>, so the card under a holding is matched too.</li>
+    </ul>
+    <pre><code>// The Emerald Court: Characters played from this province enter play with 1 additional fate on them.
+this.persistentEffect({
+    targetLocation: Location.Any,
+    targetController: Players.Self,
+    match: (card, context) =&gt; card.type === CardType.Character &amp;&amp; !!context &amp;&amp; isPlayedFromProvince(card, context.source.location),
+    effect: gainExtraFateWhenPlayed()
+});</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Neutral/TheEmeraldCourt.ts">The Emerald Court</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/ToshiRanbo.ts">Toshi Ranbo</a></p>
   </div>
 
   <div class="ref" id="he-otherHoldingsInSameProvince" data-name="otherHoldingsInSameProvince">
@@ -2298,19 +2341,21 @@ target: context.event.conflict
     <p>The attacked provinces: the conflict province first, then provinces an effect added ("The conflict is also at that province"). <code>[]</code> if the conflict has no province.</p>
     <ul class="edge">
       <li>"the attacked province" usually means checking all of them with <code>some(…)</code>.</li>
+      <li>Read live: once the conflict finishes, a province added by an <code>UntilEndOfConflict</code> effect (A War on Two Fronts) drops out. In <code>onConflictFinished</code> reactions use <a href="#q-brokenProvinces"><code>conflict.provincesAtEnd</code></a>.</li>
     </ul>
     <pre><code>// Silent Suburb: Reaction: After you win a conflict at this province - resolve the ring effect of that conflict.
 event.conflict.getConflictProvinces().some((p) =&gt; p === context.source)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/DiversionaryManeuver.ts">Diversionary Maneuver</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/StudentOfTheTao.ts">Student of the Tao</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crab/DeployedGarrison.ts">Deployed Garrison</a> (26 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DefendTheWall.ts">Defend the Wall</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/DiversionaryManeuver.ts">Diversionary Maneuver</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/StudentOfTheTao.ts">Student of the Tao</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crab/DeployedGarrison.ts">Deployed Garrison</a> (24 card files)</p>
   </div>
 
-  <div class="ref" id="q-brokenProvinces" data-name="brokenProvinces attackersAtResolution defendersAtResolution attackersAtEnd defendersAtEnd">
-    <h3><code>conflict.brokenProvinces</code>, <code>conflict.attackersAtResolution</code>, <code>conflict.defendersAtResolution</code>, <code>conflict.attackersAtEnd</code>, <code>conflict.defendersAtEnd</code> <span class="kind">Field</span> <a class="anchor" href="#q-brokenProvinces">#</a></h3>
+  <div class="ref" id="q-brokenProvinces" data-name="brokenProvinces attackersAtResolution defendersAtResolution attackersAtEnd defendersAtEnd provincesAtEnd">
+    <h3><code>conflict.brokenProvinces</code>, <code>conflict.attackersAtResolution</code>, <code>conflict.defendersAtResolution</code>, <code>conflict.attackersAtEnd</code>, <code>conflict.defendersAtEnd</code>, <code>conflict.provincesAtEnd</code> <span class="kind">Field</span> <a class="anchor" href="#q-brokenProvinces">#</a></h3>
     <p>What happened in a conflict, kept on the <code>Conflict</code> so a card needs no state of its own: the provinces broken while it was the current conflict, and the characters attacking and defending when the winner was determined.</p>
     <ul class="edge">
       <li><code>brokenProvinces</code> also records a province broken by an ability during the conflict. A province broken outside a conflict is in no conflict's list.</li>
       <li><code>attackersAtResolution</code> and <code>defendersAtResolution</code> are copies taken when the winner is determined and stay empty until then; characters that leave the conflict afterwards remain in them ("this character won the conflict": Isawa Kaede).</li>
       <li><code>attackersAtEnd</code> and <code>defendersAtEnd</code> are taken as the participants return home: a character sent home after the winner was determined (False Loyalties) isn't in them. Read them in <code>onConflictFinished</code> for "after the resolution of a conflict in which this character was attacking/defending" (EmeraldDB ruling on Ivory Kingdoms Unicorn).</li>
+      <li><code>provincesAtEnd</code> is <code>getConflictProvinces()</code> taken as the conflict finishes, before its <code>UntilEndOfConflict</code> effects expire: a province attacked through A War on Two Fronts stays in it. Read it in <code>onConflictFinished</code> for "the attacked province" (Breakthrough, Lessons from Earth); it is empty for a passed conflict.</li>
       <li>The current conflict is <code>context.game.currentConflict</code>; finished ones are the records of <a href="#q-getConflicts"><code>game.getConflicts(player)</code></a>, which share <code>brokenProvinces</code>.</li>
     </ul>
     <pre><code>// Utaku Tomoe: Reaction: After the resolution of a conflict in which this character was defending - if you won the conflict, gain 2 honor. Otherwise, ready this character.
