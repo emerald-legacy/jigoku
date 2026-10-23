@@ -13,7 +13,7 @@ export default class HenshinMysteries extends ProvinceCard {
 
     public cancelRingClaim(event: GameEvent<EventName.OnClaimRing>) {
         const province = this.conflictProvinceWithText();
-        if(event.conflict && province && !event.cancelled) {
+        if(event.conflict && event.ring === event.conflict.ring && province && !event.cancelled) {
             event.cancel();
             this.game.addMessage(msg`${province} cancels the ring being claimed`);
         }

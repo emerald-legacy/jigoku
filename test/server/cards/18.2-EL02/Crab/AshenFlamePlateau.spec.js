@@ -63,7 +63,7 @@ describe('Ashen Flame Plateau', function() {
             expect(this.player1).toHavePrompt('Conflict Action Window');
         });
 
-        it('should stop sincerity and courtesy in conflict', function() {
+        it('should not stop sincerity and courtesy in conflict: they resolve after the character left play', function() {
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',
@@ -80,11 +80,11 @@ describe('Ashen Flame Plateau', function() {
             this.player2.clickCard(this.assassination);
             this.player2.clickCard(this.envoy);
             expect(this.envoy.location).toBe('dynasty discard pile');
-            expect(this.player1.hand.length).toBe(cards);
-            expect(this.player1.fate).toBe(fate);
+            expect(this.player1.hand.length).toBe(cards + 1);
+            expect(this.player1.fate).toBe(fate + 1);
         });
 
-        it('should stop sincerity and courtesy at home', function() {
+        it('should not stop sincerity and courtesy at home: they resolve after the character left play', function() {
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',
@@ -101,8 +101,8 @@ describe('Ashen Flame Plateau', function() {
             this.player2.clickCard(this.assassination);
             this.player2.clickCard(this.envoy);
             expect(this.envoy.location).toBe('dynasty discard pile');
-            expect(this.player1.hand.length).toBe(cards);
-            expect(this.player1.fate).toBe(fate);
+            expect(this.player1.hand.length).toBe(cards + 1);
+            expect(this.player1.fate).toBe(fate + 1);
         });
 
         it('should stop abilities at home', function() {
@@ -144,7 +144,7 @@ describe('Ashen Flame Plateau', function() {
             expect(this.player1).toHavePrompt('Conflict Action Window');
         });
 
-        it('should stop forced abilities', function() {
+        it('should not stop forced abilities', function() {
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',
@@ -153,10 +153,12 @@ describe('Ashen Flame Plateau', function() {
                 province: this.wasteland
             });
             this.player2.clickCard(this.wasteland);
-            this.player2.clickCard(this.sotorii);
             this.player2.clickPrompt('Done');
-            this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Isawa Ujina');
+            this.player2.pass();
+            this.player1.pass();
+            expect(this.player1).toHavePrompt('Isawa Ujina');
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.location).toBe('removed from game');
         });
 
         it('should not stop abilities on defending characters', function() {

@@ -31,7 +31,7 @@ export default class AgashaCrucible extends DrawCard {
     static id = 'agasha-crucible';
 
     public override setupCardAbilities() {
-        this.action('Give Elemental Trait to a Fire Shugenja')
+        this.action('Give an Elemental Trait to a Shugenja')
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
+import type { Ring } from '../../Ring.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 import { cardCannot } from '../../effects.js';
 import { RestrictionType, RestrictionScope } from '../../Constants.js';
@@ -9,10 +11,6 @@ class TsangusuriWard extends DrawCard {
     override setupCardAbilities() {
         this.playOnlyIf((context) => controlsShugenja(context.player));
 
-        this.attachmentConditions({
-            myControl: true
-        });
-
         this.whileAttached({
             effect: cardCannot({
                 cannot: RestrictionType.Play,
@@ -20,6 +18,11 @@ class TsangusuriWard extends DrawCard {
                 source: this
             })
         });
+    }
+
+    /** "Play only on a character you control": it stays attached if you lose control. */
+    override canPlayOn(card: BaseCard | Ring): boolean {
+        return 'controller' in card && card.controller === this.controller && super.canPlayOn(card);
     }
 }
 

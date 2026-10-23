@@ -1,7 +1,7 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import { charactersCannot } from '../../../effects.js';
+import { cardCannot } from '../../../effects.js';
 import { msg } from '../../../GameChat.js';
-import { RestrictionType, RestrictionScope } from '../../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class AshenFlamePlateau extends ProvinceCard {
     static id = 'ashen-flame-plateau';
@@ -11,20 +11,20 @@ export default class AshenFlamePlateau extends ProvinceCard {
             .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             })
-            .conflictLastingEffect((context) => ({
+            .conflictLastingEffect({
+                targetController: Players.Opponent,
+                match: (card) => card.type === CardType.Character,
                 effect: [
-                    charactersCannot({
+                    cardCannot({
                         cannot: RestrictionType.TriggerAbilities,
-                        appliesTo: RestrictionScope.OpponentsCharacters,
-                        applyingPlayer: context.player
+                        appliesTo: RestrictionScope.NonForcedAbilities
                     }),
-                    charactersCannot({
+                    cardCannot({
                         cannot: RestrictionType.InitiateKeywords,
-                        appliesTo: RestrictionScope.OpponentsCharacters,
-                        applyingPlayer: context.player
+                        appliesTo: RestrictionScope.KeywordAbilities
                     })
                 ]
-            }))
+            })
             .chatText((context) => msg`prevent ${context.player.opponent} from triggering character abilities this conflict`);
     }
 }

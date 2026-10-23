@@ -15,14 +15,8 @@ export default class DaidojiOta extends DrawCard {
                     (card) => card.type === CardType.Character && card.isParticipating()
                 ),
             effect: reduceCost({
-                amount: (card, player) => {
-                    const dynastyMatchesByName = player.dynastyDiscardPile.filter((a) => a.name === card.name);
-                    const conflictMatchesByName = player.conflictDiscardPile.filter((a) => a.name === card.name);
-                    if(dynastyMatchesByName.length + conflictMatchesByName.length > 0) {
-                        return -1;
-                    }
-                    return 0;
-                },
+                amount: (card, player) =>
+                    player.conflictDiscardPile.some((copy) => copy !== card && copy.name === card.name) ? -1 : 0,
                 match: (card) => card.type === CardType.Event
             })
         });

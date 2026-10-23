@@ -931,9 +931,9 @@ export class BaseCard extends EffectSource {
 
     /**
      * Checks 'no attachment' restrictions for this card when attempting to
-     * attach the passed attachment card.
+     * attach the passed attachment card, which `controller` will control once attached.
      */
-    allowAttachment(attachment: BaseCard): boolean {
+    allowAttachment(attachment: BaseCard, _controller: Player = attachment.controller): boolean {
         if(this.allowedAttachmentTraits.some((trait) => attachment.getTraits().has(trait))) {
             return true;
         }

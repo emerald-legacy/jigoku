@@ -28,6 +28,10 @@ describe('Shosuro Technique', function () {
         });
 
         describe('Duel Challenge', function () {
+            it('is titled for ignoring printed skill', function () {
+                expect(this.technique.abilities.reactions.map((ability) => ability.title)).toEqual(['Ignore printed skill in the duel']);
+            });
+
             it('should make printed skill not count if you are challenged', function () {
                 this.noMoreActions();
                 this.initiateConflict({

@@ -1,6 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
 import {
+    attach,
     playCard,
     playerLastingEffect,
     sequential
@@ -12,7 +13,7 @@ export default class Kuro extends DrawCard {
     static id = 'kuro';
 
     public override allowAttachment(attachment: DrawCard) {
-        if(attachment.costLessThan(1)) {
+        if(!this.isBlank() && attachment.costLessThan(1)) {
             return false;
         }
         return super.allowAttachment(attachment);
@@ -26,9 +27,10 @@ export default class Kuro extends DrawCard {
                 cardType: CardType.Attachment,
                 // only an attachment you can play on Kuro and pay for with the reduction (RRG Target)
                 cardCondition: (card, context) =>
-                    card.costAtLeast(1) && card.canAttach(this, { ignoreType: false, controller: this.controller }) &&
+                    card.costAtLeast(1) && card.canPlayOn(this) &&
+                    attach({ attachment: card, takeControl: card.controller !== context.player }).canAffect(this, context) &&
                     card.canPlay(context.copy({ source: card }), PlayType.Other) &&
-                    context.player.getReducedCost(PlayType.Other, card, this) - 1 <= context.player.fate
+                    context.player.canSpendFate(context.player.getReducedCost(PlayType.Other, card, this) - 1, context)
             }, sequential([
                 playerLastingEffect((context) => ({
                     target: Players.Self,

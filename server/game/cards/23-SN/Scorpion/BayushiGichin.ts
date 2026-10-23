@@ -61,7 +61,7 @@ export default class BayushiGichin extends DrawCard {
                 type: DuelType.Military,
                 gameAction: (duel, context) => {
                     if(context.source.isDrawCard() && duel.winner.includes(context.source)) {
-                        return takeHonor({ target: duel.loserController });
+                        return takeHonor();
                     }
                     return noAction();
                 }

@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import { CardType, Players, ConflictType } from '../../Constants.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 
@@ -18,12 +19,12 @@ class HidaBackbreaker extends DrawCard {
             }, dishonor());
     }
 
-    override allowAttachment(attachment: DrawCard) {
-        if(attachment.controller === this.controller.opponent) {
+    override allowAttachment(attachment: DrawCard, controller: Player = attachment.controller) {
+        if(!this.isBlank() && controller === this.controller.opponent) {
             return false;
         }
 
-        return super.allowAttachment(attachment);
+        return super.allowAttachment(attachment, controller);
     }
 }
 

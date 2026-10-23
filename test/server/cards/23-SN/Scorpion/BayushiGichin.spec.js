@@ -175,3 +175,41 @@
         });
     });
 });
+
+describe('Bayushi Gichin and a duel without a loser', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 15,
+                    inPlay: ['bayushi-gichin']
+                },
+                player2: {
+                    honor: 5,
+                    inPlay: ['hida-yakamo']
+                }
+            });
+            this.gichin = this.player1.findCardByName('bayushi-gichin');
+            this.yakamo = this.player2.findCardByName('hida-yakamo');
+        });
+
+        it('takes 1 honor from the opponent when winning against Hida Yakamo', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.gichin],
+                defenders: [this.yakamo]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.gichin);
+            this.player1.clickCard(this.yakamo);
+            this.player1.clickPrompt('3');
+            this.player2.clickPrompt('1');
+            expect(this.getChatLogs(5)).toContain('Bayushi Gichin: 8 vs 5: Hida Yakamo');
+            expect(this.getChatLogs(5)).toContain('Duel Effect: take 1 honor from player2');
+            expect(this.player1.honor).toBe(14);
+            expect(this.player2.honor).toBe(6);
+        });
+    });
+});

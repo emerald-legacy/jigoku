@@ -4,6 +4,7 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 import * as costs from '../../costs/index.js';
 import { dishonor } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
+import { countTargetable } from '../countTargetable.js';
 
 export default class DishonorableAssault extends ProvinceCard {
     static id = 'dishonorable-assault';
@@ -25,7 +26,6 @@ export default class DishonorableAssault extends ProvinceCard {
         if(!this.game.currentConflict) {
             return 0;
         }
-        return this.game.currentConflict.getParticipants((card) => card.isAttacking())
-            .filter((card) => dishonor().canAffect(card, context)).length;
+        return countTargetable(this.game.currentConflict.getParticipants((card) => card.isAttacking() && dishonor().canAffect(card, context)), context);
     }
 }

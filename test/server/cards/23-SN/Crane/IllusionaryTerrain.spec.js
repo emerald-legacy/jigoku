@@ -45,7 +45,7 @@ describe('Illusionary Terrain', function () {
             this.stone.facedown = false;
             this.justice.facedown = false;
 
-            this.abandoning.broken = true;
+            this.abandoning.isBroken = true;
 
             this.game.checkGameState(true);
         });
@@ -90,7 +90,7 @@ describe('Illusionary Terrain', function () {
             expect(this.player2).not.toBeAbleToSelect(this.position);
             expect(this.player2).toBeAbleToSelect(this.manicuredGarden);
             expect(this.player2).toBeAbleToSelect(this.revels);
-            expect(this.player2).toBeAbleToSelect(this.abandoning);
+            expect(this.player2).not.toBeAbleToSelect(this.abandoning);
         });
 
         it('targeting - affinity', function () {
@@ -106,7 +106,7 @@ describe('Illusionary Terrain', function () {
 
             expect(this.player2).toBeAbleToSelect(this.position);
             expect(this.player2).toBeAbleToSelect(this.manicuredGarden);
-            expect(this.player2).toBeAbleToSelect(this.abandoning);
+            expect(this.player2).not.toBeAbleToSelect(this.abandoning);
             expect(this.player2).toBeAbleToSelect(this.revels);
 
             expect(this.player2).not.toBeAbleToSelect(this.fury);
@@ -230,6 +230,7 @@ describe('Illusionary Terrain', function () {
         });
 
         it('copy - interrupt', function () {
+            this.abandoning.isBroken = false;
             this.fury.facedown = true;
             this.player2.moveCard(this.purifier, 'play area');
             this.scout.dishonor();
@@ -401,14 +402,17 @@ describe('Illusionary Terrain on the stronghold province', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['kakita-toshimoko']
+                    inPlay: ['kakita-toshimoko'],
+                    provinces: ['manicured-garden']
                 },
                 player2: {
+                    inPlay: ['asahina-purifier'],
                     provinces: ['public-forum', 'elemental-fury', 'fertile-fields', 'avalanche-of-stone'],
                     hand: ['illusionary-terrain']
                 }
             });
             this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+            this.manicuredGarden = this.player1.findCardByName('manicured-garden');
             this.forum = this.player2.findCardByName('public-forum');
             this.fury = this.player2.findCardByName('elemental-fury');
             this.fields = this.player2.findCardByName('fertile-fields');
@@ -416,7 +420,7 @@ describe('Illusionary Terrain on the stronghold province', function () {
             this.stronghold = this.player2.findCardByName('shameful-display', 'stronghold province');
             this.terrain = this.player2.findCardByName('illusionary-terrain');
 
-            for(const province of [this.forum, this.fury, this.fields, this.stone]) {
+            for(const province of [this.manicuredGarden, this.forum, this.fury, this.fields, this.stone]) {
                 province.facedown = false;
             }
             this.fury.isBroken = true;
@@ -432,8 +436,9 @@ describe('Illusionary Terrain on the stronghold province', function () {
                 province: this.stronghold
             });
             this.player2.clickCard(this.terrain);
-            expect(this.player2).toBeAbleToSelect(this.fury);
+            expect(this.player2).toBeAbleToSelect(this.manicuredGarden);
             expect(this.player2).not.toBeAbleToSelect(this.forum);
+            expect(this.player2).not.toBeAbleToSelect(this.fury);
         });
     });
 });

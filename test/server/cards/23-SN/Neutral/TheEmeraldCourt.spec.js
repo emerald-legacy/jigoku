@@ -62,3 +62,43 @@ describe('The Emerald Court', function () {
         });
     });
 });
+
+describe('The Emerald Court and Back-Alley Hideaway', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi']
+                },
+                player2: {
+                    inPlay: ['shosuro-ibuki', 'bayushi-manipulator'],
+                    hand: ['noble-sacrifice'],
+                    dynastyDiscard: ['back-alley-hideaway'],
+                    provinces: ['the-emerald-court']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.ibuki = this.player2.findCardByName('shosuro-ibuki');
+            this.manipulator = this.player2.findCardByName('bayushi-manipulator');
+            this.backAlley = this.player2.placeCardInProvince('back-alley-hideaway', 'province 1');
+            this.ibuki.honor();
+            this.yoshi.dishonor();
+            this.player1.pass();
+            this.player2.clickCard('noble-sacrifice');
+            this.player2.clickCard(this.yoshi);
+            this.player2.clickCard(this.ibuki);
+            this.player2.clickCard(this.backAlley);
+        });
+
+        it('should add 1 fate to a character played from a Back-Alley Hideaway in this province', function () {
+            expect(this.ibuki.parent).toBe(this.backAlley);
+            this.player1.pass();
+            this.player2.clickCard(this.ibuki);
+            this.player2.clickCard(this.ibuki);
+            this.player2.clickCard(this.manipulator);
+            expect(this.ibuki.location).toBe('play area');
+            expect(this.ibuki.fate).toBe(1);
+        });
+    });
+});

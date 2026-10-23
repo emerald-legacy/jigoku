@@ -63,7 +63,7 @@ export class AttachAction<Context extends AbilityContext = AbilityContext> exten
             return false;
         }
         const controller = this.getFinalController(properties, context) ?? attachment.controller;
-        const allowed = card.allowAttachment(attachment);
+        const allowed = card.allowAttachment(attachment, controller);
         const legallyAttached = attachment.canAttach(card, { ignoreType: properties.ignoreType, controller }) &&
             !card.hasCopyOfAttachment(attachment, controller) && allowed;
         if(
