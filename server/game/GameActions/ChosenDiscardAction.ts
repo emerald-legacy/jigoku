@@ -88,7 +88,7 @@ export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext
         return player.hand.filter((card) => !properties.cardCondition || properties.cardCondition(card, context));
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, Context>, player: Player, context: Context, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, Context>, player: Player, context: Context, additionalProperties: ActionOverrides): void {
         const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;

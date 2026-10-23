@@ -47,10 +47,6 @@ export class TriggerAbilityAction<Context extends AbilityContext = AbilityContex
 
     override hasTargetsChosenByInitiatingPlayer(context: Context, additionalProperties: ActionOverrides = {}) {
         const properties = this.getProperties(context, additionalProperties);
-        return (
-            properties.ability &&
-            properties.ability.hasTargetsChosenByInitiatingPlayer &&
-            properties.ability.hasTargetsChosenByInitiatingPlayer(abilityContext(properties, context))
-        );
+        return properties.ability.hasTargetsChosenByInitiatingPlayer(abilityContext(properties, context));
     }
 }

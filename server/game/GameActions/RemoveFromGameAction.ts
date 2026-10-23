@@ -46,7 +46,7 @@ export class RemoveFromGameAction<Context extends AbilityContext = AbilityContex
         return super.canAffect(card, context);
     }
 
-    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, card: DrawCard, context: Context, additionalProperties: Record<string, unknown>): void {
+    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, card: DrawCard, context: Context, additionalProperties: ActionOverrides): void {
         super.updateEvent(event, card, context, { ...additionalProperties, destination: Location.RemovedFromGame });
     }
 }

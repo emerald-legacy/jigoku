@@ -25,7 +25,7 @@ export class InitiateConflictAction<Context extends AbilityContext = AbilityCont
     }
 
 
-    override eventHandler(event: ActionEvent<EventName.OnConflictInitiated, Context>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName.OnConflictInitiated, Context>, additionalProperties: ActionOverrides): void {
         const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         context.game.initiateConflict(

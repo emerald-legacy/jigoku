@@ -43,7 +43,7 @@
     <li><strong>The card ability</strong> (<code>CardAbility</code>):
         <ol>
             <li><code>Blanked</code>: a printed ability on a blank card, or a gained one while the card loses gained abilities.</li>
-            <li><code>CannotTrigger</code> (triggered abilities only): the card is facedown, or a restriction stops its abilities from being triggered. <code>TriggeringRestricted</code> in <code>ignoredBlockers</code> skips the restrictions, not this blocker.</li>
+            <li><code>CannotTrigger</code> (triggered abilities only): the card is facedown, or a restriction stops its abilities from being triggered. <code>CannotTrigger</code> in <code>ignoredBlockers</code> skips the restrictions; a facedown card still can't trigger.</li>
             <li><code>CannotPlay</code>: an event that can't be played (ignored when another ability resolves it).</li>
             <li><code>ConditionNotMet</code>: an event's "Play only if" (<code>meetsPlayConditions</code>) fails; this check can't be skipped.</li>
             <li><code>IfConditionNotMet</code>: the ability's <code>ifCondition()</code> is false.</li>
@@ -79,15 +79,15 @@
         <tr><td><code>ConditionNotMet</code></td><td>The ability's <code>condition()</code>; not the check that a game action has a legal target.</td></tr>
         <tr><td><code>LimitReached</code>, <code>MaxReached</code></td><td>The limit and the max.</td></tr>
         <tr><td><code>CannotPayCost</code></td><td>Whether the costs can be paid; <code>resolveAbility</code> then also skips paying them.</td></tr>
-        <tr><td><code>TriggeringRestricted</code></td><td>Restrictions on triggering the card's abilities.</td></tr>
+        <tr><td><code>CannotTrigger</code></td><td>Restrictions on triggering the card's abilities (not a facedown card).</td></tr>
         <tr><td><code>CannotPlay</code></td><td>Whether an event can be played.</td></tr>
         <tr><td><code>IfConditionNotMet</code></td><td>The ability's <code>ifCondition()</code> (Countryside Trader, The Mirror's Gaze).</td></tr>
         <tr><td><code>LimitedAlreadyPlayed</code></td><td>The Limited rule, in card abilities; play actions always check it.</td></tr>
         <tr><td><code>Facedown</code></td><td>That the card is facedown. Only the play actions check it: playing a dynasty character from a province, and adding a duplicate to a unique character.</td></tr>
     </tbody>
 </table>
-<p><code>resolveAbility</code> always ignores <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>TriggeringRestricted</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> (resolving isn't playing); a sub-resolution also ignores <code>MaxReached</code>.</p>
-<p><code>Blanked</code>, <code>CannotInitiate</code> and <code>NoLegalTarget</code> always apply. <code>CannotTrigger</code> always applies to abilities. The play actions report a play restriction as <code>CannotPlay</code>, like events do. <code>DuplicateUnique</code>, <code>EnterPlayRestricted</code>, <code>CannotEnterConflict</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities. <code>EnterPlayRestricted</code> checks the player and, for every play action, the card itself (Legendary can only enter play in the Dynasty phase). A play that may only go into the conflict is <code>CannotEnterConflict</code> when the character can't be put into it; it never falls back to playing at home.</p>
+<p><code>resolveAbility</code> always ignores <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>CannotTrigger</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> (resolving isn't playing); a sub-resolution also ignores <code>MaxReached</code>.</p>
+<p><code>Blanked</code>, <code>CannotInitiate</code> and <code>NoLegalTarget</code> always apply. For a facedown card <code>CannotTrigger</code> always applies. The play actions report a play restriction as <code>CannotPlay</code>, like events do. <code>DuplicateUnique</code>, <code>EnterPlayRestricted</code>, <code>CannotEnterConflict</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities. <code>EnterPlayRestricted</code> checks the player and, for every play action, the card itself (Legendary can only enter play in the Dynasty phase). A play that may only go into the conflict is <code>CannotEnterConflict</code> when the character can't be put into it; it never falls back to playing at home.</p>
 
 <h2 id="eng-resolver">How an ability resolves</h2>
 <p><code>AbilityResolver</code> runs these steps:</p>

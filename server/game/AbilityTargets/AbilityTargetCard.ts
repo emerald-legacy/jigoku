@@ -151,7 +151,7 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
         }
         if(!context.targets[this.name]) {
             return false;
-        } else if(context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
+        } else if(this.mustBeChosenAgain(context)) {
             return false;
         }
         const slot = context.targets[this.name];

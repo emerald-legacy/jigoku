@@ -159,7 +159,7 @@ export function ringMenuClick(menuItem: MenuItem, game: Game, player: Player, ri
         case 'takefate':
             game.addMessage(msg`${player} takes all the fate from the ${ring.element} ring and adds it to their pool`);
             player.modifyFate(ring.fate);
-            ring.fate = 0;
+            ring.modifyFate(-ring.fate);
             return;
         case 'conflict':
             if(game.currentActionWindow && game.currentActionWindow.windowName === 'preConflict') {

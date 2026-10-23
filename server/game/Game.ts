@@ -921,7 +921,6 @@ export class Game {
         return new AbilityContext({ game: this, player, stage: Stage.Cost });
     }
 
-    /** A context for game-level rules that act for no player (the fate phase, the end of a conflict); its `player` is missing. */
     initiateConflict(
         player: Player,
         canPass: boolean,

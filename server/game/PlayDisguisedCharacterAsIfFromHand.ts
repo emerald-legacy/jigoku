@@ -2,7 +2,7 @@ import type { AbilityContext } from './AbilityContext.js';
 import { PlayType, type Blocker } from './Constants.js';
 import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
 import { PlayIntoLocation } from './PlayCharacterAction.js';
-import { asIfFromHandBlockers, type AsIfFromHandOptions } from './PlayCharacterAsIfFromHand.js';
+import { asIfFromHandBlockers, type AsIfFromHandOptions, PlayCharacterAsIfFromHand } from './PlayCharacterAsIfFromHand.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
 
@@ -28,4 +28,9 @@ export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAc
         }
         super.executeHandler(context);
     }
+}
+
+/** Both ways to play a character "as if from your hand": normally and using Disguised. */
+export function asIfFromHandPlayActions(card: DrawCard, options: AsIfFromHandOptions = {}): [PlayCharacterAsIfFromHand, PlayDisguisedCharacterAsIfFromHand] {
+    return [new PlayCharacterAsIfFromHand(card, options), new PlayDisguisedCharacterAsIfFromHand(card, options)];
 }

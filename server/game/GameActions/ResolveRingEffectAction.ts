@@ -63,7 +63,7 @@ export class ResolveRingEffectAction<Context extends AbilityContext = AbilityCon
         }
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnResolveRingElement, Context>, ring: Ring, context: Context, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnResolveRingElement, Context>, ring: Ring, context: Context, additionalProperties: ActionOverrides): void {
         const { physicalRing, optional, player } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.player = player || context.player;

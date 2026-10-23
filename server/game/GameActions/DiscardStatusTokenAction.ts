@@ -28,7 +28,7 @@ export class DiscardStatusTokenAction<Context extends AbilityContext = AbilityCo
         event: ActionEvent<EventName.OnStatusTokenDiscarded, Context>,
         token: StatusToken,
         context: Context,
-        additionalProperties: Record<string, unknown>
+        additionalProperties: ActionOverrides
     ): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         // each token's event names only its own card (Diligent Chaperone reacts per character)

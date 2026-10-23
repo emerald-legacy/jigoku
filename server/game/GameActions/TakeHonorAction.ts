@@ -80,7 +80,7 @@ export class TakeHonorAction<Context extends AbilityContext = AbilityContext> ex
         return super.canAffect(player, context);
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnTransferHonor, Context>, player: Player, context: Context, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnTransferHonor, Context>, player: Player, context: Context, additionalProperties: ActionOverrides): void {
         const { afterBid, amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;

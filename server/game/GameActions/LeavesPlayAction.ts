@@ -21,7 +21,7 @@ export class LeavesPlayAction<
     override eventName = EventName.OnCardLeavesPlay;
     isSacrifice = false;
 
-    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, card: DrawCard, context: Context, additionalProperties: Record<string, unknown>): void {
+    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, card: DrawCard, context: Context, additionalProperties: ActionOverrides): void {
         super.updateEvent(event, card, context, additionalProperties);
         const destination = additionalProperties.destination;
         event.isSacrifice = this.isSacrifice;

@@ -38,7 +38,7 @@ export class LookAtAction<Context extends AbilityContext = AbilityContext> exten
         events.push(event);
     }
 
-    override addPropertiesToEvent(event: ActionEvent<EventName.OnLookAtCards, Context>, cards: BaseCard | BaseCard[] | null | undefined, context: Context, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnLookAtCards, Context>, cards: BaseCard | BaseCard[] | null | undefined, context: Context, additionalProperties: ActionOverrides): void {
         const resolved = targetList(cards || this.getProperties(context, additionalProperties).target);
         event.cards = resolved;
         event.stateBeforeResolution = resolved.map((a: BaseCard) => {

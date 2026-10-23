@@ -1504,7 +1504,7 @@ function resolveAgain(context: AbilityContext, player?: Player): GameAction {
         ...(player ? { player } : {}),
         ...('event' in context && context.event instanceof Event ? { event: context.event } : {}),
         subResolution: true,
-        choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
+        choosingPlayerOverride: context.choosingPlayerOverride
     });
 }
 

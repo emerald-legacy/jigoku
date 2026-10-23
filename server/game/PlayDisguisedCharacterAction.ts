@@ -1,5 +1,5 @@
 import { msg } from './GameChat.js';
-import { CardType, EffectName, EventName, Phase, Players, Blocker, RestrictionType } from './Constants.js';
+import { CardType, EffectName, EventName, Phase, Players, PlayType, Blocker, RestrictionType } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import type DrawCard from './DrawCard.js';
@@ -98,8 +98,10 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
     }
 
     public override executeHandler(context: AbilityContext<DrawCard>) {
-        const extraFate = getExtraFateWhenPlayed(context.source, context);
-        const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
+        // a province's entry effects (Toshi Ranbo, Guardian Dojo) are for characters played from it, not "as if from your hand"
+        const fromProvince = context.playType === PlayType.PlayFromProvince;
+        const extraFate = getExtraFateWhenPlayed(context.source, context, fromProvince);
+        const status = fromProvince ? context.source.getEffects(EffectName.EntersPlayWithStatus)[0] : undefined;
         const events: Event[] = [createCardPlayedEvent(context, context.source, context.playType)];
         const replacedCharacter = context.disguisedCharacter;
         if(!replacedCharacter) {

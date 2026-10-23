@@ -79,13 +79,13 @@ export class LastingEffectAction<Context extends AbilityContext = AbilityContext
         return properties.effect.length > 0;
     }
 
-    override addEventsToArray(events: Event[], context: Context, additionalProperties: Record<string, unknown>): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides): void {
         if(this.hasLegalTarget(context, additionalProperties)) {
             events.push(this.getEvent(null, context, additionalProperties));
         }
     }
 
-    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: ActionOverrides): void {
         const properties = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;
@@ -135,13 +135,13 @@ export class PlayerLastingEffectAction<Context extends AbilityContext = AbilityC
         return this.getProperties(context, additionalProperties).effect.length > 0;
     }
 
-    override addEventsToArray(events: Event[], context: Context, additionalProperties: Record<string, unknown>): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides): void {
         if(this.hasLegalTarget(context, additionalProperties)) {
             events.push(this.getEvent(null, context, additionalProperties));
         }
     }
 
-    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: ActionOverrides): void {
         const { target, ...properties } = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
             properties.ability = event.context.ability;

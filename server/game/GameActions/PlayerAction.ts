@@ -20,11 +20,11 @@ export class PlayerAction<
 
     /** The ability's player; actions aimed at the opponent return `opponentTargets(context)`. */
     override defaultTargets(context: Context): Player[] {
-        return context.player ? [context.player] : [];
+        return [context.player];
     }
 
     protected opponentTargets(context: Context): Player[] {
-        return context.player?.opponent ? [context.player.opponent] : [];
+        return context.player.opponent ? [context.player.opponent] : [];
     }
 
     override checkEventCondition(event: PlayerEvent<EventType, Context>, additionalProperties: ActionOverrides = {}): boolean {

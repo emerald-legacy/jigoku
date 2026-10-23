@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
 import { CardType, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { ActionEvent } from './GameAction.js';
+import type { ActionEvent, ActionOverrides } from './GameAction.js';
 import { RevealAction } from './RevealAction.js';
 
 export type MoveConflictProperties = CardActionProperties;
@@ -27,7 +27,7 @@ export class MoveConflictAction<Context extends AbilityContext = AbilityContext>
         return super.canAffect(card, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnConflictMoved, Context>, _additionalProperties: Record<string, unknown> = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnConflictMoved, Context>, _additionalProperties: ActionOverrides = {}): void {
         const context = event.context;
         const newProvince = event.card;
         const conflict = context.game.currentConflict;

@@ -59,7 +59,7 @@ export class AttachAction<Context extends AbilityContext = AbilityContext> exten
         }
 
         const attachment = properties.attachment;
-        if(!context.player || (card.location !== Location.PlayArea && card.type !== CardType.Province) || !attachment) {
+        if((card.location !== Location.PlayArea && card.type !== CardType.Province) || !attachment) {
             return false;
         }
         const controller = this.getFinalController(properties, context) ?? attachment.controller;
@@ -90,16 +90,16 @@ export class AttachAction<Context extends AbilityContext = AbilityContext> exten
         return properties.attachment?.controller ?? context.player;
     }
 
-    override checkEventCondition(event: AttachEvent<Context>, additionalProperties: Record<string, unknown>): boolean {
+    override checkEventCondition(event: AttachEvent<Context>, additionalProperties: ActionOverrides): boolean {
         return this.canAffect(event.parent, event.context, additionalProperties);
     }
 
-    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: Context, additionalProperties: Record<string, unknown>): boolean {
+    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: Context, additionalProperties: ActionOverrides): boolean {
         const { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
-    override addPropertiesToEvent(event: AttachEvent<Context>, card: BaseCard, context: Context, additionalProperties: Record<string, unknown>): void {
+    override addPropertiesToEvent(event: AttachEvent<Context>, card: BaseCard, context: Context, additionalProperties: ActionOverrides): void {
         const properties = this.getProperties(context, additionalProperties);
         event.parent = card;
         if(properties.attachment) {

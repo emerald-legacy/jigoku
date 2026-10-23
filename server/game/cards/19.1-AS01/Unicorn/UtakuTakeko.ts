@@ -1,8 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, DeckType, PlayType, Blocker, Trait } from '../../../Constants.js';
-import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayIntoLocation } from '../../../PlayCharacterAction.js';
-import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
+import { asIfFromHandPlayActions } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import { playCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { article } from '../../article.js';
@@ -28,12 +27,7 @@ export default class UtakuTakeko extends DrawCard {
                         source: this,
                         resetOnCancel: false,
                         playType: PlayType.PlayFromHand,
-                        playAction: target
-                            ? [
-                                new PlayCharacterAsIfFromHand(target, { into: PlayIntoLocation.Home }),
-                                new PlayDisguisedCharacterAsIfFromHand(target, { into: PlayIntoLocation.Home })
-                            ]
-                            : undefined,
+                        playAction: target ? asIfFromHandPlayActions(target, { into: PlayIntoLocation.Home }) : undefined,
                         ignoredBlockers: [Blocker.WrongPhase]
                     };
                 }),

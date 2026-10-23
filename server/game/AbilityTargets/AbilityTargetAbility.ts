@@ -100,7 +100,7 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
     }
 
     checkTarget(context: AbilityContext): boolean {
-        if(!context.targetAbility || context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
+        if(!context.targetAbility || this.mustBeChosenAgain(context)) {
             return false;
         }
         return this.properties.cardType === context.targetAbility.card.type &&
@@ -108,10 +108,7 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
-        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context))) {
-            return true;
-        }
-        return this.getChoosingPlayer(context) === context.player;
+        return this.chosenByInitiatingPlayer(this.properties.gameAction, context);
     }
 }
 

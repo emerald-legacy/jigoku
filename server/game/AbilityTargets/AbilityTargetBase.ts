@@ -43,6 +43,17 @@ export abstract class AbilityTargetBase<Properties extends AbilityTargetBaseProp
         return !!this.properties.dependsOn || this.hasLegalTarget(context);
     }
 
+    /** Whoever chooses for the ability's player instead (Hantei XXXVIII) chooses again: a choice made earlier doesn't count. */
+    protected mustBeChosenAgain(context: AbilityContext): boolean {
+        return !!context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player;
+    }
+
+    /** The ability's player chooses this target, or a target of one of `actions`. */
+    protected chosenByInitiatingPlayer(actions: GameAction[], context: AbilityContext): boolean {
+        return actions.some((action) => action.hasTargetsChosenByInitiatingPlayer(context, this.actionOverrides(context))) ||
+            this.getChoosingPlayer(context) === context.player;
+    }
+
     getChoosingPlayer(context: AbilityContext): Player | undefined {
         const player = typeof this.properties.player === 'function' ? this.properties.player(context) : this.properties.player;
         return resolveChoosingPlayer(context, player === Players.Opponent ? Players.Opponent : Players.Self);

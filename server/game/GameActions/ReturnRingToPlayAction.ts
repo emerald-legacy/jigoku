@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
-import type { ActionEvent } from './GameAction.js';
+import type { ActionEvent, ActionOverrides } from './GameAction.js';
 
 export type ReturnRingToPlayProperties = RingActionProperties;
 
@@ -18,7 +18,7 @@ export class ReturnRingToPlayAction<Context extends AbilityContext = AbilityCont
         return super.canAffect(ring, context);
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnReturnRingToPlay, Context>, _additionalProperties: Record<string, unknown> = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnReturnRingToPlay, Context>, _additionalProperties: ActionOverrides = {}): void {
         const ring = event.ring;
         const context = event.context;
 

@@ -104,7 +104,7 @@ export class AbilityContext<Source extends EffectSource = BaseCard, Target exten
         this.stage = properties.stage || Stage.Effect;
         this.targetAbility = properties.targetAbility;
         const source: EffectSource = this.source;
-        this.playType = this.player && source.isCard() ? this.player.findPlayType(source) : undefined;
+        this.playType = source.isCard() ? this.player.findPlayType(source) : undefined;
     }
 
     /** The context representing the triggering this one belongs to. */

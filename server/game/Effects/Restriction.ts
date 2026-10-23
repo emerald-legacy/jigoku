@@ -50,21 +50,17 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.NonDynastyPhase]: (context) => context.game.currentPhase !== Phase.Dynasty,
     [RestrictionScope.NonSpellEvents]: (context) => context.source.type === CardType.Event && !context.source.hasTrait(Trait.Spell),
     [RestrictionScope.OpponentsAttachments]: (context, effect) =>
-        context.player &&
         context.player === getApplyingPlayer(effect).opponent &&
         isAttachment(context),
     [RestrictionScope.OpponentsCardEffects]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && isCardEffect(context),
     [RestrictionScope.OpponentsProvinceEffects]: (context, effect) =>
-        context.player === getApplyingPlayer(effect).opponent &&
-        (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
-        [CardType.Province].includes(context.source.type),
+        context.player === getApplyingPlayer(effect).opponent && isCardEffect(context) && context.source.type === CardType.Province,
     [RestrictionScope.OpponentsEvents]: (context, effect) =>
-        context.player &&
         context.player === getApplyingPlayer(effect).opponent &&
         context.source.type === CardType.Event,
     [RestrictionScope.OpponentsRingEffects]: (context, effect) =>
-        context.player && context.player === getApplyingPlayer(effect).opponent && context.source.isRing(),
+        context.player === getApplyingPlayer(effect).opponent && context.source.isRing(),
     [RestrictionScope.OpponentsCardAndRingEffects]: (context, effect) =>
         checkRestrictions[RestrictionScope.OpponentsCardEffects](context, effect) ||
         checkRestrictions[RestrictionScope.OpponentsRingEffects](context, effect),

@@ -28,7 +28,7 @@ class BattlefieldOrders extends DrawCard {
                 ability: context.targetAbility,
                 player: context.targetAbility.card.controller,
                 ignoredBlockers: [Blocker.WrongPlayer],
-                choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
+                choosingPlayerOverride: context.choosingPlayerOverride
             })))
             .chatText((context) => msg`resolve ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
     }

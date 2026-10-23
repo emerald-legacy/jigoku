@@ -52,7 +52,7 @@ describe('CostReducer', function () {
 
     describe('canReduce()', function () {
         beforeEach(function () {
-            this.card = {};
+            this.card = { isCard: () => false };
             this.properties.match.and.returnValue(true);
             this.properties.playingTypes = ['marshal'];
             this.properties.limit = this.limitSpy;

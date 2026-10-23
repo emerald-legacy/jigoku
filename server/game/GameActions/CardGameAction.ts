@@ -66,7 +66,7 @@ export class CardGameAction<
         event.card = card;
     }
 
-    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: Context, additionalProperties: Record<string, unknown>): boolean {
+    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: Context, additionalProperties: ActionOverrides): boolean {
         return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 

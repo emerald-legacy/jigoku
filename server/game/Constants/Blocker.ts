@@ -17,7 +17,6 @@ export enum Blocker {
     LimitReached = 'limit',
     MaxReached = 'max',
     NoLegalTarget = 'target',
-    TriggeringRestricted = 'triggeringRestrictions',
     WrongLocation = 'location',
     WrongPhase = 'phase',
     WrongPlayer = 'player',

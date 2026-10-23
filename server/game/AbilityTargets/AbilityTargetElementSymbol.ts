@@ -100,17 +100,14 @@ export class AbilityTargetElementSymbol extends AbilityTargetBase<AbilityTargetE
     }
 
     checkTarget(context: AbilityContext): boolean {
-        if(!context.elementCard || context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
+        if(!context.elementCard || this.mustBeChosenAgain(context)) {
             return false;
         }
         return this.selector.canTarget(context.elementCard, context);
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
-        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context, this.actionOverrides(context)))) {
-            return true;
-        }
-        return this.getChoosingPlayer(context) === context.player;
+        return this.chosenByInitiatingPlayer(this.properties.gameAction, context);
     }
 }
 

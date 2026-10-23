@@ -72,7 +72,7 @@ export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProper
 
     checkTarget(context: AbilityContext): boolean {
         const selected = context.rings[this.name];
-        if(!selected || context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
+        if(!selected || this.mustBeChosenAgain(context)) {
             return false;
         }
         // a skipped optional target holds []
@@ -83,10 +83,7 @@ export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProper
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
-        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context, this.actionOverrides(context)))) {
-            return true;
-        }
-        return this.getChoosingPlayer(context) === context.player;
+        return this.chosenByInitiatingPlayer(this.properties.gameAction, context);
     }
 }
 

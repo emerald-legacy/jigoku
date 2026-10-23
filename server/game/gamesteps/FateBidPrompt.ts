@@ -15,8 +15,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
     constructor(
         game: Game,
         menuTitle: string,
-        private bidHandler: (result: Result) => void,
-        private prohibitedBids: Record<string, Array<number>> = {}
+        private bidHandler: (result: Result) => void
     ) {
         super(game);
         this.menuTitle = menuTitle || 'Choose a bid';
@@ -54,13 +53,10 @@ export class FateBidPrompt extends AllPlayerPrompt {
     }
 
     override activePrompt(player: Player) {
-        const prohibitedBids = this.prohibitedBids[player.uuid] || [];
         const buttons: Array<{ text: string; arg: string }> = [];
         for(let i = 0, max = player.fate; i <= max; i++) {
-            if(!prohibitedBids.includes(i)) {
-                const text = i.toString();
-                buttons.push({ text, arg: text });
-            }
+            const text = i.toString();
+            buttons.push({ text, arg: text });
         }
 
         return {

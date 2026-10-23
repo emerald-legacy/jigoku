@@ -3,8 +3,7 @@ import { perRound } from '../../../AbilityLimit.js';
 import { playCard } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, TargetMode, Blocker, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
-import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
+import { asIfFromHandPlayActions } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import { msg } from '../../../GameChat.js';
 
 export default class ToConnectThePeople extends DrawCard {
@@ -30,7 +29,7 @@ export default class ToConnectThePeople extends DrawCard {
                 mode: TargetMode.Single,
                 subActionProperties: (card) => ({
                     target: card,
-                    playAction: [new PlayCharacterAsIfFromHand(card), new PlayDisguisedCharacterAsIfFromHand(card)]
+                    playAction: asIfFromHandPlayActions(card)
                 }),
                 gameAction: playCard({ ignoredBlockers: [Blocker.WrongLocation] })
             });

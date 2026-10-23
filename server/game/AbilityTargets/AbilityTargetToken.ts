@@ -119,7 +119,7 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
 
     checkTarget(context: AbilityContext): boolean {
         const selected = context.tokens[this.name];
-        if(!selected || !Array.isArray(selected) || selected.length === 0 || context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
+        if(!selected || !Array.isArray(selected) || selected.length === 0 || this.mustBeChosenAgain(context)) {
             return false;
         }
         const card = selected[0].card;
@@ -127,10 +127,7 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
-        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context, this.actionOverrides(context)))) {
-            return true;
-        }
-        return this.getChoosingPlayer(context) === context.player;
+        return this.chosenByInitiatingPlayer(this.properties.gameAction, context);
     }
 }
 

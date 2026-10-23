@@ -312,7 +312,7 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
           <tr><td><code>CannotPayCost</code></td><td><code>'cost'</code></td><td>The costs cannot be paid.</td><td>yes</td></tr>
           <tr><td><code>CannotPlay</code></td><td><code>'cannotPlay'</code></td><td>The card cannot be played: a play restriction, or not playable from there or for this player; also a character played while the player has a <code>PlayCharacter</code> restriction.</td><td>yes (resolving isn't playing)</td></tr>
           <tr><td><code>CannotPlaceFate</code></td><td><code>'cannotPlaceFate'</code></td><td>A duplicate whose copy in play cannot have fate placed on it.</td><td>no</td></tr>
-          <tr><td><code>CannotTrigger</code></td><td><code>'cannotTrigger'</code></td><td>The card cannot trigger abilities (facedown or <code>TriggerAbilities</code> restriction).</td><td>no</td></tr>
+          <tr><td><code>CannotTrigger</code></td><td><code>'cannotTrigger'</code></td><td>The card cannot trigger abilities (facedown or <code>TriggerAbilities</code> restriction).</td><td>the restriction only</td></tr>
           <tr><td><code>ConditionNotMet</code></td><td><code>'condition'</code></td><td>The ability's <code>condition</code> is false; or the ability has no targets and none of its game actions has a legal target; or an event's "Play only if" (<code>meetsPlayConditions</code>) fails, which can't be ignored.</td><td>yes (not the play condition)</td></tr>
           <tr><td><code>DuplicateUnique</code></td><td><code>'unique'</code></td><td>Another copy of a unique card is in play (for a duplicate: no copy the player controls is).</td><td>no</td></tr>
           <tr><td><code>EnterPlayRestricted</code></td><td><code>'enterPlay'</code></td><td>A character played while the player has an <code>EnterPlay</code> restriction, or a card that has one itself (Legendary outside the Dynasty phase).</td><td>no</td></tr>
@@ -322,7 +322,6 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
           <tr><td><code>LimitReached</code></td><td><code>'limit'</code></td><td>The ability's limit (<code>.limit()</code>) is used up.</td><td>yes</td></tr>
           <tr><td><code>MaxReached</code></td><td><code>'max'</code></td><td>The ability's max (<code>.max()</code>) is used up.</td><td>yes</td></tr>
           <tr><td><code>NoLegalTarget</code></td><td><code>'target'</code></td><td>A declared target has no legal choice.</td><td>no</td></tr>
-          <tr><td><code>TriggeringRestricted</code></td><td><code>'triggeringRestrictions'</code></td><td>Never returned; listing it skips the <code>TriggerAbilities</code> restriction check of the source card.</td><td>yes</td></tr>
           <tr><td><code>WrongLocation</code></td><td><code>'location'</code></td><td>The card is not where the ability can be used (or played) from.</td><td>yes</td></tr>
           <tr><td><code>WrongPhase</code></td><td><code>'phase'</code></td><td>The ability's <code>.phase()</code> does not match, or a dynasty-phase rule forbids it.</td><td>yes</td></tr>
           <tr><td><code>WrongPlayer</code></td><td><code>'player'</code></td><td>The player is not allowed to trigger it: not the controller, no <code>anyPlayer</code>, and no effect lets the opponent trigger the card.</td><td>yes</td></tr>
@@ -331,7 +330,7 @@ abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, Abili
       </table>
   <ul class="edge">
     <li>"Ignorable: yes" means that listing the blocker in <code>ignoredBlockers</code> skips its check (in at least one <code>meetsRequirements</code>). Blockers marked "no" are always checked.</li>
-    <li><code>resolveAbility</code> always adds <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>TriggeringRestricted</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> to the ignored blockers (resolving isn't playing); <code>triggerAbility</code> adds <code>WrongPlayer</code>, <code>WrongLocation</code> and <code>LimitReached</code>. With <code>subResolution: true</code>, both also ignore <code>MaxReached</code>.</li>
+    <li><code>resolveAbility</code> always adds <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>CannotTrigger</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> to the ignored blockers (resolving isn't playing); <code>triggerAbility</code> adds <code>WrongPlayer</code>, <code>WrongLocation</code> and <code>LimitReached</code>. With <code>subResolution: true</code>, both also ignore <code>MaxReached</code>.</li>
   </ul>
   <pre><code>// The Mirror's Gaze: Reaction: After the effects of an opponent's event resolve – resolve that event again as if you had just played it, ignoring costs and triggering conditions. You may choose new targets.
 .gameAction(resolveAbility((context) =&gt; ({
@@ -829,7 +828,7 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>OpponentsCharacterAbilitiesWithLowerGlory</code></td><td><code>'opponentsCharacterAbilitiesWithLowerGlory'</code></td><td>Opponent's characters with lower glory than the effect source's parent character.</td></tr>
           <tr><td><code>OpponentsCharacters</code></td><td><code>'opponentsCharacters'</code></td><td>Characters the opponent controls.</td></tr>
           <tr><td><code>OpponentsEvents</code></td><td><code>'opponentsEvents'</code></td><td>Events played by the opponent.</td></tr>
-          <tr><td><code>OpponentsProvinceEffects</code></td><td><code>'opponentsProvinceEffects'</code></td><td>Province abilities of the opponent.</td></tr>
+          <tr><td><code>OpponentsProvinceEffects</code></td><td><code>'opponentsProvinceEffects'</code></td><td>Province abilities of the opponent: card effects (<code>isCardEffect</code>) from a province.</td></tr>
           <tr><td><code>OpponentsRingEffects</code></td><td><code>'opponentsRingEffects'</code></td><td>Ring effects resolved by the opponent.</td></tr>
           <tr><td><code>OpponentsTriggeredAbilities</code></td><td><code>'opponentsTriggeredAbilities'</code></td><td>Triggered abilities (including actions) of the opponent.</td></tr>
           <tr><td><code>OpponentsTriggeredActionAbilities</code></td><td><code>'opponentsTriggeredActionAbilities'</code></td><td>Action abilities of the opponent.</td></tr>

@@ -1140,7 +1140,7 @@ this.persistentEffect({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>createPlayAction</code></td><td><code>(card: DrawCard) =&gt; BaseAction</code></td><td>required</td><td>Creates the play action for the card, e.g. <code>(card) =&gt; new PlayCharacterAsIfFromHand(card, { into: PlayIntoLocation.Conflict })</code>. <code>PlayCharacterAsIfFromHand</code> and <code>PlayDisguisedCharacterAsIfFromHand</code> take <code>{ into?: PlayIntoLocation, facedown?: boolean }</code>: where it may be played (anywhere by default), and whether a facedown card is turned face up as it is played.</td></tr>
+        <tr><td><code>createPlayAction</code></td><td><code>(card: DrawCard) =&gt; BaseAction</code></td><td>required</td><td>Creates the play action for the card, e.g. <code>(card) =&gt; new PlayCharacterAsIfFromHand(card, { into: PlayIntoLocation.Conflict })</code>. <code>PlayCharacterAsIfFromHand</code> and <code>PlayDisguisedCharacterAsIfFromHand</code> take <code>{ into?: PlayIntoLocation, facedown?: boolean }</code>: where it may be played (anywhere by default), and whether a facedown card is turned face up as it is played. <code>asIfFromHandPlayActions(card, options)</code> builds both for a <code>playCard</code> that may use either.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -2739,7 +2739,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Read when the character is played from a province (also disguised); not when it is played "as if it were in your hand" from there (Hidden Moon Dōjō, Prepared Ambush: EmeraldDB ruling on Toshi Ranbo), nor when it is put into play by an effect.</li>
+      <li>Read when the character is played from a province (also disguised); not when it is played "as if it were in your hand" from there, normally or using Disguised (Hidden Moon Dōjō, Prepared Ambush: EmeraldDB ruling on Toshi Ranbo), nor when it is put into play by an effect.</li>
       <li>The effect must be on the card while it is in the hand or province, so set <code>targetLocation</code>.</li>
       <li>Copies add up. A <code>cardCannot(RestrictionType.PlaceFate)</code> on the character cancels the extra fate.</li>
     </ul>
@@ -3029,7 +3029,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Read when the character is played from a province and when it is played with Disguised; playing it from hand (or as if from hand) and putting it into play by an effect ignore it. A card's own "This character enters play dishonored" is not this effect: the card overrides <code>entersPlayStatus()</code>, which <code>putIntoPlay</code> reads however the card enters play (Bayushi Shinobu).</li>
+      <li>Read when the character is played from a province, also with Disguised; playing it from hand (or as if from hand, also with Disguised) and putting it into play by an effect ignore it. A card's own "This character enters play dishonored" is not this effect: the card overrides <code>entersPlayStatus()</code>, which <code>putIntoPlay</code> reads however the card enters play (Bayushi Shinobu).</li>
       <li>With several effects, the oldest one wins (<code>getEffects(…)[0]</code>).</li>
       <li>The effect must reach the card in its province: set <code>targetLocation</code> to <code>Location.Provinces</code> or <code>Location.Any</code>.</li>
     </ul>

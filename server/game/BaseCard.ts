@@ -741,7 +741,8 @@ export class BaseCard extends EffectSource {
     canTriggerAbilities(context: AbilityContext, ignoredBlockers: Blocker[] = []): boolean {
         return (
             this.isFaceup() &&
-            (ignoredBlockers.includes(Blocker.TriggeringRestricted) ||
+            // ignoring CannotTrigger skips the restrictions, not being facedown
+            (ignoredBlockers.includes(Blocker.CannotTrigger) ||
                 this.checkRestrictions(RestrictionType.TriggerAbilities, context))
         );
     }
@@ -828,11 +829,10 @@ export class BaseCard extends EffectSource {
     }
 
     override checkRestrictions(actionType: RestrictionType | PlayType | undefined, context: AbilityContext): boolean {
-        const player = context?.player || this.controller;
-        const conflict = context?.game?.currentConflict;
+        const conflict = context.game.currentConflict;
         return (
             super.checkRestrictions(actionType, context) &&
-            player.checkRestrictions(actionType, context) &&
+            context.player.checkRestrictions(actionType, context) &&
             (!conflict || conflict.checkRestrictions(actionType, context))
         );
     }

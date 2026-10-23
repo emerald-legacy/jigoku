@@ -126,10 +126,6 @@ export class Ring extends EffectSource {
         this.fate = Math.max(this.fate + fate, 0);
     }
 
-    removeFate(): void {
-        this.fate = 0;
-    }
-
     claimRing(player: Player): void {
         this.claimed = true;
         this.claimedBy = player.name;

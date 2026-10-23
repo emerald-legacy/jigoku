@@ -131,13 +131,13 @@ export class ResolveAbilityAction<Context extends AbilityContext = AbilityContex
                 properties,
                 context,
                 // resolving isn't playing (RRG Resolve an Ability): play restrictions and the Limited rule don't apply
-                properties.ignoredBlockers.concat(Blocker.WrongPlayer, Blocker.WrongLocation, Blocker.LimitReached, Blocker.TriggeringRestricted,
+                properties.ignoredBlockers.concat(Blocker.WrongPlayer, Blocker.WrongLocation, Blocker.LimitReached, Blocker.CannotTrigger,
                     Blocker.CannotPlay, Blocker.LimitedAlreadyPlayed)
             )
         );
     }
 
-    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: Record<string, unknown>): void {
+    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: ActionOverrides): void {
         const properties = this.getProperties(event.context, additionalProperties);
         const newContext = getResolutionContext(properties, event.context);
         if(properties.choosingPlayerOverride) {

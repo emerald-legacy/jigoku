@@ -113,11 +113,7 @@ export class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectPr
     }
 
     checkTarget(context: AbilityContext): boolean {
-        if(
-            this.properties.targets &&
-            context.choosingPlayerOverride &&
-            this.getChoosingPlayer(context) === context.player
-        ) {
+        if(this.properties.targets && this.mustBeChosenAgain(context)) {
             return false;
         }
         return !!context.selects[this.name] && this.isChoiceLegal(context.selects[this.name].choice, context);

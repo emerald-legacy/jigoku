@@ -24,9 +24,7 @@ export class AttachToRingAction<Context extends AbilityContext = AbilityContext>
 
     override canAffect(ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        if(!context.player) {
-            return false;
-        } else if(
+        if(
             !properties.attachment ||
             properties.attachment.anotherUniqueInPlay(context.player) ||
             !properties.attachment.canAttach(ring)
