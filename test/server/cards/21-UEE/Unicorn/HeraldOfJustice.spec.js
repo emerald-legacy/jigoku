@@ -54,6 +54,30 @@ describe('Herald of Justice', function () {
             });
         });
 
+        describe('under Waning Hostilities', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'draw',
+                    player1: {
+                        inPlay: ['herald-of-justice', 'doji-whisperer'],
+                        hand: ['waning-hostilities']
+                    }
+                });
+                this.herald = this.player1.findCardByName('herald-of-justice');
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                this.noMoreActions();
+                this.player1.clickCard('waning-hostilities');
+            });
+
+            it('cannot be used, as an additional conflict changes nothing', function () {
+                expect(this.player1).toHavePrompt('Initiate an action');
+                this.player1.clickCard(this.herald);
+                expect(this.player1).toHavePrompt('Initiate an action');
+                expect(this.herald.location).toBe('play area');
+            });
+        });
+
         describe('outside the conflict phase', function () {
             it('cannot be used during the dynasty phase', function () {
                 this.setupTest({

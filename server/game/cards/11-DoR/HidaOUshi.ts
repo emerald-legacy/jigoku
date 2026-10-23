@@ -3,6 +3,7 @@ import { perPhase } from '../../AbilityLimit.js';
 import { additionalConflict } from '../../effects.js';
 import { Duration, ConflictType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
+import { extraConflictPossible } from '../extraConflictPossible.js';
 
 class HidaOUshi extends DrawCard {
     static id = 'hida-o-ushi';
@@ -10,6 +11,7 @@ class HidaOUshi extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Gain additional military conflict')
             .when({ afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player })
+            .condition((context) => extraConflictPossible(context.player))
             .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(ConflictType.Military)

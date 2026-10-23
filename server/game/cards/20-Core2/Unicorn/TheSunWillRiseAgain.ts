@@ -3,6 +3,7 @@ import { Duration } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { additionalConflict } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { extraConflictPossible } from '../../extraConflictPossible.js';
 
 export default class TheSunWillRiseAgain extends DrawCard {
     static id = 'the-sun-will-rise-again';
@@ -15,6 +16,7 @@ export default class TheSunWillRiseAgain extends DrawCard {
                     event.conflict.winner === context.player.opponent &&
                     (event.conflict.skillDifference ?? 0) >= 4
             })
+            .condition((context) => extraConflictPossible(context.player))
             .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(context.event.conflict.conflictType)

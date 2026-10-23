@@ -42,6 +42,8 @@ export class Conflict extends GameObject {
     /** The attackers and defenders as the conflict finished resolving, before they returned home: one sent home earlier (False Loyalties) isn't among them. */
     attackersAtEnd: DrawCard[] = [];
     defendersAtEnd: DrawCard[] = [];
+    /** The attacked provinces as the conflict finished, before its until-end-of-conflict effects (A War on Two Fronts) expired. */
+    provincesAtEnd: ProvinceCard[] = [];
     defendersAtResolution: DrawCard[] = [];
     provinceStrengthsAtResolution: Array<{ province: ProvinceCard; strength: number }> = [];
     skillDifference?: number;

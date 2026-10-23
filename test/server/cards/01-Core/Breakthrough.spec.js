@@ -195,6 +195,51 @@ describe('Breakthrough after a province broke outside conflict resolution', func
     });
 });
 
+describe('Breakthrough after A War on Two Fronts', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['aggressive-moto', 'doji-whisperer'],
+                    hand: ['a-war-on-two-fronts', 'breakthrough']
+                },
+                player2: {
+                    honor: 10,
+                    provinces: ['entrenched-position', 'shameful-display']
+                }
+            });
+            this.moto = this.player1.findCardByName('aggressive-moto');
+            this.war = this.player1.findCardByName('a-war-on-two-fronts');
+            this.breakthrough = this.player1.findCardByName('breakthrough');
+            this.entrenchedPosition = this.player2.findCardByName('entrenched-position');
+            this.shamefulDisplay = this.player2.findCardByName('shameful-display', 'province 2');
+            this.noMoreActions();
+        });
+
+        it('triggers when only the added province broke', function () {
+            this.initiateConflict({
+                attackers: [this.moto],
+                type: 'military',
+                ring: 'air',
+                province: this.entrenchedPosition
+            });
+            this.player1.clickCard(this.war);
+            this.player1.clickCard(this.shamefulDisplay);
+            this.player2.clickPrompt('Done');
+            this.player2.pass();
+            this.player1.pass();
+            this.player1.clickPrompt('Yes');
+            this.player1.clickPrompt('Gain 2 Honor');
+            expect(this.entrenchedPosition.isBroken).toBe(false);
+            expect(this.shamefulDisplay.isBroken).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.breakthrough);
+        });
+    });
+});
+
 describe('Breakthrough copied by The Mirror\'s Gaze', function () {
     integration(function () {
         beforeEach(function () {

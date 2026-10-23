@@ -868,6 +868,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
+        this.conflict.provincesAtEnd = this.conflict.getConflictProvinces();
         this.game.updateCurrentConflict(null);
         this.game.raiseEvent(EventName.OnConflictFinished, { conflict: this.conflict });
         this.game.queueSimpleStep(() => this.resetCards());

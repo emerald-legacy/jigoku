@@ -100,3 +100,52 @@ describe('Lessons From Earth', function () {
     });
 });
 
+describe('Lessons From Earth on a province added by A War on Two Fronts', function () {
+    integration(function () {
+        describe('as the second attacked province', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        honor: 12,
+                        inPlay: ['aggressive-moto'],
+                        hand: ['a-war-on-two-fronts', 'lessons-from-earth', 'fine-katana']
+                    },
+                    player2: {
+                        honor: 10,
+                        hand: ['ornate-fan'],
+                        provinces: ['entrenched-position', 'shameful-display']
+                    }
+                });
+                this.moto = this.player1.findCardByName('aggressive-moto');
+                this.war = this.player1.findCardByName('a-war-on-two-fronts');
+                this.lessons = this.player1.findCardByName('lessons-from-earth');
+                this.entrenchedPosition = this.player2.findCardByName('entrenched-position');
+                this.shamefulDisplay = this.player2.findCardByName('shameful-display', 'province 2');
+                this.player1.clickCard(this.lessons);
+                this.player1.clickCard(this.entrenchedPosition);
+                this.noMoreActions();
+            });
+
+            it('triggers when the conflict ends', function () {
+                this.initiateConflict({
+                    attackers: [this.moto],
+                    type: 'military',
+                    ring: 'air',
+                    province: this.shamefulDisplay
+                });
+                this.player1.clickCard(this.war);
+                this.player1.clickCard(this.entrenchedPosition);
+                this.player2.clickPrompt('Done');
+                const hand = this.player1.hand.length;
+                this.player2.pass();
+                this.player1.pass();
+                this.player1.clickPrompt('No');
+                this.player1.clickPrompt('Gain 2 Honor');
+                expect(this.player1.hand.length).toBe(hand + 1);
+                expect(this.player2.hand.length).toBe(0);
+                expect(this.getChatLogs(5)).toContain('player1 uses Lessons from Earth to cause player1 to draw a card and player2 to discard a card');
+            });
+        });
+    });
+});

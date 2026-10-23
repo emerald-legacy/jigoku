@@ -14,7 +14,7 @@ export default class LessonsFromEarth extends ProvinceAttachment {
             .when({
                 onConflictFinished: (event, context) =>
                     !!event.conflict.winner && !!event.conflict.loser &&
-                    !!context.source.parentProvince && event.conflict.getConflictProvinces().includes(context.source.parentProvince)
+                    !!context.source.parentProvince && event.conflict.provincesAtEnd.includes(context.source.parentProvince)
             })
             .gameAction(multiple((context) => {
                 const gameActions: GameAction[] = [];

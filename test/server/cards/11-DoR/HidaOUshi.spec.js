@@ -129,3 +129,39 @@ describe('Hida O-Ushi', function() {
     });
 });
 
+describe('Hida O-Ushi under Waning Hostilities', function() {
+    integration(function() {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['doji-kuwanan']
+                },
+                player2: {
+                    inPlay: ['hida-kisada', 'hida-o-ushi'],
+                    hand: ['waning-hostilities']
+                }
+            });
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.kisada = this.player2.findCardByName('hida-kisada');
+            this.oushi = this.player2.findCardByName('hida-o-ushi');
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player2.clickCard('waning-hostilities');
+        });
+
+        it('should not trigger, as an additional conflict changes nothing', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kuwanan],
+                defenders: [this.kisada]
+            });
+            this.player2.pass();
+            this.player1.pass();
+            expect(this.getChatLogs(5)).toContain('player2 won a military conflict 7 vs 5');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

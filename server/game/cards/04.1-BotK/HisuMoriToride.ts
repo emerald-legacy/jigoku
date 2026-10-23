@@ -1,8 +1,9 @@
-import { CardType, Duration, ConflictType, EffectName, Trait } from '../../Constants.js';
+import { CardType, Duration, ConflictType, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { additionalConflict } from '../../effects.js';
 import { msg } from '../../GameChat.js';
+import { extraConflictPossible } from '../extraConflictPossible.js';
 
 export default class HisuMoriToride extends StrongholdCard {
     static id = 'hisu-mori-toride-lion';
@@ -15,8 +16,7 @@ export default class HisuMoriToride extends StrongholdCard {
                     event.conflict.conflictType === ConflictType.Military &&
                     (event.conflict.skillDifference ?? 0) >= 5
             })
-            // under Waning Hostilities an additional conflict changes nothing
-            .condition((context) => !context.player.anyEffect(EffectName.SetMaxConflicts))
+            .condition((context) => extraConflictPossible(context.player))
             .cost(costs.bowSelf())
             .cost(costs.sacrifice({
                 cardType: CardType.Character,

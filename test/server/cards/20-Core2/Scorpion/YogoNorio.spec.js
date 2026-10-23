@@ -34,6 +34,30 @@ describe('Yogo Norio', function() {
             });
         });
 
+        describe('under Waning Hostilities', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'draw',
+                    player1: {
+                        inPlay: ['yogo-norio', 'bayushi-liar'],
+                        hand: ['waning-hostilities']
+                    }
+                });
+                this.norio = this.player1.findCardByName('yogo-norio');
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                this.noMoreActions();
+                this.player1.clickCard('waning-hostilities');
+            });
+
+            it('should not be usable, as an additional conflict changes nothing', function() {
+                expect(this.player1).toHavePrompt('Initiate an action');
+                this.player1.clickCard(this.norio);
+                expect(this.player1).toHavePrompt('Initiate an action');
+                expect(this.norio.location).toBe('play area');
+            });
+        });
+
         describe('outside the conflict phase', function() {
             beforeEach(function() {
                 this.setupTest({
