@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType, EventName, Players } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
-import { dishonor, sacrifice, selectCard, sendHome, sequential } from '../../../GameActions/GameActions.js';
+import { conditional, dishonor, sacrifice, selectCard, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const DISHONOR = 'Dishonor it';
@@ -44,10 +44,14 @@ export default class ChroniclerOfCalamities extends DrawCard {
                             cardType: CardType.Character,
                             controller: Players.Self,
                             message: (context, card) => msg`${context.player} chooses to sacrifice ${card}`,
-                            subActionProperties: (card) => ({ target: card, cannotBeCancelled: true }),
                             gameAction: sacrifice()
                         }),
-                        dishonorChosen ? sendHome({ target: context.target }) : dishonor({ target: context.target })
+                        conditional({
+                            // "to": only if the sacrifice resolved (Ceaseless Duty can prevent it)
+                            condition: (context) => context.events.some((event) =>
+                                event.is(EventName.OnCardLeavesPlay) && event.isSacrifice && event.isFullyResolved()),
+                            trueGameAction: dishonorChosen ? sendHome({ target: context.target }) : dishonor({ target: context.target })
+                        })
                     ]),
                     acceptMessage: (context, chooser) => dishonorChosen
                         ? msg`${chooser} chooses to sacrifice a character to also send ${context.target} home`
