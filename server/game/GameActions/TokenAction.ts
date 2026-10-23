@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 import type { StatusToken } from '../StatusToken.js';
-import type { EventName } from '../Constants.js';
+import { type EventName, ObjectType } from '../Constants.js';
 
 export interface TokenActionProperties extends GameActionProperties {
     target?: StatusToken | StatusToken[];
@@ -16,7 +16,7 @@ export class TokenAction<
     Context extends AbilityContext = AbilityContext,
     Defaulted extends keyof Properties = never
 > extends GameAction<Properties, EventType, Context, Defaulted> {
-    override targetType = ['token'];
+    override targetType = [ObjectType.Token];
 
     override defaultTargets(context: Context): StatusToken[] {
         return context.source.statusTokens ? [...context.source.statusTokens] : [];

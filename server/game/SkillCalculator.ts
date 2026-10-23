@@ -1,10 +1,9 @@
 import { StatModifier } from './StatModifier.js';
-import { CharacterStatus, EffectName } from './Constants.js';
+import { CharacterStatus, EffectName, ObjectType, SkillType } from './Constants.js';
 import type { EffectSource } from './EffectSource.js';
 import type DrawCard from './DrawCard.js';
 import { isEffectOf, isEffectOfAny } from './Effects/types.js';
 import type { EffectApplier } from './Effects/EffectApplier.js';
-import type { SkillType } from './Constants.js';
 
 export type Exclusions = EffectName[] | ((effect: EffectApplier) => boolean);
 
@@ -77,8 +76,8 @@ export class SkillCalculator {
                 );
             } else if(isEffectOf(effect, EffectName.CopyCharacter)) {
                 const copiedCard = effect.getValue(this.card);
-                baseMilitarySkill = copiedCard.getPrintedSkill('military');
-                basePoliticalSkill = copiedCard.getPrintedSkill('political');
+                baseMilitarySkill = copiedCard.getPrintedSkill(SkillType.Military);
+                basePoliticalSkill = copiedCard.getPrintedSkill(SkillType.Political);
                 baseMilitaryModifiers = baseMilitaryModifiers.filter(
                     (mod) =>!mod.name.startsWith('Printed skill')
                 );
@@ -102,13 +101,13 @@ export class SkillCalculator {
                     )
                 );
             } else if(isEffectOf(effect, EffectName.SetBaseDash)) {
-                if(effect.getValue(this.card) === 'military') {
+                if(effect.getValue(this.card) === SkillType.Military) {
                     baseMilitaryModifiers.push(
                         StatModifier.fromEffect(NaN, effect, true, StatModifier.getEffectName(effect))
                     );
                     baseMilitarySkill = NaN;
                 }
-                if(effect.getValue(this.card) === 'political') {
+                if(effect.getValue(this.card) === SkillType.Political) {
                     basePoliticalModifiers.push(
                         StatModifier.fromEffect(NaN, effect, true, StatModifier.getEffectName(effect))
                     );
@@ -204,8 +203,8 @@ export class SkillCalculator {
     getSkillModifiers(type: SkillType, exclusions: Exclusions = []): StatModifier[] {
         const names = skillEffectNames[type];
         const baseSkillModifiers = this.getBaseSkillModifiers();
-        const baseSkill = type === 'military' ? baseSkillModifiers.baseMilitarySkill : baseSkillModifiers.basePoliticalSkill;
-        const modifiers = type === 'military' ? baseSkillModifiers.baseMilitaryModifiers : baseSkillModifiers.basePoliticalModifiers;
+        const baseSkill = type === SkillType.Military ? baseSkillModifiers.baseMilitarySkill : baseSkillModifiers.basePoliticalSkill;
+        const modifiers = type === SkillType.Military ? baseSkillModifiers.baseMilitaryModifiers : baseSkillModifiers.basePoliticalModifiers;
         if(isNaN(baseSkill)) {
             return modifiers;
         }
@@ -259,7 +258,7 @@ export class SkillCalculator {
         }
         if(doesNotModifyEffects.length > 0 || doesNotModifyConflictEffects) {
             modifiers.forEach((modifier) => {
-                if(modifier.type === 'token' && modifier.amount !== 0) {
+                if(modifier.type === ObjectType.Token && modifier.amount !== 0) {
                     modifier.amount = 0;
                     modifier.name += ` (${StatModifier.getEffectName(doesNotModifyEffects[0])})`;
                 }
@@ -270,7 +269,7 @@ export class SkillCalculator {
         );
         if(reverseEffects.length > 0) {
             modifiers.forEach((modifier) => {
-                if(modifier.type === 'token' && modifier.amount !== 0 && modifier.status === CharacterStatus.Dishonored) {
+                if(modifier.type === ObjectType.Token && modifier.amount !== 0 && modifier.status === CharacterStatus.Dishonored) {
                     modifier.amount = 0 - modifier.amount;
                     modifier.name += ` (${StatModifier.getEffectName(reverseEffects[0])})`;
                 }
@@ -281,7 +280,7 @@ export class SkillCalculator {
         );
         if(doesNotDecreaseEffects.length > 0) {
             modifiers.forEach((modifier) => {
-                if(modifier.type === 'token' && modifier.amount < 0) {
+                if(modifier.type === ObjectType.Token && modifier.amount < 0) {
                     modifier.amount = 0;
                     modifier.name += ` (${StatModifier.getEffectName(doesNotDecreaseEffects[0])})`;
                 }
@@ -295,7 +294,7 @@ export class SkillCalculator {
         modifierEffects.forEach((modifierEffect) => {
             modifiers.push(this.getModifier(modifierEffect.getValue(this.card), modifierEffect));
         });
-        modifiers = modifiers.filter((modifier) => modifier.type === 'token');
+        modifiers = modifiers.filter((modifier) => modifier.type === ObjectType.Token);
         this.adjustHonorStatusModifiers(modifiers);
         return modifiers;
     }

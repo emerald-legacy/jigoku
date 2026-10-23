@@ -3,7 +3,7 @@ import { MaxStatCardSelector } from './CardSelectors/MaxStatCardSelector.js';
 import { SingleCardSelector } from './CardSelectors/SingleCardSelector.js';
 import { UnlimitedCardSelector } from './CardSelectors/UnlimitedCardSelector.js';
 import { UpToXCardSelector } from './CardSelectors/UpToXCardSelector.js';
-import { TargetMode, CardType } from './Constants.js';
+import { TargetMode, ALL_CARD_TYPES } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { BaseCardSelectorProperties } from './CardSelectors/BaseCardSelector.js';
 import type BaseCard from './BaseCard.js';
@@ -47,7 +47,7 @@ const defaultProperties: CardSelectorProperties = {
     numCards: 1,
     cardCondition: () => true,
     numCardsFunc: () => 1,
-    cardType: [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Stronghold, CardType.Role, CardType.Province],
+    cardType: [...ALL_CARD_TYPES],
     multiSelect: false,
     sameDiscardPile: false
 };

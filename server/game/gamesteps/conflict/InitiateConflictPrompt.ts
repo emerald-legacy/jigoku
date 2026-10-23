@@ -144,9 +144,9 @@ export class InitiateConflictPrompt extends UiPrompt {
 
             if(!player.hasLegalConflictDeclaration({ type, ring, province: this.conflict.conflictProvince })) {
                 ring.flipConflictType();
-            } else if(polValid && !milValid && type === 'military') {
+            } else if(polValid && !milValid && type === ConflictType.Military) {
                 ring.flipConflictType();
-            } else if(milValid && !polValid && type === 'political') {
+            } else if(milValid && !polValid && type === ConflictType.Political) {
                 ring.flipConflictType();
             } else if(this.conflict.attackers.some((card: DrawCard) => !card.canDeclareAsAttacker(type, ring))) {
                 ring.flipConflictType();

@@ -48,7 +48,7 @@
         </tbody>
       </table>
   <ul class="edge">
-    <li>Without <code>cardType</code>, the card selector accepts attachments, characters, events, holdings, strongholds, roles and provinces, and the builder types the target as <code>BaseCard</code>. A list (<code>cardType: [CardType.Character, CardType.Attachment]</code>) types it as the union of the classes.</li>
+    <li><code>ALL_CARD_TYPES</code> lists the card types in a game (all but <code>Warlord</code> and <code>Treaty</code>). Without <code>cardType</code>, the card selector accepts those, and the builder types the target as <code>BaseCard</code>. A list (<code>cardType: [CardType.Character, CardType.Attachment]</code>) types it as the union of the classes.</li>
     <li>A card's type can change through the <code>changeType</code> effect (<code>EffectName.ChangeType</code>), so compare <code>card.type</code> (the current type), not the printed one.</li>
   </ul>
   <pre><code>// Hiruma Ambusher: Reaction: After this character enters play as a defender, choose a character – that character's abilities cannot be triggered during this conflict.
@@ -216,7 +216,7 @@ this.conflictAction('Search your conflict deck', { evenFromHome: true })
 </div>
 <div class="ref" id="en-ObjectType" data-name="ObjectType">
   <h3><code>ObjectType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-ObjectType">#</a></h3>
-  <p>The <code>printedType</code> (and <code>type</code>) of a game object that is not a card. To tell objects apart, use the guards <code>isCard()</code>, <code>isRing()</code>, <code>isPlayer()</code> and <code>isToken()</code> on any game object rather than comparing types.</p>
+  <p>The <code>printedType</code> (and <code>type</code>) of a game object that is not a card; a game action's <code>targetType</code> is a list of <code>CardType</code> and <code>ObjectType</code> values. To tell objects apart, use the guards <code>isCard()</code>, <code>isRing()</code>, <code>isPlayer()</code> and <code>isToken()</code> on any game object rather than comparing types.</p>
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>

@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { EventName, Location } from '../Constants.js';
+import { EventName, Location, ObjectType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Ring from '../Ring.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -16,7 +16,7 @@ export interface AttachToRingProperties extends CardActionProperties {
 export class AttachToRingAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<AttachToRingProperties, EventName.OnCardAttached, Context> {
     override name = 'attachToRing';
     override eventName = EventName.OnCardAttached;
-    override targetType = ['ring'];
+    override targetType = [ObjectType.Ring];
 
     protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
         return ['attach {1} to {0}', [this.getProperties(context, additionalProperties).attachment]];

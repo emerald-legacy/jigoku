@@ -1,7 +1,7 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, type RestrictionType, Stage } from '../Constants.js';
+import { CardType, EventName, type ObjectType, type RestrictionType, Stage } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { GameObject } from '../GameObject.js';
@@ -74,7 +74,7 @@ export class GameAction<
     Defaulted extends keyof Properties = never
 > {
     properties?: Properties;
-    targetType: string[] = [];
+    targetType: (CardType | ObjectType)[] = [];
     eventName = EventName.Unnamed;
     name = '';
     /** What a restriction names to forbid this action; without one, only restrictions that name no type apply. */
@@ -159,7 +159,7 @@ export class GameAction<
     canAffect(target: GameObject, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
         return (
-            this.targetType.includes(target.type) &&
+            this.targetType.some((type) => type === target.type) &&
             !context.gameActionsResolutionChain.some((action) => action === this) &&
             ((context.stage === Stage.Effect && cannotBeCancelled) || target.checkRestrictions(this.restriction, context))
         );

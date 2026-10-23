@@ -35,8 +35,11 @@ interface TargetingCallbacks {
     alternateFatePool(source: BaseCard): FatePool | false;
 }
 
+/** A conflict type, or both for an effect that applies to either. */
+export type ConflictTypeOrBoth = ConflictType | 'both';
+
 export interface ParticipantCostEffect {
-    type: string;
+    type: 'attackers' | 'defenders';
     cost: GameAction | ((player: Player) => GameAction);
     /** What the player did, in "<player> <chatText> in order to declare …"; without it, the cost's own text. */
     chatText?: (context: AbilityContext) => MessageArgs;
@@ -110,10 +113,10 @@ export interface EffectValueMap {
     [EffectName.CanOnlyBeDeclaredAsAttackerWithCondition]: (props: ICanOnlyBeDeclaredAsAttackerWithCondition) => boolean;
     [EffectName.CannotApplyLastingEffects]: (effect: EffectApplier<EffectName, GameObject, unknown>) => boolean;
     [EffectName.CannotBeAttacked]: boolean;
-    [EffectName.CannotHaveConflictsDeclaredOfType]: string;
+    [EffectName.CannotHaveConflictsDeclaredOfType]: ConflictType;
     [EffectName.CannotHaveOtherRestrictedAttachments]: BaseCard;
-    [EffectName.CannotParticipateAsAttacker]: string;
-    [EffectName.CannotParticipateAsDefender]: string;
+    [EffectName.CannotParticipateAsAttacker]: ConflictTypeOrBoth;
+    [EffectName.CannotParticipateAsDefender]: ConflictTypeOrBoth;
     [EffectName.CardCostToAttackMilitary]: number;
     [EffectName.ChangeContributionFunction]: (card: DrawCard) => number;
     [EffectName.ChangeType]: CardType;
@@ -128,7 +131,7 @@ export interface EffectValueMap {
     [EffectName.FateCostToAttack]: number;
     [EffectName.HonorCostToDeclare]: { amount: number, dueToStatusToken?: boolean };
     [EffectName.FateCostToRingToDeclareConflictAgainst]: number;
-    [EffectName.FateCostToTarget]: { cardType?: string; targetPlayer?: Players; amount: number };
+    [EffectName.FateCostToTarget]: { cardType?: CardType; targetPlayer?: Players; amount: number };
     [EffectName.PlayerFateCostToTargetCard]: { match: TargetingCallbacks['match']; amount: number };
     [EffectName.GainAbility]: GainedAbilityValue;
     [EffectName.GainAllAbilities]: BaseCard;
@@ -163,15 +166,15 @@ export interface EffectValueMap {
     [EffectName.ModifyProvinceStrengthMultiplier]: number;
     [EffectName.ModifyRestrictedAttachmentAmount]: number;
     [EffectName.MustBeChosen]: RestrictionLike;
-    [EffectName.MustBeDeclaredAsAttacker]: string;
-    [EffectName.MustBeDeclaredAsAttackerIfType]: string;
-    [EffectName.MustBeDeclaredAsDefender]: string;
+    [EffectName.MustBeDeclaredAsAttacker]: ConflictTypeOrBoth;
+    [EffectName.MustBeDeclaredAsAttackerIfType]: ConflictTypeOrBoth;
+    [EffectName.MustBeDeclaredAsDefender]: ConflictTypeOrBoth;
     [EffectName.SetApparentFate]: number;
     [EffectName.SetBaseDash]: SkillType;
     [EffectName.SetBaseMilitarySkill]: number;
     [EffectName.SetBasePoliticalSkill]: number;
     [EffectName.SetBaseProvinceStrength]: number;
-    [EffectName.SatisfyAffinity]: string | string[];
+    [EffectName.SatisfyAffinity]: Trait | Trait[];
     [EffectName.SetConflictDeclarationType]: ConflictType;
     [EffectName.ProvideConflictDeclarationType]: ConflictType;
     [EffectName.ForceConflictDeclarationType]: ConflictType;
@@ -195,11 +198,11 @@ export interface EffectValueMap {
     [EffectName.AdditionalActionAfterWindowCompleted]: number;
     [EffectName.AdditionalCardPlayed]: number;
     [EffectName.AdditionalCharactersInConflict]: number;
-    [EffectName.AdditionalConflict]: string | true;
+    [EffectName.AdditionalConflict]: ConflictType | true;
     [EffectName.AdditionalTriggerCost]: (context: AbilityContext) => Cost | Cost[];
     [EffectName.AdditionalPlayCost]: (context: AbilityContext) => Cost | Cost[];
     [EffectName.AlternateFatePool]: TargetingCallbacks['alternateFatePool'];
-    [EffectName.CannotDeclareConflictsOfType]: string;
+    [EffectName.CannotDeclareConflictsOfType]: ConflictType;
     [EffectName.CanPlayFromOwn]: boolean;
     [EffectName.CanPlayFromOutOfPlay]: CanPlayFromOutOfPlayValue;
     [EffectName.CanPlayFromOpponents]: boolean;
@@ -224,7 +227,7 @@ export interface EffectValueMap {
     [EffectName.SetBaseGlory]: number;
     [EffectName.EventsCannotBeCancelled]: boolean;
     [EffectName.ForceConflictUnopposed]: boolean;
-    [EffectName.MustDeclareMaximumAttackers]: string;
+    [EffectName.MustDeclareMaximumAttackers]: ConflictTypeOrBoth;
     [EffectName.RefillProvinceTo]: number;
     [EffectName.RestartDynastyPhase]: BaseCard;
     [EffectName.StrongholdCanBeAttacked]: boolean;

@@ -1,5 +1,5 @@
 import { EffectValueBase } from './EffectValue.js';
-import { AbilityType, CardType, Phase, type PlayType, RestrictionScope, RestrictionType, Stage, Trait } from '../Constants.js';
+import { AbilityType, CardType, Phase, type PlayType, RestrictionScope, RestrictionType, Stage, Trait, ALL_CARD_TYPES } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -118,15 +118,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
 export const isCardEffect = (context: AbilityContext) =>
     (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
     context.stage !== Stage.Cost &&
-    [
-        CardType.Event,
-        CardType.Character,
-        CardType.Holding,
-        CardType.Attachment,
-        CardType.Stronghold,
-        CardType.Province,
-        CardType.Role
-    ].includes(context.source.type);
+    ALL_CARD_TYPES.some((type) => type === context.source.type);
 
 const getApplyingPlayer = (effect: Restriction): Player => {
     return effect.applyingPlayer || effect.requireContext().player;

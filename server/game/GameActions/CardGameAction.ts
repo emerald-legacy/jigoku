@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EffectName, type EventName, Location } from '../Constants.js';
+import { EffectName, type EventName, Location, ALL_CARD_TYPES, ObjectType } from '../Constants.js';
 import { GameAction, type GameActionProperties, targetList, type ActionEvent } from './GameAction.js';
 import { payAdditionalCost } from '../costs/additionalCost.js';
 import type { AnyEvent } from '../TriggeredAbilityContext.js';
@@ -19,16 +19,7 @@ export class CardGameAction<
     Context extends AbilityContext = AbilityContext,
     Defaulted extends keyof Properties = never
 > extends GameAction<Properties, EventType, Context, Defaulted> {
-    override targetType = [
-        CardType.Character,
-        CardType.Attachment,
-        CardType.Holding,
-        CardType.Event,
-        CardType.Stronghold,
-        CardType.Province,
-        CardType.Role,
-        'ring'
-    ];
+    override targetType = [...ALL_CARD_TYPES, ObjectType.Ring];
 
     override defaultTargets(context: Context): BaseCard[] {
         return [context.source];

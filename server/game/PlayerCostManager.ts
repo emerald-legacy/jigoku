@@ -7,6 +7,7 @@ import {
     EffectName,
     EventName,
     Location,
+    ObjectType,
     Players,
     PlayType,
     RestrictionType
@@ -98,7 +99,7 @@ export class PlayerCostManager {
         if(maho) {
             alternateFatePools.push(...this.player.cardsInPlay.filter((a) => a.type === CardType.Character));
             alternateFatePools = alternateFatePools.filter(
-                (a) => a.printedType !== 'ring' && a.type === CardType.Character
+                (a) => a.printedType !== ObjectType.Ring && a.type === CardType.Character
             );
         }
 

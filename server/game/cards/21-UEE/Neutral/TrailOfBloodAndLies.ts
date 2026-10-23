@@ -1,7 +1,6 @@
 import { perPhase } from '../../../AbilityLimit.js';
 import { dishonor } from '../../../GameActions/GameActions.js';
 import { CardType, Phase, Players, Trait } from '../../../Constants.js';
-import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TrailOfBloodAndLies extends DrawCard {
@@ -15,7 +14,7 @@ export default class TrailOfBloodAndLies extends DrawCard {
                     return (
                         context.game.currentPhase !== Phase.Fate &&
                         (event.fate ?? 0) > 0 &&
-                        origin instanceof BaseCard &&
+                        !!origin?.isCard() &&
                         origin.type === CardType.Character &&
                         origin.controller === context.player.opponent
                     );

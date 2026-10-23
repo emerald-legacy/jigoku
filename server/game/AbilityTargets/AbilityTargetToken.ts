@@ -1,6 +1,6 @@
 import { AbilityTargetBase, type AbilityTargetBaseProperties } from './AbilityTargetBase.js';
 import { CardSelector } from '../CardSelector.js';
-import { CardType, Stage, Location } from '../Constants.js';
+import { type CardType, Stage, Location, ALL_CARD_TYPES } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
@@ -33,7 +33,7 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
             }
             return card.statusTokens.some((token) => this.isTokenLegal(token, context));
         };
-        const cardType = properties.cardType || [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Province, CardType.Role, CardType.Stronghold];
+        const cardType = properties.cardType || [...ALL_CARD_TYPES];
         return CardSelector.for(Object.assign({}, properties, { cardType: cardType, cardCondition: cardCondition, targets: false }));
     }
 

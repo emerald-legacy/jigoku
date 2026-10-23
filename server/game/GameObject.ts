@@ -138,7 +138,7 @@ export class GameObject {
         return false;
     }
 
-    public getType(): CardType | string {
+    public getType(): CardType | ObjectType | '' {
         return this.mostRecentEffect(EffectName.ChangeType) ?? this.printedType;
     }
 

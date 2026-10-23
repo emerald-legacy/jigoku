@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
 import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
-import type { EventName } from '../Constants.js';
+import { type EventName, ObjectType } from '../Constants.js';
 
 export interface PlayerActionProperties extends GameActionProperties {
     target?: Player | Player[];
@@ -16,7 +16,7 @@ export class PlayerAction<
     Context extends AbilityContext = AbilityContext,
     Defaulted extends keyof Properties = never
 > extends GameAction<Properties, EventType, Context, Defaulted> {
-    override targetType = ['player'];
+    override targetType = [ObjectType.Player];
 
     /** The ability's player; actions aimed at the opponent return `opponentTargets(context)`. */
     override defaultTargets(context: Context): Player[] {

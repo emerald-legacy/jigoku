@@ -1,4 +1,4 @@
-import { CardType, EffectName, type Duration } from '../Constants.js';
+import { CardType, EffectName, type Duration, SkillType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -26,23 +26,23 @@ type MilitaryModifierName = typeof MilitaryModifiers[number];
 type PoliticalModifierName = typeof PoliticalModifiers[number];
 
 const hasDash: Partial<Record<EffectName, (card: DrawCard, effect: EffectApplier<EffectName, GameObject, unknown>) => boolean>> = {
-    [EffectName.ModifyBaseMilitarySkillMultiplier]: (card) => card.hasDash('military'),
-    [EffectName.ModifyBasePoliticalSkillMultiplier]: (card) => card.hasDash('political'),
-    [EffectName.ModifyBothSkills]: (card) => card.hasDash('military') && card.hasDash('political'),
-    [EffectName.ModifyMilitarySkill]: (card) => card.hasDash('military'),
-    [EffectName.AttachmentMilitarySkillModifier]: (card) => card.hasDash('military'),
-    [EffectName.ModifyMilitarySkillMultiplier]: (card) => card.hasDash('military'),
-    [EffectName.ModifyPoliticalSkill]: (card) => card.hasDash('political'),
-    [EffectName.AttachmentPoliticalSkillModifier]: (card) => card.hasDash('political'),
-    [EffectName.ModifyPoliticalSkillMultiplier]: (card) => card.hasDash('political'),
-    [EffectName.SetBaseMilitarySkill]: (card) => card.hasDash('military'),
-    [EffectName.SetBasePoliticalSkill]: (card) => card.hasDash('political'),
+    [EffectName.ModifyBaseMilitarySkillMultiplier]: (card) => card.hasDash(SkillType.Military),
+    [EffectName.ModifyBasePoliticalSkillMultiplier]: (card) => card.hasDash(SkillType.Political),
+    [EffectName.ModifyBothSkills]: (card) => card.hasDash(SkillType.Military) && card.hasDash(SkillType.Political),
+    [EffectName.ModifyMilitarySkill]: (card) => card.hasDash(SkillType.Military),
+    [EffectName.AttachmentMilitarySkillModifier]: (card) => card.hasDash(SkillType.Military),
+    [EffectName.ModifyMilitarySkillMultiplier]: (card) => card.hasDash(SkillType.Military),
+    [EffectName.ModifyPoliticalSkill]: (card) => card.hasDash(SkillType.Political),
+    [EffectName.AttachmentPoliticalSkillModifier]: (card) => card.hasDash(SkillType.Political),
+    [EffectName.ModifyPoliticalSkillMultiplier]: (card) => card.hasDash(SkillType.Political),
+    [EffectName.SetBaseMilitarySkill]: (card) => card.hasDash(SkillType.Military),
+    [EffectName.SetBasePoliticalSkill]: (card) => card.hasDash(SkillType.Political),
     [EffectName.SetDash]: (card, effect) => {
         const type = isEffectOf(effect, EffectName.SetDash) ? effect.getValue() : undefined;
         return !!type && card.hasDash(type);
     },
-    [EffectName.SetMilitarySkill]: (card) => card.hasDash('military'),
-    [EffectName.SetPoliticalSkill]: (card) => card.hasDash('political')
+    [EffectName.SetMilitarySkill]: (card) => card.hasDash(SkillType.Military),
+    [EffectName.SetPoliticalSkill]: (card) => card.hasDash(SkillType.Political)
 };
 
 /**

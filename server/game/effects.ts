@@ -38,13 +38,13 @@ import type { CharacterStatus, ConflictType, Element, SkillType, Trait } from '.
 import type { StatusToken } from './StatusToken.js';
 import type {
     AbilityLimitIncrease,
+    ConflictTypeOrBoth,
     EffectValueMap,
     ICanOnlyBeDeclaredAsAttackerWithCondition,
     ParticipantCostEffect,
     UnlessActionCostValue
 } from './Effects/EffectValueMap.js';
 
-type ConflictTypeOrBoth = ConflictType | 'both';
 
 /* Types of effect
     1. Static effects - do something for a period

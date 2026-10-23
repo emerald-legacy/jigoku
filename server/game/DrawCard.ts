@@ -17,7 +17,7 @@ import { CourtesyAbility } from './KeywordAbilities/CourtesyAbility.js';
 import { PrideAbility } from './KeywordAbilities/PrideAbility.js';
 import { SincerityAbility } from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType, RestrictionType, EntersPlayStatus } from './Constants.js';
+import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType, SkillType, RestrictionType, EntersPlayStatus, ObjectType, DuelType } from './Constants.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
 import { TutoredAbility } from './KeywordAbilities/TutoredAbility.js';
@@ -177,8 +177,8 @@ export class DrawCard extends BaseCard {
 
         this.defaultController = owner;
 
-        this.printedMilitarySkill = this.getPrintedSkill('military');
-        this.printedPoliticalSkill = this.getPrintedSkill('political');
+        this.printedMilitarySkill = this.getPrintedSkill(SkillType.Military);
+        this.printedPoliticalSkill = this.getPrintedSkill(SkillType.Political);
         const cost = parseInt(this.cardData.cost ?? '');
         this.printedCost = isNaN(cost) ? (this.type === CardType.Event ? 0 : null) : cost;
         this.printedGlory = parseInt(String(cardData.glory ?? ''));
@@ -281,10 +281,10 @@ export class DrawCard extends BaseCard {
         });
     }
 
-    getPrintedSkill(type: string): number {
-        if(type === 'military') {
+    getPrintedSkill(type: SkillType): number {
+        if(type === SkillType.Military) {
             return this.parsePrintedSkill(this.cardData.military);
-        } else if(type === 'political') {
+        } else if(type === SkillType.Political) {
             return this.parsePrintedSkill(this.cardData.political);
         }
         return NaN;
@@ -487,15 +487,15 @@ export class DrawCard extends BaseCard {
     }
 
     hasDash(type: string = ''): boolean {
-        if(type === 'glory' || this.printedType !== CardType.Character) {
+        if(type === DuelType.Glory || this.printedType !== CardType.Character) {
             return false;
         }
 
         const baseSkillModifiers = this.skillCalculator.getBaseSkillModifiers();
 
-        if(type === 'military') {
+        if(type === SkillType.Military) {
             return isNaN(baseSkillModifiers.baseMilitarySkill);
-        } else if(type === 'political') {
+        } else if(type === SkillType.Political) {
             return isNaN(baseSkillModifiers.basePoliticalSkill);
         }
 
@@ -516,9 +516,9 @@ export class DrawCard extends BaseCard {
      * @return The chosen skill value
      */
     getSkill(type: string | undefined): number {
-        if(type === 'military') {
+        if(type === SkillType.Military) {
             return this.militarySkill;
-        } else if(type === 'political') {
+        } else if(type === SkillType.Political) {
             return this.politicalSkill;
         }
         return 0;
@@ -891,7 +891,7 @@ export class DrawCard extends BaseCard {
             }
             // status tokens are effect sources too
             const sourceObj: GameObject | undefined = e.context?.source;
-            if(sourceObj?.printedType === 'token') {
+            if(sourceObj?.printedType === ObjectType.Token) {
                 continue;
             }
             const effectType: string = e.effect?.type || '';
