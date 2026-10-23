@@ -22,5 +22,5 @@ export function canMoveFateFrom(origin: DrawCard | Player | Ring | undefined, co
     if(origin.isCard()) {
         return origin.checkRestrictions(RestrictionType.RemoveFate, context);
     }
-    return !spend || origin.checkRestrictions(RestrictionType.SpendFate, context);
+    return !spend || origin.canSpendFate(1, context);
 }
