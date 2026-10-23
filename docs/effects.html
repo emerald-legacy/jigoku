@@ -1273,7 +1273,7 @@ cardLastingEffect({
     </table>
     <ul class="edge">
       <li>The suppressed effects stay applied but every read on the target skips them (<code>getEffects</code>, <code>anyEffect</code>, <code>getRawEffects</code>). Other cards are not affected.</li>
-      <li>Useful helpers on <code>effect</code>: <code>type</code>, <code>context.source</code>, <code>isMilitaryModifier()</code>, <code>isPoliticalModifier()</code>, <code>isSkillModifier()</code> (<code>modify…Skill</code>, <code>modifyBothSkills</code>, the skill multipliers, attachment bonuses) and <code>isProvinceStrengthModifier()</code> (<code>modifyProvinceStrength</code>, <code>modifyProvinceStrengthMultiplier</code>, <code>setBaseProvinceStrength</code>).</li>
+      <li>Useful helpers on <code>effect</code>: <code>type</code>, <code>context.source</code>, <code>isMilitaryModifier()</code>, <code>isPoliticalModifier()</code>, <code>isSkillModifier()</code> (<code>modify…Skill</code>, <code>modifyBothSkills</code>, the skill multipliers, attachment bonuses).</li>
       <li><code>effect.getValue()</code> is <code>undefined</code> for a function value; check <code>effect.getValue(target)</code> as well.</li>
       <li>It only removes effects that are already active. Add <code>cannotApplyLastingEffects</code> with the same predicate to stop new lasting effects being applied.</li>
     </ul>
@@ -2054,7 +2054,7 @@ this.persistentEffect({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>condition</code></td><td><code>(props) =&gt; boolean</code></td><td>required</td><td>Called with <code>{ context, conflictType, ring, province, incomingAttackers }</code>: a game context, and what is known about the declaration so far (each may be undefined). <code>incomingAttackers</code> is the attackers being declared with it.</td></tr>
+        <tr><td><code>condition</code></td><td><code>(props) =&gt; boolean</code></td><td>required</td><td>Called with <code>{ context, conflictType, ring, province, incomingAttackers }</code>: the framework context of the character's controller, and what is known about the declaration so far (each may be undefined). <code>incomingAttackers</code> is the attackers being declared with it.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -3038,7 +3038,7 @@ this.persistentEffect({
     targetLocation: Location.Provinces,
     targetController: Players.Self,
     match: (card, context) =&gt; card.type === CardType.Character &amp;&amp; card.location === context?.source.location,
-    effect: entersPlayWithStatus(CharacterStatus.Honored)
+    effect: entersPlayWithStatus(EntersPlayStatus.Honored)
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/Tsuma.ts">Tsuma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/ShinseisLastHope.ts">Shinsei's Last Hope</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/GuardianDojo.ts">Guardian Dōjō</a></p>
   </div>
@@ -3474,7 +3474,6 @@ this.duelChallenge('Add +2 to your duel total', (duel, context) =&gt;
     </table>
     <ul class="edge">
       <li>Ignored while a <code>setBaseProvinceStrength</code> applies.</li>
-      <li>Not counted by <code>effect.isProvinceStrengthModifier()</code>.</li>
     </ul>
     <pre><code>// Web of Lies: X is equal to twice the bid on your honor dial.
 this.persistentEffect({

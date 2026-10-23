@@ -833,7 +833,7 @@ this.action('Make your opponent sacrifice a character')
         <tr><td><code>target</code></td><td><code>Player | Player[]</code></td><td>the opponent of the ability's player</td><td>Who discards.</td></tr>
         <tr><td><code>amount</code></td><td><code>number</code></td><td><code>1</code></td><td>How many cards.</td></tr>
         <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>any card</td><td>Which cards in hand may be chosen.</td></tr>
-        <tr><td><code>targets</code></td><td><code>boolean</code></td><td><code>true</code></td><td>The choice counts as choosing targets: when another player chooses the ability's targets (Hantei XXXVIII), the first matching cards in hand are discarded without a prompt.</td></tr>
+        <tr><td><code>targets</code></td><td><code>boolean</code></td><td><code>true</code></td><td>The choice counts as choosing targets: when another player chooses the ability's targets (Hantei XXXVIII), he can't see the hand and chooses blindly: random cards, or none when only certain cards may be chosen (<code>cardCondition</code>; ruling #926).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -907,7 +907,7 @@ this.reaction('Draw 2 cards and return 1')
         <tr><td><code>takesNothingGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>Resolves (with its own default target) when nothing is taken.</td></tr>
         <tr><td><code>selectedCardsHandler</code></td><td><code>(context, event, cards) =&gt; void</code></td><td>none</td><td>Replaces the default handling of the taken cards (the chat line and <code>gameAction</code>).</td></tr>
         <tr><td><code>remainingCardsHandler</code></td><td><code>(context, event, cards) =&gt; void</code></td><td>none</td><td>Replaces <code>remainingCards</code>.</td></tr>
-        <tr><td><code>targets</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The card is chosen ("choose"), so Hantei XXXVIII may make the choice; he can't see the cards and chooses none (Miya Library).</td></tr>
+        <tr><td><code>targets</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The card is chosen ("choose"), so Hantei XXXVIII may make the choice; he can't see the cards and chooses blindly: a random card, or none when only certain cards may be chosen (<code>cardCondition</code>: Miya Library).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1254,7 +1254,7 @@ this.action('Place a holding from your deck faceup in the defending province')
     <ul class="edge">
       <li>The card must be in play, and <code>destination</code> a legal place for it. It goes to its owner's province.</li>
       <li>A conflict card is discarded instead, with the chat line <code>{card} is discarded instead since it can't enter a province legally!</code></li>
-      <li>Raises <code>onCardLeavesPlay</code> with the same contingent events as the leave-play actions: its attachments are discarded and its fate is removed (Ancestral returns to hand). Attachments that are no longer legal fall off afterwards. It has no restriction type of its own.</li>
+      <li>Raises <code>onCardLeavesPlay</code> with the same contingent events as the leave-play actions: its attachments are discarded and its fate is removed (Ancestral returns to hand). Attachments that are no longer legal fall off afterwards. Restriction: <code>RestrictionType.PutIntoProvince</code>, which <code>LeavePlay</code> covers too.</li>
       <li>Chat: <code>move {0} to {1}'s {2}</code>.</li>
       <li>No builder shortcut.</li>
     </ul>
@@ -1385,7 +1385,6 @@ multiple([
         <tr><td><code>resetOnCancel</code></td><td><code>boolean</code></td><td><code>false</code></td><td>If the player cancels the play, the <code>selectCard</code> that chose the card is resolved again, so another card can be chosen. Adds a "Cancel" button when there are several play abilities.</td></tr>
         <tr><td><code>postHandler</code></td><td><code>(context) =&gt; void</code></td><td>does nothing</td><td>Runs after the play resolved; not after a cancel with <code>resetOnCancel</code>.</td></tr>
         <tr><td><code>playCardTarget</code></td><td><code>(context, properties) =&gt; void</code></td><td>none</td><td>Replaces the play's first targeting step.</td></tr>
-        <tr><td><code>location</code></td><td><code>Location</code></td><td>none</td><td>Declared, but the action never reads it.</td></tr>
       </tbody>
     </table>
     <ul class="edge">

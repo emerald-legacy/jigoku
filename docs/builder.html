@@ -1994,7 +1994,7 @@ this.action('Steal a fate')
     </table>
     <pre><code>// Niten: … return this attachment to your hand - put an attachment from your hand into play attached to the same character. (Max 1 per round.)
 .attach((context) =&gt; ({
-    target: context.costs.captureParentCost ?? [],
+    target: context.costs.captureParentCost ?? context.source.parentCharacter ?? [],
     attachment: context.target
 }))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/Logistics.ts">Logistics</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/CallingInFavors.ts">Calling in Favors</a></p>

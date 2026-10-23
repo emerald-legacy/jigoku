@@ -95,6 +95,9 @@ this.reaction('Disable a character')
           <tr><td><code>Dishonored</code></td><td><code>'dishonored'</code></td><td>Enters play dishonored.</td></tr>
         </tbody>
       </table>
+  <ul class="edge">
+    <li>With <code>Ordinary</code>, <code>putIntoPlay</code> uses the card's own <code>DrawCard.entersPlayStatus()</code>: a card that always "enters play dishonored" overrides it (Bayushi Shinobu), whichever way it enters play.</li>
+  </ul>
 </div>
 <div class="ref" id="en-DeckType" data-name="DeckType">
   <h3><code>DeckType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-DeckType">#</a></h3>
@@ -841,7 +844,7 @@ onEffectApplied: (event, context) =&gt; {
         </tbody>
       </table>
   <ul class="edge">
-    <li><code>OpponentsTriggeredAbilities</code> also matches action abilities: <code>isTriggeredAbility()</code> is true for every <code>CardAbility</code> (actions, triggered abilities, events). It does not match keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), nor a then-step, whose ability is a <code>ResolvableAbility</code>.</li>
+    <li><code>OpponentsTriggeredAbilities</code> also matches action abilities: <code>isTriggeredAbility()</code> is true for every <code>CardAbility</code> (actions, triggered abilities, events). It does not match keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), nor a then-step, whose ability is a plain <code>ResolvableAbility</code> (<code>CardAbility</code> extends it; <code>isStep()</code> is true for a step).</li>
   </ul>
   <pre><code>// Master of the Blade: Duel Strike: For this conflict, this character cannot be bowed by opponents' card effects and does not bow as a result of conflict resolution.
 cardCannot({
@@ -879,7 +882,7 @@ cardCannot({
           <tr><td><code>HaveImperialFavor</code></td><td><code>'haveImperialFavor'</code></td><td>Keeping the Imperial Favor.</td></tr>
           <tr><td><code>Honor</code></td><td><code>'honor'</code></td><td><code>honor</code> (on the card and on the ability's player).</td></tr>
           <tr><td><code>InitiateKeywords</code></td><td><code>'initiateKeywords'</code></td><td>Keyword abilities, covert.</td></tr>
-          <tr><td><code>LeavePlay</code></td><td><code>'leavePlay'</code></td><td>Every way of leaving play: matches <code>DiscardFromPlay</code>, <code>Sacrifice</code>, <code>ReturnToHand</code>, <code>ReturnToDeck</code>, <code>RemoveFromGame</code>.</td></tr>
+          <tr><td><code>LeavePlay</code></td><td><code>'leavePlay'</code></td><td>Every way of leaving play: matches <code>DiscardFromPlay</code>, <code>Sacrifice</code>, <code>ReturnToHand</code>, <code>ReturnToDeck</code>, <code>RemoveFromGame</code>, <code>PutIntoProvince</code>.</td></tr>
           <tr><td><code>LoseDuels</code></td><td><code>'loseDuels'</code></td><td>Losing a duel: a restricted loser does not lose.</td></tr>
           <tr><td><code>LoseHonor</code></td><td><code>'loseHonor'</code></td><td><code>loseHonor</code></td></tr>
           <tr><td><code>Move</code></td><td><code>'move'</code></td><td><code>moveCard</code></td></tr>
@@ -893,6 +896,7 @@ cardCannot({
           <tr><td><code>PreventedFromLeavingPlay</code></td><td><code>'preventedFromLeavingPlay'</code></td><td><code>cancel()</code> on <code>onCardLeavesPlay</code>: a restricted card cannot have leaving play cancelled (Legendary).</td></tr>
           <tr><td><code>PutIntoConflict</code></td><td><code>'putIntoConflict'</code></td><td><code>putIntoConflict</code></td></tr>
           <tr><td><code>PutIntoPlay</code></td><td><code>'putIntoPlay'</code></td><td><code>putIntoPlay</code>, <code>putIntoConflict</code></td></tr>
+          <tr><td><code>PutIntoProvince</code></td><td><code>'putIntoProvince'</code></td><td><code>putIntoProvince</code> (a <code>LeavePlay</code> restriction stops it too)</td></tr>
           <tr><td><code>Ready</code></td><td><code>'ready'</code></td><td><code>ready</code></td></tr>
           <tr><td><code>ReceiveDishonorToken</code></td><td><code>'receiveDishonorToken'</code></td><td>Dishonoring an ordinary character or province (<code>dishonor</code>, <code>dishonorProvince</code>), <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
           <tr><td><code>ReceiveHonorToken</code></td><td><code>'receiveHonorToken'</code></td><td>Honoring an ordinary character, <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
@@ -1777,14 +1781,14 @@ until: {
       </table>
   <ul class="edge">
     <li>Only a card that is not bowed can be bowed, and it must be in play or a stronghold.</li>
-    <li>Bows at the end of a conflict use the game context (<code>event.context.source</code> is the framework source); a ring effect's bow has a <code>Ring</code> as <code>event.context.source</code>.</li>
+    <li>Bows at the end of a conflict use the framework context of the bowed character's controller (<code>event.context.source</code> is the framework source); a ring effect's bow has a <code>Ring</code> as <code>event.context.source</code>.</li>
   </ul>
   <pre><code>// Ready for Battle: Reaction: After an opponent's card effect or a ring effect bows a character you control – ready that character.
 this.reaction('Ready a character')
     .when({
         onCardBowed: (event, context) =&gt;
             event.card.controller === context.player &amp;&amp;
-            (event.context?.source instanceof Ring ||
+            (event.context?.source.isRing() ||
                 (context.player.opponent &amp;&amp; event.context?.player === context.player.opponent))
     })
     .ready((context) =&gt; ({ target: context.event.card }))</code></pre>
@@ -2407,7 +2411,7 @@ this.reaction('Move the conflict')
         </tbody>
       </table>
   <ul class="edge">
-    <li>With <code>takeFate</code>, the fate on the ring goes to the player in the handler, with an <code>onMoveFate</code> raised afterwards.</li>
+    <li>With <code>takeFate</code>, the handler takes the ring's fate for the player (<code>takeAllFateFromRing</code>) in a then-window, which raises <code>onMoveFate</code> after the claim.</li>
   </ul>
   <pre><code>// Akodo Toturi: Reaction: After you claim a ring during a [conflict-military] conflict in which this character is participating – resolve that ring's effect.
 this.reaction('Resolve ring effect')
@@ -2917,7 +2921,7 @@ this.wouldInterrupt('Take Fate')
 this.reaction('Resolve the attached ring\'s effect')
     .when({
         onMoveFate: (event) =&gt; event.recipient === this.parent,
-        onPlaceFateOnUnclaimedRings: () =&gt; this.parent instanceof Ring &amp;&amp; this.parent.isUnclaimed()
+        onPlaceFateOnUnclaimedRings: () =&gt; this.parent?.isRing() &amp;&amp; this.parent.isUnclaimed()
     })</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/GreaterUnderstanding.ts">Greater Understanding</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiSeiji.ts">Kitsuki Seiji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/GreaterUnderstanding2.ts">Greater Understanding</a></p>
 </div>
@@ -3178,7 +3182,7 @@ afterConflict: (event, context) =&gt; event.conflict.isOnWinningSide(context.sou
   <ul class="edge">
     <li>The builder types it as the card's own class (<code>this.action()</code> in a class that extends <code>DrawCard</code> gives a <code>DrawCard</code> source), so its members need no cast.</li>
     <li>For a gained ability (<code>gainAbility.action(…)</code>, <code>gainAbility.reaction(…)</code>) it is the card that gained the ability.</li>
-    <li>For a ring effect it is the <code>Ring</code>; for a framework context, a plain <code>EffectSource</code> named "Framework effect". Check <code>event.context?.source instanceof Ring</code> to tell a ring effect apart.</li>
+    <li>For a ring effect it is the <code>Ring</code>; for a framework context, a plain <code>EffectSource</code> named "Framework effect". Check <code>event.context?.source.isRing()</code> to tell a ring effect apart.</li>
     <li>It is the live card: if the card has left play since the ability started, read <code>cardStateWhenInitiated</code> for its earlier state.</li>
   </ul>
   <pre><code>// Mantis Raider: Reaction: After a conflict begins, if this character is attacking unopposed - place 1 fate from the defender's fate pool on this character. …

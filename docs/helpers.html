@@ -112,7 +112,7 @@ class GreaterUnderstanding extends RingAttachment {
         this.reaction('Resolve the attached ring\'s effect')
             .when({
                 onMoveFate: (event) =&gt; event.recipient === this.parent,
-                onPlaceFateOnUnclaimedRings: () =&gt; this.parent instanceof Ring &amp;&amp; this.parent.isUnclaimed()
+                onPlaceFateOnUnclaimedRings: () =&gt; this.parent?.isRing() &amp;&amp; this.parent.isUnclaimed()
             })
             .resolveRingEffect((context) =&gt; ({ target: context.source.parent ?? [] }));
     }
@@ -891,7 +891,7 @@ private getNumberOfLegalTargets(context: AbilityContext) {
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>isOpponentsRingOrCardEffect</code>: the context's player (who resolved the ability or ring) is <code>player.opponent</code>, and the source is a ring or the ability is a card ability. Framework steps don't count.</li>
+      <li><code>isOpponentsRingOrCardEffect</code>: the context's player (who resolved the ability or ring) is <code>player.opponent</code>, and the source is a ring or it is a card effect (<code>isCardEffect</code>: not a cost, not a played character or attachment). Framework steps don't count.</li>
       <li><code>isOwnRingEffect</code>: the context's player is <code>player</code> and the source is a ring.</li>
     </ul>
     <pre><code>// Akodo Motivator: Reaction: After an opponent's card ability or ring effect discards 1 or more cards from your hand -

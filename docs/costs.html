@@ -310,7 +310,7 @@ this.action('Put an attachment into play')
     .cost(captureParentCost())
     .cost(costs.returnSelfToHand())
     .target({ cardType: CardType.Attachment, controller: Players.Self, location: Location.Hand, … })
-    .attach((context) =&gt; ({ target: context.costs.captureParentCost ?? [], attachment: context.target }))
+    .attach((context) =&gt; ({ target: context.costs.captureParentCost ?? context.source.parentCharacter ?? [], attachment: context.target }))
     .max(perRound(1));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a></p>
   </div>
