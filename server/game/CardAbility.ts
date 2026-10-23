@@ -228,16 +228,12 @@ export class CardAbility extends ResolvableAbility {
             : this.location.includes(this.card.location);
     }
 
-    getLocationMessage(location: string, context: AbilityContext): string {
-        if(location.match(/^\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b$/i)) {
-            // it's a uuid
-            const source = context.game.findAnyCardInPlayByUuid(location);
-            if(source) {
-                return `cards set aside by ${source.name}`;
-            }
-            return 'out of play area';
+    /** Where a card is played from, for the chat: a card underneath another one is "set aside" by it. */
+    getLocationMessage(card: BaseCard): string {
+        if(card.isUnderneath()) {
+            return card.host?.location === Location.PlayArea ? `cards set aside by ${card.host.name}` : 'out of play area';
         }
-        return location;
+        return card.location;
     }
 
     override displayMessage(context: AbilityContext, messageVerb = context.source.type === CardType.Event ? 'plays' : 'uses'): void {
@@ -247,7 +243,7 @@ export class CardAbility extends ResolvableAbility {
             context.source.location !== Location.Hand &&
             context.source.location !== Location.BeingPlayed
         ) {
-            this.game.addMessage(msg`${context.player} plays ${context.source} from ${context.source.controller === context.player ? 'their' : 'their opponent\'s'} ${this.getLocationMessage(context.source.location, context)}`);
+            this.game.addMessage(msg`${context.player} plays ${context.source} from ${context.source.controller === context.player ? 'their' : 'their opponent\'s'} ${this.getLocationMessage(context.source)}`);
         }
 
         if(this.properties.message) {

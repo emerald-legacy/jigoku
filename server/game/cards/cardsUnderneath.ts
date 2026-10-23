@@ -6,9 +6,9 @@ import { Location, Players, PlayType } from '../Constants.js';
 export function playableFromUnderneath(card: BaseCard, match: (underneath: BaseCard) => boolean = () => true) {
     return {
         location: Location.PlayArea,
-        targetLocation: card.uuid,
+        targetLocation: Location.Underneath,
         targetController: Players.Any,
-        match: (underneath: BaseCard) => underneath.location === card.uuid && match(underneath),
+        match: (underneath: BaseCard) => underneath.isUnderneath(card) && match(underneath),
         effect: [
             canPlayFromOutOfPlay((player) => player === card.controller, PlayType.PlayFromHand),
             registerToPlayFromOutOfPlay()
@@ -16,7 +16,11 @@ export function playableFromUnderneath(card: BaseCard, match: (underneath: BaseC
     };
 }
 
-/** Cards under `card`, whoever placed them or controls it now. */
+/** The cards under `card`, whoever placed them or controls it now. */
+export function cardsUnderneath(card: BaseCard): BaseCard[] {
+    return card.game.allCards.filter((underneath) => underneath.isUnderneath(card));
+}
+
 export function countCardsUnderneath(card: BaseCard): number {
-    return card.game.allCards.filter((underneath) => underneath.location === card.uuid).length;
+    return cardsUnderneath(card).length;
 }

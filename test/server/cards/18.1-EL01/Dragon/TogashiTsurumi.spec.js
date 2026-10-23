@@ -38,7 +38,7 @@ describe('Togashi Tsurumi', function () {
             expect(this.player1).toBeAbleToSelect(this.stance);
             expect(this.player1).toBeAbleToSelect(this.hammer);
             this.player1.clickCard(this.punch);
-            expect(this.punch.location).toBe(this.tsurumi.uuid);
+            expect(this.punch.isUnderneath(this.tsurumi)).toBe(true);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Togashi Tsurumi to place a card from their hand beneath Togashi Tsurumi and draw a card'
             );

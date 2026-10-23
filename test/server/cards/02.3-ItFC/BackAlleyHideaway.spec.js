@@ -149,7 +149,7 @@ describe('Back-Alley Hideaway', function() {
             it('cannot be played outside of the Dynasty phase', function() {
                 expect(this.game.currentPhase).toBe('conflict');
                 this.player2.clickCard(this.manipulator);
-                expect(this.manipulator.location).toBe(this.backAlley.uuid);
+                expect(this.manipulator.isUnderneath(this.backAlley)).toBe(true);
                 expect(this.manipulator.parent).toBe(this.backAlley);
             });
 

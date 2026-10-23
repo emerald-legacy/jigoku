@@ -349,20 +349,6 @@ export class Game {
     }
 
     /**
-     * Returns the card (i.e. character) with matching uuid from either players
-     * 'in play' area.
-     */
-    findAnyCardInPlayByUuid(cardId: string): DrawCard | undefined {
-        for(const player of this.getPlayers()) {
-            const card = player.findCardInPlayByUuid(cardId);
-            if(card) {
-                return card;
-            }
-        }
-        return undefined;
-    }
-
-    /**
      * Identity lookup only: returns the card object with this uuid for the game's
      * lifetime. uuids are never reused, but entries are never pruned either, so a
      * created token that has since left the game is still returned here. Callers must

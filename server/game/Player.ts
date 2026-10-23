@@ -109,6 +109,8 @@ interface DeckFaction {
 
 interface MoveCardOptions {
     bottom?: boolean;
+    /** For `Location.Underneath`: the card it goes under. */
+    host?: BaseCard;
 }
 
 interface PatronSettings {
@@ -934,7 +936,7 @@ export class Player extends GameObject {
             return false;
         }
 
-        if(this.zones.hasAdditionalPile(location)) {
+        if(location === Location.Underneath || this.zones.hasAdditionalPile(location)) {
             return true;
         }
 
@@ -979,10 +981,9 @@ export class Player extends GameObject {
         return !!legalLocations[category]?.some((legal) => legal === location);
     }
 
-    /** Puts the card in the pile underneath `host`, which is created on first use. */
+    /** Puts the card in this player's pile underneath `host`. */
     placeUnderneath(card: BaseCard, host: BaseCard): void {
-        this.zones.ensureAdditionalPile(host.uuid);
-        this.moveCard(card, host.uuid);
+        this.moveCard(card, Location.Underneath, { host });
     }
 
     promptForAttachment(card: DrawCard): void {
@@ -1143,12 +1144,14 @@ export class Player extends GameObject {
     }
 
     moveCard(card: BaseCard, targetLocation: string, options: MoveCardOptions = {}): void {
-        if(!this.isLegalLocationForCard(card, targetLocation)) {
+        if(!this.isLegalLocationForCard(card, targetLocation) || (targetLocation === Location.Underneath && !options.host)) {
             return;
         }
         this.removeCardFromPile(card);
 
-        const targetPile = this.getSourceList(targetLocation);
+        const targetPile = targetLocation === Location.Underneath && options.host
+            ? this.zones.underneathPile(options.host).cards
+            : this.getSourceList(targetLocation);
         if(targetPile.includes(card)) {
             return;
         }
@@ -1213,8 +1216,10 @@ export class Player extends GameObject {
             targetPile.push(card);
         }
 
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- custom piles are keyed by the host card's uuid
-        card.moveTo(targetLocation as Location);
+        card.host = targetLocation === Location.Underneath ? options.host ?? null : null;
+        if(isEnumValue(Location, targetLocation)) {
+            card.moveTo(targetLocation);
+        }
     }
 
     removeCardFromPile(card: BaseCard): void {
@@ -1223,7 +1228,7 @@ export class Player extends GameObject {
             return;
         }
 
-        this.zones.removeCard(card.location, card.uuid);
+        this.zones.removeCard(card.isUnderneath() && card.host ? card.host.uuid : card.location, card.uuid);
     }
 
     getTotalIncome(): number {

@@ -1,7 +1,6 @@
 import { msg, type MessageArgs } from './GameChat.js';
 import BaseCard, { type CardSummary } from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
-import { ChildCardManager } from './ChildCardManager.js';
 import { attachmentMilitarySkillModifier, attachmentPoliticalSkillModifier } from './effects.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
 import type { StatModifier } from './StatModifier.js';
@@ -122,7 +121,6 @@ export class DrawCard extends BaseCard {
     /** No initializer: BaseCard's constructor runs setupCardAbilities() before DrawCard's fields would be set. */
     playConditions?: ((context: AbilityContext) => boolean)[];
     private skillCalculator: SkillCalculator;
-    private childCardHost = new ChildCardManager(this);
 
     override checkForIllegalAttachments(): boolean {
         return this.attachmentHost.checkForIllegalAttachments();
@@ -153,22 +151,6 @@ export class DrawCard extends BaseCard {
             }
         }
         return result;
-    }
-
-    get childCards(): DrawCard[] {
-        return this.childCardHost.childCards;
-    }
-
-    set childCards(value: DrawCard[]) {
-        this.childCardHost.childCards = value;
-    }
-
-    addChildCard(card: DrawCard, location: Location): void {
-        this.childCardHost.add(card, location);
-    }
-
-    removeChildCard(card: DrawCard | null, location: Location): void {
-        this.childCardHost.remove(card, location);
     }
 
     constructor(owner: Player, cardData: CardData) {
@@ -477,11 +459,9 @@ export class DrawCard extends BaseCard {
         clone.tokens = Object.assign({}, this.tokens);
         clone.printedKeywords = this.printedKeywords;
         clone.attachmentHost = new AttachmentManager(clone);
-        clone.childCardHost = new ChildCardManager(clone);
 
         // Recursive snapshot for nested cards
         clone.attachments = this.attachments.map((attachment: DrawCard) => attachment.createSnapshot());
-        clone.childCards = this.childCards.map((card: DrawCard) => card.createSnapshot());
 
         return clone;
     }
@@ -917,7 +897,6 @@ export class DrawCard extends BaseCard {
         return Object.assign(baseSummary, {
             attached: !!this.parent,
             attachments: this.attachments.map((attachment) => attachment.getSummary(activePlayer, hideWhenFaceup)),
-            childCards: this.childCards.map((card) => card.getSummary(activePlayer, hideWhenFaceup)),
             inConflict: this.inConflict,
             isConflict: this.isConflict,
             isDynasty: this.isDynasty,

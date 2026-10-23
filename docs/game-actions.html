@@ -1187,7 +1187,7 @@ this.reaction('Add a card from the discard pile to the hand')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Characters, attachments, events and holdings, from any location. The card's controller becomes the controller of the ability's source.</li>
+      <li>Characters, attachments, events and holdings, from any location. The card goes to <code>Location.Underneath</code> with <code>host</code> = <code>destination</code>, in the pile of the ability's player (<code>player.placeUnderneath</code>). The card's controller becomes the controller of the ability's source.</li>
       <li>It has no restriction type of its own, and no event of its own. Its checks only filter a card target. A card in a <code>target</code> list you pass is placed even when they fail (see <a href="#ga-legality">legality</a>).</li>
       <li>Chat: <code>place {0} underneath {1}</code>.</li>
       <li>Builder shortcut: <code>.placeCardUnderneath(…)</code>.</li>

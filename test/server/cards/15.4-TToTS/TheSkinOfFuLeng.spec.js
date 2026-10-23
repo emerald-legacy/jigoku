@@ -1587,10 +1587,10 @@ describe('The Skin of Fu Leng', function () {
                         this.player1.clickPrompt('Ornate Fan');
                         this.player1.clickPrompt('Seal of the Crane');
 
-                        expect(this.katana.location).toBe(this.uji.uuid);
-                        expect(this.ann.location).toBe(this.uji.uuid);
-                        expect(this.fan.location).toBe(this.uji.uuid);
-                        expect(this.seal.location).toBe(this.uji.uuid);
+                        expect(this.katana.isUnderneath(this.uji)).toBe(true);
+                        expect(this.ann.isUnderneath(this.uji)).toBe(true);
+                        expect(this.fan.isUnderneath(this.uji)).toBe(true);
+                        expect(this.seal.isUnderneath(this.uji)).toBe(true);
 
                         expect(this.getChatLogs(5)).toContain('player1 uses Daidoji Uji to search their deck');
                         expect(this.getChatLogs(5)).toContain('player1 selects 4 cards');

@@ -231,7 +231,7 @@ export interface TriggeredAbilityAggregateWhenProps<Source extends EffectSource 
 
 export type TriggeredAbilityProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;
 
-export type TargetLocation = Location | (string & {});
+export type TargetLocation = Location;
 
 /** A card effect matches the cards in its target location: only draw cards are in play. */
 type MatchTarget<Value, LocationType extends TargetLocation> = Value extends BaseCard ? (LocationType extends Location.PlayArea ? DrawCard : BaseCard) : Value;

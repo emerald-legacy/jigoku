@@ -3,7 +3,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, type EventName } from '../Constants.js';
+import { CardType, type EventName, Location } from '../Constants.js';
 import { hideWhenFaceUp } from '../Effects/Library/hideWhenFaceUp.js';
 import { type CardActionProperties, type CardEvent, CardGameAction } from './CardGameAction.js';
 
@@ -30,7 +30,7 @@ export class PlaceCardUnderneathAction<Context extends AbilityContext = AbilityC
 
     override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
         const { destination } = this.getProperties(context, additionalProperties);
-        return !!(destination && destination.uuid) && super.canAffect(card, context);
+        return !!destination && super.canAffect(card, context);
     }
 
     override eventHandler(event: CardEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
@@ -43,7 +43,6 @@ export class PlaceCardUnderneathAction<Context extends AbilityContext = AbilityC
         if(!properties.destination) {
             return;
         }
-        const destination = properties.destination.uuid;
 
         context.player.placeUnderneath(card, properties.destination);
         card.controller = context.source.controller;
@@ -51,7 +50,7 @@ export class PlaceCardUnderneathAction<Context extends AbilityContext = AbilityC
         if(properties.hideWhenFaceup) {
             card.lastingEffect({
                 until: {
-                    onCardMoved: (event: GameEvent<EventName.OnCardMoved>) => event.card === card && event.originalLocation === destination
+                    onCardMoved: (event: GameEvent<EventName.OnCardMoved>) => event.card === card && event.originalLocation === Location.Underneath
                 },
                 match: card,
                 effect: hideWhenFaceUp()

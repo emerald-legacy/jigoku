@@ -13,7 +13,7 @@ export default class BackAlleyHideaway extends DrawCard {
         this.showPopup = true;
         new EventRegistrar(this.game).register({
             [EventName.OnCardMoved]: (event) => {
-                if(event.card && event.originalLocation === this.uuid) {
+                if(event.card && event.originalLocation === Location.Underneath && this.attachments.some((attachment) => attachment === event.card)) {
                     this.release(event.card);
                 }
             }
@@ -37,10 +37,10 @@ export default class BackAlleyHideaway extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.Any,
                 controller: Players.Self,
-                cardCondition: (card) => card.location === this.uuid
+                cardCondition: (card) => card.isUnderneath(this)
             }, playCard({ playType: PlayType.PlayFromProvince, ignoredBlockers: [Blocker.Facedown], source: this }))
             .chatText('play {0} from hiding')
-            .thenIf((context) => context.target.location !== this.uuid)
+            .thenIf((context) => !context.target.isUnderneath(this))
             .sacrifice({ target: this });
     }
 
@@ -48,8 +48,8 @@ export default class BackAlleyHideaway extends DrawCard {
     private hide(card: DrawCard): void {
         card.controller.removeCardFromPile(card);
         card.leavesPlay();
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- a custom pile is keyed by the host card's uuid
-        card.moveTo(this.uuid as Location);
+        card.host = this;
+        card.moveTo(Location.Underneath);
         this.attachments.push(card);
         card.parent = this;
         card.abilities.playActions.push(...this.abilities.actions);
@@ -63,7 +63,7 @@ export default class BackAlleyHideaway extends DrawCard {
 
     /** The hidden characters go to their discard pile with it. */
     override leavesPlay(destination?: string): void {
-        for(const card of this.game.allCards.filter((card) => card.location === this.uuid)) {
+        for(const card of this.game.allCards.filter((card) => card.isUnderneath(this))) {
             card.owner.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
         }
         super.leavesPlay(destination);

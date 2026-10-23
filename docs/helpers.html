@@ -513,7 +513,7 @@ this.action('Reveal cards and take ones matching named type')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Cards underneath a card are in the location <code>card.uuid</code>.</li>
+      <li>Cards underneath a card are in <code>Location.Underneath</code> with <code>host</code> set to it: <code>underneath.isUnderneath(card)</code>. <code>cardsUnderneath(card)</code> lists them.</li>
       <li>Spread the result to add a condition: <code>this.persistentEffect({ condition: …, ...playableFromUnderneath(this) })</code>.</li>
     </ul>
     <pre><code>// Togashi Tsurumi: … You may play Kihō cards under this character as if they were in your hand.
@@ -822,9 +822,9 @@ return controlsParticipating(context.player, Trait.Scout, Trait.Shinobi) ? -2 : 
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/AllDistancesAreOne.ts">All Distances Are One</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/ArrowsFromTheWoods.ts">Arrows from the Woods</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/AwakeTheFearfulHeart.ts">Awake the Fearful Heart</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/ChikaiOrderProtector.ts">Chikai Order Protector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/DisdainfulRemark.ts">Disdainful Remark</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/EsteemedTeaHouse.ts">Esteemed Tea House</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForShame.ts">For Shame</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/HeartOfTheInferno.ts">Heart of the Inferno</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/RegalBearing.ts">Regal Bearing</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Neutral/TheMaidensIcyGrasp.ts">The Maiden's Icy Grasp</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/UseTheTerrain.ts">Use the Terrain</a></p>
   </div>
 
-  <div class="ref" id="he-countCardsUnderneath" data-name="countCardsUnderneath">
-    <h3><code>countCardsUnderneath(card)</code> <span class="kind">Count</span> <a class="anchor" href="#he-countCardsUnderneath">#</a></h3>
-    <p>"for each card under it": the number of cards underneath <code>card</code> (in the location <code>card.uuid</code>), whoever placed them or controls <code>card</code> now (Stowaway after Blackmail).</p>
+  <div class="ref" id="he-countCardsUnderneath" data-name="countCardsUnderneath cardsUnderneath">
+    <h3><code>countCardsUnderneath(card)</code>, <code>cardsUnderneath(card)</code> <span class="kind">Count</span> <a class="anchor" href="#he-countCardsUnderneath">#</a></h3>
+    <p>"for each card under it": the number of cards underneath <code>card</code> (<code>cardsUnderneath(card)</code>: in <code>Location.Underneath</code> with <code>host</code> = <code>card</code>), whoever placed them or controls <code>card</code> now (Stowaway after Blackmail).</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>

@@ -144,6 +144,7 @@ this.reaction('Disable a character')
           <tr><td><code>ProvinceDeck</code></td><td><code>'province deck'</code></td><td>Provinces not chosen for the game.</td></tr>
           <tr><td><code>RemovedFromGame</code></td><td><code>'removed from game'</code></td><td>Removed from the game.</td></tr>
           <tr><td><code>UnderneathStronghold</code></td><td><code>'underneath stronghold'</code></td><td>Facedown under the stronghold province (Kaiu Shihobu).</td></tr>
+          <tr><td><code>Underneath</code></td><td><code>'underneath'</code></td><td>Under another card, <code>card.host</code> (<code>placeCardUnderneath</code>, Back-Alley Hideaway); <code>card.isUnderneath(host?)</code>. The pile is kept by the player who placed it, under the host's uuid (the client shows it on the host).</td></tr>
           <tr><td><code>OutsideTheGame</code></td><td><code>'outside the game'</code></td><td>Cards the deck lists as outside the game.</td></tr>
           <tr><td><code>BeingPlayed</code></td><td><code>'being played'</code></td><td>An event while it resolves; it moves to its discard pile afterwards.</td></tr>
           <tr><td><code>Role</code></td><td><code>'role'</code></td><td>The role card's place. Default ability location of roles.</td></tr>
@@ -1449,7 +1450,7 @@ cardLastingEffect({
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player playing it.</td></tr>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The card.</td></tr>
-          <tr><td><code>originalLocation</code></td><td><code>Location | string</code></td><td>Where it was played from, or the uuid of the card whose pile it came from (Back-Alley Hideaway).</td></tr>
+          <tr><td><code>originalLocation</code></td><td><code>Location</code></td><td>Where it was played from; <code>Location.Underneath</code> from under a card (Back-Alley Hideaway).</td></tr>
           <tr><td><code>originallyOnTopOfConflictDeck</code></td><td><code>boolean</code></td><td>Whether it was the top card of the player's conflict deck.</td></tr>
           <tr><td><code>playType</code></td><td><code>PlayType</code></td><td>How it was played.</td></tr>
           <tr><td><code>onPlayCardSource</code></td><td><code>BaseCard</code></td><td>The card whose effect played it, if any.</td></tr>

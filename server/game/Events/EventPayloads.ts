@@ -42,8 +42,8 @@ interface EventPayloadMap {
     [EventName.OnCardPlayed]: BaseEventPayload & {
         player: Player;
         card: DrawCard;
-        /** A location, or the uuid of the card whose pile it was played from (Back-Alley Hideaway). */
-        originalLocation?: Location | string;
+        /** Where it was played from: `Location.Underneath` from under a card (Back-Alley Hideaway). */
+        originalLocation?: Location;
         originallyOnTopOfConflictDeck?: boolean;
         playType?: PlayType;
         onPlayCardSource?: BaseCard;

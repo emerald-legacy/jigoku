@@ -2952,7 +2952,7 @@ this.persistentEffect({
     </table>
     <ul class="edge">
       <li>The card counts as being in a playable location for that player; with several effects the most recent one's <code>playType</code> is used.</li>
-      <li>The effect must reach the card where it is: set <code>targetLocation</code> (<code>Location.ConflictDeck</code>, <code>Location.ConflictDiscardPile</code>, a host's uuid for cards underneath).</li>
+      <li>The effect must reach the card where it is: set <code>targetLocation</code> (<code>Location.ConflictDeck</code>, <code>Location.ConflictDiscardPile</code>, <code>Location.Underneath</code> for cards underneath).</li>
       <li>Reactions and interrupts on events played this way also need <a href="#ef-registerToPlayFromOutOfPlay"><code>registerToPlayFromOutOfPlay()</code></a>. The helper <code>playableFromUnderneath(card, match?)</code> in <code>cards/cardsUnderneath.ts</code> builds both.</li>
     </ul>
     <pre><code>// Bayushi Kachiko: During [conflict-political] conflicts in which this character is participating, you may play each

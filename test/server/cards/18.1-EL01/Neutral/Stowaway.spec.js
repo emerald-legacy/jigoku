@@ -65,8 +65,8 @@ describe('Stowaway', function() {
             this.player1.clickPrompt('Done');
 
             expect(this.stowaway.militarySkill).toBe(mil + 1);
-            expect(this.katana.location).toBe(this.stowaway.uuid);
-            expect(this.letGo.location).toBe(this.stowaway.uuid);
+            expect(this.katana.isUnderneath(this.stowaway)).toBe(true);
+            expect(this.letGo.isUnderneath(this.stowaway)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Stowaway to place Fine Katana and Let Go beneath Stowaway');
 
@@ -109,7 +109,7 @@ describe('Stowaway', function() {
             this.player1.clickPrompt('Done');
 
             expect(this.stowaway.militarySkill).toBe(mil);
-            expect(this.mine.location).toBe(this.stowaway.uuid);
+            expect(this.mine.isUnderneath(this.stowaway)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Stowaway to place Iron Mine beneath Stowaway');
         });

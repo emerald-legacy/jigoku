@@ -76,10 +76,10 @@ describe('Daidoji Uji 2', function () {
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt('Ready for Battle');
 
-                expect(this.katana.location).toBe(this.uji.uuid);
-                expect(this.katana2.location).toBe(this.uji.uuid);
-                expect(this.voice.location).toBe(this.uji.uuid);
-                expect(this.readyForBattle.location).toBe(this.uji.uuid);
+                expect(this.katana.isUnderneath(this.uji)).toBe(true);
+                expect(this.katana2.isUnderneath(this.uji)).toBe(true);
+                expect(this.voice.isUnderneath(this.uji)).toBe(true);
+                expect(this.readyForBattle.isUnderneath(this.uji)).toBe(true);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Daidoji Uji to search their deck');
                 expect(this.getChatLogs(5)).toContain('player1 selects 4 cards');

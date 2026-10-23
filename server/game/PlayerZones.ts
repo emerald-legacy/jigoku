@@ -156,6 +156,11 @@ export class PlayerZones {
         return this.additionalPiles[name];
     }
 
+    /** The pile of the cards this player placed underneath `host`, created on first use. */
+    underneathPile(host: BaseCard): AdditionalPile {
+        return this.ensureAdditionalPile(host.uuid);
+    }
+
     /** The additional pile called `name`, created when there is none yet. */
     ensureAdditionalPile(name: string): AdditionalPile {
         return this.hasAdditionalPile(name) ? this.additionalPiles[name] : this.createAdditionalPile(name);

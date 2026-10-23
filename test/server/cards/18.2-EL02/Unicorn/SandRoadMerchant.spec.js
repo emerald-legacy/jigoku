@@ -48,7 +48,7 @@ describe('Sand Road Merchant', function() {
             expect(this.player1).not.toHavePromptButton('Take nothing');
             expect(this.policyDebate.location).toBe('conflict deck');
             this.player1.clickPrompt('Policy Debate');
-            expect(this.policyDebate.location).toBe(this.merchant.uuid);
+            expect(this.policyDebate.isUnderneath(this.merchant)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Sand Road Merchant to look at the top two cards of their opponent\'s conflict deck');
             expect(this.getChatLogs(5)).toContain('player1 takes Policy Debate');
@@ -85,7 +85,7 @@ describe('Sand Road Merchant', function() {
             expect(this.player1).toHavePromptButton('Fine Katana');
             expect(this.policyDebate.location).toBe('conflict deck');
             this.player1.clickPrompt('Policy Debate');
-            expect(this.policyDebate.location).toBe(this.merchant.uuid);
+            expect(this.policyDebate.isUnderneath(this.merchant)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Sand Road Merchant to look at the top two cards of their opponent\'s conflict deck');
             expect(this.getChatLogs(5)).toContain('player1 takes Policy Debate');

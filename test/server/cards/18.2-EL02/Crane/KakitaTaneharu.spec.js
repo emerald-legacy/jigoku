@@ -68,7 +68,7 @@ describe('Kakita Taneharu', function () {
                 expect(this.player1).toHavePromptButton('Fine Katana');
                 expect(this.player1).not.toHavePromptButton('Take nothing');
                 this.player1.clickPrompt('Ready for Battle');
-                expect(this.readyForBattle.location).toBe(this.uji.uuid);
+                expect(this.readyForBattle.isUnderneath(this.uji)).toBe(true);
                 expect(this.getChatLogs(5)).toContain('player1 puts a card underneath Kakita Taneharu');
             });
 

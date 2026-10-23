@@ -38,7 +38,7 @@ describe('Disloyal Oathkeeper', function () {
             expect(this.player2).toBeAbleToSelect(this.oathkeeper);
 
             this.player2.clickCard(this.oathkeeper);
-            expect(this.crane.location).toBe(this.oathkeeper.uuid);
+            expect(this.crane.isUnderneath(this.oathkeeper)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain(
                 'player2 uses Disloyal Oathkeeper to place Way of the Crane underneath Disloyal Oathkeeper'
@@ -61,7 +61,7 @@ describe('Disloyal Oathkeeper', function () {
             this.player1.clickCard(this.crane);
             this.player1.clickCard(this.whisperer);
             this.player2.clickCard(this.oathkeeper);
-            expect(this.crane.location).toBe(this.oathkeeper.uuid);
+            expect(this.crane.isUnderneath(this.oathkeeper)).toBe(true);
             this.player2.pass();
 
             this.player1.clickCard(this.waves);

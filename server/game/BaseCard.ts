@@ -145,6 +145,8 @@ export class BaseCard extends EffectSource {
 
     /** What this card is attached to, or null — the inverse of `attachments`. */
     parent: BaseCard | Ring | null = null;
+    /** The card this one is underneath, while its location is `Location.Underneath`. */
+    host: BaseCard | null = null;
 
     /** The attached character, in the cards' sense; null when attached to anything else. */
     get parentCharacter(): DrawCard | null {
@@ -603,6 +605,11 @@ export class BaseCard extends EffectSource {
 
     isConflictCard(): this is DrawCard {
         return this.isDrawCard() && this.isConflict;
+    }
+
+    /** Whether this card is underneath `host` (any card when none is given). */
+    isUnderneath(host?: BaseCard): boolean {
+        return this.location === Location.Underneath && (!host || this.host === host);
     }
 
     /** Narrows to `ProvinceCard`, the counterpart of `isCharacter`. */

@@ -38,8 +38,8 @@ describe('Strange Mirror', function () {
                 this.player2.clickPrompt('Done');
                 this.player1.clickCard(this.mirror);
 
-                expect(this.banzai.location).toBe(this.outrider.uuid);
-                expect(this.banzai.location).toBe(this.outrider.uuid);
+                expect(this.banzai.isUnderneath(this.outrider)).toBe(true);
+                expect(this.banzai.isUnderneath(this.outrider)).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
                     'player1 uses Strange Mirror to put Banzai! facedown underneath Shinjo Outrider'
                 );
@@ -58,7 +58,7 @@ describe('Strange Mirror', function () {
                 this.player2.clickCard(this.challenger);
                 this.player2.clickPrompt('Done');
                 this.player1.clickCard(this.mirror);
-                expect(this.banzai.location).toBe(this.outrider.uuid);
+                expect(this.banzai.isUnderneath(this.outrider)).toBe(true);
             });
 
             it('neither sacrifices nor injures when the play is cancelled', function () {
@@ -67,7 +67,7 @@ describe('Strange Mirror', function () {
                 this.player1.clickPrompt('Cancel');
                 expect(this.player1).not.toHavePrompt('Choose a cost for Strange Mirror');
                 expect(this.mirror.location).toBe('play area');
-                expect(this.banzai.location).toBe(this.outrider.uuid);
+                expect(this.banzai.isUnderneath(this.outrider)).toBe(true);
             });
 
             it('plays the event from underneath and then sacrifices the attachment', function () {
@@ -183,12 +183,12 @@ describe('Strange Mirror without an event it can play', function () {
                 this.player2.clickCard(this.stolen);
                 this.player2.clickCard(this.whisperer);
                 this.player1.clickCard(this.mirror);
-                expect(this.stolen.location).toBe(this.outrider.uuid);
+                expect(this.stolen.isUnderneath(this.outrider)).toBe(true);
 
                 this.player1.clickCard(this.mirror);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.mirror.location).toBe('play area');
-                expect(this.stolen.location).toBe(this.outrider.uuid);
+                expect(this.stolen.isUnderneath(this.outrider)).toBe(true);
             });
         });
     });

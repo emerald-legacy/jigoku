@@ -3,6 +3,7 @@ import { CardType, Location, PlayType, Players, Blocker } from '../../../Constan
 import { injure, playCard, sacrifice, selectCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
+import { cardsUnderneath } from '../../cardsUnderneath.js';
 
 export default class StrangeMirror extends DrawCard {
     static id = 'strange-mirror';
@@ -74,10 +75,6 @@ export default class StrangeMirror extends DrawCard {
         if(!character) {
             return [];
         }
-        // placeCardUnderneath moves the card to the host's uuid rather than registering
-        // it as a child card, so that is where "underneath" is read from.
-        return context.game.allCards.filter(
-            (card): card is DrawCard => card.isDrawCard() && card.location === character.uuid && card.type === CardType.Event
-        );
+        return cardsUnderneath(character).filter((card): card is DrawCard => card.isDrawCard() && card.type === CardType.Event);
     }
 }
