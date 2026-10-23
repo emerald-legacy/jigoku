@@ -1350,14 +1350,14 @@ export class Player extends GameObject {
         return this.anyEffect(EffectName.ShowTopDynastyCard);
     }
 
-    resolveRingEffects(elements: Element | Element[], optional: boolean = true): void {
+    resolveRingEffects(elements: Element | Element[], optional: boolean = true, onResolution?: (resolved: boolean) => void): void {
         if(!Array.isArray(elements)) {
             elements = [elements];
         }
         optional = optional && elements.length === 1;
         const effects = RingAbilities.sortedForResolution(
             this,
-            elements.map((element) => RingAbilities.contextFor(this, element, optional)),
+            elements.map((element) => RingAbilities.contextFor(this, element, optional, onResolution)),
             (context) => context.ability.defaultPriority
         );
         this.game.openSimultaneousEffectWindow(

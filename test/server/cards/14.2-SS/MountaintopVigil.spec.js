@@ -77,5 +77,44 @@ describe('Mountaintop Vigil', function() {
                 expect(this.kami.location).toBe('conflict discard pile');
             });
         });
+
+        describe('Mountaintop Vigil against ring effect replacements', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shinjo-isamu', 'adept-of-the-waves'],
+                        dynastyDeck: ['naive-student'],
+                        hand: ['leniency', 'retreat']
+                    },
+                    player2: {
+                        provinces: ['shameful-display'],
+                        inPlay: ['shinjo-outrider'],
+                        hand: ['mountaintop-vigil']
+                    }
+                });
+                this.player1.placeCardInProvince('naive-student', 'province 1');
+                this.naiveStudent = this.player1.findCardByName('naive-student');
+                this.isamu = this.player1.findCardByName('shinjo-isamu');
+                this.noMoreActions();
+            });
+
+            it('should cancel a card\'s ring effect before Leniency can replace it', function() {
+                this.initiateConflict({
+                    ring: 'earth',
+                    type: 'military',
+                    attackers: [this.isamu, 'adept-of-the-waves'],
+                    defenders: []
+                });
+                this.player2.clickCard('mountaintop-vigil');
+                this.player1.clickCard('retreat');
+                this.player1.clickCard(this.isamu);
+                this.player1.clickCard(this.isamu);
+                this.player1.clickRing('void');
+                expect(this.getChatLogs(3)).toContain('player1\'s ring effect is cancelled');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.naiveStudent.location).toBe('province 1');
+            });
+        });
     });
 });

@@ -45,9 +45,7 @@ export class AirRingAbility extends BaseAbility {
             context.game.addAnimation({ type: 'air', playerName: context.player.name, effect: 'take-honor' });
             return takeHonor().resolve(context.player.opponent, context);
         }
-        if(!context.game.currentConflict || context.game.currentConflict.element === 'air') {
-            context.game.addMessage(msg`${context.player} chooses not to resolve the ${context.game.currentConflict ? 'air' : undefined} ring`);
-            this.onResolution(false);
-        }
+        context.game.addMessage(msg`${context.player} chooses not to resolve the ${'air'} ring`);
+        this.onResolution(false);
     }
 }

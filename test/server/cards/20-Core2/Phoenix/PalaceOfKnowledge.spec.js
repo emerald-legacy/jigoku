@@ -51,6 +51,25 @@ describe('Palace of Knowledge', function () {
             expect(this.getChatLogs(5)).toContain('player1 resolves the fire ring, honoring Fushichō');
         });
 
+        it('triggers after going back from the fire ring choice', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.fushicho],
+                defenders: [],
+                ring: 'fire'
+            });
+
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.fushicho);
+            this.player1.clickPrompt('Back');
+            this.player1.clickCard(this.fushicho);
+            this.player1.clickPrompt('Honor Fushichō');
+            expect(this.fushicho.isHonored).toBe(true);
+            expect(this.player1).toHavePrompt('Any reactions?');
+            expect(this.player1).toBeAbleToSelect(this.palaceOfKnowledge);
+        });
+
         it('does not trigger when ring resolution is ignored', function () {
             this.dojiWhisperer.fate = 1;
 

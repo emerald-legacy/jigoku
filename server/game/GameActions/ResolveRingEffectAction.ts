@@ -72,20 +72,33 @@ export class ResolveRingEffectAction<Context extends AbilityContext = AbilityCon
         event.effectResolved = false;
     }
 
-    override eventHandler(event: ActionEvent<EventName.OnResolveRingElement, Context>): void {
-        const context = event.context;
-        const cannotResolveRingEffects = context.player.getEffects(EffectName.CannotResolveRings);
+    // checked before the would-interrupt window, so a cancelled ring effect cannot be replaced (ruling #636)
+    override checkEventCondition(event: ActionEvent<EventName.OnResolveRingElement, Context> & { ring: Ring }, additionalProperties: ActionOverrides = {}): boolean {
+        if(!super.checkEventCondition(event, additionalProperties)) {
+            return false;
+        }
+        return !this.ringEffectIsCancelled(event);
+    }
 
-        if(cannotResolveRingEffects.length) {
-            context.game.addMessage(msg`${context.player}'s ring effect is cancelled`);
+    override eventHandler(event: ActionEvent<EventName.OnResolveRingElement, Context>): void {
+        if(this.ringEffectIsCancelled(event)) {
             event.cancel();
             return;
         }
 
-        context.game.resolveAbility(
+        event.context.game.resolveAbility(
             RingAbilities.contextFor(event.player, event.ring.element, event.optional, (resolved) => {
                 event.effectResolved = resolved;
             })
         );
+    }
+
+    private ringEffectIsCancelled(event: ActionEvent<EventName.OnResolveRingElement, Context>): boolean {
+        const player = event.context.player;
+        if(!player.anyEffect(EffectName.CannotResolveRings)) {
+            return false;
+        }
+        event.context.game.addMessage(msg`${player}'s ring effect is cancelled`);
+        return true;
     }
 }
