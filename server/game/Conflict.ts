@@ -213,6 +213,7 @@ export class Conflict extends GameObject {
             if(newRing.isClaimed()) {
                 const claimedPlayer = this.game.getPlayers().find((player) => newRing.claimedBy === player.name);
                 if(claimedPlayer) {
+                    this.ring.contested = false;
                     this.ring.claimRing(claimedPlayer);
                 }
                 newRing.resetRing();

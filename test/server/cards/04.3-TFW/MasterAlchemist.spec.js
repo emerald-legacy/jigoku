@@ -138,3 +138,39 @@ describe('Master Alchemist', function() {
         });
     });
 });
+
+describe('Master Alchemist and an extra cost to target', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doomed-shugenja', 'ikoma-prodigy'],
+                    hand: ['to-show-the-path']
+                },
+                player2: {
+                    inPlay: ['master-alchemist', 'serene-warrior']
+                }
+            });
+            this.prodigy = this.player1.findCardByName('ikoma-prodigy');
+            this.doomedShugenja = this.player1.findCardByName('doomed-shugenja');
+            this.alchemist = this.player2.findCardByName('master-alchemist');
+            this.sereneWarrior = this.player2.findCardByName('serene-warrior');
+            this.player1.clickCard('to-show-the-path');
+            this.player1.clickCard(this.prodigy);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.prodigy],
+                defenders: [this.sereneWarrior]
+            });
+            this.player2.fate = 1;
+        });
+
+        it('counts the fate spent to the ring before offering targets', function() {
+            this.player2.clickCard(this.alchemist);
+            expect(this.player2).toBeAbleToSelect(this.doomedShugenja);
+            expect(this.player2).not.toBeAbleToSelect(this.prodigy);
+        });
+    });
+});

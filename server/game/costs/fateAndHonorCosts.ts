@@ -52,13 +52,16 @@ export function giveHonorToOpponent(amount = 1): Cost {
  * Cost where a character must spend fate to an unclaimed ring
  */
 export function payFateToRing(amount = 1, ringCondition = (ring: Ring) => ring.isUnclaimed()): Cost<{ ringPaidFateTo: Ring }> {
-    return new MetaActionCost(
-        GameActions.selectRing({
-            ringCondition,
-            gameAction: GameActions.placeFateOnRing((context) => ({ amount, origin: context.player, spend: true }))
-        }),
-        'Select a ring to place fate on',
-        'ringPaidFateTo'
+    return Object.assign(
+        new MetaActionCost(
+            GameActions.selectRing({
+                ringCondition,
+                gameAction: GameActions.placeFateOnRing((context) => ({ amount, origin: context.player, spend: true }))
+            }),
+            'Select a ring to place fate on',
+            'ringPaidFateTo'
+        ),
+        { fateSpent: () => amount }
     );
 }
 

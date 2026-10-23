@@ -105,6 +105,7 @@ describe('Elemental Inversion', function() {
             expect(this.game.currentConflict.ring.element).toBe('earth');
             expect(this.game.rings.earth.isClaimed()).toBe(false);
             expect(this.game.rings.air.claimedBy).toBe(this.player1.player.name);
+            expect(this.game.rings.air.isContested()).toBe(false);
             expect(this.getChatLogs(4)).toContain('player1 plays Elemental Inversion to move all fate from the Earth Ring and switch it with the contested ring');
         });
     });
