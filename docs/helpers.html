@@ -1581,11 +1581,11 @@ statistic: (card) =&gt; card.getMilitarySkillExcludingModifiers([EffectName.Atta
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>type</code></td><td><code>string</code></td><td><code>''</code> (either)</td><td><code>'military'</code> or <code>'political'</code> (the <code>SkillType</code> values).</td></tr>
+        <tr><td><code>type</code></td><td><code>SkillType | ConflictType | DuelType</code></td><td>none (either skill)</td><td>The skill to check; a conflict or duel type names its skill.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>Always <code>false</code> for <code>'glory'</code> and for cards not printed as characters.</li>
+      <li>Always <code>false</code> for <code>DuelType.Glory</code> and for cards not printed as characters.</li>
     </ul>
     <pre><code>// Spiderweb Passage: … choose a character on the enemy side with 0[conflict-military] or 0[conflict-political]. …
 (!card.hasDash(SkillType.Political) &amp;&amp; card.politicalSkill === 0) ||
@@ -1993,10 +1993,11 @@ condition: (context) =&gt; context.player.isMoreHonorable(),</code></pre>
   </div>
 
   <div class="ref" id="q-moveCard" data-name="moveCard shuffleConflictDeck shuffleDynastyDeck">
-    <h3><code>player.moveCard(card, location)</code>, <code>shuffleConflictDeck()</code>, <code>shuffleDynastyDeck()</code> <span class="kind">Low level</span> <a class="anchor" href="#q-moveCard">#</a></h3>
+    <h3><code>player.moveCard(card, location, options?)</code>, <code>shuffleConflictDeck()</code>, <code>shuffleDynastyDeck()</code> <span class="kind">Low level</span> <a class="anchor" href="#q-moveCard">#</a></h3>
     <p>Move a card between piles directly, and shuffle a deck. Not queries, but they appear in many handlers.</p>
     <ul class="edge">
       <li><code>moveCard</code> opens no event window: interrupts and reactions don't see the move and no restriction is checked (it only emits <code>onCardMoved</code> for lasting effects that end when a card moves). Use the <code>moveCard</code>, <code>discardCard</code>, <code>returnToHand</code>, … game actions unless the text describes a rules-level swap (Know the Terrain switches two provinces).</li>
+      <li><code>location</code> is a <code>Location</code>. <code>options.bottom</code> puts the card at the bottom of a deck; <code>options.host</code> is required for <code>Location.Underneath</code> (the card goes into the pile under the host and gets <code>card.host</code>; without it the move does nothing). Prefer <code>player.placeUnderneath(card, host)</code>.</li>
       <li>The shuffles write "{player} is shuffling their … deck" to the chat and emit <code>onDeckShuffled</code>.</li>
     </ul>
     <pre><code>// Know the Terrain: … switch it with another facedown non-stronghold province you control.

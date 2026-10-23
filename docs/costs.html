@@ -102,7 +102,7 @@ this.conflictAction('Discard a character')
         <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something. If so, the action window skips its one-click confirmation menu and starts the ability directly.</td></tr>
         <tr><td><code>dependsOn</code></td><td>The name of a target the cost depends on: while that target is offered first, a candidate is legal only if the cost can be paid for it (<code>targetDependentFate</code>).</td></tr>
         <tr><td><code>hasTargetsChosenByInitiatingPlayer(context)</code></td><td>Whether paying makes the ability's player choose cards. It counts toward the ability's <code>hasTargetsChosenByInitiatingPlayer</code> (Hantei XXXVIII).</td></tr>
-        <tr><td><code>fateSpent(context)</code></td><td>The fate the player spends paying it (set by <code>payFate</code>). Targeting costs checked before the costs are paid subtract it from the fate available.</td></tr>
+        <tr><td><code>fateSpent(context)</code></td><td>The fate the player spends paying it (set by <code>payFate</code> and <code>payFateToRing</code>). Targeting costs checked before the costs are paid subtract it from the fate available.</td></tr>
         <tr><td><code>chosenByOpponent</code></td><td>The opponent makes this choice (set by <code>optionalTakeHonorFromOpponent</code>). With <code>firstPlayerChoosesFirst()</code> and the opponent as first player, these costs are chosen first.</td></tr>
         <tr><td><code>isPrintedFateCost</code>, <code>isPlayCost</code>, <code>getReducedCost(context)</code></td><td>Engine-only, set by the fate and play costs: <code>playCard</code> with <code>ignoreFateCost</code> skips the first, a play without play costs skips the second, and the ability's fate cost after reductions comes from the third.</td></tr>
         <tr><td><code>action</code>, <code>activePromptTitle</code></td><td>Fields of some built-in costs. The engine does not read them through <code>Cost</code>.</td></tr>
@@ -910,8 +910,7 @@ this.action('Take honor from opponent when they play an event')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Can't be paid when the amount is 0 or less, the player has no fate, or can't spend fate.</li>
-      <li>It checks only that the player has some fate, not <code>amount</code>: with more than 1, check the player's fate in the condition (the pool never goes below 0).</li>
+      <li>Can't be paid when the amount is 0 or less, or the player can't spend <code>amount</code> fate (<code>player.canSpendFate</code>: fewer than <code>amount</code> fate, or a <code>SpendFate</code> restriction).</li>
       <li>Chat: <code>spending {1} fate</code>.</li>
     </ul>
     <pre><code>// Jade-Infused Arrows: [conflict-military] Conflict Action: Pay 1 fate - for this conflict, attached character gets +2[conflict-military] (+4[conflict-military] instead if the enemy side has a tainted or Corrupt character). (Unlimited.)
@@ -1162,7 +1161,7 @@ this.action('Switch this attachment with another')
     </table>
     <ul class="edge">
       <li>Cost reductions that apply to playing the source from hand are taken off the fate actually spent, so X can go above the player's fate by that much. A player who can't spend fate can still pick X up to the reduction.</li>
-      <li>Always payable when such a reduction applies. Otherwise the player needs at least <code>minAmount</code> fate (plus any cost increase) and must be able to lose fate. With <code>context.ignoreFateCost</code> X is 0, so it is payable only when <code>minAmount</code> is 0 or less (EmeraldDB ruling, Kunshu).</li>
+      <li>Always payable when such a reduction applies. Otherwise the player needs to be able to spend at least <code>minAmount</code> fate plus any cost increase (<code>player.canSpendFate</code>); the choices stop at <code>player.getSpendableFate(context)</code>. With <code>context.ignoreFateCost</code> X is 0, so it is payable only when <code>minAmount</code> is 0 or less (EmeraldDB ruling, Kunshu).</li>
       <li>Records <code>fatePaid</code>: X (0 on Cancel). No cost text.</li>
     </ul>
     <pre><code>// Favorable Alliance: Action: Set aside cards from the top of up to two conflict decks, …, until X cards are set aside. …

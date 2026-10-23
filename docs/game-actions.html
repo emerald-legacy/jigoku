@@ -1803,12 +1803,13 @@ this.action('Attacker moves a character home')
         <tr><td><code>target</code></td><td><code>Ring | Ring[]</code></td><td>the ring of the current conflict</td><td>The rings to claim.</td></tr>
         <tr><td><code>takeFate</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Also take the fate on the ring.</td></tr>
         <tr><td><code>conflictType</code></td><td><code>ConflictType</code></td><td>required</td><td>The conflict type the claimed ring shows.</td></tr>
+        <tr><td><code>staysContested</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The conflict's own claim: the ring stays contested while the claim resolves (<code>onClaimRing</code> reactions see it contested); the rules reset it afterwards.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>The claimant is always the ability's player. Illegal when they can't claim rings (<code>RestrictionType.ClaimRings</code> on the player), the ring is removed from play, or they already claimed it.</li>
       <li>Fate is only taken when the player may take fate from rings (<code>RestrictionType.TakeFateFromRings</code>): chat "<em>player</em> takes <em>N</em> fate from <em>ring</em>", and an <code>onMoveFate</code> event.</li>
-      <li>The ring stops being contested. Raises <code>onClaimRing</code>. Chat: "claim <em>ring</em>".</li>
+      <li>Unless <code>staysContested</code>, the ring stops being contested. Raises <code>onClaimRing</code>. Chat: "claim <em>ring</em>".</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// Offerings to the Kami: Reaction: After this province is revealed, choose a ring in the unclaimed ring pool - resolve that ring's effects and claim it as a [conflict-political] ring, gaining all fate on it.
