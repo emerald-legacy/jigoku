@@ -10,6 +10,7 @@ import type PlayerInteractionWrapper from './playerinteractionwrapper.js';
 import type { CardLike } from './playerinteractionwrapper.js';
 import BaseCard from '../../server/game/BaseCard.js';
 import Ring from '../../server/game/Ring.js';
+import { Location } from '../../server/game/Constants.js';
 import type Game from '../../server/game/Game.js';
 
 const deckBuilder = new DeckBuilder();
@@ -262,7 +263,7 @@ globalThis.integration = function (definitions: () => void): void {
                     flow.player2.provinces = options.player2.provinces;
                 }
                 if(options.phase !== 'setup') {
-                    for(const location of ['province 1', 'province 2', 'province 3', 'province 4']) {
+                    for(const location of [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]) {
                         for(const wrapper of [flow.player1, flow.player2]) {
                             // A province emptied by the setup above (an `inPlay` card can be the
                             // only copy and get sourced out of a province) is backfilled facedown.

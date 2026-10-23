@@ -6,6 +6,8 @@ import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
+const PROVINCES = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour];
+
 export class SetupProvincesPrompt extends AllPlayerPrompt {
     strongholdProvince: Record<string, ProvinceCard | null>;
     clickedDone: Record<string, boolean>;
@@ -120,7 +122,7 @@ export class SetupProvincesPrompt extends AllPlayerPrompt {
             if(!provinceCard.startsGameFaceup()) {
                 provinceCard.facedown = true;
             }
-            player.moveCard(provinceCard, 'province ' + i.toString());
+            player.moveCard(provinceCard, PROVINCES[i - 1]);
         }
         player.hideProvinceDeck = true;
 

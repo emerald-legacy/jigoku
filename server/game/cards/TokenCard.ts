@@ -16,11 +16,11 @@ export abstract class TokenCard extends DrawCard {
     }
 
     /** Where the facedown card goes when the token leaves play for `destination`. */
-    protected facedownDestination(_destination?: string): string {
+    protected facedownDestination(_destination?: Location): Location {
         return Location.DynastyDiscardPile;
     }
 
-    override leavesPlay(destination?: string): void {
+    override leavesPlay(destination?: Location): void {
         this.owner.moveCard(this.facedownCard, this.facedownDestination(destination));
         this.game.queueSimpleStep(() => {
             this.owner.removeCardFromPile(this);

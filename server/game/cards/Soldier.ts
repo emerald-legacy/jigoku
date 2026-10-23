@@ -29,7 +29,7 @@ export default class Soldier extends TokenCard {
         });
     }
 
-    protected override facedownDestination(destination: string = Location.ConflictDiscardPile): string {
+    protected override facedownDestination(destination: Location = Location.ConflictDiscardPile): Location {
         return destination;
     }
 }

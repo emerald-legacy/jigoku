@@ -385,14 +385,14 @@ class PlayerInteractionWrapper {
 
     placeCardInProvince(card: CardLike, location: string = 'province 1'): BaseCard {
         const resolved: BaseCard = typeof card === 'string' ? this.findCardByName(card) : card;
-        if(!['province 1', 'province 2', 'province 3', 'province 4'].includes(location)) {
+        if(!isEnumValue(Location, location) || ![Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour].includes(location)) {
             throw new Error(`${location} is not a valid province`);
         }
         if(resolved.location !== location) {
             const oldLocation = resolved.location;
             const existing = this.player.getDynastyCardInProvince(location);
             if(existing) {
-                this.player.moveCard(existing, 'dynasty deck');
+                this.player.moveCard(existing, Location.DynastyDeck);
             }
             this.player.moveCard(resolved, location);
             this.player.replaceDynastyCard(oldLocation);
@@ -406,8 +406,8 @@ class PlayerInteractionWrapper {
 
     putIntoPlay(card: CardLike): BaseCard {
         const resolved: BaseCard = typeof card === 'string' ? this.findCardByName(card) : card;
-        if(resolved.location !== 'play area') {
-            this.player.moveCard(resolved, 'play area');
+        if(resolved.location !== Location.PlayArea) {
+            this.player.moveCard(resolved, Location.PlayArea);
         }
         resolved.facedown = false;
         return resolved;
@@ -527,6 +527,9 @@ class PlayerInteractionWrapper {
     }
 
     moveCard(card: CardLike, targetLocation: string, searchLocations: string | string[] = 'any'): BaseCard {
+        if(!isEnumValue(Location, targetLocation)) {
+            throw new Error(`${targetLocation} is not a location`);
+        }
         const resolved: BaseCard = typeof card === 'string' ? this.mixedListToCardList([card], searchLocations)[0] : card;
         this.player.moveCard(resolved, targetLocation);
         this.game.continue();

@@ -654,7 +654,7 @@ export class Player extends GameObject {
         });
     }
 
-    replaceDynastyCard(location: string): boolean {
+    replaceDynastyCard(location: Location): boolean {
         const province = this.getProvinceCardInProvince(location);
 
         if(!province || this.getSourceList(location).length > 1) {
@@ -681,7 +681,7 @@ export class Player extends GameObject {
         return true;
     }
 
-    putTopDynastyCardInProvince(location: string, facedown: boolean = false): boolean {
+    putTopDynastyCardInProvince(location: Location, facedown: boolean = false): boolean {
         if(this.dynastyDeck.length === 0) {
             this.deckRanOutOfCards(DeckType.Dynasty);
             this.game.queueSimpleStep(() => {
@@ -698,7 +698,7 @@ export class Player extends GameObject {
         return true;
     }
 
-    refillProvince(location: string, refillAmount: number): boolean {
+    refillProvince(location: Location, refillAmount: number): boolean {
         if(refillAmount <= 0) {
             return true;
         }
@@ -899,6 +899,7 @@ export class Player extends GameObject {
 
         if(
             !this.game.manualMode ||
+            !isEnumValue(Location, target) ||
             source === target ||
             !this.isLegalLocationForCard(card, target) ||
             !card ||
@@ -1143,7 +1144,7 @@ export class Player extends GameObject {
         this.faction = deck.faction ?? {};
     }
 
-    moveCard(card: BaseCard, targetLocation: string, options: MoveCardOptions = {}): void {
+    moveCard(card: BaseCard, targetLocation: Location, options: MoveCardOptions = {}): void {
         if(!this.isLegalLocationForCard(card, targetLocation) || (targetLocation === Location.Underneath && !options.host)) {
             return;
         }
@@ -1217,9 +1218,7 @@ export class Player extends GameObject {
         }
 
         card.host = targetLocation === Location.Underneath ? options.host ?? null : null;
-        if(isEnumValue(Location, targetLocation)) {
-            card.moveTo(targetLocation);
-        }
+        card.moveTo(targetLocation);
     }
 
     removeCardFromPile(card: BaseCard): void {

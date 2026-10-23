@@ -647,7 +647,7 @@ export class BaseCard extends EffectSource {
         }
     }
 
-    leavesPlay(_destination?: string): void {
+    leavesPlay(_destination?: Location): void {
         this.tokens = {};
         this.resetLimits();
         this.controller = this.owner;
