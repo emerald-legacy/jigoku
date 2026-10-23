@@ -16,7 +16,7 @@ import { FatePhase } from './gamesteps/FatePhase.js';
 import { EndRoundPrompt } from './gamesteps/regroup/EndRoundPrompt.js';
 import { SimpleStep } from './gamesteps/SimpleStep.js';
 import { GameWonPrompt } from './gamesteps/GameWonPrompt.js';
-import type { GameAction } from './GameActions/GameAction.js';
+import type { GameAction, GameActionTarget } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { EventParams, GameEvent } from './Events/EventPayloads.js';
 import type { EventWindow } from './Events/EventWindow.js';
@@ -884,6 +884,28 @@ export class Game {
             if(events.length > 0) {
                 this.openEventWindow(events);
                 this.queueSimpleStep(() => context.refill());
+            }
+        });
+        return events;
+    }
+
+    /**
+     * A rule step's action on each target, with the framework context of the player it acts for (the card's controller,
+     * a ring's claimant), all in one window; then emptied provinces refill. So no rule step looks like an opponent's doing
+     * to reactions that check who acted ("after an opponent's … bows a character you control").
+     */
+    resolveRuleAction(action: GameAction, targets: { target: GameActionTarget; player: Player }[]): Event[] {
+        const events: Event[] = [];
+        const contexts = new Map<Player, AbilityContext>();
+        for(const { target, player } of targets) {
+            const context = contexts.get(player) ?? this.getFrameworkContext(player);
+            contexts.set(player, context);
+            action.addEventsToArray(events, context, { target });
+        }
+        this.queueSimpleStep(() => {
+            if(events.length > 0) {
+                this.openEventWindow(events);
+                this.queueSimpleStep(() => contexts.forEach((context) => context.refill()));
             }
         });
         return events;

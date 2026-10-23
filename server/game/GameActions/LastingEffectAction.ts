@@ -88,7 +88,7 @@ export class LastingEffectAction<Context extends AbilityContext = AbilityContext
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source.applyDurationEffect(properties.duration, properties);
+        event.context.source.applyDurationEffect(properties.duration, { ...properties, controller: event.context.player });
     }
 }
 
@@ -147,11 +147,11 @@ export class PlayerLastingEffectAction<Context extends AbilityContext = AbilityC
         const players = targetList(target);
         // one effect for both players, so it reports and expires once
         if(players.length > 1 && event.context.game.getPlayers().every((player) => players.includes(player))) {
-            event.context.source.applyDurationEffect(properties.duration, { ...properties, targetController: Players.Any });
+            event.context.source.applyDurationEffect(properties.duration, { ...properties, targetController: Players.Any, controller: event.context.player });
             return;
         }
         for(const player of players) {
-            event.context.source.applyDurationEffect(properties.duration, { ...properties, targetController: player });
+            event.context.source.applyDurationEffect(properties.duration, { ...properties, targetController: player, controller: event.context.player });
         }
     }
 }

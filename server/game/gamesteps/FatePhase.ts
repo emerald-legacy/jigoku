@@ -89,9 +89,8 @@ export class FatePhase extends PhaseStep {
     }
 
     removeFateFromCharacters() {
-        const events = this.game.resolveActions([
-            removeFate({ target: this.game.findAnyCardsInPlay((card) => card.allowGameAction('removeFate', this.game.getFrameworkContext(card.controller))) })
-        ], this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
+        const cards = this.game.findAnyCardsInPlay((card) => card.allowGameAction('removeFate', this.game.getFrameworkContext(card.controller)));
+        const events = this.game.resolveRuleAction(removeFate(), cards.map((card) => ({ target: card, player: card.controller })));
         let processed = false;
         this.game.queueSimpleStep(() => {
             for(const player of this.game.getPlayersInFirstPlayerOrder()) {
@@ -184,12 +183,15 @@ export class FatePhase extends PhaseStep {
 
     readyCards() {
         const cardsToReady = this.game.allCards.filter((card) => card.bowed && card.readiesDuringReadyPhase());
-        ready().resolve(cardsToReady, this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
+        this.game.resolveRuleAction(ready(), cardsToReady.map((card) => ({ target: card, player: card.controller })));
     }
 
     returnRings() {
-        const claimedRings = Object.values(this.game.rings).filter((ring) => ring.claimed);
-        returnRing().resolve(claimedRings, this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
+        const claimedRings = Object.values(this.game.rings).flatMap((ring) => {
+            const claimant = ring.claimed ? this.game.getPlayerByName(ring.claimedBy) : undefined;
+            return claimant ? [{ target: ring, player: claimant }] : [];
+        });
+        this.game.resolveRuleAction(returnRing(), claimedRings);
     }
 
     passFirstPlayer() {

@@ -78,7 +78,7 @@ export class CardLastingEffectAction<Context extends AbilityContext = AbilityCon
         const card = event.card;
         const lastingEffectRestrictions = card.getEffects(EffectName.CannotApplyLastingEffects);
         const { effect: _effect, ...otherProperties } = properties;
-        const effectProperties = Object.assign({ match: card, location: Location.Any }, otherProperties);
+        const effectProperties = Object.assign({ match: card, location: Location.Any, controller: eventContext.player }, otherProperties);
         let effects = properties.effect.map((factory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
         );

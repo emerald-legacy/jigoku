@@ -16,19 +16,23 @@ describe('ActiveEffect', function() {
     });
 
     describe('when the source has no controller (e.g. a framework / ring source)', function() {
-        it('should use a framework context of the first player', function() {
-            const first = testPlayer(game);
-            spyOn(game, 'getPlayersInFirstPlayerOrder').and.returnValue([first]);
+        it('should use a framework context of the player who created it', function() {
+            const creator = testPlayer(game, 'player2');
             const source = new EffectSource(game, 'framework');
-            new ActiveEffect(game, source, {}, staticEffect);
-            expect(game.getFrameworkContext).toHaveBeenCalledWith(first);
+            new ActiveEffect(game, source, { controller: creator }, staticEffect);
+            expect(game.getFrameworkContext).toHaveBeenCalledWith(creator);
+        });
+
+        it('should refuse an effect without a creating player', function() {
+            const source = new EffectSource(game, 'framework');
+            expect(() => new ActiveEffect(game, source, {}, staticEffect)).toThrowError(/has no controller/);
         });
     });
 
     describe('isEffectActive() for a persistent effect whose source tracks no persistentEffects', function() {
         it('should return false without throwing', function() {
             const source = new EffectSource(game, 'ring');
-            const effect = new ActiveEffect(game, source, { duration: Duration.Persistent }, staticEffect);
+            const effect = new ActiveEffect(game, source, { duration: Duration.Persistent, controller: testPlayer(game) }, staticEffect);
             expect(effect.isEffectActive()).toBe(false);
         });
     });

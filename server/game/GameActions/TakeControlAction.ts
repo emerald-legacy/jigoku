@@ -42,6 +42,6 @@ export class TakeControlAction<Context extends AbilityContext = AbilityContext> 
 
     override eventHandler(event: ActionEvent<EventName.OnEffectApplied, Context>, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(event.context, additionalProperties);
-        event.context.source.applyDurationEffect(properties.duration, Object.assign({ match: event.card }, properties));
+        event.context.source.applyDurationEffect(properties.duration, Object.assign({ match: event.card, controller: event.context.player }, properties));
     }
 }

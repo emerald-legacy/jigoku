@@ -79,6 +79,7 @@ export class ConflictPhase extends PhaseStep {
             gameAction: (winner: Player | null) =>
                 winner ? claimImperialFavor({ target: winner }) : null
         })
+            // the count compares the players in first player order; the claim acts for the winner
             .resolve(undefined, this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
     }
 }

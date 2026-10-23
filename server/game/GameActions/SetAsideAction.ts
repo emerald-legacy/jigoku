@@ -87,6 +87,7 @@ export class SetAsideAction<Context extends AbilityContext = AbilityContext> ext
             const own = cards.filter((card) => card.owner === owner);
             context.source.applyDurationEffect(Duration.UntilEndOfRound, {
                 targetController: owner,
+                controller: context.player,
                 effect: playerDelayedEffect({
                     when: { onConflictFinished: () => true },
                     gameAction: new HandlerAction({

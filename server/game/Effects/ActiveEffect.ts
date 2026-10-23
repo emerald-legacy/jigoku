@@ -42,6 +42,8 @@ export interface EffectProperties<Target extends GameObject = GameObject> {
     target?: GameObject | GameObject[];
     /** A printed attachment skill bonus: not a card effect, so restrictions on card effects (Reclusive Zokujin's immunity) don't stop it. */
     printedSkillBonus?: boolean;
+    /** Whose effect it is when the source has no controller (a ring or the framework): the player whose ability created it. */
+    controller?: Player;
 }
 
 /**
@@ -63,6 +65,7 @@ export class ActiveEffect<Target extends GameObject = GameObject> {
     targets: Target[];
     context!: AbilityContext;
     endingMessage: string | undefined;
+    creator: Player | undefined;
 
     constructor(game: Game, source: EffectSource, properties: EffectProperties<Target>, effect: EffectApplier<EffectName, Target>) {
         this.game = game;
@@ -76,6 +79,7 @@ export class ActiveEffect<Target extends GameObject = GameObject> {
         this.canChangeZoneNTimes = properties.canChangeZoneNTimes || 0;
         this.effect = effect;
         this.ability = properties.ability;
+        this.creator = properties.controller;
         this.targets = [];
         this.refreshContext();
         this.effect.duration = this.duration;
@@ -83,8 +87,11 @@ export class ActiveEffect<Target extends GameObject = GameObject> {
     }
 
     refreshContext() {
-        const controller = this.source.getEffectController();
-        this.context = this.game.getFrameworkContext(controller ?? this.game.getPlayersInFirstPlayerOrder()[0]);
+        const controller = this.source.getEffectController() ?? this.creator;
+        if(!controller) {
+            throw new Error(`An effect from ${this.source.name} has no controller: pass the creating player as \`controller\``);
+        }
+        this.context = this.game.getFrameworkContext(controller);
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- an effect's source need not be a card (framework context)
         this.context.source = this.source as BaseCard;
         if(this.ability) {

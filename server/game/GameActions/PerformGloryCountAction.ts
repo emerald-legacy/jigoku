@@ -43,12 +43,17 @@ export class PerformGloryCountAction<Context extends AbilityContext = AbilityCon
             }
         }
 
+        if(!winner) {
+            return;
+        }
+        // the rule's own count (no card) acts for its winner, as the Imperial Favor claim does
+        const context = event.context.source.isCard() ? event.context : game.getFrameworkContext(winner);
         const gameAction =
             typeof properties.gameAction === 'function'
-                ? properties.gameAction(winner, event.context)
+                ? properties.gameAction(winner, context)
                 : properties.gameAction;
-        if(gameAction && gameAction.hasLegalTarget(event.context) && winner) {
-            gameAction.resolve(undefined, event.context);
+        if(gameAction && gameAction.hasLegalTarget(context)) {
+            gameAction.resolve(undefined, context);
         }
     }
 }

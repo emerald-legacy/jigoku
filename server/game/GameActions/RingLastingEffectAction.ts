@@ -21,6 +21,6 @@ export class RingLastingEffectAction<Context extends AbilityContext = AbilityCon
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source.applyDurationEffect(properties.duration, Object.assign({ match: event.ring }, properties));
+        event.context.source.applyDurationEffect(properties.duration, Object.assign({ match: event.ring, controller: event.context.player }, properties));
     }
 }
