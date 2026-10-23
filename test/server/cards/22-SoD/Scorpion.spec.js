@@ -321,7 +321,7 @@ describe('SoD - Scorpion', function () {
             it('names the chosen character\'s controller in the chat', function () {
                 this.player1.clickCard(this.lineage);
                 this.player1.clickCard(this.rumormonger);
-                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Bayushi Rumormonger\'s printed faction and prevent player1 from honoring characters while Bayushi Rumormonger is participating in a conflict');
+                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Bayushi Rumormonger\'s clan affiliation and prevent player1 from honoring characters while Bayushi Rumormonger is participating in a conflict');
             });
 
             it('should prevent honoring if participating', function () {
@@ -361,7 +361,7 @@ describe('SoD - Scorpion', function () {
                 this.player1.clickCard(this.diplomat);
 
                 expect(this.player1.hand.length).toBe(hand);
-                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Doji Diplomat\'s printed faction and prevent player2 from honoring characters while Doji Diplomat is participating in a conflict and draw a card');
+                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Doji Diplomat\'s clan affiliation and prevent player2 from honoring characters while Doji Diplomat is participating in a conflict and draw a card');
             });
         });
 

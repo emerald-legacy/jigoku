@@ -31,6 +31,6 @@ export default class DisputedLineage extends DrawCard {
                 condition: context.player.imperialFavor !== '',
                 trueGameAction: draw({ target: context.player })
             })))
-            .chatText((context) => msg`remove ${context.chatTarget()}'s printed faction and prevent ${context.target.controller} from honoring characters while ${context.chatTarget()} is participating in a conflict${context.player.imperialFavor !== '' ? ' and draw a card' : ''}`);
+            .chatText((context) => msg`remove ${context.chatTarget()}'s clan affiliation and prevent ${context.target.controller} from honoring characters while ${context.chatTarget()} is participating in a conflict${context.player.imperialFavor !== '' ? ' and draw a card' : ''}`);
     }
 }
