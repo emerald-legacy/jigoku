@@ -249,6 +249,8 @@ export class AbilityResolver extends BaseStepWithPipeline {
             }
             this.game.openThenEventWindow(new InitiateCardAbilityEvent({ card: this.context.source, context: this.context }, () => this.initiateAbility = true));
         } else {
+            // a step has no initiate event: "Then, choose …" targets count for the triggering too
+            this.context.recordChosenCardTargets(Object.values(this.context.targets).flat());
             this.initiateAbility = true;
         }
     }

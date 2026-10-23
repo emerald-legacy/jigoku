@@ -788,3 +788,39 @@ describe('Dragon Tattoo when the replay is cancelled', function() {
         });
     });
 });
+
+describe('Dragon Tattoo and a target chosen in a then-step', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'doji-challenger', attachments: ['dragon-tattoo'] }, 'doji-whisperer'],
+                    hand: ['cornering-maneuver']
+                },
+                player2: {
+                    inPlay: ['doji-kuwanan']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.tattoo = this.player1.findCardByName('dragon-tattoo');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.whisperer],
+                defenders: ['doji-kuwanan']
+            });
+            this.player2.pass();
+        });
+
+        it('reacts when the tattooed character is chosen after "Then"', function() {
+            this.player1.clickCard('cornering-maneuver');
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.isParticipating()).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.tattoo);
+        });
+    });
+});

@@ -80,7 +80,8 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         }
         cardAbility.displayMessage(this.context, 'resolves');
         payTargetingCosts(this.context, costsToTarget);
-        this.game.openEventWindow(
+        // like AbilityResolver: reactions to the effects come after them (Supporting Cast)
+        this.game.openThenEventWindow(
             new InitiateCardAbilityEvent(
                 { card: this.context.source, context: this.context, resolvedWithoutTriggering: true },
                 () => (this.initiateAbility = true)

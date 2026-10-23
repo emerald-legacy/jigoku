@@ -157,3 +157,43 @@ describe('Supporting Cast and a targeted attachment', function () {
         });
     });
 });
+
+describe('Supporting Cast after an ability resolved by Battlefield Orders', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['forward-patrol', 'doji-whisperer']
+                },
+                player2: {
+                    fate: 10,
+                    inPlay: ['matsu-berserker', 'bayushi-manipulator'],
+                    hand: ['battlefield-orders', 'supporting-cast']
+                }
+            });
+            this.patrol = this.player1.findCardByName('forward-patrol');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.berserker = this.player2.findCardByName('matsu-berserker');
+            this.manipulator = this.player2.findCardByName('bayushi-manipulator');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.patrol, this.whisperer],
+                defenders: [this.berserker, this.manipulator]
+            });
+            this.berserker.bow();
+            this.player2.clickCard('battlefield-orders');
+            this.player2.clickCard(this.patrol);
+            this.player1.clickCard(this.berserker);
+        });
+
+        it('is offered once the ability\'s effects have resolved', function () {
+            expect(this.berserker.bowed).toBe(false);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard('supporting-cast');
+            this.player2.clickCard(this.manipulator);
+            expect(this.berserker.bowed).toBe(true);
+        });
+    });
+});

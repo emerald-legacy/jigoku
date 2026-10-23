@@ -12,16 +12,7 @@ export class InitiateCardAbilityEvent extends Event {
         const ctx = this.context;
         this.cardTargets = ctx ? Object.values(ctx.targets).flat() : [];
         this.ringTargets = ctx ? Object.values(ctx.rings).flat() : [];
-        // Record chosen cards on the triggering context, so continuations (sub-resolutions)
-        // stay visible to cards reacting to the original triggering.
-        const triggeringContext = ctx?.triggeringContext;
-        if(triggeringContext) {
-            for(const card of this.cardTargets) {
-                if(!triggeringContext.chosenCardTargets.includes(card)) {
-                    triggeringContext.chosenCardTargets.push(card);
-                }
-            }
-        }
+        ctx?.recordChosenCardTargets(this.cardTargets);
     }
 }
 

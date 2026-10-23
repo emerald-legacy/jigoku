@@ -112,6 +112,16 @@ export class AbilityContext<Source extends EffectSource = BaseCard, Target exten
         return this.originatingContext ?? this;
     }
 
+    /** Cards chosen as targets, recorded for the whole triggering: its steps and sub-resolutions too (Dragon Tattoo). */
+    recordChosenCardTargets(cards: BaseCard[]): void {
+        const chosen = this.triggeringContext.chosenCardTargets;
+        for(const card of cards) {
+            if(!chosen.includes(card)) {
+                chosen.push(card);
+            }
+        }
+    }
+
     copy(newProps: Partial<AbilityContextProperties>): AbilityContext<Source, Target> {
         return this.copyStateTo(this.createCopy(newProps));
     }

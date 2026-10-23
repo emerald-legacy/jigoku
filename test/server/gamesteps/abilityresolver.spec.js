@@ -29,7 +29,7 @@ describe('AbilityResolver', function() {
         this.costEvent.getResolutionEvent.and.returnValue({ cancelled: false });
         this.player = { player: 1 };
         this.game.getPlayers.and.returnValue([this.player]);
-        this.context = { foo: 'bar', player: this.player, source: this.source, ability: this.ability, targets: {}, selects: {}, rings: {}, tokens: {}, costs: {} };
+        this.context = { foo: 'bar', player: this.player, source: this.source, ability: this.ability, targets: {}, selects: {}, rings: {}, tokens: {}, costs: {}, recordChosenCardTargets: jasmine.createSpy('recordChosenCardTargets') };
         this.resolver = new AbilityResolver(this.game, this.context);
     });
 

@@ -215,6 +215,9 @@ export class SelectCardAction<Context extends AbilityContext = AbilityContext> e
                     context.game.addMessage(text);
                 }
                 payTargetingCosts(context, costsToTarget);
+                if(properties.targets) {
+                    context.recordChosenCardTargets(Array.isArray(cards) ? cards : [cards]);
+                }
                 if(typeof properties.gameAction !== 'function' || !Array.isArray(cards) || cards.length > 0) {
                     actionFor(properties.gameAction, cards).addEventsToArray(
                         events,

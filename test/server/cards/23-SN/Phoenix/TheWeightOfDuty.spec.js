@@ -225,3 +225,39 @@ describe('The Weight of Duty and The Mirror\'s Gaze', function () {
         });
     });
 });
+
+describe('The Weight of Duty and a card chosen while the ability resolves', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asako-azunami']
+                },
+                player2: {
+                    inPlay: ['adept-of-the-waves', 'doji-kuwanan'],
+                    hand: ['the-weight-of-duty']
+                }
+            });
+            this.azunami = this.player1.findCardByName('asako-azunami');
+            this.adept = this.player2.findCardByName('adept-of-the-waves', 'play area');
+            this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                ring: 'water',
+                attackers: [this.azunami],
+                defenders: []
+            });
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.azunami);
+            this.player1.clickCard(this.adept);
+        });
+
+        it('reacts to its Shugenja being chosen', function() {
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect('the-weight-of-duty');
+        });
+    });
+});

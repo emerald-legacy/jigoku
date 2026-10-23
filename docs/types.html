@@ -3351,7 +3351,7 @@ this.action('Gain 2 fate or 2 honor')
 </div>
 <div class="ref" id="ctx-chosenCardTargets" data-name="chosenCardTargets triggeringContext originatingContext subResolution">
   <h3><code>context.chosenCardTargets</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-chosenCardTargets">#</a></h3>
-  <p><code>chosenCardTargets</code>: every card chosen as a target during this triggering, then-steps and sub-resolutions included. It is filled on <code>triggeringContext</code> when the effects initiate.</p>
+  <p><code>chosenCardTargets</code>: every card chosen as a target during this triggering, then-steps and sub-resolutions included. <code>context.recordChosenCardTargets(cards)</code> fills it on <code>triggeringContext</code>: when the effects initiate (<code>onInitiateAbilityEffects</code>), when a then-step's targets are chosen, and when a <code>selectCard({ targets: true })</code> choice is made while the ability resolves (Asako Azunami).</p>
   <p><code>originatingContext</code>: the context this one continues (a then-step, or a sub-resolution by <code>resolveAbility</code> / <code>triggerAbility</code>); <code>triggeringContext</code> is that context, or this one.</p>
   <p><code>subResolution</code>: <code>true</code> when the ability is resolved again as part of another resolution (it then raises no <code>onCardAbilityTriggered</code>, adds no extra trigger or play costs, and does not count its max again).</p>
   <pre><code>// The Weight of Duty: Reaction: After a Shugenja character you control is chosen as the target of an opponent’s triggered ability, choose a Bushi character you control - honor that character. …
