@@ -196,7 +196,7 @@ export class ProvinceCard extends BaseCard {
         return (
             !this.isBroken &&
             !this.anyEffect(EffectName.CannotBeAttacked) &&
-            (!this.controller.opponent || this.controller.opponent.fate >= fateCostToAttack + fateToDeclareAttackers) &&
+            (!this.controller.opponent || this.controller.opponent.canSpendFate(fateCostToAttack + fateToDeclareAttackers, this.game.getFrameworkCostContext(this.controller.opponent))) &&
             (this.location !== Location.StrongholdProvince ||
                 this.controller.getProvinces((card) => card.isBroken).length > 2 ||
                 this.controller.anyEffect(EffectName.StrongholdCanBeAttacked))

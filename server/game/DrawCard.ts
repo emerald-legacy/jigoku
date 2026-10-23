@@ -36,6 +36,7 @@ import type { CardData } from './types/CardData.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { StateViewer } from './types/StateViewer.js';
 import { discardStatusToken, gainHonor, loseHonor, removeFate } from './GameActions/GameActions.js';
+import { honorCostToDeclare } from './gamesteps/conflict/declarationCosts.js';
 
 interface MenuItem {
     command: string;
@@ -773,7 +774,7 @@ export class DrawCard extends BaseCard {
         }
 
         const fateCostToAttackProvince = province ? province.getFateCostToAttack() : 0;
-        if(sumOverAttackers(EffectName.FateCostToAttack) + fateCostToAttackProvince > this.controller.fate) {
+        if(!this.controller.canSpendFate(sumOverAttackers(EffectName.FateCostToAttack) + fateCostToAttackProvince, this.game.getFrameworkCostContext(this.controller))) {
             return false;
         }
         if(!this.canPayHonorCostToDeclare(attackers)) {
@@ -830,8 +831,7 @@ export class DrawCard extends BaseCard {
 
     /** The honor costs to declare these characters (tainted, Unleashed Experiment) can be paid. */
     private canPayHonorCostToDeclare(characters: DrawCard[]): boolean {
-        const amount = characters.reduce((total, card) =>
-            total + card.getEffects(EffectName.HonorCostToDeclare).reduce((sum, effect) => sum + effect.amount, 0), 0);
+        const amount = honorCostToDeclare(characters);
         return amount === 0 || loseHonor({ amount }).canAffect(this.controller, this.game.getFrameworkCostContext(this.controller));
     }
 

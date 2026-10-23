@@ -2161,7 +2161,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Paid by the declaring player after attackers (or defenders) are declared, one honor loss per effect. Chat: "&lt;player&gt; pays N honor to declare their attackers" (or defenders), with N the total.</li>
+      <li>Paid by the declaring player after attackers (or defenders) are declared, one honor loss per effect, in one window with the other costs to declare. Chat, once paid: "&lt;player&gt; pays N honor to declare their attackers" (or defenders), with N the total (<code>honorCostToDeclare(characters)</code>). An honor loss cancelled by an interrupt (Asahina Purifier) doesn't undo the declaration.</li>
       <li>The tainted status token is this effect with <code>{ amount: 1, dueToStatusToken: true }</code>; <code>taintedStatusDoesNotCostHonor()</code> switches that one off.</li>
     </ul>
     <pre><code>// Unleashed Experiment: … As an additional cost to declare this character as an attacker or defender, you lose 2 honor.
@@ -2668,8 +2668,8 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>The amounts of all declared attackers, plus the province's <code>fateCostToRingToDeclareConflictAgainst</code>, must not exceed the controller's fate, or the character can't be declared.</li>
-      <li>Paid after declaration: "&lt;player&gt; pays N fate to declare their attackers".</li>
+      <li>The controller must be able to spend the amounts of all declared attackers, plus the province's <code>fateCostToRingToDeclareConflictAgainst</code> (<code>player.canSpendFate</code>, with the framework cost context), or the character can't be declared.</li>
+      <li>Paid after declaration, with the other costs to declare: "&lt;player&gt; pays N fate to declare their attackers" once paid.</li>
     </ul>
     <pre><code>// Caravan Guard: Keeper role only. This character cannot be declared as an attacker unless you spend 1 fate.
 this.persistentEffect({

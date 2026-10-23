@@ -94,11 +94,10 @@ describe('Asahina Purifier', function () {
                 attackers: [this.brash, this.whisperer],
                 province: this.shameful
             });
-            expect(this.getChatLogs(10)).toContain('player1 pays 1 honor to declare their attackers');
-
             expect(this.player2).toBeAbleToSelect(this.purifier);
             this.player2.clickCard(this.purifier);
             expect(this.getChatLogs(10)).toContain('player2 uses Asahina Purifier to gain 1 honor rather than having player1 lose 1 honor from a status token');
+            expect(this.getChatLogs(10)).toContain('player1 pays 1 honor to declare their attackers');
 
             expect(this.player1.honor).toBe(honor1);
             expect(this.player2.honor).toBe(honor2 + 1);
@@ -116,14 +115,13 @@ describe('Asahina Purifier', function () {
                 defenders: [this.sotorii, this.shugenja],
                 province: this.shameful
             });
-            expect(this.getChatLogs(10)).toContain('player2 pays 2 honor to declare their defenders');
-
             expect(this.player2).toBeAbleToSelect(this.purifier);
             this.player2.clickCard(this.purifier);
             expect(this.player2).toHavePrompt('Choose an event to respond to');
             expect(this.player2).toHavePromptButton('onModifyHonor');
             this.player2.clickPrompt('onModifyHonor');
             expect(this.getChatLogs(10)).toContain('player2 uses Asahina Purifier to gain 1 honor rather than having player2 lose 1 honor from a status token');
+            expect(this.getChatLogs(10)).toContain('player2 pays 2 honor to declare their defenders');
             expect(this.player2.honor).toBe(honor2);
         });
 

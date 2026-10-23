@@ -23,7 +23,6 @@ interface SelectCardBase<Context extends AbilityContext, Types extends CardTypes
     location?: Location | Location[];
     cardCondition?: (card: CardOfType<Types>, context: Context) => boolean;
     targets?: boolean;
-    manuallyRaiseEvent?: boolean;
     selector?: BaseCardSelector;
     hidePromptIfSingleCard?: boolean;
     cancelHandler?: () => void;
@@ -128,13 +127,12 @@ export class SelectCardAction<Context extends AbilityContext = AbilityContext> e
     SelectCardActionProperties<Context>,
     EventName,
     Context,
-    'subActionProperties' | 'targets' | 'hidePromptIfSingleCard' | 'manuallyRaiseEvent'
+    'subActionProperties' | 'targets' | 'hidePromptIfSingleCard'
 > {
     override defaultProperties = {
         subActionProperties: (card: BaseCard | BaseCard[]) => ({ target: card }),
         targets: false,
-        hidePromptIfSingleCard: false,
-        manuallyRaiseEvent: false
+        hidePromptIfSingleCard: false
     };
 
     override getEffectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
@@ -224,9 +222,6 @@ export class SelectCardAction<Context extends AbilityContext = AbilityContext> e
                         context,
                         Object.assign({ parentAction: this }, additionalProperties, properties.subActionProperties(cards))
                     );
-                }
-                if(properties.manuallyRaiseEvent) {
-                    context.game.openEventWindow(events);
                 }
                 return true;
             }

@@ -4,9 +4,10 @@ import type DrawCard from '../../DrawCard.js';
 import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
 import { discardCard } from '../../costs/boardCosts.js';
 import type BaseCard from '../../BaseCard.js';
-import { payFate, payFateToRing, payHonor } from '../../costs/fateAndHonorCosts.js';
+import { payFate, payFateToRing } from '../../costs/fateAndHonorCosts.js';
+import { type DeclarationCost, honorCostToDeclare, honorCostsToDeclare } from './declarationCosts.js';
 import { covertContexts } from './covertContexts.js';
-import { bow, breakProvince, loseHonor, resolveConflictRing, reveal } from '../../GameActions/GameActions.js';
+import { bow, breakProvince, claimRing, loseHonor, resolveConflictRing, reveal } from '../../GameActions/GameActions.js';
 import { takeAllFateFromRing } from '../../GameActions/TakeFateFromRingAction.js';
 import { SimpleStep } from '../SimpleStep.js';
 import { ConflictActionWindow } from './ConflictActionWindow.js';
@@ -201,62 +202,37 @@ export class ConflictFlow extends BaseStepWithPipeline {
     payAttackerCosts(): void {
         this.game.updateCurrentConflict(null);
         if(!this.conflict.conflictPassed) {
-            const totalFateCost = this.conflict.attackers.reduce(
-                (total: number, card: DrawCard) => total + card.sumEffects(EffectName.FateCostToAttack),
-                0
-            );
-            const totalHonorCost = this.conflict.attackers.reduce(
-                (total: number, card: DrawCard) => {
-                    const effects = card.getEffects(EffectName.HonorCostToDeclare);
-                    const sum = effects.reduce((total, effect) => total + effect.amount, 0);
-                    return total + sum;
-                },
-                0
-            );
-            const totalCardCost =
-                this.conflict.conflictType === ConflictType.Military
-                    ? this.conflict.attackers.reduce(
-                        (total: number, card: DrawCard) => total + card.sumEffects(EffectName.CardCostToAttackMilitary),
-                        0
-                    )
-                    : 0;
-            const costEvents: Event[] = [];
-            if(!this.conflict.conflictPassed && totalFateCost > 0) {
-                this.game.addMessage(msg`${this.conflict.attackingPlayer} pays ${totalFateCost} fate to declare their attackers`);
-                payFate(totalFateCost).addEventsToArray?.(
-                    costEvents,
-                    this.game.getFrameworkCostContext(this.conflict.attackingPlayer)
-                );
-            }
-            if(!this.conflict.conflictPassed && totalHonorCost > 0) {
-                this.game.addMessage(msg`${this.conflict.attackingPlayer} pays ${totalHonorCost} honor to declare their attackers`);
-                this.conflict.attackers.forEach((card) => {
-                    const effects = card.getEffects(EffectName.HonorCostToDeclare);
-                    effects.forEach((effect) => {
-                        payHonor(effect.amount, effect.dueToStatusToken).addEventsToArray?.(
-                            costEvents,
-                            this.game.getFrameworkCostContext(this.conflict.attackingPlayer)
-                        );
-                    });
+            const attacker = this.conflict.attackingPlayer;
+            const attackers = this.conflict.attackers;
+            const totalFateCost = attackers.reduce((total: number, card: DrawCard) => total + card.sumEffects(EffectName.FateCostToAttack), 0);
+            const totalHonorCost = honorCostToDeclare(attackers);
+            const totalCardCost = this.conflict.conflictType === ConflictType.Military
+                ? attackers.reduce((total: number, card: DrawCard) => total + card.sumEffects(EffectName.CardCostToAttackMilitary), 0)
+                : 0;
+            const costs: DeclarationCost[] = [];
+            if(totalFateCost > 0) {
+                costs.push({
+                    costs: [payFate(totalFateCost)],
+                    paidMessages: () => [msg`${attacker} pays ${totalFateCost} fate to declare their attackers`]
                 });
             }
-            if(!this.conflict.conflictPassed && totalCardCost > 0) {
-                this.game.addMessage(msg`${this.conflict.attackingPlayer} must discard ${totalCardCost} card${totalCardCost > 1 ? 's' : ''} to declare their attackers`);
-                const props = {
-                    numCards: totalCardCost,
-                    manuallyRaiseEvent: true,
-                    message: (_context: AbilityContext, cards: BaseCard[], chooser: Player) => msg`${chooser} discards ${cards}`
-                };
-                discardCard(props).addEventsToArray?.(
-                    costEvents,
-                    this.game.getFrameworkCostContext(this.conflict.attackingPlayer),
-                    {}
-                );
+            if(totalHonorCost > 0) {
+                costs.push({
+                    costs: honorCostsToDeclare(attackers),
+                    paidMessages: () => [msg`${attacker} pays ${totalHonorCost} honor to declare their attackers`]
+                });
             }
-            if(costEvents.length > 0) {
-                this.game.openEventWindow(costEvents);
+            if(totalCardCost > 0) {
+                this.game.addMessage(msg`${attacker} must discard ${totalCardCost} card${totalCardCost > 1 ? 's' : ''} to declare their attackers`);
+                costs.push({
+                    costs: [discardCard({
+                        numCards: totalCardCost,
+                        message: (_context: AbilityContext, cards: BaseCard[], chooser: Player) => msg`${chooser} discards ${cards}`
+                    })]
+                });
             }
             this.conflict.attackerDeclarationFailed = false;
+            this.payDeclarationCosts(attacker, costs);
             this.queueParticipantCosts('attackers', () => this.conflict.attackingPlayer, 'declare attacking characters', () => {
                 this.conflict.attackerDeclarationFailed = true;
                 this.conflict.conflictFailedToInitiate = true;
@@ -278,24 +254,54 @@ export class ConflictFlow extends BaseStepWithPipeline {
                     : this.conflict.conflictProvince;
 
             const totalFateCost = province ? province.getFateCostToAttack() : 0;
-            if(!this.conflict.conflictPassed && province && totalFateCost > 0) {
+            if(province && totalFateCost > 0) {
                 const attacker = this.conflict.attackingPlayer;
-                const costEvents: Event[] = [];
-                payFateToRing(totalFateCost).addEventsToArray?.(costEvents, this.game.getFrameworkCostContext(attacker), {});
-                this.game.queueSimpleStep(() => this.game.openThenEventWindow(costEvents));
-                this.game.queueSimpleStep(() => {
-                    const placeFateEvent: AnyEvent | undefined = costEvents[0];
-                    if(!placeFateEvent || costEvents.some((event) => event.cancelled || !event.resolved)) {
-                        this.game.addMessage(msg`${attacker} cannot pay the fate to declare a conflict at ${provinceName}`);
-                        this.conflict.attackerDeclarationFailed = true;
-                        this.conflict.conflictFailedToInitiate = true;
-                        return;
+                this.payDeclarationCosts(attacker, [{
+                    costs: [payFateToRing(totalFateCost)],
+                    paidMessages: (events) => {
+                        const placeFateEvent: AnyEvent | undefined = events[0];
+                        return [
+                            msg`${attacker} pays ${totalFateCost} fate to declare a conflict at ${provinceName}`,
+                            msg`${attacker} places ${totalFateCost} fate on the ${placeFateEvent?.recipient || 'ring'}`
+                        ];
                     }
-                    this.game.addMessage(msg`${attacker} pays ${totalFateCost} fate to declare a conflict at ${provinceName}`);
-                    this.game.addMessage(msg`${attacker} places ${totalFateCost} fate on the ${placeFateEvent.recipient || 'ring'}`);
+                }], () => {
+                    this.game.addMessage(msg`${attacker} cannot pay the fate to declare a conflict at ${provinceName}`);
+                    this.conflict.attackerDeclarationFailed = true;
+                    this.conflict.conflictFailedToInitiate = true;
                 });
             }
         }
+    }
+
+    /**
+     * Pays the rules' costs to declare in one window, once any choices they need are made (a ring, cards to discard), and
+     * says what was paid after it. With `failed`, a cost that wasn't paid stops the declaration (the fate to a ring).
+     */
+    private payDeclarationCosts(player: Player, declarationCosts: DeclarationCost[], failed?: () => void): void {
+        if(declarationCosts.length === 0) {
+            return;
+        }
+        const context = this.game.getFrameworkCostContext(player);
+        const paying = declarationCosts.map((declarationCost) => {
+            const events: Event[] = [];
+            declarationCost.costs.forEach((cost) => cost.addEventsToArray?.(events, context, {}));
+            return { declarationCost, events };
+        });
+        this.game.queueSimpleStep(() => {
+            this.game.openEventWindow(paying.flatMap(({ events }) => events));
+        });
+        this.game.queueSimpleStep(() => {
+            if(failed && paying.some(({ events }) => events.length === 0 || events.some((event) => event.getResolutionEvent().cancelled))) {
+                failed();
+                return;
+            }
+            for(const { declarationCost, events } of paying) {
+                for(const message of declarationCost.paidMessages?.(events) ?? []) {
+                    this.game.addMessage(message);
+                }
+            }
+        });
     }
 
     initiateConflict(): void {
@@ -569,27 +575,12 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 this.conflict.defenderDeclarationFailed = true;
             });
 
-            const totalHonorCost = this.conflict.defenders.reduce(
-                (total: number, card: DrawCard) => {
-                    const effects = card.getEffects(EffectName.HonorCostToDeclare);
-                    const sum = effects.reduce((total, effect) => total + effect.amount, 0);
-                    return total + sum;
-                },
-                0
-            );
+            const totalHonorCost = honorCostToDeclare(this.conflict.defenders);
             if(!this.conflict.conflictPassed && totalHonorCost > 0) {
-                const costEvents: Event[] = [];
-                this.game.addMessage(msg`${defender} pays ${totalHonorCost} honor to declare their defenders`);
-                this.conflict.defenders.forEach((card) => {
-                    const effects = card.getEffects(EffectName.HonorCostToDeclare);
-                    effects.forEach((effect) => {
-                        payHonor(effect.amount, effect.dueToStatusToken).addEventsToArray?.(
-                            costEvents,
-                            this.game.getFrameworkCostContext(defender)
-                        );
-                    });
-                });
-                this.game.openEventWindow(costEvents);
+                this.payDeclarationCosts(defender, [{
+                    costs: honorCostsToDeclare(this.conflict.defenders),
+                    paidMessages: () => [msg`${defender} pays ${totalHonorCost} honor to declare their defenders`]
+                }]);
             }
         }
     }
@@ -802,20 +793,13 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
         const winner = this.conflict.winner;
-        if(
-            winner &&
-            winner.checkRestrictions(RestrictionType.ClaimRings, this.game.getFrameworkContext(winner))
-        ) {
-            this.game.raiseEvent(
-                EventName.OnClaimRing,
-                { player: winner, conflict: this.conflict, ring },
-                () => ring.claimRing(winner)
-            );
+        if(winner) {
+            // the attacker took the ring's fate when declaring
+            claimRing({ conflictType: this.conflict.conflictType ?? ring.conflictType, takeFate: false, staysContested: true })
+                .resolve(ring, this.game.getFrameworkContext(winner));
         }
-        //Do this lazily for now
         this.game.queueSimpleStep(() => {
             ring.contested = false;
-            return true;
         });
     }
 

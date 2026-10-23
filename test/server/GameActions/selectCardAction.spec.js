@@ -128,25 +128,6 @@ describe('SelectCardAction', function() {
             );
         });
 
-        it('should manually open an event window when manuallyRaiseEvent is set', function() {
-            const events = [];
-            const action = new SelectCardAction({
-                selector: this.selector, gameAction: this.gameAction, manuallyRaiseEvent: true
-            });
-            action.addEventsToArray(events, this.context);
-            lastPromptArgs(this.game.promptForSelect).onSelect(this.player, this.cardA);
-            expect(this.game.openEventWindow).toHaveBeenCalledWith(events);
-        });
-
-        it('should NOT open an event window when manuallyRaiseEvent is false', function() {
-            const action = new SelectCardAction({
-                selector: this.selector, gameAction: this.gameAction
-            });
-            action.addEventsToArray([], this.context);
-            lastPromptArgs(this.game.promptForSelect).onSelect(this.player, this.cardA);
-            expect(this.game.openEventWindow).not.toHaveBeenCalled();
-        });
-
         it('should add the message with the context, the chosen card and the chooser', function() {
             const message = jasmine.createSpy('message').and.returnValue(['{0} picks {1}', ['arg1', 'arg2']]);
             const action = new SelectCardAction({

@@ -466,11 +466,11 @@ this.conflictAction('Move two monks to the conflict', { conflictType: ConflictTy
   <h3 class="group-title" id="en-group-game">Conflicts, duels, rings and phases</h3>
 <div class="ref" id="en-ConflictType" data-name="ConflictType">
   <h3><code>ConflictType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-ConflictType">#</a></h3>
-  <p>The type of a conflict. Cards use it with <code>this.conflictAction(title, { conflictType })</code>, <code>game.isDuringConflict(type)</code>, <code>conflict.conflictType</code>, <code>ring.conflictType</code>, <code>claimRing({ type })</code>, <code>initiateConflict({ forcedDeclaredType })</code> and conflict effects such as <code>cannotDeclareConflictsOfType</code>.</p>
+  <p>The type of a conflict. Cards use it with <code>this.conflictAction(title, { conflictType })</code>, <code>game.isDuringConflict(type)</code>, <code>conflict.conflictType</code>, <code>ring.conflictType</code>, <code>claimRing({ conflictType })</code>, <code>initiateConflict({ forcedDeclaredType })</code> and conflict effects such as <code>cannotDeclareConflictsOfType</code>.</p>
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>Military</code></td><td><code>'military'</code></td><td>A military conflict. Default <code>type</code> of <code>claimRing</code>.</td></tr>
+          <tr><td><code>Military</code></td><td><code>'military'</code></td><td>A military conflict.</td></tr>
           <tr><td><code>Political</code></td><td><code>'political'</code></td><td>A political conflict.</td></tr>
           <tr><td><code>Passed</code></td><td><code>'passed'</code></td><td>Not a conflict type: a counter key in <code>declaredConflictOpportunities</code> for passed opportunities.</td></tr>
           <tr><td><code>Forced</code></td><td><code>'forced'</code></td><td>Not a conflict type: a counter key for conflicts declared with a forced type.</td></tr>
@@ -2397,18 +2397,18 @@ this.reaction('Move the conflict')
   <h3 class="group-title" id="ev-group-rings">Rings</h3>
 <div class="ref" id="ev-onClaimRing" data-name="onClaimRing OnClaimRing">
   <h3><code>onClaimRing</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onClaimRing">#</a></h3>
-  <p>Raised when a player claims a ring: by the conflict's winner after the ring effect (if no <code>ClaimRings</code> restriction), and by <code>claimRing</code>.</p>
+  <p>Raised by <code>claimRing</code> when a player claims a ring; the conflict's winner claims the contested ring after the ring effect with it too (<code>takeFate: false</code>: the attacker took its fate when declaring), with their framework context.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player claiming it.</td></tr>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring.</td></tr>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The current conflict, if any.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The claiming ability's, or the winner's framework context.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li>From <code>claimRing</code>, the fate on the ring goes to the player in the handler, with an <code>onMoveFate</code> raised afterwards.</li>
+    <li>With <code>takeFate</code>, the fate on the ring goes to the player in the handler, with an <code>onMoveFate</code> raised afterwards.</li>
   </ul>
   <pre><code>// Akodo Toturi: Reaction: After you claim a ring during a [conflict-military] conflict in which this character is participating – resolve that ring's effect.
 this.reaction('Resolve ring effect')
