@@ -97,3 +97,41 @@ describe('To Sow the Earth with a Peasant attachment', function () {
         });
     });
 });
+
+describe('To Sow the Earth with Utaku Tetsuko', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    inPlay: ['adept-of-the-waves'],
+                    conflictDiscard: ['meek-informant'],
+                    hand: ['to-sow-the-earth']
+                },
+                player2: {
+                    inPlay: ['utaku-tetsuko']
+                }
+            });
+            this.informant = this.player1.findCardByName('meek-informant');
+            this.tetsuko = this.player2.findCardByName('utaku-tetsuko');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.tetsuko],
+                defenders: []
+            });
+        });
+
+        it('increases the cost of the character played as if from hand', function () {
+            this.player1.clickCard('to-sow-the-earth');
+            this.player1.clickCard(this.informant);
+            this.player1.clickPrompt('0');
+            expect(this.informant.location).toBe('play area');
+            // 1 for To Sow the Earth and 2 for Meek Informant
+            expect(this.player1.fate).toBe(7);
+        });
+    });
+});
+

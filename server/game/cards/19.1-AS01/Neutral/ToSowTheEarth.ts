@@ -1,4 +1,4 @@
-import { CardType, Players, Location, Trait } from '../../../Constants.js';
+import { CardType, Players, Location, PlayType, Trait } from '../../../Constants.js';
 import { asIfFromHandPlayActions } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
@@ -17,7 +17,8 @@ export default class ToSowTheEarth extends DrawCard {
                 cardCondition: (card) => card.hasTrait(Trait.Peasant)
             }, playCard((context) => ({
                 target: context.target,
-                playAction: context.target ? asIfFromHandPlayActions(context.target) : undefined
+                playAction: context.target ? asIfFromHandPlayActions(context.target) : undefined,
+                playType: PlayType.PlayFromHand
             })))
             .chatText('play {0} from their discard pile');
 

@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { playCard } from '../../../GameActions/GameActions.js';
-import { CardType, Location, Players, TargetMode, Blocker, Trait } from '../../../Constants.js';
+import { CardType, Location, Players, PlayType, TargetMode, Blocker, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { asIfFromHandPlayActions } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import { msg } from '../../../GameChat.js';
@@ -31,7 +31,7 @@ export default class ToConnectThePeople extends DrawCard {
                     target: card,
                     playAction: asIfFromHandPlayActions(card)
                 }),
-                gameAction: playCard({ ignoredBlockers: [Blocker.WrongLocation] })
+                gameAction: playCard({ ignoredBlockers: [Blocker.WrongLocation], playType: PlayType.PlayFromHand })
             });
     }
 

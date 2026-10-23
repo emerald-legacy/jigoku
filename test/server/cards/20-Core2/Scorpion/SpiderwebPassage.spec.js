@@ -54,8 +54,20 @@ describe('Spiderweb Passage', function () {
             expect(this.player1).toBeAbleToSelect(this.tensai);
             expect(this.player1).toBeAbleToSelect(this.koyane);
             expect(this.player1).not.toBeAbleToSelect(this.adept);
-            expect(this.player1).not.toBeAbleToSelect(this.goblin);
             expect(this.player1).not.toBeAbleToSelect(this.ningyo);
+        });
+
+        it('targets characters with a dash skill', function () {
+            this.initiateConflict({
+                attackers: [this.sadako, this.aramoro],
+                defenders: [this.goblin],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.spiderwebPassage);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.goblin);
         });
 
         it('can make opponent discard cards', function () {

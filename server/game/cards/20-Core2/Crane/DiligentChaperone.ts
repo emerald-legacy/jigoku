@@ -12,6 +12,9 @@ type ChaperoneEvent = GameEvent<EventName.OnStatusTokenMoved | EventName.OnCardD
 function targetsFromEvent(event: ChaperoneEvent): WeakSet<BaseCard> {
     switch(event.name) {
         case EventName.OnStatusTokenMoved:
+            if(event.token.grantedStatus === CharacterStatus.Dishonored) {
+                return new WeakSet([event.recipient]);
+            }
             return new WeakSet(event.donor ? [event.donor] : []);
         case EventName.OnCardDishonored:
             return new WeakSet([event.card]);
@@ -38,9 +41,13 @@ export default class DiligentChaperone extends DrawCard {
         this.reaction('Rehonor the character')
             .when({
                 onStatusTokenMoved: (event, context) =>
-                    event.token.grantedStatus === CharacterStatus.Honored &&
-                    !!event.donor && isFriendlyCharacter(context, event.donor) &&
-                    !context.source.bowed,
+                    !context.source.bowed && (
+                        (event.token.grantedStatus === CharacterStatus.Honored &&
+                            !!event.donor && isFriendlyCharacter(context, event.donor)) ||
+                        // a dishonored token moved onto an honored character discards both tokens
+                        (event.token.grantedStatus === CharacterStatus.Dishonored &&
+                            !event.recipient.isDishonored && isFriendlyCharacter(context, event.recipient))
+                    ),
                 onCardDishonored: (event, context) =>
                     event.card.isOrdinary() && isFriendlyCharacter(context, event.card) && !context.source.bowed,
                 onStatusTokenDiscarded: (event, context) =>

@@ -152,5 +152,40 @@ describe('Invoke the Divine', function() {
                 expect(this.player1).toHavePrompt('Invoke the Divine');
             });
         });
+
+        describe('Invoke the Divine and Gossip', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['doji-whisperer'],
+                        hand: ['gossip']
+                    },
+                    player2: {
+                        inPlay: ['adept-of-the-waves'],
+                        hand: ['invoke-the-divine', 'against-the-waves', 'supernatural-storm']
+                    }
+                });
+                this.invoke = this.player2.findCardByName('invoke-the-divine');
+                this.against = this.player2.findCardByName('against-the-waves');
+                this.storm = this.player2.findCardByName('supernatural-storm');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.adept = this.player2.findCardByName('adept-of-the-waves');
+            });
+
+            it('should not let you choose a spell you cannot play from hand', function() {
+                this.player1.clickCard('gossip');
+                this.player1.chooseCardInPrompt(this.against.name, 'card-name');
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.whisperer],
+                    defenders: [this.adept]
+                });
+                this.player2.clickCard(this.invoke);
+                expect(this.player2).toHavePrompt('Invoke the Divine');
+                expect(this.player2).toBeAbleToSelect(this.storm);
+                expect(this.player2).not.toBeAbleToSelect(this.against);
+            });
+        });
     });
 });

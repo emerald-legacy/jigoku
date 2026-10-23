@@ -1,7 +1,8 @@
 import { msg } from '../../GameChat.js';
 import { DuelType, Blocker } from '../../Constants.js';
-import { optional, selectAttackedProvince, triggerAbility } from '../../GameActions/GameActions.js';
+import { chooseAction, optional, selectAttackedProvince, triggerAbility } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import type { CardAbility } from '../../CardAbility.js';
 
 export default class CunningNegotiator extends DrawCard {
     static id = 'cunning-negotiator';
@@ -21,11 +22,22 @@ export default class CunningNegotiator extends DrawCard {
                         declineMessage: (_context, chooser) => msg`${chooser} chooses not to trigger a province ability`,
                         gameAction: selectAttackedProvince({
                             player: duel.winnerController,
-                            gameAction: (province) => triggerAbility({
-                                player: duel.winnerController,
-                                ability: province.abilities.actions[0],
-                                ignoredBlockers: [Blocker.LimitReached]
-                            })
+                            gameAction: (province) => {
+                                const trigger = (ability: CardAbility) => triggerAbility({
+                                    player: duel.winnerController,
+                                    ability,
+                                    ignoredBlockers: [Blocker.LimitReached]
+                                });
+                                const actions = province.abilities.actions;
+                                if(actions.length < 2) {
+                                    return trigger(actions[0]);
+                                }
+                                return chooseAction({
+                                    activePromptTitle: 'Choose an ability to trigger',
+                                    player: duel.winnerController,
+                                    choices: Object.fromEntries(actions.map((ability) => [ability.title, trigger(ability)]))
+                                });
+                            }
                         })
                     })
             }));

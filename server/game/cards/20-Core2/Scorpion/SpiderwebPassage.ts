@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Players, SkillType, Trait } from '../../../Constants.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { chatMessage, discardAtRandom, discardFromPlay, joint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -24,9 +24,7 @@ export default class SpiderwebPassage extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) =>
-                    card.isParticipating() &&
-                    ((!card.hasDash(SkillType.Political) && card.politicalSkill === 0) ||
-                        (!card.hasDash(SkillType.Military) && card.militarySkill === 0))
+                    card.isParticipating() && (card.politicalSkill === 0 || card.militarySkill === 0)
             })
             // "Its controller selects one" is before the dash: made with the target (RRG Select)
             .selectFrom({

@@ -3,8 +3,8 @@ import { CardType, ConflictType, Duration, Location, Players, Trait } from '../.
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import * as costs from '../../../costs/index.js';
 import { perRound } from '../../../AbilityLimit.js';
-import { cannotTriggerAbilities, removeFromGameInsteadOfLeavingPlay } from '../../../effects.js';
-import { cardLastingEffect, claimRing, joint, putIntoPlay } from '../../../GameActions/GameActions.js';
+import { removeFromGameInsteadOfLeavingPlay } from '../../../effects.js';
+import { claimRing, putIntoPlay } from '../../../GameActions/GameActions.js';
 
 export default class TheEmptyCity extends ProvinceCard {
     static id = 'the-empty-city';
@@ -35,14 +35,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 cardCondition: (card) => card.hasTrait(Trait.Spirit) && card.costAtMost(3)
-            }, joint([
-                putIntoPlay(),
-                cardLastingEffect((context) => ({
-                    target: context.source,
-                    effect: cannotTriggerAbilities(),
-                    duration: Duration.UntilEndOfRound
-                }))
-            ]))
+            }, putIntoPlay())
             .chatText('put {0} into play')
             .limit(sharedLimit)
             .afterwardsIf((context) => context.target.location === Location.PlayArea)

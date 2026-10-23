@@ -572,5 +572,39 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
         });
+
+        describe('Right Hand of the Emperor and tokens', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['matsu-berserker'],
+                        dynastyDiscard: ['ashigaru-encampment'],
+                        hand: ['peerless-discipline', 'right-hand-of-the-emperor']
+                    },
+                    player2: {
+                        inPlay: ['adept-of-the-waves']
+                    }
+                });
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.encampment = this.player1.placeCardInProvince('ashigaru-encampment');
+                this.encampment.facedown = false;
+                this.player1.clickCard(this.encampment);
+                this.ashigaru = this.player1.player.cardsInPlay.find((card) => card.name === 'Ashigaru Recruit');
+                this.player2.pass();
+                this.player1.clickCard('peerless-discipline');
+                this.player2.pass();
+                this.ashigaru.bowed = true;
+                this.berserker.bowed = true;
+            });
+
+            it('should not allow you to target a token', function() {
+                expect(this.ashigaru.hasTrait('bushi')).toBe(true);
+                this.player1.clickCard('right-hand-of-the-emperor');
+                expect(this.player1).toHavePrompt('Choose characters');
+                expect(this.player1).toBeAbleToSelect(this.berserker);
+                expect(this.player1).not.toBeAbleToSelect(this.ashigaru);
+            });
+        });
     });
 });

@@ -278,5 +278,40 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.challenger.isHonored).toBe(true);
             });
         });
+
+        describe('Miyako\'s Undertaking and a card with the same title', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        honor: 5,
+                        inPlay: ['wandering-ronin', 'doji-whisperer'],
+                        hand: ['miyako-s-undertaking']
+                    },
+                    player2: {
+                        inPlay: ['doomed-shugenja'],
+                        dynastyDiscard: ['wandering-ronin']
+                    }
+                });
+                this.ronin = this.player1.findCardByName('wandering-ronin', 'play area');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.opponentRonin = this.player2.findCardByName('wandering-ronin', 'dynasty discard pile');
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.ronin, this.whisperer],
+                    defenders: []
+                });
+                this.player2.pass();
+            });
+
+            it('should not let a character become a copy of a card with its own title', function() {
+                this.player1.clickCard('miyako-s-undertaking');
+                this.player1.clickCard(this.opponentRonin);
+                expect(this.player1).toBeAbleToSelect(this.whisperer);
+                expect(this.player1).not.toBeAbleToSelect(this.ronin);
+            });
+        });
     });
 });
+

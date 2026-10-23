@@ -22,7 +22,7 @@ export default class MiyakosUndertaking extends DrawCard {
                 dependsOn: 'cardToCopy',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => card.isParticipating() && card.name !== context.targets.cardToCopy?.name
             }, cardLastingEffect((context) => ({
                 effect: copyCard(context.targets.cardToCopy)
             })))

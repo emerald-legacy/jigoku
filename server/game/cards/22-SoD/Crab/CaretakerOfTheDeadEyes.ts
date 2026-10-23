@@ -1,4 +1,4 @@
-import { Trait } from '../../../Constants.js';
+import { Location, Trait } from '../../../Constants.js';
 import { msg } from '../../../GameChat.js';
 import { addKeyword } from '../../../effects.js';
 import { cardLastingEffect, honor, multiple } from '../../../GameActions/GameActions.js';
@@ -10,7 +10,10 @@ export default class CaretakerOfTheDeadEyes extends DrawCard {
     override setupCardAbilities() {
         this.interrupt('Honor a character')
             .when({
-                onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.hasTrait(Trait.Bushi)
+                onCardLeavesPlay: (event, context) =>
+                    event.card.location === Location.PlayArea &&
+                    event.card.controller === context.player &&
+                    event.card.hasTrait(Trait.Bushi)
             })
             .gameAction(multiple((context) => {
                 const card = context.event.card;

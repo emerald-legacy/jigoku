@@ -1,4 +1,4 @@
-import { CardType } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import { unlimited } from '../../../AbilityLimit.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
@@ -10,7 +10,10 @@ export default class HirumaHarrower extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Gain military skill')
             .when({
-                onCardLeavesPlay: (event, context) => context.game.isDuringConflict() && event.card.type === CardType.Character
+                onCardLeavesPlay: (event, context) =>
+                    context.game.isDuringConflict() &&
+                    event.card.type === CardType.Character &&
+                    event.cardStateWhenLeftPlay?.location === Location.PlayArea
             })
             .cardLastingEffect({
                 effect: modifyMilitarySkill(2)

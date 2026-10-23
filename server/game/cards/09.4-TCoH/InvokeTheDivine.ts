@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { playCard, selectCard } from '../../GameActions/GameActions.js';
 
-import { Location, Players, Trait } from '../../Constants.js';
+import { Location, PlayType, Players, Trait } from '../../Constants.js';
 
 class InvokeTheDivine extends DrawCard {
     static id = 'invoke-the-divine';
@@ -15,6 +15,7 @@ class InvokeTheDivine extends DrawCard {
             gameAction: playCard((invokeContext) => ({
                 resetOnCancel: true,
                 payCosts: false,
+                playType: PlayType.PlayFromHand,
                 source: this,
                 postHandler: (context) => {
                     if(spellsCast < 2) {

@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, CharacterStatus } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
-import { discardStatusToken, dishonor, honor, joint, taint } from '../../../GameActions/GameActions.js';
+import { discardStatusToken, dishonor, gainStatusToken, honor, joint, taint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const ORIGINL_TOKEN = 'original';
@@ -28,8 +28,9 @@ export default class AsakoKousuke extends DrawCard {
                     return {};
                 }
 
+                const canReceive = (token: CharacterStatus) => gainStatusToken({ token }).canAffect(targetCard, context);
                 const choices: Array<[string, GameAction]> = [];
-                if(!targetCard.isHonored) {
+                if(canReceive(CharacterStatus.Honored)) {
                     choices.push([
                         'Turn it into Honored',
                         joint([
@@ -39,7 +40,7 @@ export default class AsakoKousuke extends DrawCard {
                     ]);
                 }
 
-                if(!targetCard.isDishonored) {
+                if(canReceive(CharacterStatus.Dishonored)) {
                     choices.push([
                         'Turn it into Dishonored',
                         joint([
@@ -49,7 +50,7 @@ export default class AsakoKousuke extends DrawCard {
                     ]);
                 }
 
-                if(!targetCard.isTainted) {
+                if(canReceive(CharacterStatus.Tainted)) {
                     choices.push([
                         'Turn it into Tainted',
                         joint([

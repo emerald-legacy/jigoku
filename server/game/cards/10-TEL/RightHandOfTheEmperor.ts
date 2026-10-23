@@ -23,7 +23,7 @@ class RightHandOfTheEmperor extends DrawCard {
                 optional: true,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait(Trait.Bushi)
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && card.getCost() !== null
             }, ready())
             .moveCard((context) => ({
                 target: context.source,
