@@ -13,7 +13,10 @@ class BayushiGensato extends DrawCard {
                     bow({ target: duel.loser }),
                     dishonor({ target: duel.winner })
                 ]),
-                statistic: (card) => card.getMilitarySkillExcludingModifiers([EffectName.AttachmentMilitarySkillModifier, EffectName.AttachmentPoliticalSkillModifier])
+                statistic: (card, duelRules) =>
+                    duelRules === 'printedSkill'
+                        ? card.printedMilitarySkill
+                        : card.getMilitarySkillExcludingModifiers([EffectName.AttachmentMilitarySkillModifier, EffectName.AttachmentPoliticalSkillModifier])
             }));
     }
 }

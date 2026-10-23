@@ -3299,7 +3299,7 @@ this.persistentEffect({
 <h3 class="group-title" id="ef-group-1-duels">Duels</h3>
 <p>A side's duel total (<code>Duel</code>) adds up:</p>
   <ul>
-    <li>each participant's duel statistic: its skill (or glory) for the duel type, the printed value under Emerald and Sanctuary rules;</li>
+    <li>each participant's duel statistic: its skill (or glory) for the duel type, or the card's own <code>statistic</code> (Bayushi Gensato, True Strike Kenjutsu, Challenge on the Fields); the printed value under Emerald and Sanctuary rules;</li>
     <li>each participant's <code>modifyDuelistSkill</code> for this duel;</li>
     <li>the side's <code>modifyDuelTotal</code>;</li>
     <li>the side's honor bid, once bids are revealed.</li>
@@ -3309,7 +3309,7 @@ this.persistentEffect({
     <h3><code>applyStatusTokensToDuel()</code> <span class="kind">Duel effect</span> <a class="anchor" href="#ef-applyStatusTokensToDuel">#</a></h3>
     <p>"Apply the skill modifiers from status tokens to each character's duel statistic."</p>
     <ul class="edge">
-      <li>Only under printed-skill duel rules (<code>game.rules.duelRules === 'printedSkill'</code>: Emerald and Sanctuary), and only for duels without a custom <code>statistic</code>: each duelist's statistic gets <code>card.getStatusTokenSkill()</code> added. Under other duel rules it does nothing.</li>
+      <li>Only under printed-skill duel rules (<code>game.rules.duelRules === 'printedSkill'</code>: Emerald and Sanctuary), also for duels with a custom <code>statistic</code>: each duelist's statistic gets <code>card.getStatusTokenSkill()</code> added. Under other duel rules it does nothing.</li>
     </ul>
     <pre><code>// Show Me Your Stance: Duel Challenge: Apply the skill modifiers from status tokens to each character's duel statistic. …
 this.duelChallenge('Apply status tokens to the duel')
@@ -3347,7 +3347,7 @@ this.persistentEffect({
     <h3><code>duelIgnorePrintedSkill()</code> <span class="kind">Duel effect</span> <a class="anchor" href="#ef-duelIgnorePrintedSkill">#</a></h3>
     <p>"Characters do not contribute their printed statistic to the resolution of this duel."</p>
     <ul class="edge">
-      <li>Only under printed-skill duel rules and for duels without a custom <code>statistic</code>: the base statistic becomes 0. Status tokens (with <code>applyStatusTokensToDuel</code>), duel total modifiers and bids still count.</li>
+      <li>Only under printed-skill duel rules: the printed statistic becomes 0. A custom <code>statistic</code> that returns <code>{ printed, bonus }</code> (Challenge on the Fields) keeps its bonus. Status tokens (with <code>applyStatusTokensToDuel</code>), duel total modifiers and bids still count.</li>
     </ul>
     <pre><code>// Shosuro Technique: Duel Challenge: If you were challenged - characters do not contribute their printed statistic to
 // the resolution of this duel. …

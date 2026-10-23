@@ -3,6 +3,7 @@ import { DuelType, EffectName, EventName, Location, RestrictionType } from './Co
 import { EventRegistrar } from './EventRegistrar.js';
 import type DrawCard from './DrawCard.js';
 import type Game from './Game.js';
+import type { GameRules } from './GameRules.js';
 import type Player from './Player.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
@@ -26,6 +27,9 @@ const InvalidStats = Symbol('Invalid stats');
 
 type StatisticTotal = typeof InvalidStats | number;
 
+/** A custom duel statistic: a number, or its printed part and a bonus that "ignore printed" effects keep. */
+export type DuelStatistic = (card: DrawCard, duelRules: GameRules['duelRules']) => number | { printed: number; bonus: number };
+
 const listFormatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
 /** A duel with a winner; its loser can still be missing. */
@@ -41,6 +45,7 @@ export class Duel extends GameObject {
     winningPlayer?: Player;
     finalDifference?: number;
     private eventRegistrar?: EventRegistrar;
+    readonly #initiatedDuringConflict: boolean;
 
     constructor(
         public override game: Game,
@@ -51,10 +56,11 @@ export class Duel extends GameObject {
             requiresConflict?: boolean;
             targetCondition?: (card: DrawCard, context: AbilityContext) => boolean;
         },
-        private statistic?: (card: DrawCard, duelRules: 'currentSkill' | 'printedSkill' | 'skirmish') => number,
+        private statistic?: DuelStatistic,
         public challengingPlayer = challenger.controller
     ) {
         super(game, 'Duel');
+        this.#initiatedDuringConflict = game.isDuringConflict();
         this.#initializeDuelModifiers(challenger.controller);
     }
 
@@ -116,10 +122,13 @@ export class Duel extends GameObject {
         );
     }
 
+    /** RRG D.1: a duel initiated during a conflict is between participating characters, unless it ignores location requirements. */
     #allowedTargetCondition(card: DrawCard, context: AbilityContext) {
-        return this.properties.targetCondition
-            ? this.properties.targetCondition(card, context)
-            : !this.properties.requiresConflict || card.isParticipating();
+        if(this.properties.targetCondition) {
+            return this.properties.targetCondition(card, context);
+        }
+        const requiresParticipation = this.properties.requiresConflict ?? this.#initiatedDuringConflict;
+        return !requiresParticipation || card.isParticipating();
     }
 
     isInvolved(card: BaseCard): boolean {
@@ -257,7 +266,15 @@ export class Duel extends GameObject {
         return effectModifier;
     }
 
-    #deriveBaseStatistic(card: DrawCard): number {
+    #deriveBaseStatistic(card: DrawCard): { printed: number; bonus: number } {
+        if(typeof this.statistic === 'function') {
+            const statistic = this.statistic(card, this.game.rules.duelRules);
+            return typeof statistic === 'number' ? { printed: statistic, bonus: 0 } : statistic;
+        }
+        return { printed: this.#defaultStatistic(card), bonus: 0 };
+    }
+
+    #defaultStatistic(card: DrawCard): number {
         switch(this.duelType) {
             case DuelType.Military:
                 return this.game.rules.duelRules === 'printedSkill'
@@ -273,28 +290,16 @@ export class Duel extends GameObject {
     }
 
     getSkillStatistic(card: DrawCard): number {
-        if(typeof this.statistic === 'function') {
-            return this.statistic(card, this.game.rules.duelRules);
-        }
-
-        let baseStatistic = this.#deriveBaseStatistic(card);
+        const { printed, bonus } = this.#deriveBaseStatistic(card);
 
         // Some effects for the new duel framework
         if(this.game.rules.duelRules === 'printedSkill') {
-            let statusTokenBonus = 0;
             const useStatusTokens = this.getEffects(EffectName.ApplyStatusTokensToDuel).length > 0;
             const ignorePrintedSkill = this.getEffects(EffectName.DuelIgnorePrintedSkill).length > 0;
-
-            if(ignorePrintedSkill) {
-                baseStatistic = 0;
-            }
-            if(useStatusTokens) {
-                statusTokenBonus = card.getStatusTokenSkill();
-            }
-            return baseStatistic + statusTokenBonus;
+            return (ignorePrintedSkill ? 0 : printed) + bonus + (useStatusTokens ? card.getStatusTokenSkill() : 0);
         }
 
-        return baseStatistic;
+        return printed + bonus;
     }
 
     #getTotals(challengerStats: number, targetStats: number): [number, number] {

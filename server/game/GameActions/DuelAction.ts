@@ -5,7 +5,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, Duration, EventName, Location, type DuelType, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { Duel, type ResolvedDuel } from '../Duel.js';
+import { Duel, type DuelStatistic, type ResolvedDuel } from '../Duel.js';
 import type { Event } from '../Events/Event.js';
 import { DuelFlow } from '../gamesteps/DuelFlow.js';
 import type { HonorBidPrompt } from '../gamesteps/HonorBidPrompt.js';
@@ -19,13 +19,15 @@ export interface DuelProperties<Context extends AbilityContext = AbilityContext>
     challenger?: DrawCard;
     challengerCondition?(card: DrawCard, context: Context): boolean;
     requiresConflict?: boolean;
+    /** Who can be added to the duel (Two Hands); by default participating characters when it starts during a conflict (RRG D.1). */
+    targetCondition?(card: DrawCard, context: Context): boolean;
     /** Resolved only when the duel has a winner. */
     gameAction: GameAction | ((duel: ResolvedDuel, context: AbilityContext) => GameAction);
     onTie?: GameAction | ((duel: Duel, context: AbilityContext) => GameAction);
     /** What the chat says the duel does, after "Duel Effect: "; by default its game action's own text. */
     chatText?(context: Context, duel: ResolvedDuel): MessageArgs;
     costHandler?(context: Context, prompt: HonorBidPrompt): void;
-    statistic?: (card: DrawCard, duelRules: 'currentSkill' | 'printedSkill' | 'skirmish') => number;
+    statistic?: DuelStatistic;
     challengerEffect?: EffectFactory | EffectFactory[];
     targetEffect?: EffectFactory | EffectFactory[];
     refuseGameAction?: GameAction;

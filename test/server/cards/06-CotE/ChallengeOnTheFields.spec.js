@@ -276,6 +276,50 @@ describe('Challenge on the Fields', function () {
                 expect(this.getChatLogs(5)).toContain('Border Rider: 5 vs 3: Agasha Swordsmith');
             });
         });
+
+        describe('under Emerald rules with Shosuro Technique', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['border-rider', 'battle-maiden-recruit', 'ide-messenger'],
+                        hand: ['challenge-on-the-fields']
+                    },
+                    player2: {
+                        fate: 5,
+                        inPlay: ['agasha-swordsmith', 'ancient-master'],
+                        hand: ['shosuro-technique']
+                    },
+                    gameMode: 'emerald'
+                });
+                this.borderRider = this.player1.findCardByName('border-rider');
+                this.battleMaidenRecruit = this.player1.findCardByName('battle-maiden-recruit');
+                this.ideMessenger = this.player1.findCardByName('ide-messenger');
+                this.challengeOnTheFields = this.player1.findCardByName('challenge-on-the-fields');
+
+                this.agashaSwordsmith = this.player2.findCardByName('agasha-swordsmith');
+                this.ancientMaster = this.player2.findCardByName('ancient-master');
+                this.technique = this.player2.findCardByName('shosuro-technique');
+            });
+
+            it('ignores the printed skill but keeps the bonus for other participating characters', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.borderRider, this.battleMaidenRecruit, this.ideMessenger],
+                    defenders: [this.agashaSwordsmith, this.ancientMaster],
+                    type: 'political'
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.challengeOnTheFields);
+                this.player1.clickCard(this.borderRider);
+                this.player1.clickCard(this.agashaSwordsmith);
+                this.player2.clickCard(this.technique);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+
+                expect(this.getChatLogs(5)).toContain('Border Rider: 3 vs 2: Agasha Swordsmith');
+            });
+        });
     });
 });
 

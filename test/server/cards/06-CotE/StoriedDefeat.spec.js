@@ -266,5 +266,44 @@ describe('Storied Defeat', function() {
                 expect(this.whisperer.isDishonored).toBe(true);
             });
         });
+
+        describe('Storied Defeat and a duel before the conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kakita-yoshi', 'doji-challenger'],
+                        hand: ['unyielding-terms', 'storied-defeat']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer', 'doji-hotaru']
+                    }
+                });
+                this.yoshi = this.player1.findCardByName('kakita-yoshi');
+                this.challenger = this.player1.findCardByName('doji-challenger');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+                this.hotaru = this.player2.findCardByName('doji-hotaru');
+            });
+
+            it('does not count a duel lost before the conflict', function() {
+                this.player1.clickCard('unyielding-terms');
+                this.player1.clickCard(this.yoshi);
+                this.player1.clickCard(this.whisperer);
+                this.player1.clickPrompt('5');
+                this.player2.clickPrompt('1');
+                expect(this.whisperer.bowed).toBe(true);
+                this.whisperer.ready();
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.challenger],
+                    defenders: [this.hotaru],
+                    type: 'military'
+                });
+                this.player2.pass();
+                this.player1.clickCard('storied-defeat');
+                expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            });
+        });
     });
 });

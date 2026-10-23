@@ -22,7 +22,7 @@ export class DuelsThisConflict {
         return new DuelsThisConflict(game, (duel) => [duel.challenger, ...duel.targets]);
     }
 
-    constructor(game: Game, private select: (duel: Duel) => DrawCard[]) {
+    constructor(private game: Game, private select: (duel: Duel) => DrawCard[]) {
         new EventRegistrar(game).register({
             [EventName.OnConflictFinished]: () => this.onConflictFinished(),
             [EventName.AfterDuel]: (event) => this.afterDuel(event),
@@ -39,6 +39,9 @@ export class DuelsThisConflict {
     }
 
     public afterDuel(event: EventPayload<EventName.AfterDuel>) {
+        if(!this.game.isDuringConflict()) {
+            return;
+        }
         for(const card of this.select(event.duel)) {
             this.cards.add(card);
         }

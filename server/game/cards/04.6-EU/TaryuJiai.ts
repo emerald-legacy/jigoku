@@ -26,6 +26,7 @@ export default class TaryuJiai extends DrawCard {
             }, duel((context) => ({
                 type: DuelType.Glory,
                 challenger: context.targets.myShugenja,
+                targetCondition: (card) => card.hasTrait(Trait.Shugenja),
                 chatText: (_context, duel) => msg`${duel.winnerController} chooses a ring effect to resolve`,
                 gameAction: (duel) =>
                     selectRing({
