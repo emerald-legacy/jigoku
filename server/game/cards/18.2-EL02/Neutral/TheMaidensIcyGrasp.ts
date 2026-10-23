@@ -1,6 +1,6 @@
-import { cannotContribute } from '../../../effects.js';
+import { cardCannot } from '../../../effects.js';
 import { cardLastingEffect, onAffinity, removeFate } from '../../../GameActions/GameActions.js';
-import { CardType, Trait } from '../../../Constants.js';
+import { CardType, RestrictionType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { CharactersEnteredThisConflict } from '../../CharactersEnteredThisConflict.js';
 import { controlsParticipating } from '../../controlsParticipating.js';
@@ -15,9 +15,9 @@ export default class TheMaidensIcyGrasp extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => charactersEntered.has(card)
-            }, cardLastingEffect((context) => ({
-                effect: [cannotContribute(() => (card) => card === context.target)]
-            })), onAffinity({
+            }, cardLastingEffect({
+                effect: cardCannot(RestrictionType.ContributeSkillToConflictResolution)
+            }), onAffinity({
                 trait: Trait.Water,
                 gameAction: removeFate()
             }))

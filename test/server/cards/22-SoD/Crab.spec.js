@@ -531,6 +531,56 @@ describe('SoD - Crab', function () {
                 expect(this.getChatLogs(5)).toContain('Military Air conflict - Attacker: 1 Defender: 5');
             });
         });
+
+        describe('Unbridled Assault and a loser that leaves play and returns', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['matsu-berserker', 'kitsu-spiritcaller-2'],
+                        hand: ['unbridled-rage']
+                    },
+                    player2: {
+                        inPlay: ['togashi-yokuni'],
+                        hand: ['assassination']
+                    }
+                });
+
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.spiritcaller = this.player1.findCardByName('kitsu-spiritcaller-2');
+                this.rage = this.player1.findCardByName('unbridled-rage');
+                this.yokuni = this.player2.findCardByName('togashi-yokuni');
+                this.assassination = this.player2.findCardByName('assassination');
+            });
+
+            it('the returned character contributes again', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.berserker],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+
+                this.player1.clickCard(this.rage);
+                this.player1.clickCard(this.berserker);
+                this.player1.clickCard(this.yokuni);
+                this.player2.clickPrompt('No');
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                expect(this.getChatLogs(5)).toContain('Duel Effect: prevent Matsu Berserker from contributing to resolution of this conflict');
+                expect(this.game.currentConflict.attackerSkill).toBe(0);
+
+                this.player2.clickCard(this.assassination);
+                this.player2.clickCard(this.berserker);
+                expect(this.berserker.location).toBe('dynasty discard pile');
+
+                this.player1.clickCard(this.spiritcaller);
+                this.player1.clickCard(this.berserker);
+                expect(this.berserker.isParticipating()).toBe(true);
+                expect(this.game.currentConflict.attackerSkill).toBe(this.berserker.militarySkill);
+            });
+        });
     });
 });
 

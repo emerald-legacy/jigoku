@@ -153,3 +153,50 @@ describe('The Maidens Icy Grasp and a character put into play when the conflict 
         });
     });
 });
+
+describe('The Maidens Icy Grasp and a character that leaves play and returns', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic'],
+                    hand: ['the-maiden-s-icy-grasp', 'assassination']
+                },
+                player2: {
+                    inPlay: ['kitsu-spiritcaller-2', 'kitsu-spiritcaller-2'],
+                    dynastyDiscard: ['akodo-gunso']
+                }
+            });
+            this.grasp = this.player1.findCardByName('the-maiden-s-icy-grasp');
+            this.assassination = this.player1.findCardByName('assassination');
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            [this.spiritcaller, this.spiritcaller2] = this.player2.filterCardsByName('kitsu-spiritcaller-2');
+            this.gunso = this.player2.findCardByName('akodo-gunso');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.mystic],
+                defenders: []
+            });
+        });
+
+        it('the returned character contributes again', function () {
+            this.player2.clickCard(this.spiritcaller);
+            this.player2.clickCard(this.gunso);
+            this.player1.clickCard(this.grasp);
+            this.player1.clickCard(this.gunso);
+            expect(this.game.currentConflict.defenderSkill).toBe(0);
+
+            this.player2.pass();
+            this.player1.clickCard(this.assassination);
+            this.player1.clickCard(this.gunso);
+            expect(this.gunso.location).toBe('dynasty discard pile');
+
+            this.player2.clickCard(this.spiritcaller2);
+            this.player2.clickCard(this.gunso);
+            expect(this.gunso.isParticipating()).toBe(true);
+            expect(this.game.currentConflict.defenderSkill).toBe(this.gunso.militarySkill);
+        });
+    });
+});

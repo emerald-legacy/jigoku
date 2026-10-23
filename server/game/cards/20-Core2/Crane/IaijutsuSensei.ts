@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
-import { DuelType, Trait } from '../../../Constants.js';
-import { cannotContribute, modifyBothSkills } from '../../../effects.js';
+import { DuelType, RestrictionType, Trait } from '../../../Constants.js';
+import { cardCannot, modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -23,7 +23,7 @@ export default class IaijutsuSensei extends DrawCard {
                 gameAction: (duel) =>
                     cardLastingEffect({
                         target: duel.loser,
-                        effect: [cannotContribute(() => (card) => (duel.loser ?? []).includes(card))]
+                        effect: cardCannot(RestrictionType.ContributeSkillToConflictResolution)
                     })
             }));
     }

@@ -1,5 +1,5 @@
-import { Duration, DuelType, Players, Trait } from '../../../Constants.js';
-import { additionalAction, cannotContribute } from '../../../effects.js';
+import { Duration, DuelType, Players, RestrictionType, Trait } from '../../../Constants.js';
+import { additionalAction, cardCannot } from '../../../effects.js';
 import { cardLastingEffect, draw, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -29,7 +29,7 @@ export default class UnbridledRage extends DrawCard {
                 gameAction: (duel) =>
                     cardLastingEffect({
                         target: duel.loser,
-                        effect: [cannotContribute(() => (card) => (duel.loser ?? []).includes(card))]
+                        effect: cardCannot(RestrictionType.ContributeSkillToConflictResolution)
                     })
             }));
     }
