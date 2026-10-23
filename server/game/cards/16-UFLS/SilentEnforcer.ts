@@ -8,7 +8,7 @@ class SilentEnforcer extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Bow or move home a character')
             .when({
-                onCardPlayed: (event, context) => event.card.type === CardType.Event && event.card.controller === context.player && context.source.isParticipating()
+                onCardPlayed: (event, context) => event.card.type === CardType.Event && event.player === context.player && context.source.isParticipating()
             })
             .target({
                 name: 'character',

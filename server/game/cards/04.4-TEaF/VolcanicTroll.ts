@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { modifyBothSkills } from '../../effects.js';
 import { Element } from '../../Constants.js';
 
-const elementKey = 'isawa-tsuke-2-fire';
+const elementKey = 'volcanic-troll-fire';
 class VolcanicTroll extends DrawCard {
     static id = 'volcanic-troll';
 

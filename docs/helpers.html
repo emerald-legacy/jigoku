@@ -238,24 +238,23 @@ this.reaction('Gain honor')
   </div>
 
   <div class="ref" id="he-DuelsThisConflict" data-name="DuelsThisConflict">
-    <h3><code>DuelsThisConflict.winners(game, options?)</code> <span class="kind">Tracker</span> <a class="anchor" href="#he-DuelsThisConflict">#</a></h3>
+    <h3><code>DuelsThisConflict.winners(game)</code> <span class="kind">Tracker</span> <a class="anchor" href="#he-DuelsThisConflict">#</a></h3>
     <p>Remembers characters from each duel resolved during the current conflict. The static factories pick which ones; <code>has(card)</code> answers the question.</p>
     <table>
       <thead><tr><th>Member</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>DuelsThisConflict.winners(game, options?)</code></td><td>factory</td><td></td><td>"has won a duel during this conflict": each duel's <code>winner</code>.</td></tr>
-        <tr><td><code>DuelsThisConflict.losers(game, options?)</code></td><td>factory</td><td></td><td>"has lost a duel during this conflict": each duel's <code>loser</code>.</td></tr>
-        <tr><td><code>DuelsThisConflict.participants(game, options?)</code></td><td>factory</td><td></td><td>The challenger and the targets of each duel.</td></tr>
-        <tr><td><code>options.forgetOnEnterPlay</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Forget a character when it enters play again.</td></tr>
+        <tr><td><code>DuelsThisConflict.winners(game)</code></td><td>factory</td><td></td><td>"has won a duel during this conflict": each duel's <code>winner</code>.</td></tr>
+        <tr><td><code>DuelsThisConflict.losers(game)</code></td><td>factory</td><td></td><td>"has lost a duel during this conflict": each duel's <code>loser</code>.</td></tr>
+        <tr><td><code>DuelsThisConflict.participants(game)</code></td><td>factory</td><td></td><td>The challenger and the targets of each duel.</td></tr>
         <tr><td><code>has(card)</code></td><td><code>(card: BaseCard) =&gt; boolean</code></td><td></td><td>Whether the card is recorded.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Recorded after each duel (<code>afterDuel</code>); a duel without a winner or loser adds nobody to <code>winners</code> or <code>losers</code>.</li>
-      <li>Cleared when the conflict finishes.</li>
+      <li>Cleared when the conflict finishes. A character that enters play again is a new instance (RRG) and is forgotten.</li>
     </ul>
     <pre><code>// Storied Defeat: Action: During a conflict, choose a character that has lost a duel during this conflict - bow that character. …
-const duelLosers = DuelsThisConflict.losers(this.game, { forgetOnEnterPlay: true });
+const duelLosers = DuelsThisConflict.losers(this.game);
 this.action('Bow a character who lost a duel')
     .condition((context) =&gt; context.game.isDuringConflict())
     .target({

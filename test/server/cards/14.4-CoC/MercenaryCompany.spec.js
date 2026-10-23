@@ -139,7 +139,7 @@ describe('Mercenary Company', function() {
             expect(this.getChatLogs(10)).toContain('player1 places a fate on and takes control of Mercenary Company');
         });
 
-        it('should not let you take control if you cannot spend fate', function() {
+        it('should let you hire it at Blood of Onnotangu, as moving fate isn\'t spending it', function() {
             this.initiateConflict({
                 type: 'military',
                 attackers: [this.company],
@@ -148,7 +148,9 @@ describe('Mercenary Company', function() {
             });
 
             this.noMoreActions();
-            expect(this.player2).not.toHavePrompt('Place a fate on Mercenary Company to take control of it?');
+            expect(this.player2).toHavePrompt('Place a fate on Mercenary Company to take control of it?');
+            this.player2.clickPrompt('Yes');
+            expect(this.company.controller).toBe(this.player2.player);
         });
     });
 });

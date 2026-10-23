@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Duration, Players } from '../../Constants.js';
 import { unlimited } from '../../AbilityLimit.js';
 import { takeControl } from '../../effects.js';
-import { loseFate, placeFate } from '../../GameActions/GameActions.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 class MercenaryCompany extends DrawCard {
@@ -12,8 +12,7 @@ class MercenaryCompany extends DrawCard {
         this.forcedReaction('Give control of this character')
             .when({
                 afterConflict: (event, context) => !!context.player.opponent && event.conflict.isOnLosingSide(context.source)
-                    && loseFate({ spend: true }).canAffect(context.player.opponent, context)
-                    && placeFate().canAffect(context.source, context)
+                    && placeFate({ origin: context.player.opponent }).canAffect(context.source, context)
             })
             .optional((context) => ({
                 player: Players.Opponent,

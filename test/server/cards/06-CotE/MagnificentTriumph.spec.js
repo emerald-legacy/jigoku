@@ -78,3 +78,43 @@ describe('Magnificent Triumph', function() {
         });
     });
 });
+
+describe('Magnificent Triumph and a duel winner that left play', function() {
+    integration(function() {
+        it('can\'t choose the character once it was played again', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    inPlay: ['adept-of-shadows'],
+                    hand: ['magnificent-triumph']
+                },
+                player2: {
+                    inPlay: ['mirumoto-raitsugu']
+                }
+            });
+            this.adept = this.player1.findCardByName('adept-of-shadows');
+            this.raitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.adept],
+                defenders: [this.raitsugu]
+            });
+            this.player2.clickCard(this.raitsugu);
+            this.player2.clickCard(this.adept);
+            this.player1.clickPrompt('5');
+            this.player2.clickPrompt('1');
+            this.player1.clickCard(this.adept);
+            this.player2.pass();
+            this.player1.clickCard(this.adept);
+            this.player1.clickPrompt('0');
+            this.player1.clickPrompt('Conflict');
+            this.player2.pass();
+            expect(this.adept.isParticipating()).toBe(true);
+
+            this.player1.clickCard('magnificent-triumph');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1.findCardByName('magnificent-triumph').location).toBe('hand');
+        });
+    });
+});

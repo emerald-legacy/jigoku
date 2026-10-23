@@ -15,7 +15,7 @@ export default class StoriedDefeat extends DrawCard {
     static id = 'storied-defeat';
 
     public override setupCardAbilities() {
-        const duelLosers = DuelsThisConflict.losers(this.game, { forgetOnEnterPlay: true });
+        const duelLosers = DuelsThisConflict.losers(this.game);
         this.action('Bow a character who lost a duel')
             .condition((context) => context.game.isDuringConflict())
             .target({

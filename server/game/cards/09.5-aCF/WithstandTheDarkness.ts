@@ -13,7 +13,7 @@ export default class WithstandTheDarkness extends DrawCard {
         this.reaction('Place a fate on a character')
             .when({
                 onCardPlayed: (event, context) =>
-                    event.card.type === CardType.Event && event.card.controller === context.player.opponent &&
+                    event.card.type === CardType.Event && event.player === context.player.opponent &&
                     this.getChosenCrabCharacters(event, context).length > 0
             })
             .target({

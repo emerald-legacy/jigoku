@@ -126,3 +126,45 @@ describe('Opportunistic Rustler against a province with printed strength X', fun
         });
     });
 });
+
+describe('Opportunistic Rustler at a province copied by Illusionary Terrain', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['opportunistic-rustler']
+                },
+                player2: {
+                    fate: 5,
+                    provinces: ['shameful-display', 'manicured-garden'],
+                    inPlay: ['brash-samurai', 'diplomat-of-the-steppes', 'courtly-challenger', 'tengu-sensei'],
+                    hand: ['illusionary-terrain']
+                }
+            });
+            this.rustler = this.player1.findCardByName('opportunistic-rustler');
+            this.display = this.player2.findCardByName('shameful-display', 'province 1');
+            this.garden = this.player2.findCardByName('manicured-garden');
+            this.garden.facedown = false;
+            this.tengu = this.player2.findCardByName('tengu-sensei');
+            this.player2.reduceDeckToNumber('dynasty deck', 0);
+            for(const card of ['tengu-sensei', 'brash-samurai', 'courtly-challenger', 'diplomat-of-the-steppes']) {
+                this.player2.moveCard(card, 'dynasty deck');
+            }
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.rustler],
+                province: this.display
+            });
+            this.player2.clickCard('illusionary-terrain');
+            this.player2.clickCard(this.garden);
+        });
+
+        it('looks at as many cards as the copy\'s printed strength', function () {
+            expect(this.display.printedStrength).toBe(4);
+            this.player1.clickCard(this.rustler);
+            expect(this.player1).toHavePromptButton(this.tengu.name);
+        });
+    });
+});

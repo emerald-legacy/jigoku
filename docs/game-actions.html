@@ -2541,6 +2541,7 @@ this.duelChallenge('Apply status tokens to the duel', (duel, context) =&gt; duel
         <tr><td><code>duration</code></td><td><code>Duration</code></td><td><code>Duration.UntilEndOfConflict</code></td><td>How long it lasts.</td></tr>
         <tr><td><code>until</code></td><td><code>EffectUntil</code></td><td>none</td><td>With <code>Duration.Custom</code>: the events that end it.</td></tr>
         <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>always</td><td>The effect applies only while this is true.</td></tr>
+        <tr><td><code>match</code></td><td><code>(player, context?) =&gt; boolean</code></td><td>every target</td><td>Of the targets, the players it applies to, checked while it lasts: with <code>target: Players.Any</code>, the current controller of a character (Disputed Lineage).</td></tr>
         <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>the resolving ability</td><td>The ability the effect is reported as coming from.</td></tr>
         <tr><td><code>endingMessage</code></td><td><code>string</code></td><td>none</td><td>With <code>Duration.Custom</code>: a chat line when the effect ends (Into the Storm).</td></tr>
       </tbody>

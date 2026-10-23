@@ -1,5 +1,5 @@
 import { removeFate } from '../../GameActions/GameActions.js';
-import { msg } from '../../GameChat.js';
+import { msg, type MsgArg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, EventName, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -20,7 +20,7 @@ class ConsumedByFiveFires extends DrawCard {
             .chatText((context) => msg`remove fate from ${context.player.opponent}'s characters`);
     }
 
-    private chooseCard(context: AbilityContext, targets: Record<string, number>, messages: string[]) {
+    private chooseCard(context: AbilityContext, targets: Record<string, number>, messages: MsgArg[]) {
         const fateRemaining = 5 - Object.values(targets).reduce((totalFate: number, fateToRemove: number) => totalFate + fateToRemove, 0);
         if(!context.player.opponent) {
             return;
@@ -50,7 +50,7 @@ class ConsumedByFiveFires extends DrawCard {
                     text: choice.toString(),
                     handler: () => {
                         targets[card.uuid] = choice;
-                        messages.push('take ' + choice.toString() + ' fate from ' + card.name);
+                        messages.push(this.game.gameChat.nested(msg`remove ${choice} fate from ${card}`));
                         this.chooseCard(context, targets, messages);
                     }
                 }));

@@ -38,8 +38,10 @@ export function toEffectList(effect: EffectFactory | EffectFactory[] | undefined
 
 export type LastingEffectProperties<Context extends AbilityContext = AbilityContext> = LastingEffectGeneralProperties<Context>;
 
-interface PlayerLastingEffectProperties<Context extends AbilityContext = AbilityContext> extends LastingEffectGeneralProperties<Context> {
+interface PlayerLastingEffectProperties<Context extends AbilityContext = AbilityContext> extends Omit<LastingEffectGeneralProperties<Context>, 'match'> {
     target?: Player | Player[];
+    /** The players it applies to, checked while it lasts (the current controller of a character). */
+    match?: (player: Player, context?: AbilityContext) => boolean;
 }
 
 /** As written on cards: `target` may also be relative to the ability's player (`Players.Any` for both). */

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import { loseFate, placeFate } from '../../GameActions/GameActions.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
 
 class DiplomaticGiftGiver extends DrawCard {
@@ -8,7 +8,7 @@ class DiplomaticGiftGiver extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Put fate on characters')
-            .condition((context) => !!(context.source.isParticipating() && context.player.opponent && loseFate({ spend: true }).canAffect(context.player.opponent, context) && loseFate({ spend: true }).canAffect(context.player, context)))
+            .condition((context) => context.source.isParticipating() && !!context.player.opponent)
             .target({
                 name: 'firstCharacter',
                 activePromptTitle: 'Choose a character to receive the gift of fate',

@@ -7,7 +7,7 @@ class AkodoReserveCompany extends DrawCard {
     static id = 'akodo-reserve-company';
 
     override setupCardAbilities() {
-        this.action('Bow an attacking character')
+        this.action('Swap with a participating character')
             .ifCondition((context) => context.game.isTraitInPlay(Trait.Battlefield))
             .target({
                 cardType: CardType.Character,

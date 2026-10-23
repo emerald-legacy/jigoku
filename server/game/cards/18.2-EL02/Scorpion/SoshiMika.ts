@@ -20,6 +20,7 @@ class SoshiMika extends DrawCard {
             .chatText('have each player lose an honor and draw two cards');
 
         this.action('Flip the Imperial Favor')
+            .ifCondition((context) => context.game.getPlayers().some((player) => player.imperialFavor !== ''))
             .gameAction(flipImperialFavor((context) => ({
                 target: context.player.imperialFavor ? context.player : context.player.opponent
             })));

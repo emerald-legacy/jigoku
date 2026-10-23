@@ -73,15 +73,10 @@ export class ProvinceCard extends BaseCard {
         return this.getBaseStrength();
     }
 
-    get printedStrength() {
-        const parsed = parseInt(String(this.cardData.strength ?? ''), 10);
-        return isNaN(parsed) ? 0 : parsed;
-    }
-
-    getCardStrength(): number {
+    /** A copy has the copied province's printed strength (Illusionary Terrain). */
+    get printedStrength(): number {
         const copiedProvince = this.mostRecentEffect(EffectName.CopyProvince);
-        const strength = (copiedProvince || this).cardData.strength;
-        return parseInt(String(strength ?? '')) || 0;
+        return parseInt(String((copiedProvince || this).cardData.strength ?? '')) || 0;
     }
 
     getBaseStrength(): number {
@@ -89,7 +84,7 @@ export class ProvinceCard extends BaseCard {
         if(setBaseStrength !== undefined) {
             return setBaseStrength;
         }
-        return this.sumEffects(EffectName.ModifyBaseProvinceStrength) + this.getCardStrength();
+        return this.sumEffects(EffectName.ModifyBaseProvinceStrength) + this.printedStrength;
     }
 
     getDynastyOrStrongholdCardModifier(): number {
@@ -116,7 +111,7 @@ export class ProvinceCard extends BaseCard {
         if(setBaseEffect) {
             modifiers.push(setModifier(setBaseEffect));
         } else {
-            modifiers.push(new StatModifier(this.getCardStrength(), 'Printed', false, undefined));
+            modifiers.push(new StatModifier(this.printedStrength, 'Printed', false, undefined));
             for(const effect of effectsOf(EffectName.ModifyBaseProvinceStrength)) {
                 modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, false));
             }

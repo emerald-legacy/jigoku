@@ -200,7 +200,7 @@ this.action('Turn attachment into character')
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>copyCard</code> also takes the other card's printed cost, skills and glory: <code>getCost()</code>, the base skills and the base glory use them. The fields <code>printedCost</code>, <code>printedMilitarySkill</code> and <code>printedGlory</code> keep the card's own values. <code>copyProvince</code> takes the printed strength and the province elements. Modifiers on the card still apply on top.</li>
+      <li><code>copyCard</code> also takes the other card's printed cost, skills and glory: <code>getCost()</code>, the base skills and the base glory use them. The fields <code>printedCost</code>, <code>printedMilitarySkill</code> and <code>printedGlory</code> keep the card's own values. <code>copyProvince</code> takes the printed strength (<code>printedStrength</code> too, which Opportunistic Rustler and Paths Not Taken read) and the province elements. Modifiers on the card still apply on top.</li>
       <li>The copied abilities are read when <code>copyCard(…)</code> is called. Copied actions and triggered abilities get fresh limits; copied persistent effects only start if their location fits the card (play area for a character, provinces for a holding or province, or <code>Location.Any</code>).</li>
       <li>The card's own printed abilities are blanked (<code>isBlank()</code> is true), except its own keyword reactions. Abilities and effects from other cards stay.</li>
       <li>With several copy effects, the most recent one wins.</li>
@@ -236,11 +236,12 @@ this.action('Choose a character to copy')
     </table>
     <ul class="edge">
       <li>It removes the faction whether it is printed (or copied) or added by <code>addFaction</code>. A card with no faction left is not <code>'neutral'</code> either.</li>
+      <li>For "remove its clan affiliation" remove every faction the card has (<code>getFactions()</code>), gained ones included; a faction gained afterwards stays.</li>
     </ul>
     <pre><code>// Disputed Lineage: Action: Choose a character - for this round, remove that character's clan affiliation. …
 .target({ cardType: CardType.Character }, multiple([
     cardLastingEffect((context) =&gt; ({
-        effect: loseFaction(context.target.printedFaction),
+        effect: [...context.target.getFactions()].map((faction) =&gt; loseFaction(faction)),
         duration: Duration.UntilEndOfRound
     })),
     …

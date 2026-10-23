@@ -1,4 +1,4 @@
-import { CardType, Duration, RestrictionType, Trait } from '../../../Constants.js';
+import { CardType, Duration, Players, RestrictionType, Trait } from '../../../Constants.js';
 import { loseFaction, playerCannot } from '../../../effects.js';
 import { cardLastingEffect, conditional, draw, multiple, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,12 +14,13 @@ export default class DisputedLineage extends DrawCard {
                 cardType: CardType.Character
             }, multiple([
                 cardLastingEffect((context) => ({
-                    effect: loseFaction(context.target.printedFaction),
+                    effect: [...context.target.getFactions()].map((faction) => loseFaction(faction)),
                     duration: Duration.UntilEndOfRound
                 })),
                 playerLastingEffect((context) => ({
                     duration: Duration.UntilEndOfRound,
-                    target: context.target.controller,
+                    target: Players.Any,
+                    match: (player) => player === context.target.controller,
                     condition: () => context.target.isParticipating(),
                     effect: playerCannot({
                         cannot: RestrictionType.Honor

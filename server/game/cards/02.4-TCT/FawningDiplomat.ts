@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 
 class FawningDiplomat extends DrawCard {
@@ -9,7 +10,7 @@ class FawningDiplomat extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card === context.source
             })
             .claimImperialFavor()
-            .chatText('claim the Emperor\'s favor as she leaves play');
+            .chatText((context) => msg`claim the ${context.game.rules.imperialFavorSovereign} favor as she leaves play`);
     }
 }
 

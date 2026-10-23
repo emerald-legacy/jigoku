@@ -6,27 +6,27 @@ import { EventRegistrar } from '../EventRegistrar.js';
 import type { EventPayload } from '../Events/EventPayloads.js';
 import type Game from '../Game.js';
 
-/** Records the characters `select` picks from each duel this conflict; `forgetOnEnterPlay` drops a character that enters play again. */
+/** Records the characters `select` picks from each duel this conflict. A character that enters play again is a new instance (RRG 640) and is forgotten. */
 export class DuelsThisConflict {
     private cards = new Set<BaseCard>();
 
-    static winners(game: Game, options?: { forgetOnEnterPlay?: boolean }) {
-        return new DuelsThisConflict(game, (duel) => duel.winner ?? [], options);
+    static winners(game: Game) {
+        return new DuelsThisConflict(game, (duel) => duel.winner ?? []);
     }
 
-    static losers(game: Game, options?: { forgetOnEnterPlay?: boolean }) {
-        return new DuelsThisConflict(game, (duel) => duel.loser ?? [], options);
+    static losers(game: Game) {
+        return new DuelsThisConflict(game, (duel) => duel.loser ?? []);
     }
 
-    static participants(game: Game, options?: { forgetOnEnterPlay?: boolean }) {
-        return new DuelsThisConflict(game, (duel) => [duel.challenger, ...duel.targets], options);
+    static participants(game: Game) {
+        return new DuelsThisConflict(game, (duel) => [duel.challenger, ...duel.targets]);
     }
 
-    constructor(game: Game, private select: (duel: Duel) => DrawCard[], { forgetOnEnterPlay = false } = {}) {
+    constructor(game: Game, private select: (duel: Duel) => DrawCard[]) {
         new EventRegistrar(game).register({
             [EventName.OnConflictFinished]: () => this.onConflictFinished(),
             [EventName.AfterDuel]: (event) => this.afterDuel(event),
-            ...(forgetOnEnterPlay ? { [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event) } : {})
+            [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event)
         });
     }
 

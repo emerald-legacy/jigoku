@@ -21,7 +21,7 @@ class ExpertInterpreter extends DrawCard {
             }, ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
-                condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.myRing,
+                condition: () => context.rings.myRing.isContested() && this.game.currentConflict?.ring === context.rings.myRing,
                 effect: playerCannot({
                     cannot: RestrictionType.EnterPlay,
                     appliesTo: RestrictionScope.Characters
@@ -36,7 +36,7 @@ class ExpertInterpreter extends DrawCard {
             }, ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
-                condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.oppRing,
+                condition: () => context.rings.oppRing.isContested() && this.game.currentConflict?.ring === context.rings.oppRing,
                 effect: playerCannot({
                     cannot: RestrictionType.EnterPlay,
                     appliesTo: RestrictionScope.Characters

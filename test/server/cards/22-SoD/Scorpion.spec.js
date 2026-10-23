@@ -287,7 +287,7 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger'],
-                        hand: ['disputed-lineage', 'soul-beyond-reproach']
+                        hand: ['disputed-lineage', 'soul-beyond-reproach', 'seal-of-the-lion']
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat', 'doji-challenger'],
@@ -344,6 +344,15 @@ describe('SoD - Scorpion', function () {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
+            it('should remove a clan the character gained', function () {
+                this.player1.playAttachment('seal-of-the-lion', this.diplomat);
+                this.player2.pass();
+                this.player1.clickCard(this.lineage);
+                this.player1.clickCard(this.diplomat);
+                expect(this.diplomat.isFaction('lion')).toBe(false);
+                expect(this.diplomat.getFactions().size).toBe(0);
+            });
+
             it('should draw with favor', function () {
                 const hand = this.player1.hand.length;
                 this.player1.player.imperialFavor = 'military';
@@ -353,6 +362,62 @@ describe('SoD - Scorpion', function () {
 
                 expect(this.player1.hand.length).toBe(hand);
                 expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Doji Diplomat\'s printed faction and prevent player2 from honoring characters while Doji Diplomat is participating in a conflict and draw a card');
+            });
+        });
+
+        describe('Disputed Lineage on a character that changes control', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['mercenary-company', 'doji-kuwanan'],
+                        hand: ['way-of-the-crane']
+                    },
+                    player2: {
+                        inPlay: ['akodo-toturi-2', 'wild-ogre', 'doji-diplomat'],
+                        hand: ['disputed-lineage', 'way-of-the-crane']
+                    }
+                });
+                this.company = this.player1.findCardByName('mercenary-company');
+                this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+                this.p1Crane = this.player1.findCardByName('way-of-the-crane');
+                this.toturi = this.player2.findCardByName('akodo-toturi-2');
+                this.p2Crane = this.player2.findCardByName('way-of-the-crane');
+
+                this.player1.pass();
+                this.player2.clickCard('disputed-lineage');
+                this.player2.clickCard(this.company);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.company],
+                    defenders: [this.toturi, 'wild-ogre']
+                });
+                this.noMoreActions();
+                this.player2.clickPrompt('Yes');
+                expect(this.company.controller).toBe(this.player2.player);
+                this.company.bowed = false;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'fire',
+                    attackers: [this.company],
+                    defenders: [this.kuwanan]
+                });
+            });
+
+            it('stops the new controller from honoring characters', function () {
+                this.player1.pass();
+                this.player2.clickCard(this.p2Crane);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.p2Crane.location).toBe('hand');
+                expect(this.player2.findCardByName('doji-diplomat').isHonored).toBe(false);
+            });
+
+            it('no longer stops the old controller', function () {
+                this.player1.clickCard(this.p1Crane);
+                this.player1.clickCard(this.kuwanan);
+                expect(this.kuwanan.isHonored).toBe(true);
             });
         });
 

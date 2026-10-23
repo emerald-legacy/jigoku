@@ -76,7 +76,7 @@ describe('Diplomatic Gift-Giver', function() {
 
         });
 
-        it('should not let you take the action if you cannot spend fate', function() {
+        it('should let you take the action at Blood of Onnotangu, as moving fate isn\'t spending it', function() {
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',
@@ -85,10 +85,9 @@ describe('Diplomatic Gift-Giver', function() {
                 province: this.blood
             });
 
-
             this.player2.pass();
             this.player1.clickCard(this.diplomatic);
-            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1).toHavePrompt('Choose a character to receive the gift of fate');
         });
 
         it('should not let you trigger if you are not participating', function() {
