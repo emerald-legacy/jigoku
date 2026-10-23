@@ -11,6 +11,8 @@ describe('Costs.payReduceableFateCost', function () {
             'checkRestrictions'
         ]);
         this.playerSpy.checkRestrictions.and.returnValue(true);
+        this.playerSpy.getSpendableFate = () => this.playerSpy.fate;
+        this.playerSpy.canSpendFate = (amount) => amount <= 0 || this.playerSpy.fate >= amount;
         this.cardSpy = { card: 1, allowGameAction: () => true, isTemptationsMaho: () => false };
         this.context = {
             costs: {},

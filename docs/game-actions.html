@@ -479,7 +479,8 @@ this.action('Gain an honor')
     </table>
     <ul class="edge">
       <li>Illegal unless <code>amount</code> is greater than 0 and the player has fate. A player with less fate loses what they have.</li>
-      <li>Restriction: <code>RestrictionType.SpendFate</code>, with <code>spend: true</code> only. The fate costs (<code>payFate</code>, <code>payVariableFate</code>, targeting costs) set it.</li>
+      <li>With <code>spend: true</code> it is <code>player.canSpendFate(amount, context)</code>: the player needs all <code>amount</code> fate (the third Objection! costs 2) and no <code>RestrictionType.SpendFate</code> restriction. The fate costs (<code>payFate</code>, <code>payVariableFate</code>, targeting costs) set it.</li>
+      <li>Every "can the player spend N fate" check uses <code>player.canSpendFate(amount, context)</code> (spending 0 is always possible) or <code>player.getSpendableFate(context)</code> (their fate, or 0 while they cannot spend fate).</li>
       <li>Raises <code>onModifyFate</code> with a negative <code>event.amount</code>. Chat: "make <em>player</em> lose <em>N</em> fate"; as a cost: "spending <em>N</em> fate".</li>
       <li>Builder shortcut: <code>.loseFate(n)</code> or <code>.loseFate(properties)</code>.</li>
     </ul>

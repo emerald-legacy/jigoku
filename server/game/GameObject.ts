@@ -173,16 +173,10 @@ export class GameObject {
             const alternateFate = context.player.getAvailableAlternateFate(context);
             const availableFate = Math.max(context.player.fate - Math.max(fateCost - alternateFate, 0), 0);
 
-            return (
-                availableFate >= targetingCost &&
-                (targetingCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
-            );
+            return targetingCost <= Math.min(availableFate, context.player.getSpendableFate(context));
         } else if(context.stage === Stage.Target || context.stage === Stage.Effect) {
             //We paid costs first, or targeting has to be done after costs have been paid
-            return (
-                context.player.fate >= targetingCost &&
-                (targetingCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
-            );
+            return context.player.canSpendFate(targetingCost, context);
         }
 
         return true;

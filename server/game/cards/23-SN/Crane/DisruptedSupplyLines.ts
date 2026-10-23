@@ -7,7 +7,7 @@ import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 
 const resourcesAvailable = (context: AbilityContext) => {
-    const fateAvailable = loseFate({ spend: true }).canAffect(context.player, context);
+    const fateAvailable = context.player.canSpendFate(1, context);
 
     const eligibleCharacters = context.player.cardsInPlay.filter(
         (card) => card.type === CardType.Character &&

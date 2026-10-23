@@ -58,9 +58,7 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
             )
         );
         const minCost = Math.max(context.player.getMinimumCost(context.playType, context) - maxCharacterCost, 0);
-        return (
-            context.player.fate >= minCost && (minCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
-        );
+        return context.player.canSpendFate(minCost, context);
     }
 
     override getReducedCost(context: AbilityContext<DrawCard>) {

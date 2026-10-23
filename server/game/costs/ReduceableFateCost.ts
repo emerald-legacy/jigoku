@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName, Location, Players, RestrictionType } from '../Constants.js';
+import { EventName, Location, Players } from '../Constants.js';
 import type { Cost, CostContext, Result } from './Cost.js';
 import type { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
@@ -44,7 +44,7 @@ export class ReduceableFateCost implements Cost {
             return false;
         }
 
-        return context.player.fate >= minCost && context.player.checkRestrictions(RestrictionType.SpendFate, context);
+        return context.player.canSpendFate(minCost, context);
     }
 
     /** "Can only be paid for with fate on characters you control": the fate pool pays nothing (Temptations Mahō cards). */
@@ -270,9 +270,6 @@ export class ReduceableFateCost implements Cost {
         if(this.isCharacterFateOnly(context)) {
             return 0;
         }
-        if(context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
-            return context.player.fate;
-        }
-        return 0;
+        return context.player.getSpendableFate(context);
     }
 }

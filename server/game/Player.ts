@@ -1238,6 +1238,16 @@ export class Player extends GameObject {
         return this.fate;
     }
 
+    /** The fate the player could spend from their pool: none while they cannot spend fate (Blood of Onnotangu). */
+    getSpendableFate(context: AbilityContext): number {
+        return this.checkRestrictions(RestrictionType.SpendFate, context) ? this.fate : 0;
+    }
+
+    /** Whether the player can spend `amount` fate from their pool. Spending nothing is always possible. */
+    canSpendFate(amount: number, context: AbilityContext): boolean {
+        return amount <= 0 || this.getSpendableFate(context) >= amount;
+    }
+
     setSelectedCards(cards: BaseCard[]): void {
         this.promptState.setSelectedCards(cards);
     }

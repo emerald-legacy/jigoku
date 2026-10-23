@@ -34,10 +34,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             return false;
         }
 
-        return (
-            context.player.fate >= reducedCost &&
-            (reducedCost === 0 || context.player.checkRestrictions(RestrictionType.SpendFate, context))
-        );
+        return context.player.canSpendFate(reducedCost, context);
     }
 
     public override payEvent(context: AbilityContext<DrawCard>): Event {

@@ -905,7 +905,7 @@ cardCannot({
           <tr><td><code>ReturnToHand</code></td><td><code>'returnToHand'</code></td><td><code>returnToHand</code></td></tr>
           <tr><td><code>Sacrifice</code></td><td><code>'sacrifice'</code></td><td><code>sacrifice</code></td></tr>
           <tr><td><code>SendHome</code></td><td><code>'sendHome'</code></td><td><code>sendHome</code></td></tr>
-          <tr><td><code>SpendFate</code></td><td><code>'spendFate'</code></td><td>Paying fate costs, <code>loseFate</code>, <code>placeFateOnRing</code> from a player.</td></tr>
+          <tr><td><code>SpendFate</code></td><td><code>'spendFate'</code></td><td>Spending fate from a player's pool: fate costs, <code>loseFate</code>, <code>placeFate</code>, <code>placeFateOnRing</code> and <code>takeFate</code> with <code>spend: true</code> (<code>player.canSpendFate</code>). Losing or moving fate isn't spending it.</td></tr>
           <tr><td><code>TakeControl</code></td><td><code>'takeControl'</code></td><td><code>takeControl</code>, moving a card to another player.</td></tr>
           <tr><td><code>TakeFateFromRings</code></td><td><code>'takeFateFromRings'</code></td><td>Taking fate from rings (declaring a conflict, claiming, <code>takeFateFromRing</code>).</td></tr>
           <tr><td><code>TakeHonor</code></td><td><code>'takeHonor'</code></td><td><code>takeHonor</code></td></tr>
@@ -2839,7 +2839,7 @@ this.reaction('Increase bid by 1')
         </tbody>
       </table>
   <ul class="edge">
-    <li><code>loseFate</code> needs a player with fate and no <code>SpendFate</code> restriction.</li>
+    <li><code>loseFate</code> needs a player with fate; with <code>spend: true</code>, <code>player.canSpendFate(amount, context)</code> (all of it, and no <code>SpendFate</code> restriction).</li>
   </ul>
   <p class="seen">Not used by any card yet.</p>
 </div>

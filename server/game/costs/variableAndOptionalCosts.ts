@@ -90,7 +90,7 @@ export function chooseFate(type: PlayType): Cost {
         resolve(context: AbilityContext<DrawCard>, result: Result) {
             context.chooseFate = 0;
 
-            let extrafate = context.player.fate - context.player.getReducedCost(type, context.source);
+            let extrafate = context.player.getSpendableFate(context) - context.player.getReducedCost(type, context.source);
             if(!context.player.checkRestrictions(RestrictionType.PlaceFateWhenPlayingCharacter, context)) {
                 extrafate = 0;
             }
@@ -100,7 +100,7 @@ export function chooseFate(type: PlayType): Cost {
             ) {
                 extrafate = 0;
             }
-            if(!context.player.checkRestrictions(RestrictionType.SpendFate, context) || !context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
+            if(!context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
                 extrafate = 0;
             }
 
@@ -360,17 +360,7 @@ export function payOptionalFate(amount: number, forcePayment: (context: AbilityC
     return {
         promptsPlayer: true,
         canPay(context) {
-            if(forcePayment(context)) {
-                let fateAvailable = true;
-                if(context.player.fate < amount) {
-                    fateAvailable = false;
-                }
-                if(!context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
-                    fateAvailable = false;
-                }
-                return fateAvailable;
-            }
-            return true;
+            return !forcePayment(context) || context.player.canSpendFate(amount, context);
         },
         getActionName(_context) {
             return 'optionalFatePaid';
@@ -382,13 +372,7 @@ export function payOptionalFate(amount: number, forcePayment: (context: AbilityC
             return ['paying {1} fate', [amount]];
         },
         resolve(context, result) {
-            let fateAvailable = true;
-            if(context.player.fate < amount) {
-                fateAvailable = false;
-            }
-            if(!context.player.checkRestrictions(RestrictionType.SpendFate, context)) {
-                fateAvailable = false;
-            }
+            const fateAvailable = context.player.canSpendFate(amount, context);
 
             if(forcePayment(context) && fateAvailable) {
                 context.costs.optionalFatePaid = amount;

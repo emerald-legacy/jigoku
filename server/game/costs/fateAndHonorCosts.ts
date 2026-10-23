@@ -121,8 +121,7 @@ export function payVariableFate(properties: {
             const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
             return (
                 costModifiers < 0 ||
-                (context.player.fate >= deriveMinAmount(context) + costModifiers &&
-                    GameActions.loseFate({ spend: true }).canAffect(context.player, context))
+                context.player.canSpendFate(deriveMinAmount(context) + costModifiers, context)
             );
         },
         resolve(context: AbilityContext<DrawCard>, result) {
@@ -134,12 +133,9 @@ export function payVariableFate(properties: {
 
             const maxAmount = deriveMaxAmount(context);
             const min = deriveMinAmount(context);
-            let max = context.player.fate - costModifiers;
+            let max = context.player.getSpendableFate(context) - costModifiers;
             if(maxAmount >= 0) {
-                max = Math.min(maxAmount, context.player.fate - costModifiers);
-            }
-            if(!GameActions.loseFate({ spend: true }).canAffect(context.player, context)) {
-                max = Math.min(max, -costModifiers);
+                max = Math.min(maxAmount, max);
             }
             const choices = Array.from({ length: max + 1 - min }, (_, idx) => String(idx + min));
             if(result.canCancel) {
