@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import { TargetMode } from '../Constants.js';
+import { TargetMode, Element } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 import { EARTH_CHOICE, type GameRules } from '../GameRules.js';
@@ -27,22 +27,22 @@ export class EarthRingAbility extends BaseAbility {
 
     public override executeHandler(context: AbilityContext): void {
         if(context.select === EARTH_CHOICE.SKIP) {
-            context.game.addMessage(msg`${context.player} chooses not to resolve the ${'earth'} ring`);
+            context.game.addMessage(msg`${context.player} chooses not to resolve the ${Element.Earth} ring`);
             this.onResolution(false);
         } else if(context.select === EARTH_CHOICE.FORCE_DISCARD) {
-            context.game.addMessage(msg`${context.player} resolves the ${'earth'} ring, forcing ${context.player.opponent} to discard a card at random`);
+            context.game.addMessage(msg`${context.player} resolves the ${Element.Earth} ring, forcing ${context.player.opponent} to discard a card at random`);
             this.onResolution(true);
-            context.game.addAnimation({ type: 'earth', playerName: context.player.name, effect: 'force-discard' });
+            context.game.addAnimation({ type: Element.Earth, playerName: context.player.name, effect: 'force-discard' });
             discardAtRandom().resolve(context.player.opponent, context);
         } else if(context.select === EARTH_CHOICE.DRAW_AND_FORCE_DISCARD && context.player.opponent) {
-            context.game.addMessage(msg`${context.player} resolves the ${'earth'} ring, drawing a card and forcing ${context.player.opponent} to discard a card at random`);
+            context.game.addMessage(msg`${context.player} resolves the ${Element.Earth} ring, drawing a card and forcing ${context.player.opponent} to discard a card at random`);
             this.onResolution(true);
-            context.game.addAnimation({ type: 'earth', playerName: context.player.name, effect: 'draw-discard' });
+            context.game.addAnimation({ type: Element.Earth, playerName: context.player.name, effect: 'draw-discard' });
             context.game.resolveActions([draw({ target: context.player }), discardAtRandom({ target: context.player.opponent })], context);
         } else if(context.select === EARTH_CHOICE.DRAW) {
-            context.game.addMessage(msg`${context.player} resolves the ${'earth'} ring, drawing a card`);
+            context.game.addMessage(msg`${context.player} resolves the ${Element.Earth} ring, drawing a card`);
             this.onResolution(true);
-            context.game.addAnimation({ type: 'earth', playerName: context.player.name, effect: 'draw' });
+            context.game.addAnimation({ type: Element.Earth, playerName: context.player.name, effect: 'draw' });
             context.game.resolveActions([draw({ target: context.player })], context);
         }
     }

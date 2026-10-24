@@ -736,7 +736,7 @@ export class DrawCard extends BaseCard {
             }
         }
 
-        const currentAttackers = this.game.isDuringConflict() && this.game.currentConflict ? this.game.currentConflict.attackers : [];
+        const currentAttackers = this.game.currentConflict?.attackers ?? [];
         let attackers = incomingAttackers || currentAttackers;
         if(!attackers.includes(this)) {
             attackers = attackers.concat(this);
@@ -747,8 +747,8 @@ export class DrawCard extends BaseCard {
 
         if(
             elementsAdded.some((element) =>
-                this.game.ringFor(element)
-                    ?.getEffects(EffectName.CannotDeclareRing)
+                this.game.rings[element]
+                    .getEffects(EffectName.CannotDeclareRing)
                     .some((match) => match(this.controller))
             )
         ) {

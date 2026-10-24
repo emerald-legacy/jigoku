@@ -204,9 +204,6 @@ export class Conflict extends GameObject {
 
     switchElement(element: Element) {
         const newRing = this.game.rings[element];
-        if(!newRing) {
-            throw new Error('switchElement called for non-existant element');
-        }
         this.game.openThenEventWindow(takeAllFateFromRing(newRing, this.game.getFrameworkContext(this.attackingPlayer)));
         if(newRing.conflictType !== this.conflictType) {
             newRing.flipConflictType();
@@ -475,14 +472,12 @@ export class Conflict extends GameObject {
         this.attackersAtResolution = this.getAttackers().slice();
         this.defendersAtResolution = this.getDefenders().slice();
         this.provinceStrengthsAtResolution = [];
-        this.getConflictProvinces()
-            .filter((a) => a)
-            .forEach((a) => {
-                this.provinceStrengthsAtResolution.push({
-                    province: a,
-                    strength: a.getStrength()
-                });
+        this.getConflictProvinces().forEach((a) => {
+            this.provinceStrengthsAtResolution.push({
+                province: a,
+                strength: a.getStrength()
             });
+        });
 
         const winner = this.getWinningPlayer();
         if(!winner) {

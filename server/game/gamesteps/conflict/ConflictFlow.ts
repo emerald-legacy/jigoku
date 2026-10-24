@@ -241,8 +241,8 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
     /** The fate to a ring it costs to attack the province (Foothills Keep); unpaid, the conflict fails to initiate. */
     private provinceCosts(attacker: Player): DeclarationCost[] {
-        const { slot, name } = this.declaredProvince;
-        const province = this.conflict.conflictProvince || this.conflict.defendingPlayer?.getProvinceCardInProvince(slot);
+        const province = this.conflict.conflictProvince;
+        const name = this.conflictProvinceChatName;
         const totalFateCost = province ? province.getFateCostToAttack() : 0;
         if(!province || totalFateCost === 0) {
             return [];
@@ -264,11 +264,10 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }];
     }
 
-    /** The declared province's slot, and how chat names it (the slot while it is facedown). */
-    private get declaredProvince(): { slot: Location; name: Location | ProvinceCard | null | undefined } {
+    /** How chat names the conflict province: its slot while it is facedown. */
+    private get conflictProvinceChatName(): Location | ProvinceCard | null | undefined {
         const province = this.conflict.conflictProvince;
-        const slot = province ? province.location : Location.ProvinceOne;
-        return { slot, name: province && province.isFacedown() ? slot : province };
+        return province && province.isFacedown() ? province.location : province;
     }
 
     /**
@@ -311,7 +310,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        this.game.addMessage(msg`${this.conflict.attackingPlayer} is initiating a ${this.conflict.conflictType} conflict at ${this.declaredProvince.name}, contesting ${this.conflict.ring}`);
+        this.game.addMessage(msg`${this.conflict.attackingPlayer} is initiating a ${this.conflict.conflictType} conflict at ${this.conflictProvinceChatName}, contesting ${this.conflict.ring}`);
 
         const params = {
             conflict: this.conflict,
@@ -751,10 +750,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
         this.conflict.provinceStrengthsAtResolution.forEach((a: { province: ProvinceCard; strength: number }) => {
             const province = a.province;
-            const strength = a.strength === undefined ? province.getStrength() : a.strength;
             if(
                 this.conflict.isAttackerTheWinner() &&
-                this.conflict.skillDifference !== undefined && this.conflict.skillDifference >= strength &&
+                this.conflict.skillDifference !== undefined && this.conflict.skillDifference >= a.strength &&
                 !province.isBroken
             ) {
                 this.game.resolveActions([breakProvince({ target: province, breaker: this.conflict.attackingPlayer })], this.game.getFrameworkContext(province.controller));
@@ -795,7 +793,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         const winner = this.conflict.winner;
         if(winner) {
             // the attacker took the ring's fate when declaring
-            claimRing({ conflictType: this.conflict.conflictType ?? ring.conflictType, takeFate: false, staysContested: true })
+            claimRing({ conflictType: ring.conflictType, takeFate: false, staysContested: true })
                 .resolve(ring, this.game.getFrameworkContext(winner));
         }
         this.game.queueSimpleStep(() => {

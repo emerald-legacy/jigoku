@@ -7,7 +7,7 @@ import type { CardAbility } from '../CardAbility.js';
 import type { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import type BaseCard from '../BaseCard.js';
 import type { Conflict } from '../Conflict.js';
-import type { CharacterStatus, ConflictType, DeckType, DuelType, EventName, Location, Phase, Players, PlayType, TokenType } from '../Constants.js';
+import type { CharacterStatus, ConflictType, DeckType, DuelType, EffectName, EventName, Location, Phase, Players, PlayType, TokenType } from '../Constants.js';
 import type { Direction } from '../GameActions/ModifyBidAction.js';
 import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
@@ -247,7 +247,7 @@ interface EventPayloadMap {
     [EventName.OnEffectApplied]: BaseEventPayload & {
         card?: BaseCard;
         ring?: Ring;
-        effectTypes?: string[];
+        effectTypes?: EffectName[];
         matches?: EffectMatch[];
     };
     [EventName.OnLookAtCards]: BaseEventPayload & {

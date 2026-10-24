@@ -170,7 +170,7 @@ export class ActionWindow extends UiPrompt {
         if(this.bonusActions) {
             const bonusActions = this.bonusActions[this.currentPlayer.uuid];
             if(!bonusActions.actionsTaken && bonusActions.takingActions && bonusActions.actionCount > 0) {
-                allowableConsecutiveActions = allowableConsecutiveActions + (bonusActions?.actionCount - 1);
+                allowableConsecutiveActions = allowableConsecutiveActions + (bonusActions.actionCount - 1);
             }
         }
         if(this.currentPlayer.actionPhasePriority) {
@@ -209,6 +209,7 @@ export class ActionWindow extends UiPrompt {
     attemptComplete() {
         if(!this.currentPlayer.opponent) {
             this.complete();
+            return;
         }
 
         if(!this.checkBonusActions()) {
@@ -230,30 +231,13 @@ export class ActionWindow extends UiPrompt {
         if(!bonusActions || !player1 || !player2) {
             return false;
         }
-        const p1 = bonusActions[player1.uuid];
-        const p2 = bonusActions[player2.uuid];
-
-        if(p1.actionCount > 0) {
-            if(!p1.actionsTaken) {
-                this.game.addMessage(msg`${player1} has a bonus action during resolution!`);
+        for(const player of [player1, player2]) {
+            const playerBonusActions = bonusActions[player.uuid];
+            if(playerBonusActions.actionCount > 0 && !playerBonusActions.actionsTaken) {
+                this.game.addMessage(msg`${player} has a bonus action during resolution!`);
                 this.prevPlayerPassed = false;
-                // Set the current player to player1
-                if(this.currentPlayer !== player1) {
-                    this.currentPlayer = player1;
-                }
-                p1.takingActions = true;
-                return true;
-            }
-        }
-        if(p2.actionCount > 0) {
-            if(!p2.actionsTaken) {
-                this.game.addMessage(msg`${player2} has a bonus action during resolution!`);
-                this.prevPlayerPassed = false;
-                // Set the current player to player1
-                if(this.currentPlayer !== player2) {
-                    this.currentPlayer = player2;
-                }
-                p2.takingActions = true;
+                this.currentPlayer = player;
+                playerBonusActions.takingActions = true;
                 return true;
             }
         }

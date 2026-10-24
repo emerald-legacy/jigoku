@@ -268,7 +268,7 @@ export type FlexibleEffectName = {
 
 export interface ICanOnlyBeDeclaredAsAttackerWithCondition {
     context: AbilityContext,
-    conflictType: string | undefined,
+    conflictType: ConflictType | undefined,
     ring: Ring | undefined,
     province?: ProvinceCard | null,
     incomingAttackers?: DrawCard[]

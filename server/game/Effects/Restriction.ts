@@ -32,7 +32,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.ability.abilityType !== AbilityType.ForcedInterrupt,
     [RestrictionScope.CardEffects]: (context) => isCardEffect(context),
     [RestrictionScope.CardEffectsExceptOwn]: (context, effect) =>
-        checkRestrictions[RestrictionScope.CardEffects](context, effect) && context.source !== effect.context?.source,
+        checkRestrictions[RestrictionScope.CardEffects](context, effect) && context.source !== effect.requireContext().source,
     [RestrictionScope.RingEffects]: (context) => context.source.isRing(),
     [RestrictionScope.CardAndRingEffects]: (context, effect) => checkRestrictions[RestrictionScope.CardEffects](context, effect) || checkRestrictions[RestrictionScope.RingEffects](context, effect),
     // a character played as an attachment is played as an attachment (EmeraldDB rulings on Grasp of Earth, Daimyō's Favor)
@@ -87,8 +87,8 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.ActionEvents]: (context) =>
         context.ability instanceof BaseCardAbility &&
         context.ability.card.type === CardType.Event && context.ability.abilityType === AbilityType.Action,
-    [RestrictionScope.Source]: (context, effect) => context.source === effect.context?.source,
-    [RestrictionScope.ThisAbility]: (context, effect) => context.ability === effect.context?.ability,
+    [RestrictionScope.Source]: (context, effect) => context.source === effect.requireContext().source,
+    [RestrictionScope.ThisAbility]: (context, effect) => context.ability === effect.requireContext().ability,
     [RestrictionScope.KeywordAbilities]: (context) => context.ability.isKeywordAbility(),
     [RestrictionScope.NonKeywordAbilities]: (context) => !context.ability.isKeywordAbility(),
     [RestrictionScope.NonForcedAbilities]: (context) =>
@@ -107,7 +107,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.source.type === CardType.Event && !!card && context.player.showBid > card.controller.showBid,
     [RestrictionScope.LoseHonorAsCost]: (context) => context.stage === Stage.Cost,
     [RestrictionScope.UnlessMeishodo]: (context) =>
-        !!context.source && context.source.hasTrait(Trait.Spell) && !context.source.hasTrait(Trait.Meishodo)
+        context.source.hasTrait(Trait.Spell) && !context.source.hasTrait(Trait.Meishodo)
 };
 
 /** Whether `context` is a card effect: a card's ability resolving, not a cost and not playing a card (RRG "Card effect"). */
@@ -121,7 +121,7 @@ const getApplyingPlayer = (effect: Restriction): Player => {
 };
 
 /** An attachment, or a character played as an attachment (Tattooed Wanderer, Jealous Ancestor). */
-const isAttachment = (context: AbilityContext) => context.source.type === CardType.Attachment || !!context.ability.isCharacterPlayedAsAttachment();
+const isAttachment = (context: AbilityContext) => context.source.type === CardType.Attachment || context.ability.isCharacterPlayedAsAttachment();
 
 /** What an immunity (a restriction naming no type) doesn't stop (RRG Immune): peripheral entities such as fate and attachments aren't immune. */
 const immunityExemptTypes = new Set<RestrictionType | PlayType | undefined>([RestrictionType.RemoveFate, RestrictionType.Attach]);
@@ -174,7 +174,7 @@ export class Restriction extends EffectValueBase<Restriction> {
 
         if(!this.type) {
             // an immunity doesn't stop a card from being used to pay costs (RRG Immune)
-            return context?.stage !== Stage.Cost && !immunityExemptTypes.has(type) && this.checkCondition(context, card);
+            return context.stage !== Stage.Cost && !immunityExemptTypes.has(type) && this.checkCondition(context, card);
         }
         return this.type === type && this.checkCondition(context, card);
     }

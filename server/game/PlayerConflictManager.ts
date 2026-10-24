@@ -161,17 +161,13 @@ export class PlayerConflictManager {
             baselineAvailableConflicts = 1;
         }
 
-        if(setConflictType && type === setConflictType) {
-            const declaredConflictsOfOtherType = this.declaredConflictOpportunities[setConflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military];
+        const lockedConflictType = setConflictType ?? forceConflictType;
+        if(lockedConflictType) {
+            if(type !== lockedConflictType) {
+                return 0;
+            }
+            const declaredConflictsOfOtherType = this.declaredConflictOpportunities[type === ConflictType.Military ? ConflictType.Political : ConflictType.Military];
             return baselineAvailableConflicts + additionalConflictEffects.length - declaredConflictsOfOtherType;
-        } else if(setConflictType && type !== setConflictType) {
-            return 0;
-        }
-        if(forceConflictType && type === forceConflictType) {
-            const declaredConflictsOfOtherType = this.declaredConflictOpportunities[forceConflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military];
-            return baselineAvailableConflicts + additionalConflictEffects.length - declaredConflictsOfOtherType;
-        } else if(forceConflictType && type !== forceConflictType) {
-            return 0;
         }
         if(provideConflictDeclarationType) {
             const declaredConflictsOfOtherType = this.declaredConflictOpportunities[type === ConflictType.Military ? ConflictType.Political : ConflictType.Military];

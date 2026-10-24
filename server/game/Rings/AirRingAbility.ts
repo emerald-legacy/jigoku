@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import { TargetMode } from '../Constants.js';
+import { TargetMode, Element } from '../Constants.js';
 import { calculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
@@ -34,18 +34,18 @@ export class AirRingAbility extends BaseAbility {
                 context.game.currentPhase,
                 2
             );
-            context.game.addMessage(msg`${context.player} resolves the ${'air'} ring, gaining ${amountToTransfer} honor`);
+            context.game.addMessage(msg`${context.player} resolves the ${Element.Air} ring, gaining ${amountToTransfer} honor`);
             this.onResolution(true);
-            context.game.addAnimation({ type: 'air', playerName: context.player.name, effect: 'gain-honor' });
+            context.game.addAnimation({ type: Element.Air, playerName: context.player.name, effect: 'gain-honor' });
             return gainHonor({ amount: 2 }).resolve(context.player, context);
         }
         if(context.select === AIR_CHOICE.TAKE_1) {
-            context.game.addMessage(msg`${context.player} resolves the ${'air'} ring, taking 1 honor from ${context.player.opponent}`);
+            context.game.addMessage(msg`${context.player} resolves the ${Element.Air} ring, taking 1 honor from ${context.player.opponent}`);
             this.onResolution(true);
-            context.game.addAnimation({ type: 'air', playerName: context.player.name, effect: 'take-honor' });
+            context.game.addAnimation({ type: Element.Air, playerName: context.player.name, effect: 'take-honor' });
             return takeHonor().resolve(context.player.opponent, context);
         }
-        context.game.addMessage(msg`${context.player} chooses not to resolve the ${'air'} ring`);
+        context.game.addMessage(msg`${context.player} chooses not to resolve the ${Element.Air} ring`);
         this.onResolution(false);
     }
 }

@@ -410,10 +410,10 @@ export class BaseCard extends EffectSource {
             Location.PlayArea,
             Location.Provinces
         ];
-        const defaultLocationForType: Record<string, Location> = {
-            province: Location.Provinces,
-            holding: Location.Provinces,
-            stronghold: Location.Provinces
+        const defaultLocationForType: Partial<Record<CardType, Location>> = {
+            [CardType.Province]: Location.Provinces,
+            [CardType.Holding]: Location.Provinces,
+            [CardType.Stronghold]: Location.Provinces
         };
 
         const location = properties.location || defaultLocationForType[this.getType()] || Location.PlayArea;

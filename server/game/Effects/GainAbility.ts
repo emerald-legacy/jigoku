@@ -150,9 +150,9 @@ export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
         const origin = { origin: this.context?.source };
         const grant = this.grant;
         if(grant.kind === AbilityType.Persistent) {
-            const activeLocations: Record<string, string[]> = {
-                'play area': [Location.PlayArea],
-                province: this.requireContext().game.getProvinceArray()
+            const activeLocations: Partial<Record<Location, Location[]>> = {
+                [Location.PlayArea]: [Location.PlayArea],
+                [Location.Provinces]: this.requireContext().game.getProvinceArray()
             };
             const condition = grant.properties.condition;
             const value: PersistentGainValue = Object.assign(origin, grant.properties, {
@@ -160,7 +160,11 @@ export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
             });
             this.value = value;
             this.grantedPersistent = value;
-            if(activeLocations[value.location].includes(target.location)) {
+            const locations = activeLocations[value.location];
+            if(!locations) {
+                throw new Error(`A gained persistent effect cannot be active in '${value.location}'`);
+            }
+            if(locations.includes(target.location)) {
                 value.ref = target.addEffectToEngine(value);
             }
             return;

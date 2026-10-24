@@ -10,12 +10,10 @@ export class RallyAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordReaction, {
             when: {
-                onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext<DrawCard>) => {
-                    const revealed = event;
-                    return revealed.card === context.source &&
-                        !!revealed.card && context.game.getProvinceArray().includes(revealed.card.location) &&
-                        context.source.hasRally();
-                }
+                onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext<DrawCard>) =>
+                    event.card === context.source &&
+                    context.game.getProvinceArray().includes(context.source.location) &&
+                    context.source.hasRally()
             },
             location: Location.Provinces,
             title: `${card.name}'s Rally`,

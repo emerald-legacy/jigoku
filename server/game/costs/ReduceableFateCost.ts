@@ -91,7 +91,8 @@ export class ReduceableFateCost implements Cost {
             reducedCost: reducedCost,
             remainingPoolTotal: alternatePoolTotal
         };
-        context.costs.alternateFate = new Map();
+        const alternateFate = new Map<unknown, number>();
+        context.costs.alternateFate = alternateFate;
         if(properties.reducedCost === 0) {
             return;
         }
@@ -128,7 +129,7 @@ export class ReduceableFateCost implements Cost {
                         );
                     }
                 };
-                this.promptForAlternateFate(context, result, properties, choiceHandler);
+                this.promptForAlternateFate(context, alternateFate, result, properties, choiceHandler);
             });
         };
 
@@ -145,7 +146,7 @@ export class ReduceableFateCost implements Cost {
                 if(result.cancelled || properties.numberOfChoices === 0) {
                     return;
                 }
-                this.promptForAlternateFate(context, result, properties);
+                this.promptForAlternateFate(context, alternateFate, result, properties);
             });
         }
 
@@ -212,6 +213,7 @@ export class ReduceableFateCost implements Cost {
 
     private promptForAlternateFate(
         context: FateCostContext,
+        alternateFate: Map<unknown, number>,
         result: Result,
         properties: Props,
         handler?: (choice: string | number) => void
@@ -224,7 +226,7 @@ export class ReduceableFateCost implements Cost {
             choices.push('Cancel');
         }
         if(properties.maxFate === 0) {
-            context.costs.alternateFate?.set(properties.pool, 0);
+            alternateFate.set(properties.pool, 0);
             return;
         }
 
@@ -246,7 +248,7 @@ export class ReduceableFateCost implements Cost {
                     return;
                 }
 
-                context.costs.alternateFate?.set(properties.pool, Number(choice));
+                alternateFate.set(properties.pool, Number(choice));
                 properties.reducedCost -= Number(choice);
 
                 if(handler) {

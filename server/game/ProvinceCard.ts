@@ -152,8 +152,8 @@ export class ProvinceCard extends BaseCard {
             .map((symbol) => symbol.element);
     }
 
-    isElement(element: string): boolean {
-        return this.element.some((provinceElement) => provinceElement === element);
+    isElement(element: Element): boolean {
+        return this.element.includes(element);
     }
 
     override hasElementSymbols(): boolean {
@@ -191,7 +191,7 @@ export class ProvinceCard extends BaseCard {
 
     canBeAttacked() {
         const fateCostToAttack = this.getFateCostToAttack();
-        const attackers = this.game.isDuringConflict() && this.game.currentConflict ? this.game.currentConflict.attackers : [];
+        const attackers = this.game.currentConflict?.attackers ?? [];
 
         return (
             !this.isBroken &&

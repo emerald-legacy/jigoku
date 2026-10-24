@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
 import type { GameRules } from '../GameRules.js';
-import { CardType } from '../Constants.js';
+import { CardType, Element } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { BaseAbility } from '../BaseAbility.js';
 import { bow, ready } from '../GameActions/GameActions.js';
@@ -28,19 +28,19 @@ export class WaterRingAbility extends BaseAbility {
 
     public override executeHandler(context: AbilityContext) {
         if(!context.target) {
-            context.game.addMessage(msg`${context.player} chooses not to resolve the ${'water'} ring`);
+            context.game.addMessage(msg`${context.player} chooses not to resolve the ${Element.Water} ring`);
             this.onResolution(false);
             return;
         }
         if(context.target.bowed) {
-            context.game.addMessage(msg`${context.player} resolves the ${'water'} ring, readying ${context.target}`);
+            context.game.addMessage(msg`${context.player} resolves the ${Element.Water} ring, readying ${context.target}`);
             this.onResolution(true);
-            context.game.addAnimation({ type: 'water', targetUuid: context.target.uuid, effect: 'ready' });
+            context.game.addAnimation({ type: Element.Water, targetUuid: context.target.uuid, effect: 'ready' });
             context.game.resolveActions([ready({ target: context.target })], context);
         } else {
-            context.game.addMessage(msg`${context.player} resolves the ${'water'} ring, bowing ${context.target}`);
+            context.game.addMessage(msg`${context.player} resolves the ${Element.Water} ring, bowing ${context.target}`);
             this.onResolution(true);
-            context.game.addAnimation({ type: 'water', targetUuid: context.target.uuid, effect: 'bow' });
+            context.game.addAnimation({ type: Element.Water, targetUuid: context.target.uuid, effect: 'bow' });
             context.game.resolveActions([bow({ target: context.target })], context);
         }
     }

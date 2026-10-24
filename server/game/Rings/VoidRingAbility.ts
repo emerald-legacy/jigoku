@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType } from '../Constants.js';
+import { CardType, Element } from '../Constants.js';
 import { BaseAbility } from '../BaseAbility.js';
 import type DrawCard from '../DrawCard.js';
 import { removeFate } from '../GameActions/GameActions.js';
@@ -29,12 +29,12 @@ export class VoidRingAbility extends BaseAbility {
 
     public override executeHandler(context: AbilityContext): void {
         if(context.target) {
-            context.game.addMessage(msg`${context.player} resolves the ${'void'} ring, removing a fate from ${context.target}`);
+            context.game.addMessage(msg`${context.player} resolves the ${Element.Void} ring, removing a fate from ${context.target}`);
             this.onResolution(true);
-            context.game.addAnimation({ type: 'void', targetUuid: context.target.uuid, effect: 'remove-fate' });
+            context.game.addAnimation({ type: Element.Void, targetUuid: context.target.uuid, effect: 'remove-fate' });
             context.game.resolveActions([removeFate({ target: context.target })], context);
         } else {
-            context.game.addMessage(msg`${context.player} chooses not to resolve the ${'void'} ring`);
+            context.game.addMessage(msg`${context.player} chooses not to resolve the ${Element.Void} ring`);
             this.onResolution(false);
         }
     }
