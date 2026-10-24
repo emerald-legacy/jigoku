@@ -4,6 +4,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { Duration } from '../Constants.js';
 import type { AbilityLimit } from '../AbilityLimit.js';
 import type BaseCard from '../BaseCard.js';
+import type { StoredPersistentEffect } from '../BaseCard.js';
 import type { CardAbility } from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
 import type { TriggeredAbility } from '../TriggeredAbility.js';
@@ -49,6 +50,15 @@ export type GainedAbilityValue = boolean | CardAction | TriggeredAbility | Persi
 /** A gained persistent effect: granted abilities never have the persistent type. */
 export function isPersistentGain(value: GainedAbilityValue): value is PersistentGainValue {
     return typeof value === 'object' && value.abilityType === AbilityType.Persistent;
+}
+
+/** A copy of another card's persistent effect, for a card that gains it: it stops while that card loses its gained abilities. */
+export function gainedPersistentEffect(effect: StoredPersistentEffect): StoredPersistentEffect {
+    const condition = effect.condition;
+    return Object.assign({}, effect, {
+        ref: undefined,
+        condition: (context: AbilityContext) => !context.source.anyEffect(EffectName.LoseGainedAbilities) && (!condition || condition(context))
+    });
 }
 
 // only a card ability carries its properties; authored properties never have that key

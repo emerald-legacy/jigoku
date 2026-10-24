@@ -68,3 +68,49 @@ describe('Cloud the Mind 2 with Air affinity', function () {
     });
 });
 
+
+describe('Cloud the Mind 2 with Air affinity on a character that gained all abilities', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 15,
+                    inPlay: ['wandering-ronin'],
+                    hand: ['spirit-of-valor'],
+                    dynastyDiscard: ['ikoma-orator', 'miwaku-kabe-guard']
+                },
+                player2: {
+                    honor: 8,
+                    inPlay: ['young-philosopher'],
+                    hand: ['cloud-the-mind-2']
+                }
+            });
+
+            this.ronin = this.player1.findCardByName('wandering-ronin');
+            this.spirit = this.player1.findCardByName('spirit-of-valor');
+            this.player1.playAttachment(this.spirit, this.ronin);
+            this.noMoreActions();
+            this.initiateConflict({ type: 'military', attackers: [this.ronin], defenders: [] });
+            this.player2.pass();
+        });
+
+        it('removes gained constant abilities', function () {
+            this.player1.clickCard(this.spirit);
+            this.player1.clickCard('ikoma-orator');
+            expect(this.ronin.getPoliticalSkill()).toBe(this.ronin.printedPoliticalSkill + 2);
+
+            this.player2.playAttachment('cloud-the-mind-2', this.ronin);
+            expect(this.ronin.getPoliticalSkill()).toBe(this.ronin.printedPoliticalSkill);
+        });
+
+        it('removes gained keywords', function () {
+            this.player1.clickCard(this.spirit);
+            this.player1.clickCard('miwaku-kabe-guard');
+            expect(this.ronin.hasKeyword('pride')).toBe(true);
+
+            this.player2.playAttachment('cloud-the-mind-2', this.ronin);
+            expect(this.ronin.hasKeyword('pride')).toBe(false);
+        });
+    });
+});

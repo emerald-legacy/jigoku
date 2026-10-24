@@ -513,5 +513,38 @@ describe('Togashi Yokuni', function() {
                 expect(this.fieryMadness.location).toBe('conflict discard pile');
             });
         });
+
+        describe('Togashi Yokuni and a character that is a copy', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['togashi-yokuni', 'doji-whisperer']
+                    },
+                    player2: {
+                        inPlay: ['shosuro-actor']
+                    }
+                });
+                this.yokuni = this.player1.findCardByName('togashi-yokuni');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.actor = this.player2.findCardByName('shosuro-actor');
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.whisperer],
+                    defenders: [this.actor]
+                });
+                this.player2.clickCard(this.actor);
+                this.player2.clickCard(this.whisperer);
+            });
+
+            it('should copy the ability printed on the character, not the copied card\'s', function() {
+                expect(this.actor.name).toBe('Doji Whisperer');
+                this.player1.clickCard(this.yokuni);
+                expect(this.player1).toBeAbleToSelect(this.actor);
+                this.player1.clickCard(this.actor);
+                expect(this.getChatLogs(3)).toContain('player1 uses Togashi Yokuni to copy Doji Whisperer\'s \'Choose a character to copy\' ability');
+                expect(this.yokuni.getCardActions().map((action) => action.title)).toContain('Choose a character to copy');
+            });
+        });
     });
 });

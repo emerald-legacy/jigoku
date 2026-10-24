@@ -6,7 +6,7 @@ import type { CardAction } from '../../CardAction.js';
 import type { TriggeredAbility } from '../../TriggeredAbility.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
-import { GainAbility } from '../GainAbility.js';
+import { GainAbility, gainedPersistentEffect } from '../GainAbility.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
 export class CopyCard<Card extends BaseCard> extends EffectValue<Card, BaseCard> {
@@ -27,7 +27,7 @@ export class CopyCard<Card extends BaseCard> extends EffectValue<Card, BaseCard>
         this.reactions = card.abilities.reactions.map(
             (ability: TriggeredAbility) => new GainAbility(ability.abilityType, ability)
         );
-        this.persistentEffects = card.abilities.persistentEffects.map((effect) => Object.assign({}, effect));
+        this.persistentEffects = card.abilities.persistentEffects.map(gainedPersistentEffect);
     }
 
     override apply(target: BaseCard) {

@@ -59,6 +59,7 @@ export interface TargetAbility extends BaseTarget {
     cardType?: CardType | CardType[];
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
     abilityCondition?: (ability: CardAbility) => boolean;
+    printedOn?: boolean;
 }
 
 export interface TargetToken extends BaseTarget {

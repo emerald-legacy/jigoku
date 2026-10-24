@@ -15,7 +15,7 @@ class CountrysideTrader extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isConflictProvince(),
-                abilityCondition: (ability) => ability.printedAbility
+                printedOn: true
             }, resolveAbility((context) => ({
                 target: context.targetAbility?.card,
                 ability: context.targetAbility,

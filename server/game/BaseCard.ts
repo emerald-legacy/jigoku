@@ -934,11 +934,19 @@ export class BaseCard extends EffectSource {
      * attach the passed attachment card, which `controller` will control once attached.
      */
     allowAttachment(attachment: BaseCard, _controller: Player = attachment.controller): boolean {
-        if(this.allowedAttachmentTraits.some((trait) => attachment.getTraits().has(trait))) {
-            return true;
-        }
+        const traits = attachment.getTraits();
+        return this.attachmentRestrictions().every((allowedTraits) => allowedTraits.some((trait) => traits.has(trait)));
+    }
 
-        return this.isBlank() || this.allowedAttachmentTraits.length === 0;
+    /** The traits each "No attachments [except …]" on this card allows: its own, a copied card's, or one gained with all of a card's abilities. */
+    private attachmentRestrictions(): string[][] {
+        const losesGained = this.anyEffect(EffectName.LoseGainedAbilities);
+        const gained: BaseCard[] = losesGained ? [] : this.getEffects(EffectName.GainAllAbilities);
+        const copied = this.copiedCard;
+        const own = copied ? (losesGained ? [] : [copied]) : (this.isBlank() ? [] : [this]);
+        return [...own, ...gained]
+            .map((card) => card.allowedAttachmentTraits)
+            .filter((allowedTraits) => allowedTraits.length > 0);
     }
 
     /**

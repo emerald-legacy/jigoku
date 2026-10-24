@@ -103,3 +103,44 @@ describe('Floating Fortress', function () {
         });
     });
 });
+
+describe('Floating Fortress copying a holding with a province strength bonus', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-diplomat']
+                },
+                player2: {
+                    inPlay: ['brash-samurai'],
+                    dynastyDiscard: ['floating-fortress', 'kaiu-forges']
+                }
+            });
+
+            this.diplomat = this.player1.findCardByName('doji-diplomat');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.fortress = this.player2.findCardByName('floating-fortress');
+            this.sd1 = this.player2.findCardByName('shameful-display', 'province 1');
+            this.player2.placeCardInProvince(this.fortress, 'province 2');
+            this.fortress.facedown = false;
+        });
+
+        it('uses the copied holding\'s province strength bonus', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.diplomat],
+                defenders: [this.brash],
+                province: this.sd1
+            });
+            const strength = this.sd1.getStrength();
+
+            this.player2.clickCard(this.fortress);
+            this.player2.clickCard('kaiu-forges');
+            this.player2.clickPrompt('Yes');
+            expect(this.fortress.location).toBe('province 1');
+            expect(this.fortress.getProvinceStrengthBonus()).toBe(3);
+            expect(this.sd1.getStrength()).toBe(strength + 3);
+        });
+    });
+});

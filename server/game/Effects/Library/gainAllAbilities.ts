@@ -5,7 +5,7 @@ import type { TriggeredAbility } from '../../TriggeredAbility.js';
 import { AbilityType, EffectName, Location } from '../../Constants.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
-import { GainAbility } from '../GainAbility.js';
+import { GainAbility, gainedPersistentEffect } from '../GainAbility.js';
 
 export class GainAllAbilities extends EffectValue<BaseCard, BaseCard> {
     actions: Array<GainAbility>;
@@ -27,7 +27,7 @@ export class GainAllAbilities extends EffectValue<BaseCard, BaseCard> {
             .map((ability: TriggeredAbility) => new GainAbility(ability.abilityType, ability));
         this.persistentEffects = card.abilities.persistentEffects
             // .filter(a => !this.printedOnly || a.printedAbility)
-            .map((effect) => Object.assign({}, effect));
+            .map(gainedPersistentEffect);
         this.abilitiesForTargets = {};
     }
 

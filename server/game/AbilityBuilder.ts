@@ -255,6 +255,8 @@ interface AbilityTargetProps<Context, EarlierContext, Types extends CardType, De
     /** The type of the card the chosen ability is printed on: one type, which the engine compares with it. */
     cardType: Types;
     abilityCondition?: (ability: CardAbility) => boolean;
+    /** Choose from the abilities printed on the card itself, also when it is a copy of another card. */
+    printedOn?: boolean;
     cardCondition?: (card: CardOfType<Types>, context: Context) => boolean;
 }
 
@@ -598,6 +600,9 @@ export class AbilityBuilder<
         const entry: AbilityEntry = { ...this.#cardChoice(props), mode: TargetMode.Ability };
         if(props.abilityCondition) {
             entry.abilityCondition = props.abilityCondition;
+        }
+        if(props.printedOn) {
+            entry.printedOn = true;
         }
         if(props.cardCondition) {
             entry.cardCondition = this.#cardCondition(holdsCard, props.cardCondition, [...earlier, own], others);

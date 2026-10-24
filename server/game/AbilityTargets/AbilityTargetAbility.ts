@@ -14,6 +14,7 @@ interface AbilityTargetAbilityProperties extends AbilityTargetBaseProperties {
     gameAction: GameAction[];
     cardType?: CardType | CardType[];
     abilityCondition?: (ability: CardAbility) => boolean;
+    printedOn?: boolean;
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
 }
 
@@ -34,7 +35,10 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
 
     /** The abilities of `card` that can be chosen: their game actions have a legal target. */
     private legalAbilities(card: BaseCard, context: AbilityContext) {
-        const abilities = [...card.getCardActions(), ...card.getReactions()].filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
+        const abilities = (this.properties.printedOn
+            ? [...card.abilities.actions, ...card.abilities.reactions].filter((ability) => ability.printedAbility)
+            : [...card.getCardActions(), ...card.getReactions()]
+        ).filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
         return abilities.filter((ability) => {
             const contextCopy = context.copy({});
             contextCopy.targetAbility = ability;

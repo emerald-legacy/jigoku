@@ -371,7 +371,7 @@ export class SkillCalculator {
     }
 
     getProvinceStrengthBonusModifiers(): StatModifier[] {
-        const strengthModifierEffects = [EffectName.SetProvinceStrengthBonus, EffectName.ModifyProvinceStrengthBonus];
+        const strengthModifierEffects = [EffectName.SetProvinceStrengthBonus, EffectName.ModifyProvinceStrengthBonus, EffectName.CopyCharacter];
 
         const strengthEffects = this.card.getRawEffects().filter((effect) =>
             strengthModifierEffects.includes(effect.type)
@@ -392,9 +392,22 @@ export class SkillCalculator {
             ];
         }
 
-        strengthModifiers.push(
-            StatModifier.fromCard(this.card.printedStrengthBonus, this.card, 'Printed province strength bonus', false)
-        );
+        const copyEffect = strengthEffects.filter((effect) => isEffectOf(effect, EffectName.CopyCharacter)).at(-1);
+        if(copyEffect) {
+            const copiedCard = copyEffect.getValue(this.card);
+            strengthModifiers.push(
+                StatModifier.fromEffect(
+                    copiedCard.printedStrengthBonus,
+                    copyEffect,
+                    false,
+                    `Printed province strength bonus from ${copiedCard.name} due to ${StatModifier.getEffectName(copyEffect)}`
+                )
+            );
+        } else {
+            strengthModifiers.push(
+                StatModifier.fromCard(this.card.printedStrengthBonus, this.card, 'Printed province strength bonus', false)
+            );
+        }
         const modifierEffects = strengthEffects.filter((effect) => isEffectOf(effect, EffectName.ModifyProvinceStrengthBonus));
         modifierEffects.forEach((modifierEffect) => {
             const value = modifierEffect.getValue(this.card);
