@@ -28,13 +28,13 @@ describe('Use the Terrain', function () {
                     defenders: [this.challenger]
                 });
 
-                let riderMil = this.rider.getMilitarySkill();
-                let scholarMil = this.scholar.getMilitarySkill();
+                const riderMil = this.rider.militarySkill;
+                const scholarMil = this.scholar.militarySkill;
 
                 this.player2.pass();
                 this.player1.clickCard(this.terrain);
-                expect(this.rider.getMilitarySkill()).toBe(riderMil + 1);
-                expect(this.scholar.getMilitarySkill()).toBe(scholarMil + 1);
+                expect(this.rider.militarySkill).toBe(riderMil + 1);
+                expect(this.scholar.militarySkill).toBe(scholarMil + 1);
                 expect(this.getChatLogs(5)).toContain('player1 plays Use the Terrain to give all characters they control +1military');
             });
 
@@ -80,11 +80,41 @@ describe('Use the Terrain', function () {
                     defenders: [this.challenger]
                 });
 
-                let riderMil = this.rider.getMilitarySkill();
+                const riderMil = this.rider.militarySkill;
                 this.player2.pass();
                 this.player1.clickCard(this.terrain);
-                expect(this.rider.getMilitarySkill()).toBe(riderMil + 2);
+                expect(this.rider.militarySkill).toBe(riderMil + 2);
                 expect(this.getChatLogs(5)).toContain('player1 plays Use the Terrain to give all characters they control +2military');
+            });
+        });
+
+        describe('with a Scout at home', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['border-rider', 'eager-scout'],
+                        hand: ['use-the-terrain']
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger']
+                    }
+                });
+                this.rider = this.player1.findCardByName('border-rider');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+            });
+
+            it('gives only +1 military', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rider],
+                    defenders: [this.challenger]
+                });
+                const riderMil = this.rider.militarySkill;
+                this.player2.pass();
+                this.player1.clickCard('use-the-terrain');
+                expect(this.rider.militarySkill).toBe(riderMil + 1);
             });
         });
     });

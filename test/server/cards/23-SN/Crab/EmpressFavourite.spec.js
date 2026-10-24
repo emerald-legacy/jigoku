@@ -28,8 +28,8 @@ describe('Empress Favorite', function () {
                 province: this.sd1,
                 type: 'political'
             });
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.clickCard(this.favorite);
             expect(this.player1.honor).toBe(honor - 1);

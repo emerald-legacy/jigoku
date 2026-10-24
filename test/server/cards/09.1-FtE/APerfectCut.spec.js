@@ -64,12 +64,12 @@ describe('A Perfect Cut', function() {
                     attackers: [this.kitsukiShomon],
                     defenders: []
                 });
-                let militarySkill = this.kitsukiShomon.getMilitarySkill();
+                const militarySkill = this.kitsukiShomon.militarySkill;
                 this.player2.pass();
                 this.player1.clickCard(this.aPerfectCut);
                 expect(this.player1).toHavePrompt('A Perfect Cut');
                 this.player1.clickCard(this.kitsukiShomon);
-                expect(this.kitsukiShomon.getMilitarySkill()).toBe(militarySkill + 2);
+                expect(this.kitsukiShomon.militarySkill).toBe(militarySkill + 2);
             });
 
             it('should honor the chosen character if they win the conflict', function() {
@@ -142,6 +142,44 @@ describe('A Perfect Cut', function() {
                 expect(this.kitsukiShomon.isHonored).toBe(false);
                 expect(this.getChatLogs(2)).not.toContain('Kitsuki Shomon is honored due to the delayed effect of A Perfect Cut');
             });
+        });
+    });
+});
+
+describe('A Perfect Cut on a character on the other player\'s side', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['steward-of-law']
+                },
+                player2: {
+                    hand: ['join-the-fray', 'a-perfect-cut'],
+                    dynastyDiscard: ['moto-chagatai']
+                }
+            });
+            this.steward = this.player1.findCardByName('steward-of-law');
+            this.chagatai = this.player2.placeCardInProvince('moto-chagatai', 'province 1');
+            this.noMoreActions();
+        });
+
+        it('honors it when its side wins the conflict', function() {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.steward],
+                defenders: []
+            });
+            this.player2.clickCard('join-the-fray');
+            this.player2.clickCard(this.chagatai);
+            this.player2.clickPrompt('player1');
+            expect(this.game.currentConflict.attackers).toContain(this.chagatai);
+            this.player1.pass();
+            this.player2.clickCard('a-perfect-cut');
+            this.player2.clickCard(this.chagatai);
+
+            this.noMoreActions();
+            expect(this.chagatai.isHonored).toBe(true);
         });
     });
 });

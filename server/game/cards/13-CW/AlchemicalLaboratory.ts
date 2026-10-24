@@ -1,31 +1,24 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'alchemical-laboratory-fire';
+const elementSymbol = { key: 'alchemical-laboratory-fire', element: Element.Fire };
 
 class AlchemicalLaboratory extends DrawCard {
     static id = 'alchemical-laboratory';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => (
-                this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player)
-            ),
-            match: (card: DrawCard, context) => card.getType() === CardType.Attachment && card.parentCharacter !== null && card.parentCharacter !== undefined && card.parentCharacter.controller !== context?.player,
-            effect: AbilityDsl.effects.addKeyword('ancestral'),
+            condition: (context) => hasClaimedRing(this, elementSymbol.key, context.player),
+            match: (card, context) => card.type === CardType.Attachment && card.parentCharacter !== null && card.parentCharacter !== undefined && card.parentCharacter.controller !== context?.player,
+            effect: addKeyword('ancestral'),
             targetController: Players.Self
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Fire
-        });
-        return symbols;
+    override getPrintedElementSymbols() {
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

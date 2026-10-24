@@ -60,5 +60,47 @@ describe('Deathseeker', function() {
                 });
             });
         });
+
+        describe('Deathseeker\'s ability', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['deathseeker']
+                    },
+                    player2: {
+                        inPlay: ['akodo-toturi', 'doji-kuwanan']
+                    }
+                });
+                this.deathseeker = this.player1.findCardByName('deathseeker');
+                this.akodoToturi = this.player2.findCardByName('akodo-toturi');
+                this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+                this.kuwanan.fate = 2;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.deathseeker],
+                    defenders: [this.akodoToturi]
+                });
+                this.noMoreActions();
+            });
+
+            it('should discard a character with no fate', function() {
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                this.player1.clickCard(this.deathseeker);
+                this.player1.clickCard(this.akodoToturi);
+                expect(this.deathseeker.location).toBe('dynasty discard pile');
+                expect(this.akodoToturi.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(5)).toContain('player1 uses Deathseeker, sacrificing Deathseeker to discard Akodo Toturi');
+            });
+
+            it('should remove 1 fate from a character with fate', function() {
+                this.player1.clickCard(this.deathseeker);
+                this.player1.clickCard(this.kuwanan);
+                expect(this.kuwanan.location).toBe('play area');
+                expect(this.kuwanan.fate).toBe(1);
+                expect(this.getChatLogs(5)).toContain('player1 uses Deathseeker, sacrificing Deathseeker to remove 1 fate from Doji Kuwanan');
+            });
+        });
     });
 });

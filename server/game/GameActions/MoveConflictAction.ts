@@ -2,24 +2,20 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
 import { CardType, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent, ActionOverrides } from './GameAction.js';
+import { RevealAction } from './RevealAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export type MoveConflictProperties = CardActionProperties;
 
-export class MoveConflictAction extends CardGameAction {
-    name = 'moveConflict';
-    eventName = EventName.OnConflictMoved;
-    targetType = [CardType.Province];
-    effect = 'move the conflict to {0}';
-    cost = 'moves the conflict to {0}';
-    defaultProperties: MoveConflictProperties = {};
-    constructor(properties: ((context: AbilityContext) => MoveConflictProperties) | MoveConflictProperties) {
-        super(properties);
-    }
+export class MoveConflictAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<MoveConflictProperties, EventName.OnConflictMoved, Context> {
+    override name = 'moveConflict';
+    override eventName = EventName.OnConflictMoved;
+    override targetType = [CardType.Province];
+    override effect = 'move the conflict to {0}';
+    override cost = 'moving the conflict to {0}';
 
-    canAffect(card: ProvinceCard, context: AbilityContext): boolean {
+    override canAffect(card: ProvinceCard, context: Context): boolean {
         if(
-            !card ||
             !context.game.isDuringConflict() ||
             card.type !== CardType.Province ||
             card.isConflictProvince() ||
@@ -31,9 +27,9 @@ export class MoveConflictAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnConflictMoved>, _additionalProperties: Record<string, unknown> = {}): void {
-        let context = (event.context as AbilityContext);
-        let newProvince = event.card;
+    override eventHandler(event: ActionEvent<EventName.OnConflictMoved, Context>, _additionalProperties: ActionOverrides = {}): void {
+        const context = event.context;
+        const newProvince = event.card;
         const conflict = context.game.currentConflict;
         if(!conflict || !conflict.conflictProvince) {
             return;
@@ -43,9 +39,8 @@ export class MoveConflictAction extends CardGameAction {
         conflict.conflictProvince.inConflict = false;
         conflict.conflictProvince = newProvince;
         if(newProvince.isFacedown()) {
-            const revealEvent = context.game.actions
-                .reveal()
-                .getEvent(newProvince, context.game.getFrameworkContext());
+            const revealEvent = new RevealAction({})
+                .getEvent(newProvince, context.game.getFrameworkContext(newProvince.controller));
             context.game.openThenEventWindow(revealEvent);
         }
     }

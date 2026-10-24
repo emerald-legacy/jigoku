@@ -1,58 +1,48 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { Duration, TargetMode } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { cannotDeclareRing } from '../../../effects.js';
+import { Duration, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
-
-type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
 
 function fluff(element: Element): string {
     switch(element) {
-        case 'air':
-            return 'with a glorious race they celebrate. A day of games and friendly competition, the herd and the samurai in communion!';
-        case 'earth':
-            return 'high in the mountains they celebrate. Around a fire, close to the stars, sharing some tasty kumis!';
-        case 'fire':
-            return 'it\'s a sunny day filled with celebration. The Moto share tales of the desert!';
-        case 'water':
-            return 'they celebrate at the beach. A day of joyful play for the riders, and the first sight of the sea for a few foals!';
-        case 'void':
-            return 'with offerings at an open air shrine they celebrate. The Iuchi pay respect to Shinjo-kami, and herd is blessed for a good year!';
-        default:
-            return '';
+        case Element.Air:
+            return 'with a glorious race they celebrate. A day of games and friendly competition, the herd and the samurai in communion';
+        case Element.Earth:
+            return 'high in the mountains they celebrate. Around a fire, close to the stars, sharing some tasty kumis';
+        case Element.Fire:
+            return 'it\'s a sunny day filled with celebration. The Moto share tales of the desert';
+        case Element.Water:
+            return 'they celebrate at the beach. A day of joyful play for the riders, and the first sight of the sea for a few foals';
+        case Element.Void:
+            return 'with offerings at an open air shrine they celebrate. The Iuchi pay respect to Shinjo-kami, and herd is blessed for a good year';
     }
 }
 
 export default class DayOfBrotherHorse extends DrawCard {
     static id = 'day-of-brother-horse';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Protect a ring and draw three card',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Protect a ring and draw three cards')
+            .when({
                 onConflictPass: (event, context) =>
                     context.player === event.conflict.attackingPlayer &&
-                    (context.player.cardsInPlay as DrawCard[]).some((card: DrawCard) => !card.bowed)
-            },
-            target: {
-                mode: TargetMode.Ring,
+                    context.player.cardsInPlay.some((card) => !card.bowed)
+            })
+            .ringTarget({
                 ringCondition: () => true
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context) => ({
-                gameActions: [
-                    AbilityDsl.actions.ringLastingEffect({
-                        duration: Duration.UntilEndOfPhase,
-                        target: (context.ring?.getElements() as Element[]).map((element) => context.game.rings[element]),
-                        effect: AbilityDsl.effects.cannotDeclareRing(
-                            (player: Player) => player === context.player.opponent
-                        )
-                    }),
-                    AbilityDsl.actions.draw({ target: context.player, amount: 3 }),
-                    AbilityDsl.actions.chosenDiscard({ target: context.player })
-                ]
-            })),
-            max: AbilityDsl.limit.perRound(1),
-            effect: 'prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}',
-            effectArgs: (context) => [context.player.opponent ?? '', fluff((context.ring?.element ?? 'air') as Element)]
-        });
+            })
+            .ringLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                target: context.ring.getElements().map((element) => context.game.rings[element]),
+                effect: cannotDeclareRing(
+                    (player) => player === context.player.opponent
+                )
+            }))
+            .draw(3)
+            .chatText((context) => msg`prevent ${context.player.opponent ?? ''} from declaring ${context.chatTarget()} conflicts, draw 3 cards, and discard 1 card - ${fluff(context.ring.element)}`)
+            .max(perRound(1))
+            .then()
+            .chosenDiscard((context) => ({ target: context.player }));
     }
 }

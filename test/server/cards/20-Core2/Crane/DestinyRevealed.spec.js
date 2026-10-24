@@ -58,7 +58,7 @@ describe('Destiny Revealed', function () {
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('1');
 
-                let fate = this.challenger.fate;
+                const fate = this.challenger.fate;
                 this.player1.clickCard(this.destiny);
                 expect(this.challenger.fate).toBe(fate + 1);
                 expect(this.player1).toHavePrompt('Policy Debate');
@@ -221,6 +221,36 @@ describe('Destiny Revealed Ring Stuff', function () {
             expect(this.getChatLogs(5)).toContain(
                 'player2 plays Destiny Revealed to cancel the effects of the Water Ring'
             );
+        });
+    });
+});
+
+describe('Destiny Revealed own ring effects', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['destiny-revealed']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+        });
+
+        it('does not cancel your own ring effect', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [],
+                ring: 'fire'
+            });
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.challenger);
+            this.player1.clickPrompt('Honor Doji Challenger');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.challenger.isHonored).toBe(true);
         });
     });
 });

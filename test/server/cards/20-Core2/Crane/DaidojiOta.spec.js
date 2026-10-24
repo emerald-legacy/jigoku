@@ -142,8 +142,8 @@ describe('Daidoji Ota', function () {
                     defenders: [this.mitsu]
                 });
 
-                let fate = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.clickCard(this.punches[0]);
                 this.player2.clickCard(this.mitsu);
@@ -181,7 +181,7 @@ describe('Daidoji Ota', function () {
                     defenders: [this.mitsu]
                 });
 
-                let fate2 = this.player2.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.clickCard(this.katanas[0]);
                 this.player2.clickCard(this.mitsu);
@@ -197,8 +197,8 @@ describe('Daidoji Ota', function () {
                     defenders: [this.mitsu]
                 });
 
-                let _fate = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const _fate = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.pass();
                 this.player1.clickCard(this.retreat);
@@ -220,6 +220,45 @@ describe('Daidoji Ota', function () {
                 this.player2.clickCard(this.mitsu);
                 expect(this.player2.fate).toBe(fate2);
             });
+        });
+    });
+});
+
+describe('Daidoji Ota and an event played from the discard pile', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 0,
+                    inPlay: ['isawa-hifumi'],
+                    conflictDiscard: ['banzai']
+                },
+                player2: {
+                    inPlay: ['daidoji-ota', 'doji-whisperer']
+                }
+            });
+            this.hifumi = this.player1.findCardByName('isawa-hifumi');
+            this.banzai = this.player1.findCardByName('banzai');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+        });
+
+        it('does not count the event being played as a copy in the discard pile', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.hifumi],
+                defenders: [this.whisperer]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.hifumi);
+            expect(this.player1).toHavePrompt('Choose an event');
+            expect(this.player1).toBeAbleToSelect(this.banzai);
+            this.player1.clickCard(this.banzai);
+            expect(this.player1).toHavePrompt('Choose a character');
+            this.player1.clickCard(this.hifumi);
+            this.player1.clickPrompt('Done');
+            expect(this.banzai.location).toBe('removed from game');
+            expect(this.player1.fate).toBe(0);
         });
     });
 });

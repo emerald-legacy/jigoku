@@ -140,3 +140,38 @@
         });
     });
 });
+
+describe('Gateway to Meido and Disguised paid with a character at home', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['agasha-swordsmith']
+                },
+                player2: {
+                    inPlay: ['akodo-gunso', 'honored-general'],
+                    provinces: ['gateway-to-meido'],
+                    dynastyDiscard: ['akodo-zentaro']
+                }
+            });
+            this.akodoGunso = this.player2.findCardByName('akodo-gunso');
+            this.akodoZentaro = this.player2.findCardByName('akodo-zentaro', 'dynasty discard pile');
+            this.gatewayToMeido = this.player2.findCardByName('gateway-to-meido', 'province 1');
+        });
+
+        it('should not offer Disguised when only replacing a character at home would make it affordable', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['agasha-swordsmith'],
+                defenders: [this.akodoGunso],
+                province: this.gatewayToMeido
+            });
+            this.player2.fate = 0;
+            this.player2.clickCard(this.akodoZentaro);
+            expect(this.player2).not.toHavePrompt('Choose a character to replace');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.akodoZentaro.location).toBe('dynasty discard pile');
+        });
+    });
+});

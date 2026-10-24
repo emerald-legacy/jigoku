@@ -1,19 +1,25 @@
+import { msg } from '../../../GameChat.js';
 import { Location, CardType, CharacterStatus, EventName } from '../../../Constants.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cannotParticipateAsAttacker } from '../../../effects.js';
+import { honor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { GameEvent } from '../../../Events/EventPayloads.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-function targetsFromEvent(context: AbilityContext): WeakSet<BaseCard> {
-    switch((context as TriggeredAbilityContext).event.name) {
+type ChaperoneEvent = GameEvent<EventName.OnStatusTokenMoved | EventName.OnCardDishonored | EventName.OnStatusTokenDiscarded>;
+
+function targetsFromEvent(event: ChaperoneEvent): WeakSet<BaseCard> {
+    switch(event.name) {
         case EventName.OnStatusTokenMoved:
-            return new WeakSet([(context as TriggeredAbilityContext).event.donor as BaseCard]);
+            if(event.token.grantedStatus === CharacterStatus.Dishonored) {
+                return new WeakSet([event.recipient]);
+            }
+            return new WeakSet(event.donor ? [event.donor] : []);
         case EventName.OnCardDishonored:
-            return new WeakSet([(context as TriggeredAbilityContext).event.card as BaseCard]);
+            return new WeakSet([event.card]);
         case EventName.OnStatusTokenDiscarded:
-            return new WeakSet((context as TriggeredAbilityContext).event.cards);
+            return new WeakSet(event.cards);
         default:
             return new WeakSet();
     }
@@ -26,39 +32,36 @@ function isFriendlyCharacter(context: TriggeredAbilityContext, card: BaseCard) {
 export default class DiligentChaperone extends DrawCard {
     static id = 'diligent-chaperone';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            effect: AbilityDsl.effects.cannotParticipateAsAttacker()
+            effect: cannotParticipateAsAttacker()
         });
 
-        this.reaction({
-            title: 'Rehonor the character',
-            when: {
-                onStatusTokenMoved: (event: EventPayload<EventName.OnStatusTokenMoved>, context) =>
-                    !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
-                    !!event.donor && isFriendlyCharacter(context, event.donor) &&
-                    !context.source.bowed,
-                onCardDishonored: (event: { card: DrawCard }, context) =>
+        this.reaction('Rehonor the character')
+            .when({
+                onStatusTokenMoved: (event, context) =>
+                    !context.source.bowed && (
+                        (event.token.grantedStatus === CharacterStatus.Honored &&
+                            !!event.donor && isFriendlyCharacter(context, event.donor)) ||
+                        // a dishonored token moved onto an honored character discards both tokens
+                        (event.token.grantedStatus === CharacterStatus.Dishonored &&
+                            !event.recipient.isDishonored && isFriendlyCharacter(context, event.recipient))
+                    ),
+                onCardDishonored: (event, context) =>
                     event.card.isOrdinary() && isFriendlyCharacter(context, event.card) && !context.source.bowed,
-                onStatusTokenDiscarded: (event: EventPayload<EventName.OnStatusTokenDiscarded>, context) =>
+                onStatusTokenDiscarded: (event, context) =>
                     !context.source.bowed &&
-                    !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
-                    (event.cards ?? []).some(isFriendlyCharacter.bind(null, context))
-            },
-            effect: 'protect the honor of the Crane',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+                    event.token.grantedStatus === CharacterStatus.Honored &&
+                    event.cards.some(isFriendlyCharacter.bind(null, context))
+            })
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
-                cardCondition: (card, context) => targetsFromEvent(context).has(card),
-                subActionProperties: (card) => {
-                    context.target = card;
-                    return { target: card };
-                },
-                gameAction: AbilityDsl.actions.honor(),
-                message: '{0} honors {1}',
-                messageArgs: (card, player) => [player, card]
+                cardCondition: (card) => targetsFromEvent(context.event).has(card),
+                gameAction: honor(),
+                message: (_context, card, player) => msg`${player} honors ${card}`
             }))
-        });
+            .chatText('protect the honor of the Crane');
     }
 }

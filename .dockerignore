@@ -3,8 +3,6 @@ npm-debug.log
 build
 .git
 .gitignore
-.eslintrc
-.eslintrc.json
 .prettierrc
 .env
 .env.local

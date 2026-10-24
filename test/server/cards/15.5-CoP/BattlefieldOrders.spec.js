@@ -90,7 +90,7 @@ describe('Battlefield Orders', function() {
             this.player1.clickCard(this.advisor);
             expect(this.advisor.bowed).toBe(true);
 
-            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to trigger Doji Kuwanan\'s \'Bow a participating character with lower military skill\' ability');
+            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to resolve Doji Kuwanan\'s \'Bow a participating character with lower military skill\' ability');
             expect(this.getChatLogs(10)).toContain('player1 resolves Doji Kuwanan to bow Beloved Advisor');
         });
 
@@ -102,8 +102,8 @@ describe('Battlefield Orders', function() {
                 type: 'military'
             });
 
-            let hand1 = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand1 = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.player2.clickCard(this.orders);
             this.player2.clickCard(this.advisor);
@@ -111,8 +111,8 @@ describe('Battlefield Orders', function() {
             expect(this.player1.hand.length).toBe(hand1 + 1);
             expect(this.player2.hand.length).toBe(hand2); //-1 from orders
 
-            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to trigger Beloved Advisor\'s \'Each player draws 1 card\' ability');
-            expect(this.getChatLogs(10)).toContain('player2 resolves Beloved Advisor to draw 1 card');
+            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to resolve Beloved Advisor\'s \'Each player draws 1 card\' ability');
+            expect(this.getChatLogs(10)).toContain('player2 resolves Beloved Advisor to make player1 and player2 draw 1 card');
         });
 
         it('should let you choose between action if the character has multiple', function() {
@@ -160,15 +160,47 @@ describe('Battlefield Orders', function() {
             });
 
             this.player2.clickCard(this.orders);
-            let fate = this.kuwanan.fate;
+            const fate = this.kuwanan.fate;
             expect(this.player2).toHavePrompt('Select an ability to resolve');
             this.player2.clickCard(this.warrior);
             this.player1.clickCard(this.kuwanan);
             expect(this.warrior.location).toBe('dynasty discard pile');
             expect(this.kuwanan.fate).toBe(fate + 1);
 
-            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to trigger Vanguard Warrior\'s \'Sacrifice to put fate on one character\' ability');
+            expect(this.getChatLogs(10)).toContain('player2 plays Battlefield Orders to resolve Vanguard Warrior\'s \'Sacrifice to put fate on one character\' ability');
             expect(this.getChatLogs(10)).toContain('player1 resolves Vanguard Warrior, sacrificing Vanguard Warrior to place 1 fate on Doji Kuwanan');
+        });
+    });
+});
+
+describe('Battlefield Orders and an ability that can\'t resolve', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    inPlay: [{ card: 'matsu-agetoki', attachments: ['true-strike-kenjutsu'] }],
+                    hand: ['battlefield-orders']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.agetoki = this.player2.findCardByName('matsu-agetoki');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: [this.agetoki]
+            });
+        });
+
+        it('only offers the abilities that can resolve', function() {
+            this.player2.clickCard('battlefield-orders');
+            this.player2.clickCard(this.agetoki);
+            expect(this.player2).not.toHavePrompt('Choose an ability');
+            expect(this.player2).toBeAbleToSelect(this.berserker);
         });
     });
 });

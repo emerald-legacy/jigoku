@@ -55,7 +55,7 @@ describe('The Path of Man', function() {
             });
 
             it('should give you 2 fate', function() {
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 this.initiateConflict({
                     attackers: [this.fushicho],
                     defenders: []

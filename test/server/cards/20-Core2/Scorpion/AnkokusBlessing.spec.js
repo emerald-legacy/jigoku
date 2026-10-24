@@ -16,8 +16,8 @@ describe('Ankoku\'s Blessing', function () {
         });
 
         it('should discard a card from hand to gain 2 fate and draw 2 cards', function () {
-            let fate = this.player1.fate;
-            let hand = this.player1.hand.length;
+            const fate = this.player1.fate;
+            const hand = this.player1.hand.length;
 
             this.player1.clickCard(this.blessing);
             expect(this.player1).toHavePrompt('Select card to discard');

@@ -29,7 +29,7 @@ describe('Seven Fold Palace', function() {
             });
 
             this.noMoreActions();
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.sevenFoldPalace);

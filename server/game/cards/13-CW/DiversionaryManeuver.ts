@@ -1,60 +1,62 @@
-import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
-import { Location, CardType, Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Location, CardType, Players, TargetMode, ConflictType } from '../../Constants.js';
+import {
+    bow,
+    moveConflict,
+    moveToConflict,
+    multiple,
+    selectCards,
+    sendHome,
+    sequential
+} from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class DiversionaryManeuver extends DrawCard {
     static id = 'diversionary-maneuver';
 
-    setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Move the conflict to another province',
-            condition: context => context.game.isDuringConflict('military') && context.player.isAttackingPlayer(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Move the conflict to another province')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military) && context.player.isAttackingPlayer())
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard, context) => !(card as ProvinceCard).isConflictProvince() && (card as ProvinceCard).canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a: ProvinceCard) => a.controller === card.controller)
-            },
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.bow(context => ({
+                cardCondition: (card, context) => !card.isConflictProvince() && card.canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a) => a.controller === card.controller)
+            })
+            .gameAction(sequential([
+                multiple([
+                    bow((context) => ({
                         target: context.game.currentConflict?.getParticipants()
                     })),
-                    AbilityDsl.actions.sendHome(context => ({
+                    sendHome((context) => ({
                         target: context.game.currentConflict?.getParticipants()
                     })),
-                    AbilityDsl.actions.moveConflict<ProvinceCard>(context => ({
+                    moveConflict((context) => ({
                         target: context.target })),
-                    AbilityDsl.actions.selectCard({
+                    selectCards({
                         cardType: CardType.Character,
                         location: Location.PlayArea,
                         controller: Players.Self,
                         player: Players.Self,
                         optional: true,
                         mode: TargetMode.Unlimited,
-                        cardCondition: card => !card.bowed,
-                        message: '{0} moves {1} to the conflict',
-                        messageArgs: (card: DrawCard[], player) => [player, card.length > 0 ? card : 'no one'],
-                        gameAction: AbilityDsl.actions.moveToConflict()
+                        cardCondition: (card) => !card.bowed,
+                        message: (_context, card, player) => msg`${player} moves ${card.length > 0 ? card : 'no one'} to the conflict`,
+                        gameAction: moveToConflict()
                     })
                 ]),
-                AbilityDsl.actions.selectCard({
+                selectCards({
                     cardType: CardType.Character,
                     location: Location.PlayArea,
                     controller: Players.Opponent,
                     player: Players.Opponent,
                     optional: true,
                     mode: TargetMode.Unlimited,
-                    cardCondition: card => !card.bowed,
-                    message: '{0} moves {1} to the conflict',
-                    messageArgs: (card: DrawCard[], player) => [player, card.length > 0 ? card : 'no one'],
-                    gameAction: AbilityDsl.actions.moveToConflict()
+                    cardCondition: (card) => !card.bowed,
+                    message: (_context, card, player) => msg`${player} moves ${card.length > 0 ? card : 'no one'} to the conflict`,
+                    gameAction: moveToConflict()
                 })
-            ]),
-            effect: 'move the conflict to {1} and send all participating characters home bowed',
-            effectArgs: context => [context.target ?? '']
-        });
+            ]))
+            .chatText((context) => msg`move the conflict to ${context.target} and send all participating characters home bowed`);
     }
 }
 

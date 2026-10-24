@@ -1,44 +1,47 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { Location, Players } from '../../../Constants.js';
+import { perRound } from '../../../AbilityLimit.js';
+import {
+    cardMenu,
+    conditional,
+    draw,
+    lookAt,
+    moveCard,
+    sequential
+} from '../../../GameActions/GameActions.js';
+import { Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
+import { msg } from '../../../GameChat.js';
+import { randomHandCards } from '../../randomHandCards.js';
 
 export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Gaze into the void',
-            condition: (context) => context.player.isTraitInPlay('shugenja'),
-            gameAction: AbilityDsl.actions.sequentialContext((context) => {
-                const revealedCards = (shuffle(context.player.opponent?.hand) as Array<DrawCard>)
-                    .slice(0, 2)
-                    .sort((a, b) => a.name.localeCompare(b.name));
-                return {
-                    gameActions: [
-                        AbilityDsl.actions.lookAt((context) => ({
-                            target: revealedCards,
-                            message: '{0} reveals {1} from their hand - the void reveals...',
-                            messageArgs: (cards) => [context.player.opponent, cards]
-                        })),
-                        AbilityDsl.actions.cardMenu((_context) => ({
-                            activePromptTitle: 'Choose a card to remove from the game',
-                            cards: revealedCards,
-                            targets: true,
-                            player: Players.Self,
-                            message: '{0} removes {1} from the game - the void consumes!',
-                            messageArgs: (card, player) => [player, card],
-                            gameAction: AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame })
-                        })),
-                        AbilityDsl.actions.conditional((context) => ({
-                            condition: context.player.hasAffinity('void', context),
-                            trueGameAction: AbilityDsl.actions.draw(),
-                            falseGameAction: AbilityDsl.actions.noAction()
-                        }))
-                    ]
-                };
-            }),
-            max: AbilityDsl.limit.perRound(1)
-        });
+    override setupCardAbilities() {
+        this.action('Gaze into the void')
+            .condition((context) => (context.player.opponent?.hand.length ?? 0) > 0)
+            .ifCondition((context) => controlsShugenja(context.player))
+            .gameAction(sequential((context) => {
+                const revealedCards = randomHandCards(context.player.opponent, 2);
+                return [
+                    lookAt({
+                        target: revealedCards,
+                        message: (context, cards) => msg`${context.player.opponent} reveals ${cards} from their hand - the void reveals...`
+                    }),
+                    cardMenu((_context) => ({
+                        activePromptTitle: 'Choose a card to remove from the game',
+                        cards: revealedCards,
+                        targets: true,
+                        player: Players.Self,
+                        message: (_context, card, player) => msg`${player} removes ${card} from the game - the void consumes`,
+                        gameAction: moveCard({ destination: Location.RemovedFromGame })
+                    })),
+                    conditional((context) => ({
+                        condition: context.player.hasAffinity(Trait.Void, context) && revealedCards.some((card) => card.location === Location.RemovedFromGame),
+                        trueGameAction: draw()
+                    }))
+                ];
+            }))
+            .chatText((context) => msg`reveal 2 random cards from ${context.player.opponent}'s hand and remove one from the game`)
+            .max(perRound(1));
     }
 }

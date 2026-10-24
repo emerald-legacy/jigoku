@@ -1,9 +1,10 @@
-import DrawCard from '../../../../../server/game/DrawCard.js';
+import type DrawCard from '../../../../../server/game/DrawCard.js';
+import type { IntegrationContext } from '../../../../helpers/integrationhelper.js';
 
 describe('Retreat to Safety', () => {
     integration(() => {
-        let player1: any;
-        let player2: any;
+        let player1: IntegrationContext['player1'];
+        let player2: IntegrationContext['player2'];
         let borderRider: DrawCard;
         let matsuBerserker: DrawCard;
         let kitsuMotso: DrawCard;
@@ -13,7 +14,7 @@ describe('Retreat to Safety', () => {
         let noMoreActions: () => void;
         let getChatLogs: (_n: number) => string[];
 
-        beforeEach(function(this: any) {
+        beforeEach(function(this: IntegrationContext) {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
@@ -31,12 +32,33 @@ describe('Retreat to Safety', () => {
             noMoreActions = () => this.noMoreActions();
             getChatLogs = (n) => this.getChatLogs(n);
 
-            borderRider = player1.findCardByName('border-rider');
-            matsuBerserker = player2.findCardByName('matsu-berserker');
-            kitsuMotso = player2.findCardByName('kitsu-motso');
-            ikomaProdigy = player2.findCardByName('ikoma-prodigy');
-            retreatToSafety = player2.findCardByName('retreat-to-safety');
+            borderRider = player1.findDrawCard('border-rider');
+            matsuBerserker = player2.findDrawCard('matsu-berserker');
+            kitsuMotso = player2.findDrawCard('kitsu-motso');
+            ikomaProdigy = player2.findDrawCard('ikoma-prodigy');
+            retreatToSafety = player2.findDrawCard('retreat-to-safety');
             ikomaProdigy.bowed = true;
+        });
+
+        it('lets the player decline to ready a character', () => {
+            noMoreActions();
+            initiateConflict({
+                attackers: [borderRider],
+                defenders: [matsuBerserker, kitsuMotso]
+            });
+            matsuBerserker.bowed = true;
+            kitsuMotso.bowed = true;
+
+            player2.clickCard(retreatToSafety);
+            player2.clickCard(matsuBerserker);
+            player2.clickCard(kitsuMotso);
+            player2.clickPrompt('Done');
+
+            expect(player2).toHavePrompt('Choose a character to ready');
+            expect(player2).toHavePromptButton('Done');
+            player2.clickPrompt('Done');
+            expect(matsuBerserker.bowed).toBe(true);
+            expect(kitsuMotso.bowed).toBe(true);
         });
 
         it('sends defenders home', () => {

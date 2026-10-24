@@ -47,7 +47,7 @@ describe('Unyielding Sensei', function() {
             });
 
             it('should allow you to choose from the top two cards of your dynasty deck', function() {
-                let cards = this.player1.provinces['province 1'].dynastyCards.length;
+                const cards = this.player1.provinces['province 1'].dynastyCards.length;
                 expect(this.player1.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.player1.clickCard(this.sensei);
                 expect(this.player1).toBeAbleToSelect(this.p1);
@@ -76,7 +76,7 @@ describe('Unyielding Sensei', function() {
             });
 
             it('should only show Take Nothing if you don\'t see a character', function() {
-                let cards = this.player1.provinces['province 1'].dynastyCards.length;
+                const cards = this.player1.provinces['province 1'].dynastyCards.length;
                 expect(this.player1.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.player1.clickCard(this.sensei);
                 expect(this.player1).toBeAbleToSelect(this.p1);
@@ -102,7 +102,7 @@ describe('Unyielding Sensei', function() {
 
             it('should let you keep stacking a province', function() {
                 this.player1.moveCard(this.akodototuri, 'dynasty deck');
-                let cards = this.player1.provinces['province 1'].dynastyCards.length;
+                const cards = this.player1.provinces['province 1'].dynastyCards.length;
                 expect(this.player1.player.dynastyDeck[0]).toBe(this.akodototuri);
                 this.player1.clickCard(this.sensei);
                 expect(this.player1).toBeAbleToSelect(this.p1);
@@ -132,7 +132,7 @@ describe('Unyielding Sensei', function() {
 
             it('chat message', function() {
                 this.p1.facedown = false;
-                let cards = this.player1.provinces['province 1'].dynastyCards.length;
+                const cards = this.player1.provinces['province 1'].dynastyCards.length;
                 expect(this.player1.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.player1.clickCard(this.sensei);
                 expect(this.player1).toBeAbleToSelect(this.p1);

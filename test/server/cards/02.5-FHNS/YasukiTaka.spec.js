@@ -67,5 +67,31 @@ describe('Yasuki Taka', function() {
                 expect(this.player1).toBeAbleToSelect('yasuki-taka');
             });
         });
+
+        describe('Yasuki Taka and a character put into a province', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 1,
+                        inPlay: ['yasuki-taka', 'eager-scout'],
+                        hand: ['the-receding-tide']
+                    },
+                    player2: {
+                        inPlay: ['stoic-gunso']
+                    }
+                });
+                this.keeper = this.player1.findCardByName('eager-scout');
+            });
+
+            it('should trigger on a crab character leaving play into a province', function() {
+                this.player1.clickCard('the-receding-tide');
+                this.player1.clickCard(this.keeper);
+                this.player1.clickCard(this.player1.findCardByName('shameful-display', 'province 1'));
+                expect(this.keeper.location).toBe('province 1');
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect('yasuki-taka');
+            });
+        });
     });
 });

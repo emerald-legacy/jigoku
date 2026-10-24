@@ -1,7 +1,8 @@
-import { CardType, EventName, Location, Phases } from '../../Constants.js';
+import { CardType, EventName, Location, Phase } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
-import BaseCard from '../../BaseCard.js';
+import * as costs from '../../costs/index.js';
+import { returnToHand } from '../../GameActions/GameActions.js';
+import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 
@@ -9,22 +10,23 @@ export default class SoshiShadowshaper extends DrawCard {
     static id = 'soshi-shadowshaper';
 
     private charactersPlayedThisPhase = new Set<BaseCard>();
-    private eventRegistrar?: EventRegistrar;
 
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnPhaseStarted, EventName.OnCharacterEntersPlay]);
-
-        this.action({
-            title: 'Return a character to owner\'s hand',
-            phase: Phases.Conflict,
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
-                cardType: CardType.Character,
-                cardCondition: (card) => (card.getCost() ?? 0) < 3 && this.charactersPlayedThisPhase.has(card),
-                gameAction: AbilityDsl.actions.returnToHand()
-            }
+    public override setupCardAbilities() {
+        const eventRegistrar = new EventRegistrar(this.game);
+        eventRegistrar.register({
+            [EventName.OnPhaseStarted]: () => this.onPhaseStarted(),
+            [EventName.OnCharacterEntersPlay]: (event) => this.onCharacterEntersPlay(event),
+            // a card that left play is a new instance when it comes back
+            [EventName.OnCardLeavesPlay]: (event) => this.charactersPlayedThisPhase.delete(event.card)
         });
+
+        this.action('Return a character to owner\'s hand')
+            .phase(Phase.Conflict)
+            .cost(costs.payHonor(1))
+            .target({
+                cardType: CardType.Character,
+                cardCondition: (card) => card.costLessThan(3) && this.charactersPlayedThisPhase.has(card)
+            }, returnToHand());
     }
 
     public onPhaseStarted() {

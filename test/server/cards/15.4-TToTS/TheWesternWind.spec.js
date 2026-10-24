@@ -99,7 +99,7 @@ describe('The Western Wind', function() {
         });
 
         it('should not discard the cards already there', function() {
-            let p1Count = this.player1.player.getDynastyCardsInProvince('province 1').length;
+            const p1Count = this.player1.player.getDynastyCardsInProvince('province 1').length;
             this.p21.facedown = false;
             this.p22.facedown = false;
             this.game.checkGameState(true);

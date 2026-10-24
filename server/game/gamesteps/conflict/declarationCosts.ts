@@ -1,0 +1,41 @@
+import { EffectName, EventName } from '../../Constants.js';
+import type { Cost } from '../../costs/Cost.js';
+import { payHonor } from '../../costs/fateAndHonorCosts.js';
+import type DrawCard from '../../DrawCard.js';
+import type { Event } from '../../Events/Event.js';
+import type { MessageArgs } from '../../GameChat.js';
+
+/** A cost the rules charge to declare a conflict, attackers or defenders, and what the chat says once it is paid (from its events that resolved). */
+export interface DeclarationCost {
+    costs: Cost[];
+    paidMessages?: (events: Event[]) => MessageArgs[];
+    /** Called instead when the cost wasn't paid, which stops the declaration. */
+    failed?: () => void;
+}
+
+/** The fate it costs to declare these characters as attackers. */
+export function fateCostToDeclare(characters: DrawCard[]): number {
+    return characters.reduce((total, card) => total + card.sumEffects(EffectName.FateCostToAttack), 0);
+}
+
+/** The cards to discard to declare these characters as attackers in a military conflict. */
+export function cardCostToDeclare(characters: DrawCard[]): number {
+    return characters.reduce((total, card) => total + card.sumEffects(EffectName.CardCostToAttackMilitary), 0);
+}
+
+/** The honor it costs to declare these characters (tainted, Unleashed Experiment). */
+export function honorCostToDeclare(characters: DrawCard[]): number {
+    return characters.reduce((total, card) =>
+        total + card.getEffects(EffectName.HonorCostToDeclare).reduce((sum, effect) => sum + effect.amount, 0), 0);
+}
+
+/** One honor cost per effect, so the honor lost to a status token is reported as such. */
+export function honorCostsToDeclare(characters: DrawCard[]): Cost[] {
+    return characters.flatMap((card) =>
+        card.getEffects(EffectName.HonorCostToDeclare).map((effect) => payHonor(effect.amount, effect.dueToStatusToken)));
+}
+
+/** The honor these resolved honor-cost events took. */
+export function honorPaid(events: Event[]): number {
+    return events.reduce((total, event) => total + (event.is(EventName.OnModifyHonor) ? Math.abs(event.amount) : 0), 0);
+}

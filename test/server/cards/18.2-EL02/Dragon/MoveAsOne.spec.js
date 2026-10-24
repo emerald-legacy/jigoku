@@ -52,7 +52,7 @@ describe('Move as One', function() {
         });
 
         it('should add it to your hand', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.initiateConflict({
                 attackers: [this.ancientMaster]

@@ -91,6 +91,8 @@ describe('Prayers on the Eve of Battle', function () {
                 });
 
                 this.noMoreActions();
+                // both players' forced reactions: the first player orders them
+                this.player1.clickCard(this.prayers1);
 
                 expect(this.asakoTsuki.isParticipating()).toBe(false);
                 expect(this.prayers1.location).toBe('removed from game');
@@ -98,8 +100,8 @@ describe('Prayers on the Eve of Battle', function () {
             });
 
             it('happy path', function () {
-                let fate = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -108,6 +110,8 @@ describe('Prayers on the Eve of Battle', function () {
                 });
 
                 this.noMoreActions();
+                // both players' forced reactions: the first player orders them
+                this.player1.clickCard(this.prayers1);
                 expect(this.player1.fate).toBe(fate);
                 expect(this.player2.fate).toBe(fate2 + 1);
 
@@ -117,6 +121,44 @@ describe('Prayers on the Eve of Battle', function () {
                 expect(this.getChatLogs(10)).toContain('player1 uses Prayers on the Eve of Battle to remove Prayers on the Eve of Battle from the game');
                 expect(this.getChatLogs(10)).toContain('player2 uses Prayers on the Eve of Battle to gain 1 fate and discard Prayers on the Eve of Battle');
             });
+        });
+    });
+});
+
+describe('Prayers on the Eve of Battle when the conflict ends', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asako-tsuki', 'doji-challenger'],
+                    hand: ['prayers-on-the-eve-of-battle']
+                },
+                player2: {
+                    inPlay: ['borderlands-defender']
+                }
+            });
+            this.asakoTsuki = this.player1.findCardByName('asako-tsuki');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.borderlands = this.player2.findCardByName('borderlands-defender');
+            this.prayers = this.player1.findCardByName('prayers-on-the-eve-of-battle');
+        });
+
+        it('resolves at the end of the conflict, after the ring effect', function () {
+            this.player1.playAttachment(this.prayers, this.asakoTsuki);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.asakoTsuki, this.challenger],
+                defenders: [this.borderlands]
+            });
+            const fate = this.player1.fate;
+            this.noMoreActions();
+            expect(this.player1).toHavePrompt('Choose an effect to resolve');
+            expect(this.prayers.location).toBe('play area');
+            expect(this.player1.fate).toBe(fate);
+            this.player1.clickPrompt('Gain 2 honor');
+            expect(this.prayers.location).toBe('conflict discard pile');
+            expect(this.player1.fate).toBe(fate + 1);
         });
     });
 });

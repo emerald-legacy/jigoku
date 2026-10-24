@@ -76,5 +76,12 @@ describe('White Lotus Method', function () {
                 'player1 plays White Lotus Method to move a status token to Doji Whisperer, their controller draws a card'
             );
         });
+
+        it('cannot move a dishonor token from an opponent\'s character', function () {
+            this.dojiWhisperer.dishonor();
+            this.player1.clickCard(this.whiteLotusMethod);
+            expect(this.player1).toBeAbleToSelect(this.bayushiManipulator);
+            expect(this.player1).not.toBeAbleToSelect(this.dojiWhisperer);
+        });
     });
 });

@@ -1,22 +1,20 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class YasukiOguri extends DrawCard {
     static id = 'yasuki-oguri';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Gain +1/+1',
-            limit: ability.limit.unlimitedPerConflict(),
-            when: {
-                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context) => event.player === context.player.opponent && event.card.type === CardType.Event && context.source.isDefending()
-            },
-            effect: 'give him +1{1}/+1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(1) })
-        });
+    override setupCardAbilities() {
+        this.reaction('Gain +1/+1')
+            .when({
+                onCardPlayed: (event, context) => event.player === context.player.opponent && event.card.type === CardType.Event && context.source.isDefending()
+            })
+            .cardLastingEffect({ effect: modifyBothSkills(1) })
+            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
+            .limit(unlimited());
     }
 }
 

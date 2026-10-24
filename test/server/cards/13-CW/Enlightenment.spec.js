@@ -90,3 +90,44 @@ describe('Enlightenment', function() {
         });
     });
 });
+
+describe('Enlightenment with cancelled ring effects', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['enlightenment']
+                },
+                player2: {
+                    provinces: ['manicured-garden'],
+                    dynastyDiscard: ['storm-from-sakkaku']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.enlightenment = this.player1.findCardByName('enlightenment');
+            this.garden = this.player2.findCardByName('manicured-garden');
+            this.storm = this.player2.findCardByName('storm-from-sakkaku');
+            this.player2.placeCardInProvince(this.storm, this.garden.location);
+            this.storm.facedown = false;
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'air',
+                province: this.garden,
+                attackers: [this.challenger],
+                defenders: []
+            });
+            this.player2.pass();
+            for(const ring of ['air', 'fire', 'earth', 'void', 'water']) {
+                this.player1.claimRing(ring);
+            }
+        });
+
+        it('does not win when the ring effects were cancelled', function() {
+            this.player1.clickCard(this.enlightenment);
+            expect(this.getChatLogs(10)).not.toContain('player1 has won the game');
+            expect(this.game.winner).toBeFalsy();
+        });
+    });
+});

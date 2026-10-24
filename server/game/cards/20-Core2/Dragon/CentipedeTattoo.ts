@@ -1,19 +1,19 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { Trait } from '../../../Constants.js';
+import { addTrait, doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CentipedeTattoo extends DrawCard {
     static id = 'centipede-tattoo';
 
-    setupCardAbilities() {
-        this.attachmentConditions({ trait: 'monk' });
+    override setupCardAbilities() {
+        this.attachmentConditions({ trait: Trait.Monk });
 
-        this.whileAttached({ effect: AbilityDsl.effects.addKeyword('tattooed') });
+        this.whileAttached({ effect: addTrait(Trait.Tattooed) });
 
         this.whileAttached({
             condition: () =>
-                !!this.parentCharacter && !!this.game.currentConflict &&
-                this.parentCharacter.isParticipating() && this.game.currentConflict.loser === this.parentCharacter.controller,
-            effect: AbilityDsl.effects.doesNotBow()
+                !!this.parentCharacter && !!this.game.currentConflict?.isOnLosingSide(this.parentCharacter),
+            effect: doesNotBow()
         });
     }
 }

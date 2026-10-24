@@ -1,36 +1,33 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type Ring from '../../Ring.js';
+import * as costs from '../../costs/index.js';
+import { attach, cardMenu } from '../../GameActions/GameActions.js';
 import { Players, CardType, Location } from '../../Constants.js';
 
 class AgashaShunsen extends DrawCard {
     static id = 'agasha-shunsen';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Return rings to fetch an attachment',
-            condition: () => this.game.isDuringConflict(),
-            cost: AbilityDsl.costs.returnRings(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Return rings to fetch an attachment')
+            .condition(() => this.game.isDuringConflict())
+            .cost(costs.returnRings())
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.cardMenu(context => ({
-                    cards: context.player.conflictDeck.filter((card: DrawCard) =>
-                        card.type === CardType.Attachment &&
-                        card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1)
-                    ),
-                    message: '{0} chooses to attach {1} to {2}',
-                    messageArgs: card => [context.player, card, context.target],
-                    choices: ['Don\'t attach a card'],
-                    handlers: [() => this.game.addMessage('{0} chooses not to attach anything to {1}', context.player, context.target)],
-                    gameAction: AbilityDsl.actions.attach(),
-                    subActionProperties: card => ({ attachment: card })
-                }))
-            },
-            effect: 'search their deck for an attachment costing {1} or less and attach it to {0}',
-            effectArgs: context => (context.costs.returnRing as Ring[]).length,
-            gameAction: AbilityDsl.actions.shuffleDeck({ deck: Location.ConflictDeck })
-        });
+                controller: Players.Self
+            }, cardMenu((context) => ({
+                cards: context.player.conflictDeck.filter((card) =>
+                    card.type === CardType.Attachment &&
+                        card.costLessThan(context.costs.returnedRings ? context.costs.returnedRings.length + 1 : 1)
+                ),
+                message: (context, card) => msg`${context.player} chooses to attach ${card} to ${context.target}`,
+                options: [
+                    { text: 'Don\'t attach a card', handler: () => this.game.addMessage(msg`${context.player} chooses not to attach anything to ${context.target}`) }
+                ],
+                gameAction: attach(),
+                subActionProperties: (card) => ({ attachment: card })
+            })))
+            .shuffleDeck({ deck: Location.ConflictDeck })
+            .chatText((context) => msg`search their deck for an attachment costing ${(context.costs.returnedRings ?? []).length} or less and attach it to ${context.chatTarget()}`);
     }
 }
 

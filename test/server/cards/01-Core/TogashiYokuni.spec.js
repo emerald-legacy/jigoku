@@ -330,28 +330,28 @@ describe('Togashi Yokuni', function() {
                 this.player1.clickCard(this.illustriousPlagiarist);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
-                this.player2.clickCard(this.legionOfOne);
+                this.player1.clickCard(this.legionOfOne);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Give a solitary character +3/+0');
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(9);
+                expect(this.togashiYokuni.militarySkill).toBe(9);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Give a solitary character +3/+0');
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(12);
+                expect(this.togashiYokuni.militarySkill).toBe(12);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
-                this.player2.clickCard(this.legionOfOne);
-                this.player2.pass();
-                this.player1.clickCard(this.togashiYokuni);
-                this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(15);
+                this.player1.clickCard(this.legionOfOne);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(18);
+                expect(this.togashiYokuni.militarySkill).toBe(15);
+                this.player2.pass();
+                this.player1.clickCard(this.togashiYokuni);
+                this.player1.clickCard(this.togashiYokuni);
+                expect(this.togashiYokuni.militarySkill).toBe(18);
             });
 
             it('should allow Yokuni to copy Plagiarist and play Banzai from hand and from Yokuni, but not from Yokuni twice', function() {
@@ -365,7 +365,7 @@ describe('Togashi Yokuni', function() {
                 this.player2.pass();
                 // Yokuni copies Banzai!
                 this.player1.clickCard(this.togashiYokuni);
-                this.player2.clickCard(this.banzai);
+                this.player1.clickCard(this.banzai);
                 // Legion of One on Plagiarist
                 this.legionOfOne = this.player2.clickCard('a-legion-of-one');
                 this.player2.clickCard(this.illustriousPlagiarist);
@@ -373,24 +373,24 @@ describe('Togashi Yokuni', function() {
                 this.player1.clickCard('banzai');
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Done');
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(8);
+                expect(this.togashiYokuni.militarySkill).toBe(8);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Increase a character\'s military skill');
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickPrompt('Done');
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(10);
+                expect(this.togashiYokuni.militarySkill).toBe(10);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
-                this.player2.clickCard(this.legionOfOne);
-                this.player2.pass();
-                this.player1.clickCard(this.togashiYokuni);
-                this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(13);
+                this.player1.clickCard(this.legionOfOne);
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(16);
+                expect(this.togashiYokuni.militarySkill).toBe(13);
+                this.player2.pass();
+                this.player1.clickCard(this.togashiYokuni);
+                this.player1.clickCard(this.togashiYokuni);
+                expect(this.togashiYokuni.militarySkill).toBe(16);
             });
         });
 
@@ -427,6 +427,8 @@ describe('Togashi Yokuni', function() {
                 expect(this.sumiko.location).toBe('play area');
                 this.noMoreActions();
                 this.player2.pass();
+                // both players' delayed effects: the first player orders them
+                this.player1.clickPrompt('Kitsu Spiritcaller\'s effect on Akodo Toturi');
                 expect(this.sumiko.location).toBe('dynasty deck');
                 expect(this.toturi.location).toBe('dynasty deck');
             });
@@ -458,7 +460,7 @@ describe('Togashi Yokuni', function() {
             it('should correctly copy Toshiro\'s ability', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.togashiYokuni);
-                expect(this.togashiYokuni.getMilitarySkill()).toBe(10);
+                expect(this.togashiYokuni.militarySkill).toBe(10);
                 this.noMoreActions();
                 expect(this.player1).toHavePrompt('Air Ring');
                 this.player1.clickPrompt('Gain 2 honor');
@@ -509,6 +511,39 @@ describe('Togashi Yokuni', function() {
                 expect(this.player1).toHavePrompt('Togashi Yokuni');
                 this.player1.clickCard(this.fieryMadness);
                 expect(this.fieryMadness.location).toBe('conflict discard pile');
+            });
+        });
+
+        describe('Togashi Yokuni and a character that is a copy', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['togashi-yokuni', 'doji-whisperer']
+                    },
+                    player2: {
+                        inPlay: ['shosuro-actor']
+                    }
+                });
+                this.yokuni = this.player1.findCardByName('togashi-yokuni');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.actor = this.player2.findCardByName('shosuro-actor');
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.whisperer],
+                    defenders: [this.actor]
+                });
+                this.player2.clickCard(this.actor);
+                this.player2.clickCard(this.whisperer);
+            });
+
+            it('should copy the ability printed on the character, not the copied card\'s', function() {
+                expect(this.actor.name).toBe('Doji Whisperer');
+                this.player1.clickCard(this.yokuni);
+                expect(this.player1).toBeAbleToSelect(this.actor);
+                this.player1.clickCard(this.actor);
+                expect(this.getChatLogs(3)).toContain('player1 uses Togashi Yokuni to copy Doji Whisperer\'s \'Choose a character to copy\' ability');
+                expect(this.yokuni.getCardActions().map((action) => action.title)).toContain('Choose a character to copy');
             });
         });
     });

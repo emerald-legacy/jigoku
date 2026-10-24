@@ -99,6 +99,47 @@ describe('Outmaneuvered by Force', function () {
                 });
             });
 
+            describe('After the first conflict opportunity', function () {
+                beforeEach(function () {
+                    this.setupTest({
+                        phase: 'conflict',
+                        player1: {
+                            inPlay: ['adept-of-the-waves']
+                        },
+                        player2: {
+                            inPlay: ['crisis-breaker'],
+                            hand: ['outmaneuvered-by-force']
+                        }
+                    });
+                    this.adeptOfTheWaves = this.player1.findCardByName('adept-of-the-waves');
+                    this.outmaneuveredByForce = this.player2.findCardByName('outmaneuvered-by-force');
+                });
+
+                it('can be played if that opportunity was passed', function () {
+                    this.noMoreActions();
+                    this.player1.passConflict();
+                    this.player1.pass();
+                    expect(this.player2).toHavePrompt('Action Window');
+                    this.player2.clickCard(this.outmaneuveredByForce);
+                    expect(this.player2).toHavePrompt('Initiate Conflict');
+                });
+
+                it('cannot be played once a conflict was declared', function () {
+                    this.noMoreActions();
+                    this.initiateConflict({
+                        attackers: [this.adeptOfTheWaves],
+                        defenders: []
+                    });
+                    this.noMoreActions();
+                    this.player1.clickPrompt('Don\'t Resolve');
+                    this.player1.pass();
+                    expect(this.player2).toHavePrompt('Action Window');
+                    this.player2.clickCard(this.outmaneuveredByForce);
+                    expect(this.player2).not.toHavePrompt('Initiate Conflict');
+                    expect(this.outmaneuveredByForce.location).toBe('hand');
+                });
+            });
+
             describe('When conflicts were declared', function () {
                 beforeEach(function () {
                     this.setupTest({

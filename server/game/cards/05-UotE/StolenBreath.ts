@@ -1,25 +1,19 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { ConflictType } from '../../Constants.js';
+import { cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class StolenBreath extends DrawCard {
     static id = 'stolen-breath';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
+        this.playOnlyIf((context) => !context.game.isDuringConflict());
+
         this.whileAttached({
             effect: [
-                ability.effects.cannotParticipateAsAttacker('political'),
-                ability.effects.cannotParticipateAsDefender('political')
+                cannotParticipateAsAttacker(ConflictType.Political),
+                cannotParticipateAsDefender(ConflictType.Political)
             ]
         });
-    }
-
-    canPlay(context: AbilityContext, playType: string) {
-        if(this.game.isDuringConflict()) {
-            return false;
-        }
-
-        return super.canPlay(context, playType);
     }
 }
 

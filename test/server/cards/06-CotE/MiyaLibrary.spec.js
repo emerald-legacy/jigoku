@@ -5,7 +5,7 @@ describe('Miya Library', function () {
                 this.setupTest({
                     phase: 'dynasty',
                     player1: {
-                        inPlay: ['miya-library', 'kanjo-district', 'miya-satoshi', 'adept-of-the-waves', 'kudaka', 'naive-student'],
+                        inPlay: ['miya-library', 'kanjo-district', 'miya-satoshi', 'adept-of-the-waves', 'kudaka', 'naive-student', 'seppun-guardsman'],
                         dynastyDeck: []
                     },
                     player2: {
@@ -18,6 +18,8 @@ describe('Miya Library', function () {
                 this.kanjo = this.player1.findCardByName('kanjo-district');
                 this.naiveStudent = this.player1.findCardByName('naive-student');
                 this.player1.placeCardInProvince(this.miyaLibrary, 'province 1');
+                this.guardsman = this.player1.findCardByName('seppun-guardsman');
+                this.player1.moveCard(this.guardsman, 'dynasty deck');
                 this.player1.moveCard(this.miyaSatoshi, 'dynasty deck');
                 this.player1.moveCard(this.kanjo, 'dynasty deck');
                 this.player1.moveCard(this.adept, 'dynasty deck');
@@ -27,7 +29,9 @@ describe('Miya Library', function () {
 
             it('should allow you to replace the library for satoshi', function () {
                 this.player1.clickCard(this.miyaLibrary);
-                expect(this.player1).toHavePrompt('select an imperial character to replace miya library');
+                expect(this.getChatLogs(1)).toContain('player1 uses Miya Library to search the top four cards of their dynasty deck for an Imperial character');
+                expect(this.player1).toHavePrompt('Select an Imperial character to replace Miya Library');
+                expect(this.player1).not.toHavePromptButton('Seppun Guardsman');
                 this.player1.clickPrompt('Miya Satoshi');
                 expect(this.player1).toHavePrompt('Select the card you would like to place on top of your dynasty deck');
                 this.player1.clickPrompt('Kanjo District');
@@ -35,8 +39,10 @@ describe('Miya Library', function () {
                 this.player1.clickPrompt('Adept of the Waves');
                 expect(this.player1).toHavePrompt('Which card do you want to be the third card?');
                 this.player1.clickPrompt('Kudaka');
+                expect(this.player1.dynastyDeck[4]).toBe(this.guardsman);
                 expect(this.player2).toHavePrompt('Play cards from provinces');
                 expect(this.miyaSatoshi.location).toBe('province 1');
+                expect(this.miyaSatoshi.facedown).toBe(false);
                 expect(this.miyaLibrary.location).toBe('dynasty deck');
                 this.player2.pass();
                 this.player1.clickCard(this.miyaSatoshi);
@@ -53,7 +59,7 @@ describe('Miya Library', function () {
                 this.player1.moveCard(this.naiveStudent, 'dynasty deck');
                 this.player1.clickCard(this.miyaLibrary);
                 expect(this.player1).not.toBeAbleToSelect(this.miyaSatoshi);
-                expect(this.player1).toHavePrompt('select an imperial character to replace miya library');
+                expect(this.player1).toHavePrompt('Select an Imperial character to replace Miya Library');
                 this.player1.clickPrompt('Do not replace Miya Library');
                 this.player1.clickPrompt('Kudaka');
                 this.player1.clickPrompt('Naive Student');
@@ -62,7 +68,7 @@ describe('Miya Library', function () {
 
             it('should put the card back in the right order', function () {
                 this.player1.clickCard(this.miyaLibrary);
-                expect(this.player1).toHavePrompt('select an imperial character to replace miya library');
+                expect(this.player1).toHavePrompt('Select an Imperial character to replace Miya Library');
                 this.player1.clickPrompt('Miya Satoshi');
                 expect(this.player1).toHavePrompt('Select the card you would like to place on top of your dynasty deck');
                 this.player1.clickPrompt('Kanjo District');
@@ -91,6 +97,44 @@ describe('Miya Library', function () {
                 this.player1.clickPrompt('Kanjo District');
                 expect(this.player2).toHavePrompt('Play cards from provinces');
             });
+        });
+    });
+});
+
+describe('Miya Library and Hantei XXXVIII', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    inPlay: ['miya-library', 'kanjo-district', 'miya-satoshi', 'adept-of-the-waves', 'kudaka'],
+                    dynastyDeck: []
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.miyaLibrary = this.player1.findCardByName('miya-library');
+            this.miyaSatoshi = this.player1.findCardByName('miya-satoshi');
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.player1.placeCardInProvince(this.miyaLibrary, 'province 1');
+            for(const name of ['miya-satoshi', 'kanjo-district', 'adept-of-the-waves', 'kudaka']) {
+                this.player1.moveCard(this.player1.findCardByName(name), 'dynasty deck');
+            }
+        });
+
+        it('chooses no card; the cards are put back in any order', function () {
+            this.player1.clickCard(this.miyaLibrary);
+            expect(this.player2).toBeAbleToSelect(this.hantei);
+            this.player2.clickCard(this.hantei);
+            expect(this.player2).not.toHavePrompt('Select an Imperial character to replace Miya Library');
+            expect(this.player1).toHavePrompt('Select the card you would like to place on top of your dynasty deck');
+            this.player1.clickPrompt('Miya Satoshi');
+            this.player1.clickPrompt('Kudaka');
+            this.player1.clickPrompt('Kanjo District');
+            expect(this.player1.dynastyDeck[0]).toBe(this.miyaSatoshi);
+            expect(this.miyaLibrary.location).toBe('province 1');
+            expect(this.player2).toHavePrompt('Play cards from provinces');
         });
     });
 });

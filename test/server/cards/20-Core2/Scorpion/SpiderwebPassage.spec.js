@@ -54,8 +54,20 @@ describe('Spiderweb Passage', function () {
             expect(this.player1).toBeAbleToSelect(this.tensai);
             expect(this.player1).toBeAbleToSelect(this.koyane);
             expect(this.player1).not.toBeAbleToSelect(this.adept);
-            expect(this.player1).not.toBeAbleToSelect(this.goblin);
             expect(this.player1).not.toBeAbleToSelect(this.ningyo);
+        });
+
+        it('targets characters with a dash skill', function () {
+            this.initiateConflict({
+                attackers: [this.sadako, this.aramoro],
+                defenders: [this.goblin],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.spiderwebPassage);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.goblin);
         });
 
         it('can make opponent discard cards', function () {
@@ -75,7 +87,7 @@ describe('Spiderweb Passage', function () {
             expect(this.player1).not.toBeAbleToSelect(this.adept);
 
             this.player1.clickCard(this.tensai);
-            expect(this.getChatLogs(5)).toContain(
+            expect(this.getChatLogs(5)).not.toContain(
                 'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
             );
             expect(this.player2).toHavePrompt('Select one');
@@ -83,6 +95,9 @@ describe('Spiderweb Passage', function () {
             expect(this.player2).toHavePromptButton('Discard Fire Tensai Initiate');
 
             this.player2.clickPrompt('Discard 2 random cards from hand');
+            expect(this.getChatLogs(5)).toContain(
+                'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
+            );
             expect(this.getChatLogs(5)).toContain('player2 distracts the Shinobi');
             expect(this.fan.location).toBe('conflict discard pile');
             expect(this.katana.location).toBe('conflict discard pile');
@@ -105,7 +120,7 @@ describe('Spiderweb Passage', function () {
             expect(this.player1).not.toBeAbleToSelect(this.adept);
 
             this.player1.clickCard(this.tensai);
-            expect(this.getChatLogs(5)).toContain(
+            expect(this.getChatLogs(5)).not.toContain(
                 'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
             );
             expect(this.player2).toHavePrompt('Select one');
@@ -114,12 +129,35 @@ describe('Spiderweb Passage', function () {
 
             this.player2.clickPrompt('Discard Fire Tensai Initiate');
             expect(this.getChatLogs(5)).toContain(
+                'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
+            );
+            expect(this.getChatLogs(5)).toContain(
                 'player2 refuses to discard 2 cards. Fire Tensai Initiate is discarded'
             );
             expect(this.tensai.location).toBe('dynasty discard pile');
         });
 
-        it('direct to discard when opponent does not have enough cards in hand', function () {
+        it('offers discarding the hand when it has fewer cards than there are Shinobi', function () {
+            this.initiateConflict({
+                attackers: [this.sadako, this.aramoro, this.actress],
+                defenders: [this.tensai],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.spiderwebPassage);
+            this.player1.clickCard(this.tensai);
+            expect(this.player2).toHavePrompt('Select one');
+            this.player2.clickPrompt('Discard 3 random cards from hand');
+            expect(this.player2.hand.length).toBe(0);
+            expect(this.katana.location).toBe('conflict discard pile');
+            expect(this.fan.location).toBe('conflict discard pile');
+            expect(this.tensai.location).toBe('play area');
+        });
+
+        it('direct to discard when opponent has no cards in hand', function () {
+            this.player2.moveCard(this.katana, 'conflict deck');
+            this.player2.moveCard(this.fan, 'conflict deck');
             this.initiateConflict({
                 attackers: [this.sadako, this.aramoro, this.actress],
                 defenders: [this.tensai],
@@ -139,6 +177,8 @@ describe('Spiderweb Passage', function () {
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Spiderweb Passage, sacrificing Spiderweb Passage to ambush Fire Tensai Initiate'
             );
+            expect(this.tensai.location).toBe('dynasty discard pile');
+            expect(this.getChatLogs(5).filter((line) => line.includes('refuses'))).toEqual([]);
         });
     });
 });

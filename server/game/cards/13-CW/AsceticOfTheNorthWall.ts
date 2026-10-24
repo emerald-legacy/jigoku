@@ -1,30 +1,25 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase, Element, RestrictionType } from '../../Constants.js';
+import { cardCannot } from '../../effects.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'ascetic-of-the-north-wall-earth';
+const elementSymbol = { key: 'ascetic-of-the-north-wall-earth', element: Element.Earth };
 
 class AsceticOfTheNorthWall extends DrawCard {
     static id = 'ascetic-of-the-north-wall';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player) && context.game.currentPhase !== Phases.Fate,
+            condition: (context) => hasClaimedRing(this, elementSymbol.key, context.player) && context.game.currentPhase !== Phase.Fate,
             effect: [
-                AbilityDsl.effects.cardCannot('removeFate'),
-                AbilityDsl.effects.cardCannot('discardFromPlay')
+                cardCannot(RestrictionType.RemoveFate),
+                cardCannot(RestrictionType.DiscardFromPlay)
             ]
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Earth
-        });
-        return symbols;
+    override getPrintedElementSymbols() {
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

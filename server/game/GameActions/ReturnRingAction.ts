@@ -1,21 +1,21 @@
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export type ReturnRingProperties = RingActionProperties;
 
-export class ReturnRingAction extends RingAction {
-    name = 'returnRing';
-    eventName = EventName.OnReturnRing;
-    effect = 'return {0} to the unclaimed pool';
+export class ReturnRingAction<Context extends AbilityContext = AbilityContext> extends RingAction<ReturnRingProperties, EventName.OnReturnRing, Context> {
+    override name = 'returnRing';
+    override eventName = EventName.OnReturnRing;
+    override effect = 'return {0} to the unclaimed pool';
 
-    canAffect(ring: Ring, context: AbilityContext): boolean {
+    override canAffect(ring: Ring, context: Context): boolean {
         return !ring.isUnclaimed() && super.canAffect(ring, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnReturnRing>): void {
-        event.ring?.resetRing();
+    override eventHandler(event: ActionEvent<EventName.OnReturnRing, Context>): void {
+        event.ring.resetRing();
     }
 }

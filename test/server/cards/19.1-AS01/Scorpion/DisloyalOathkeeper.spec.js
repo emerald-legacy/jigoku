@@ -38,7 +38,7 @@ describe('Disloyal Oathkeeper', function () {
             expect(this.player2).toBeAbleToSelect(this.oathkeeper);
 
             this.player2.clickCard(this.oathkeeper);
-            expect(this.crane.location).toBe(this.oathkeeper.uuid);
+            expect(this.crane.isUnderneath(this.oathkeeper)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain(
                 'player2 uses Disloyal Oathkeeper to place Way of the Crane underneath Disloyal Oathkeeper'
@@ -61,7 +61,7 @@ describe('Disloyal Oathkeeper', function () {
             this.player1.clickCard(this.crane);
             this.player1.clickCard(this.whisperer);
             this.player2.clickCard(this.oathkeeper);
-            expect(this.crane.location).toBe(this.oathkeeper.uuid);
+            expect(this.crane.isUnderneath(this.oathkeeper)).toBe(true);
             this.player2.pass();
 
             this.player1.clickCard(this.waves);
@@ -97,6 +97,50 @@ describe('Disloyal Oathkeeper', function () {
             this.player2.clickCard(this.challenger);
 
             expect(this.player1).toHavePrompt('Action Window');
+        });
+    });
+});
+
+describe('Disloyal Oathkeeper after a change of control', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['disloyal-oathkeeper', 'matsu-berserker'],
+                    hand: ['fine-katana', 'banzai']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['seize-the-mind']
+                }
+            });
+            this.oathkeeper = this.player1.findCardByName('disloyal-oathkeeper');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.whisperer.fate = 3;
+            this.player1.player.placeUnderneath(this.katana, this.oathkeeper);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: [this.whisperer]
+            });
+            this.player2.clickCard('seize-the-mind');
+            this.player2.clickCard(this.oathkeeper);
+            this.player2.clickCard(this.whisperer);
+            this.player2.clickPrompt('3');
+        });
+
+        it('still counts the card under it, whoever placed it', function () {
+            expect(this.oathkeeper.controller).toBe(this.player2.player);
+            this.player1.clickCard('banzai');
+            this.player1.clickCard(this.berserker);
+            if(this.player1.currentButtons.includes('Done')) {
+                this.player1.clickPrompt('Done');
+            }
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
         });
     });
 });

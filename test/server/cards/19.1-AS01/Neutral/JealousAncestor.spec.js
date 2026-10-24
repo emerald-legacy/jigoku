@@ -176,7 +176,7 @@ describe('Jealous Ancestor', function () {
                 });
 
                 it('does not block draw from opponent events', function () {
-                    let initialHand = this.player1.hand.length;
+                    const initialHand = this.player1.hand.length;
                     this.player2.clickCard(this.bhc);
                     this.player2.clickPrompt('player1');
                     expect(this.getChatLogs(5)).toContain(
@@ -257,7 +257,7 @@ describe('Jealous Ancestor', function () {
                 });
 
                 it('does not block draw from opponent events', function () {
-                    let initialHand = this.player1.hand.length;
+                    const initialHand = this.player1.hand.length;
                     this.player2.clickCard(this.bhc);
                     this.player2.clickPrompt('player1');
                     expect(this.getChatLogs(5)).toContain(
@@ -336,7 +336,7 @@ describe('Jealous Ancestor', function () {
                 });
 
                 it('does not block draw from opponent events', function () {
-                    let initialHand = this.player1.hand.length;
+                    const initialHand = this.player1.hand.length;
                     this.player2.clickCard(this.bhc);
                     this.player2.clickPrompt('player1');
                     expect(this.getChatLogs(5)).toContain(
@@ -366,3 +366,91 @@ describe('Jealous Ancestor', function () {
         });
     });
 });
+
+describe('Jealous Ancestor attached to its controller\'s own character', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['gifted-tactician'],
+                    hand: ['jealous-ancestor', 'backhanded-compliment']
+                },
+                player2: {
+                    inPlay: ['master-whisperer'],
+                    hand: ['backhanded-compliment']
+                }
+            });
+
+            this.giftedTactician = this.player1.findCardByName('gifted-tactician');
+            this.jealousAncestor = this.player1.findCardByName('jealous-ancestor');
+            this.bhc1 = this.player1.findCardByName('backhanded-compliment');
+            this.whisperer = this.player2.findCardByName('master-whisperer');
+            this.bhc2 = this.player2.findCardByName('backhanded-compliment');
+
+            this.player1.clickCard(this.jealousAncestor);
+            this.player1.clickPrompt('Play Jealous Ancestor as an attachment');
+            this.player1.clickCard(this.giftedTactician);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.giftedTactician],
+                defenders: [this.whisperer]
+            });
+        });
+
+        it('blocks its controller\'s draw effects', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.bhc1);
+            this.player1.clickPrompt('player1');
+            expect(this.player1.hand.length).toBe(0);
+        });
+
+        it('does not block the opponent\'s draw effects', function () {
+            this.player2.clickCard(this.bhc2);
+            this.player2.clickPrompt('player2');
+            expect(this.player2.hand.length).toBe(1);
+        });
+    });
+});
+
+describe('Jealous Ancestor and the opponent\'s cards', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer', { card: 'matsu-berserker', attachments: ['dai-tsuchi'] }]
+                },
+                player2: {
+                    inPlay: [{ card: 'doji-challenger', attachments: ['fine-katana'] }],
+                    hand: ['jealous-ancestor']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.katana = this.player2.findCardByName('fine-katana');
+            this.player1.pass();
+            this.player2.clickCard('jealous-ancestor');
+            this.player2.clickPrompt('Play Jealous Ancestor as an attachment');
+            this.player2.clickCard(this.whisperer);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.whisperer, this.berserker],
+                defenders: [this.challenger]
+            });
+            this.player2.pass();
+        });
+
+        it('lets the parent\'s controller return an opponent\'s card to that opponent\'s hand', function () {
+            this.player1.clickCard(this.berserker);
+            expect(this.player1).toBeAbleToSelect(this.katana);
+            this.player1.clickCard(this.katana);
+            expect(this.katana.location).toBe('hand');
+        });
+    });
+});
+

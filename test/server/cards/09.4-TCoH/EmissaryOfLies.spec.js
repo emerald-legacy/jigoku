@@ -48,6 +48,7 @@ describe('Emissary of lies\'', function() {
                 this.player1.clickCard(this.tsukune);
                 this.player2.chooseCardInPrompt(this.katana.name, 'card-name');
                 expect(this.player1).toHavePrompt('Do you want to reveal your hand?');
+                expect(this.player2).toHavePrompt('Waiting for opponent to choose to reveal their hand or not');
                 expect(this.player1).toHavePromptButton('Yes');
                 expect(this.player1).toHavePromptButton('No');
             });
@@ -76,6 +77,21 @@ describe('Emissary of lies\'', function() {
                 this.player1.clickPrompt('Yes');
                 expect(this.game.currentConflict.defenders).toContain(this.tsukune);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+
+            it('should log the named card', function() {
+                this.player1.clickCard(this.emissary);
+                this.player1.clickCard(this.tsukune);
+                this.player2.chooseCardInPrompt(this.banzai.name, 'card-name');
+                expect(this.getChatLogs(3)).toContain('player2 names Banzai! - player1 must choose if they want to reveal their hand');
+            });
+
+            it('should reveal the hand when choosing to reveal it', function() {
+                this.player1.clickCard(this.emissary);
+                this.player1.clickCard(this.tsukune);
+                this.player2.chooseCardInPrompt(this.banzai.name, 'card-name');
+                this.player1.clickPrompt('Yes');
+                expect(this.getChatLogs(5)).toContain('Emissary of Lies sees Fine Katana');
             });
         });
     });

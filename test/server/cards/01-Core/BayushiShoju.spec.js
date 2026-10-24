@@ -31,7 +31,7 @@ describe('Bayushi Shoju', function() {
             });
 
             it('shouldn\'t discard the target if its political skill is above 0', function() {
-                expect(this.yogoOutcast.getPoliticalSkill()).toBe(2);
+                expect(this.yogoOutcast.politicalSkill).toBe(2);
                 expect(this.yogoOutcast.location).toBe('play area');
             });
 
@@ -55,7 +55,7 @@ describe('Bayushi Shoju', function() {
                     this.player2.pass();
                     this.player1.clickCard(this.bayushiShoju);
                     this.player1.clickCard(this.yogoOutcast);
-                    expect(this.yogoOutcast.getPoliticalSkill()).toBe(1);
+                    expect(this.yogoOutcast.politicalSkill).toBe(1);
                     this.player2.pass();
                     this.player1.clickCard('a-fate-worse-than-death', 'hand');
                     this.player1.clickCard(this.yogoOutcast);
@@ -66,7 +66,7 @@ describe('Bayushi Shoju', function() {
             describe('Fiery Madness and Shoju\'s delayed effect', function() {
                 it('should discard the target before Watch Commander fires', function() {
                     this.watchCommander = this.player2.playAttachment('watch-commander', this.yogoOutcast);
-                    expect(this.yogoOutcast.getPoliticalSkill()).toBe(3);
+                    expect(this.yogoOutcast.politicalSkill).toBe(3);
                     this.player1.clickCard(this.bayushiShoju);
                     this.player1.clickCard(this.yogoOutcast);
                     this.player2.pass();
@@ -85,7 +85,7 @@ describe('Bayushi Shoju', function() {
 
                 it('Yogo Outcast should not be discarded by Shoju\'s effect', function() {
                     this.player1.playAttachment('fiery-madness', this.yogoOutcast);
-                    expect(this.yogoOutcast.getPoliticalSkill()).toBe(1);
+                    expect(this.yogoOutcast.politicalSkill).toBe(1);
                     expect(this.yogoOutcast.location).toBe('play area');
                     this.player2.clickCard('noble-sacrifice');
                     this.player2.clickPrompt('Pay Costs First');

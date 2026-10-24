@@ -5,7 +5,7 @@ describe('Recalled Defenses', function() {
                 phase: 'dynasty',
                 player1: {
                     inPlay: ['naive-student'],
-                    dynastyDiscard: ['bustling-academy','kanjo-district', 'recalled-defenses']
+                    dynastyDiscard: ['bustling-academy','kanjo-district', 'recalled-defenses', 'doji-whisperer']
                 },
                 player2: {
                     inPlay: ['moto-youth','shinjo-scout'],
@@ -35,6 +35,13 @@ describe('Recalled Defenses', function() {
             expect(this.player1).not.toBeAbleToSelect(this.youth);
             expect(this.player1).not.toBeAbleToSelect(this.defenses);
             expect(this.player1).not.toBeAbleToSelect(this.scout);
+        });
+
+        it('should not target a card already in the stronghold province', function() {
+            const strongholdCard = this.player1.moveCard('doji-whisperer', 'stronghold province');
+            this.player1.clickCard(this.defenses);
+            expect(this.player1).toHavePrompt('Choose a card');
+            expect(this.player1).not.toBeAbleToSelect(strongholdCard);
         });
 
         it('should move the targeted card to the stronghold province', function() {

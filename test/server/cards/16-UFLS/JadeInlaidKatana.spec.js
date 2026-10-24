@@ -29,7 +29,7 @@ describe('Jade Inlaid Katana', function () {
 
         it('should make opponent lose a fate when parent wins a conflict as first player', function () {
             this.noMoreActions();
-            let fate = this.yogoHiroue.fate;
+            const fate = this.yogoHiroue.fate;
 
             this.initiateConflict({
                 type: 'political',

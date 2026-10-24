@@ -1,139 +1,71 @@
-import type { AbilityContext } from '../../AbilityContext.js';
-import { Location, Phases, PlayType, EventName, CardType } from '../../Constants.js';
-import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
-import ThenAbility from '../../ThenAbility.js';
-import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../DrawCard.js';
-import DynastyCardAction from '../../DynastyCardAction.js';
+import { msg } from '../../GameChat.js';
+import { Blocker, CardType, EventName, Location, Players, PlayType } from '../../Constants.js';
 import type BaseCard from '../../BaseCard.js';
-import type { Event } from '../../Events/Event.js';
-import type { AbilityLimit } from '../../AbilityLimit.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type { EffectTarget } from '../../Effects/EffectBuilder.js';
-
-const backAlleyPersistentEffect = {
-    apply: (target: EffectTarget) => {
-        const card = target as BackAlleyHideaway;
-        card.showPopup = true;
-        card.popupMenuText = 'Use Interrupt ability';
-        card.backAlleyActionLimit.registerEvents(card.game);
-    },
-    unapply: (target: EffectTarget) => {
-        const card = target as BackAlleyHideaway;
-        for(const character of card.attachments as DrawCard[]) {
-            character.owner.moveCard(
-                character,
-                character.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
-            );
-            character.abilities.playActions = character.abilities.playActions.filter(
-                (action) => action.title !== 'Play this character from Back-Alley Hideaway'
-            );
-        }
-
-        card.showPopup = false;
-        card.popupMenuText = '';
-        card.backAlleyActionLimit.reset();
-        card.backAlleyActionLimit.unregisterEvents(card.game);
-    }
-};
-
-class BackAlleyPlayCharacterAction extends DynastyCardAction {
-    title = 'Play this character from Back-Alley Hideaway';
-    limit: AbilityLimit;
-
-    constructor(
-        public backAlleyCard: BackAlleyHideaway,
-        card: BaseCard
-    ) {
-        super(card);
-        this.limit = backAlleyCard.backAlleyActionLimit;
-    }
-
-    meetsRequirements(context = this.createContext()) {
-        if(context.game.currentPhase !== Phases.Dynasty) {
-            return 'phase';
-        }
-        if(context.source.location !== this.backAlleyCard.uuid) {
-            return 'location';
-        }
-        if(
-            !(context.source as DrawCard).canPlay(context, PlayType.PlayFromProvince) ||
-            !(context.source.parent instanceof DrawCard && context.source.parent.canTriggerAbilities(context))
-        ) {
-            return 'cannotTrigger';
-        }
-        if(!this.canPayCosts(context)) {
-            return 'cost';
-        }
-        return '';
-    }
-
-    executeHandler(context: AbilityContext & { chooseFate: number }) {
-        context.game.addMessage(
-            '{0} plays {1} from {2} with {3} additional fate',
-            context.player,
-            context.source,
-            context.source.parent,
-            context.chooseFate
-        );
-        context.source.abilities.playActions = context.source.abilities.playActions.filter(
-            (action) => action.title !== 'Play this character from Back-Alley Hideaway'
-        );
-        // remove associations between this card and Back-Alley Hideaway
-        this.backAlleyCard.removeAttachment(context.source as DrawCard);
-        context.source.parent = null;
-        let putIntoPlayEvent = putIntoPlay({ fate: context.chooseFate }).getEvent(context.source, context);
-        let cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
-            player: context.player,
-            card: context.source,
-            originalLocation: this.backAlleyCard.uuid,
-            playType: PlayType.PlayFromProvince
-        });
-        let window = context.game.openEventWindow([putIntoPlayEvent, cardPlayedEvent]);
-        context.events = [putIntoPlayEvent];
-        let thenAbility = new ThenAbility(this.backAlleyCard, {
-            gameAction: sacrifice({ target: this.backAlleyCard })
-        });
-        window.addThenAbility(thenAbility, context);
-    }
-
-    isCardAbility() {
-        return true;
-    }
-}
+import DrawCard from '../../DrawCard.js';
+import { EventRegistrar } from '../../EventRegistrar.js';
+import { playCard } from '../../GameActions/GameActions.js';
 
 export default class BackAlleyHideaway extends DrawCard {
     static id = 'back-alley-hideaway';
 
-    backAlleyActionLimit!: ReturnType<typeof AbilityDsl.limit.perRound>;
-
-    setupCardAbilities() {
-        this.backAlleyActionLimit = AbilityDsl.limit.perRound(1);
-        this.persistentEffect({
-            effect: AbilityDsl.effects.customDetachedCard(backAlleyPersistentEffect)
+    override setupCardAbilities() {
+        // the client lists the hidden characters in a popup
+        this.showPopup = true;
+        new EventRegistrar(this.game).register({
+            [EventName.OnCardMoved]: (event) => {
+                if(event.card && event.originalLocation === Location.Underneath && this.attachments.some((attachment) => attachment === event.card)) {
+                    this.release(event.card);
+                }
+            }
         });
-        this.interrupt({
-            title: 'Place character in Hideaway',
-            when: {
-                onCardLeavesPlay: (event, context: TriggeredAbilityContext) =>
+
+        this.interrupt('Place character in Hideaway')
+            .when({
+                onCardLeavesPlay: (event, context) =>
                     event.card.isFaction('scorpion') &&
                     event.card.type === CardType.Character &&
                     event.card.controller === context.player &&
-                    event.card.location === Location.PlayArea
-            },
-            effect: 'move {1} into hiding',
-            effectArgs: (context: TriggeredAbilityContext) => context?.event.card ?? '',
-            handler: (context: TriggeredAbilityContext<this>) => {
-                context.event.replaceHandler((event: Event) => {
-                    const card = (event as Event & { card: DrawCard }).card;
-                    context.player.removeCardFromPile(card);
-                    card.leavesPlay();
-                    card.moveTo(context.source.uuid as Location);
-                    (context.source as BackAlleyHideaway).attachments.push(card);
-                    card.parent = context.source;
-                    card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source as BackAlleyHideaway, card));
-                });
-            }
-        });
+                    event.card.location === Location.PlayArea &&
+                    (event.destination === Location.DynastyDiscardPile || event.destination === Location.ConflictDiscardPile)
+            })
+            .handler((context) => context.event.replaceHandler(() => this.hide(context.event.card)))
+            .chatText((context) => msg`move ${context.event.card} into hiding`);
+
+        // "as if it were in this province": played from a province in the dynasty phase, or using Disguised in the conflict phase
+        this.action('Play a character from hiding')
+            .target({
+                cardType: CardType.Character,
+                location: Location.Any,
+                controller: Players.Self,
+                cardCondition: (card) => card.isUnderneath(this)
+            }, playCard({ playType: PlayType.PlayFromProvince, ignoredBlockers: [Blocker.Facedown], source: this }))
+            .chatText('play {0} from hiding')
+            .thenIf((context) => !context.target.isUnderneath(this))
+            .sacrifice({ target: this });
+    }
+
+    /** Attached facedown; clicking it (in the popup) uses the Action. */
+    private hide(card: DrawCard): void {
+        card.controller.removeCardFromPile(card);
+        card.leavesPlay();
+        card.host = this;
+        card.moveTo(Location.Underneath);
+        this.attachments.push(card);
+        card.parent = this;
+        card.abilities.playActions.push(...this.abilities.actions);
+    }
+
+    private release(card: BaseCard): void {
+        this.attachments = this.attachments.filter((attachment) => attachment !== card);
+        card.parent = null;
+        card.abilities.playActions = card.abilities.playActions.filter((action) => !this.abilities.actions.some((own) => own === action));
+    }
+
+    /** The hidden characters go to their discard pile with it. */
+    override leavesPlay(destination?: Location): void {
+        for(const card of this.game.allCards.filter((card) => card.isUnderneath(this))) {
+            card.owner.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+        }
+        super.leavesPlay(destination);
     }
 }

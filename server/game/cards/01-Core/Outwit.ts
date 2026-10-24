@@ -1,23 +1,20 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players, CardType, Trait } from '../../Constants.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 
 class Outwit extends DrawCard {
     static id = 'outwit';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Send a character home.',
-            target: {
+    override setupCardAbilities() {
+        this.action('Send a character home')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => context.player.cardsInPlay.some((myCard: DrawCard) => (
-                    myCard.hasTrait('courtier') && myCard.isParticipating() &&
+                cardCondition: (card, context) => context.player.cardsInPlay.some((myCard) => (
+                    myCard.hasTrait(Trait.Courtier) && myCard.isParticipating() &&
                     myCard.politicalSkill > card.politicalSkill
-                )),
-                gameAction: ability.actions.sendHome()
-            }
-        });
+                ))
+            }, sendHome());
     }
 }
 

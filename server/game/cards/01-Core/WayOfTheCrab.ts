@@ -1,30 +1,29 @@
+import { msg } from '../../GameChat.js';
 import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perRound } from '../../AbilityLimit.js';
+import { sacrifice } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class WayOfTheCrab extends DrawCard {
     static id = 'way-of-the-crab';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Make your opponent sacrifice a character',
-            condition: (context) => context.player.opponent !== undefined,
-            cost: AbilityDsl.costs.sacrifice({
+    public override setupCardAbilities() {
+        this.action('Make your opponent sacrifice a character')
+            .condition((context) => context.player.opponent !== undefined)
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard) => card.isFaction('crab')
-            }),
-            effect: 'force {1} to sacrifice a character',
-            effectArgs: (context) => context.player.opponent ?? '',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+                cardCondition: (card) => card.isFaction('crab')
+            }))
+            .selectCard({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                message: '{0} sacrifices {1} to {2}',
-                messageArgs: (card) => [context.player.opponent, card, context.source],
-                gameAction: AbilityDsl.actions.sacrifice()
-            })),
-            max: AbilityDsl.limit.perRound(1)
-        });
+                message: (context, card) => msg`${context.player.opponent} sacrifices ${card} to ${context.source}`,
+                gameAction: sacrifice()
+            })
+            .chatText((context) => msg`force ${context.player.opponent ?? ''} to sacrifice a character`)
+            .max(perRound(1));
     }
 }

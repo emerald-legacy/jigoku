@@ -26,7 +26,7 @@ describe('Malicious Timekeeper', function () {
                 attackers: [this.timekeeper],
                 defenders: [this.whisperer]
             });
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
             this.player2.pass();
             this.player1.pass();
             expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -42,7 +42,7 @@ describe('Malicious Timekeeper', function () {
                 attackers: [this.timekeeper],
                 defenders: []
             });
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
             this.player2.pass();
             this.player1.pass();
             expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -57,7 +57,7 @@ describe('Malicious Timekeeper', function () {
                 attackers: [this.yogo],
                 defenders: [this.whisperer]
             });
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
             this.player2.pass();
             this.player1.pass();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
@@ -73,7 +73,7 @@ describe('Malicious Timekeeper', function () {
                 attackers: [this.whisperer],
                 defenders: [this.timekeeper]
             });
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player1.pass();
             this.player2.pass();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');

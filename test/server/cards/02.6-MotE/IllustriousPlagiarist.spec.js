@@ -28,7 +28,7 @@ describe('Illustrious Plagiarist', function() {
                 expect(this.bayushiShoju.isDishonored).toBe(true);
                 expect(this.bayushiShoju.bowed).toBe(true);
                 this.illustriousPlagiarist = this.player1.clickCard('illustrious-plagiarist');
-                this.player2.clickCard(this.aFateWorseThanDeath);
+                this.player1.clickCard(this.aFateWorseThanDeath);
                 this.player2.pass();
                 this.player1.clickCard(this.illustriousPlagiarist);
                 expect(this.player1).toHavePrompt('Illustrious Plagiarist');
@@ -37,6 +37,51 @@ describe('Illustrious Plagiarist', function() {
                 expect(this.getChatLogs(3)).toContain('player1 uses Illustrious Plagiarist\'s gained ability from A Fate Worse Than Death to bow, dishonor, blank, move home, and remove a fate from Doji Challenger');
                 expect(this.dojiChallenger.isDishonored).toBe(true);
                 expect(this.dojiChallenger.bowed).toBe(true);
+            });
+        });
+
+        describe('When copying A Fate Worse Than Death 2', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 0,
+                        inPlay: ['bayushi-shoju', 'illustrious-plagiarist']
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger'],
+                        hand: ['a-fate-worse-than-death-2']
+                    }
+                });
+                this.bayushiShoju = this.player1.findCardByName('bayushi-shoju');
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
+                this.dojiChallenger = this.player2.findCardByName('doji-challenger');
+                this.copyAfwtd2 = (attackers) => {
+                    this.noMoreActions();
+                    this.initiateConflict({
+                        attackers: attackers,
+                        defenders: [this.dojiChallenger]
+                    });
+                    this.aFateWorseThanDeath2 = this.player2.clickCard('a-fate-worse-than-death-2');
+                    this.player2.clickCard(this.bayushiShoju);
+                    this.player1.clickCard(this.illustriousPlagiarist);
+                    this.player1.clickCard(this.aFateWorseThanDeath2);
+                    this.player2.pass();
+                };
+            });
+
+            it('should allow a participating plagiarist to copy it', function() {
+                this.copyAfwtd2([this.bayushiShoju, this.illustriousPlagiarist]);
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Illustrious Plagiarist');
+                expect(this.player1).toBeAbleToSelect(this.dojiChallenger);
+            });
+
+            it('should not let a plagiarist at home use the copied conflict action', function() {
+                this.copyAfwtd2([this.bayushiShoju]);
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.dojiChallenger.isDishonored).toBe(false);
             });
         });
 
@@ -56,32 +101,116 @@ describe('Illustrious Plagiarist', function() {
                     }
                 });
                 this.bayushiLiar = this.player1.findCardByName('bayushi-liar');
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
                 this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'political',
-                    attackers: [this.bayushiLiar],
-                    defenders: [this.dojiWhisperer]
-                });
-                this.assassination = this.player2.clickCard('assassination');
-                this.player2.clickCard(this.bayushiLiar);
+                this.copyAssassination = (attackers) => {
+                    this.noMoreActions();
+                    this.initiateConflict({
+                        type: 'political',
+                        attackers: attackers,
+                        defenders: [this.dojiWhisperer]
+                    });
+                    this.assassination = this.player2.clickCard('assassination');
+                    this.player2.clickCard(this.bayushiLiar);
+                    expect(this.bayushiLiar.location).toBe('dynasty discard pile');
+                    this.player1.playAttachment('cloud-the-mind', this.dojiWhisperer);
+                    this.player2.pass();
+                    this.player1.clickCard(this.illustriousPlagiarist);
+                    this.player1.clickCard(this.assassination);
+                    this.player2.clickCard('banzai');
+                    this.player2.clickCard(this.dojiWhisperer);
+                    this.player2.clickPrompt('Done');
+                };
             });
 
             it('should allow plagiarist to copy Assassinate', function() {
-                expect(this.bayushiLiar.location).toBe('dynasty discard pile');
-                this.player1.playAttachment('cloud-the-mind', this.dojiWhisperer);
-                this.player2.pass();
-                this.illustriousPlagiarist = this.player1.clickCard('illustrious-plagiarist');
-                this.player2.clickCard(this.assassination);
-                this.player2.clickCard('banzai');
-                this.player2.clickCard(this.dojiWhisperer);
-                this.player2.clickPrompt('Done');
+                this.copyAssassination([this.bayushiLiar, this.illustriousPlagiarist]);
                 this.player1.clickCard(this.illustriousPlagiarist);
                 expect(this.player1).toHavePrompt('Illustrious Plagiarist');
                 expect(this.player1).toBeAbleToSelect(this.dojiWhisperer);
                 this.player1.clickCard(this.dojiWhisperer);
                 expect(this.dojiWhisperer.location).toBe('dynasty discard pile');
                 expect(this.player1.honor).toBe(7);
+            });
+
+            it('should not let a plagiarist at home use the copied conflict action', function() {
+                this.copyAssassination([this.bayushiLiar]);
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.dojiWhisperer.location).toBe('play area');
+                expect(this.player1.honor).toBe(10);
+            });
+        });
+
+        describe('When an older event is under the topmost event', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['illustrious-plagiarist']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        conflictDiscard: ['banzai', 'a-fate-worse-than-death']
+                    }
+                });
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
+                this.banzai = this.player2.findCardByName('banzai', 'conflict discard pile');
+            });
+
+            it('should only allow choosing the topmost event', function() {
+                this.aFateWorseThanDeath = this.player2.findCardByName('a-fate-worse-than-death', 'conflict discard pile');
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Illustrious Plagiarist');
+                expect(this.player1).toBeAbleToSelect(this.banzai);
+                expect(this.player1).not.toBeAbleToSelect(this.aFateWorseThanDeath);
+            });
+        });
+
+        describe('When the topmost event has no action ability', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['illustrious-plagiarist']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        conflictDiscard: ['voice-of-honor', 'banzai']
+                    }
+                });
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
+                this.banzai = this.player2.findCardByName('banzai', 'conflict discard pile');
+            });
+
+            it('should not be able to trigger', function() {
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+        });
+
+        describe('When a non-event card is on top of the topmost event', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['illustrious-plagiarist']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        conflictDiscard: ['fine-katana', 'banzai']
+                    }
+                });
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
+                this.banzai = this.player2.findCardByName('banzai', 'conflict discard pile');
+            });
+
+            it('should allow choosing the topmost event', function() {
+                this.fineKatana = this.player2.findCardByName('fine-katana', 'conflict discard pile');
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Illustrious Plagiarist');
+                expect(this.player1).toBeAbleToSelect(this.banzai);
+                expect(this.player1).not.toBeAbleToSelect(this.fineKatana);
             });
         });
     });

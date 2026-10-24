@@ -122,7 +122,7 @@ describe('Countryside Trader', function() {
 
             expect(this.player1.fate).toBe(playerFatePreTrader - 1);
             expect(this.getChatLogs(5)).toContain('player1 uses Countryside Trader, spending 1 fate to resolve Restoration of Balance\'s Force opponent to discard to 4 cards ability');
-            expect(this.getChatLogs(5)).toContain('player1 resolves Restoration of Balance to make player2 discard 1 cards');
+            expect(this.getChatLogs(5)).toContain('player1 resolves Restoration of Balance to make player2 discard 1 card');
             expect(this.getChatLogs(5)).toContain('player2 discards Fine Katana');
         });
 
@@ -253,6 +253,102 @@ describe('Countryside Trader', function() {
 
             expect(this.getChatLogs(5)).toContain('player2 uses Countryside Trader, spending 1 fate to resolve Brother’s Gift Dōjō\'s Move a character home ability');
             expect(this.getChatLogs(5)).toContain('player2 resolves Brother’s Gift Dōjō, losing 1 honor to send Countryside Trader home');
+        });
+    });
+});
+
+describe('Countryside Trader - The Art of Peace', function() {
+    integration(function() {
+        describe('resolving an interrupt that uses the conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['countryside-trader', 'doji-whisperer']
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger'],
+                        provinces: ['the-art-of-peace']
+                    }
+                });
+
+                this.trader = this.player1.findCardByName('countryside-trader');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+                this.artOfPeace = this.player2.findCardByName('the-art-of-peace', 'province 1');
+                this.artOfPeace.facedown = false;
+                this.trader.fate = 1;
+                this.game.checkGameState(true);
+            });
+
+            it('should dishonor the attackers and honor the defenders of the current conflict', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.trader, this.whisperer],
+                    defenders: [this.challenger],
+                    type: 'military',
+                    province: this.artOfPeace
+                });
+                this.player2.pass();
+
+                this.player1.clickCard(this.trader);
+                this.player1.clickCard(this.artOfPeace);
+
+                expect(this.trader.isDishonored).toBe(true);
+                expect(this.whisperer.isDishonored).toBe(true);
+                expect(this.challenger.isHonored).toBe(true);
+                expect(this.artOfPeace.isBroken).toBe(false);
+            });
+        });
+    });
+});
+
+describe('Countryside Trader - To Show the Path', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['countryside-trader']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'isawa-ujina'],
+                    provinces: ['floating-world'],
+                    hand: ['to-show-the-path']
+                }
+            });
+            this.trader = this.player1.findCardByName('countryside-trader');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.floatingWorld = this.player2.findCardByName('floating-world');
+            this.floatingWorld.facedown = false;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.trader],
+                defenders: [this.whisperer],
+                province: this.floatingWorld,
+                type: 'political'
+            });
+            this.player2.clickCard('to-show-the-path');
+            this.player2.clickCard(this.whisperer);
+        });
+
+        it('makes the player resolving the province ability pay to target the chosen character', function() {
+            this.player1.fate = 1;
+            this.player1.clickCard(this.trader);
+            this.player1.clickCard(this.floatingWorld);
+            expect(this.player1).toHavePrompt('Choose a character to dishonor');
+            expect(this.player1).toBeAbleToSelect(this.trader);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+        });
+
+        it('lets them target it if they can pay the additional fate', function() {
+            this.player1.fate = 2;
+            this.player1.clickCard(this.trader);
+            this.player1.clickCard(this.floatingWorld);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+            expect(this.player1.fate).toBe(0);
         });
     });
 });

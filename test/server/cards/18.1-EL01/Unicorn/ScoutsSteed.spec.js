@@ -68,3 +68,31 @@ describe('Scouts Steed', function () {
         });
     });
 });
+
+describe('Scouts Steed outside the conflict phase', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['shinjo-archer'],
+                    hand: ['scout-s-steed']
+                }
+            });
+            this.shinjoArcher = this.player1.findCardByName('shinjo-archer');
+            this.scoutsSteed = this.player1.findCardByName('scout-s-steed');
+            this.shinjoArcher.bow();
+        });
+
+        it('has no reaction: no province is eligible while no conflict can be declared', function () {
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.player1.clickCard(this.scoutsSteed);
+            this.player1.clickCard(this.shinjoArcher);
+            expect(this.scoutsSteed.parent).toBe(this.shinjoArcher);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.game.currentConflict).toBeNull();
+            expect(this.shinjoArcher.bowed).toBe(true);
+        });
+    });
+});

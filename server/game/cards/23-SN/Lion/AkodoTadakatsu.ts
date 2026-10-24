@@ -1,53 +1,44 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, Phases, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
+import { bow, injure } from '../../../GameActions/GameActions.js';
+import { isOpponentsRingOrCardEffect } from '../../effectSource.js';
 
 export default class AkodoTadakatsu extends DrawCard {
     static id = 'akodo-tadakatsu';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Injure a character',
-            when: {
+    override setupCardAbilities() {
+        this.interrupt('Injure a character')
+            .when({
                 onMoveFate: (event, context) => {
-                    if(context.game.currentPhase === Phases.Fate || event.origin !== context.source || event.fate <= 0) {
+                    if(context.game.currentPhase === Phase.Fate || event.origin !== context.source || (event.fate ?? 0) <= 0) {
                         return false;
                     }
-                    const cause = event.context;
-                    return !!cause && !!context.player.opponent && cause.player === context.player.opponent &&
-                        ((cause.source.type as string) === 'ring' || cause.ability.isCardAbility());
+                    return isOpponentsRingOrCardEffect(context.player, event.context);
                 }
-            },
-            target: {
+            })
+            .target({
                 controller: Players.Opponent,
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.injure()
-            }
-        });
+                cardType: CardType.Character
+            }, injure());
 
-        this.reaction({
-            title: 'Injure or bow a character',
-            when: {
-                onConflictStarted: (event, context) => context.source.isAttacking()
-            },
-            targets: {
-                character: {
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    player: Players.Opponent,
-                    cardCondition: card => card.isDefending()
-                },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'character',
-                    player: Players.Opponent,
-                    choices: {
-                        'Injure this character': AbilityDsl.actions.injure((context: AbilityContext) => ({ target: context.targets.character })),
-                        'Bow this character': AbilityDsl.actions.bow((context: AbilityContext) => ({ target: context.targets.character }))
-                    }
-                }
-            }
-        });
+        this.reaction('Injure or bow a character')
+            .when({
+                onConflictStarted: (_event, context) => context.source.isAttacking()
+            })
+            .target({
+                name: 'character',
+                cardType: CardType.Character,
+                controller: Players.Opponent,
+                player: Players.Opponent,
+                cardCondition: (card) => card.isDefending()
+            })
+            .select({
+                name: 'select',
+                dependsOn: 'character',
+                player: Players.Opponent
+            }, {
+                'Injure this character': injure((context) => ({ target: context.targets.character })),
+                'Bow this character': bow((context) => ({ target: context.targets.character }))
+            });
     }
 }

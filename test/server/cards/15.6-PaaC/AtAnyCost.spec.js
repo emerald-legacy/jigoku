@@ -23,8 +23,8 @@ describe('At Any Cost', function () {
         });
 
         it('should pay 3 honor to put 2 fate on a character', function () {
-            let honor = this.player1.honor;
-            let fate = this.youth.fate;
+            const honor = this.player1.honor;
+            const fate = this.youth.fate;
             this.player1.clickCard(this.atAnyCost);
             this.player1.clickCard(this.youth);
             expect(this.player1.honor).toBe(honor - 3);

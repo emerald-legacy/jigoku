@@ -1,6 +1,6 @@
-import { TargetMode } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { chosenDiscard, draw } from '../../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 function cardDifference(context: AbilityContext): number {
@@ -10,29 +10,22 @@ function cardDifference(context: AbilityContext): number {
 export default class GladeOfContemplation extends ProvinceCard {
     static id = 'glade-of-contemplation';
 
-    public setupCardAbilities() {
-        this.reaction({
-            title: 'Draw cards or force the opponent to discard cards',
-            when: {
+    public override setupCardAbilities() {
+        this.reaction('Draw cards or force the opponent to discard cards')
+            .when({
                 onConflictDeclared: (event, context) =>
                     event.conflict.declaredProvince === context.source &&
                     context.player.opponent &&
                     context.player.hand.length < context.player.opponent.hand.length
-            },
-            target: {
-                mode: TargetMode.Select,
-                choices: {
-                    'Draw cards': AbilityDsl.actions.draw((context) => ({
-                        amount: cardDifference(context)
-                    })),
-                    'Force opponent to discard cards': AbilityDsl.actions.chosenDiscard((context) => ({
-                        amount: cardDifference(context),
-                        target: context.player.opponent
-                    }))
-                }
-            },
-            effect: '{1}',
-            effectArgs: (context) => context.select.toLowerCase()
-        });
+            })
+            .select({
+                'Draw cards': draw((context) => ({
+                    amount: cardDifference(context)
+                })),
+                'Force opponent to discard cards': chosenDiscard((context) => ({
+                    amount: cardDifference(context)
+                }))
+            })
+            .chatText((context) => msg`${context.select.toLowerCase()}`);
     }
 }

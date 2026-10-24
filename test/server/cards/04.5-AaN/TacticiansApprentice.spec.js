@@ -50,3 +50,29 @@ describe('Tactican\'s Apprentice', function() {
         });
     });
 });
+
+describe('Tactician\'s Apprentice on a dial reveal without honor bid', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['mischievous-tanuki', 'tactician-s-apprentice']
+                },
+                player2: {
+                    inPlay: ['adept-of-the-waves']
+                }
+            });
+            this.tanuki = this.player1.findCardByName('mischievous-tanuki');
+            this.apprentice = this.player1.findCardByName('tactician-s-apprentice');
+        });
+
+        it('triggers after the dials are revealed', function() {
+            this.player1.clickCard(this.tanuki);
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('2');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.apprentice);
+        });
+    });
+});

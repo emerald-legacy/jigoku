@@ -1,5 +1,8 @@
-import { CardType, Players, Duration, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Players, ConflictType } from '../../../Constants.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
+import { atEndOfConflict, cardLastingEffect, multiple, sacrifice } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const CHARACTER = 'character';
@@ -7,59 +10,42 @@ const CHARACTER = 'character';
 export default class ForDeathAndGlory extends DrawCard {
     static id = 'for-death-and-glory-';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Increase a character\'s military skill',
-            condition: (context) => context.game.isDuringConflict('military'),
-            targets: {
-                [CHARACTER]: {
-                    controller: Players.Self,
-                    cardType: CardType.Character,
-                    cardCondition: (card) => card.isParticipating()
+    override setupCardAbilities() {
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
+            .target({
+                name: CHARACTER,
+                controller: Players.Self,
+                cardType: CardType.Character,
+                cardCondition: (card) => card.isParticipating()
+            })
+            .select({
+                name: 'select',
+                dependsOn: CHARACTER
+            }, {
+                'Gain +2 skill': {
+                    action: cardLastingEffect((context) => ({
+                        target: context.targets[CHARACTER],
+                        effect: modifyMilitarySkill(2)
+                    })),
+                    chatText: (context) => msg`${'grant 2 military skill to '}${context.targets[CHARACTER]}`
                 },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: CHARACTER,
-                    choices: {
-                        'Gain +2 skill': AbilityDsl.actions.cardLastingEffect((context) => ({
+                'Gain +4 skill, and get discarded when the conflict ends': {
+                    action: multiple([
+                        cardLastingEffect((context) => ({
                             target: context.targets[CHARACTER],
-                            effect: AbilityDsl.effects.modifyMilitarySkill(2)
+                            effect: modifyMilitarySkill(4)
                         })),
-                        'Gain +4 skill, and get discarded when the conflict ends': AbilityDsl.actions.multiple([
-                            AbilityDsl.actions.cardLastingEffect((context) => ({
-                                target: context.targets[CHARACTER],
-                                effect: AbilityDsl.effects.modifyMilitarySkill(4)
-                            })),
-                            AbilityDsl.actions.cardLastingEffect((context) => ({
-                                target: context.targets[CHARACTER],
-                                duration: Duration.UntilEndOfPhase,
-                                effect: [
-                                    AbilityDsl.effects.delayedEffect({
-                                        when: { onConflictFinished: () => true },
-                                        message: '{1} is discarded from play due to the delayed effect of {0}',
-                                        messageArgs: [context.source, context.targets[CHARACTER]],
-                                        gameAction: AbilityDsl.actions.sacrifice({
-                                            target: context.targets[CHARACTER]
-                                        })
-                                    })
-                                ]
-                            }))
-                        ])
-                    }
+                        atEndOfConflict((context) => ({
+                            target: context.targets[CHARACTER],
+                            message: () => msg`${context.targets[CHARACTER]} is discarded from play due to the delayed effect of ${context.source}`,
+                            gameAction: sacrifice({
+                                target: context.targets[CHARACTER]
+                            })
+                        }))
+                    ]),
+                    chatText: (context) => msg`${'grant 4 military skill to '}${context.targets[CHARACTER]}, sacrificing them at the end of the conflict`
                 }
-            },
-            effect: '{1}{2}{3}',
-            effectArgs: (context) => {
-                if(context.selects.select.choice === 'Gain +2 skill') {
-                    return ['grant 2 military skill to ', context.targets[CHARACTER], ''];
-                }
-                return [
-                    'grant 4 military skill to ',
-                    context.targets[CHARACTER],
-                    ', sacrificing them at the end of the conflict'
-                ];
-            },
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            })
+            .max(perConflict(1));
     }
 }

@@ -1,50 +1,26 @@
-import { CardType, Duration, EventName, Players } from '../../Constants.js';
-import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { CardType, Players, ConflictType } from '../../Constants.js';
+import { atEndOfConflict, honor, sacrifice } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class InfernoGuardInvoker extends DrawCard {
     static id = 'inferno-guard-invoker';
 
-    private provinceBroken = false;
-    private eventRegistrar?: EventRegistrar;
-
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnConflictDeclared]);
-
-        this.action({
-            title: 'honor this character',
-            condition: (context) => context.game.isDuringConflict('military'),
-            target: {
+    public override setupCardAbilities() {
+        this.action('honor this character')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
-            },
-            effect: 'honor {0}. It will be discarded if a province is broken this conflict',
-            gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.honor((context) => ({ target: context.target })),
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    duration: Duration.UntilEndOfPhase,
-                    target: context.target,
-                    effect: AbilityDsl.effects.delayedEffect({
-                        when: {
-                            onConflictFinished: () => this.provinceBroken
-                        },
-                        message: '{1} is discarded, burned to a pile of ash due to the delayed effect of {0}',
-                        messageArgs: [context.source, context.target],
-                        gameAction: AbilityDsl.actions.sacrifice({ target: context.target })
-                    })
-                }))
-            ])
-        });
-    }
-
-    public onBreakProvince() {
-        this.provinceBroken = true;
-    }
-
-    public onConflictDeclared() {
-        this.provinceBroken = false;
+            }, honor(), atEndOfConflict((context) => {
+                const conflict = context.game.currentConflict;
+                return {
+                    onlyIf: () => !!conflict && conflict.brokenProvinces.length > 0,
+                    message: () => msg`${context.target} is discarded, burned to a pile of ash due to the delayed effect of ${context.source}`,
+                    gameAction: sacrifice({ target: context.target })
+                };
+            }))
+            .chatText('honor {0}. It will be discarded if a province is broken this conflict');
     }
 }

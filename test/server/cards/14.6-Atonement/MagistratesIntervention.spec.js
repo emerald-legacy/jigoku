@@ -104,6 +104,24 @@ describe('Magistrate\'s Intervention', function() {
             expect(this.getChatLogs(5)).toContain('player1 plays Magistrate\'s Intervention to dishonor Akodo Toturi');
         });
 
+        it('should not be able to target an attacker that cannot be dishonored', function() {
+            this.toturi.dishonor();
+            this.toturi.dishonor();
+            expect(this.toturi.isDishonored).toBe(true);
+            this.noMoreActions();
+            this.player1.moveCard(this.cunning, 'play area');
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.toturi, this.zerk],
+                defenders: [this.cunning],
+                type: 'military'
+            });
+            this.player1.clickCard(this.intervention);
+            expect(this.player1).not.toBeAbleToSelect(this.toturi);
+            expect(this.player1).toBeAbleToSelect(this.zerk);
+        });
+
         it('should dishonor the target twice if it is their second conflict against you', function() {
             this.noMoreActions();
             this.player1.moveCard(this.cunning, 'play area');
@@ -209,6 +227,56 @@ describe('Magistrate\'s Intervention', function() {
             expect(this.toturi.isHonored).toBe(false);
             expect(this.toturi.isDishonored).toBe(false);
             expect(this.getChatLogs(5)).toContain('player1 plays Magistrate\'s Intervention to dishonor Akodo Toturi');
+        });
+    });
+});
+
+describe('Magistrate\'s Intervention and a redirected dishonor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['cunning-magistrate'],
+                    hand: ['magistrate-s-intervention']
+                },
+                player2: {
+                    inPlay: ['akodo-toturi', 'kitsuki-shomon']
+                }
+            });
+            this.intervention = this.player1.findCardByName('magistrate-s-intervention');
+            this.cunning = this.player1.findCardByName('cunning-magistrate');
+            this.toturi = this.player2.findCardByName('akodo-toturi');
+            this.shomon = this.player2.findCardByName('kitsuki-shomon');
+
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.toturi],
+                defenders: [this.cunning],
+                type: 'military'
+            });
+            this.toturi.bowed = true;
+            this.noMoreActions();
+            this.toturi.bowed = false;
+            this.noMoreActions();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.toturi],
+                defenders: [],
+                type: 'political',
+                ring: 'earth'
+            });
+        });
+
+        it('does not dishonor again when the first dishonor was redirected', function() {
+            this.player1.clickCard(this.intervention);
+            this.player1.clickCard(this.toturi);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.shomon);
+            expect(this.shomon.isDishonored).toBe(true);
+            expect(this.toturi.isDishonored).toBe(false);
         });
     });
 });

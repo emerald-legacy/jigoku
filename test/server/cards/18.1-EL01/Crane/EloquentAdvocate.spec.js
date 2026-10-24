@@ -36,13 +36,14 @@ describe('Eloquent Advocate', function() {
                 type: 'political'
             });
 
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
             this.noMoreActions();
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.advocate);
             this.player2.clickCard(this.advocate);
 
             expect(this.player2).toHavePrompt('Select a card');
+            expect(this.player2).not.toHavePromptButton('Take nothing');
             expect(this.player2).toHavePromptButton('Policy Debate');
             expect(this.player2).toHavePromptButton('Ornate Fan');
             expect(this.policyDebate.location).toBe('conflict deck');

@@ -39,6 +39,8 @@ describe('Togashi Yoshi', function() {
 
                 this.player1.clickRing('air');
                 expect(this.player1.fate).toBe(7);
+                expect(this.getChatLogs(5)).toContain('player1 uses Togashi Yoshi to gain 1 fate from an unclaimed ring');
+                expect(this.getChatLogs(5)).toContain('player1 takes 1 fate from Air Ring');
             });
 
             it('should allow you to claim fate of a ring with fate if you win a political conflict', function () {

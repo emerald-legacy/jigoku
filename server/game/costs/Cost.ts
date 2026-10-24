@@ -1,34 +1,40 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type { MsgArg } from '../GameChat.js';
 import type { GameAction } from '../GameActions/GameAction.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type { Event } from '../Events/Event.js';
-import type Player from '../Player.js';
 
 export type Result = {
     canCancel?: boolean;
     cancelled?: boolean;
 };
 
-export interface Cost {
-    canPay(context: AbilityContext): boolean;
+/** A format with its args; the paid card or cards are `{0}`. */
+export type CostMessage = [] | [string] | [string, MsgArg];
+
+export type CostContext<Results extends object, Context extends AbilityContext = AbilityContext> = Context & { costs: Partial<Results> };
+
+/** `Results` is what paying the cost records on `context.costs`; its callbacks read and write it typed. */
+export interface Cost<Results extends object = object, Context extends AbilityContext = AbilityContext> {
+    canPay(context: CostContext<Results, Context>): boolean;
 
     action?: GameAction;
     activePromptTitle?: string;
 
-    selectCardName?(player: Player, cardName: string, context: AbilityContext): boolean;
     promptsPlayer?: boolean;
     dependsOn?: string;
     isPrintedFateCost?: boolean;
     isPlayCost?: boolean;
-    canIgnoreForTargeting?: boolean;
-    payFateCostToOpponent?: boolean;
+    /** The fate its player spends paying it (`payFate`): a targeting cost checked before costs are paid needs what's left. */
+    fateSpent?(context: AbilityContext): number;
+    /** The opponent makes this choice: it comes first when they're the first player and the ability says so (`firstPlayerChoosesFirst`). */
+    chosenByOpponent?: boolean;
 
     getActionName?(context: AbilityContext): string;
-    getCostMessage?(context: AbilityContext): MsgArg[];
+    getCostMessage?(context: CostContext<Results, Context>): CostMessage;
     hasTargetsChosenByInitiatingPlayer?(context: AbilityContext): boolean;
     addEventsToArray?(events: Event[], context: AbilityContext, result?: Result): void;
-    resolve?(context: AbilityContext, result: Result): void;
-    payEvent?(context: TriggeredAbilityContext): Event | Event[];
-    pay?(context: TriggeredAbilityContext): void;
+    resolve?(context: CostContext<Results, Context>, result: Result): void;
+    payEvent?(context: CostContext<Results, Context>): Event | Event[];
+    pay?(context: CostContext<Results, Context>): void;
+    getReducedCost?(context: AbilityContext): number;
 }

@@ -26,7 +26,7 @@ describe('Moto Raiju', function () {
         });
 
         it('should get a bonus equal to the number of faceup provinces your opponent controls', function () {
-            const baseMil = this.raiju.getMilitarySkill();
+            const baseMil = this.raiju.militarySkill;
 
             this.p1.facedown = false;
             this.p2.facedown = false;
@@ -45,10 +45,10 @@ describe('Moto Raiju', function () {
             });
 
             this.player2.clickCard(this.raiju2);
-            expect(this.raiju2.getMilitarySkill()).toBe(baseMil + 2);
+            expect(this.raiju2.militarySkill).toBe(baseMil + 2);
 
             this.player1.clickCard(this.raiju);
-            expect(this.raiju.getMilitarySkill()).toBe(baseMil + 5);
+            expect(this.raiju.militarySkill).toBe(baseMil + 5);
 
             expect(this.getChatLogs(10)).toContain(
                 'player2 uses Moto Raiju to give itself +2military until the end of the conflict'

@@ -64,5 +64,50 @@ describe('Rift to Toshigoku', function () {
             this.player1.clickCard(this.aggressiveMoto);
             expect(this.aggressiveMoto.location).toBe('dynasty discard pile');
         });
+
+        it('should cancel the ring effect of this conflict', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.aggressiveMoto, this.tetsuko],
+                province: this.riftToToshigoku,
+                type: 'military',
+                ring: 'earth'
+            });
+            this.player2.clickCard(this.riftToToshigoku);
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.aggressiveMoto);
+            this.player2.clickPrompt('Done');
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('Rift to Toshigoku cancels the ring effect');
+        });
+
+        it('should not cancel the ring effect of a later conflict at this province', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.aggressiveMoto],
+                province: this.riftToToshigoku,
+                type: 'military',
+                ring: 'earth'
+            });
+            this.player2.clickCard(this.riftToToshigoku);
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.aggressiveMoto);
+            this.player2.clickPrompt('Done');
+            this.noMoreActions();
+            this.noMoreActions();
+            this.player2.passConflict();
+            this.noMoreActions();
+
+            this.riftToToshigoku.isBroken = false;
+            this.initiateConflict({
+                attackers: [this.tetsuko],
+                province: this.riftToToshigoku,
+                type: 'political',
+                ring: 'air'
+            });
+            this.player2.clickPrompt('Done');
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).not.toContain('Rift to Toshigoku cancels the ring effect');
+        });
     });
 });

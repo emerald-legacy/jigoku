@@ -47,8 +47,8 @@ describe('Yasuki Oguri', function() {
             });
 
             it('should give him +1/+1', function() {
-                this.mil = this.oguri.getMilitarySkill();
-                this.pol = this.oguri.getPoliticalSkill();
+                this.mil = this.oguri.militarySkill;
+                this.pol = this.oguri.politicalSkill;
 
                 this.initiateConflict({
                     attackers: [this.outrider],
@@ -62,8 +62,8 @@ describe('Yasuki Oguri', function() {
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect(this.oguri);
                 this.player2.clickCard(this.oguri);
-                expect(this.oguri.getMilitarySkill()).toBe(this.mil + 1);
-                expect(this.oguri.getPoliticalSkill()).toBe(this.pol + 1);
+                expect(this.oguri.militarySkill).toBe(this.mil + 1);
+                expect(this.oguri.politicalSkill).toBe(this.pol + 1);
             });
         });
     });

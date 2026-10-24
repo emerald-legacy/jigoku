@@ -1,26 +1,24 @@
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Players } from '../../Constants.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
-class StrategicWeapoint extends DrawCard {
+class StrategicWeakpoint extends DrawCard {
     static id = 'strategic-weakpoint';
 
-    setupCardAbilities() {
-        this.interrupt({
-            title: 'Force opponent to discard a character',
-            when: {
+    override setupCardAbilities() {
+        this.wouldInterrupt('Force opponent to discard a character')
+            .when({
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location
-            },
-            target: {
+            })
+            .target({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to discard',
                 controller: Players.Opponent,
-                cardCondition: card => card.isAttacking(),
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            }
-        });
+                cardType: CardType.Character,
+                cardCondition: (card) => card.isAttacking()
+            }, discardFromPlay());
     }
 }
 
 
-export default StrategicWeapoint;
+export default StrategicWeakpoint;

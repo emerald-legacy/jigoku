@@ -1,0 +1,1545 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Costs and limits — Jigoku card builder</title>
+<meta name="description" content="Every cost an ability can have, what it records, and the limits on how often an ability can be used.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@500;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+    <p class="brand">Jigoku <small>Card builder reference</small></p>
+    <div class="search">
+        <input type="search" id="search" placeholder="Jump to… (press /)" aria-label="Jump to an entry" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="jump" aria-autocomplete="list">
+    </div>
+    <nav class="pages" id="pages" aria-label="Pages"></nav>
+    <nav class="toc" id="toc" aria-label="On this page"></nav>
+</aside>
+<main id="content">
+<header class="hero">
+    <h1>Costs and limits</h1>
+    <p>Every cost an ability can have, what it records, and the limits on how often an ability can be used.</p>
+</header>
+<h2 id="co-costs">Costs</h2>
+<p>A cost is what the player pays to use an ability: the imperative instructions before the dash ("Bow this character", "Lose 1 honor", "Sacrifice a character"). Call <code>.cost(...)</code> once per cost; all costs of an ability are paid together.</p>
+<p>Import the costs as a namespace: <code>import * as costs from '../../costs/index.js'</code>. Many costs share a name with a game action (<code>bow</code>, <code>dishonor</code>, …); the namespace keeps them apart. The functions live in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/boardCosts.ts"><code>boardCosts.ts</code></a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/fateAndHonorCosts.ts"><code>fateAndHonorCosts.ts</code></a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/variableAndOptionalCosts.ts"><code>variableAndOptionalCosts.ts</code></a>.</p>
+<div class="rule"><blockquote>Any imperative instruction (other than "choose…," which denotes one or more targets must be chosen, or "select…," which denotes that one or more of a number of effects must be selected) that appears before the dash of a triggered ability is considered a part of that ability’s cost.</blockquote><cite>Cost</cite></div>
+<div class="rule"><blockquote>If multiple costs for a single card or ability require payment, those costs must be paid simultaneously. If any part of a cost payment is prevented, once all costs that can be paid are paid, the process of initiating the ability or playing the card immediately ends without further resolution.</blockquote><cite>Cost</cite></div>
+<div class="rule"><blockquote>If the effects of an ability are canceled, the ability is still considered to have been used, and any costs have still been paid.</blockquote><cite>Cancel</cite></div>
+<pre><code>// Assassination: Conflict Action: Lose 3 honor. Choose a character with printed cost 2 or lower – discard that character. (Max 1 per round.)
+this.conflictAction('Discard a character')
+    .cost(costs.payHonor(3))
+    .target({
+        cardType: CardType.Character,
+        cardCondition: (card) =&gt; card.costLessThan(3)
+    }, discardFromPlay())
+    .max(perRound(1));</code></pre>
+
+<h3 id="co-how">How the engine pays</h3>
+<ol>
+    <li><strong>Legality.</strong> Before the ability can be used, the engine asks every cost <code>canPay(context)</code> on a copy of the context at <code>Stage.Cost</code>. If one says no, the ability is not offered (blocker <code>CannotPayCost</code>). Nothing is chosen or paid yet, so <code>context.costs</code> is empty.</li>
+    <li><strong>Early targets.</strong> Unless the ability has <code>cannotTargetFirst()</code>, its targets are checked and offered first (stage <code>PreTarget</code>); the player may pick "Pay costs first". The targets are confirmed after the costs.</li>
+    <li><strong>Choosing.</strong> The costs resolve in the order they were declared (with <code>firstPlayerChoosesFirst()</code> and the opponent as first player, costs marked <code>chosenByOpponent</code> come first): each one asks its question (which card, how much fate, Yes or No) and collects the events that pay it. While the resolver allows it, every prompt has a Cancel button; cancelling ends the ability and nothing is paid.</li>
+    <li><strong>Paying.</strong> All collected events resolve in one event window, so the costs are paid simultaneously. If any of them is cancelled or prevented, the chat says "<em>player1 attempted to use X, but did not successfully pay the required costs</em>" and the ability ends (for a played card it also raises <a href="types.html#ev-onCardPlayCostsNotPaid"><code>onCardPlayCostsNotPaid</code></a>); what was paid stays paid.</li>
+    <li><strong>Then</strong> the targets are chosen or confirmed. Costs of targeting (effects that make choosing a card cost fate) are checked and paid when the effects initiate; if they can't be paid, the chat says "<em>did not successfully pay the required costs</em>" and the ability ends before the limit or max counts. If no legal target is left, the chat says "<em>player1 attempted to use X, but there are insufficient legal targets</em>" and the ability ends; the costs stay paid. Otherwise the limit and max count the use, the chat line is written and the effects initiate. The effects can still be cancelled; the costs stay paid.</li>
+</ol>
+<ul>
+    <li>An event card gets <code>payReduceableFateCost()</code> (its printed fate cost) added after its own costs automatically; don't declare it.</li>
+    <li>Effects can add costs: <a href="effects.html#ef-additionalTriggerCost"><code>additionalTriggerCost</code></a> (on the player), <code>additionalTriggerCostForCard</code> (on the source card) and <a href="effects.html#ef-additionalPlayCost"><code>additionalPlayCost</code></a> (on the player). They are paid with the ability's own costs, but not by a sub-resolution (an ability resolving again).</li>
+    <li>An ability resolved by another card's effect (<code>resolveAbility</code>) pays its own costs without a Cancel button. It skips the printed fate cost and the added costs. With <code>Blocker.CannotPayCost</code> among its ignored blockers, it pays no costs at all.</li>
+    <li>Costs are checked and paid at <code>Stage.Cost</code>. A restriction scoped to card effects (<code>RestrictionScope.CardEffects</code>, and the scopes for one player's card effects) doesn't stop a cost. One scoped to <code>RestrictionScope.LoseHonorAsCost</code> stops only costs.</li>
+    <li>Choosing a card for a cost is not targeting it: "cannot be targeted" doesn't protect it and no targeting cost is paid.</li>
+    <li>A <code>then()</code> step can declare its own costs; its <code>context.costs</code> starts with a copy of what the ability recorded.</li>
+</ul>
+
+<h3 id="co-records">What costs record</h3>
+<p>Once paid, a cost may record what was paid in <code>context.costs</code>, typed by the builder (your editor shows the keys). A selection cost records the chosen card under its own name, and a snapshot of it under <code>&lt;name&gt;StateWhenChosen</code>: <code>costs.dishonor(…)</code> gives <code>context.costs.dishonor</code> and <code>context.costs.dishonorStateWhenChosen</code>. Read the snapshot when the card changes while paying (a sacrificed card has left play; the snapshot still has its traits and skill).</p>
+<p>A multi-card mode (<code>Exactly</code>, <code>UpTo</code>, <code>Unlimited</code>, …) records a list, even for one card, and no snapshot: the <code>StateWhenChosen</code> key is typed but stays <code>undefined</code>.</p>
+<table>
+    <thead><tr><th>Cost</th><th>Key</th><th>Value</th></tr></thead>
+    <tbody>
+        <tr><td>Selection costs (<code>bow</code>, <code>sacrifice</code>, …)</td><td>its name, <code>&lt;name&gt;StateWhenChosen</code></td><td>the chosen card(s), a snapshot</td></tr>
+        <tr><td><code>shuffleIntoDeck(…)</code></td><td><code>moveCard</code>, <code>moveCardStateWhenChosen</code></td><td>the shuffled card, a snapshot</td></tr>
+        <tr><td><code>dishonorAndSacrifice(…)</code></td><td><code>dishonorAndSacrifice</code>, <code>dishonorAndSacrificeStateWhenChosen</code></td><td>the card, a snapshot</td></tr>
+        <tr><td><code>discardCardsOf(fn)</code></td><td><code>discardCard</code></td><td>the cards <code>fn</code> returned</td></tr>
+        <tr><td><code>revealCardsOf(fn)</code></td><td><code>reveal</code></td><td>the revealed cards</td></tr>
+        <tr><td><code>discardCardsUpToVariableX(n)</code></td><td><code>discardCardsUpToVariableX</code></td><td>the discarded cards</td></tr>
+        <tr><td><code>discardHand()</code></td><td><code>discardHand</code></td><td>the discarded cards</td></tr>
+        <tr><td><code>switchLocation()</code></td><td><code>switchLocation</code></td><td>the moved card</td></tr>
+        <tr><td><code>payFateToRing(…)</code></td><td><code>ringPaidFateTo</code></td><td>the ring</td></tr>
+        <tr><td><code>returnRings(…)</code></td><td><code>returnedRings</code></td><td>the returned rings</td></tr>
+        <tr><td><code>payVariableFate(…)</code></td><td><code>fatePaid</code></td><td>the amount</td></tr>
+        <tr><td><code>payVariableHonor(…)</code></td><td><code>honorPaid</code></td><td>the amount</td></tr>
+        <tr><td><code>payOptionalFate(…)</code></td><td><code>optionalFatePaid</code></td><td>0 or the amount</td></tr>
+        <tr><td><code>optionalOpponentLoseHonor(…)</code></td><td><code>optionalOpponentLoseHonorPaid</code></td><td>whether the opponent lost it</td></tr>
+        <tr><td><code>optionalTakeHonorFromOpponent(…)</code></td><td><code>honorTakenFromOpponent</code></td><td>whether the opponent gave it</td></tr>
+        <tr><td><code>chooseOne({ … })</code></td><td><code>chosenCostLabel</code></td><td>the chosen label (plus the chosen cost's own key)</td></tr>
+        <tr><td><code>nameCard()</code></td><td><code>namedCard</code></td><td>the name</td></tr>
+    </tbody>
+</table>
+<p>The costs on the source card and the fixed fate and honor costs also write the paid targets under their game action's name (<code>bowSelf()</code> writes <code>context.costs.bow</code>, a list holding the source), but their result type is empty, so the builder types those keys as <code>unknown</code>. Don't rely on them; read <code>context.source</code> instead.</p>
+<div class="warn"><p><code>context.costs</code> is only set once the costs are paid. Conditions, target conditions and <code>canPay</code> checks also run before that, with <code>context.costs</code> empty: handle <code>undefined</code> (Expert Bartering treats "not paid yet" as paid: <code>context.costs.optionalFatePaid === undefined || context.costs.optionalFatePaid &gt; 0</code>). When a target depends on what a cost recorded, add <code>.cannotTargetFirst()</code> so the target is chosen after the costs (Bonds of Blood, Sanguine Mastery, Rebuild).</p></div>
+
+<h3 id="co-chat">Chat text</h3>
+<p>The chat line of an ability lists the cost texts between the card and the effect: <em>player1 uses Asahina Artisan, bowing Asahina Artisan to give Doji Whisperer +3 political skill</em>. Each entry below gives its cost text. In it, <code>{0}</code> is what the cost recorded (the paid card or cards; a facedown card reads "a facedown card") and <code>{1}</code>, <code>{2}</code> are the cost's own values. A cost without a cost text adds nothing to the line; a few print a line of their own while paying.</p>
+
+<h3 id="co-own">A cost of your own</h3>
+<p>A cost is an object implementing <code>Cost&lt;Results&gt;</code> (<a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/costs/Cost.ts"><code>costs/Cost.ts</code></a>). <code>Results</code> is what it records, which types <code>context.costs</code> in the builder. Write one only when no cost below fits.</p>
+<table>
+    <thead><tr><th>Member</th><th>Meaning</th></tr></thead>
+    <tbody>
+        <tr><td><code>canPay(context)</code></td><td>Required. Whether the cost can be paid now (also called before anything is chosen).</td></tr>
+        <tr><td><code>addEventsToArray(events, context, result)</code></td><td>Collects the paying events in one go. When present, <code>resolve</code>, <code>payEvent</code> and <code>pay</code> are not used.</td></tr>
+        <tr><td><code>resolve(context, result)</code></td><td>Asks the player and records the answer in <code>context.costs</code>. Set <code>result.cancelled = true</code> to cancel; offer Cancel only when <code>result.canCancel</code>.</td></tr>
+        <tr><td><code>payEvent(context)</code> / <code>pay(context)</code></td><td>The event(s) that pay it, or a plain function run inside a <code>PayCost</code> event. <code>addCostEvents(cost, events, context, result)</code> (<code>costs/addCostEvents.ts</code>) runs a cost this way for the ability and for <code>unless</code> and <code>chooseOne</code>: <code>addEventsToArray</code>, or <code>resolve</code> and, in a later step unless cancelled, <code>payEvent</code> / <code>pay</code>.</td></tr>
+        <tr><td><code>getActionName(context)</code></td><td>The <code>context.costs</code> key the cost records under. Its value is <code>{0}</code> in the cost text.</td></tr>
+        <tr><td><code>getCostMessage(context)</code></td><td>The cost text, as <code>[format, args]</code>; <code>args</code> become <code>{1}</code>, <code>{2}</code>, …</td></tr>
+        <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something. If so, the action window skips its one-click confirmation menu and starts the ability directly.</td></tr>
+        <tr><td><code>dependsOn</code></td><td>The name of a target the cost depends on: while that target is offered first, a candidate is legal only if the cost can be paid for it (<code>targetDependentFate</code>).</td></tr>
+        <tr><td><code>hasTargetsChosenByInitiatingPlayer(context)</code></td><td>Whether paying makes the ability's player choose cards. It counts toward the ability's <code>hasTargetsChosenByInitiatingPlayer</code> (Hantei XXXVIII).</td></tr>
+        <tr><td><code>fateSpent(context)</code></td><td>The fate the player spends paying it (set by <code>payFate</code>, <code>payFateToRing</code> and <code>giveFateToOpponent</code>). Targeting costs checked before the costs are paid subtract it from the fate available, and the reduceable fate costs add it to their own when checking they can be paid.</td></tr>
+        <tr><td><code>chosenByOpponent</code></td><td>The opponent makes this choice (set by <code>optionalTakeHonorFromOpponent</code>). With <code>firstPlayerChoosesFirst()</code> and the opponent as first player, these costs are chosen first.</td></tr>
+        <tr><td><code>isPrintedFateCost</code>, <code>isPlayCost</code>, <code>getReducedCost(context)</code></td><td>Engine-only, set by the fate and play costs: <code>playCard</code> with <code>ignoreFateCost</code> skips the first, a play without play costs skips the second, and the ability's fate cost after reductions comes from the third.</td></tr>
+        <tr><td><code>action</code>, <code>activePromptTitle</code></td><td>Fields of some built-in costs. The engine does not read them through <code>Cost</code>.</td></tr>
+    </tbody>
+</table>
+<pre><code>// cards/captureCost.ts: a free cost that records a value before later costs change it (Niten records its parent before returning to hand)
+export function captureCost&lt;Name extends string, Value&gt;(name: Name, capture: (context: AbilityContext) =&gt; Value): Cost&lt;{ [Key in Name]: Value }&gt; {
+    return {
+        canPay() {
+            return true;
+        },
+        resolve(context) {
+            Object.assign(context.costs, { [name]: capture(context) });
+        },
+        pay() {}
+    };
+}</code></pre>
+
+<section class="group">
+  <h3 class="group-title" id="co-group-self">Paying for the source card</h3>
+  <p>These costs act on the card with the ability (or its parent) and take no choice. They can't be paid when that card can't be affected: it is in the wrong place, already in that state, or a restriction forbids it. They write the paid card under the game action's name in <code>context.costs</code> (untyped, see above).</p>
+
+  <div class="ref" id="co-bowParent" data-name="bowParent">
+    <h3><code>bowParent()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-bowParent">#</a></h3>
+    <p>"Bow attached character": bows the character the source is attached to.</p>
+    <ul class="edge">
+      <li>Can't be paid when the source has no parent, or the parent is not in play, is already bowed, can't be bowed, or is controlled by another player (RRG Cost: a cost is paid with what you control).</li>
+      <li>Chat: <code>bowing {0}</code>, with the parent as <code>{0}</code>.</li>
+    </ul>
+    <pre><code>// Tattered Missive: Action: Bow attached character – search the top 5 cards of your conflict deck for a card, reveal it, and add it to your hand. Shuffle.
+this.action('Search top 5 cards')
+    .condition((context) =&gt; context.player.conflictDeck.length &gt; 0)
+    .cost(costs.bowParent())
+    .deckSearch({ … });</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/TatteredMissive.ts">Tattered Missive</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/BeingAndBecoming.ts">Being and Becoming</a></p>
+  </div>
+
+  <div class="ref" id="co-bowSelf" data-name="bowSelf">
+    <h3><code>bowSelf()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-bowSelf">#</a></h3>
+    <p>"Bow this character / this card": bows the source.</p>
+    <ul class="edge">
+      <li>Can't be paid when the source is already bowed, is not in the play area, or a restriction stops the bow. A stronghold is the exception to the location check: it can be bowed from the stronghold province.</li>
+      <li>Only characters, attachments and strongholds can be bowed; on a holding or province this cost can never be paid.</li>
+      <li>Chat: <code>bowing {0}</code>.</li>
+    </ul>
+    <pre><code>// Paranoid Hōsōshi: Action: During the conflict phase, bow this character. Choose a character with the highest cost (you choose in case of a tie) - move 1 fate from that character to your fate pool.
+this.action('Steal fate from a character')
+    .phase(Phase.Conflict)
+    .cost(costs.bowSelf())
+    .target({ … }, removeFate((context) =&gt; ({ recipient: context.player })));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsahinaArtisan.ts">Asahina Artisan</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CityOfTheOpenHand.ts">City of the Open Hand</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DaimyosFavor.ts">Daimyō's Favor</a></p>
+  </div>
+
+  <div class="ref" id="co-breakSelf" data-name="breakSelf">
+    <h3><code>breakSelf()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-breakSelf">#</a></h3>
+    <p>"Break this province": breaks the source province.</p>
+    <ul class="edge">
+      <li>Can't be paid when the source is not a province, is already broken, or can't be broken.</li>
+      <li>Chat: <code>breaking {0}</code>.</li>
+    </ul>
+    <pre><code>// Endless Plains: Reaction: After an attack is declared here, break this province. Your opponent chooses an attacking character – discard that character.
+this.reaction('Force opponent to discard a character')
+    .when({ onConflictDeclared: (event, context) =&gt; event.conflict.declaredProvince === context.source })
+    .cost(costs.breakSelf())
+    .target({ player: Players.Opponent, … }, discardFromPlay());</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/EndlessPlains.ts">Endless Plains</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Neutral/RiftToToshigoku.ts">Rift to Toshigoku</a></p>
+  </div>
+
+  <div class="ref" id="co-discardSelf" data-name="discardSelf">
+    <h3><code>discardSelf()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardSelf">#</a></h3>
+    <p>"Discard this card from your hand": discards the source. Use it on an ability that works from the hand (<code>.location(Location.Hand)</code>).</p>
+    <ul class="edge">
+      <li>Can't be paid when the source is in hand and its controller can't discard (a restriction), or when it is not a character, attachment, event or holding.</li>
+      <li>It doesn't check the location: give the ability <code>.location(Location.Hand)</code> so it can only be used from the hand.</li>
+      <li>Chat: <code>discarding {0}</code>.</li>
+    </ul>
+    <pre><code>// Village Dōshin: Interrupt: When the effects of a card ability that targets an attachment on a character you control would initiate, discard this card from your hand - cancel those effects unless …
+this.wouldInterrupt('Protect attachment from leaving play')
+    .when({ onInitiateAbilityEffects: (event, context) =&gt; … })
+    .location(Location.Hand)
+    .cost(costs.discardSelf())
+    …</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/VillageDoshin.ts">Village Dōshin</a></p>
+  </div>
+
+  <div class="ref" id="co-discardStatusTokenFromSelf" data-name="discardStatusTokenFromSelf">
+    <h3><code>discardStatusTokenFromSelf(status)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardStatusTokenFromSelf">#</a></h3>
+    <p>"Discard an honored status token from this character": discards the source's status token of that status. Its other tokens stay.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>status</code></td><td><a href="types.html#en-CharacterStatus"><code>CharacterStatus</code></a></td><td>required</td><td>Which token: <code>Honored</code>, <code>Dishonored</code> or <code>Tainted</code>.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid when the source has no token of that status. Restrictions are not checked.</li>
+      <li>Chat: <code>discarding a status token</code>.</li>
+    </ul>
+    <pre><code>// Master of the Court: Interrupt: When the effects of an event would initiate, discard an honored status token from this character - cancel those effects.
+this.wouldInterrupt('Cancel an event')
+    .when({
+        onInitiateAbilityEffects: (event, context) =&gt; event.card.type === CardType.Event &amp;&amp; context.source.isHonored
+    })
+    .cost(costs.discardStatusTokenFromSelf(CharacterStatus.Honored))
+    .cancel();</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/MasterOfTheCourt.ts">Master of the Court</a></p>
+  </div>
+
+  <div class="ref" id="co-dishonorSelf" data-name="dishonorSelf">
+    <h3><code>dishonorSelf()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-dishonorSelf">#</a></h3>
+    <p>"Dishonor this character": dishonors the source (an honored character becomes ordinary, an ordinary one dishonored).</p>
+    <ul class="edge">
+      <li>Can't be paid when the source is not a character in play, is already dishonored, can't be dishonored, or is ordinary and can't receive a dishonored status token.</li>
+      <li>Chat: <code>dishonoring {0}</code>.</li>
+    </ul>
+    <pre><code>// Young Harrier: Action: Dishonor this character – each [clan-crane] character you control cannot be dishonored until the end of the phase.
+this.action('Prevent other characters from being dishonored')
+    .cost(costs.dishonorSelf())
+    .cardLastingEffect((context) =&gt; ({ … effect: cardCannot(RestrictionType.Dishonor) }));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/YoungHarrier.ts">Young Harrier</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/BayushiAramoro.ts">Bayushi Aramoro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/YasukiProcurer.ts">Yasuki Procurer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ViceProprietor.ts">Vice Proprietor</a></p>
+  </div>
+
+  <div class="ref" id="co-putSelfIntoPlay" data-name="putSelfIntoPlay">
+    <h3><code>putSelfIntoPlay()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-putSelfIntoPlay">#</a></h3>
+    <p>"Put this character into play": puts the source into play for the ability's player, at home, ordinary, with no fate.</p>
+    <ul class="edge">
+      <li>Can't be paid when the source is not a character, is already in play or facedown, another copy of a unique character is in play for the player, or a restriction stops it from entering play.</li>
+      <li>Use it with <code>.location(Location.Hand)</code> (or wherever the card waits).</li>
+      <li>Chat: <code>putting {0} into play</code>.</li>
+    </ul>
+    <pre><code>// Yogo Kikuyo: Interrupt: When the effects of a Spell event your opponent plays during a conflict would initiate, put this character into play from your hand – cancel those effects.
+this.wouldInterrupt('Cancel a spell')
+    .when({ onInitiateAbilityEffects: (event, context) =&gt; … })
+    .location(Location.Hand)
+    .cost(costs.putSelfIntoPlay())
+    .cancel();</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/YogoKikuyo.ts">Yogo Kikuyo</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Scorpion/SoshiAya.ts">Soshi Aya</a></p>
+  </div>
+
+  <div class="ref" id="co-removeFateFromParent" data-name="removeFateFromParent">
+    <h3><code>removeFateFromParent()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-removeFateFromParent">#</a></h3>
+    <p>"Remove 1 fate from attached character": removes 1 fate from the source's parent to the general pool.</p>
+    <ul class="edge">
+      <li>Can't be paid when there is no parent, it has no fate, fate can't be removed from it, or another player controls it (RRG Cost; EmeraldDB ruling on Honed Nodachi).</li>
+      <li>Chat: <code>removing 1 fate from {0}</code>.</li>
+    </ul>
+    <pre><code>// Honed Nodachi: Reaction: After attached character wins a [conflict-military] conflict, remove 1 fate from attached character. Your opponent chooses a participating character he or she controls - discard that character.
+this.reaction('Remove a fate from attached character and force opponent to discard a participating character')
+    .when({ afterConflict: (event, context) =&gt; … })
+    .cost(costs.removeFateFromParent())
+    .target({ player: Players.Opponent, controller: Players.Opponent, … }, discardFromPlay());</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/OniMask.ts">Oni Mask</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/HonedNodachi.ts">Honed Nodachi</a></p>
+  </div>
+
+  <div class="ref" id="co-removeFateFromSelf" data-name="removeFateFromSelf">
+    <h3><code>removeFateFromSelf()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-removeFateFromSelf">#</a></h3>
+    <p>"Remove 1 fate from this character": removes 1 fate from the source to the general pool.</p>
+    <ul class="edge">
+      <li>Can't be paid when the source is not a character in play, has no fate, or fate can't be removed from it.</li>
+      <li>Chat: <code>removing 1 fate from {0}</code>.</li>
+    </ul>
+    <pre><code>// Wandering Ronin: Action: During a conflict, remove 1 fate from this character – it gets +2[conflict-military] and +2[conflict-political] until the end of the conflict. (Limit twice per conflict.)
+this.action('Give this character +2/+2')
+    .condition(() =&gt; this.game.isDuringConflict())
+    .cost(costs.removeFateFromSelf())
+    .cardLastingEffect({ effect: modifyBothSkills(2) })
+    .limit(perConflict(2));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WanderingRonin.ts">Wandering Ronin</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/MediumOfTheLivingSoul.ts">Medium of the Living Soul</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/OpenFieldSkirmisher.ts">Open Field Skirmisher</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MantisRaider.ts">Mantis Raider</a></p>
+  </div>
+
+  <div class="ref" id="co-removeSelfFromGame" data-name="removeSelfFromGame">
+    <h3><code>removeSelfFromGame(properties?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-removeSelfFromGame">#</a></h3>
+    <p>"Remove this card from the game": moves the source to the removed-from-game area.</p>
+    <table>
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>location</code></td><td><code>Location[]</code></td><td>none</td><td>Where the source may be. Without it, the source must be in play (a holding in a province).</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Without <code>location</code>: can't be paid when the source is not in play or can't be removed from the game.</li>
+      <li>With <code>location</code>: the only check is that the source is in one of those locations (<code>Location.Any</code> matches all); restrictions and card type are not checked.</li>
+      <li>Chat: <code>removing {0} from the game</code>.</li>
+    </ul>
+    <pre><code>// Lucky Coin: Reaction: If this attachment is in play or in your hand, after all players reveal their cards in the dynasty phase, … remove this card from the game - set aside each card in your provinces, refilling them faceup. …
+this.reaction('Replace all cards in your provinces')
+    .when({ onRevealFacedownDynastyCards: (_, context) =&gt; … })
+    .location(ACTIVE_LOCATIONS)
+    .cost(costs.removeSelfFromGame({ location: ACTIVE_LOCATIONS }))
+    …</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crane/LuckyCoin.ts">Lucky Coin</a></p>
+  </div>
+
+  <div class="ref" id="co-returnSelfToHand" data-name="returnSelfToHand">
+    <h3><code>returnSelfToHand()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-returnSelfToHand">#</a></h3>
+    <p>"Return this card to your hand": returns the source from play to its owner's hand.</p>
+    <ul class="edge">
+      <li>Can't be paid when the source is not in play, is not a character, attachment or event, or can't be returned to hand.</li>
+      <li>The source leaves play: its own attachments are discarded and its fate removed, and it is no longer attached to anything when the effects resolve. Record what you need first with a cost declared before it (Niten records its parent with <code>captureParentCost()</code>).</li>
+      <li>Chat: <code>returning {0} to their hand</code>.</li>
+    </ul>
+    <pre><code>// Niten: Action: During a conflict in which attached character is participating, return this attachment to your hand - put an attachment from your hand into play attached to the same character. (Max 1 per round.)
+this.action('Put an attachment into play')
+    .condition((context) =&gt; !!(context.source.parentCharacter &amp;&amp; context.source.parentCharacter.isParticipating()))
+    .cost(captureParentCost())
+    .cost(costs.returnSelfToHand())
+    .target({ cardType: CardType.Attachment, controller: Players.Self, location: Location.Hand, … })
+    .attach((context) =&gt; ({ target: context.costs.captureParentCost ?? context.source.parentCharacter ?? [], attachment: context.target }))
+    .max(perRound(1));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a></p>
+  </div>
+
+  <div class="ref" id="co-sacrificeSelf" data-name="sacrificeSelf">
+    <h3><code>sacrificeSelf()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-sacrificeSelf">#</a></h3>
+    <p>"Sacrifice this card": discards the source from play as a sacrifice.</p>
+    <ul class="edge">
+      <li>Can't be paid when the source is not a character or attachment in play or a faceup holding in a province, or can't be sacrificed.</li>
+      <li>The card leaves play while the cost is paid. Leaving play resets its limits, and a source that changed location is not counted against its limit (see <a href="#li-counting">When a use is counted</a>).</li>
+      <li>Chat: <code>sacrificing {0}</code>.</li>
+    </ul>
+    <pre><code>// Planted Fields: Interrupt: When the conflict phase ends, if this card is in an unbroken province, sacrifice this card - if it is the first time this round you have triggered a copy of this ability, gain 2 fate and draw 2 cards.  Otherwise, gain 2 honor.
+this.interrupt('Sacrifice Planted Fields')
+    .when({ onPhaseEnded: (event, context) =&gt; event.phase === Phase.Conflict &amp;&amp; … })
+    .cost(costs.sacrificeSelf())
+    .if((context) =&gt; this.hasTriggered(context))
+    …</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/PlantedFields.ts">Planted Fields</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Deathseeker.ts">Deathseeker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FavorableGround.ts">Favorable Ground</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HidaTomonatsu.ts">Hida Tomonatsu</a></p>
+  </div>
+
+  <div class="ref" id="co-switchLocation" data-name="switchLocation">
+    <h3><code>switchLocation()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-switchLocation">#</a></h3>
+    <p>"Move this character home or to the conflict": sends the source home when it is participating, otherwise moves it into the conflict. The player is not asked; where the character is decides.</p>
+    <ul class="edge">
+      <li>Can't be paid when the source can neither be sent home nor moved into the conflict (outside a conflict it never can).</li>
+      <li>Records <code>switchLocation</code>: the source.</li>
+      <li>Chat: <code>moving {1} home</code> or <code>moving {1} to the conflict</code>, with the source as <code>{1}</code>.</li>
+    </ul>
+    <pre><code>// Shinjo Archer: Action: During a conflict, move this character home or to the conflict. Choose another participating character - that character gets -2[conflict-military] and -2[conflict-political] until the end of the conflict.
+this.action('Move and give -2/-2')
+    .cost(costs.switchLocation())
+    .target({
+        cardType: CardType.Character,
+        cardCondition: (card, context) =&gt; card !== context.source &amp;&amp; card.isParticipating()
+    }, cardLastingEffect({
+        effect: modifyBothSkills(-2)
+    }))
+    .chatText((context) =&gt; msg`give ${context.chatTarget()} -2${'military'}/-2${'political'}`);</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/ShinjoArcher.ts">Shinjo Archer</a></p>
+  </div>
+</section>
+
+<section class="group">
+  <h3 class="group-title" id="co-group-select">Choosing a card to pay with</h3>
+  <p>These costs ask the player to choose a card, then pay with it ("Bow a Spirit character you control", "Sacrifice a participating Berserker character"). They take the properties of the <code>selectCard</code> game action, minus <code>gameAction</code>. Unlike a <code>target()</code>, there is no <code>dependsOn</code>, <code>optional</code> or <code>hideIfNoLegalTargets</code>, and choosing a card for a cost doesn't target it.</p>
+  <table>
+    <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>cardType</code></td><td><code>CardType | CardType[]</code></td><td>every card type</td><td>Which cards can be chosen. Also types <code>cardCondition</code>'s card and the recorded card.</td></tr>
+      <tr><td><code>controller</code></td><td><code>Players</code></td><td><code>Players.Self</code></td><td>Whose cards. Costs are paid with "friendly" cards, so the default is right for nearly every card.</td></tr>
+      <tr><td><code>location</code></td><td><code>Location | Location[]</code></td><td><code>Location.Any</code> (<code>discardCard</code>: <code>Location.Hand</code>)</td><td>Where the card is. <code>Location.Provinces</code> means every province.</td></tr>
+      <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>any card</td><td>Extra condition. <code>context</code> is the context of the ability paying the cost.</td></tr>
+      <tr><td><code>mode</code></td><td><code>TargetMode</code></td><td>from <code>numCards</code>: <code>Single</code> for 1, <code>UpTo</code> for more, <code>Unlimited</code> for 0 (<code>discardCard</code>: <code>Exactly</code>)</td><td>How many cards: <code>Single</code>, <code>Exactly</code>, <code>UpTo</code>, <code>Unlimited</code>, … A multi-card mode records a list.</td></tr>
+      <tr><td><code>numCards</code></td><td><code>number</code></td><td>1</td><td>The count for <code>Exactly</code> and <code>UpTo</code>.</td></tr>
+      <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>per cost (see each entry)</td><td>The prompt's title.</td></tr>
+      <tr><td><code>hidePromptIfSingleCard</code></td><td><code>boolean</code></td><td><code>false</code></td><td>With exactly one legal card, pay with it without asking.</td></tr>
+      <tr><td><code>subActionProperties</code></td><td><code>(card) =&gt; properties</code></td><td><code>{ target: card }</code></td><td>Overrides for the paying action. Passing it replaces the function that records the chosen card, so nothing is recorded in <code>context.costs</code>.</td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li>Only cards the paying action can affect are offered: a bow cost offers ready cards, a dishonor cost characters that can be dishonored. <code>cardCondition</code> only narrows further.</li>
+    <li>The cost can't be paid when fewer cards than the mode needs are legal.</li>
+    <li>It records the chosen card under its own name, typed by <code>cardType</code> and <code>mode</code>, and a snapshot under <code>&lt;name&gt;StateWhenChosen</code>. A multi-card mode records a list and no snapshot (see <a href="#co-records">What costs record</a>).</li>
+    <li>Chat: the paying action's cost text, with the chosen card as <code>{0}</code>.</li>
+  </ul>
+
+  <div class="ref" id="co-bow" data-name="bow">
+    <h3><code>bow(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-bow">#</a></h3>
+    <p>"Bow a … character you control": the player chooses a card and bows it.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which card can be bowed.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers ready characters and attachments in play and ready strongholds that can be bowed.</li>
+      <li>Prompt: "Select card to bow". Records <code>bow</code>, <code>bowStateWhenChosen</code>. Chat: <code>bowing {0}</code>.</li>
+    </ul>
+    <pre><code>// In Service to My Lord: Action: Bow a (friendly) non-unique character and choose a unique character - ready the chosen character. Put this card on the bottom of its owner's conflict deck.
+this.action('Ready a character')
+    .cost(costs.bow({
+        cardType: CardType.Character,
+        cardCondition: (card) =&gt; !card.isUnique()
+    }))
+    .target({ activePromptTitle: 'Choose a unique character', cardType: CardType.Character, cardCondition: (card) =&gt; card.isUnique() }, multiple([ … ]));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/InServiceToMyLord.ts">In Service to My Lord</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BentensTouch.ts">Benten's Touch</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/TheEmptyCity.ts">The Empty City</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ToSowTheEarth.ts">To Sow the Earth</a></p>
+  </div>
+
+  <div class="ref" id="co-breakProvince" data-name="breakProvince">
+    <h3><code>breakProvince(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-breakProvince">#</a></h3>
+    <p>"Break a (friendly) province": the player chooses a province and breaks it.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which province can be broken.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers unbroken provinces that can be broken.</li>
+      <li>Prompt: "Select a province to break". Records <code>breakProvince</code>, <code>breakProvinceStateWhenChosen</code>. Chat: <code>breaking {0}</code>.</li>
+    </ul>
+    <pre><code>// Raze to the Ground: Reaction: After you win a [conflict-military] conflict against a non-stronghold province, dishonor a participating (friendly) character and break a faceup (friendly) province - break the attacked province.
+this.reaction('Break the attacked province')
+    .when({ afterConflict: (event, context) =&gt; … })
+    .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card) =&gt; card.isParticipating() }))
+    .cost(costs.breakProvince({ cardCondition: (card) =&gt; card.isFaceup() }))
+    .selectAttackedProvince({ … });</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/RazeToTheGround.ts">Raze to the Ground</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/FeedingAnArmy.ts">Feeding an Army</a></p>
+  </div>
+
+  <div class="ref" id="co-discardCard" data-name="discardCard">
+    <h3><code>discardCard(properties?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardCard">#</a></h3>
+    <p>"Discard a card from your hand": the player chooses cards and discards them.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td><code>{ location: Location.Hand, mode: TargetMode.Exactly }</code></td><td>Which cards; <code>numCards</code> for more than one. Given properties replace those defaults one by one.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>The default mode is <code>Exactly</code>, so <code>context.costs.discardCard</code> is a list even for one card, and <code>discardCardStateWhenChosen</code> stays unset. Pass <code>mode: TargetMode.Single</code> to get one card and its snapshot.</li>
+      <li>Can't be paid with fewer than <code>numCards</code> legal cards, or when the player can't discard from hand.</li>
+      <li>Prompt: "Select card to discard", or "Select N cards to discard" when <code>numCards</code> is more than 1. Records <code>discardCard</code>. Chat: <code>discarding {0}</code>.</li>
+    </ul>
+    <pre><code>// Sharpen the Mind: Action: During a conflict, discard a card from your hand - attached character gets +3[conflict-military] and +3[conflict-political] until the end of the conflict.
+this.action('Give +3/+3 to attached character')
+    .condition((context) =&gt; context.game.isDuringConflict())
+    .cost(costs.discardCard({ location: Location.Hand }))
+    .cardLastingEffect((context) =&gt; ({
+        target: context.source.parentCharacter ?? [],
+        effect: modifyBothSkills(3)
+    }))
+    .chatText((context) =&gt; msg`give +3${'military'}/+3${'political'} to ${context.source.parentCharacter}`);</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/SharpenTheMind.ts">Sharpen the Mind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Phoenix/EmissaryOfTheFiveRivers.ts">Emissary of the Five Rivers</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Lion/SteadfastOrator.ts">Steadfast Orator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FavoredNiece.ts">Favored Niece</a></p>
+  </div>
+
+  <div class="ref" id="co-discardHonoredToken" data-name="discardHonoredToken">
+    <h3><code>discardHonoredToken(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardHonoredToken">#</a></h3>
+    <p>"Discard an honored status token from a (friendly) character": the player chooses a character and discards its honored status token.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties without <code>subActionProperties</code></td><td>required</td><td>Which character.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Only the honored token is discarded. Put <code>card.isHonored</code> in <code>cardCondition</code>: a card without an honored token passes the paying action's check (it has nothing to check) and would be offered.</li>
+      <li>Records nothing (its own <code>subActionProperties</code> replaces the recording).</li>
+      <li>Prompt: "Select character to discard honored status token from". Chat: <code>discarding a status token</code>.</li>
+    </ul>
+    <pre><code>// The Spear Rushes Forth: Action: During a [conflict-military] conflict, discard an honored status token from a participating (friendly) character and choose a participating character your opponent controls - bow that character.
+this.action('Bow a participating character')
+    .condition(() =&gt; this.game.isDuringConflict(ConflictType.Military))
+    .cost(costs.discardHonoredToken({
+        cardCondition: (card) =&gt; card.isHonored &amp;&amp; card.isDrawCard() &amp;&amp; card.isParticipating()
+    }))
+    .target({ cardType: CardType.Character, controller: Players.Opponent, cardCondition: (card) =&gt; card.isParticipating() }, bow());</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/TheSpearRushesForth.ts">The Spear Rushes Forth</a></p>
+  </div>
+
+  <div class="ref" id="co-dishonor" data-name="dishonor">
+    <h3><code>dishonor(properties?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-dishonor">#</a></h3>
+    <p>"Dishonor a (friendly) character": the player chooses a character and dishonors it.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>any friendly card the action allows</td><td>Which character.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers characters in play that are not dishonored and can be dishonored (an ordinary one must be able to receive a dishonored token).</li>
+      <li>Prompt: "Select character to dishonor". Records <code>dishonor</code>, <code>dishonorStateWhenChosen</code>. Chat: <code>dishonoring {0}</code> (nothing when an empty list was recorded).</li>
+    </ul>
+    <pre><code>// Sanguine Mastery: Action: Dishonor a (friendly) character. Choose up to X attachments, where X is the dishonored character's glory - discard each of those attachments.
+this.action('Discard attachments')
+    .cost(costs.dishonor({ cardType: CardType.Character, cardCondition: (card) =&gt; card.glory &gt; 0 }))
+    .targetCards({
+        mode: TargetMode.UpToVariable,
+        numCardsFunc: (context) =&gt; context.costs.dishonor ? context.costs.dishonor.glory : 1,
+        cardType: CardType.Attachment
+    }, discardFromPlay())
+    .cannotTargetFirst();</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/BondsOfBlood.ts">Bonds of Blood</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/SanguineMastery.ts">Sanguine Mastery</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForgedEdict.ts">Forged Edict</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/SpiesAtCourt.ts">Spies at Court</a></p>
+  </div>
+
+  <div class="ref" id="co-dishonorAndSacrifice" data-name="dishonorAndSacrifice">
+    <h3><code>dishonorAndSacrifice(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-dishonorAndSacrifice">#</a></h3>
+    <p>"Dishonor and sacrifice a … character": the player chooses a card, which is dishonored and sacrificed together.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which card.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>A card qualifies only when it can be both dishonored and sacrificed: a cost is paid in full or not at all. An already dishonored character isn't offered.</li>
+      <li>The card leaves play: read its traits from <code>dishonorAndSacrificeStateWhenChosen</code>.</li>
+      <li>Prompt: "Choose a card to dishonor and sacrifice". Records <code>dishonorAndSacrifice</code>, <code>dishonorAndSacrificeStateWhenChosen</code>. Chat: <code>dishonoring and sacrificing {1}</code>, with the card as <code>{1}</code>.</li>
+    </ul>
+    <pre><code>// A Bad Death: Reaction: After you lose a conflict, dishonor and sacrifice a participating character. Choose an opposing character (choose up to 2 characters if you sacrificed a Berserker) – dishonor each of the chosen characters. Draw a card.
+this.reaction('Sacrifice a character to dishonor characters')
+    .when({ afterConflict: (event, context) =&gt; event.conflict.loser === context.player &amp;&amp; !!context.player.opponent })
+    .cost(costs.dishonorAndSacrifice({
+        cardType: CardType.Character,
+        cardCondition: (card) =&gt; card.isParticipating()
+    }))
+    .targetCards({
+        mode: TargetMode.UpToVariable,
+        numCardsFunc: (context) =&gt; context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait(Trait.Berserker) ? 2 : 1,
+        …
+    }, dishonor())
+    .cannotTargetFirst()
+    …</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Crab/ABadDeath.ts">A Bad Death</a></p>
+  </div>
+
+  <div class="ref" id="co-moveToConflict" data-name="moveToConflict">
+    <h3><code>moveToConflict(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-moveToConflict">#</a></h3>
+    <p>"Move a … character you control to the conflict": the player chooses a character and moves it into the conflict.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which character.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers characters in play, not participating, that can participate on their controller's side (attacker or defender) in the current conflict. Outside a conflict it can't be paid.</li>
+      <li>Prompt: "Select card to move to the conflict". Records <code>moveToConflict</code>, <code>moveToConflictStateWhenChosen</code>. Chat: <code>moving {0} into the conflict</code>.</li>
+    </ul>
+    <pre><code>// Marvelous Beings: [conflict-political] Conflict Action: Move a Creature or Spirit character you control to the conflict - add the printed cost of that character to your skill during this conflict's resolution (to a maximum of 3). (Max 1 per conflict.)
+this.conflictAction('Move character to conflict and gain skill bonus', { conflictType: ConflictType.Political })
+    .cost(costs.moveToConflict({
+        cardType: CardType.Character,
+        cardCondition: (card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Spirit) || card.hasTrait(Trait.Creature))
+    }))
+    .playerLastingEffect((context) =&gt; ({ target: Players.Self, effect: changePlayerResolutionSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict)) }))
+    .chatText((context) =&gt; msg`entrance the court, giving their side an extra ${this.marvelousSkillBonus(context.costs.moveToConflict)}${'political'} during this conflict's resolution`)
+    .max(perConflict(1));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MarvelousBeings.ts">Marvelous Beings</a></p>
+  </div>
+
+  <div class="ref" id="co-removeFate" data-name="removeFate">
+    <h3><code>removeFate(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-removeFate">#</a></h3>
+    <p>"Remove 1 fate from a (friendly) character": the player chooses a character and removes 1 fate from it to the general pool.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which character.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers characters in play with fate that fate can be removed from.</li>
+      <li>Prompt: "Select character to discard a fate from". Records <code>removeFate</code>, <code>removeFateStateWhenChosen</code>. Chat: <code>removing 1 fate from {0}</code>.</li>
+    </ul>
+    <pre><code>// I Am Ready: Action: Remove 1 fate from a (friendly) [clan-unicorn] character – ready that character.
+this.action('Ready a character')
+    .cost(costs.removeFate({
+        cardType: CardType.Character,
+        // the effect must be able to ready it, or the ability can't change the game state
+        cardCondition: (card, context) =&gt; card.isFaction('unicorn') &amp;&amp; ready().canAffect(card, context)
+    }))
+    .handler((context) =&gt; ready().resolve(context.costs.removeFate, context))
+    .chatText((context) =&gt; msg`ready ${context.costs.removeFate}`)
+    .cannotBeMirrored();</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IAmReady.ts">I Am Ready</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/StolenSecrets.ts">Stolen Secrets</a></p>
+  </div>
+
+  <div class="ref" id="co-removeFromGame" data-name="removeFromGame">
+    <h3><code>removeFromGame(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-removeFromGame">#</a></h3>
+    <p>"Remove … from the game": the player chooses cards and removes them from the game, usually from a discard pile.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which cards; set <code>location</code> to the pile they come from.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>The select's <code>location</code> is also the paying action's: any card in that location qualifies, without restriction checks. Without <code>location</code> it is <code>Location.Any</code>, so give one.</li>
+      <li>Prompt: "Select card to remove from game". Records <code>removeFromGame</code> (a list with <code>TargetMode.Unlimited</code>). Chat: <code>removing {0} from the game</code>.</li>
+    </ul>
+    <pre><code>// Isawa Tadaka: Action: During a conflict, remove one or more characters in your dynasty discard pile from the game - look at that many random cards from your opponent's hand. Choose and discard one of those cards.
+this.action('Remove discarded characters to discard a card')
+    .condition((context) =&gt; context.game.isDuringConflict() &amp;&amp; context.player.opponent !== undefined)
+    .cost(costs.removeFromGame({
+        cardType: CardType.Character,
+        location: Location.DynastyDiscardPile,
+        mode: TargetMode.Unlimited
+    }))
+    .gameAction(multiple((context) =&gt; { const removed = context.costs.removeFromGame; … }));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.2-BoB/IsawaTadaka2.ts">Isawa Tadaka</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/AkodoMastermind.ts">Akodo Mastermind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/ArmorOfTheFallen.ts">Armor of the Fallen</a></p>
+  </div>
+
+  <div class="ref" id="co-returnToDeck" data-name="returnToDeck">
+    <h3><code>returnToDeck(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-returnToDeck">#</a></h3>
+    <p>"Put a (friendly) … on the top/bottom of your deck": the player chooses a card and returns it to its owner's deck (dynasty or conflict, by the card).</p>
+    <table>
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>select properties</td><td>(above)</td><td></td><td>Which card. <code>location</code> is also where the paying action accepts it from.</td></tr>
+        <tr><td><code>bottom</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Bottom of the deck instead of the top.</td></tr>
+        <tr><td><code>shuffle</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Shuffle the deck afterwards.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers characters, attachments, events and holdings in <code>location</code> that can be returned to the deck. A card in a province leaving triggers its refill.</li>
+      <li>Prompt: "Select card to return to your deck". Records <code>returnToDeck</code>, <code>returnToDeckStateWhenChosen</code>. Chat: <code>returning {0} to the top of their deck</code> (<code>bottom of their deck</code> with <code>bottom</code>), or <code>shuffling {0} into their deck</code> with <code>shuffle</code>.</li>
+    </ul>
+    <pre><code>// Kaiu Siege Force: Action: Put a (friendly) holding on the bottom of your dynasty deck - ready this character.
+this.action('Ready this character')
+    .cost(costs.returnToDeck({
+        location: Location.Provinces,
+        cardCondition: (card) =&gt; card.type === CardType.Holding &amp;&amp; card.isFaceup(),
+        bottom: true
+    }))
+    .ready();</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/KaiuSiegeForce.ts">Kaiu Siege Force</a></p>
+  </div>
+
+  <div class="ref" id="co-returnToHand" data-name="returnToHand">
+    <h3><code>returnToHand(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-returnToHand">#</a></h3>
+    <p>"Return a (friendly) … to your hand": the player chooses a card in play and returns it to its owner's hand.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which card.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers characters, attachments and events in play that can be returned to hand.</li>
+      <li>Prompt: "Select card to return to hand". Records <code>returnToHand</code>, <code>returnToHandStateWhenChosen</code>. Chat: <code>returning {0} to their hand</code>.</li>
+    </ul>
+    <pre><code>// Sketch, no card uses this cost yet: "Return a character you control to your hand - …"
+this.action('…')
+    .cost(costs.returnToHand({ cardType: CardType.Character }))
+    …</code></pre>
+    <p class="seen">Not used by any card yet.</p>
+  </div>
+
+  <div class="ref" id="co-reveal" data-name="reveal">
+    <h3><code>reveal(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-reveal">#</a></h3>
+    <p>"Reveal a (friendly) facedown province": the player chooses a card and turns it faceup.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which card.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>A faceup card in a province or in play can't be revealed; a card elsewhere (hand, deck) can.</li>
+      <li>Prompt: "Select a {cardType} to reveal" ("Select a province to reveal"; "card" without <code>cardType</code>). Records <code>reveal</code>, <code>revealStateWhenChosen</code>. Chat: <code>revealing {0}</code>.</li>
+    </ul>
+    <pre><code>// Shoshi ni Kie: Action: Reveal a (friendly) facedown province. Choose an ordinary character - ready that character.
+this.action('ready an ordinary character')
+    .cost(costs.reveal({ cardCondition: (card) =&gt; card.isFacedown(), cardType: CardType.Province }))
+    .target({ cardCondition: (card) =&gt; card.isOrdinary(), cardType: CardType.Character, player: Players.Self }, ready());</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/ShoshiNiKie.ts">Shoshi ni Kie</a></p>
+  </div>
+
+  <div class="ref" id="co-sacrifice" data-name="sacrifice">
+    <h3><code>sacrifice(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-sacrifice">#</a></h3>
+    <p>"Sacrifice a … character": the player chooses cards and sacrifices them.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which cards.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers characters and attachments in play and faceup holdings in provinces that can be sacrificed.</li>
+      <li>The card leaves play before the effects: read its traits and skill from <code>sacrificeStateWhenChosen</code>.</li>
+      <li>Prompt: "Select card to sacrifice". Records <code>sacrifice</code>, <code>sacrificeStateWhenChosen</code>. Chat: <code>sacrificing {0}</code>.</li>
+    </ul>
+    <pre><code>// Broken Blades: Reaction: After you win a [conflict-military] conflict as the attacker, sacrifice a participating Berserker character and choose a participating character controlled by your opponent - … (Max 1 per conflict.)
+this.reaction('Return all fate from a character then discard them')
+    .when({ afterConflict: (event, context) =&gt; … })
+    .cost(costs.sacrifice({
+        cardType: CardType.Character,
+        cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; card.hasTrait(Trait.Berserker)
+    }))
+    .target({ cardType: CardType.Character, controller: Players.Opponent, … }, sequential([ … ]))
+    .max(perConflict(1));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/BrokenBlades.ts">Broken Blades</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/OurDuty.ts">Our Duty!</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FuneralPyre.ts">Funeral Pyre</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/NobleSacrifice.ts">Noble Sacrifice</a></p>
+  </div>
+
+  <div class="ref" id="co-shuffleIntoDeck" data-name="shuffleIntoDeck">
+    <h3><code>shuffleIntoDeck(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-shuffleIntoDeck">#</a></h3>
+    <p>"Shuffle a card in one of your provinces back into your dynasty deck": the player chooses a card and shuffles it into the dynasty deck.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which card; usually <code>location: Location.Provinces</code>.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>The destination is always the dynasty deck, so only dynasty cards not in play qualify.</li>
+      <li>It records under <code>moveCard</code> (the paying action), not <code>shuffleIntoDeck</code>: <code>context.costs.moveCard</code>, <code>context.costs.moveCardStateWhenChosen</code> (the snapshot keeps the province it was in).</li>
+      <li>Prompt: "Select card to shuffle into deck". Chat: <code>shuffling {0} into their deck</code>.</li>
+    </ul>
+    <pre><code>// Rebuild: Action: Shuffle a card in one of your unbroken provinces back into your dynasty deck. Choose a holding in your dynasty discard pile – put that holding into play in that province.
+this.action('Put a holding into play from your discard')
+    .cost(costs.shuffleIntoDeck({
+        location: Location.Provinces,
+        cardCondition: (card) =&gt; !!card.controller.getProvinceCardInProvince(card.location) &amp;&amp; !card.controller.getProvinceCardInProvince(card.location)?.isBroken
+    }))
+    .target({
+        activePromptTitle: 'Choose a holding to put into the province',
+        cardType: CardType.Holding,
+        location: Location.DynastyDiscardPile,
+        controller: Players.Self
+    }, moveCard((context) =&gt; ({
+        destination: context.costs.moveCardStateWhenChosen instanceof DrawCard ? context.costs.moveCardStateWhenChosen.location : Location.ProvinceOne
+    })))
+    .chatText('replace it with {0}')
+    .cannotTargetFirst()
+    .cannotBeMirrored();</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Rebuild.ts">Rebuild</a></p>
+  </div>
+
+  <div class="ref" id="co-taint" data-name="taint">
+    <h3><code>taint(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-taint">#</a></h3>
+    <p>"Taint a (friendly) …": the player chooses a character or province and taints it.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>properties</code></td><td>select properties (above)</td><td>required</td><td>Which card.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers characters in play and provinces that are not tainted and can receive a tainted status token.</li>
+      <li>Prompt: "Select card to taint". Records <code>taint</code>, <code>taintStateWhenChosen</code>. Chat: <code>tainting {0}</code>.</li>
+    </ul>
+    <pre><code>// Unveiled Corruption: Action: Taint a (friendly) unbroken province - each opponent discards cards from their hand, until they have an equal or fewer number of cards in their hand as you.
+this.action('Force opponent to discard cards to match your hand size')
+    .cost(costs.taint({ cardCondition: (card) =&gt; {
+        return card.type === CardType.Province &amp;&amp; !(card instanceof ProvinceCard &amp;&amp; card.isBroken);
+    } }))
+    …</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/UnveiledCorruption.ts">Unveiled Corruption</a></p>
+  </div>
+</section>
+
+<section class="group">
+  <h3 class="group-title" id="co-group-given">Paying with cards the code picks</h3>
+  <p>"Discard the top card of your dynasty deck", "Discard your hand": the card text names the cards, so the player chooses nothing.</p>
+
+  <div class="ref" id="co-discardCardsOf" data-name="discardCardsOf">
+    <h3><code>discardCardsOf(cardFunc)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardCardsOf">#</a></h3>
+    <p>Discards the card or cards <code>cardFunc</code> returns.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>cardFunc</code></td><td><code>(context) =&gt; DrawCard | DrawCard[] | undefined</code></td><td>required</td><td>The cards to discard, read when the costs are checked and again when they are paid.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can be paid when at least one returned card can be discarded; only those are discarded.</li>
+      <li>Records <code>discardCard</code>: every card <code>cardFunc</code> returned (as a list, <code>undefined</code> left out).</li>
+      <li>Chat: <code>discarding {0}</code>.</li>
+    </ul>
+    <pre><code>// War Dog Master: Reaction: After this character is declared as an attacker, discard the top card of your dynasty deck – this character gets +X[conflict-military] until the end of the conflict. X is the printed cost of the discarded card.
+this.reaction('Gain a +X/+0 bonus')
+    .when({
+        onConflictDeclared: (event, context) =&gt; (event.attackers ?? []).includes(context.source)
+    })
+    .cost(costs.discardCardsOf((context) =&gt; context.player.dynastyDeck[0]))
+    .cardLastingEffect((context) =&gt; ({
+        effect: modifyMilitarySkill(discardedCost(context.costs.discardCard))
+    }))
+    .chatText((context) =&gt; msg`give ${context.chatTarget()} +${discardedCost(context.costs.discardCard)}${'military'}`);</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/WarDogMaster.ts">War Dog Master</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/YoungBeastmaster.ts">Young Beastmaster</a></p>
+  </div>
+
+  <div class="ref" id="co-discardHand" data-name="discardHand">
+    <h3><code>discardHand()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardHand">#</a></h3>
+    <p>"Discard your hand": discards every card in the player's hand.</p>
+    <ul class="edge">
+      <li>Can't be paid with an empty hand, or when the player can't discard.</li>
+      <li>The hand is read when the cost resolves; records <code>discardHand</code>: those cards.</li>
+      <li>No cost text in the chat.</li>
+    </ul>
+    <pre><code>// Calling the Storm: Action: Discard your hand - until the end of the phase, you may look at and play the top card of your conflict deck as if it were in your hand.
+this.action('Make top card of conflict deck playable')
+    .cost(costs.discardHand())
+    .cardLastingEffect((context) =&gt; ({ … }))
+    .playerLastingEffect(() =&gt; ({ duration: Duration.UntilEndOfPhase, effect: showTopConflictCard(Players.Self) }))
+    .chatText('play cards from their conflict deck this phase');</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/CallingTheStorm.ts">Calling the Storm</a></p>
+  </div>
+
+  <div class="ref" id="co-revealCardsOf" data-name="revealCardsOf">
+    <h3><code>revealCardsOf(cardFunc)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-revealCardsOf">#</a></h3>
+    <p>"Reveal the top N cards of your conflict deck": reveals the cards <code>cardFunc</code> returns.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>cardFunc</code></td><td><code>(context) =&gt; Card[]</code></td><td>required</td><td>The cards to reveal.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid when no returned card can be revealed (an empty list, or only faceup cards in provinces or in play).</li>
+      <li>Records <code>reveal</code>: the revealed cards, typed. Chat: <code>revealing {0}</code>.</li>
+    </ul>
+    <pre><code>// Test of Skill: Action: Name a card type. Reveal the top 3 cards of your conflict deck (top 4 cards instead if you control a Duelist character) – add up to 2 revealed cards of that type to your hand and discard the rest.
+this.action('Reveal cards and take ones matching named type')
+    .condition((context) =&gt; context.player.conflictDeck.length &gt;= revealCount(context, Trait.Duelist))
+    .cost(costs.revealCardsOf((context) =&gt; context.player.conflictDeck.slice(0, revealCount(context, Trait.Duelist))))
+    .cost(nameCardType())
+    .deckSearch((context) =&gt; takeUpToTwoOfNamedType(context, Trait.Duelist))
+    .chatText('take cards into their hand')
+    .cannotBeMirrored();</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/TestOfSkill.ts">Test of Skill</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/ShrineMaiden.ts">Shrine Maiden</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DaimyosGunbai.ts">Daimyō's Gunbai</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/WorkInProgress.ts">Work in Progress</a></p>
+  </div>
+</section>
+
+<section class="group">
+  <h3 class="group-title" id="co-group-fate">Fate and honor</h3>
+  <p>Fixed amounts of fate or honor, the printed fate cost of a played card, and the extra fate placed on a character. The fixed costs pay the ability's player's own fate or honor.</p>
+
+  <div class="ref" id="co-chooseFate" data-name="chooseFate">
+    <h3><code>chooseFate(type)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-chooseFate">#</a></h3>
+    <p>The engine's "how much extra fate" question when a character is played. Cards don't use it.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>type</code></td><td><code>PlayType</code></td><td>required</td><td>How the character is played (<code>PlayFromHand</code>, <code>PlayFromProvince</code>); picks the cost reducers and restrictions that apply.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Always payable. Offers 0 up to the fate left after the reduced cost, three numbers at a time with a "More" button.</li>
+      <li>Offers only 0 when the player can't spend fate, or a restriction stops placing fate on a played character (Hallowed Ground). With <code>PlayFromProvince</code>, also when a restriction stops it for characters played from a province (Legendary, Doomed Shugenja).</li>
+      <li>Stores the amount in <code>context.chooseFate</code>, not <code>context.costs</code>, and takes it from the player's pool directly. No cost text.</li>
+    </ul>
+    <pre><code>// PlayCharacterAction (engine)
+super(card, [chooseFate(PlayType.PlayFromHand), payReduceableFateCost()]);</code></pre>
+    <p class="seen">Not used by any card. The engine uses it in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/PlayCharacterAction.ts">PlayCharacterAction</a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/DynastyCardAction.ts">DynastyCardAction</a>.</p>
+  </div>
+
+  <div class="ref" id="co-giveFateToOpponent" data-name="giveFateToOpponent">
+    <h3><code>giveFateToOpponent(amount?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-giveFateToOpponent">#</a></h3>
+    <p>"Give your opponent N fate": moves fate from the player's pool to the opponent's.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount</code></td><td><code>number</code></td><td>1</td><td>How much fate.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid without an opponent (solo game), or when the player has fewer than <code>amount</code> fate.</li>
+      <li>Its <code>fateSpent</code> (<code>amount</code>) is counted by the ability's reduceable fate cost and the costs of targeting.</li>
+      <li>Chat: <code>giving {1} fate to {2}</code> (the amount, the opponent).</li>
+    </ul>
+    <pre><code>// Doji Gift Giver: Action: While this character is participating in a conflict, give your opponent 1 fate. That opponent must choose a ready participating character he or she controls – bow that character.
+this.action('Bow a character')
+    .condition((context) =&gt; context.source.isParticipating() &amp;&amp; context.player.opponent !== undefined)
+    .cost(costs.giveFateToOpponent(1))
+    .target({ player: Players.Opponent, cardType: CardType.Character, controller: Players.Opponent, … }, bow());</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DojiGiftGiver.ts">Doji Gift Giver</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KaradaDistrict.ts">Karada District</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Neutral/UsogawaChidori.ts">Usogawa Chidori</a></p>
+  </div>
+
+  <div class="ref" id="co-giveHonorToOpponent" data-name="giveHonorToOpponent">
+    <h3><code>giveHonorToOpponent(amount?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-giveHonorToOpponent">#</a></h3>
+    <p>"Give your opponent N honor": transfers honor from the player to the opponent.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount</code></td><td><code>number</code></td><td>1</td><td>How much honor.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid without an opponent, with an amount of 0, when an honor-gain limit leaves nothing to transfer, or when honor can't be taken from the player or the player can't lose honor (a restriction on losing honor blocks it).</li>
+      <li>An honor-gain limit on the opponent (<a href="effects.html#ef-limitHonorGainPerPhase"><code>limitHonorGainPerPhase</code></a>) lowers the amount transferred. No other effect changes it.</li>
+      <li>Chat: <code>giving {1} honor to {2}</code> (the amount actually transferred, the opponent).</li>
+      <li>Also used as an added cost: Command Respect makes the opponent pay it with <code>additionalPlayCost</code>.</li>
+    </ul>
+    <pre><code>// Command Respect: Action: During a conflict, if you have fewer cards in your hand than your opponent - as an additional cost for your opponent to play an event during this conflict, that opponent must give you 1 honor. (Max 1 per conflict.)
+this.action('Take honor from opponent when they play an event')
+    .condition((context) =&gt; context.game.isDuringConflict())
+    .ifCondition((context) =&gt; !!context.player.opponent &amp;&amp; context.player.hand.length &lt; context.player.opponent.hand.length)
+    .playerLastingEffect((context) =&gt; ({
+        target: context.player.opponent,
+        effect: additionalPlayCost((sourceContext) =&gt;
+            sourceContext.source.type === CardType.Event ? [costs.giveHonorToOpponent(1)] : []
+        )
+    }))
+    .max(perConflict(1));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/CommandRespect.ts">Command Respect</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SmugglingDeal.ts">Smuggling Deal</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/NaturalNegotiator.ts">Natural Negotiator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/BlatantSwindler.ts">Blatant Swindler</a></p>
+  </div>
+
+  <div class="ref" id="co-payFate" data-name="payFate">
+    <h3><code>payFate(amount?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-payFate">#</a></h3>
+    <p>"Spend N fate": the player loses fate from their pool. Not reduced by cost reducers.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount</code></td><td><code>number | (context) =&gt; number</code></td><td>1</td><td>How much fate.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid when the amount is 0 or less, or the player can't spend <code>amount</code> fate (<code>player.canSpendFate</code>: fewer than <code>amount</code> fate, or a <code>SpendFate</code> restriction).</li>
+      <li>Chat: <code>spending {1} fate</code>.</li>
+    </ul>
+    <pre><code>// Jade-Infused Arrows: [conflict-military] Conflict Action: Pay 1 fate - for this conflict, attached character gets +2[conflict-military] (+4[conflict-military] instead if the enemy side has a tainted or Corrupt character). (Unlimited.)
+this.conflictAction('Give attached character a skill bonus', { conflictType: ConflictType.Military })
+    .cost(costs.payFate(1))
+    .cardLastingEffect((context) =&gt; ({ target: context.source.parentCharacter ?? [], effect: modifyMilitarySkill(this.bonusAmount(context)) }))
+    .limit(unlimited());</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/JadeInfusedArrows.ts">Jade-Infused Arrows</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Crane/EyesOfTheSerpent.ts">Eyes of the Serpent</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IdeMessenger.ts">Ide Messenger</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/KabukiHero.ts">Kabuki Hero</a></p>
+  </div>
+
+  <div class="ref" id="co-payFateToRing" data-name="payFateToRing">
+    <h3><code>payFateToRing(amount?, ringCondition?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-payFateToRing">#</a></h3>
+    <p>"Spend 1 fate to an unclaimed ring": the player chooses a ring and moves fate from their pool onto it.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount</code></td><td><code>number</code></td><td>1</td><td>How much fate.</td></tr>
+        <tr><td><code>ringCondition</code></td><td><code>(ring) =&gt; boolean</code></td><td>unclaimed rings</td><td>Which rings can be chosen. Pass <code>() =&gt; true</code> for "a ring".</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid when the player has no fate or can't spend fate, or no matching ring can receive fate.</li>
+      <li>Unlike <code>payFate</code>, it checks only that the player can spend some fate (<code>canMoveFateFrom</code> with <code>spend</code>: <code>canSpendFate(1)</code>), not <code>amount</code>; the move then takes at most the fate the player has. Its <code>fateSpent</code> (<code>amount</code>) is counted by the ability's reduceable fate cost and the costs of targeting.</li>
+      <li>Prompt: "Select a ring to place fate on". Records <code>ringPaidFateTo</code>: the ring (no snapshot). Chat: <code>placing {1} fate on the {0}</code>.</li>
+    </ul>
+    <pre><code>// Young Ise Zumi: Reaction: After this character wins a conflict, spend 1 fate to a ring - players cannot declare conflicts using that ring this phase.
+this.reaction('Prevent a ring from being used for a conflict')
+    .when({ afterConflict: (event, context) =&gt; … })
+    .cost(costs.payFateToRing(1, () =&gt; true))
+    .ringLastingEffect((context) =&gt; ({
+        duration: Duration.UntilEndOfPhase,
+        target: context.costs.ringPaidFateTo || context.game.rings.air,
+        effect: cannotDeclareRing(() =&gt; true)
+    }));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KitsukiInvestigator.ts">Kitsuki Investigator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Dragon/YoungIseZumi.ts">Young Ise Zumi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsceticVisionary.ts">Ascetic Visionary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/TogashiInitiate.ts">Togashi Initiate</a></p>
+  </div>
+
+  <div class="ref" id="co-payHonor" data-name="payHonor">
+    <h3><code>payHonor(amount?, dueToStatusToken?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-payHonor">#</a></h3>
+    <p>"Lose N honor": the player loses honor.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount</code></td><td><code>number</code></td><td>1</td><td>How much honor.</td></tr>
+        <tr><td><code>dueToStatusToken</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Marks the loss as caused by a dishonored status token (the engine's use; cards leave it).</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid with an amount of 0, or when the player can't lose honor. A restriction with <code>RestrictionScope.LoseHonorAsCost</code> stops only this kind of loss.</li>
+      <li>The player's honor total is not checked: a player with less honor can still pay.</li>
+      <li>Chat: <code>losing {1} honor</code>.</li>
+    </ul>
+    <pre><code>// Assassination: Conflict Action: Lose 3 honor. Choose a character with printed cost 2 or lower – discard that character. (Max 1 per round.)
+this.conflictAction('Discard a character')
+    .cost(costs.payHonor(3))
+    .target({ cardType: CardType.Character, cardCondition: (card) =&gt; card.costLessThan(3) }, discardFromPlay())
+    .max(perRound(1));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/MerchantOfDesires.ts">Merchant of Desires</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AdeptOfShadows.ts">Adept of Shadows</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CaptiveAudience.ts">Captive Audience</a></p>
+  </div>
+
+  <div class="ref" id="co-payReduceableFateCost" data-name="payReduceableFateCost">
+    <h3><code>payReduceableFateCost(ignoreType?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-payReduceableFateCost">#</a></h3>
+    <p>The printed fate cost of the source, minus the cost reducers that apply. Every event gets it automatically; characters and other played cards get it from the engine.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>ignoreType</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Apply reducers limited to a card type even when the source has another type.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid when the card has no printed cost (a dash), or when its minimum cost isn't 0 and the player can't spend it plus the fate the ability's other costs spend (their <code>fateSpent</code>, e.g. <code>payFate</code>, <code>payFateToRing</code>): all costs are paid in full together. The fate pool offered when paying is lowered by those other costs too. A Temptations maho card ("can only be paid for with fate on characters you control") can only be played when its cost is reduced to 0: the fate on your characters reduces it, the fate pool pays nothing. A subclass sets this for its own cost by overriding <code>isCharacterFateOnly(context)</code> (Isawa Hifumi's cost).</li>
+      <li>When fate on other cards or rings may pay for the card (alternate fate pools), the player is asked how much to take from each; the chat says "<em>player1 takes N fate from X to pay the cost of Y</em>".</li>
+      <li>Marks the reducers used (only while it is a play cost, <code>isPlayCost</code>; Isawa Hifumi's cost subclass turns that off). Skipped when <code>context.ignoreFateCost</code> is set, and when another card's effect resolves the ability.</li>
+      <li>With <code>ignoreType</code>, a reducer limited to another card type also lowers the cost, and is marked used.</li>
+      <li>Records <code>fate</code> (the reduced cost) and, with alternate pools, <code>alternateFate</code> (a map of pool to fate). No cost text.</li>
+    </ul>
+    <pre><code>// CardAbility (engine): an event card pays its printed cost
+if(card.getType() === CardType.Event &amp;&amp; !this.isKeywordAbility()) {
+    this.cost = this.cost.concat(payReduceableFateCost());
+}</code></pre>
+    <p class="seen">Not used by any card. The engine adds it in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/CardAbility.ts">CardAbility</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/PlayCharacterAction.ts">PlayCharacterAction</a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/DynastyCardAction.ts">DynastyCardAction</a>.</p>
+  </div>
+
+  <div class="ref" id="co-payTargetDependentFateCost" data-name="payTargetDependentFateCost">
+    <h3><code>payTargetDependentFateCost(targetName, ignoreType?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-payTargetDependentFateCost">#</a></h3>
+    <p>The printed fate cost of the source, with the reducers that apply when it goes onto the card chosen as the target <code>targetName</code>: playing an attachment.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>targetName</code></td><td><code>string</code></td><td>required</td><td>The target the cost depends on (<code>'target'</code> for the default target).</td></tr>
+        <tr><td><code>ignoreType</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Apply reducers limited to a card type anyway (a character played as an attachment).</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>The target only offers cards the cost can be paid for (a reduced cost of 0 always; otherwise it plus the other costs' <code>fateSpent</code> must be spendable). Before the target is chosen, the cost counts as payable.</li>
+      <li>When the fate goes to the opponent (playing with <code>payFateToOpponent</code>), it can't be paid if the opponent can't gain fate.</li>
+      <li>A Temptations Mahō card can only be paid for a target that reduces its cost to 0 (with the fate on your characters), as with <a href="#co-payReduceableFateCost"><code>payReduceableFateCost</code></a>.</li>
+      <li>With <code>ignoreType</code>, a reducer limited to another card type also lowers the cost, and is marked used: a character played as an attachment uses up Daimyō's Favor's "next attachment" reduction.</li>
+      <li>Records <code>targetDependentFate</code>: the reduced cost. No cost text.</li>
+    </ul>
+    <pre><code>// PlayAttachmentAction (engine)
+super(card, [payTargetDependentFateCost('target', ignoreType)], { … });</code></pre>
+    <p class="seen">Not used by any card. The engine uses it in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/PlayAttachmentAction.ts">PlayAttachmentAction</a>.</p>
+  </div>
+</section>
+
+<section class="group">
+  <h3 class="group-title" id="co-group-variable">Variable and optional costs</h3>
+  <p>"Lose up to 3 honor", "You may spend 1 fate", "Each opponent may …": the player (or the opponent) decides how much, or whether, to pay. Most record the answer so the effect can scale with it; read it with a fallback, since it is <code>undefined</code> until paid.</p>
+
+  <div class="ref" id="co-discardCardsUpToVariableX" data-name="discardCardsUpToVariableX">
+    <h3><code>discardCardsUpToVariableX(amount)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardCardsUpToVariableX">#</a></h3>
+    <p>"Discard up to X cards from your hand": the player chooses up to <code>amount</code> cards in hand and discards them.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount</code></td><td><code>number | (context) =&gt; number</code></td><td>required</td><td>The most cards to discard.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid when <code>amount</code> is 0 or the player can't discard (empty hand or a restriction).</li>
+      <li>Choosing no card, or cancelling, cancels the ability.</li>
+      <li>Prompt: "Choose up to N card(s) to discard". Records <code>discardCardsUpToVariableX</code>: the cards. No cost text.</li>
+    </ul>
+    <pre><code>// Exemplary Negotiator: Action: If you control a dishonored character, discard up to 2 cards from your hand - for each card discarded, each opponent discards 1 random card from their hand.
+this.action('Discard cards to cause opponent to discard')
+    .ifCondition((context) =&gt; context.player.anyCardsInPlay((card) =&gt; card.isDishonored))
+    .cost(costs.discardCardsUpToVariableX(() =&gt; 2))
+    .discardAtRandom((context) =&gt; ({
+        amount: context.costs.discardCardsUpToVariableX?.length || 1
+    }))
+    .chatText((context) =&gt; msg`discard ${context.costs.discardCardsUpToVariableX} to make ${context.player.opponent} discard ${(context.costs.discardCardsUpToVariableX ?? []).length} card${(context.costs.discardCardsUpToVariableX ?? []).length &gt; 1 ? 's' : ''} at random`);</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.2-BoB/DishonorableAssault.ts">Dishonorable Assault</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crane/ExemplaryNegotiator.ts">Exemplary Negotiator</a></p>
+  </div>
+
+  <div class="ref" id="co-optionalOpponentLoseHonor" data-name="optionalOpponentLoseHonor">
+    <h3><code>optionalOpponentLoseHonor(prompt?, canPayFunc?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-optionalOpponentLoseHonor">#</a></h3>
+    <p>"Each opponent may choose to lose 1 honor": asks the opponent whether to lose 1 honor.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>prompt</code></td><td><code>string</code></td><td><code>'Lose 1 honor?'</code></td><td>The question the opponent sees.</td></tr>
+        <tr><td><code>canPayFunc</code></td><td><code>(context) =&gt; boolean</code></td><td>always</td><td>When the opponent is offered the choice.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Always payable. The opponent is not asked when <code>canPayFunc</code> is false, there is no opponent, or the opponent can't lose honor.</li>
+      <li>Records <code>optionalOpponentLoseHonorPaid</code>: whether they lost it (<code>false</code> when not asked).</li>
+      <li>No cost text; when the opponent pays, the chat says "<em>player2 chooses to lose 1 honor</em>".</li>
+    </ul>
+    <pre><code>// Merchant of Desires: Action: Lose 1 honor. Each opponent may choose to lose 1 honor - each player that lost 1 honor draws a card.
+this.action('Draw a card')
+    .cost(costs.payHonor(1))
+    .cost(costs.optionalOpponentLoseHonor('Lose 1 honor to draw a card?'))
+    .draw((context) =&gt; ({
+        target: context.costs.optionalOpponentLoseHonorPaid &amp;&amp; context.player.opponent
+            ? [context.player, context.player.opponent]
+            : context.player
+    }));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/MerchantOfDesires.ts">Merchant of Desires</a></p>
+  </div>
+
+  <div class="ref" id="co-optionalTakeHonorFromOpponent" data-name="optionalTakeHonorFromOpponent">
+    <h3><code>optionalTakeHonorFromOpponent(canPayFunc?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-optionalTakeHonorFromOpponent">#</a></h3>
+    <p>"Each opponent may give you 1 honor": asks the opponent "Give an honor to your opponent?" and transfers 1 honor on Yes.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>canPayFunc</code></td><td><code>(context) =&gt; boolean</code></td><td>always</td><td>When the opponent is offered the choice.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Always payable. The opponent is not asked when <code>canPayFunc</code> is false, there is no opponent, the opponent can't lose honor or the player can't gain it.</li>
+      <li>The honor moves when the costs are paid, before the opponent's targets: a later target can depend on it (<code>cardCondition: (_card, context) =&gt; Boolean(context.costs.honorTakenFromOpponent)</code>).</li>
+      <li>Records <code>honorTakenFromOpponent</code>: whether they gave it. No cost text; on Yes the chat says "<em>player2 chooses to give player1 1 honor</em>".</li>
+      <li>Marked <code>chosenByOpponent</code>: with <a href="builder.html#b-firstPlayerChoosesFirst"><code>firstPlayerChoosesFirst()</code></a>, an opponent who is the first player is asked, and chooses their target, before you choose yours.</li>
+    </ul>
+    <pre><code>// Roadside Inn: Reaction: After the fate phase begins, choose a character. Each opponent may give you 1 honor and choose a character - each player who chose a character in this way moves 1 fate from their fate pool to their chosen character, if able.
+this.reaction('Place a fate on a character')
+    .when({
+        onPhaseStarted: (event) =&gt; event.phase === Phase.Fate
+    })
+    .condition((context) =&gt; context.player.fate &gt; 0 || (context.player.opponent?.fate ?? 0) &gt; 0)
+    .cost(costs.optionalTakeHonorFromOpponent((context) =&gt; {
+        return (context.player.opponent?.fate ?? 0) &gt; 0;
+    }))
+    .target({
+        name: 'myCharacter',
+        cardType: CardType.Character
+    })
+    .target({
+        name: 'oppCharacter',
+        player: Players.Opponent,
+        cardType: CardType.Character,
+        optional: true,
+        hideIfNoLegalTargets: true,
+        cardCondition: (_card, context) =&gt; Boolean(context.costs.honorTakenFromOpponent)
+    }, placeFate((context) =&gt; ({ origin: context.player.opponent })))
+    .placeFate((context) =&gt; ({ origin: context.player, target: context.targets.myCharacter }))
+    .firstPlayerChoosesFirst()
+    .chatText((context) =&gt; msg`${context.player.fate &gt; 0 ? 'place a fate from their pool on' : 'choose'} ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) =&gt; msg`place a fate from their pool on ${card}`)}`);</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/RoadsideInn.ts">Roadside Inn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ExpertInterpreter.ts">Expert Interpreter</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/AgashaProdigy.ts">Agasha Prodigy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a></p>
+  </div>
+
+  <div class="ref" id="co-payOptionalFate" data-name="payOptionalFate">
+    <h3><code>payOptionalFate(amount, forcePayment?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-payOptionalFate">#</a></h3>
+    <p>"You may spend N fate": asks "Spend N fate?" and takes the fate on Yes.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount</code></td><td><code>number</code></td><td>required</td><td>How much fate.</td></tr>
+        <tr><td><code>forcePayment</code></td><td><code>(context) =&gt; boolean</code></td><td>never</td><td>When the fate must be paid: then it is taken without asking, and the cost can't be paid without it.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Payable unless <code>forcePayment</code> holds and the player has fewer than <code>amount</code> fate or can't spend fate.</li>
+      <li>Not asked (records 0) when the player can't pay.</li>
+      <li>The fate is taken from the pool directly, without a lose-fate event.</li>
+      <li>Records <code>optionalFatePaid</code>: 0 or <code>amount</code>. Chat: <code>paying {1} fate</code>, nothing for 0.</li>
+    </ul>
+    <pre><code>// Expert Bartering: Action: You may spend 1 fate. Choose another attachment (you may only choose one an opponent controls if you spent 1 fate) - switch this attachment with the chosen attachment. …
+this.action('Switch this attachment with another')
+    .cost(costs.payOptionalFate(1, (context) =&gt; {
+        const contextCopy = context.copy({});
+        contextCopy.costs.optionalFatePaid = 0;
+        return !context.ability.hasLegalTargets(contextCopy);
+    }))
+    .target({
+        cardType: CardType.Attachment,
+        cardCondition: (card, context) =&gt; card !== context.source &amp;&amp; switchAttachments.hasLegalTarget(context),
+        controller: (context) =&gt; (context.costs.optionalFatePaid === undefined || context.costs.optionalFatePaid &gt; 0) ? Players.Any : Players.Self
+    })
+    .gameAction(switchAttachments)
+    .cannotTargetFirst();</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ExpertBartering.ts">Expert Bartering</a></p>
+  </div>
+
+  <div class="ref" id="co-payVariableFate" data-name="payVariableFate">
+    <h3><code>payVariableFate(properties)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-payVariableFate">#</a></h3>
+    <p>"Spend X fate": the player picks X from a list and pays it.</p>
+    <table>
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>required (<code>''</code> shows "Choose how much fate to pay")</td><td>The question.</td></tr>
+        <tr><td><code>minAmount</code></td><td><code>number | (context) =&gt; number</code></td><td>1</td><td>The smallest X offered.</td></tr>
+        <tr><td><code>maxAmount</code></td><td><code>number | (context) =&gt; number</code></td><td>required</td><td>The largest X offered; a negative value means no limit but the player's fate.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Cost reductions that apply to playing the source from hand are taken off the fate actually spent, so X can go above the player's fate by that much. A player who can't spend fate can still pick X up to the reduction.</li>
+      <li>Always payable when such a reduction applies. Otherwise the player needs to be able to spend at least <code>minAmount</code> fate plus any cost increase (<code>player.canSpendFate</code>); the choices stop at <code>player.getSpendableFate(context)</code>. With <code>context.ignoreFateCost</code> X is 0, so it is payable only when <code>minAmount</code> is 0 or less (EmeraldDB ruling, Kunshu).</li>
+      <li>Records <code>fatePaid</code>: X (0 on Cancel). No cost text.</li>
+    </ul>
+    <pre><code>// Favorable Alliance: Action: Set aside cards from the top of up to two conflict decks, …, until X cards are set aside. …
+this.action('Draw cards')
+    .cost(costs.payVariableFate({
+        minAmount: 1,
+        maxAmount: (context) =&gt; context.player.conflictDeck.length,
+        activePromptTitle: 'Choose a value for X'
+    }))
+    .lookAt((context) =&gt; ({ target: context.player.conflictDeck.slice(0, context.costs.fatePaid), … }));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/FavorableAlliance.ts">Favorable Alliance</a></p>
+  </div>
+
+  <div class="ref" id="co-payVariableHonor" data-name="payVariableHonor">
+    <h3><code>payVariableHonor(amountFunc)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-payVariableHonor">#</a></h3>
+    <p>"Lose up to N honor" / "lose 1 or more honor": the player picks how much honor to lose, from 1.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amountFunc</code></td><td><code>(context) =&gt; number</code></td><td>required</td><td>The most honor that can be lost.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Offers 1 up to the smaller of <code>amountFunc</code> and the player's honor; there is no 0. Declining is the Cancel button, which cancels the whole ability.</li>
+      <li>Can't be paid when <code>amountFunc</code> returns 0 or less, or the player can't lose honor.</li>
+      <li>Prompt: "Choose how much honor to pay". Records <code>honorPaid</code>: the amount (0 on Cancel). No cost text.</li>
+    </ul>
+    <pre><code>// Ignoble Enforcers: Reaction: After you play this character, you may lose up to 3 honor – for each honor you lost by this ability, put 1 fate on this character.
+this.reaction('Place additional fate on this character')
+    .when({ onCardPlayed: (event, context) =&gt; event.card === context.source })
+    .cost(costs.payVariableHonor(() =&gt; 3))
+    .placeFate((context) =&gt; ({ amount: context.costs.honorPaid }))
+    .chatText((context) =&gt; msg`place ${context.costs.honorPaid} fate on ${context.chatTarget()}`);</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/IgnobleEnforcers.ts">Ignoble Enforcers</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ImbuedWithShadows.ts">Imbued With Shadows</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/IsawaTsuke2.ts">Isawa Tsuke</a></p>
+  </div>
+
+  <div class="ref" id="co-returnRings" data-name="returnRings">
+    <h3><code>returnRings(amount?, ringCondition?)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-returnRings">#</a></h3>
+    <p>"Return a ring from your claimed ring pool to the unclaimed ring pool": the player chooses claimed rings one at a time and returns them.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount</code></td><td><code>number</code></td><td><code>-1</code></td><td>How many rings at most; a negative value means any number.</td></tr>
+        <tr><td><code>ringCondition</code></td><td><code>(ring, context) =&gt; boolean</code></td><td>any ring</td><td>Which claimed rings can be returned.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Can't be paid when the player has claimed no matching ring.</li>
+      <li>After the first ring a Done button stops; the prompt also stops at <code>amount</code> rings or when the player has no other claimed ring.</li>
+      <li>Prompt: "Choose a ring to return". Records <code>returnedRings</code>: the rings. Chat: <code>returning the {1}</code>, with the rings as <code>{1}</code>.</li>
+    </ul>
+    <pre><code>// Deduction: Action: During a [conflict-political] conflict, return a ring from your claimed ring pool to the unclaimed ring pool. Choose a participating character with printed cost 3 or lower - bow that character.
+this.action('Bow a character')
+    .condition(() =&gt; this.game.isDuringConflict(ConflictType.Political))
+    .cost(costs.returnRings(1))
+    .target({ cardType: CardType.Character, controller: Players.Any, cardCondition: (card) =&gt; card.costLessThan(4) &amp;&amp; card.isParticipating() }, bow());</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/Deduction.ts">Deduction</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/AgashaShunsen.ts">Agasha Shunsen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/AncestralShrine.ts">Ancestral Shrine</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/PerceptiveKitsuki.ts">Perceptive Kitsuki</a></p>
+  </div>
+</section>
+
+<section class="group">
+  <h3 class="group-title" id="co-group-other">Other costs</h3>
+
+  <div class="ref" id="co-discardImperialFavor" data-name="discardImperialFavor">
+    <h3><code>discardImperialFavor()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-discardImperialFavor">#</a></h3>
+    <p>"Discard the Imperial Favor": the player loses the Imperial Favor.</p>
+    <ul class="edge">
+      <li>Can't be paid when the player doesn't have the Imperial Favor, or can't lose it.</li>
+      <li>Chat: <code>discarding the Imperial Favor</code>.</li>
+    </ul>
+    <pre><code>// Kakita Yoshi: Action: While this character is participating in a conflict, discard the Imperial Favor – draw 3 cards. Reduce the cost of each event you play during this conflict by 2.
+this.action('Draw 3 cards')
+    .condition((context) =&gt; context.source.isParticipating())
+    .cost(costs.discardImperialFavor())
+    .draw(3)
+    .playerLastingEffect({
+        effect: reduceCost({
+            amount: 2,
+            match: (card) =&gt; card.type === CardType.Event
+        })
+    })
+    .chatText('draw 3 cards, and reduce the cost of events this conflict');</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/KakitaYoshi.ts">Kakita Yoshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/IkomaUjiaki.ts">Ikoma Ujiaki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/FairAccord.ts">Fair Accord</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/ItinerantPhilosopher.ts">Itinerant Philosopher</a></p>
+  </div>
+
+  <div class="ref" id="co-nameCard" data-name="nameCard">
+    <h3><code>nameCard()</code> <span class="kind">Cost</span> <a class="anchor" href="#co-nameCard">#</a></h3>
+    <p>"Name a card": the player types a card name. Nothing is paid; the name is recorded.</p>
+    <ul class="edge">
+      <li>Always payable.</li>
+      <li>Records <code>namedCard</code>: the name. Chat: <code>naming {1}</code>, with the name as <code>{1}</code>.</li>
+      <li>Only for naming before the dash. When naming is the effect ("Action: Name a card. …", Gossip), use the <a href="game-actions.html#ga-nameCard"><code>nameCard</code></a> game action: the card is named after the ability could be cancelled.</li>
+    </ul>
+    <pre><code>// Kitsuki Chiari: Reaction: After a province you control is revealed, choose an opponent and name a card - reveal 4 random cards in that opponent's hand and discard each copy of the named card revealed this way.
+this.reaction('Name a card')
+    .when({
+        onCardRevealed: (event, context) =&gt; event.card.isProvince &amp;&amp; event.card.controller === context.player &amp;&amp;
+            context.player.opponent &amp;&amp; context.player.opponent.hand.length &gt; 0
+    })
+    .cost(costs.nameCard())
+    // … match: (context, card) =&gt; card.name === context.costs.namedCard</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ShiroKitsuki.ts">Shiro Kitsuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/KitsukiChiari.ts">Kitsuki Chiari</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Dragon/HonestAssessment.ts">Honest Assessment</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/AshalanLantern.ts">Ashalan Lantern</a></p>
+  </div>
+</section>
+
+<section class="group">
+  <h3 class="group-title" id="co-group-combine">Combining costs</h3>
+  <p>Wrappers for "pay X or Y", "you may pay X" and "pay X unless …". They take other costs.</p>
+
+  <div class="ref" id="co-chooseOne" data-name="chooseOne">
+    <h3><code>chooseOne(options)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-chooseOne">#</a></h3>
+    <p>"Spend 1 honor or 1 fate": the player picks one of the costs by its label and pays it.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>options</code></td><td><code>Record&lt;string, Cost&gt;</code></td><td>required</td><td>Each button label with the cost it pays.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Payable when any option is. Only payable options are offered; with just one, it is paid without asking.</li>
+      <li>Prompt: "Choose a cost to pay". Records <code>chosenCostLabel</code>: the label, and the chosen cost records its own key (<code>discardCard</code>, …). The result type only has <code>chosenCostLabel</code>.</li>
+      <li>Chat: the chosen cost's text.</li>
+    </ul>
+    <pre><code>// Eyes of the Serpent: Conflict Action: Spend 1 honor or 1 fate and choose a participating dishonored character - taint it. With Air affinity, gain 1 honor.
+this.conflictAction('Taint a character')
+    .playOnlyIf((context) =&gt; controlsShugenja(context.player))
+    .cost(costs.chooseOne({
+        'Spend 1 honor': costs.payHonor(1),
+        'Spend 1 fate': costs.payFate(1)
+    }))
+    .target({ cardType: CardType.Character, cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; card.isDishonored }, taint())
+    …</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Lion/SteadfastOrator.ts">Steadfast Orator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Crane/EyesOfTheSerpent.ts">Eyes of the Serpent</a></p>
+  </div>
+
+  <div class="ref" id="co-unless" data-name="unless">
+    <h3><code>unless(condition, cost)</code> <span class="kind">Cost</span> <a class="anchor" href="#co-unless">#</a></h3>
+    <p>"Pay X unless …": nothing to pay while <code>condition</code> holds, otherwise the wrapped cost.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>required</td><td>When the cost is waived.</td></tr>
+        <tr><td><code>cost</code></td><td><code>Cost</code></td><td>required</td><td>The cost to pay otherwise.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Payable when <code>condition</code> holds or the wrapped cost can be paid. Whether it is waived is decided once, when the costs are paid.</li>
+      <li>Records what the wrapped cost records, under its key (nothing when waived).</li>
+      <li>The wrapped cost is paid like any other (<code>addCostEvents</code>), so a selection cost works too.</li>
+      <li>Chat: the wrapped cost's text, nothing when waived.</li>
+    </ul>
+    <pre><code>// Conduit of Heroes: Action: During a conflict, bow this character unless you have at least 5 more honor than an opponent. Choose another character - until the end of the conflict, that character gets +3[conflict-military], +1[conflict-political] and +1 glory.
+this.action('Give a character +3/+1/+1')
+    .condition(() =&gt; this.game.isDuringConflict())
+    .cost(costs.unless((context) =&gt; !!context.player.opponent &amp;&amp; context.player.honor &gt;= context.player.opponent.honor + 5, costs.bowSelf()))
+    .target({ cardType: CardType.Character, controller: Players.Any, cardCondition: (card, context) =&gt; card !== context.source }, cardLastingEffect(() =&gt; ({ … })));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/ConduitOfHeroes.ts">Conduit of Heroes</a></p>
+  </div>
+</section>
+
+<h2 id="li-limits">Ability limits</h2>
+<p>A limit says how often an ability can be used in a period. The builder has two calls for it, both taking a limit object from <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/AbilityLimit.ts"><code>AbilityLimit.ts</code></a> (<code>import { perConflict } from '../../AbilityLimit.js'</code>).</p>
+<div class="rule"><blockquote>Unless otherwise specified, each triggered ability can only be used once per game round. This general restriction applies to any triggered ability that does not have "Limit X per [period]" printed as part of the ability’s text.</blockquote><cite>Limits of Triggered Abilities</cite></div>
+<div class="rule"><blockquote>This phrase specifies the number of times a triggered ability can be used during the designated period. This replaces the general restriction of using a triggered ability once per game round. Each copy of an ability with a specified limit may be used the specified number of times during the specified period. If a card leaves play and re-enters play during the same period, or if a card transitions from one out-of-play area to another (such as going from hand to discard pile), it is considered a new instance of the card. There is no memory of having used the ability during the specified period for any new instance of a card. All limits are player specific. If the effects of an ability with a limit are canceled, the use of the ability is still counted against the limit.</blockquote><cite>Limit X per [period]</cite></div>
+<div class="rule"><blockquote>This phrase imposes a maximum number of times that an ability may be initiated from all copies (by title) of cards bearing the ability (including itself), during the designated period. Initiating an ability on a card counts toward the maximum for all copies of that card. Each maximum is player specific. If the effects of a card or ability with a maximum are canceled, the use of the card or ability is still counted against the maximum. An ability’s maximum value cannot be modified.</blockquote><cite>Max X per [period]</cite></div>
+
+<h3 id="li-limit-max"><code>limit()</code> and <code>max()</code></h3>
+<table>
+    <thead><tr><th></th><th><code>.limit(l)</code></th><th><code>.max(l)</code></th></tr></thead>
+    <tbody>
+        <tr><td>Card text</td><td>"(Limit X per [period].)", "(Unlimited.)"</td><td>"(Max X per [period].)"</td></tr>
+        <tr><td>Counts</td><td>Uses of this ability on this card, per player</td><td>Uses of this ability on every copy of the card (same title), per player</td></tr>
+        <tr><td>Without the call</td><td><code>perRound(1)</code>, for every card ability (actions, reactions, interrupts, forced abilities)</td><td>No maximum</td></tr>
+        <tr><td>Kept</td><td>On the card; reset when the card leaves play or changes location (moving between provinces doesn't reset it)</td><td>On the player, for the game: a copy leaving play doesn't reset it</td></tr>
+        <tr><td>Raised by <code>increaseLimitOnAbilities</code></td><td>Yes, +1 per effect, for the effect's player</td><td>No</td></tr>
+    </tbody>
+</table>
+<ul>
+    <li>An ability can have both: Assassination's "(Max 1 per round.)" is <code>.max(perRound(1))</code> and keeps the default limit of once per round per copy.</li>
+    <li>Each can be called once; a second call throws. A <code>then()</code> step can't have them (setup throws); put them on the ability.</li>
+    <li>Keyword abilities set their own: Pride is once per conflict; Covert, Rally, Tutored, Thriving, Courtesy and Sincerity have no limit.</li>
+    <li>Pass one limit object to several abilities to share it: The Empty City's "You can only trigger one of this card's abilities per round" creates <code>perRound(1)</code> once and gives it to both actions.</li>
+</ul>
+
+<h3 id="li-counting">When a use is counted</h3>
+<ul>
+    <li>A use counts once the costs are paid and the targets chosen, before the effects initiate. Cancelling the ability while paying or choosing doesn't count it; cancelling its effects afterwards does.</li>
+    <li>The limit is not counted for a card in hand (an event, or an ability used from the hand), nor when the source changed location since the ability was initiated (it sacrificed or returned itself as a cost). The max is counted in both cases.</li>
+    <li>An ability resolved by another card's effect (<code>resolveAbility</code>) ignores the limit and doesn't count toward it, but counts toward the max. A sub-resolution (the ability resolving again, <code>mayResolveAgain</code>) counts toward neither and ignores the max.</li>
+    <li>The max is keyed by the card's name and the ability's number on the card: copies of the same card share it, and each player has their own.</li>
+</ul>
+
+<h3 id="li-gained">Copied and gained abilities</h3>
+<ul>
+    <li>An ability gained from an effect (<code>gainAbility</code>, <code>gainAbility.action(…)</code>) without <code>.limit()</code> gets its own once-per-round limit on each card that gains it. Its uses are counted per player and per card that holds it, and carry on when the effect is applied to the same card again.</li>
+    <li>A copied ability (an existing ability passed to <code>gainAbility</code>) gets a fresh copy of the original's limit and max: the same number and period, no uses yet. It keeps the original's ability number, so its max is keyed by the name of the card that now holds it.</li>
+    <li>A gained or copied ability is not printed: effects that raise the limit of printed abilities don't apply to it.</li>
+</ul>
+
+<section class="group">
+  <h3 class="group-title" id="li-group-periods">Limit helpers</h3>
+  <p>Each helper returns a limit object for <code>.limit()</code> or <code>.max()</code> (and for the <code>limit</code> of <code>reduceCost</code>). <code>max</code> is how many uses the period allows.</p>
+
+  <div class="ref" id="li-fixed" data-name="fixed">
+    <h3><code>fixed(max)</code> <span class="kind">Limit</span> <a class="anchor" href="#li-fixed">#</a></h3>
+    <p>N uses that never reset on a period.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>max</code></td><td><code>number</code></td><td>required</td><td>How many uses.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Not repeatable: a cost reducer with <code>limit: fixed(1)</code> expires once used ("reduce the cost of the next …"). Cards use it only there.</li>
+      <li>On an ability it behaves like <code>perGame</code>; as <code>.limit()</code> it still resets when the card leaves play.</li>
+    </ul>
+    <pre><code>// Daimyō's Favor: Action: Bow this attachment – reduce the cost of the next attachment you play on this character this phase by 1.
+this.action('Bow to reduce attachment cost')
+    .cost(costs.bowSelf())
+    .playerLastingEffect((context) =&gt; {
+        // "this character" is the one the Favor is on now, even if the Favor leaves play later
+        const character = context.source.parentCharacter;
+        return {
+            duration: Duration.UntilEndOfPhase,
+            effect: reduceCost({
+                amount: 1,
+                cardType: CardType.Attachment,
+                targetCondition: (target) =&gt; !!character &amp;&amp; target === character,
+                limit: fixed(1)
+            })
+        };
+    });</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DaimyosFavor.ts">Daimyō's Favor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/YasukiProcurer.ts">Yasuki Procurer</a></p>
+  </div>
+
+  <div class="ref" id="li-perConflict" data-name="perConflict">
+    <h3><code>perConflict(max)</code> <span class="kind">Limit</span> <a class="anchor" href="#li-perConflict">#</a></h3>
+    <p>"per conflict": resets when a conflict finishes.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>max</code></td><td><code>number</code></td><td>required</td><td>Uses per conflict.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Resets on <code>onConflictFinished</code>. A passed conflict opportunity doesn't reset it; use <code>perConflictOpportunity</code> for that.</li>
+    </ul>
+    <pre><code>// Wandering Ronin: Action: During a conflict, remove 1 fate from this character – it gets +2[conflict-military] and +2[conflict-political] until the end of the conflict. (Limit twice per conflict.)
+this.action('Give this character +2/+2')
+    .condition(() =&gt; this.game.isDuringConflict())
+    .cost(costs.removeFateFromSelf())
+    .cardLastingEffect({ effect: modifyBothSkills(2) })
+    .limit(perConflict(2));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KitsukiInvestigator.ts">Kitsuki Investigator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WanderingRonin.ts">Wandering Ronin</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/BrokenBlades.ts">Broken Blades</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Banzai.ts">Banzai!</a></p>
+  </div>
+
+  <div class="ref" id="li-perConflictOpportunity" data-name="perConflictOpportunity">
+    <h3><code>perConflictOpportunity(max)</code> <span class="kind">Limit</span> <a class="anchor" href="#li-perConflictOpportunity">#</a></h3>
+    <p>"per conflict opportunity": resets when a conflict finishes or a player passes a conflict.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>max</code></td><td><code>number</code></td><td>required</td><td>Uses per conflict opportunity.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Resets on <code>onConflictFinished</code> and <code>onConflictPass</code>.</li>
+    </ul>
+    <pre><code>// Prayers on the Eve of Battle: Reaction: After an opponent passes a conflict, if they control a ready character - return this card from your conflict discard pile to your hand. (Max 1 per conflict opportunity.)
+this.reaction('Return to hand')
+    .when({ onConflictPass: (event, context) =&gt; … })
+    .location(Location.ConflictDiscardPile)
+    .moveCard((context) =&gt; ({ target: context.source, destination: Location.Hand }))
+    .max(perConflictOpportunity(1));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/OurFoeDoesNotWait.ts">Our Foe Does Not Wait</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/MeditationsOnOrthodoxy.ts">Meditations on Orthodoxy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Neutral/PrayersOnTheEveOfBattle.ts">Prayers on the Eve of Battle</a></p>
+  </div>
+
+  <div class="ref" id="li-perGame" data-name="perGame">
+    <h3><code>perGame(max)</code> <span class="kind">Limit</span> <a class="anchor" href="#li-perGame">#</a></h3>
+    <p>"per game": never resets on a period.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>max</code></td><td><code>number</code></td><td>required</td><td>Uses per game.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Use it with <code>.max()</code>: the max lives on the player for the whole game. As <code>.limit()</code> it resets when the card leaves play.</li>
+      <li>Unlike <code>fixed</code>, it counts as repeatable: a cost reducer with it stops reducing when used up but doesn't expire.</li>
+    </ul>
+    <pre><code>// Our Duty!: Action: Except during the first round of the game, sacrifice a (friendly) [clan-crab] character - each opponent must sacrifice a character. (Max 1 per game.)
+this.action('Make your opponent sacrifice a character')
+    .condition((context) =&gt; context.game.roundNumber &gt; 1 &amp;&amp; Boolean(context.player.opponent))
+    .cost(costs.sacrifice({ cardType: CardType.Character, cardCondition: (card) =&gt; card.isFaction('crab') }))
+    .selectCard({ … })
+    .max(perGame(1));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/OurDuty.ts">Our Duty!</a></p>
+  </div>
+
+  <div class="ref" id="li-perPhase" data-name="perPhase">
+    <h3><code>perPhase(max)</code> <span class="kind">Limit</span> <a class="anchor" href="#li-perPhase">#</a></h3>
+    <p>"per phase": resets when a phase ends.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>max</code></td><td><code>number</code></td><td>required</td><td>Uses per phase.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Resets on <code>onPhaseEnded</code>.</li>
+    </ul>
+    <pre><code>// Tactician's Apprentice: Reaction: After honor dials are revealed, if your bid is lower than an opponent's – draw 1 card. (Limit once per phase.)
+this.reaction('Draw a card')
+    .when({ onHonorDialsRevealed: (_event, context) =&gt; !!context.player.opponent &amp;&amp; context.player.showBid &lt; context.player.opponent.showBid })
+    .draw()
+    .limit(perPhase(1));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WayOfThePhoenix.ts">Way of the Phoenix</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/TacticiansApprentice.ts">Tactician's Apprentice</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/WithstandTheDarkness.ts">Withstand the Darkness</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/HidaOUshi.ts">Hida O-Ushi</a></p>
+  </div>
+
+  <div class="ref" id="li-perRound" data-name="perRound">
+    <h3><code>perRound(max)</code> <span class="kind">Limit</span> <a class="anchor" href="#li-perRound">#</a></h3>
+    <p>"per round": resets when the round ends. <code>perRound(1)</code> is every card ability's default limit.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>max</code></td><td><code>number</code></td><td>required</td><td>Uses per round.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Resets on <code>onRoundEnded</code>.</li>
+      <li><code>.limit(perRound(1))</code> repeats the default; write it only to share one limit object between abilities.</li>
+    </ul>
+    <pre><code>// The Empty City: Eminent. You can only trigger one of this card's abilities per round.
+const sharedLimit = perRound(1);
+this.action('Claim a ring')
+    …
+    .limit(sharedLimit);
+this.action('Put a Spirit character into play')
+    …
+    .limit(sharedLimit);</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/TheEmptyCity.ts">The Empty City</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BayushiShoju.ts">Bayushi Shoju</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FavoredNiece.ts">Favored Niece</a></p>
+  </div>
+
+  <div class="ref" id="li-repeatable" data-name="repeatable">
+    <h3><code>repeatable(max, eventName)</code> <span class="kind">Limit</span> <a class="anchor" href="#li-repeatable">#</a></h3>
+    <p>A limit that resets on any game event you name; the period helpers above are built on it.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>max</code></td><td><code>number</code></td><td>required</td><td>Uses per period.</td></tr>
+        <tr><td><code>eventName</code></td><td><code>EventName</code></td><td>required</td><td>The event that resets the count.</td></tr>
+      </tbody>
+    </table>
+    <pre><code>// Sketch: once per duel
+.limit(repeatable(1, EventName.OnDuelFinished))</code></pre>
+    <p class="seen">Not used by any card yet.</p>
+  </div>
+
+  <div class="ref" id="li-unlimited" data-name="unlimited">
+    <h3><code>unlimited()</code> <span class="kind">Limit</span> <a class="anchor" href="#li-unlimited">#</a></h3>
+    <p>"(Unlimited.)": the ability is never at its limit. Use it with <code>.limit()</code> to lift the once-per-round default.</p>
+    <ul class="edge">
+      <li>A <code>.max()</code> still applies.</li>
+    </ul>
+    <pre><code>// Jade-Infused Arrows: [conflict-military] Conflict Action: Pay 1 fate - for this conflict, attached character gets +2[conflict-military] … (Unlimited.)
+this.conflictAction('Give attached character a skill bonus', { conflictType: ConflictType.Military })
+    .cost(costs.payFate(1))
+    .cardLastingEffect((context) =&gt; ({ … }))
+    .limit(unlimited());</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/JadeInfusedArrows.ts">Jade-Infused Arrows</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WatchCommander.ts">Watch Commander</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/YasukiTaka.ts">Yasuki Taka</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/DojiShigeru.ts">Doji Shigeru</a></p>
+  </div>
+</section>
+
+</main>
+</div>
+<div class="jump" id="jump" role="listbox" aria-label="Matches" hidden></div>
+<script src="assets/search-index.js"></script>
+<script src="assets/docs.js"></script>
+</body>
+</html>

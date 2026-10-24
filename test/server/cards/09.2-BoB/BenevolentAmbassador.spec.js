@@ -36,8 +36,8 @@ describe('Benevolent Ambassador', function () {
                     defenders: [this.maiden]
                 }),
                 this.noMoreActions();
-                let player1Honor = this.player1.honor;
-                let opponentHonor = this.player2.honor;
+                const player1Honor = this.player1.honor;
+                const opponentHonor = this.player2.honor;
                 this.player1.clickCard(this.ambassador);
                 expect(this.player1.honor).toBe(player1Honor + 1);
                 expect(this.player2.honor).toBe(opponentHonor + 1);

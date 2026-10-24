@@ -1,29 +1,28 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Element, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Duration, Trait } from '../../Constants.js';
+import { switchBaseSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { canSwitchSkills } from '../switchSkills.js';
 
 class IsawaHeiko extends DrawCard {
     static id = 'isawa-heiko';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Switch a character\'s base skills',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Switch a character\'s base skills')
+            .when({
                 onCardPlayed: (event, context) => {
-                    return event.card.hasTrait(Element.Water) &&
+                    return event.card.hasTrait(Trait.Water) &&
                         event.player === context.player;
                 }
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
-                cardCondition: card => !card.hasDash(),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.switchBaseSkills()
-                })
-            },
-            effect: 'switch {0}\'s military and political skill'
-        });
+                cardCondition: (card) => canSwitchSkills(card)
+            }, cardLastingEffect({
+                duration: Duration.UntilEndOfPhase,
+                effect: switchBaseSkills()
+            }))
+            .chatText('switch {0}\'s military and political skill');
     }
 }
 

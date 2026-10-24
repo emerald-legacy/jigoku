@@ -1,28 +1,27 @@
+import { msg } from '../../../GameChat.js';
 import { Duration } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { additionalConflict } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { extraConflictPossible } from '../../extraConflictPossible.js';
 
 export default class TheSunWillRiseAgain extends DrawCard {
     static id = 'the-sun-will-rise-again';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Gain an additional conflict',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Gain an additional conflict')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.attackingPlayer === context.player &&
                     event.conflict.winner === context.player.opponent &&
                     (event.conflict.skillDifference ?? 0) >= 4
-            },
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
-                targetController: context.player,
+            })
+            .condition((context) => extraConflictPossible(context.player))
+            .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict((context as TriggeredAbilityContext).event.conflict?.conflictType)
-            })),
-            max: AbilityDsl.limit.perConflict(1),
-            effect: 'gain an additional {1} conflict this round. They will not forget this defeat.',
-            effectArgs: (context) => [context.event.conflict?.conflictType ?? '']
-        });
+                effect: additionalConflict(context.event.conflict.conflictType)
+            }))
+            .chatText((context) => msg`gain an additional ${context.event.conflict.conflictType} conflict this round. They will not forget this defeat`)
+            .max(perConflict(1));
     }
 }

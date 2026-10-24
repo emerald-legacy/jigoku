@@ -43,13 +43,13 @@ describe('Mantis Raider', function () {
                     defenders: []
                 });
 
-                let raiderFateBefore = this.mantisRaider.fate;
-                let opponentFateBefore = this.player2.fate;
+                const raiderFateBefore = this.mantisRaider.fate;
+                const opponentFateBefore = this.player2.fate;
                 this.player1.clickCard(this.mantisRaider);
                 expect(this.mantisRaider.fate).toBe(raiderFateBefore + 1);
                 expect(this.player2.fate).toBe(opponentFateBefore - 1);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Mantis Raider to take a fate from player2 and place it on Mantis Raider.'
+                    'player1 uses Mantis Raider to take a fate from player2 and place it on Mantis Raider'
                 );
             });
         });

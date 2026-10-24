@@ -1,15 +1,21 @@
-import { v1 as uuidV1 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 import type { AbilityContext } from './AbilityContext.js';
-import { type CardType, EffectName, Stage } from './Constants.js';
-import type { CardEffect } from './Effects/types.js';
-import type { EffectValueMap } from './Effects/EffectValueMap.js';
+import { type CardType, EffectName, type ObjectType, type PlayType, RestrictionType, Stage } from './Constants.js';
+import { isEffectOf } from './Effects/types.js';
+import type { EffectApplier } from './Effects/EffectApplier.js';
+import type { EffectValueMap, NumericEffectName } from './Effects/EffectValueMap.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
-import { getGameAction } from './GameActions/GameActionRegistry.js';
+import { type GameActionName, getGameAction } from './GameActions/GameActionRegistry.js';
+import { targetingCosts, totalTargetingCost } from './GameActions/targetingCosts.js';
+import type BaseCard from './BaseCard.js';
+import type Ring from './Ring.js';
 import type Player from './Player.js';
+import type { StatusToken } from './StatusToken.js';
+import type { StateViewer } from './types/StateViewer.js';
 
-export interface ShortSummary {
+interface ShortSummary {
     name: string;
     [key: string]: unknown;
 }
@@ -17,12 +23,12 @@ export interface ShortSummary {
 export class GameObject {
     declare public game: Game;
     private _name!: string;
-    public uuid = uuidV1();
+    public uuid: string = randomUUID();
     protected id: string;
-    public printedType = '';
+    public printedType: CardType | ObjectType | '' = '';
     public facedown = false;
-    protected effects = [] as CardEffect[];
-    protected effectsByType = new Map<EffectName, CardEffect[]>();
+    protected effects: EffectApplier[] = [];
+    protected effectsByType = new Map<EffectName, EffectApplier[]>();
     private suppressEffectCount = 0;
 
     public constructor(
@@ -46,7 +52,7 @@ export class GameObject {
         this._name = value;
     }
 
-    public addEffect(effect: CardEffect) {
+    public addEffect(effect: EffectApplier) {
         this.effects.push(effect);
         const bucket = this.effectsByType.get(effect.type);
         if(bucket) {
@@ -59,7 +65,7 @@ export class GameObject {
         }
     }
 
-    public removeEffect(effect: CardEffect) {
+    public removeEffect(effect: EffectApplier) {
         if(effect.type === EffectName.SuppressEffects) {
             this.suppressEffectCount--;
         }
@@ -76,23 +82,20 @@ export class GameObject {
         }
     }
 
-    public getEffects<N extends EffectName>(type: N): EffectValueMap[N][] {
+    public getEffects<EffectType extends EffectName>(type: EffectType): EffectValueMap[EffectType][] {
         // Fast path: no suppress effects — use indexed lookup
-        if(this.suppressEffectCount === 0) {
-            const bucket = this.effectsByType.get(type);
-            if(!bucket || bucket.length === 0) {
-                return [];
+        const effects = this.suppressEffectCount === 0 ? this.effectsByType.get(type) : this.getRawEffects();
+        const values: EffectValueMap[EffectType][] = [];
+        for(const effect of effects ?? []) {
+            if(isEffectOf(effect, type)) {
+                values.push(effect.getValue(this));
             }
-            return bucket.map((effect) => effect.getValue<EffectValueMap[N]>(this));
         }
-        // Slow path: suppress effects present — filter from raw effects
-        let filteredEffects = this.getRawEffects().filter((effect) => effect.type === type);
-        return filteredEffects.map((effect) => effect.getValue<EffectValueMap[N]>(this));
+        return values;
     }
 
-    public sumEffects(type: EffectName): number {
-        const filteredEffects = this.getEffects(type) as number[];
-        return filteredEffects.reduce((total, effect) => total + effect, 0);
+    public sumEffects(type: NumericEffectName): number {
+        return this.getEffects(type).reduce((total: number, effect) => total + effect, 0);
     }
 
     public anyEffect(type: EffectName) {
@@ -104,26 +107,40 @@ export class GameObject {
         return this.getEffects(type).length > 0;
     }
 
-    public allowGameAction(actionType: string, context = this.game.getFrameworkContext()) {
+    /** Whether the named game action, built with no properties, can affect this. Restrictions alone are `checkRestrictions`. */
+    public allowGameAction(actionType: GameActionName, context: AbilityContext) {
         const gameActionFactory = getGameAction(actionType);
-        if(gameActionFactory) {
-            const gameAction: GameAction = gameActionFactory();
-            return gameAction.canAffect(this, context);
+        if(!gameActionFactory) {
+            throw new Error(`${actionType} is not a registered game action`);
         }
-        return this.checkRestrictions(actionType, context);
+        const gameAction: GameAction = gameActionFactory();
+        return gameAction.canAffect(this, context);
     }
 
-    public checkRestrictions(actionType: string, context?: AbilityContext) {
+    public checkRestrictions(actionType: RestrictionType | PlayType | undefined, context: AbilityContext) {
         return !this.getEffects(EffectName.AbilityRestrictions).some((restriction) =>
-            restriction.isMatch(actionType, context as AbilityContext, this)
+            restriction.isMatch(actionType, context, this)
         );
     }
 
-    public getType(): CardType | string {
-        if(this.anyEffect(EffectName.ChangeType)) {
-            return this.mostRecentEffect(EffectName.ChangeType);
-        }
-        return this.printedType;
+    public isCard(): this is BaseCard {
+        return false;
+    }
+
+    public isRing(): this is Ring {
+        return false;
+    }
+
+    public isPlayer(): this is Player {
+        return false;
+    }
+
+    public isToken(): this is StatusToken {
+        return false;
+    }
+
+    public getType(): CardType | ObjectType | '' {
+        return this.mostRecentEffect(EffectName.ChangeType) ?? this.printedType;
     }
 
     public getShortSummary(): ShortSummary {
@@ -138,7 +155,7 @@ export class GameObject {
     }
 
     public canBeTargeted(context: AbilityContext, selectedCards: GameObject | GameObject[] = []) {
-        if(!this.checkRestrictions('target', context)) {
+        if(!this.checkRestrictions(RestrictionType.Target, context)) {
             return false;
         }
         let targets = selectedCards;
@@ -147,36 +164,27 @@ export class GameObject {
         }
 
         targets = targets.concat(this);
-        let targetingCost = context.player.getTargetingCost(context.source, targets);
+        const targetingCost = totalTargetingCost(targetingCosts(context, targets.filter((target) => target.isCard())));
 
         if(context.stage === Stage.PreTarget || context.stage === Stage.Cost) {
-            //We haven't paid the cost yet, so figure out what it will cost to play this so we can know how much fate we'll have available for targeting
-            let fateCost = 0;
-            // @ts-expect-error -- getReducedCost exists on play action abilities but is not declared on the base AbilityContext.ability type
-            if(context.ability.getReducedCost) {
-                //we only want to consider the ability cost, not the card cost
-                // @ts-expect-error -- getReducedCost exists on play action abilities but is not declared on the base AbilityContext.ability type
-                fateCost = context.ability.getReducedCost(context);
-            }
-            let alternateFate = context.player.getAvailableAlternateFate(context.playType, context);
-            let availableFate = Math.max(context.player.fate - Math.max(fateCost - alternateFate, 0), 0);
+            //costs aren't paid yet: the pool fate left for targeting once the card's cost (less alternate fate) and other fate costs are paid
+            //a Mahō card's cost is paid with fate on characters, never from the pool
+            const cardCost = context.source.isTemptationsMaho()
+                ? 0
+                : Math.max(context.ability.getReducedCost(context) - context.player.getAvailableAlternateFate(context), 0);
+            const fateCost = cardCost + context.ability.cost.reduce((sum, cost) => sum + (cost.fateSpent?.(context) ?? 0), 0);
+            const availableFate = Math.max(context.player.fate - fateCost, 0);
 
-            return (
-                availableFate >= targetingCost &&
-                (targetingCost === 0 || context.player.checkRestrictions('spendFate', context))
-            );
+            return targetingCost <= Math.min(availableFate, context.player.getSpendableFate(context));
         } else if(context.stage === Stage.Target || context.stage === Stage.Effect) {
             //We paid costs first, or targeting has to be done after costs have been paid
-            return (
-                context.player.fate >= targetingCost &&
-                (targetingCost === 0 || context.player.checkRestrictions('spendFate', context))
-            );
+            return context.player.canSpendFate(targetingCost, context);
         }
 
         return true;
     }
 
-    public getShortSummaryForControls(_activePlayer: Player): Record<string, unknown> {
+    public getShortSummaryForControls(_activePlayer: StateViewer): Record<string, unknown> {
         return this.getShortSummary();
     }
 
@@ -188,9 +196,9 @@ export class GameObject {
         return !this.facedown;
     }
 
-    public mostRecentEffect<N extends EffectName>(type: N): EffectValueMap[N] {
+    public mostRecentEffect<EffectType extends EffectName>(type: EffectType): EffectValueMap[EffectType] | undefined {
         const effects = this.getEffects(type);
-        return effects[effects.length - 1] as EffectValueMap[N];
+        return effects[effects.length - 1];
     }
 
     public getRawEffects() {
@@ -198,8 +206,8 @@ export class GameObject {
         if(this.suppressEffectCount === 0) {
             return this.effects;
         }
-        const suppressEffects = this.effects.filter((effect) => effect.type === EffectName.SuppressEffects);
-        const suppressedEffects = suppressEffects.reduce<CardEffect[]>((array, effect) => array.concat(effect.getValue(this)), []);
+        const suppressEffects = this.effects.filter((effect) => isEffectOf(effect, EffectName.SuppressEffects));
+        const suppressedEffects = suppressEffects.reduce<EffectValueMap[EffectName.SuppressEffects]>((array, effect) => array.concat(effect.getValue(this)), []);
         return this.effects.filter((effect) => !suppressedEffects.includes(effect));
     }
 
@@ -208,7 +216,7 @@ export class GameObject {
     // hand-copying in subclasses could not reach it and silently dropped it.
     protected cloneEffectStateInto(target: GameObject): void {
         target.effects = [...this.effects];
-        const clonedIndex = new Map<EffectName, CardEffect[]>();
+        const clonedIndex = new Map<EffectName, EffectApplier[]>();
         for(const [type, bucket] of this.effectsByType) {
             clonedIndex.set(type, [...bucket]);
         }

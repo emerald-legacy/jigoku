@@ -52,6 +52,14 @@ describe('Yasuki Fuzake', function() {
                 expect(this.yasukiFuzake.location).toBe('dynasty discard pile');
             });
 
+            it('should name only the chosen character when the first is skipped', function() {
+                this.player1.clickCard(this.yasukiFuzake);
+                this.player1.clickPrompt('Done');
+                this.player1.clickCard(this.asahinaStoryteller);
+                expect(this.asahinaStoryteller.isHonored).toBe(false);
+                expect(this.getChatLogs(5)).toContain('player1 uses Yasuki Fuzake to discard all status tokens from Asahina Storyteller');
+            });
+
             it('should not allow the player to select 2 characters controlled by the same player', function() {
                 this.player1.clickCard(this.yasukiFuzake);
                 this.player1.clickCard(this.eagerScout);

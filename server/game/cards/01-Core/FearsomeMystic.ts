@@ -1,6 +1,5 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyGlory } from '../../effects.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'fearsome-mystic-air';
@@ -8,23 +7,21 @@ const elementKey = 'fearsome-mystic-air';
 class FearsomeMystic extends DrawCard {
     static id = 'fearsome-mystic';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            effect: AbilityDsl.effects.modifyGlory(2)
+            effect: modifyGlory(2)
         });
 
-        this.action({
-            title: 'Remove fate from characters',
-            condition: context => context.source.isParticipating(),
-            gameAction: AbilityDsl.actions.removeFate((context: AbilityContext<DrawCard, DrawCard>) => ({
-                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter(card => card.getGlory() < context.source.getGlory()) ?? []
-            }))
-        });
+        this.action('Remove fate from characters')
+            .condition((context) => context.source.isParticipating())
+            .removeFate((context) => ({
+                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.glory < context.source.glory) ?? []
+            }));
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+    override getPrintedElementSymbols() {
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: '+2 Glory',

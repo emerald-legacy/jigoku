@@ -44,7 +44,7 @@ describe('Watchtower of Valor', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
                 expect(this.player2).toBeAbleToSelect(this.watchtower);
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand + 1);
@@ -62,7 +62,7 @@ describe('Watchtower of Valor', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
                 expect(this.player2).toBeAbleToSelect(this.watchtower);
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand + 1);
@@ -80,7 +80,7 @@ describe('Watchtower of Valor', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
                 expect(this.player2).not.toBeAbleToSelect(this.watchtower);
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand);
@@ -98,7 +98,7 @@ describe('Watchtower of Valor', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
                 expect(this.player2).not.toBeAbleToSelect(this.watchtower);
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand);
@@ -117,7 +117,7 @@ describe('Watchtower of Valor', function() {
                 this.player1.pass();
                 this.player2.pass();
 
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
                 expect(this.player2).not.toBeAbleToSelect(this.watchtower);
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand);
@@ -135,7 +135,7 @@ describe('Watchtower of Valor', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
                 expect(this.player2).not.toBeAbleToSelect(this.watchtower);
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand);

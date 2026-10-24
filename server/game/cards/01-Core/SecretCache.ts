@@ -1,24 +1,22 @@
 import { Location } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 export default class SecretCache extends ProvinceCard {
     static id = 'secret-cache';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Look at top 5 cards',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Look at top 5 cards')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
-            },
-            effect: 'look at the top 5 cards of their conflict deck',
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: 5,
+            })
+            .deckSearch({
+                cardsToLookAt: 5,
                 reveal: false,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             })
-        });
+            .chatText('look at the top 5 cards of their conflict deck');
     }
 }

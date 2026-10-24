@@ -1,42 +1,29 @@
-import { CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Location, Players, Trait, EntersPlayStatus } from '../../../Constants.js';
+import { putIntoConflict, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Duel } from '../../../Duel.js';
+import { controlsClanCard } from '../../controlsClanCard.js';
 
 export default class ForeignCustoms extends DrawCard {
     static id = 'foreign-customs';
 
-    setupCardAbilities() {
-        this.duelStrike({
-            title: 'Put a character into play',
-            duelCondition: (duel: Duel, context) => duel.loserController === context.player,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+    override setupCardAbilities() {
+        this.duelStrike('Put a character into play', (duel, context) => duel.loserController === context.player)
+            .selectCard({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,
-                message: '{0} puts into the conflict {1} - they challenge the traditions of the empire',
-                messageArgs: (cards) => [context.player, cards],
-                subActionProperties: (card) => ({ target: card }),
-                gameAction: AbilityDsl.actions.putIntoConflict({ status: 'dishonored' })
-            }))
-        });
+                message: (context, cards) => msg`${context.player} puts into the conflict ${cards} - they challenge the traditions of the empire`,
+                gameAction: putIntoConflict({ status: EntersPlayStatus.Dishonored })
+            });
 
-        this.action({
-            title: 'Ready a non-unicorn character',
-            condition: (context) =>
-                context.player.stronghold?.isFaction('unicorn') ||
-                context.player.cardsInPlay.some(
-                    (card: DrawCard) =>
-                        card.isFaction('unicorn') ||
-                        card.attachments?.some((a: DrawCard) => a.isFaction('unicorn'))
-                ),
-            target: {
+        this.action('Ready a non-unicorn character')
+            .ifCondition((context) => controlsClanCard(context.player, 'unicorn'))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin')),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait(Trait.Gaijin))
+            }, ready());
     }
 }

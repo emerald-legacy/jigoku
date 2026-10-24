@@ -25,8 +25,8 @@ describe('Raving Lunatic', function () {
                 defenders: [this.lunatic2]
             });
 
-            expect(this.lunatic.getMilitarySkill()).toBe(this.lunatic2.getMilitarySkill() + 2);
-            expect(this.lunatic.getPoliticalSkill()).toBe(this.lunatic2.getPoliticalSkill());
+            expect(this.lunatic.militarySkill).toBe(this.lunatic2.militarySkill + 2);
+            expect(this.lunatic.politicalSkill).toBe(this.lunatic2.politicalSkill);
 
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.clickCard(this.lunatic2);

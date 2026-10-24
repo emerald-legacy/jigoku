@@ -24,6 +24,7 @@ describe('Sensei\'s Heirloom', function () {
 
             this.player1.clickCard(this.senseiHeirloom);
             expect(this.player1).toHavePrompt('Select a card');
+            expect(this.player1).not.toHavePromptButton('Take nothing');
             expect(this.player1).toHavePromptButton('Supernatural Storm (4)');
 
             this.player1.clickPrompt('Supernatural Storm (4)');

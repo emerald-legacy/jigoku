@@ -1,112 +1,46 @@
-import { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
-import { CardType, EventName, Location, Players, PlayType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { canPlayFromOutOfPlay, registerToPlayFromOutOfPlay } from '../../effects.js';
+import { CardType, Location, Players, PlayType, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventRegistrar } from '../../EventRegistrar.js';
-import type Player from '../../Player.js';
-
-const MAXIMUM_CARDS_ALLOWED = 3;
-
-type CardPlayedEvent = EventPayload<EventName.OnCardPlayed> & { sourceOfCardPlayedFromConflictDiscard?: BaseCard; onPlayCardSource?: BaseCard };
+import { LimitedPlaysFromOutOfPlay } from '../LimitedPlaysFromOutOfPlay.js';
 
 export default class BayushiKachiko2 extends DrawCard {
     static id = 'bayushi-kachiko-2';
 
-    private cardsPlayedThisRound = 0;
-    private eventRegistrar?: EventRegistrar;
-    private mostRecentEvent?: CardPlayedEvent;
-
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
-
-        this.persistentEffect({
-            effect: AbilityDsl.effects.delayedEffect({
-                when: {
-                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext<this>) => {
-                        if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
-                            return false;
-                        }
-                        this.mostRecentEvent = event;
-                        return (
-                            event.originalLocation === Location.ConflictDiscardPile &&
-                            event.card.owner === context.player.opponent &&
-                            event.card.type === CardType.Event &&
-                            !event.onPlayCardSource &&
-                            !event.card.fromOutOfPlaySource &&
-                            event.player === context.player &&
-                            !event.sourceOfCardPlayedFromConflictDiscard &&
-                            context.game.isDuringConflict('political') &&
-                            context.source.isParticipating()
-                        );
-                    }
-                },
-                gameAction: AbilityDsl.actions.handler({
-                    handler: (context) => {
-                        const mostRecentEvent = this.mostRecentEvent;
-                        if(!mostRecentEvent) {
-                            return;
-                        }
-                        if(
-                            mostRecentEvent.sourceOfCardPlayedFromConflictDiscard &&
-                            mostRecentEvent.sourceOfCardPlayedFromConflictDiscard !== this
-                        ) {
-                            return;
-                        }
-                        if(!this.cardsPlayedThisRound || this.cardsPlayedThisRound < 0) {
-                            this.cardsPlayedThisRound = 0;
-                        }
-                        mostRecentEvent.sourceOfCardPlayedFromConflictDiscard = this;
-                        this.cardsPlayedThisRound++;
-                        this.game.addMessage(
-                            '{0} plays a card from their opponent\'s conflict discard pile due to the ability of {1} ({2} use{3} remaining)',
-                            context.player,
-                            context.source,
-                            MAXIMUM_CARDS_ALLOWED - this.cardsPlayedThisRound,
-                            MAXIMUM_CARDS_ALLOWED - this.cardsPlayedThisRound === 1 ? '' : 's'
-                        );
-                        this.game.addMessage(
-                            '{0} is removed from the game due to the ability of {1}',
-                            mostRecentEvent.card,
-                            context.source
-                        );
-                        mostRecentEvent.card.owner.moveCard(mostRecentEvent.card, Location.RemovedFromGame);
-                    }
-                })
-            })
+    public override setupCardAbilities() {
+        const plays = new LimitedPlaysFromOutOfPlay<this>(this, {
+            max: 3,
+            active: (context) => context.game.isDuringConflict(ConflictType.Political) && context.source.isParticipating(),
+            allows: (event, context) =>
+                event.originalLocation === Location.ConflictDiscardPile &&
+                event.card.owner === context.player.opponent &&
+                event.card.type === CardType.Event,
+            description: 'plays a card from their opponent\'s conflict discard pile',
+            afterPlay: (event, context) => {
+                context.game.addMessage(msg`${event.card} is removed from the game due to the ability of ${context.source}`);
+                event.card.owner.moveCard(event.card, Location.RemovedFromGame);
+            }
         });
 
         this.persistentEffect({
             condition: (context) =>
-                context.game.isDuringConflict('political') &&
+                context.game.isDuringConflict(ConflictType.Political) &&
                 context.source.isParticipating() &&
-                this.cardsPlayedThisRound < MAXIMUM_CARDS_ALLOWED,
+                plays.available,
             location: Location.PlayArea,
             targetLocation: Location.ConflictDiscardPile,
             targetController: Players.Opponent,
-            match: (card: DrawCard, context) =>
+            match: (card, context) =>
                 card.type === CardType.Event &&
                 card.location === Location.ConflictDiscardPile &&
                 card.owner === context?.player.opponent,
             effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player: Player, card: BaseCard) => player !== card.owner,
+                canPlayFromOutOfPlay(
+                    (player, card) => player !== card.owner,
                     PlayType.PlayFromHand
                 ),
-                AbilityDsl.effects.registerToPlayFromOutOfPlay()
+                registerToPlayFromOutOfPlay()
             ]
         });
-    }
-
-    public onRoundEnded() {
-        this.cardsPlayedThisRound = 0;
-    }
-
-    public onCharacterEntersPlay(event: EventPayload<EventName.OnCharacterEntersPlay>) {
-        if(event.card === this) {
-            this.cardsPlayedThisRound = 0;
-        }
     }
 }

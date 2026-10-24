@@ -34,7 +34,7 @@ describe('Utaku Sumire', function () {
             expect(this.player1).toHavePrompt('Any interrupts?');
             this.player1.clickCard(this.utakuSumire);
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Utaku Sumire to charge into battle under the devout silence of the Utaku - during this conflict, player1 refuses to play Action events. If they win the conflict, their warriors will have their confidence renewed!'
+                'player1 uses Utaku Sumire to charge into battle under the devout silence of the Utaku - during this conflict, player1 refuses to play Action events. If they win the conflict, their warriors will have their confidence renewed'
             );
         });
 
@@ -175,6 +175,42 @@ describe('Utaku Sumire', function () {
             expect(this.getChatLogs(5)).toContain('player2 won a military conflict 16 vs 9');
 
             expect(this.player1).not.toHavePrompt('Utaku Sumire');
+        });
+    });
+});
+
+describe('Utaku Sumire and events played from another zone', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['utaku-sumire', 'utaku-infantry'],
+                    conflictDiscard: ['chain-of-command']
+                },
+                player2: {
+                    inPlay: ['kaiu-siege-force']
+                }
+            });
+            this.utakuSumire = this.player1.findCardByName('utaku-sumire');
+            this.utakuInfantry = this.player1.findCardByName('utaku-infantry');
+            this.chainOfCommand = this.player1.findCardByName('chain-of-command');
+            this.noMoreActions();
+        });
+
+        it('blocks Action events played from the discard pile', function () {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.utakuSumire],
+                defenders: []
+            });
+            this.player1.clickCard(this.utakuSumire);
+            this.utakuSumire.bowed = true;
+            this.player2.pass();
+            this.player1.clickCard(this.chainOfCommand);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.utakuInfantry.bowed).toBe(false);
+            expect(this.utakuSumire.bowed).toBe(true);
         });
     });
 });

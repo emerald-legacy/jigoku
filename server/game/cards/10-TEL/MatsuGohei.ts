@@ -1,18 +1,19 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 
 class MatsuGohei extends DrawCard {
     static id = 'matsu-gohei';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isAttacking() &&
+            condition: (context) => context.source.isAttacking() &&
                             context.player.cardsInPlay
-                                .filter(card => card.hasTrait('bushi') &&
+                                .filter((card) => card.hasTrait(Trait.Bushi) &&
                                     card !== context.source &&
                                     card.isAttacking()).length >= 2,
 
-            effect: AbilityDsl.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 }

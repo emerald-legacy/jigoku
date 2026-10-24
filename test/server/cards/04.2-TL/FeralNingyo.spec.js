@@ -122,23 +122,53 @@ describe('Feral Ningyo', function () {
                     expect(this.game.emitEvent).toHaveBeenCalledWith('onDeckShuffled', jasmine.anything());
                 });
 
-                it('should be triggerable if played from hand and then triggered in play', function() {
+                it('can use its action in play when played normally, to return at the end of the conflict (EmeraldDB ruling)', function() {
                     this.player1.clickPrompt('Play this character');
                     this.player1.clickPrompt('0');
                     this.player1.clickPrompt('Conflict');
                     this.player2.pass();
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.feral);
-                    expect(this.player2).toHavePrompt('Conflict Action Window');
                     expect(this.getChatLogs(3)).toContain('player1 uses Feral Ningyo to return Feral Ningyo to the deck at the end of the conflict');
-                    this.noMoreActions();
-                    this.player1.clickPrompt('No');
-                    this.player1.clickPrompt('Don\'t resolve');
-                    expect(this.feral.location).toBe('conflict deck');
-                    expect(this.getChatLogs(2)).toContain('Feral Ningyo returns to the deck and shuffles due to its delayed effect');
-                    expect(this.getChatLogs(1)).toContain('player1 is shuffling their conflict deck');
                 });
             });
         });
     });
 });
+
+describe('Feral Ningyo played normally', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 4,
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['feral-ningyo']
+                }
+            });
+            this.feral = this.player1.findCardByName('feral-ningyo');
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.player1.clickCard(this.feral);
+            this.player1.clickPrompt('0');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'water',
+                attackers: [this.adept],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('can use its Action in play to return at the end of the Water conflict (EmeraldDB ruling)', function () {
+            expect(this.feral.location).toBe('play area');
+            this.player1.clickCard(this.feral);
+            expect(this.getChatLogs(3)).toContain('player1 uses Feral Ningyo to return Feral Ningyo to the deck at the end of the conflict');
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.feral.location).toBe('conflict deck');
+        });
+    });
+});
+

@@ -26,6 +26,31 @@ describe('Grasp of Earth 2', function () {
             });
         });
 
+        describe('Discount uses your own affinity', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['adept-of-the-waves'],
+                        hand: ['grasp-of-earth-2']
+                    },
+                    player2: {
+                        inPlay: ['solemn-scholar']
+                    }
+                });
+                this.solemnScholar = this.player2.findCardByName('solemn-scholar');
+                this.graspOfEarth = this.player1.findCardByName('grasp-of-earth-2');
+                this.initialP1Fate = this.player1.fate;
+            });
+
+            it('is not discounted for a player without Earth affinity, even on an opponent\'s Earth character', function () {
+                this.player1.clickCard(this.graspOfEarth);
+                this.player1.clickCard(this.solemnScholar);
+                expect(this.graspOfEarth.parent).toBe(this.solemnScholar);
+                expect(this.player1.fate).toBe(this.initialP1Fate - 1);
+            });
+        });
+
         describe('Anti movement ability', function () {
             beforeEach(function () {
                 this.setupTest({

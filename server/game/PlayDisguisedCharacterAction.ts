@@ -1,19 +1,26 @@
-import { GameModes } from '../GameModes.js';
-import { CardType, EffectName, EventName, Phases, Players } from './Constants.js';
+import { msg } from './GameChat.js';
+import { CardType, EffectName, EventName, Phase, Players, PlayType, Blocker, RestrictionType } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
-import { AbilityContext } from './AbilityContext.js';
-import Player from './Player.js';
+import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
+import { PlayIntoLocation } from './PlayCharacterAction.js';
+import { getExtraFateWhenPlayed, getPlayBlocker } from './playActionHelpers.js';
+import type { AbilityContext } from './AbilityContext.js';
 import type { Cost, Result } from './costs/Cost.js';
 import type { Event } from './Events/Event.js';
+import { attach, discardFromPlay, moveStatusToken, placeFate, putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 
-function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {
+/** A character played into the conflict can only replace a participating character. */
+function replacesParticipatingOnly(intoLocation: PlayIntoLocation): boolean {
+    return intoLocation === PlayIntoLocation.Conflict;
+}
+
+function ChooseDisguisedCharacterCost(intoLocation: PlayIntoLocation) {
     return {
         canPay(context: AbilityContext<DrawCard>) {
-            return (context.player.cardsInPlay as BaseCard[]).some((card) =>
-                context.source.canDisguise(card as DrawCard, context, !!intoConflictOnly)
+            return context.player.cardsInPlay.some((card) =>
+                context.source.canDisguise(card, context, replacesParticipatingOnly(intoLocation))
             );
         },
         resolve(context: AbilityContext<DrawCard>, results: Result) {
@@ -21,10 +28,10 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIn
                 activePromptTitle: 'Choose a character to replace',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card: BaseCard) => context.source.canDisguise(card as DrawCard, context, !!intoConflictOnly),
+                cardCondition: (card) => context.source.canDisguise(card, context, replacesParticipatingOnly(intoLocation)),
                 context: context,
-                onSelect: (player: Player, card: BaseCard) => {
-                    context.costs.chooseDisguisedCharacter = card;
+                onSelect: (_player, card) => {
+                    context.disguisedCharacter = card;
                     return true;
                 },
                 onCancel: () => {
@@ -40,142 +47,107 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIn
 }
 
 class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
-    canPay(context: AbilityContext<DrawCard>) {
+    constructor(private intoLocation: PlayIntoLocation) {
+        super(false);
+    }
+
+    override canPay(context: AbilityContext<DrawCard>) {
         const maxCharacterCost = Math.max(
             ...context.player.cardsInPlay.map((card) =>
-                context.source.canDisguise(card, context, false) ? (card.getCost() ?? 0) : 0
+                context.source.canDisguise(card, context, replacesParticipatingOnly(this.intoLocation)) ? (card.getCost() ?? 0) : 0
             )
         );
         const minCost = Math.max(context.player.getMinimumCost(context.playType, context) - maxCharacterCost, 0);
-        return (
-            context.player.fate >= minCost && (minCost === 0 || context.player.checkRestrictions('spendFate', context))
-        );
+        return context.player.canSpendFate(minCost, context);
     }
 
-    getReducedCost(context: AbilityContext<DrawCard>) {
-        if(context.costs.chooseDisguisedCharacter) {
-            return Math.max(super.getReducedCost(context) - ((context.costs.chooseDisguisedCharacter as DrawCard).getCost() ?? 0), 0);
+    override getReducedCost(context: AbilityContext<DrawCard>) {
+        const replaced = context.disguisedCharacter;
+        if(replaced) {
+            return Math.max(super.getReducedCost(context) - (replaced.getCost() ?? 0), 0);
         }
         return super.getReducedCost(context);
     }
 }
 
-export enum PlayDisguisedCharacterIntoLocation {
-    Any,
-    Conflict,
-    Home
-}
-
 export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
-    public title = 'Play this character with Disguise';
+    public override title = 'Play this character with Disguise';
 
     constructor(
         card: DrawCard,
-        private intoLocation = PlayDisguisedCharacterIntoLocation.Any
+        private intoLocation = PlayIntoLocation.Any
     ) {
-        super(card, [ChooseDisguisedCharacterCost(intoLocation), new DisguisedReduceableFateCost(false)]);
+        super(card, [ChooseDisguisedCharacterCost(intoLocation), new DisguisedReduceableFateCost(intoLocation)]);
     }
 
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
-        if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Conflict) {
-            return 'phase';
-        } else if(
-            !ignoredRequirements.includes('location') &&
-            !context.player.isCardInPlayableLocation(context.source, context.playType)
-        ) {
-            return 'location';
-        } else if(
-            !ignoredRequirements.includes('cannotTrigger') &&
-            !context.source.canPlay(context, context.playType)
-        ) {
-            return 'cannotTrigger';
-        } else if(context.source.anotherUniqueInPlay(context.player)) {
-            return 'unique';
-        } else if(!context.player.checkRestrictions('enterPlay', context)) {
-            return 'restriction';
+    public override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
+        if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Conflict) {
+            return Blocker.WrongPhase;
         }
-        return super.meetsRequirements(context);
+        const blocker = getPlayBlocker(context.source, context, ignoredBlockers, context.playType);
+        if(blocker) {
+            return blocker;
+        }
+        if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
+            return Blocker.EnterPlayRestricted;
+        }
+        if(this.intoLocation === PlayIntoLocation.Conflict && !context.source.allowGameAction('putIntoConflict', context)) {
+            return Blocker.CannotEnterConflict;
+        }
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
-    public executeHandler(context: AbilityContext<DrawCard>) {
-        const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
-        let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
-        if(!context.source.checkRestrictions('placeFate', context)) {
-            extraFate = 0;
-        }
-        extraFate = extraFate + legendaryFate;
-        const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
-        const events = [
-            context.game.getEvent(EventName.OnCardPlayed, {
-                player: context.player,
-                card: context.source,
-                context: context,
-                originalLocation: context.source.location,
-                originallyOnTopOfConflictDeck:
-                    context.player &&
-                    context.player.conflictDeck &&
-                    context.player.conflictDeck[0] === context.source,
-                onPlayCardSource: context.onPlayCardSource,
-                playType: context.playType
-            })
-        ];
-        const replacedCharacter = context.costs.chooseDisguisedCharacter as DrawCard;
+    public override executeHandler(context: AbilityContext<DrawCard>) {
+        // a province's entry effects (Toshi Ranbo, Guardian Dojo) are for characters played from it, not "as if from your hand"
+        const fromProvince = context.playType === PlayType.PlayFromProvince;
+        const extraFate = getExtraFateWhenPlayed(context.source, context, fromProvince);
+        const status = fromProvince ? context.source.getEffects(EffectName.EntersPlayWithStatus)[0] : undefined;
+        const events: Event[] = [createCardPlayedEvent(context, context.source, context.playType)];
+        const replacedCharacter = context.disguisedCharacter;
         if(!replacedCharacter) {
             return;
         }
-        const frameworkKeepsDisguisedInCurrentLocation =
-            context.game.gameMode === GameModes.Emerald || context.game.gameMode === GameModes.Obsidian;
+        const frameworkKeepsDisguisedInCurrentLocation = context.game.rules.disguiseKeepsCharactersInSameLocation;
         const conflictOnly =
-            this.intoLocation === PlayDisguisedCharacterIntoLocation.Conflict ||
+            this.intoLocation === PlayIntoLocation.Conflict ||
             (frameworkKeepsDisguisedInCurrentLocation && replacedCharacter.isParticipating());
 
-        let intoConflict = conflictOnly && this.intoLocation !== PlayDisguisedCharacterIntoLocation.Home;
+        let intoConflict = conflictOnly && this.intoLocation !== PlayIntoLocation.Home;
         if(replacedCharacter.inConflict && !conflictOnly) {
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Where do you wish to play this character?',
                 source: context.source,
-                choices: ['Conflict', 'Home'],
-                handlers: [() => (intoConflict = true), () => true]
+                options: [{ text: 'Conflict', handler: () => (intoConflict = true) }, { text: 'Home', handler: () => true }]
             });
         }
         context.game.queueSimpleStep(() => {
-            context.game.addMessage(
-                '{0} plays {1}{2} using Disguised, choosing to replace {3}',
-                context.player,
-                context.source,
-                intoConflict ? ' into the conflict' : '',
-                replacedCharacter
-            );
+            context.game.addMessage(msg`${context.player} plays ${context.source}${intoConflict ? ' into the conflict' : ''} using Disguised, choosing to replace ${replacedCharacter}`);
             const gameAction = intoConflict
-                ? context.game.actions.putIntoConflict({ target: context.source, fate: extraFate, status })
-                : context.game.actions.putIntoPlay({ target: context.source, fate: extraFate, status });
+                ? putIntoConflict({ target: context.source, fate: extraFate, status })
+                : putIntoPlay({ target: context.source, fate: extraFate, status });
             gameAction.addEventsToArray(events, context);
             events.push(
                 context.game.getEvent(EventName.Unnamed, {}, () => {
                     const moveEvents: Event[] = [];
-                    context.game.actions
-                        .placeFate({
-                            target: context.source,
-                            origin: replacedCharacter,
-                            amount: replacedCharacter.fate
-                        })
+                    placeFate({
+                        target: context.source,
+                        origin: replacedCharacter,
+                        amount: replacedCharacter.fate
+                    })
                         .addEventsToArray(moveEvents, context);
                     for(const attachment of replacedCharacter.attachments) {
-                        context.game.actions
-                            .attach({ target: context.source, attachment: attachment, viaDisguised: true })
+                        attach({ target: context.source, attachment: attachment, viaDisguised: true })
                             .addEventsToArray(moveEvents, context);
                     }
                     for(const token of replacedCharacter.statusTokens) {
-                        context.game.actions
-                            .moveStatusToken({ target: token, recipient: context.source })
+                        moveStatusToken({ target: token, recipient: context.source })
                             .addEventsToArray(moveEvents, context);
                     }
                     moveEvents.push(
                         context.game.getEvent(EventName.Unnamed, {}, () => {
                             context.game.checkGameState(true);
                             context.game.openThenEventWindow(
-                                context.game.actions
-                                    .discardFromPlay({ cannotBeCancelled: true })
+                                discardFromPlay({ cannotBeCancelled: true })
                                     .getEvent(replacedCharacter, context)
                             );
                         })
@@ -187,11 +159,11 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
         });
     }
 
-    public isCardPlayed() {
+    public override isCardPlayed() {
         return true;
     }
 
-    public isKeywordAbility() {
+    public override isKeywordAbility() {
         return true;
     }
 }

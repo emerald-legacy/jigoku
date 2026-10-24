@@ -1,28 +1,23 @@
-import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType } from '../../../Constants.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class CompetingInterests extends DrawCard {
     static id = 'competing-interests';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            condition: (context) => this.#hasEnoughUniques(context),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Bow a character')
+            .ifCondition((context) => this.hasEnoughUniques(context))
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isUnique() && card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isUnique() && card.isParticipating()
+            }, bow());
     }
 
-    #hasEnoughUniques(ctx: AbilityContext) {
+    private hasEnoughUniques(ctx: AbilityContext) {
         let totalUniques = 0;
-        for(const card of (ctx.game.currentConflict as undefined | Conflict)?.getParticipants() ?? []) {
+        for(const card of ctx.game.currentConflict?.getParticipants() ?? []) {
             if(card.controller !== ctx.player) {
                 if(card.isUnique()) {
                     totalUniques++;

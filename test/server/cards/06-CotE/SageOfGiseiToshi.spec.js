@@ -83,3 +83,37 @@ describe('Sage of Gisei Toshi', function() {
     });
 });
 
+describe('Sage of Gisei Toshi at home', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['sage-of-gisei-toshi', 'doji-challenger'],
+                    honor: 11
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    honor: 10
+                }
+            });
+            this.sage = this.player1.findCardByName('sage-of-gisei-toshi');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.whisperer]
+            });
+            this.player2.pass();
+        });
+
+        it('cannot be used ("If you do" needs Sage to move home)', function() {
+            this.player1.clickCard(this.sage);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            expect(this.whisperer.isParticipating()).toBe(true);
+        });
+    });
+});

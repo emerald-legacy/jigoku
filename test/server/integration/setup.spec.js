@@ -59,13 +59,13 @@ describe('setup phase', function() {
             });
 
             it('should prompt players to choose their province positions', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(strongholdProvince);
                 expect(this.player1.currentPrompt().menuTitle).toBe('Choose province order, or press Done to place them at random');
             });
 
             it('should place provinces at random if the player clicks done', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(strongholdProvince);
                 this.player1.clickPrompt('Done');
                 expect(this.player1.currentPrompt().menuTitle).toBe('Waiting for opponent to finish selecting provinces');
@@ -74,7 +74,7 @@ describe('setup phase', function() {
             });
 
             it('should allow the player to change their stronghold province', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(this.player1.player.provinceDeck[1]);
                 expect(this.player1).toHavePrompt('Choose province order, or press Done to place them at random');
                 this.player1.clickPrompt('Change stronghold province');
@@ -87,10 +87,10 @@ describe('setup phase', function() {
             });
 
             it('should allow players to place provinces in an order of their choice', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(strongholdProvince);
                 expect(this.player1).toHavePrompt('Choose province order, or press Done to place them at random');
-                let provinces = this.player1.player.provinceDeck;
+                const provinces = this.player1.player.provinceDeck;
                 for(let i = 1; i < 5; i++) {
                     this.player1.clickCard(provinces[i]);
                 }
@@ -104,10 +104,10 @@ describe('setup phase', function() {
             });
 
             it('should allow players to place provinces in an order of their choice - selecting less than 4 provinces', function() {
-                let strongholdProvince = this.player1.player.provinceDeck[0];
+                const strongholdProvince = this.player1.player.provinceDeck[0];
                 this.player1.clickCard(strongholdProvince);
                 expect(this.player1).toHavePrompt('Choose province order, or press Done to place them at random');
-                let provinces = this.player1.player.provinceDeck;
+                const provinces = this.player1.player.provinceDeck;
                 for(let i = 1; i < 3; i++) {
                     this.player1.clickCard(provinces[i]);
                 }
@@ -130,7 +130,7 @@ describe('setup phase', function() {
 
             it('should present both players with a dynasty mulligan prompt', function() {
                 expect(this.player1).toHavePrompt('Select dynasty cards to mulligan');
-                expect(this.player1).toHavePrompt('Select dynasty cards to mulligan');
+                expect(this.player2).toHavePrompt('Select dynasty cards to mulligan');
             });
 
             describe('if a player clicks Done', function() {
@@ -143,9 +143,22 @@ describe('setup phase', function() {
                     expect(this.player1).toHavePrompt('Waiting for opponent to mulligan dynasty cards');
                 });
 
+                it('should leave no card selectable for the player who decided', function() {
+                    expect(this.player1.currentActionTargets).toEqual([]);
+                    expect(this.player2.currentActionTargets.length).toBeGreaterThan(0);
+                });
+
                 it('should not shuffle the dynasty deck', function() {
                     expect(this.spy).not.toHaveBeenCalled();
                 });
+            });
+
+            it('should not let a player mulligan the opponent\'s cards', function() {
+                const opponentCard = this.player2.findCardByName('Otomo Courtier', 'province 1');
+                this.player1.clickCard(opponentCard);
+                expect(this.player1.player.selectedCards).not.toContain(opponentCard);
+                this.player1.clickPrompt('Done');
+                expect(opponentCard.location).toBe('province 1');
             });
 
             describe('if the player chooses to mulligan a card', function() {
@@ -191,6 +204,11 @@ describe('setup phase', function() {
                 it('should prompt the second player', function() {
                     expect(this.player2).toHavePrompt('Select conflict cards to mulligan');
                     expect(this.player1).toHavePrompt('Waiting for opponent to mulligan conflict cards');
+                });
+
+                it('should leave no card selectable for the player who decided', function() {
+                    expect(this.player1.currentActionTargets).toEqual([]);
+                    expect(this.player2.currentActionTargets.length).toBeGreaterThan(0);
                 });
 
                 it('should not shuffle the conflict deck', function() {

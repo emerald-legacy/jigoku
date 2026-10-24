@@ -1,33 +1,27 @@
-import { CardType, EventName, Location } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, EventName, Location, Trait } from '../../Constants.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import type { GameEvent } from '../../Events/EventPayloads.js';
 
 export default class BustlingAcademy extends DrawCard {
     static id = 'bustling-academy';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Discard a card in a province and refill it faceup',
-            condition: (context) =>
-                context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('scholar')) &&
-                context.player.opponent !== undefined,
-            target: {
+    public override setupCardAbilities() {
+        this.action('Discard a card in a province and refill it faceup')
+            .ifCondition((context) =>
+                context.player.cardsInPlay.some((card) => card.hasTrait(Trait.Scholar)) &&
+                context.player.opponent !== undefined)
+            .target({
                 location: Location.Provinces,
-                cardType: [CardType.Character, CardType.Holding, CardType.Event],
-                gameAction: AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile })
-            },
-            effect: 'discard {0} and refill it faceup',
-            then: (context: AbilityContext) => ({
-                gameAction: AbilityDsl.actions.refillFaceup(() => {
-                    const moveEvent = context.events[0] as GameEvent<EventName.Unnamed> & { cardStateWhenMoved: DrawCard };
-                    return {
-                        target: moveEvent.cardStateWhenMoved.controller,
-                        location: moveEvent.cardStateWhenMoved.location
-                    };
-                })
-            })
-        });
+                cardType: [CardType.Character, CardType.Holding, CardType.Event]
+            }, moveCard({ destination: Location.DynastyDiscardPile }))
+            .chatText('discard {0} and refill it faceup')
+            .then()
+            .refillFaceup((context) => {
+                const moveEvent = context.previousEvents[0];
+                const discarded = moveEvent?.is(EventName.Unnamed) ? moveEvent.cardStateWhenMoved : undefined;
+                return discarded
+                    ? { target: discarded.controller, location: discarded.location }
+                    : { target: [], location: [] };
+            });
     }
 }

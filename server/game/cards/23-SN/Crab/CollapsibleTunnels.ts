@@ -1,39 +1,28 @@
-import { CardType, Location } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { modifyProvinceStrength } from '../../../effects.js';
+import { bow, cardLastingEffect } from '../../../GameActions/GameActions.js';
 
 export default class CollapsibleTunnels extends DrawCard {
     static id = 'collapsible-tunnels';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Add Province Strength',
-            condition: (context) => context.game.isDuringConflict(),
-            effect: 'increase the strength of an attacked province by 2',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince(),
-                message: '{0} increases the strength of {1}',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.modifyProvinceStrength(2)
+    override setupCardAbilities() {
+        this.conflictAction('Add Province Strength')
+            .selectAttackedProvince({
+                message: (context, cards) => msg`${context.player} increases the strength of ${cards}`,
+                gameAction: cardLastingEffect({
+                    effect: modifyProvinceStrength(2)
                 })
-            }))
-        });
+            })
+            .chatText('increase the strength of an attacked province by 2');
 
-        this.action({
-            title: 'Bow a character',
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            condition: (context) => context.game.isDuringConflict(),
-            target: {
+        this.conflictAction('Bow a character')
+            .cost(costs.sacrificeSelf())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking() && card.getBaseMilitarySkill() <= 2,
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isAttacking() && card.getBaseMilitarySkill() <= 2
+            }, bow());
     }
 }

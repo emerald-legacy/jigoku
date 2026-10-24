@@ -1,26 +1,23 @@
-import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { attach } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
 
 class InvocationOfAsh extends DrawCard {
     static id = 'invocation-of-ash';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move to another character',
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
+    override setupCardAbilities() {
+        this.action('Move to another character')
+            .cost(costs.payHonor(1))
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.attach((context: AbilityContext<DrawCard, DrawCard>) => ({ attachment: context.source })),
-                    AbilityDsl.actions.removeFate()
-                ])
-            },
-            effect: 'move {1} to {0}, then remove a fate from {0}',
-            effectArgs: context => context.source
-        });
+                cardCondition: (card, context) => card !== context.source.parentCharacter
+            }, attach((context) => ({ attachment: context.source })))
+            .chatText((context) => msg`move ${context.source} to ${context.chatTarget()}, then remove a fate from ${context.chatTarget()}`)
+            .then()
+            .removeFate((context) => ({ target: context.target }));
     }
 }
 

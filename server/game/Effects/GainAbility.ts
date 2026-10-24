@@ -1,32 +1,33 @@
 import { EffectValue } from './EffectValue.js';
-import { AbilityType, Location } from '../Constants.js';
+import { AbilityType, EffectName, Location } from '../Constants.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type { Duration } from '../Constants.js';
 import type { AbilityLimit } from '../AbilityLimit.js';
 import type BaseCard from '../BaseCard.js';
-import type CardAbility from '../CardAbility.js';
+import type { StoredPersistentEffect } from '../BaseCard.js';
+import type { CardAbility } from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
-import type TriggeredAbility from '../TriggeredAbility.js';
-import type Effect from './Effect.js';
+import type { TriggeredAbility } from '../TriggeredAbility.js';
+import type { TriggeredAbilityProperties } from '../TriggeredAbility.js';
+import type { ActiveEffect } from './ActiveEffect.js';
 import type {
     ActionProps,
     PersistentEffectProps,
-    TriggeredAbilityProps,
-    TriggeredAbilityWhenProps
+    TriggeredAbilityProps
 } from '../Interfaces.js';
 
-type GainAbilityProps =
-    | ActionProps
-    | TriggeredAbilityProps
-    | TriggeredAbilityWhenProps
-    | PersistentEffectProps;
+type TriggeredAbilityType = Exclude<AbilityType, AbilityType.Action | AbilityType.Persistent>;
 
-interface GainAbilitySource {
-    createCopies?: boolean;
-    properties?: ActionProps | TriggeredAbilityProps;
-    abilityIdentifier?: string;
-    card?: BaseCard;
-}
+type GainedPersistentProps = PersistentEffectProps;
 
-interface GainAbilityNewProps {
+/** Authored properties, whose kind the ability type decides, or a printed or gained ability to copy. */
+export type GainAbilityArgs =
+    | [abilityType: AbilityType.Action, ability: ActionProps]
+    | [abilityType: AbilityType.Persistent, ability: GainedPersistentProps]
+    | [abilityType: TriggeredAbilityType, ability: TriggeredAbilityProps]
+    | [abilityType: AbilityType, ability: CardAbility];
+
+interface CopiedProps {
     printedAbility: boolean;
     abilityIdentifier?: string;
     origin?: BaseCard;
@@ -34,120 +35,184 @@ interface GainAbilityNewProps {
     max?: AbilityLimit;
 }
 
-type GainAbilityInput = CardAbility | GainAbilityProps;
+type PersistentGain = GainedPersistentProps & { printedAbility: boolean; location: Location; abilityType?: AbilityType };
 
-interface PersistentGainValue {
-    location: Location;
-    ref?: Effect[];
-    abilityType?: AbilityType;
-    effect?: PersistentEffectProps['effect'];
+// read back as a stored persistent effect, which has no duration
+type PersistentGainValue = PersistentGain & { ref?: ActiveEffect[]; duration?: Duration };
+
+type Grant =
+    | { kind: AbilityType.Action; properties: ActionProps }
+    | { kind: AbilityType.Persistent; properties: PersistentGain }
+    | { kind: 'triggered'; properties: TriggeredAbilityProperties };
+
+export type GainedAbilityValue = boolean | CardAction | TriggeredAbility | PersistentGainValue;
+
+/** A gained persistent effect: granted abilities never have the persistent type. */
+export function isPersistentGain(value: GainedAbilityValue): value is PersistentGainValue {
+    return typeof value === 'object' && value.abilityType === AbilityType.Persistent;
 }
 
-type GainedAbilityValue = boolean | CardAction | TriggeredAbility | PersistentGainValue;
+/** A copy of another card's persistent effect, for a card that gains it: it stops while that card loses its gained abilities. */
+export function gainedPersistentEffect(effect: StoredPersistentEffect): StoredPersistentEffect {
+    const condition = effect.condition;
+    return Object.assign({}, effect, {
+        ref: undefined,
+        condition: (context: AbilityContext) => !context.source.anyEffect(EffectName.LoseGainedAbilities) && (!condition || condition(context))
+    });
+}
 
-export default class GainAbility extends EffectValue<GainedAbilityValue> {
+// only a card ability carries its properties; authored properties never have that key
+function isCopy(args: GainAbilityArgs): args is [AbilityType, CardAbility] {
+    return 'properties' in args[1];
+}
+
+function copiedProps(ability: CardAbility): CopiedProps {
+    const props: CopiedProps = {
+        printedAbility: false,
+        abilityIdentifier: ability.abilityIdentifier,
+        origin: ability.card
+    };
+    if(ability.properties.limit) {
+        // If the copied ability has a limit, we need to create a new instantiation of it, with the same max and reset event
+        props.limit = ability.properties.limit.clone();
+    }
+    if(ability.properties.max) {
+        // Same for max
+        props.max = ability.properties.max.clone();
+    }
+    return props;
+}
+
+function grantFor(args: GainAbilityArgs): Grant {
+    if(isCopy(args)) {
+        const ability = args[1];
+        return ability.isCardAction()
+            ? { kind: AbilityType.Action, properties: Object.assign({}, ability.properties, copiedProps(ability)) }
+            : { kind: 'triggered', properties: Object.assign({}, ability.properties, copiedProps(ability)) };
+    }
+    if(args[0] === AbilityType.Action) {
+        return { kind: AbilityType.Action, properties: Object.assign({ printedAbility: false }, args[1]) };
+    }
+    if(args[0] === AbilityType.Persistent) {
+        const properties = Object.assign({ printedAbility: false }, args[1]);
+        const location = properties.location;
+        return {
+            kind: AbilityType.Persistent,
+            properties: location
+                ? Object.assign(properties, { location })
+                : Object.assign(properties, { location: Location.PlayArea, abilityType: AbilityType.Persistent })
+        };
+    }
+    return { kind: 'triggered', properties: Object.assign({ printedAbility: false }, args[1]) };
+}
+
+export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
     abilityType: AbilityType;
     createCopies: boolean;
-    forCopying: { abilityType: AbilityType; ability: GainAbilityInput } | undefined;
+    forCopying: GainAbilityArgs | undefined;
     grantedAbilityLimits: Record<string, AbilityLimit>;
-    properties: PersistentGainValue | GainAbilityProps;
+    grant: Grant;
+    // the last granted ability by kind; `value` holds the same object
+    grantedAction?: CardAction;
+    grantedTriggered?: TriggeredAbility;
+    grantedPersistent?: PersistentGainValue;
 
-    constructor(abilityType: AbilityType, ability: GainAbilityInput) {
+    constructor(...args: GainAbilityArgs) {
         super(true);
-        this.abilityType = abilityType;
+        this.abilityType = args[0];
         this.createCopies = false;
-        const source = ability as GainAbilitySource;
-        if(source.createCopies) {
+        if(args[0] === AbilityType.Persistent && !isCopy(args) && args[1].createCopies) {
             this.createCopies = true;
-            this.forCopying = { abilityType: abilityType, ability: ability };
+            this.forCopying = args;
         }
         this.grantedAbilityLimits = {};
-        if(source.properties) {
-            let newProps: GainAbilityNewProps = {
-                printedAbility: false,
-                abilityIdentifier: source.abilityIdentifier,
-                origin: source.card
-            };
-            if(source.properties.limit) {
-                // If the copied ability has a limit, we need to create a new instantiation of it, with the same max and reset event
-                newProps.limit = source.properties.limit.clone();
-            }
-            if(source.properties.max) {
-                // Same for max
-                newProps.max = source.properties.max.clone();
-            }
-            this.properties = Object.assign({}, source.properties, newProps);
-        } else {
-            this.properties = Object.assign({ printedAbility: false }, ability) as GainAbilityProps;
-        }
-        const props = this.properties as PersistentGainValue;
-        if(abilityType === AbilityType.Persistent && !props.location) {
-            props.location = Location.PlayArea;
-            props.abilityType = AbilityType.Persistent;
-        }
+        this.grant = grantFor(args);
     }
 
     getCopy(): GainAbility {
         if(this.createCopies && this.forCopying) {
-            const ability = new GainAbility(this.forCopying.abilityType, this.forCopying.ability);
+            const ability = new GainAbility(...this.forCopying);
             ability.context = this.context;
             return ability;
         }
         return this;
     }
 
-    reset() {
+    override reset() {
         this.grantedAbilityLimits = {};
     }
 
-    apply(target: BaseCard) {
-        const origin = { origin: this.context.source };
-        if(this.abilityType === AbilityType.Persistent) {
-            const activeLocations: Record<string, string[]> = {
-                'play area': [Location.PlayArea],
-                province: this.context.game.getProvinceArray()
+    override copyForTarget(): GainAbility | undefined {
+        return this.abilityType === AbilityType.Persistent ? this.getCopy() : undefined;
+    }
+
+    override apply(target: BaseCard) {
+        const origin = { origin: this.context?.source };
+        const grant = this.grant;
+        if(grant.kind === AbilityType.Persistent) {
+            const activeLocations: Partial<Record<Location, Location[]>> = {
+                [Location.PlayArea]: [Location.PlayArea],
+                [Location.Provinces]: this.requireContext().game.getProvinceArray()
             };
-            const value = Object.assign(origin, this.properties as PersistentGainValue);
+            const condition = grant.properties.condition;
+            const value: PersistentGainValue = Object.assign(origin, grant.properties, {
+                condition: (context: AbilityContext) => !target.anyEffect(EffectName.LoseGainedAbilities) && (!condition || condition(context))
+            });
             this.value = value;
-            if(activeLocations[value.location].includes(target.location)) {
+            this.grantedPersistent = value;
+            const locations = activeLocations[value.location];
+            if(!locations) {
+                throw new Error(`A gained persistent effect cannot be active in '${value.location}'`);
+            }
+            if(locations.includes(target.location)) {
                 value.ref = target.addEffectToEngine(value);
             }
             return;
         }
-        const properties = Object.assign(origin, this.properties);
-        if(this.abilityType === AbilityType.Action) {
-            this.value = target.createAction(properties as ActionProps);
+        let granted: CardAction | TriggeredAbility;
+        if(grant.kind === AbilityType.Action) {
+            const action = target.createAction(Object.assign(origin, grant.properties));
+            this.value = action;
+            this.grantedAction = action;
+            granted = action;
         } else {
-            const triggered = target.createTriggeredAbility(this.abilityType as AbilityType, properties as TriggeredAbilityWhenProps);
+            const triggered = target.createTriggeredAbility(this.abilityType, Object.assign(origin, grant.properties));
             this.value = triggered;
+            this.grantedTriggered = triggered;
             triggered.registerEvents();
+            granted = triggered;
         }
-        const granted = this.value as CardAction | TriggeredAbility;
         if(!this.grantedAbilityLimits[target.uuid]) {
             this.grantedAbilityLimits[target.uuid] = granted.limit;
         } else {
+            // the uses so far count on: the new ability's own limit is dropped, so it stops listening;
+            // an authored limit is the same object, which must keep listening
+            if(granted.limit !== this.grantedAbilityLimits[target.uuid]) {
+                granted.limit.unregisterEvents(target.game);
+            }
             granted.limit = this.grantedAbilityLimits[target.uuid];
         }
         this.grantedAbilityLimits[target.uuid].currentUser = target.uuid;
     }
 
-    unapply(target: BaseCard) {
+    override unapply(target: BaseCard) {
         if(this.grantedAbilityLimits[target.uuid]) {
             this.grantedAbilityLimits[target.uuid].currentUser = null;
         }
         if(
             [
+                AbilityType.DuelReaction,
                 AbilityType.ForcedInterrupt,
                 AbilityType.ForcedReaction,
                 AbilityType.Interrupt,
                 AbilityType.Reaction,
                 AbilityType.WouldInterrupt
-            ].includes(this.abilityType as AbilityType)
+            ].includes(this.abilityType)
         ) {
-            (this.value as TriggeredAbility).unregisterEvents();
+            this.grantedTriggered?.unregisterEvents();
         } else if(this.abilityType === AbilityType.Persistent) {
-            const value = this.value as PersistentGainValue;
-            if(value.ref) {
+            const value = this.grantedPersistent;
+            if(value?.ref) {
                 target.removeEffectFromEngine(value.ref);
                 delete value.ref;
             }

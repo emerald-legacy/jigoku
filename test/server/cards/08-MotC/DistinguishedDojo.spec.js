@@ -67,7 +67,7 @@
                 this.player2.clickPrompt('1');
                 this.player1.clickCard(this.distinguishedDojo);
                 expect(this.distinguishedDojo.getTokenCount('honor')).toBe(1);
-                expect(this.getChatLogs(1)).toContain('player1 uses Distinguished Dōjō to add a honor token to Distinguished Dōjō');
+                expect(this.getChatLogs(1)).toContain('player1 uses Distinguished Dōjō to add an honor token to Distinguished Dōjō');
             });
 
             it('should prompt to optionally sacrifice itself', function() {
@@ -83,7 +83,7 @@
             });
 
             it('should, if \'No\' is chosen for sacrifice, have no further effect', function() {
-                let honor = this.player1.player.honor;
+                const honor = this.player1.player.honor;
                 this.player2.pass();
                 this.player1.clickCard(this.aspiringChallenger);
                 this.player1.clickCard(this.mirumotoRaitsugu);
@@ -110,7 +110,7 @@
             });
 
             it('should, if \'Yes\' is chosen for sacrifice, gain honor equal to the number of honor tokens', function() {
-                let honor = this.player1.player.honor;
+                const honor = this.player1.player.honor;
                 this.player2.pass();
                 this.player1.clickCard(this.aspiringChallenger);
                 this.player1.clickCard(this.mirumotoRaitsugu);

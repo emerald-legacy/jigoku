@@ -1,22 +1,19 @@
-import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, DuelType } from '../../Constants.js';
+import { gainAbility } from '../../effects.js';
+import { bow } from '../../GameActions/GameActions.js';
+import { DuelType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { Duel } from '../../Duel.js';
 
 export default class TrueStrikeKenjutsu extends DrawCard {
     static id = 'true-strike-kenjutsu';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Initiate a military duel',
-                initiateDuel: {
+            effect: gainAbility.action('Initiate a military duel', (ability) => ability
+                .initiateDuel(() => ({
                     type: DuelType.Military,
-                    gameAction: (duel: Duel) => AbilityDsl.actions.bow({ target: duel.loser }),
-                    statistic: (card: DrawCard) => card.getBaseMilitarySkill()
-                },
-                printedAbility: false
-            })
+                    gameAction: (duel) => bow({ target: duel.loser }),
+                    statistic: (card, duelRules) => duelRules === 'printedSkill' ? card.printedMilitarySkill : card.getBaseMilitarySkill()
+                })))
         });
     }
 }

@@ -51,6 +51,25 @@ describe('Palace of Knowledge', function () {
             expect(this.getChatLogs(5)).toContain('player1 resolves the fire ring, honoring Fushichō');
         });
 
+        it('triggers after going back from the fire ring choice', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.fushicho],
+                defenders: [],
+                ring: 'fire'
+            });
+
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.fushicho);
+            this.player1.clickPrompt('Back');
+            this.player1.clickCard(this.fushicho);
+            this.player1.clickPrompt('Honor Fushichō');
+            expect(this.fushicho.isHonored).toBe(true);
+            expect(this.player1).toHavePrompt('Any reactions?');
+            expect(this.player1).toBeAbleToSelect(this.palaceOfKnowledge);
+        });
+
         it('does not trigger when ring resolution is ignored', function () {
             this.dojiWhisperer.fate = 1;
 
@@ -67,6 +86,33 @@ describe('Palace of Knowledge', function () {
             this.player1.clickPrompt('Don\'t resolve');
             expect(this.getChatLogs(3)).toContain('player1 chooses not to resolve the water ring');
             expect(this.player1).not.toHavePrompt('Any reactions?');
+        });
+
+    });
+});
+
+describe('Palace of Knowledge timing', function () {
+    integration(function () {
+        describe('outside a conflict', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        stronghold: 'palace-of-knowledge',
+                        inPlay: ['togashi-initiate'],
+                        hand: ['riddles-of-the-henshin', 'court-games']
+                    }
+                });
+                this.palaceOfKnowledge = this.player1.findCardByName('palace-of-knowledge');
+                this.player1.claimRing('earth');
+            });
+
+            it('does not react to a ring effect', function () {
+                this.player1.clickCard('riddles-of-the-henshin');
+                this.player1.clickRing('earth');
+                expect(this.player1).not.toBeAbleToSelect(this.palaceOfKnowledge);
+                expect(this.player2).toHavePrompt('Action Window');
+            });
         });
     });
 });

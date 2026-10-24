@@ -1,63 +1,45 @@
-import { CardType, DuelType, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
+import { msg } from '../../GameChat.js';
+import { DuelType, Blocker } from '../../Constants.js';
+import { chooseAction, optional, selectAttackedProvince, triggerAbility } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import type { CardAbility } from '../../CardAbility.js';
 
 export default class CunningNegotiator extends DrawCard {
     static id = 'cunning-negotiator';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Political duel to resolve the attacked province\'s action ability',
-            condition: (context) => context.game.currentConflict !== null,
-            initiateDuel: {
+    override setupCardAbilities() {
+        this.action('Political duel to resolve the attacked province\'s action ability')
+            .condition((context) => context.game.isDuringConflict())
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                message: 'resolve the action ability of an attacked province',
+                chatText: () => msg`resolve the action ability of an attacked province`,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.menuPrompt((context) => ({
+                    optional({
                         activePromptTitle: 'Do you want to trigger a province ability?',
-                        choices: duel.winner ? ['Yes', 'No'] : [],
-                        player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
-                        choiceHandler: (choice, displayMessage) => {
-                            if(displayMessage) {
-                                if(choice === 'Yes') {
-                                    context.game.addMessage(
-                                        '{0} chooses to trigger a province ability',
-                                        context.player
-                                    );
-                                } else {
-                                    context.game.addMessage(
-                                        '{0} chooses not to trigger a province ability',
-                                        context.player
-                                    );
+                        player: duel.winnerController,
+                        acceptMessage: (_context, chooser) => msg`${chooser} chooses to trigger a province ability`,
+                        declineMessage: (_context, chooser) => msg`${chooser} chooses not to trigger a province ability`,
+                        gameAction: selectAttackedProvince({
+                            player: duel.winnerController,
+                            gameAction: (province) => {
+                                const trigger = (ability: CardAbility) => triggerAbility({
+                                    player: duel.winnerController,
+                                    ability,
+                                    ignoredBlockers: [Blocker.LimitReached]
+                                });
+                                const actions = province.abilities.actions;
+                                if(actions.length < 2) {
+                                    return trigger(actions[0]);
                                 }
+                                return chooseAction({
+                                    activePromptTitle: 'Choose an ability to trigger',
+                                    player: duel.winnerController,
+                                    choices: Object.fromEntries(actions.map((ability) => [ability.title, trigger(ability)]))
+                                });
                             }
-                            return {
-                                cardCondition: (card: BaseCard) =>
-                                    choice === 'Yes' ? card.isConflictProvince() : false
-                            };
-                        },
-                        gameAction: AbilityDsl.actions.selectCard((context) => ({
-                            activePromptTitle: 'Choose an attacked province',
-                            hidePromptIfSingleCard: true,
-                            cardType: CardType.Province,
-                            location: Location.Provinces,
-                            subActionProperties: (card) => {
-                                context.target = card;
-                                return { target: card };
-                            },
-                            gameAction: AbilityDsl.actions.triggerAbility((context) => {
-                                const conflictProvince = context.target;
-                                return {
-                                    player: duel.winnerController ?? context.source.controller,
-                                    ability: duel.winner && conflictProvince ? conflictProvince.abilities.actions[0] : [],
-                                    ignoredRequirements: ['limit']
-                                };
-                            })
-                        }))
-                    }))
-            }
-        });
+                        })
+                    })
+            }));
     }
 }

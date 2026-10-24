@@ -47,7 +47,7 @@ describe('Daidoji Kageyu', function() {
                 });
 
                 this.player2.playAttachment(this.newName, this.guardian);
-                let hand = this.player1.player.hand.length;
+                const hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
@@ -71,7 +71,7 @@ describe('Daidoji Kageyu', function() {
                 this.player1.pass();
                 this.player2.playAttachment(this.seal, this.guardian);
 
-                let hand = this.player1.player.hand.length;
+                const hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
@@ -96,7 +96,7 @@ describe('Daidoji Kageyu', function() {
                 this.player1.pass();
                 this.player2.playAttachment(this.seal, this.guardian);
 
-                let hand = this.player1.player.hand.length;
+                const hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
@@ -113,7 +113,7 @@ describe('Daidoji Kageyu', function() {
                 });
 
                 this.player2.playAttachment(this.newName, this.guardian);
-                let hand = this.player1.player.hand.length;
+                const hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
@@ -129,7 +129,7 @@ describe('Daidoji Kageyu', function() {
                 });
 
                 this.player2.playAttachment(this.newName, this.guardian);
-                let hand = this.player1.player.hand.length;
+                const hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
@@ -155,7 +155,7 @@ describe('Daidoji Kageyu', function() {
             });
 
             it('should be playable using disguised', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.kageyu);
                 expect(this.player1).toBeAbleToSelect(this.whisperer);
                 expect(this.player1).not.toBeAbleToSelect(this.brash);

@@ -1,24 +1,22 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveConflict } from '../../GameActions/GameActions.js';
 
 class ChasingTheSun extends DrawCard {
     static id = 'chasing-the-sun';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move the conflict to another eligible province',
-            condition: context => context.player.isAttackingPlayer(),
-            cannotBeMirrored: true,
-            effect: 'move the conflict to another eligible province',
-            gameAction: AbilityDsl.actions.selectCard({
+    override setupCardAbilities() {
+        this.action('Move the conflict to another eligible province')
+            .condition((context) => context.player.isAttackingPlayer())
+            .selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                message: '{0} moves the conflict to {1}',
-                messageArgs: (card, player) => [player, card],
-                gameAction: AbilityDsl.actions.moveConflict()
+                message: (_context, card, player) => msg`${player} moves the conflict to ${card}`,
+                gameAction: moveConflict()
             })
-        });
+            .chatText('move the conflict to another eligible province')
+            .cannotBeMirrored();
     }
 }
 

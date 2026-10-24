@@ -140,3 +140,54 @@ describe('Serene Ise Zumi', function() {
         });
     });
 });
+
+describe('Serene Ise Zumi as an attachment, later', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 11,
+                    fate: 10,
+                    inPlay: ['togashi-initiate', 'togashi-hoshi'],
+                    hand: ['serene-ise-zumi']
+                },
+                player2: {
+                    honor: 8,
+                    inPlay: ['doji-whisperer'],
+                    hand: ['blackmail']
+                }
+            });
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.initiate = this.player1.findCardByName('togashi-initiate');
+            this.hoshi = this.player1.findCardByName('togashi-hoshi');
+            this.iseZumi = this.player1.findCardByName('serene-ise-zumi');
+            this.player1.clickCard(this.iseZumi);
+            this.player1.clickPrompt('Play Serene Ise Zumi as an attachment');
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            this.player1.clickCard(this.initiate);
+        });
+
+        it('stays attached when you lose control of the character (EmeraldDB ruling)', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.initiate],
+                defenders: []
+            });
+            this.player2.clickCard('blackmail');
+            this.player2.clickCard(this.initiate);
+            expect(this.initiate.controller).toBe(this.player2.player);
+            expect(this.iseZumi.parent).toBe(this.initiate);
+            expect(this.iseZumi.location).toBe('play area');
+        });
+
+        it('doesn\'t regain sincerity when it becomes a character again (EmeraldDB ruling)', function() {
+            this.player2.pass();
+            this.player1.clickCard(this.hoshi);
+            this.player1.clickCard(this.iseZumi);
+            expect(this.iseZumi.type).toBe('character');
+            expect(this.iseZumi.hasSincerity()).toBe(false);
+        });
+    });
+});
+

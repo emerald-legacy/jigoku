@@ -1,21 +1,16 @@
+import { msg } from '../GameChat.js';
 import { EffectName, EventName } from '../Constants.js';
 import type { Duel } from '../Duel.js';
 import type Game from '../Game.js';
+import type { Event } from '../Events/Event.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
-import type HonorBidPrompt from './HonorBidPrompt.js';
+import type { HonorBidPrompt } from './HonorBidPrompt.js';
 
 /**
-D. Duel Timing
-D.1 Duel begins.
-D.2 Establish challenger and challengee.
-D.3 Duel honor bid.
-D.4 Reveal honor dials.
-D.5 Transfer honor.
-D.6 Modify dueling skill.
-D.7 Compare skill value and determine results.
-D.8 Apply duel results.
-D.9 Duel ends.
+ * RRG Duel Timing: D.1 Initiate a duel (the ability's targets), D.2 Challenge (onDuelChallenge),
+ * D.3 Focus (honor bids, duel totals, the winner: afterDuel), D.4 Strike (onDuelStrike, then the
+ * consequences: onDuelResolution), D.5 Duel ends (onDuelFinished).
  */
 export class DuelFlow extends BaseStepWithPipeline {
     constructor(
@@ -43,6 +38,7 @@ export class DuelFlow extends BaseStepWithPipeline {
     #setCurrentDuel() {
         this.duel.previousDuel = this.game.currentDuel ?? undefined;
         this.game.currentDuel = this.duel;
+        this.duel.start();
         this.game.checkGameState(true);
     }
 
@@ -84,24 +80,37 @@ export class DuelFlow extends BaseStepWithPipeline {
 
     #announceResult() {
         if(this.duel.challenger.mostRecentEffect(EffectName.WinDuel) === this.duel) {
-            this.game.addMessage('{0} wins the duel vs {1}', this.duel.challenger, this.duel.targets);
+            this.game.addMessage(msg`${this.duel.challenger} wins the duel vs ${this.duel.targets}`);
         } else {
-            this.game.addMessage(this.duel.getTotalsForDisplay());
+            this.game.addMessage([this.duel.getTotalsForDisplay(), []]);
         }
         if(!this.duel.winner) {
-            this.game.addMessage('The duel ends in a draw');
+            this.game.addMessage(msg`The duel ends in a draw`);
         }
-        this.game.raiseEvent(EventName.AfterDuel, {
+        const events: Event[] = [this.game.getEvent(EventName.AfterDuel, {
             duel: this.duel,
             winner: this.duel.winner,
             loser: this.duel.loser,
             winningPlayer: this.duel.winningPlayer,
             losingPlayer: this.duel.losingPlayer
-        });
+        })];
+        // each winning character is a triggering condition of its own (EmeraldDB ruling on Proving Ground)
+        for(const card of this.duel.winner ?? []) {
+            events.push(this.game.getEvent(EventName.OnCharacterWinsDuel, { card, duel: this.duel }));
+        }
+        this.game.openEventWindow(events);
     }
 
     #applyDuelResults() {
         this.game.raiseEvent(EventName.OnDuelResolution, { duel: this.duel }, () => this.resolutionHandler(this.duel));
+    }
+
+    override abort(): void {
+        super.abort();
+        if(this.game.currentDuel === this.duel) {
+            this.game.currentDuel = this.duel.previousDuel ?? null;
+        }
+        this.duel.cleanup();
     }
 
     #cleanUpDuel() {

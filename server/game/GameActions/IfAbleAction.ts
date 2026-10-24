@@ -1,58 +1,30 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameObject } from '../GameObject.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { CompositeGameAction } from './CompositeGameAction.js';
+import type { GameAction, GameActionProperties } from './GameAction.js';
 
-export interface IfAbleActionProperties extends GameActionProperties {
-    ifAbleAction: GameAction;
-    otherwiseAction: GameAction;
+export interface IfAbleProperties extends GameActionProperties {
+    ifAbleGameAction: GameAction;
+    otherwiseGameAction: GameAction;
 }
 
-export class IfAbleAction extends GameAction {
-    declare defaultProperties: IfAbleActionProperties;
-
-    getProperties(context: AbilityContext, additionalProperties = {}): IfAbleActionProperties {
-        let properties = super.getProperties(context, additionalProperties) as IfAbleActionProperties;
-        properties.ifAbleAction.setDefaultTarget(() => properties.target);
-        properties.otherwiseAction.setDefaultTarget(() => properties.target);
-        return properties;
+export class IfAbleAction<Context extends AbilityContext = AbilityContext> extends CompositeGameAction<IfAbleProperties, Context> {
+    protected children(properties: IfAbleProperties) {
+        return [properties.ifAbleGameAction, properties.otherwiseGameAction];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context);
-        return ifAbleAction.hasLegalTarget(context)
-            ? ifAbleAction.getEffectMessage(context)
-            : otherwiseAction.getEffectMessage(context);
+    override getEffectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { properties: { ifAbleGameAction, otherwiseGameAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
+        return ifAbleGameAction.hasLegalTarget(context, overrides)
+            ? ifAbleGameAction.getEffectMessage(context, overrides)
+            : otherwiseGameAction.getEffectMessage(context, overrides);
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
-        return (
-            ifAbleAction.hasLegalTarget(context, additionalProperties) ||
-            otherwiseAction.hasLegalTarget(context, additionalProperties)
-        );
-    }
-
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
-        return (
-            ifAbleAction.canAffect(target, context, additionalProperties) ||
-            otherwiseAction.canAffect(target, context, additionalProperties)
-        );
-    }
-
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
-        let gameAction = ifAbleAction.hasLegalTarget(context) ? ifAbleAction : otherwiseAction;
-        gameAction.addEventsToArray(events, context, additionalProperties);
-    }
-
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}) {
-        let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
-        return (
-            ifAbleAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties) ||
-            otherwiseAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)
-        );
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}) {
+        const { properties: { ifAbleGameAction, otherwiseGameAction }, overrides } = this.getCompositeProperties(context, additionalProperties);
+        const gameAction = ifAbleGameAction.hasLegalTarget(context, overrides) ? ifAbleGameAction : otherwiseGameAction;
+        gameAction.addEventsToArray(events, context, overrides);
     }
 }

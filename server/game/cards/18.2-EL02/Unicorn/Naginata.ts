@@ -1,41 +1,34 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityType, CardType, EventName } from '../../../Constants.js';
+import { gainAbility, modifyMilitarySkill } from '../../../effects.js';
+import { bow } from '../../../GameActions/GameActions.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityProps } from '../../../Interfaces.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class Naginata extends DrawCard {
     static id = 'naginata';
 
-    setupCardAbilities() {
-        this.attachmentConditions({ myControl: true });
-
+    override setupCardAbilities() {
         this.whileAttached({
             condition: (context) => !!context.source.parentCharacter && context.source.controller.firstPlayer,
-            effect: AbilityDsl.effects.modifyMilitarySkill(1)
+            effect: modifyMilitarySkill(1)
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
-                title: 'Bow a character',
-                when: {
-                    onMoveToConflict: (event: EventPayload<EventName.OnMoveToConflict>, context: TriggeredAbilityContext<DrawCard>) =>
-                        context.source.isParticipating('military') &&
-                        event.card?.type === CardType.Character &&
-                        event.card?.isParticipating(),
-                    onSendHome: (event: EventPayload<EventName.OnSendHome>, context: TriggeredAbilityContext<DrawCard>) =>
-                        context.source.isParticipating('military') &&
-                        event.card?.type === CardType.Character &&
-                        !event.card?.isParticipating()
-                },
-                target: {
+            effect: gainAbility.reaction('Bow a character', (ability) => ability
+                .when({
+                    onMoveToConflict: (event, context) =>
+                        context.source.isParticipating(ConflictType.Military) &&
+                        event.card.type === CardType.Character &&
+                        event.card.isParticipating(),
+                    onSendHome: (event, context) =>
+                        context.source.isParticipating(ConflictType.Military) &&
+                        event.card.type === CardType.Character &&
+                        !event.card.isParticipating()
+                })
+                .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
-                        card.isParticipating() && card.getMilitarySkill() < context.source.getMilitarySkill(),
-                    gameAction: AbilityDsl.actions.bow()
-                }
-            } as TriggeredAbilityProps<DrawCard>)
+                        card.isParticipating() && card.militarySkill < context.source.militarySkill
+                }, bow()))
         });
     }
 }

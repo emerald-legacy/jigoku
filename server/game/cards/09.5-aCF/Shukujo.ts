@@ -1,12 +1,11 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType } from '../../Constants.js';
+import { gainAbility } from '../../effects.js';
 
 class Shukujo extends DrawCard {
     static id = 'shukujo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             unique: true,
@@ -14,14 +13,11 @@ class Shukujo extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card: DrawCard) => card.hasTrait('champion'),
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Switch the conflict type',
-                condition: (context: AbilityContext<DrawCard>) => context.source.isParticipating(),
-                printedAbility: false,
-                effect: 'switch the conflict type',
-                gameAction: AbilityDsl.actions.switchConflictType()
-            })
+            match: (card) => card.hasTrait(Trait.Champion),
+            effect: gainAbility.action('Switch the conflict type', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .switchConflictType()
+                .chatText('switch the conflict type'))
         });
     }
 }

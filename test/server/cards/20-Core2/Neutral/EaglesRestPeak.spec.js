@@ -40,7 +40,7 @@ describe('Eagle\'s Rest Peak', function () {
 
             this.player2.clickCard(this.yokuni);
             expect(this.getChatLogs(10)).toContain(
-                'player2 uses Eagle\'s Rest Peak to use the insight of Togashi Yokuni, revealing and setting aside 5 cards from player1\'s hand'
+                'player2 uses Eagle\'s Rest Peak to use the insight of Togashi Yokuni, revealing and setting aside 2 cards from player1\'s hand'
             );
         });
     });

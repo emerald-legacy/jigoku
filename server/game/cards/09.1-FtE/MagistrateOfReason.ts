@@ -1,17 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { additionalTriggerCost } from '../../effects.js';
 import { CardType, Players } from '../../Constants.js';
 
 class MagistrateOfReason extends DrawCard {
     static id = 'magistrate-of-reason';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isAttacking(),
+            condition: (context) => context.source.isAttacking(),
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.additionalTriggerCost((context: AbilityContext) =>
-                context.source.type === CardType.Character ? [AbilityDsl.costs.payFateToRing(1)] : []
+            effect: additionalTriggerCost((context) =>
+                context.source.type === CardType.Character ? [costs.payFateToRing(1)] : []
             )
         });
     }

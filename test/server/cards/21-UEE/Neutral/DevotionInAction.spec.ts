@@ -1,4 +1,5 @@
-import DrawCard from '../../../../../server/game/DrawCard.js';
+import type DrawCard from '../../../../../server/game/DrawCard.js';
+import type { IntegrationContext } from '../../../../helpers/integrationhelper.js';
 
 describe('Devotion in Action', () => {
     integration(() => {
@@ -11,13 +12,13 @@ describe('Devotion in Action', () => {
         let akodoYoshitsune: DrawCard;
         let bayushiManipulator: DrawCard;
         let courtNovice: DrawCard;
-        let player1: any;
-        let player2: any;
+        let player1: IntegrationContext['player1'];
+        let player2: IntegrationContext['player2'];
         let noMoreActions: () => void;
         let initiateConflict: (_config: Record<string, unknown>) => void;
         let getChatLogs: (_n: number) => string[];
 
-        beforeEach(function(this: any) {
+        beforeEach(function(this: IntegrationContext) {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
@@ -36,16 +37,20 @@ describe('Devotion in Action', () => {
             initiateConflict = (config) => this.initiateConflict(config);
             getChatLogs = (n) => this.getChatLogs(n);
 
-            devotionInAction = player1.findCardByName('devotion-in-action');
-            ikomaProdigy = player1.findCardByName('ikoma-prodigy');
-            masterOfTheSpear = player1.findCardByName('master-of-the-spear');
-            matsuBerserker = player1.placeCardInProvince('matsu-berserker', 'province 1');
-            ikomaMessageRunner = player1.placeCardInProvince('ikoma-message-runner', 'province 2');
-            matsuSakura = player1.placeCardInProvince('matsu-sakura', 'province 3');
-            akodoYoshitsune = player1.placeCardInProvince('akodo-yoshitsune', 'province 4');
+            devotionInAction = player1.findDrawCard('devotion-in-action');
+            ikomaProdigy = player1.findDrawCard('ikoma-prodigy');
+            masterOfTheSpear = player1.findDrawCard('master-of-the-spear');
+            matsuBerserker = player1.findDrawCard('matsu-berserker');
+            player1.placeCardInProvince(matsuBerserker, 'province 1');
+            ikomaMessageRunner = player1.findDrawCard('ikoma-message-runner');
+            player1.placeCardInProvince(ikomaMessageRunner, 'province 2');
+            matsuSakura = player1.findDrawCard('matsu-sakura');
+            player1.placeCardInProvince(matsuSakura, 'province 3');
+            akodoYoshitsune = player1.findDrawCard('akodo-yoshitsune');
+            player1.placeCardInProvince(akodoYoshitsune, 'province 4');
 
-            bayushiManipulator = player2.findCardByName('bayushi-manipulator');
-            courtNovice = player2.findCardByName('court-novice');
+            bayushiManipulator = player2.findDrawCard('bayushi-manipulator');
+            courtNovice = player2.findDrawCard('court-novice');
 
             noMoreActions();
         });

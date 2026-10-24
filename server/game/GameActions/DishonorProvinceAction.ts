@@ -1,49 +1,39 @@
-import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName } from '../Constants.js';
-import type { ProvinceCard } from '../ProvinceCard.js';
+import { CardType, EventName, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import { targetList, type ActionEvent, type ActionOverrides } from './GameAction.js';
 
 export type DishonorProvinceProperties = CardActionProperties;
 
-export class DishonorProvinceAction extends CardGameAction {
-    name = 'dishonor';
-    eventName = EventName.OnCardDishonored;
-    targetType = [CardType.Province];
-    cost = 'dishonoring {0}';
-    effect = 'dishonor {0}';
+export class DishonorProvinceAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProvinceProperties, EventName.OnCardDishonored, Context> {
+    override name = 'dishonorProvince';
+    override restriction = RestrictionType.Dishonor;
+    override eventName = EventName.OnCardDishonored;
+    override targetType = [CardType.Province];
+    override cost = 'dishonoring {0}';
+    override effect = 'dishonor {0}';
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        const properties = this.getProperties(context) as DishonorProvinceProperties;
-        const targetArray = [];
-        if(properties.target) {
-            if(Array.isArray(properties.target)) {
-                properties.target.forEach((t) => {
-                    const target = t as ProvinceCard;
-                    const targetMessage = target && target.isFacedown && target.isFacedown() ? target.location : target;
-                    targetArray.push(targetMessage);
-                });
-            } else {
-                const target = properties.target as ProvinceCard;
-                const targetMessage = target && target.isFacedown && target.isFacedown() ? target.location : target;
-                targetArray.push(targetMessage);
-            }
-        }
-        return ['place a dishonored status token on {0}, blanking it', [targetArray]];
+    protected override effectMessage(): MessageArgs {
+        return ['place a dishonored status token on {0}, blanking it', []];
     }
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    /** A facedown province is named by its location. */
+    protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {
+        return targetList(this.getProperties(context, additionalProperties).target).map((target) => target.isFacedown() ? target.location : target);
+    }
+
+    override canAffect(card: BaseCard, context: Context): boolean {
         if(card.type !== CardType.Province || card.isDishonored) {
             return false;
-        } else if(!card.isHonored && !card.checkRestrictions('receiveDishonorToken', context)) {
+        } else if(!card.isHonored && !card.checkRestrictions(RestrictionType.ReceiveDishonorToken, context)) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardDishonored>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardDishonored, Context>): void {
         event.card.dishonor();
     }
 }

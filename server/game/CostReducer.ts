@@ -45,12 +45,12 @@ export class CostReducer {
         }
     }
 
-    public canReduce(playingType: PlayType, card: BaseCard, target?: BaseCard, ignoreType = false): boolean {
+    public canReduce(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType = false): boolean {
         if(this.limit && this.limit.isAtMax(this.source.controller)) {
             return false;
         } else if(!ignoreType && this.cardType && card.getType() !== this.cardType) {
             return false;
-        } else if(this.playingTypes && !this.playingTypes.includes(playingType)) {
+        } else if(this.playingTypes && (!playingType || !this.playingTypes.includes(playingType))) {
             return false;
         }
         const context = new AbilityContext({ game: this.game, player: card.controller, source: card });
@@ -77,8 +77,8 @@ export class CostReducer {
         this.limit?.unregisterEvents(this.game);
     }
 
-    private checkMatch(card: BaseCard) {
-        return !this.match || this.match(card as DrawCard, this.source);
+    private checkMatch(card: DrawCard) {
+        return !this.match || this.match(card, this.source);
     }
 
     private checkTargetCondition(context: AbilityContext, target?: BaseCard): boolean {

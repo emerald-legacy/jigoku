@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import { AbilityType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
@@ -6,27 +7,16 @@ import { ProvinceCard } from '../../ProvinceCard.js';
 export default class Pilgrimage extends ProvinceCard {
     static id = 'pilgrimage';
 
-    private eventRegistrar?: EventRegistrar;
-
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([
-            {
-                [EventName.OnResolveRingElement + ':' + AbilityType.WouldInterrupt]: 'cancelRingEffect'
-            }
-        ]);
+    public override setupCardAbilities() {
+        const eventRegistrar = new EventRegistrar(this.game);
+        eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
     }
 
     public cancelRingEffect(event: GameEvent<EventName.OnResolveRingElement>) {
-        if(
-            !this.isBroken &&
-            !this.isBlank() &&
-            event.context.game.currentConflict &&
-            this.isConflictProvince() &&
-            !event.cancelled
-        ) {
+        const province = this.conflictProvinceWithText();
+        if(province && !event.cancelled) {
             event.cancel();
-            this.game.addMessage('{0} cancels the ring effect', this);
+            this.game.addMessage(msg`${province} cancels the ring effect`);
         }
     }
 }

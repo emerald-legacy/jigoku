@@ -34,8 +34,8 @@ describe('Kaiu Mitsurugi', function() {
         });
 
         it('should let you sacrifice a holding to gain an fate and draw a card', function() {
-            let fate = this.player1.fate;
-            let hand = this.player1.hand.length;
+            const fate = this.player1.fate;
+            const hand = this.player1.hand.length;
             this.tower.facedown = false;
             this.challenger.facedown = false;
             this.game.checkGameState(true);

@@ -54,7 +54,7 @@ describe('Sato', function () {
                 attackers: [this.wanderingRonin],
                 defenders: [this.adeptOfTheWaves]
             });
-            let honor = this.player2.player.honor;
+            const honor = this.player2.player.honor;
             this.player2.clickCard(this.banzai);
             this.player2.clickCard(this.adeptOfTheWaves);
             this.player2.clickPrompt('Done');

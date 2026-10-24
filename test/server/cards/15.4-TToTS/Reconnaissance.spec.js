@@ -182,6 +182,21 @@ describe('Reconnaissance', function() {
                 expect(this.player1).toBeAbleToSelect(this.ballista);
                 expect(this.player1).not.toBeAbleToSelect(this.whisperer);
                 expect(this.player1).not.toBeAbleToSelect(this.challenger);
+
+                this.player1.clickPrompt('Done');
+                expect(this.getChatLogs(3)).toContain('player1 chooses to discard no cards');
+            });
+
+            it('only discards from the chosen provinces, not the other player\'s province with the same number', function () {
+                expect(this.revels.location).toBe(this.garden.location);
+                this.player1.clickCard(this.reconnaissance);
+                this.player1.clickCard(this.garden);
+                this.player1.clickCard(this.fields);
+                this.player1.clickCard(this.pilgrimage);
+                this.player1.clickPrompt('Done');
+                expect(this.player1).toBeAbleToSelect(this.aranat);
+                expect(this.player1).not.toBeAbleToSelect(this.spiritcaller);
+                expect(this.player1).not.toBeAbleToSelect(this.tactician);
             });
         });
     });

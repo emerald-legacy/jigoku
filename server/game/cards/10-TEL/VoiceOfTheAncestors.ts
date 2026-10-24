@@ -1,70 +1,77 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { EffectTarget } from '../../Effects/EffectBuilder.js';
-import { AbilityType, CardType, Location, Players, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { AbilityType, CardType, Location, Players, PlayType, Duration, Trait } from '../../Constants.js';
+import {
+    addTrait,
+    attachmentRestrictTraitAmount,
+    blank,
+    changeType,
+    gainAbility,
+    modifyMilitarySkill,
+    modifyPoliticalSkill,
+    reduceNextPlayedCardCost
+} from '../../effects.js';
+import { attach, cardLastingEffect, playCard, playerLastingEffect, sequential } from '../../GameActions/GameActions.js';
 
 class VoiceOfTheAncestors extends DrawCard {
     static id = 'voice-of-the-ancestors';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         const DummySpiritAttachment = new DrawCard(this.owner, {
             cost: '0',
             glory: '0',
             side: 'dynasty',
             text: '',
-            type: 'attachment',
+            type: CardType.Attachment,
             name: 'Spirit Attachment',
             id: 'dummy-spirit-attachment',
             traits: ['spirit']
         });
 
-        this.action({
-            title: 'Attach a character as a Spirit',
-            target: {
+        this.action('Attach a character as a Spirit')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    context.game.actions.attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
-            },
-            gameAction: AbilityDsl.actions.selectCard({
+                    attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
+            })
+            .selectCard({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
-                cardCondition: card => card.isFaction('lion'),
+                // only a character you can pay for with the reduction (RRG Target)
+                cardCondition: (card, context) => card.isFaction('lion') &&
+                    context.player.getReducedCost(PlayType.Other, card, context.target) - 1 <= context.player.fate,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.playerLastingEffect(context => ({
-                        targetController: context.player,
-                        effect: AbilityDsl.effects.reduceNextPlayedCardCost(1)
-                    })),
-                    AbilityDsl.actions.cardLastingEffect({
+                gameAction: sequential([
+                    playerLastingEffect({
+                        target: Players.Self,
+                        effect: reduceNextPlayedCardCost(1, (card) => card.location === Location.DynastyDiscardPile)
+                    }),
+                    cardLastingEffect({
                         canChangeZoneOnce: true,
                         duration: Duration.Custom,
                         effect: [
-                            AbilityDsl.effects.blank(true),
-                            AbilityDsl.effects.changeType(CardType.Attachment),
-                            AbilityDsl.effects.addTrait('spirit'),
-                            AbilityDsl.effects.attachmentRestrictTraitAmount({ spirit: 1 }),
-                            AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
-                                match: (card: BaseCard, context?: AbilityContext<this>) => card === context?.source?.parentCharacter,
+                            blank(true),
+                            changeType(CardType.Attachment),
+                            addTrait(Trait.Spirit),
+                            attachmentRestrictTraitAmount({ spirit: 1 }),
+                            gainAbility(AbilityType.Persistent, {
+                                match: (card, context) => card === context?.source.parentCharacter,
                                 effect: [
-                                    AbilityDsl.effects.modifyMilitarySkill((card: EffectTarget, context) => (context.source as DrawCard).printedMilitarySkill || 0),
-                                    AbilityDsl.effects.modifyPoliticalSkill((card: EffectTarget, context) => (context.source as DrawCard).printedPoliticalSkill || 0)
+                                    modifyMilitarySkill((_card, context) => (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0),
+                                    modifyPoliticalSkill((_card, context) => (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0)
                                 ]
                             })
                         ]
                     }),
-                    AbilityDsl.actions.playCard(context => ({
+                    playCard((context) => ({
                         source: this,
-                        playCardTarget: attachContext => {
+                        playCardTarget: (attachContext) => {
                             attachContext.target = context.target;
                             attachContext.targets.target = context.targets.target;
                         }
                     }))
                 ])
-            })
-        });
+            });
     }
 }
 

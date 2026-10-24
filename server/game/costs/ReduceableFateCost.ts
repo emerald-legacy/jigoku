@@ -1,17 +1,21 @@
-import { AbilityContext } from '../AbilityContext.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import { msg } from '../GameChat.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location, Players } from '../Constants.js';
-import type { Cost, Result } from './Cost.js';
-import { Event } from '../Events/Event.js';
+import type { Cost, CostContext, Result } from './Cost.js';
+import type { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
-import BaseCard from '../BaseCard.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import Ring from '../Ring.js';
+import type Ring from '../Ring.js';
+import { waitingPromptTitle } from '../AbilityTargets/TargetPrompt.js';
 
 const CANCELLED = 'CANCELLED';
 const STOP = 'STOP';
 
 type PoolOption = BaseCard | Ring | typeof CANCELLED | typeof STOP;
+/** Fate taken from each alternate pool, by pool. */
+type FateCostContext = CostContext<{ fate: number; alternateFate: Map<unknown, number> }, AbilityContext<DrawCard>>;
+
 type Props = {
     reducedCost: number;
     remainingPoolTotal: number;
@@ -24,7 +28,6 @@ type Props = {
 export class ReduceableFateCost implements Cost {
     public isPlayCost = true;
     public isPrintedFateCost = true;
-    public payFateCostToOpponent = false;
     constructor(public ignoreType: boolean) { }
 
     public canPay(context: AbilityContext<DrawCard>): boolean {
@@ -37,25 +40,35 @@ export class ReduceableFateCost implements Cost {
             return true;
         }
 
-        if(context.source.isTemptationsMaho()) {
+        if(this.isCharacterFateOnly(context)) {
             return false;
         }
 
-        return context.player.fate >= minCost && context.player.checkRestrictions('spendFate', context);
+        return context.player.canSpendFate(minCost + this.otherFateSpent(context), context);
+    }
+
+    /** The fate the ability's other costs take from the pool: all costs are paid in full together. */
+    protected otherFateSpent(context: AbilityContext): number {
+        return context.ability.cost.reduce((sum, cost) => cost === this ? sum : sum + (cost.fateSpent?.(context) ?? 0), 0);
+    }
+
+    /** "Can only be paid for with fate on characters you control": the fate pool pays nothing (Temptations Mahō cards). */
+    protected isCharacterFateOnly(context: AbilityContext<DrawCard>): boolean {
+        return context.source.isTemptationsMaho();
     }
 
     protected getAlternateFatePools(context: AbilityContext<DrawCard>): Set<BaseCard | Ring> {
-        return new Set(context.player.getAlternateFatePools(context.playType, context.source, context));
+        return new Set(context.player.getAlternateFatePools(context.source, context));
     }
 
-    public resolve(context: AbilityContext<DrawCard>, result: Result): void {
+    public resolve(context: FateCostContext, result: Result): void {
         const alternatePools = this.getAlternateFatePools(context);
 
         const ringPool = new Set<Ring>();
         const cardPool = new Set<BaseCard>();
         let alternatePoolTotal = 0;
         for(const pool of alternatePools) {
-            if(pool instanceof Ring) {
+            if(pool.isRing()) {
                 ringPool.add(pool);
             } else {
                 cardPool.add(pool);
@@ -63,7 +76,7 @@ export class ReduceableFateCost implements Cost {
             alternatePoolTotal += pool.getFate();
         }
 
-        const maxPlayerFate = this.#getMaxPlayerFate(context);
+        const maxPlayerFate = Math.max(this.#getMaxPlayerFate(context) - this.otherFateSpent(context), 0);
         const reducedCost = this.getReducedCost(context);
         if(reducedCost > maxPlayerFate + alternatePoolTotal) {
             result.cancelled = true;
@@ -78,7 +91,8 @@ export class ReduceableFateCost implements Cost {
             reducedCost: reducedCost,
             remainingPoolTotal: alternatePoolTotal
         };
-        context.costs.alternateFate = new Map();
+        const alternateFate = new Map<unknown, number>();
+        context.costs.alternateFate = alternateFate;
         if(properties.reducedCost === 0) {
             return;
         }
@@ -115,7 +129,7 @@ export class ReduceableFateCost implements Cost {
                         );
                     }
                 };
-                this.promptForAlternateFate(context, result, properties, choiceHandler);
+                this.promptForAlternateFate(context, alternateFate, result, properties, choiceHandler);
             });
         };
 
@@ -132,7 +146,7 @@ export class ReduceableFateCost implements Cost {
                 if(result.cancelled || properties.numberOfChoices === 0) {
                     return;
                 }
-                this.promptForAlternateFate(context, result, properties);
+                this.promptForAlternateFate(context, alternateFate, result, properties);
             });
         }
 
@@ -141,25 +155,19 @@ export class ReduceableFateCost implements Cost {
         }
     }
 
-    protected getReducedCost(context: AbilityContext<DrawCard>): number {
+    public getReducedCost(context: AbilityContext<DrawCard>): number {
         return context.player.getReducedCost(context.playType, context.source, undefined, this.ignoreType);
     }
 
-    protected getFinalFatecost(context: AbilityContext<DrawCard>, reducedCost: number) {
+    protected getFinalFatecost(context: FateCostContext, reducedCost: number) {
         if(!context.costs.alternateFate) {
             return reducedCost;
         }
         let totalAlternateFate = 0;
         for(const alternatePool of this.getAlternateFatePools(context)) {
-            const amount = (context.costs.alternateFate as Map<unknown, number>).get(alternatePool);
+            const amount = context.costs.alternateFate.get(alternatePool);
             if(amount) {
-                context.game.addMessage(
-                    '{0} takes {1} fate from {2} to pay the cost of {3}',
-                    context.player,
-                    amount,
-                    alternatePool,
-                    context.source
-                );
+                context.game.addMessage(msg`${context.player} takes ${amount} fate from ${alternatePool} to pay the cost of ${context.source}`);
                 removeFate({ amount }).resolve(alternatePool, context);
                 totalAlternateFate += amount;
             }
@@ -178,14 +186,9 @@ export class ReduceableFateCost implements Cost {
         if(minFate <= 0) {
             buttons.push({ text: 'Done', arg: STOP });
         }
-        const waitingPromptTitle =
-            context.ability.abilityType === 'action'
-                ? 'Waiting for opponent to take an action or pass'
-                : 'Waiting for opponent';
-
         context.game.promptForSelect(context.player, {
             activePromptTitle: `Choose a card to help pay the fate cost of ${currentCard.name}`,
-            waitingPromptTitle,
+            waitingPromptTitle: waitingPromptTitle(context),
             context,
             location: Location.PlayArea,
             controller: Players.Self,
@@ -200,17 +203,20 @@ export class ReduceableFateCost implements Cost {
                 return true;
             },
             onMenuCommand: (_player: unknown, arg: string) => {
-                handler(arg as PoolOption);
+                if(arg === CANCELLED || arg === STOP) {
+                    handler(arg);
+                }
                 return true;
             }
         });
     }
 
     private promptForAlternateFate(
-        context: AbilityContext<DrawCard>,
+        context: FateCostContext,
+        alternateFate: Map<unknown, number>,
         result: Result,
         properties: Props,
-        handler?: (choice: string) => void
+        handler?: (choice: string | number) => void
     ) {
         const choices: Array<number | string> = Array.from(
             { length: properties.numberOfChoices ?? 0 },
@@ -220,7 +226,7 @@ export class ReduceableFateCost implements Cost {
             choices.push('Cancel');
         }
         if(properties.maxFate === 0) {
-            (context.costs.alternateFate as Map<unknown, number>).set(properties.pool, 0);
+            alternateFate.set(properties.pool, 0);
             return;
         }
 
@@ -229,11 +235,12 @@ export class ReduceableFateCost implements Cost {
         }
 
         const pool = properties.pool;
-        context.player.setSelectableCards([pool as BaseCard]);
+        // a ring pool is not a card: it only clears the selection
+        context.player.setSelectableCards(pool.isCard() ? [pool] : []);
         context.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: `Choose amount of fate to spend from ${pool.name}`,
             choices: choices,
-            choiceHandler: (choice: string) => {
+            choiceHandler: (choice) => {
                 context.player.clearSelectableCards();
 
                 if(choice === 'Cancel') {
@@ -241,8 +248,8 @@ export class ReduceableFateCost implements Cost {
                     return;
                 }
 
-                (context.costs.alternateFate as Map<unknown, number>).set(properties.pool, parseInt(choice, 10));
-                properties.reducedCost -= parseInt(choice, 10);
+                alternateFate.set(properties.pool, Number(choice));
+                properties.reducedCost -= Number(choice);
 
                 if(handler) {
                     handler(choice);
@@ -256,23 +263,22 @@ export class ReduceableFateCost implements Cost {
      */
     protected afterPayHook(_event: Event): void { }
 
-    public payEvent(context: TriggeredAbilityContext<DrawCard>): Event {
+    public payEvent(context: FateCostContext): Event {
         const amount = this.getReducedCost(context);
         context.costs.fate = amount;
-        return new Event(EventName.OnSpendFate, { amount, context }, (event) => {
-            context.player.markUsedReducers(context.playType, context.source);
-            context.player.fate -= this.getFinalFatecost(context, amount);
+        return context.game.getEvent(EventName.OnSpendFate, { amount, context }, (event) => {
+            if(this.isPlayCost) {
+                context.player.markUsedReducers(context.playType, context.source, undefined, this.ignoreType);
+            }
+            context.player.modifyFate(-this.getFinalFatecost(context, amount));
             this.afterPayHook(event);
         });
     }
 
     #getMaxPlayerFate(context: AbilityContext<DrawCard>): number {
-        if(context.source.isTemptationsMaho()) {
+        if(this.isCharacterFateOnly(context)) {
             return 0;
         }
-        if(context.player.checkRestrictions('spendFate', context)) {
-            return context.player.fate;
-        }
-        return 0;
+        return context.player.getSpendableFate(context);
     }
 }

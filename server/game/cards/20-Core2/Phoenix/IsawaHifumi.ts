@@ -1,35 +1,37 @@
-import { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { unlimited } from '../../../AbilityLimit.js';
+import { playCard } from '../../../GameActions/GameActions.js';
 import { CardType, EventName, Location, Players, PlayType } from '../../../Constants.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 import { ReduceableFateCost } from '../../../costs/ReduceableFateCost.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import Player from '../../../Player.js';
+import type Player from '../../../Player.js';
 import type { Event } from '../../../Events/Event.js';
 
 class HifumiCost extends ReduceableFateCost {
-    isPlayCost = false;
-    isPrintedFateCost = false;
+    override isPlayCost = false;
+    override isPrintedFateCost = false;
 
-    #timesTriggered = new WeakMap<Player, number>();
+    private timesTriggered = new WeakMap<Player, number>();
 
     refreshHifumiCount(): void {
-        this.#timesTriggered = new WeakMap();
+        this.timesTriggered = new WeakMap();
     }
 
     currentCost(player: Player): number {
-        return this.#timesTriggered.get(player) ?? 0;
+        return this.timesTriggered.get(player) ?? 0;
     }
 
-    canPay(context: AbilityContext): boolean {
+    override canPay(context: AbilityContext): boolean {
         const cost = this.currentCost(context.player);
         if(cost === 0) {
             return true;
         }
 
         let totalFateAvailable = 0;
-        for(const card of this.#cardsThatCanPayForHifumi(context)) {
+        for(const card of this.cardsThatCanPayForHifumi(context)) {
             totalFateAvailable += card.fate;
             if(totalFateAvailable >= cost) {
                 return true;
@@ -39,70 +41,77 @@ class HifumiCost extends ReduceableFateCost {
         return false;
     }
 
-    protected getReducedCost(context: AbilityContext): number {
+    // "remove an amount of fate from (friendly) characters": never from the fate pool
+    protected override isCharacterFateOnly(): boolean {
+        return true;
+    }
+
+    public override getReducedCost(context: AbilityContext): number {
         return this.currentCost(context.player);
     }
 
-    protected getAlternateFatePools(context: AbilityContext): Set<DrawCard> {
-        return this.#cardsThatCanPayForHifumi(context);
+    protected override getAlternateFatePools(context: AbilityContext): Set<DrawCard> {
+        return this.cardsThatCanPayForHifumi(context);
     }
 
-    protected afterPayHook(event: Event): void {
-        const player = (event.context as AbilityContext).player;
-        this.#timesTriggered.set(player, this.currentCost(player) + 1);
+    protected override afterPayHook(event: Event): void {
+        const player = event.context?.player;
+        if(!player) {
+            return;
+        }
+        this.timesTriggered.set(player, this.currentCost(player) + 1);
     }
 
-    #cardsThatCanPayForHifumi(context: AbilityContext): Set<DrawCard> {
+    private cardsThatCanPayForHifumi(context: AbilityContext): Set<DrawCard> {
         return new Set(
-            context.player.cardsInPlay.filter((c: DrawCard) => c.type === CardType.Character && c.getFate() > 0)
+            context.player.cardsInPlay.filter((c) => c.type === CardType.Character && c.getFate() > 0)
         );
     }
 }
 
 export default class IsawaHifumi extends DrawCard {
     static id = 'isawa-hifumi';
-    private eventRegistrar?: EventRegistrar;
 
-    hifumiCost!: HifumiCost;
+    private hifumiCost?: HifumiCost;
 
-    setupCardAbilities() {
-        this.hifumiCost = new HifumiCost(false);
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
+    override setupCardAbilities() {
+        const hifumiCost = new HifumiCost(false);
+        this.hifumiCost = hifumiCost;
+        new EventRegistrar(this.game).register({
+            [EventName.OnRoundEnded]: () => this.onRoundEnded(),
+            [EventName.OnCardLeavesPlay]: (event) => this.onCardLeavesPlay(event)
+        });
 
-        this.action({
-            title: 'Play an event from discard',
-            cost: this.hifumiCost,
-            cannotTargetFirst: true,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.action('Play an event from discard')
+            .cost(hifumiCost)
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose an event',
                 cardType: CardType.Event,
                 controller: Players.Self,
                 location: Location.ConflictDiscardPile,
-                gameAction: AbilityDsl.actions.playCard({
+                gameAction: playCard({
                     resetOnCancel: true,
                     source: this,
                     playType: PlayType.PlayFromHand,
                     postHandler: (eventContext) => {
                         const card = eventContext.source;
-                        context.game.addMessage('{0} is removed from the game by {1}\'s ability', card, context.source);
+                        context.game.addMessage(msg`${card} is removed from the game by ${context.source}'s ability`);
                         context.player.moveCard(card, Location.RemovedFromGame);
                     }
                 })
-            })),
-            effect: 'play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)',
-            effectArgs: (context) => [this.hifumiCost.currentCost(context.player), context.player],
-            limit: AbilityDsl.limit.unlimited()
-        });
+            }))
+            .chatText((context) => msg`play an event from their discard pile (the next time it is used this round will cost ${hifumiCost.currentCost(context.player)} fate from their characters)`)
+            .limit(unlimited())
+            .cannotTargetFirst();
     }
 
     public onRoundEnded() {
-        this.hifumiCost.refreshHifumiCount();
+        this.hifumiCost?.refreshHifumiCount();
     }
 
     public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
         if(event.card === this) {
-            this.hifumiCost.refreshHifumiCount();
+            this.hifumiCost?.refreshHifumiCount();
         }
     }
 }

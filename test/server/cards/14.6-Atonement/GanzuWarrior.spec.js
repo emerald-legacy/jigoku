@@ -54,7 +54,7 @@ describe('Ganzu Warrior', function () {
                 province: this.fortress
             });
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player1.clickCard(this.ganzu);
             expect(this.player1).toBeAbleToSelectRing('air');

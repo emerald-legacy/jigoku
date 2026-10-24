@@ -86,6 +86,7 @@ describe('Crane Industry', function() {
             let fate = this.player2.fate;
             this.player2.clickCard(this.afwtd);
             this.player2.clickCard(this.challenger);
+            expect(this.player2.fate).toBe(fate - 4);
 
             fate = this.player1.fate;
             this.player1.clickCard(this.scorpion);
@@ -117,6 +118,86 @@ describe('Crane Industry', function() {
             this.player1.clickCard(this.swim2);
             this.player1.clickCard(this.kuwanan);
             expect(this.player1.fate).toBe(fate - 1);
+        });
+    });
+});
+
+describe('Crane Industry and other card types', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['crane-industry', 'reprieve']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.industry = this.player1.findCardByName('crane-industry');
+            this.reprieve = this.player1.findCardByName('reprieve');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+        });
+
+        it('does not reduce the cost of attachments', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.whisperer]
+            });
+            this.player1.clickCard(this.industry);
+            this.player2.pass();
+
+            const fate = this.player1.fate;
+            this.player1.playAttachment(this.reprieve, this.challenger);
+            expect(this.player1.fate).toBe(fate - 1);
+        });
+    });
+});
+
+describe('Crane Industry and events played before the conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    inPlay: ['doji-challenger', 'kakita-yoshi'],
+                    hand: ['crane-industry', 'calling-in-favors', 'calling-in-favors']
+                },
+                player2: {
+                    inPlay: [{ card: 'doji-whisperer', attachments: ['fine-katana', 'ornate-fan'] }]
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.industry = this.player1.findCardByName('crane-industry');
+            this.favors = this.player1.filterCardsByName('calling-in-favors');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.katana = this.player2.findCardByName('fine-katana');
+            this.fan = this.player2.findCardByName('ornate-fan');
+        });
+
+        it('only counts events played during the conflict', function() {
+            this.player1.clickCard(this.favors[0]);
+            this.player1.clickCard(this.katana);
+            this.player1.clickCard(this.challenger);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [this.whisperer]
+            });
+            this.player1.clickCard(this.industry);
+            this.player2.pass();
+            const fate = this.player1.fate;
+            this.player1.clickCard(this.favors[1]);
+            this.player1.clickCard(this.fan);
+            this.player1.clickCard(this.yoshi);
+            expect(this.fan.location).toBe('play area');
+            expect(this.player1.fate).toBe(fate);
         });
     });
 });

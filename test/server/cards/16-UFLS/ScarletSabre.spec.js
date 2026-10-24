@@ -1,3 +1,6 @@
+import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
+import { takeControl } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Scarlet Sabre', function () {
     integration(function () {
         beforeEach(function () {
@@ -25,7 +28,7 @@ describe('Scarlet Sabre', function () {
 
         it('should make opponent lose a fate when parent wins a conflict as first player', function () {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 type: 'political',
@@ -62,6 +65,37 @@ describe('Scarlet Sabre', function () {
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilites');
             expect(this.player2).not.toHavePrompt('Triggered Abilites');
+        });
+    });
+});
+
+describe('Scarlet Sabre on a character the opponent took control of', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-manipulator'],
+                    hand: ['scarlet-sabre']
+                },
+                player2: {
+                    inPlay: ['yogo-hiroue']
+                }
+            });
+            this.manipulator = this.player1.findCardByName('bayushi-manipulator');
+            this.yogoHiroue = this.player2.findCardByName('yogo-hiroue');
+            this.reactions = this.manipulator.getReactions().length;
+            this.sabre = this.player1.playAttachment('scarlet-sabre', this.manipulator);
+            const context = new ResolvableAbility(this.yogoHiroue, {}).createContext(this.player2.player);
+            this.game.queueSimpleStep(() => takeControl().resolve(this.manipulator, context));
+            this.game.continue();
+        });
+
+        it('keeps the ability while the Sabre\'s controller is first player', function () {
+            expect(this.manipulator.controller).toBe(this.player2.player);
+            expect(this.sabre.controller).toBe(this.player1.player);
+            expect(this.player1.player.firstPlayer).toBe(true);
+            expect(this.manipulator.getReactions().length).toBe(this.reactions + 1);
         });
     });
 });

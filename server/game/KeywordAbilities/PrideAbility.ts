@@ -1,42 +1,49 @@
+import { msg } from '../GameChat.js';
 import * as AbilityLimit from '../AbilityLimit.js';
-import type { Conflict } from '../Conflict.js';
-import { AbilityType, EventName } from '../Constants.js';
+import { AbilityType, type EventName } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
-import TriggeredAbility from '../TriggeredAbility.js';
+import { TriggeredAbility } from '../TriggeredAbility.js';
 
 import type { EventPayload } from '../Events/EventPayloads.js';
-export default class PrideAbility extends TriggeredAbility<DrawCard> {
+import { dishonor, honor } from '../GameActions/GameActions.js';
+export class PrideAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordReaction, {
             when: {
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => {
+                    // "this character wins": its side wins, whoever controls it (Endless Plains Skirmisher)
                     const conflict = event.conflict;
-                    return context.source.isParticipating() && context.source.hasPride() &&
-                        ((conflict.winner === context.player && context.source.allowGameAction('honor', context)) ||
-                         (conflict.loser === context.player && context.source.allowGameAction('dishonor', context)));
+                    return context.source.hasPride() &&
+                        ((conflict.isOnWinningSide(context.source) && context.source.allowGameAction('honor', context)) ||
+                         (conflict.isOnLosingSide(context.source) && context.source.allowGameAction('dishonor', context)));
                 }
             },
             title: card.name + '\'s Pride',
             printedAbility: false,
-            message: '{0} is {1}honored due to their Pride',
-            messageArgs: (context: TriggeredAbilityContext) => [context.source, (context.event.conflict as Conflict).winner === context.player ? '' : 'dis'],
+            message: (context: TriggeredAbilityContext) => context.event.conflict?.isOnWinningSide(card)
+                ? msg`${context.source} is honored due to their Pride`
+                : msg`${context.source} is dishonored due to their Pride`,
             limit: AbilityLimit.perConflict(1),
             handler: (context: TriggeredAbilityContext) => {
-                if((context.event.conflict as Conflict).winner === context.player) {
-                    this.game.applyGameAction(context, { honor: context.source });
+                const conflict = context.event.conflict;
+                if(!conflict) {
+                    return;
+                }
+                if(conflict.isOnWinningSide(card)) {
+                    this.game.resolveActions([honor({ target: context.source })], context);
                 } else {
-                    this.game.applyGameAction(context, { dishonor: context.source });
+                    this.game.resolveActions([dishonor({ target: context.source })], context);
                 }
             }
         });
     }
 
-    isTriggeredAbility() {
+    override isTriggeredAbility() {
         return false;
     }
 
-    isKeywordAbility() {
+    override isKeywordAbility() {
         return true;
     }
 }

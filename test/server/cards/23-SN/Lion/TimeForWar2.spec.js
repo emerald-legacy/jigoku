@@ -34,6 +34,8 @@ describe('Time For War 2', function () {
                 expect(this.player2).toBeAbleToSelect('cloud-the-mind');
                 this.kamayari = this.player2.clickCard('kamayari');
                 expect(this.matsuBerserker.attachments).toContain(this.kamayari);
+                expect(this.getChatLogs(5)).toContain('player2 plays Time for War to attach an attachment to Matsu Berserker');
+                expect(this.getChatLogs(5)).toContain('player2 chooses to attach Kamayari to Matsu Berserker');
             });
         });
     });

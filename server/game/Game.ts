@@ -1,7 +1,8 @@
-import type { LobbyUser, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
-import ChatCommands from './ChatCommands.js';
-import { GameChat } from './GameChat.js';
-import type { MsgArg } from './GameChat.js';
+import type { DeckDTO, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
+import type { CardLibrary } from './types/CardClass.js';
+import { ChatCommands } from './ChatCommands.js';
+import { msg, GameChat } from './GameChat.js';
+import type { MessageArgs } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
 import type { ClockConfig } from './Clocks/ClockSelector.js';
@@ -14,45 +15,46 @@ import { ConflictPhase } from './gamesteps/ConflictPhase.js';
 import { FatePhase } from './gamesteps/FatePhase.js';
 import { EndRoundPrompt } from './gamesteps/regroup/EndRoundPrompt.js';
 import { SimpleStep } from './gamesteps/SimpleStep.js';
-import GameWonPrompt from './gamesteps/GameWonPrompt.js';
-import * as GameActions from './GameActions/GameActions.js';
-import { Event } from './Events/Event.js';
-import type { EventPayload, GameEvent } from './Events/EventPayloads.js';
-import EventWindow from './Events/EventWindow.js';
-import ThenEventWindow from './Events/ThenEventWindow.js';
-import AbilityResolver from './gamesteps/AbilityResolver.js';
-import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
+import { GameWonPrompt } from './gamesteps/GameWonPrompt.js';
+import type { GameAction, GameActionTarget } from './GameActions/GameAction.js';
+import type { Event } from './Events/Event.js';
+import type { EventParams, GameEvent } from './Events/EventPayloads.js';
+import type { EventWindow } from './Events/EventWindow.js';
+import type { ThenEventWindow } from './Events/ThenEventWindow.js';
+import { AbilityResolver } from './gamesteps/AbilityResolver.js';
+import { SimultaneousEffectWindow } from './gamesteps/SimultaneousEffectWindow.js';
 import type { SimultaneousEffectChoiceInput } from './gamesteps/SimultaneousEffectWindow.js';
-import type ForcedTriggeredAbilityWindow from './gamesteps/ForcedTriggeredAbilityWindow.js';
-import type HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
-import type MenuPrompt from './gamesteps/MenuPrompt.js';
-import type HandlerMenuPrompt from './gamesteps/HandlerMenuPrompt.js';
-import type SelectCardPrompt from './gamesteps/SelectCardPrompt.js';
-import type SelectRingPrompt from './gamesteps/SelectRingPrompt.js';
-import type ActionWindow from './gamesteps/ActionWindow.js';
+import type { TriggerWindow } from './gamesteps/TriggerWindow.js';
+import type { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
+import type { MenuHandlers, MenuPromptProperties } from './gamesteps/MenuPrompt.js';
+import type { HandlerMenuPromptProperties } from './gamesteps/HandlerMenuPrompt.js';
+import type { CardsChoice, OptionalCardChoice, SelectCardPromptProperties, SelectorChoice, SingleCardChoice } from './gamesteps/SelectCardPrompt.js';
+import type { CardTypes } from './types/CardOfType.js';
+import type { SelectRingPrompt } from './gamesteps/SelectRingPrompt.js';
+import type { ActionWindow } from './gamesteps/ActionWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './Ring.js';
 import { Conflict } from './Conflict.js';
-import { Duel } from './Duel.js';
-import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
+import type { Duel } from './Duel.js';
+import { ConflictFlow } from './gamesteps/conflict/ConflictFlow.js';
 import { GameInputHandler } from './GameInputHandler.js';
 import { GameStateSerializer } from './GameStateSerializer.js';
-import type { DeckForSaving, FormattedDeck } from './GameStateSerializer.js';
+import type { FormattedDeck } from './GameStateSerializer.js';
 import type { MenuItem } from './MenuCommands.js';
-import type { Step } from './gamesteps/Step.js';
+import type { MenuArg, Step } from './gamesteps/Step.js';
 import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
-import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { EffectName, EventName, Location, ConflictType, Element, Players } from './Constants.js';
+import { type AbilityType, EventName, Location, ConflictType, Element, type Players, type Phase, RestrictionType, Stage, type Trait, type FavorType } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
-import { type EventHandler } from './GameEventBus.js';
+import type { ChoiceWindow } from './TriggeredAbility.js';
+import { rulesFor, type GameRules } from './GameRules.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
-import { GameModes } from '../GameModes.js';
+import { isEnumValue } from './utils/helpers.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
-import type Socket from '../Socket.js';
+import type { Socket } from '../Socket.js';
 import type { AnimationEvent } from './AnimationEvent.js';
 import type { GameRouter } from './GameRouter.js';
 import type { GameSaveState, GameSummary } from '../gamenode/LobbyProtocol.js';
@@ -69,69 +71,28 @@ export interface GameState {
     [key: string]: unknown;
 }
 
-export interface GameDetails {
+interface GameDetails {
     id: string;
     name: string;
     allowSpectators: boolean;
-    spectatorSquelch: boolean;
+    spectatorSquelch?: boolean;
     owner: string;
     savedGameId?: string;
-    gameType: string;
-    gameMode: string;
+    gameType?: string;
+    gameMode?: string;
     password?: string;
-    players: Record<string, GamePlayerEntry>;
-    spectators: Record<string, GamePlayerEntry>;
-    clocks: unknown;
-}
-
-interface GamePlayerEntry {
-    id: string;
-    user: GamePlayerUser;
+    players: Record<string, { id: string; user: GamePlayerUser }>;
+    spectators: Record<string, { id: string; user: UserIdentity }>;
+    clocks?: ClockConfig | null;
 }
 
 interface GameOptions {
     shortCardData?: ShortCardData[];
-    cardLibrary?: Map<string, unknown>;
+    cardLibrary?: CardLibrary;
     router?: GameRouter;
 }
 
-type ApplyGameActionCardTarget = BaseCard | BaseCard[];
-type ApplyGameActionPlayerTarget = Player | Player[];
-
-/*
- * The game actions reachable through `applyGameAction`, keyed by the name callers pass.
- * Each entry adapts the caller's bare target to that action's own properties type, so
- * the lookup stays typed instead of indexing the `GameActions` namespace dynamically.
- */
-const APPLY_CARD_ACTIONS = {
-    bow: (target: ApplyGameActionCardTarget) => GameActions.bow({ target }),
-    break: (target: ApplyGameActionCardTarget) => GameActions.breakProvince({ target }),
-    discardCard: (target: ApplyGameActionCardTarget) => GameActions.discardCard({ target }),
-    discardFromPlay: (target: ApplyGameActionCardTarget) => GameActions.discardFromPlay({ target }),
-    dishonor: (target: ApplyGameActionCardTarget) => GameActions.dishonor({ target }),
-    flipDynasty: (target: ApplyGameActionCardTarget) => GameActions.flipDynasty({ target }),
-    honor: (target: ApplyGameActionCardTarget) => GameActions.honor({ target }),
-    placeFate: (target: ApplyGameActionCardTarget) => GameActions.placeFate({ target }),
-    ready: (target: ApplyGameActionCardTarget) => GameActions.ready({ target }),
-    removeFate: (target: ApplyGameActionCardTarget) => GameActions.removeFate({ target }),
-    sendHome: (target: ApplyGameActionCardTarget) => GameActions.sendHome({ target }),
-    turnFacedown: (target: ApplyGameActionCardTarget) => GameActions.turnFacedown({ target })
-};
-
-const APPLY_PLAYER_ACTIONS = {
-    discardAtRandom: (target: ApplyGameActionPlayerTarget) => GameActions.discardAtRandom({ target }),
-    draw: (target: ApplyGameActionPlayerTarget) => GameActions.draw({ target }),
-    gainFate: (target: ApplyGameActionPlayerTarget) => GameActions.gainFate({ target }),
-    gainHonor: (target: ApplyGameActionPlayerTarget) => GameActions.gainHonor({ target }),
-    loseHonor: (target: ApplyGameActionPlayerTarget) => GameActions.loseHonor({ target })
-};
-
-export type GameActionRequest = Partial<
-    { [K in keyof typeof APPLY_CARD_ACTIONS]: ApplyGameActionCardTarget } &
-    { [K in keyof typeof APPLY_PLAYER_ACTIONS]: ApplyGameActionPlayerTarget }
->;
-
-class Game {
+export class Game {
     private readonly events = new GameEventManager(this);
 
     effectEngine: EffectEngine;
@@ -142,35 +103,43 @@ class Game {
     id: string;
     name: string;
     allowSpectators: boolean;
-    spectatorSquelch: boolean;
+    spectatorSquelch?: boolean;
     owner: string;
     started: boolean;
     playStarted: boolean;
     createdAt: Date;
     savedGameId?: string;
-    gameType: string;
-    currentAbilityWindow: ForcedTriggeredAbilityWindow | SimultaneousEffectWindow | null;
+    gameType?: string;
+    currentAbilityWindow: TriggerWindow | SimultaneousEffectWindow | null;
     currentActionWindow: ActionWindow | null;
     currentEventWindow: EventWindow | null;
     currentConflict: Conflict | null;
     currentDuel: Duel | null;
     manualMode: boolean;
-    gameMode: string;
-    currentPhase: string;
+    /** Set when the game is created; a game keeps its mode. */
+    readonly gameMode?: string;
+    /** The rules of `gameMode`. */
+    readonly rules: GameRules;
+    /** Between phases: `''`. */
+    currentPhase: Phase | '';
     password?: string;
     roundNumber: number;
     initialFirstPlayer: string | null;
     private conflictTracker: ConflictTracker;
-    readonly prompts: GamePromptHelper;
+    private readonly prompts: GamePromptHelper;
     private readonly input: GameInputHandler;
     private readonly serializer: GameStateSerializer;
     private readonly connections: GameConnectionManager;
-    rings: Record<string, Ring>;
+    rings: Record<Element, Ring>;
     shortCardData: ShortCardData[];
-    cardLibrary: Map<string, unknown>;
+    cardLibrary: CardLibrary;
     router?: GameRouter;
     allCards: BaseCard[];
     private cardsByUuid = new Map<string, BaseCard>();
+    /** Effects both players resolve simultaneously: the game is won only once they're done (`suspendWinCheck`). */
+    private winCheckSuspended = false;
+    /** Status-token honor events of characters leaving play in the same step (`changeStatusTokenHonor`). */
+    private statusTokenHonorEvents: Event[] | null = null;
     provinceCards: BaseCard[];
     winner?: Player;
     finishedAt?: Date;
@@ -204,6 +173,7 @@ class Game {
         this.currentDuel = null;
         this.manualMode = false;
         this.gameMode = details.gameMode;
+        this.rules = rulesFor(details.gameMode);
         this.currentPhase = '';
         this.password = details.password;
         this.roundNumber = 0;
@@ -227,17 +197,17 @@ class Game {
         this.provinceCards = [];
         this.hiddenInfoLog = [];
 
-        Object.values(details.players).forEach((player: { id: string; user: GamePlayerUser }) => {
+        Object.values(details.players).forEach((player) => {
             this.playersAndSpectators[player.user.username] = new Player(
                 player.id,
                 player.user,
                 this.owner === player.user.username,
                 this,
-                details.clocks as ClockConfig | undefined
+                details.clocks ?? undefined
             );
         });
 
-        Object.values(details.spectators).forEach((spectator: { id: string; user: GamePlayerUser }) => {
+        Object.values(details.spectators).forEach((spectator) => {
             this.playersAndSpectators[spectator.user.username] = new Spectator(spectator.id, spectator.user);
         });
 
@@ -260,6 +230,20 @@ class Game {
     }
 
     addAnimation(event: AnimationEvent): void {
+        // a player's fate changes within one update show as one (a character's cost and its extra fate)
+        if(event.type === 'fate') {
+            const index = this.pendingAnimations.findIndex((pending) => pending.type === 'fate' && pending.playerName === event.playerName);
+            const earlier = this.pendingAnimations[index];
+            if(earlier?.type === 'fate') {
+                const amount = earlier.amount + event.amount;
+                if(amount === 0) {
+                    this.pendingAnimations.splice(index, 1);
+                } else {
+                    this.pendingAnimations[index] = { ...earlier, amount };
+                }
+                return;
+            }
+        }
         this.pendingAnimations.push(event);
     }
 
@@ -267,18 +251,14 @@ class Game {
         this.pendingAnimations = [];
     }
 
-    /**
-     * Adds a message to the in-game chat e.g 'Jadiel draws 1 card'
-     */
-    addMessage(message: string, ...args: MsgArg[]): void {
-        this.gameChat.addMessage(message, ...args);
+    /** Adds a message to the in-game chat, e.g. `msg\`${player} draws 1 card\``. */
+    addMessage(message: MessageArgs): void {
+        this.gameChat.addMessage(message);
     }
 
-    /**
-     * Adds a message to in-game chat with a graphical icon
-     */
-    addAlert(type: string, message: string, ...args: MsgArg[]): void {
-        this.gameChat.addAlert(type, message, ...args);
+    /** Adds a message to the in-game chat with a graphical icon. */
+    addAlert(type: string, message: MessageArgs): void {
+        this.gameChat.addAlert(type, message);
     }
 
     get messages(): GameChat['messages'] {
@@ -288,20 +268,23 @@ class Game {
     /**
      * Checks if a player is a spectator
      */
-    isSpectator(player: Player | Spectator): boolean {
+    isSpectator(player: Player | Spectator): player is Spectator {
         return player.constructor === Spectator;
     }
 
-    invalidatePlayerCaches(): void {
+    private invalidatePlayerCaches(): void {
         this._playersCache = null;
         this._spectatorsCache = null;
     }
 
-    /**
-     * Checks whether a player/spectator is still in the game
-     */
-    hasActivePlayer(playerName: string): boolean {
-        return this.playersAndSpectators[playerName] && !this.playersAndSpectators[playerName].left;
+    addPlayerOrSpectator(name: string, playerOrSpectator: Player | Spectator): void {
+        this.playersAndSpectators[name] = playerOrSpectator;
+        this.invalidatePlayerCaches();
+    }
+
+    removePlayerOrSpectator(name: string): void {
+        delete this.playersAndSpectators[name];
+        this.invalidatePlayerCaches();
     }
 
     /**
@@ -309,7 +292,7 @@ class Game {
      */
     getPlayers(): Player[] {
         if(!this._playersCache) {
-            this._playersCache = Object.values(this.playersAndSpectators).filter((player) => !this.isSpectator(player)) as Player[];
+            this._playersCache = Object.values(this.playersAndSpectators).filter((player): player is Player => !this.isSpectator(player));
         }
         return this._playersCache;
     }
@@ -320,7 +303,7 @@ class Game {
     getPlayerByName(playerName: string): Player | undefined {
         const player = this.playersAndSpectators[playerName];
         if(player && !this.isSpectator(player)) {
-            return player as Player;
+            return player;
         }
         return undefined;
     }
@@ -329,7 +312,7 @@ class Game {
      * Get all players (not spectators) with the first player at index 0
      */
     getPlayersInFirstPlayerOrder(): Player[] {
-        return this.getPlayers().sort((a) => (a.firstPlayer ? -1 : 1));
+        return [...this.getPlayers()].sort((a, b) => Number(!!b.firstPlayer) - Number(!!a.firstPlayer));
     }
 
     /**
@@ -344,7 +327,7 @@ class Game {
      */
     getSpectators(): Spectator[] {
         if(!this._spectatorsCache) {
-            this._spectatorsCache = Object.values(this.playersAndSpectators).filter((player) => this.isSpectator(player)) as Spectator[];
+            this._spectatorsCache = Object.values(this.playersAndSpectators).filter((player) => this.isSpectator(player));
         }
         return this._spectatorsCache;
     }
@@ -366,19 +349,6 @@ class Game {
     }
 
     /**
-     * Returns the card (i.e. character) with matching uuid from either players
-     * 'in play' area.
-     */
-    findAnyCardInPlayByUuid(cardId: string): DrawCard | null {
-        return this.getPlayers().reduce((card: DrawCard | null, player: Player) => {
-            if(card) {
-                return card;
-            }
-            return player.findCardInPlayByUuid(cardId);
-        }, null);
-    }
-
-    /**
      * Identity lookup only: returns the card object with this uuid for the game's
      * lifetime. uuids are never reused, but entries are never pruned either, so a
      * created token that has since left the game is still returned here. Callers must
@@ -391,6 +361,8 @@ class Game {
     /**
      * Returns all cards from anywhere in the game matching the passed predicate
      */
+    findAnyCardsInAnyList<Card extends BaseCard>(predicate: (card: BaseCard) => card is Card): Card[];
+    findAnyCardsInAnyList(predicate: (card: BaseCard) => boolean): BaseCard[];
     findAnyCardsInAnyList(predicate: (card: BaseCard) => boolean): BaseCard[] {
         return this.allCards.filter(predicate);
     }
@@ -403,7 +375,7 @@ class Game {
         let foundCards: DrawCard[] = [];
 
         this.getPlayers().forEach((player) => {
-            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate as (card: BaseCard) => boolean) as DrawCard[]);
+            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate));
         });
 
         return foundCards;
@@ -412,43 +384,39 @@ class Game {
     /**
      * Returns if a card is in play (characters, attachments, provinces, holdings) that has the passed trait
      */
-    isTraitInPlay(trait: string): boolean {
+    isTraitInPlay(trait: Trait): boolean {
         return this.getPlayers().some((player) => player.isTraitInPlay(trait));
     }
 
+    /** The ring of an element named by a string; `undefined` for any other name (one from the client may be anything). */
+    ringFor(element: string): Ring | undefined {
+        return isEnumValue(Element, element) ? this.rings[element] : undefined;
+    }
+
     getProvinceArray(includeStronghold: boolean = true): Location[] {
-        if(this.gameMode === GameModes.Skirmish) {
-            return [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
-        }
-        let array: Location[] = [
-            Location.ProvinceOne,
-            Location.ProvinceTwo,
-            Location.ProvinceThree,
-            Location.ProvinceFour
-        ];
-        if(includeStronghold) {
+        const array = [...this.rules.setupNonStrongholdProvinces];
+        if(includeStronghold && this.rules.setupHaveStrongholds) {
             array.push(Location.StrongholdProvince);
         }
         return array;
     }
 
-    createToken(card: DrawCard, token?: new (card: DrawCard) => DrawCard): DrawCard {
-        let tokenCard: DrawCard;
-        if(!token) {
-            tokenCard = new SpiritOfTheRiver(card);
-        } else {
-            tokenCard = new token(card);
-        }
+    createToken(card: DrawCard, token: new (card: DrawCard) => DrawCard): DrawCard {
+        const tokenCard = new token(card);
         this.allCards.push(tokenCard);
         this.cardsByUuid.set(tokenCard.uuid, tokenCard);
         return tokenCard;
     }
 
-    get actions(): typeof GameActions {
-        return GameActions;
+    requireConflict(): Conflict {
+        if(!this.currentConflict) {
+            throw new Error('No conflict in progress');
+        }
+        return this.currentConflict;
     }
 
-    isDuringConflict(types: string | string[] | null = null): boolean {
+    /** Whether a conflict is going on, of every type and element given. */
+    isDuringConflict(types: ConflictType | Element | Array<ConflictType | Element> | null = null): boolean {
         const conflict = this.currentConflict;
         if(!conflict) {
             return false;
@@ -457,9 +425,7 @@ class Game {
         } else if(!Array.isArray(types)) {
             types = [types];
         }
-        const elementsAndType = ([...conflict.elements, conflict.conflictType] as Array<string | undefined>).filter(
-            (value): value is string => typeof value === 'string'
-        );
+        const elementsAndType: string[] = [...conflict.elements, conflict.conflictType].filter((value) => value !== undefined);
         return types.every((type) => elementsAndType.includes(type));
     }
 
@@ -469,6 +435,11 @@ class Game {
 
     getConflicts(player: Player | Players.All): ConflictRecord[] {
         return this.conflictTracker.getForPlayer(player);
+    }
+
+    /** The number of conflicts the player declared this round, not counting passed ones. */
+    getDeclaredConflictCount(player: Player): number {
+        return this.getConflicts(player).filter((conflict) => !conflict.passed).length;
     }
 
     recordConflictWinner(conflict: Conflict): void {
@@ -481,10 +452,6 @@ class Game {
 
     stopClocks(): void {
         this.getPlayers().forEach((player) => player.stopClock());
-    }
-
-    resetClocks(): void {
-        this.getPlayers().forEach((player) => player.resetClock());
     }
 
     /**
@@ -532,7 +499,10 @@ class Game {
      * function doesn't check to see if a conquest victory has been achieved)
      */
     checkWinCondition(): void {
-        const honorRequiredToWin = this.gameMode === GameModes.Skirmish ? 12 : 25;
+        if(this.winCheckSuspended) {
+            return;
+        }
+        const honorRequiredToWin = this.rules.winConRequiredHonorForWin;
         for(const player of this.getPlayersInFirstPlayerOrder()) {
             if(player.honor >= honorRequiredToWin) {
                 this.recordWinner(player, 'honor');
@@ -540,6 +510,17 @@ class Game {
                 this.recordWinner(player, 'dishonor');
             }
         }
+    }
+
+    /** Until `resumeWinCheck`, honor changes don't win the game: both players' effects resolve simultaneously (A Season of War). */
+    suspendWinCheck(): void {
+        this.winCheckSuspended = true;
+    }
+
+    /** Checks for a winner after simultaneous effects; if both players would lose, the first player wins (EmeraldDB ruling). */
+    resumeWinCheck(): void {
+        this.winCheckSuspended = false;
+        this.checkWinCondition();
     }
 
     /**
@@ -551,7 +532,7 @@ class Game {
             return;
         }
 
-        this.addMessage('{0} has won the game', winner);
+        this.addMessage(msg`${winner} has won the game`);
 
         this.winner = winner;
         this.finishedAt = new Date();
@@ -599,7 +580,7 @@ class Game {
         this.input.concede(playerName);
     }
 
-    selectDeck(playerName: string, deck: unknown): void {
+    selectDeck(playerName: string, deck: DeckDTO): void {
         this.input.selectDeck(playerName, deck);
     }
 
@@ -611,15 +592,24 @@ class Game {
         this.input.shuffleDynastyDeck(playerName);
     }
 
-    promptWithMenu(player: Player, contextObj: ConstructorParameters<typeof MenuPrompt>[2], properties: ConstructorParameters<typeof MenuPrompt>[3]): void {
-        this.prompts.promptWithMenu(player, contextObj, properties);
+    promptWithMenu(player: Player, handlers: MenuHandlers, properties: MenuPromptProperties): void {
+        this.prompts.promptWithMenu(player, handlers, properties);
     }
 
-    promptWithHandlerMenu(player: Player, properties: ConstructorParameters<typeof HandlerMenuPrompt>[2]): void {
+    /** "Name a card": the player types a card name, and `onName` gets it. */
+    promptForCardName(player: Player, onName: (player: Player, cardName: string) => void, menuTitle?: string): void {
+        this.prompts.promptForCardName(player, onName, menuTitle);
+    }
+
+    promptWithHandlerMenu<Card extends BaseCard, ChoiceValue extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<Card, ChoiceValue>): void {
         this.prompts.promptWithHandlerMenu(player, properties);
     }
 
-    promptForSelect(player: Player, properties: ConstructorParameters<typeof SelectCardPrompt>[2]): void {
+    promptForSelect<const Types extends CardTypes = undefined>(player: Player, properties: SingleCardChoice<Types>): void;
+    promptForSelect<const Types extends CardTypes = undefined>(player: Player, properties: OptionalCardChoice<Types>): void;
+    promptForSelect<const Types extends CardTypes = undefined>(player: Player, properties: CardsChoice<Types>): void;
+    promptForSelect(player: Player, properties: SelectorChoice): void;
+    promptForSelect<Types extends CardTypes>(player: Player, properties: SelectCardPromptProperties<Types>): void {
         this.prompts.promptForSelect(player, properties);
     }
 
@@ -635,7 +625,7 @@ class Game {
      * This function is called by the client whenever a player clicks a button
      * in a prompt
      */
-    menuButton(playerName: string, arg: string, uuid: string, method: string): boolean {
+    menuButton(playerName: string, arg: MenuArg, uuid: string, method?: string | null): boolean {
         return this.input.menuButton(playerName, arg, uuid, method);
     }
 
@@ -674,7 +664,7 @@ class Game {
 
         for(const player of this.getPlayers()) {
             player.initialise();
-            if(this.gameMode !== GameModes.Skirmish && !player.stronghold) {
+            if(this.rules.setupHaveStrongholds && !player.stronghold) {
                 playerWithNoStronghold = player;
             }
         }
@@ -688,13 +678,10 @@ class Game {
         }
         this.provinceCards = this.allCards.filter((card) => card.isProvince);
 
-        if(this.gameMode !== GameModes.Skirmish) {
+        if(this.rules.setupHaveStrongholds) {
             if(playerWithNoStronghold) {
                 this.queueSimpleStep(() => {
-                    this.addMessage(
-                        'Invalid Deck Detected: {0} does not have a stronghold in their decklist',
-                        playerWithNoStronghold
-                    );
+                    this.addMessage(msg`Invalid Deck Detected: ${playerWithNoStronghold} does not have a stronghold in their decklist`);
                     return false;
                 });
                 this.continue();
@@ -705,7 +692,7 @@ class Game {
                 const numProvinces = this.provinceCards.filter((a) => a.controller === player);
                 if(numProvinces.length !== 5) {
                     this.queueSimpleStep(() => {
-                        this.addMessage('Invalid Deck Detected: {0} has {1} provinces', player, numProvinces.length);
+                        this.addMessage(msg`Invalid Deck Detected: ${player} has ${numProvinces.length} provinces`);
                         return false;
                     });
                     this.continue();
@@ -752,7 +739,7 @@ class Game {
     /*
      * Adds a step to the pipeline queue
      */
-    queueStep<T extends Step>(step: T): T {
+    queueStep<Value extends Step>(step: Value): Value {
         this.pipeline.queueStep(step);
         return step;
     }
@@ -779,39 +766,62 @@ class Game {
         this.queueStep(window);
     }
 
-    getEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
-    getEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
-    getEvent(eventName: string, params: Record<string, unknown> = {}, handler?: (event: Event) => void): Event {
+    getEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>, handler?: (event: GameEvent<EventType>) => void): GameEvent<EventType> {
         return this.events.getEvent(eventName, params, handler);
     }
 
     /**
      * Creates a game Event, and opens a window for it.
      */
-    raiseEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
-    raiseEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
-    raiseEvent(eventName: string, params: Record<string, unknown> = {}, handler: (event: Event) => void = () => true): Event {
+    raiseEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>, handler?: (event: GameEvent<EventType>) => void): GameEvent<EventType> {
         return this.events.raiseEvent(eventName, params, handler);
     }
 
-    emitEvent(eventName: string, params: Record<string, unknown> = {}): void {
+    emitEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>): void {
         this.events.emitEvent(eventName, params);
     }
 
-    emit(eventName: string, ...args: unknown[]): void {
-        this.events.emit(eventName, ...args);
+    /** Tells the listeners to a game event that it happened. */
+    emit(event: Event): void {
+        this.events.emit(event);
     }
 
-    on(eventName: string, handler: EventHandler): void {
+    on<EventType extends EventName>(eventName: EventType, handler: (event: GameEvent<EventType>) => void): void {
         this.events.on(eventName, handler);
     }
 
-    once(eventName: string, handler: EventHandler): void {
-        this.events.once(eventName, handler);
+    off<EventType extends EventName>(eventName: EventType, handler: (event: GameEvent<EventType>) => void): void {
+        this.events.off(eventName, handler);
     }
 
-    removeListener(eventName: string, handler: EventHandler): void {
-        this.events.removeListener(eventName, handler);
+    /** Called for each event of an `abilityType` trigger window, with the window to offer abilities to (none for other effects). */
+    onTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
+        this.events.onTriggerWindow(eventName, abilityType, handler);
+    }
+
+    onceTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
+        this.events.onceTriggerWindow(eventName, abilityType, handler);
+    }
+
+    offTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
+        this.events.offTriggerWindow(eventName, abilityType, handler);
+    }
+
+    emitTriggerWindow(event: Event, abilityType: AbilityType, window?: ChoiceWindow): void {
+        this.events.emitTriggerWindow(event, abilityType, window);
+    }
+
+    /** Called once per `abilityType` trigger window, with all of its events. */
+    onAggregateWindow(abilityType: AbilityType, handler: (events: Event[], window: ChoiceWindow) => void): void {
+        this.events.onAggregateWindow(abilityType, handler);
+    }
+
+    offAggregateWindow(abilityType: AbilityType, handler: (events: Event[], window: ChoiceWindow) => void): void {
+        this.events.offAggregateWindow(abilityType, handler);
+    }
+
+    emitAggregateWindow(events: Event[], abilityType: AbilityType, window: ChoiceWindow): void {
+        this.events.emitAggregateWindow(events, abilityType, window);
     }
 
     /**
@@ -827,50 +837,74 @@ class Game {
     }
 
     /**
-     * Raises a custom event window for checking for any cancels to a card
-     * ability
+     * Honor from the status token of a character leaving play. Characters leaving play together change it at once
+     * (EmeraldDB ruling): one window with gains before losses, so only the net change can make a player lose.
      */
-    raiseInitiateAbilityEvent(params: Record<string, unknown>, handler: () => void): void {
-        this.events.raiseInitiateAbilityEvent(params, handler);
-    }
-
-    /**
-     * Raises a custom event window for checking for any cancels to several card
-     * abilities which initiate simultaneously
-     */
-    raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: Record<string, unknown>; handler: () => void }>): void {
-        this.events.raiseMultipleInitiateAbilityEvents(eventProps);
-    }
-
-    /**
-     * Checks whether a game action can be performed on a card or an array of
-     * cards, and performs it on all legal targets.
-     */
-    applyGameAction(context: AbilityContext | null, actions: GameActionRequest): Event[] {
-        if(!context) {
-            context = this.getFrameworkContext();
+    changeStatusTokenHonor(event: Event, gain: boolean): void {
+        if(!this.statusTokenHonorEvents) {
+            const events: Event[] = [];
+            this.statusTokenHonorEvents = events;
+            this.queueSimpleStep(() => {
+                this.statusTokenHonorEvents = null;
+                this.openThenEventWindow(events);
+            });
         }
-        const resolvedContext = context;
-        const actionPairs = Object.entries(actions);
-        const events = actionPairs.reduce((array: Event[], [action, cards]) => {
-            if(action in APPLY_CARD_ACTIONS) {
-                const factory = APPLY_CARD_ACTIONS[action as keyof typeof APPLY_CARD_ACTIONS];
-                factory(cards as ApplyGameActionCardTarget).addEventsToArray(array, resolvedContext);
-            } else if(action in APPLY_PLAYER_ACTIONS) {
-                const factory = APPLY_PLAYER_ACTIONS[action as keyof typeof APPLY_PLAYER_ACTIONS];
-                factory(cards as ApplyGameActionPlayerTarget).addEventsToArray(array, resolvedContext);
+        if(gain) {
+            this.statusTokenHonorEvents.unshift(event);
+        } else {
+            this.statusTokenHonorEvents.push(event);
+        }
+    }
+
+    /**
+     * Resolves game actions together: their events on all legal targets open in one window, then emptied provinces refill.
+     * A single action inside an ability uses `action.resolve()`; the ability refills at its end.
+     */
+    resolveActions(actions: GameAction[], context: AbilityContext): Event[] {
+        const events: Event[] = [];
+        for(const action of actions) {
+            action.addEventsToArray(events, context);
+        }
+        // an action may still add its event in a queued step (after an "unless" cost), so the window opens after those
+        this.queueSimpleStep(() => {
+            if(events.length > 0) {
+                this.openEventWindow(events);
+                this.queueSimpleStep(() => context.refill());
             }
-            return array;
-        }, []);
-        if(events.length > 0) {
-            this.openEventWindow(events);
-            this.queueSimpleStep(() => resolvedContext.refill());
-        }
+        });
         return events;
     }
 
-    getFrameworkContext(player: Player | null = null): AbilityContext {
-        return new AbilityContext({ game: this, player: player ?? undefined });
+    /**
+     * A rule step's action on each target, with the framework context of the player it acts for (the card's controller,
+     * a ring's claimant), all in one window; then emptied provinces refill. So no rule step looks like an opponent's doing
+     * to reactions that check who acted ("after an opponent's … bows a character you control").
+     */
+    resolveRuleAction(action: GameAction, targets: { target: GameActionTarget; player: Player }[]): Event[] {
+        const events: Event[] = [];
+        const contexts = new Map<Player, AbilityContext>();
+        for(const { target, player } of targets) {
+            const context = contexts.get(player) ?? this.getFrameworkContext(player);
+            contexts.set(player, context);
+            action.addEventsToArray(events, context, { target });
+        }
+        this.queueSimpleStep(() => {
+            if(events.length > 0) {
+                this.openEventWindow(events);
+                this.queueSimpleStep(() => contexts.forEach((context) => context.refill()));
+            }
+        });
+        return events;
+    }
+
+    /** A context for the game's own rules acting for `player`, outside any card ability. */
+    getFrameworkContext(player: Player): AbilityContext {
+        return new AbilityContext({ game: this, player });
+    }
+
+    /** A framework context for paying a rules cost, such as the costs to declare attackers or defenders. */
+    getFrameworkCostContext(player: Player): AbilityContext {
+        return new AbilityContext({ game: this, player, stage: Stage.Cost });
     }
 
     initiateConflict(
@@ -882,9 +916,9 @@ class Game {
         const conflict = new Conflict(
             this,
             player,
-            player.opponent as Player,
+            player.opponent,
             undefined,
-            forceProvinceTarget ?? undefined,
+            forceProvinceTarget,
             forcedDeclaredType
         );
         this.queueStep(new ConflictFlow(this, conflict, canPass));
@@ -902,11 +936,8 @@ class Game {
     takeControl(player: Player, card: DrawCard): void {
         if(
             card.controller === player ||
-            !card.checkRestrictions(EffectName.TakeControl, this.getFrameworkContext())
+            !card.checkRestrictions(RestrictionType.TakeControl, this.getFrameworkContext(player))
         ) {
-            return;
-        }
-        if(!player || !player.cardsInPlay) {
             return;
         }
         card.controller.removeCardFromPile(card);
@@ -924,7 +955,7 @@ class Game {
         this.checkGameState(true);
     }
 
-    getFavorSide(): string | undefined {
+    getFavorSide(): FavorType | undefined {
         for(const player of this.getPlayers()) {
             if(player.imperialFavor) {
                 return player.imperialFavor;
@@ -937,7 +968,7 @@ class Game {
         return this.connections.watch(socketId, user);
     }
 
-    join(socketId: string, user: LobbyUser): boolean {
+    join(socketId: string, user: GamePlayerUser): boolean {
         return this.connections.join(socketId, user);
     }
 
@@ -993,8 +1024,8 @@ class Game {
                     }
                 });
 
-                if(!player.checkRestrictions('haveImperialFavor') && player.imperialFavor !== '') {
-                    this.addMessage('The imperial favor is discarded as {0} cannot have it', player.name);
+                if(!player.checkRestrictions(RestrictionType.HaveImperialFavor, this.getFrameworkContext(player)) && player.imperialFavor !== '') {
+                    this.addMessage(msg`The Imperial Favor is discarded as ${player} cannot have it`);
                     player.loseImperialFavor();
                 }
             }
@@ -1013,7 +1044,7 @@ class Game {
         this.pipeline.continue();
     }
 
-    formatDeckForSaving(deck: DeckForSaving): FormattedDeck {
+    formatDeckForSaving(deck: DeckDTO): FormattedDeck {
         return this.serializer.formatDeckForSaving(deck);
     }
 

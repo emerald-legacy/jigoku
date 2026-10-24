@@ -1,27 +1,18 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { ConflictType } from '../../Constants.js';
+import { countClaimedRings } from '../claimedRings.js';
 
 class KitsuWarrior extends DrawCard {
     static id = 'kitsu-warrior';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.modifyMilitarySkill(() => this.twiceMilClaimedRings()),
-                AbilityDsl.effects.modifyPoliticalSkill(() => this.twicePolClaimedRings())
+                modifyMilitarySkill(() => 2 * countClaimedRings(this.game, (ring) => ring.isConflictType(ConflictType.Military))),
+                modifyPoliticalSkill(() => 2 * countClaimedRings(this.game, (ring) => ring.isConflictType(ConflictType.Political)))
             ]
         });
-    }
-
-    twiceMilClaimedRings() {
-        // @ts-expect-error string literal 'military' vs ConflictType enum - game engine accepts both at runtime
-        let milclaimedRings = Object.values(this.game.rings).filter(ring => ring.isConsideredClaimed() && ring.isConflictType('military'));
-        return 2 * milclaimedRings.length;
-    }
-    twicePolClaimedRings() {
-        // @ts-expect-error string literal 'political' vs ConflictType enum - game engine accepts both at runtime
-        let polclaimedRings = Object.values(this.game.rings).filter(ring => ring.isConsideredClaimed() && ring.isConflictType('political'));
-        return 2 * polclaimedRings.length;
     }
 }
 

@@ -18,17 +18,6 @@ describe('SelectCardAction', function() {
         this.gameAction = buildGameActionSpy();
     });
 
-    describe('getProperties()', function() {
-        it('should install a setDefaultTarget closure that returns the wrapped target', function() {
-            const action = new SelectCardAction({
-                target: 'tgt', selector: this.selector, gameAction: this.gameAction
-            });
-            action.getProperties(this.context);
-            const installedFn = this.gameAction.setDefaultTarget.calls.mostRecent().args[0];
-            expect(installedFn()).toEqual(['tgt']);
-        });
-    });
-
     describe('canAffect()', function() {
         it('should ask the selector with the current player by default', function() {
             const action = new SelectCardAction({ selector: this.selector, gameAction: this.gameAction });
@@ -139,35 +128,15 @@ describe('SelectCardAction', function() {
             );
         });
 
-        it('should manually open an event window when manuallyRaiseEvent is set', function() {
-            const events = [];
+        it('should add the message with the context, the chosen card and the chooser', function() {
+            const message = jasmine.createSpy('message').and.returnValue(['{0} picks {1}', ['arg1', 'arg2']]);
             const action = new SelectCardAction({
-                selector: this.selector, gameAction: this.gameAction, manuallyRaiseEvent: true
-            });
-            action.addEventsToArray(events, this.context);
-            lastPromptArgs(this.game.promptForSelect).onSelect(this.player, this.cardA);
-            expect(this.game.openEventWindow).toHaveBeenCalledWith(events);
-        });
-
-        it('should NOT open an event window when manuallyRaiseEvent is false', function() {
-            const action = new SelectCardAction({
-                selector: this.selector, gameAction: this.gameAction
+                selector: this.selector, gameAction: this.gameAction, message
             });
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptForSelect).onSelect(this.player, this.cardA);
-            expect(this.game.openEventWindow).not.toHaveBeenCalled();
-        });
-
-        it('should add a message via messageArgs when message is configured', function() {
-            const messageArgs = jasmine.createSpy('messageArgs').and.returnValue(['arg1', 'arg2']);
-            const action = new SelectCardAction({
-                selector: this.selector, gameAction: this.gameAction,
-                message: 'msg', messageArgs
-            });
-            action.addEventsToArray([], this.context);
-            lastPromptArgs(this.game.promptForSelect).onSelect(this.player, this.cardA);
-            expect(messageArgs).toHaveBeenCalledWith(this.cardA, this.player, jasmine.any(Object));
-            expect(this.game.addMessage).toHaveBeenCalledWith('msg', 'arg1', 'arg2');
+            expect(message).toHaveBeenCalledWith(this.context, this.cardA, this.player);
+            expect(this.game.addMessage).toHaveBeenCalledWith(['{0} picks {1}', ['arg1', 'arg2']]);
         });
 
         it('should include a Cancel button when cancelHandler is provided', function() {
@@ -245,13 +214,35 @@ describe('SelectCardAction', function() {
             expect(action.getEffectMessage(this.context)).toEqual(['choose a target for {0}', [['tgt']]]);
         });
 
-        it('should return the custom effect with effectArgs when configured', function() {
-            const effectArgs = jasmine.createSpy('effectArgs').and.returnValue(['x']);
+        it('should return the custom chat text when configured', function() {
+            const chatText = jasmine.createSpy('chatText').and.returnValue(['custom {0}', ['x']]);
             const action = new SelectCardAction({
-                target: 'tgt', selector: this.selector, gameAction: this.gameAction,
-                effect: 'custom', effectArgs
+                target: 'tgt', selector: this.selector, gameAction: this.gameAction, chatText
             });
-            expect(action.getEffectMessage(this.context)).toEqual(['custom', ['x']]);
+            expect(action.getEffectMessage(this.context)).toEqual(['custom {0}', ['x']]);
+            expect(chatText).toHaveBeenCalledWith(this.context);
+        });
+    });
+
+    describe('with gameAction as a function of the chosen card', function() {
+        beforeEach(function() {
+            this.gameActionFor = jasmine.createSpy('gameActionFor').and.returnValue(this.gameAction);
+            this.action = new SelectCardAction({ selector: this.selector, gameAction: this.gameActionFor });
+        });
+
+        it('resolves the action built for the chosen card', function() {
+            const events = [];
+            this.action.addEventsToArray(events, this.context);
+            lastPromptArgs(this.game.promptForSelect).onSelect(this.player, this.cardA);
+            expect(this.gameActionFor).toHaveBeenCalledWith(this.cardA);
+            expect(this.gameAction.addEventsToArray).toHaveBeenCalledWith(events, this.context, jasmine.objectContaining({ target: this.cardA }));
+        });
+
+        it('resolves nothing when an optional select is skipped', function() {
+            this.action.addEventsToArray([], this.context);
+            lastPromptArgs(this.game.promptForSelect).onSelect(this.player, []);
+            expect(this.gameActionFor).not.toHaveBeenCalled();
+            expect(this.gameAction.addEventsToArray).not.toHaveBeenCalled();
         });
     });
 });

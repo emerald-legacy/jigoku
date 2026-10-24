@@ -1,18 +1,19 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword, mustBeDeclaredAsAttackerIfType, mustBeDeclaredAsDefender } from '../../../effects.js';
+import { ConflictType } from '../../../Constants.js';
 
 class LiquidCourage extends DrawCard {
     static id = 'liquid-courage';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.addKeyword('pride')
+            effect: addKeyword('pride')
         });
 
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.mustBeDeclaredAsAttackerIfType('military'),
-                AbilityDsl.effects.mustBeDeclaredAsDefender('military')
+                mustBeDeclaredAsAttackerIfType(ConflictType.Military),
+                mustBeDeclaredAsDefender(ConflictType.Military)
             ]
         });
     }

@@ -1,23 +1,21 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Location, elementTrait } from '../../Constants.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class ShibaSophist extends DrawCard {
     static id = 'shiba-sophist';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Search top 5 card for a card with the contested ring trait',
-            condition: context => context.source.isParticipating(),
-            effect: 'look at the top five cards of their deck',
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: 5,
-                cardCondition: card => this.game.currentConflict?.elements.some(element => card.hasTrait(element)) ?? false,
-                gameAction: AbilityDsl.actions.moveCard({
+    override setupCardAbilities() {
+        this.action('Search top 5 cards for a card with the contested ring trait')
+            .condition((context) => context.source.isParticipating())
+            .deckSearch({
+                cardsToLookAt: 5,
+                cardCondition: (card) => this.game.currentConflict?.elements.some((element) => card.hasTrait(elementTrait(element))) ?? false,
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             })
-        });
+            .chatText('look at the top five cards of their deck');
     }
 }
 

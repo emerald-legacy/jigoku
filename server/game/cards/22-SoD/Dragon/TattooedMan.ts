@@ -1,21 +1,21 @@
-import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { Stage } from '../../../Constants.js';
 
 export default class TattooedMan extends DrawCard {
     static id = 'tattooed-man';
 
-    setupCardAbilities() {
-        this.reaction({
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Ready this character')
+            .when({
                 onMoveFate: (event, context) =>
-                    event.fate > 0 &&
-                    event.recipient?.type === 'ring' &&
+                    (event.fate ?? 0) > 0 &&
+                    event.recipient?.isRing() &&
                     !!event.context &&
                     context.player === event.context.player &&
-                    event.context.ability.isCardAbility()
-            },
-            title: 'Ready this character',
-            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source }))
-        });
+                    event.context.ability.isCardAbility() &&
+                    // costs are not effects
+                    event.context.stage !== Stage.Cost
+            })
+            .ready();
     }
 }

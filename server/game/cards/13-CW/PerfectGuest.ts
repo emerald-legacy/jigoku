@@ -1,34 +1,23 @@
-import { Duration } from '../../Constants.js';
-import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Duration, RestrictionScope, RestrictionType } from '../../Constants.js';
+import { playerCannot, takeControl } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class PerfectGuest extends DrawCard {
     static id = 'perfect-guest';
 
-    private triggeredThisRound = false;
-    private eventRegistrar?: EventRegistrar;
-
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register(['onRoundEnded']);
-
-        this.action({
-            title: 'Give control of this character',
-            effect: 'give control of itself to {1}',
-            effectArgs: (context) => [context.player.opponent ?? context.player],
-            condition: (context) => context.player.opponent !== undefined && !this.triggeredThisRound,
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => {
-                this.triggeredThisRound = true;
-                return {
-                    effect: AbilityDsl.effects.takeControl(context.player.opponent),
-                    duration: Duration.Custom
-                };
-            })
-        });
-    }
-
-    public onRoundEnded() {
-        this.triggeredThisRound = false;
+    public override setupCardAbilities() {
+        this.action('Give control of this character')
+            .condition((context) => context.player.opponent !== undefined)
+            .cardLastingEffect((context) => ({
+                effect: takeControl(context.player.opponent),
+                duration: Duration.Custom
+            }))
+            .playerLastingEffect((context) => ({
+                target: context.player.opponent,
+                duration: Duration.UntilEndOfRound,
+                effect: playerCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo: RestrictionScope.ThisAbility })
+            }))
+            .chatText((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`);
     }
 }

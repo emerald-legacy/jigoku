@@ -28,13 +28,24 @@ describe('Assemble the Council', function () {
             expect(this.player1).toBeAbleToSelect(this.meditationsOnOrthodoxy);
         });
 
+        it('can choose no character: the card still goes to the bottom of the deck', function () {
+            this.adept.ready();
+            this.solemn.ready();
+            this.noMoreActions();
+            this.player1.clickPrompt('Pass Conflict');
+            this.player1.clickPrompt('Yes');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.meditationsOnOrthodoxy);
+            this.player1.clickPrompt('Done');
+            expect(this.meditationsOnOrthodoxy.location).toBe('conflict deck');
+        });
+
         it('if triggered, readies 2 characters', function () {
             this.noMoreActions();
             this.player1.clickPrompt('Pass Conflict');
             this.player1.clickPrompt('Yes');
             this.player1.clickCard(this.meditationsOnOrthodoxy);
             expect(this.player1).toHavePrompt('Choose characters');
-            expect(this.player1).not.toHavePromptButton('Done');
             expect(this.player1).toBeAbleToSelect(this.adept);
             expect(this.player1).toBeAbleToSelect(this.solemn);
             expect(this.player1).not.toBeAbleToSelect(this.mystic);

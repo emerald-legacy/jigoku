@@ -23,7 +23,7 @@ describe('Mediator of Hostilites', function() {
         });
 
         it('if triggered, should draw you a card', function() {
-            let cards = this.player1.hand.length;
+            const cards = this.player1.hand.length;
             this.noMoreActions();
             this.player1.clickPrompt('Pass Conflict');
             this.player1.clickPrompt('Yes');

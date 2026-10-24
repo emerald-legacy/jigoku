@@ -2,21 +2,15 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
+import type { ActionEvent, ActionOverrides } from './GameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export type RemoveRingFromPlayProperties = RingActionProperties;
 
-export class RemoveRingFromPlayAction extends RingAction {
-    name = 'removeRingFromPlay';
-    eventName = EventName.OnRemoveRingFromPlay;
-    effect = 'remove the {0} from play';
-    constructor(
-        properties: ((context: AbilityContext) => RemoveRingFromPlayProperties) | RemoveRingFromPlayProperties
-    ) {
-        super(properties);
-    }
-
-    canAffect(ring: Ring, context: AbilityContext): boolean {
+export class RemoveRingFromPlayAction<Context extends AbilityContext = AbilityContext> extends RingAction<RemoveRingFromPlayProperties, EventName.OnRemoveRingFromPlay, Context> {
+    override name = 'removeRingFromPlay';
+    override eventName = EventName.OnRemoveRingFromPlay;
+    override effect = 'remove the {0} from play';
+    override canAffect(ring: Ring, context: Context): boolean {
         if(ring.removedFromGame) {
             return false;
         }
@@ -24,9 +18,9 @@ export class RemoveRingFromPlayAction extends RingAction {
         return super.canAffect(ring, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnRemoveRingFromPlay>, _additionalProperties: Record<string, unknown> = {}): void {
+    override eventHandler(event: ActionEvent<EventName.OnRemoveRingFromPlay, Context>, _additionalProperties: ActionOverrides = {}): void {
         const ring = event.ring;
-        const context = event.context as AbilityContext;
+        const context = event.context;
 
         context.game.raiseEvent(EventName.OnRemoveRingFromPlay, { ring: ring }, () => ring.removeRingFromPlay());
     }

@@ -5,7 +5,7 @@ describe('Kaiu Forges', function() {
                 this.setupTest({
                     phase: 'conflict',
                     player1: {
-                        dynastyDiscard: ['kaiu-forges', 'imperial-storehouse', 'seventh-tower', 'watchtower-of-valor' ,'favorable-ground', 'ancestral-armory', 'ancestral-shrine', 'hida-kisada', 'artisan-academy', 'forgotten-library', 'hall-of-victories'],
+                        dynastyDiscard: ['kaiu-forges', 'imperial-storehouse', 'seventh-tower', 'watchtower-of-valor' ,'favorable-ground', 'ancestral-armory', 'ancestral-shrine', 'hida-kisada', 'artisan-academy', 'forgotten-library', 'hall-of-victories', 'bustling-academy', 'iron-mine'],
                         dynastyDeckSize: 4
                     }
                 });
@@ -21,6 +21,9 @@ describe('Kaiu Forges', function() {
                 this.artisanAcademy = this.player1.findCardByName('artisan-academy');
                 this.forgottenLibrary = this.player1.findCardByName('forgotten-library');
                 this.hallOfVictories = this.player1.findCardByName('hall-of-victories');
+                this.player1.reduceDeckToNumber('dynasty deck', 0);
+                this.ironMine = this.player1.moveCard('iron-mine', 'dynasty deck');
+                this.player1.moveCard('bustling-academy', 'dynasty deck');
                 this.player1.moveCard(this.storehouse, 'dynasty deck');
                 this.player1.moveCard(this.favorableGround, 'dynasty deck');
                 this.player1.moveCard(this.ancestralArmory, 'dynasty deck');
@@ -68,7 +71,19 @@ describe('Kaiu Forges', function() {
                 expect(this.player1).toHavePromptButton('Artisan Academy');
                 expect(this.player1).toHavePromptButton('Forgotten Library');
                 expect(this.player1).toHavePromptButton('Hall of Victories');
+                expect(this.player1).toHavePromptButton('Bustling Academy');
+                expect(this.player1).not.toHavePromptButton('Iron Mine');
                 expect(this.player1).toHavePromptButton('Take nothing');
+            });
+
+            it('should not swap with a facedown Kaiu Wall', function() {
+                this.watchtowerOfValor.facedown = true;
+                this.player1.clickCard(this.kaiuForges);
+                this.player1.clickCard(this.p2);
+                this.player1.clickPrompt('Forgotten Library');
+                expect(this.getChatLogs(3)).toContain('player1 cannot put a holding into play because there is no Kaiu Wall in the selected province');
+                expect(this.watchtowerOfValor.location).toBe('province 2');
+                expect(this.player2).toHavePrompt('Action Window');
             });
 
             it('should allow you to take nothing', function() {
@@ -92,11 +107,12 @@ describe('Kaiu Forges', function() {
                 expect(this.player1).toHavePrompt('Choose a holding to swap with a Kaiu Wall');
                 expect(this.player1).toHavePromptButton('Forgotten Library');
                 this.player1.clickPrompt('Forgotten Library');
-                expect(this.player1).toHavePrompt('Choose a holding');
+                expect(this.player1).toHavePrompt('Choose a Kaiu Wall to swap with');
                 expect(this.player1).toBeAbleToSelect(this.kaiuForges);
                 this.player1.clickCard(this.kaiuForges);
                 expect(this.kaiuForges.location).toBe('dynasty deck');
                 expect(this.forgottenLibrary.location).toBe('province 1');
+                expect(this.forgottenLibrary.facedown).toBe(false);
 
                 expect(this.getChatLogs(3)).toContain('player1 uses Kaiu Forges to look at the top ten cards of their dynasty deck');
                 expect(this.getChatLogs(2)).toContain('player1 chooses to replace Kaiu Forges with Forgotten Library');

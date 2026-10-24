@@ -239,10 +239,10 @@ describe('Togashi Hoshi', function () {
             this.player1.clickCard(this.jadeTetsubo);
             this.player2.pass();
             this.player1.clickCard(this.jadeTetsubo);
-            let mil = this.mirumotoRaitsugu.getMilitarySkill();
+            const mil = this.mirumotoRaitsugu.militarySkill;
             this.player1.clickCard(this.mirumotoRaitsugu);
             expect(this.mirumotoRaitsugu.attachments).toContain(this.jadeTetsubo);
-            expect(this.mirumotoRaitsugu.getMilitarySkill()).toBe(mil + 3);
+            expect(this.mirumotoRaitsugu.militarySkill).toBe(mil + 3);
         });
 
         it('ancestral attachments should not return to hand if detatched', function () {
@@ -268,8 +268,61 @@ describe('Togashi Hoshi', function () {
             this.player1.clickCard(this.kazue);
             expect(this.player2).toHavePrompt('Action Window');
 
-            expect(this.kazue.getMilitarySkill()).toBe(this.kazue.printedMilitarySkill);
-            expect(this.kazue.getPoliticalSkill()).toBe(this.kazue.printedPoliticalSkill);
+            expect(this.kazue.militarySkill).toBe(this.kazue.printedMilitarySkill);
+            expect(this.kazue.politicalSkill).toBe(this.kazue.printedPoliticalSkill);
         });
     });
 });
+
+describe('Togashi Hoshi and a "+X" attachment', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-hoshi', { card: 'mirumoto-raitsugu', attachments: ['kobo-ichi-kai-jujutsu'] }],
+                    hand: ['fine-katana']
+                }
+            });
+            this.hoshi = this.player1.findCardByName('togashi-hoshi');
+            this.kobo = this.player1.findCardByName('kobo-ichi-kai-jujutsu');
+            this.katana = this.player1.findCardByName('fine-katana');
+        });
+
+        it('has base skill 0 that modifiers change (X counts as 0)', function () {
+            this.player1.clickCard(this.hoshi);
+            this.player1.clickCard(this.kobo);
+            expect(this.kobo.type).toBe('character');
+            expect(this.kobo.militarySkill).toBe(0);
+            this.player2.pass();
+            this.player1.playAttachment(this.katana, this.kobo);
+            expect(this.kobo.militarySkill).toBe(2);
+        });
+    });
+});
+
+describe('Togashi Hoshi and the old host', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-hoshi', { card: 'mirumoto-raitsugu', attachments: ['fine-katana'] }]
+                }
+            });
+            this.hoshi = this.player1.findCardByName('togashi-hoshi');
+            this.raitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+            this.katana = this.player1.findCardByName('fine-katana');
+        });
+
+        it('takes the detached card\'s skill bonus off its old host', function () {
+            const mil = this.raitsugu.militarySkill;
+            this.player1.clickCard(this.hoshi);
+            this.player1.clickCard(this.katana);
+            expect(this.katana.type).toBe('character');
+            expect(this.katana.parent).toBeNull();
+            expect(this.raitsugu.militarySkill).toBe(mil - 2);
+        });
+    });
+});
+

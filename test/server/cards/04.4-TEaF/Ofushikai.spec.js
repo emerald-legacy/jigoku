@@ -25,12 +25,12 @@ describe('Ofushikai', function() {
             it('should increase the attached characters military an political skills when attached', function() {
                 this.player1.playAttachment('ofushikai', 'shiba-tsukune');
                 expect(this.player2).toHavePrompt('Action Window');
-                expect(this.shibaTsukune.getMilitarySkill()).toBe(this.shibaTsukune.getBaseMilitarySkill() + this.ofushikaiMilitaryBonus);
-                expect(this.shibaTsukune.getPoliticalSkill()).toBe(this.shibaTsukune.getBasePoliticalSkill() + this.ofushikaiPoliticalBonus);
+                expect(this.shibaTsukune.militarySkill).toBe(this.shibaTsukune.getBaseMilitarySkill() + this.ofushikaiMilitaryBonus);
+                expect(this.shibaTsukune.politicalSkill).toBe(this.shibaTsukune.getBasePoliticalSkill() + this.ofushikaiPoliticalBonus);
             });
 
             it('should grant the ability to a character that is a phoenix champion when attached', function() {
-                let shibaTsukuneActionCount = this.shibaTsukune.getActions().length;
+                const shibaTsukuneActionCount = this.shibaTsukune.getActions().length;
                 this.player1.playAttachment('ofushikai', 'shiba-tsukune');
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.shibaTsukune.getActions().length).toBe(shibaTsukuneActionCount + 1);
@@ -42,7 +42,7 @@ describe('Ofushikai', function() {
             });
 
             it('should not grant an ability to a character that is not a champion when attached', function() {
-                let tsukiActionCount = this.askaoTsuki.getActions().length;
+                const tsukiActionCount = this.askaoTsuki.getActions().length;
                 this.player1.playAttachment('ofushikai', 'asako-tsuki');
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.askaoTsuki.getActions().length).toBe(tsukiActionCount);
@@ -64,13 +64,13 @@ describe('Ofushikai', function() {
                 it('should attach and increase the characters skills by +2/+3', function() {
                     this.player1.clickCard('ofushikai');
                     this.player1.clickCard(this.yoritomo);
-                    expect(this.yoritomo.getMilitarySkill()).toBe(this.yoritomo.getBaseMilitarySkill() + this.player1.fate + this.sealOfThePhoenixMilitaryBonus + this.ofushikaiMilitaryBonus);
-                    expect(this.yoritomo.getPoliticalSkill()).toBe(this.yoritomo.getBasePoliticalSkill() + this.player1.fate + this.sealOfThePhoenixPoliticalBonus + this.ofushikaiPoliticalBonus);
+                    expect(this.yoritomo.militarySkill).toBe(this.yoritomo.getBaseMilitarySkill() + this.player1.fate + this.sealOfThePhoenixMilitaryBonus + this.ofushikaiMilitaryBonus);
+                    expect(this.yoritomo.politicalSkill).toBe(this.yoritomo.getBasePoliticalSkill() + this.player1.fate + this.sealOfThePhoenixPoliticalBonus + this.ofushikaiPoliticalBonus);
                     expect(this.player2).toHavePrompt('Action Window');
                 });
 
                 it('should grant the ability if the character is a champion', function() {
-                    let yoritomoActionCount = this.yoritomo.getActions().length;
+                    const yoritomoActionCount = this.yoritomo.getActions().length;
                     this.player1.clickCard('ofushikai');
                     this.player1.clickCard(this.yoritomo);
                     expect(this.yoritomo.getActions().length).toBe(yoritomoActionCount + 1);
@@ -98,7 +98,7 @@ describe('Ofushikai', function() {
                     expect(this.getChatLogs(3)).toContain('player1 uses Shiba Tsukune\'s gained ability from Ofushikai to send Crisis Breaker home and prevent it from attacking this phase');
                     expect(this.player2).toHavePrompt('Conflict Action Window');
                     expect(this.crisisBreaker.inConflict).toBe(false);
-                    let cannotParticipateAsAttackerEffects = this.crisisBreaker.effects.filter(effect => effect.type === 'cannotParticipateAsAttacker' && effect.duration === 'untilEndOfPhase');
+                    const cannotParticipateAsAttackerEffects = this.crisisBreaker.effects.filter(effect => effect.type === 'cannotParticipateAsAttacker' && effect.duration === 'untilEndOfPhase');
                     expect(cannotParticipateAsAttackerEffects.length).toBeGreaterThan(0);
                 });
 

@@ -28,7 +28,7 @@ describe('Endless Ranks', function () {
                 attackers: [this.ranks],
                 defenders: []
             });
-            let deckSize = this.player1.dynastyDeck.length;
+            const deckSize = this.player1.dynastyDeck.length;
             this.player2.pass();
             this.player1.pass();
             expect(this.player1).toHavePrompt('Triggered Abilities');

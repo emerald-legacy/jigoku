@@ -1,35 +1,36 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { Location } from '../../../Constants.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
+import { Location, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
-function getCharactersWithoutFate(context: AbilityContext) {
+function charactersOnYourSide(context: AbilityContext) {
     return context.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0;
 }
 
 export default class AkodoAsuka extends DrawCard {
     static id = 'akodo-asuka';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Draw a card',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Draw a card')
+            .when({
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller &&
-                    context.source.isParticipating() &&
+                    event.conflict.isOnWinningSide(context.source) &&
                     context.player.conflictDeck.length > 0
-            },
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: (context) => getCharactersWithoutFate(context),
+            })
+            .deckSearch({
+                cardsToLookAt: (context) => charactersOnYourSide(context),
+                mode: TargetMode.Exactly,
+                numCards: 1,
                 activePromptTitle: 'Choose a card to put in your hand',
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: true,
                 reveal: false
-            }),
-            effect: 'look at the top {1} cards of their conflict deck',
-            effectArgs: (context) => getCharactersWithoutFate(context)
-        });
+            })
+            .chatText((context) => {
+                const amount = charactersOnYourSide(context);
+                return msg`look at the top ${amount} card${amount === 1 ? '' : 's'} of their conflict deck`;
+            });
     }
 }

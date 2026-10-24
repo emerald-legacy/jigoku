@@ -1,52 +1,36 @@
-import { CardType, Players, Decks, EventName } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Players, DeckType, Trait } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { attach, deckSearch } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type Ring from '../../../Ring.js';
-import type { GameEvent } from '../../../Events/EventPayloads.js';
-import type { Event } from '../../../Events/Event.js';
+import { attachSearchedCard } from '../../attachSearchedCard.js';
 
 export default class KaiuNoIshiTauro extends DrawCard {
     static id = 'kaiu-no-ishi-tauro';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Return rings to fetch an attachment',
-            cost: AbilityDsl.costs.returnRings(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Return rings to fetch an attachment')
+            .cost(costs.returnRings())
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.deckSearch(context => ({
-                    activePromptTitle: 'Select an attachment',
-                    deck: Decks.ConflictDeck,
-                    cardCondition: (card) => card.type === CardType.Attachment &&
-                        (card.hasTrait('weapon') || card.hasTrait('armor') || card.hasTrait('item')) &&
-                        (context.game.actions.attach({ attachment: card }).canAffect(context.target, context)) &&
-                        card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),
-                    shuffle: true,
-                    reveal: true,
-                    selectedCardsHandler: (context, event: Event, cards) => {
-                        const card = cards[0];
-                        if(!card) {
-                            context.game.addMessage('{0} takes nothing', context.player);
-                            return;
-                        }
-
-                        context.game.addMessage(
-                            '{0} takes {1} and attaches it to {2}',
-                            (event as GameEvent<EventName.OnDeckSearch>).player,
-                            card,
-                            context.target
-                        );
-                        context.game.queueSimpleStep(() =>
-                            AbilityDsl.actions
-                                .attach({ target: context.target, attachment: card })
-                                .resolve(undefined, context)
-                        );
+                controller: Players.Self
+            }, deckSearch((context) => ({
+                target: context.player,
+                activePromptTitle: 'Select an attachment',
+                deck: DeckType.Conflict,
+                cardCondition: (card) => card.type === CardType.Attachment &&
+                        (card.hasTrait(Trait.Weapon) || card.hasTrait(Trait.Armor) || card.hasTrait(Trait.Item)) &&
+                        !!context.target && attach({ attachment: card }).canAffect(context.target, context) &&
+                        card.costLessThan(context.costs.returnedRings ? context.costs.returnedRings.length + 1 : 1),
+                reveal: true,
+                selectedCardsHandler: (context, event, [card]) => {
+                    if(!card) {
+                        context.game.addMessage(msg`${context.player} takes nothing`);
+                        return;
                     }
-                }))
-            },
-            effect: 'search their deck for an attachment costing {1} or less and attach it to {0}',
-            effectArgs: (context) => (context.costs.returnRing as Ring[]).length
-        });
+                    attachSearchedCard(context, context.target, card, (card) => msg`${event.player} takes ${card} and attaches it to ${context.target}`);
+                }
+            })))
+            .chatText((context) => msg`search their deck for an attachment costing ${(context.costs.returnedRings ?? []).length} or less and attach it to ${context.chatTarget()}`);
     }
 }

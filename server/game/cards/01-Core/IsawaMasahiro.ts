@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import { CardType, Element } from '../../Constants.js';
 
 const elementKey = 'isawa-masahiro-fire';
@@ -7,21 +8,18 @@ const elementKey = 'isawa-masahiro-fire';
 class IsawaMasahiro extends DrawCard {
     static id = 'isawa-masahiro';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow to discard an enemy character' ,
-            condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Bow to discard a participating character')
+            .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
+            .cost(costs.bowSelf())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.costLessThan(3) && card.isParticipating(),
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            }
-        });
+                cardCondition: (card) => card.costLessThan(3) && card.isParticipating()
+            }, discardFromPlay());
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+    override getPrintedElementSymbols() {
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',

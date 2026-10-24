@@ -1,86 +1,77 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardType, DuelType, Players, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import { Duel } from '../../../Duel.js';
-import { AbilityContext } from '../../../AbilityContext.js';
-import Player from '../../../Player.js';
+import { CardType, DuelType, Players, Location, Trait } from '../../../Constants.js';
+import { unlimited } from '../../../AbilityLimit.js';
+import { attach, noAction, selectCard, sequential, takeHonor } from '../../../GameActions/GameActions.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type BaseCard from '../../../BaseCard.js';
 
 export default class BayushiGichin extends DrawCard {
     static id = 'bayushi-gichin';
 
-    setupCardAbilities() {
-        this.duelStrike({
-            title: 'Poison a character',
-            duelCondition: (duel, context) => duel.participants.includes(context.source),
-            gameAction: AbilityDsl.actions.sequentialContext(context => ({
-                gameActions: [
-                    AbilityDsl.actions.selectCard({
+    override setupCardAbilities() {
+        this.duelStrike('Poison a character', (duel, context) => duel.participants.includes(context.source))
+            .gameAction(sequential((context) => {
+                let character: BaseCard | undefined;
+                let poison: DrawCard | undefined;
+                return [
+                    selectCard({
                         activePromptTitle: 'Choose a duel participant',
                         cardType: CardType.Character,
                         controller: Players.Opponent,
                         cardCondition: (card) => {
-                            if(!((context as TriggeredAbilityContext).event.duel as Duel).isInvolved(card)) {
+                            if(!context.event.duel.isInvolved(card)) {
                                 return false;
                             }
                             const poisons = this.getPoisons(context);
-                            return poisons.some(p => AbilityDsl.actions.attach().canAffect(card, context, { attachment: p }));
+                            return poisons.some((p) => attach().canAffect(card, context, { attachment: p }));
                         },
-                        message: '{0} poisons {1}',
-                        messageArgs: (cards) => {
-                            return [context.player, cards];
-                        },
+                        message: (context, cards) => msg`${context.player} poisons ${cards}`,
                         subActionProperties: (card) => {
-                            context.targets.character = card;
+                            character = Array.isArray(card) ? undefined : card;
                             return { target: card };
                         },
-                        gameAction: AbilityDsl.actions.noAction()
+                        gameAction: noAction()
                     }),
-                    AbilityDsl.actions.selectCard({
+                    selectCard({
                         activePromptTitle: 'Choose a poison attachment',
                         cardType: CardType.Attachment,
                         controller: Players.Self,
                         location: [Location.Hand, Location.ConflictDiscardPile, Location.DynastyDiscardPile],
-                        cardCondition: (card) => card.hasTrait('poison') && AbilityDsl.actions.attach().canAffect(context.targets.character, context, { attachment: card }),
-                        message: '{0} attaches {1}',
-                        messageArgs: (cards) => {
-                            return [context.player, cards];
-                        },
+                        cardCondition: (card) => card.hasTrait(Trait.Poison) && !!character && attach().canAffect(character, context, { attachment: card }),
+                        message: (context, cards) => msg`${context.player} attaches ${cards}`,
                         subActionProperties: (card) => {
-                            context.targets.attachment = card;
+                            poison = !Array.isArray(card) && card.isDrawCard() ? card : undefined;
                             return { attachment: card };
                         },
-                        gameAction: AbilityDsl.actions.noAction()
+                        gameAction: noAction()
                     }),
-                    AbilityDsl.actions.attach(() => {
+                    attach(() => {
                         return {
-                            target: context.targets.character,
-                            attachment: context.targets.attachment
+                            target: character,
+                            attachment: poison
                         };
                     })
-                ]
-            })),
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+                ];
+            }))
+            .limit(unlimited());
 
-        this.conflictAction({
-            title: 'Military duel to steal honor',
-            initiateDuel: {
+        this.conflictAction('Military duel to steal honor')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel, context) => {
-                    if(duel.winner?.includes(context.source as DrawCard)) {
-                        return AbilityDsl.actions.takeHonor({ target: duel.loserController });
+                    if(context.source.isDrawCard() && duel.winner.includes(context.source)) {
+                        return takeHonor();
                     }
-                    return AbilityDsl.actions.noAction();
+                    return noAction();
                 }
-            }
-        });
+            }));
     }
 
-    getPoisons(context: AbilityContext) {
-        const player = context.player as Player;
-        const inDiscard = player.conflictDiscardPile.filter(card => card.hasTrait('poison'));
-        const inHand = player.hand.filter(card => card.hasTrait('poison'));
+    private getPoisons(context: AbilityContext) {
+        const player = context.player;
+        const inDiscard = player.conflictDiscardPile.filter((card) => card.hasTrait(Trait.Poison));
+        const inHand = player.hand.filter((card) => card.hasTrait(Trait.Poison));
 
         return [...inDiscard, ...inHand];
     }

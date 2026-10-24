@@ -1,11 +1,11 @@
-import { GameModes } from '../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../build/server/GameMode.js';
 
 describe('Kyuden Hida', function () {
     integration(function () {
         describe('Emerald Dynasty rules', function () {
             beforeEach(function () {
                 this.setupTest({
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     phase: 'dynasty',
                     player1: {
                         stronghold: 'kyuden-hida',
@@ -219,9 +219,9 @@ describe('Kyuden Hida', function () {
             });
 
             it('should work if you have less than 3 cards', function () {
-                this.player1.moveCard(this.favorableGround, 'conflict discard');
-                this.player1.moveCard(this.storehouse, 'conflict discard');
-                this.player1.moveCard(this.borderlands, 'conflict discard');
+                this.player1.moveCard(this.favorableGround, 'dynasty discard pile');
+                this.player1.moveCard(this.storehouse, 'dynasty discard pile');
+                this.player1.moveCard(this.borderlands, 'dynasty discard pile');
 
                 this.player1.clickCard(this.kyudenHida);
                 expect(this.player1).toHavePromptButton('Hida Kisada');

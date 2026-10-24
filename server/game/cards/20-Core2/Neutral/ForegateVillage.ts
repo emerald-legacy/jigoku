@@ -1,21 +1,18 @@
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
 
 export default class ForegateVillage extends ProvinceCard {
     static id = 'foregate-village';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Switch the conflict type',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Switch the conflict type')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
-            },
-            effect: 'switch the conflict type',
-            gameAction: AbilityDsl.actions.switchConflictType()
-        });
+            })
+            .switchConflictType()
+            .chatText('switch the conflict type');
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

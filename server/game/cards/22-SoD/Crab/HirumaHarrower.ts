@@ -1,23 +1,24 @@
-import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Location } from '../../../Constants.js';
+import { unlimited } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class HirumaHarrower extends DrawCard {
     static id = 'hiruma-harrower';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Gain military skill',
-            when: {
-                onCardLeavesPlay: (event, context) => context.game.isDuringConflict() && event.card.type === CardType.Character
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source,
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
-            })),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            effect: 'give itself +2{1}',
-            effectArgs: ['military']
-        });
+    override setupCardAbilities() {
+        this.reaction('Gain military skill')
+            .when({
+                onCardLeavesPlay: (event, context) =>
+                    context.game.isDuringConflict() &&
+                    event.card.type === CardType.Character &&
+                    event.cardStateWhenLeftPlay?.location === Location.PlayArea
+            })
+            .cardLastingEffect({
+                effect: modifyMilitarySkill(2)
+            })
+            .chatText(() => msg`give itself +2${'military'}`)
+            .limit(unlimited());
     }
 }

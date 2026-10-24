@@ -63,9 +63,8 @@ describe('Shinjo Gunso', function () {
                 expect(this.getChatLogs(5)).toContain(
                     'player1 uses Shinjo Gunsō to search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play'
                 );
-                expect(this.getChatLogs(5)).toContain(
-                    'player1 puts Hida Guardian into play and discards Hida Kisada, Favorable Ground, Imperial Storehouse and Borderlands Defender'
-                );
+                expect(this.getChatLogs(5)).toContain('player1 puts Hida Guardian into play');
+                expect(this.getChatLogs(5)).toContain('player1 discards Hida Kisada, Favorable Ground, Imperial Storehouse and Borderlands Defender');
             });
 
             it('should allow you to put a character into play from the top 5 cards (verification)', function () {
@@ -88,9 +87,8 @@ describe('Shinjo Gunso', function () {
                 expect(this.getChatLogs(5)).toContain(
                     'player1 uses Shinjo Gunsō to search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play'
                 );
-                expect(this.getChatLogs(5)).toContain(
-                    'player1 puts Hida Guardian into play and discards Hida Kisada, Favorable Ground, Imperial Storehouse and Borderlands Defender'
-                );
+                expect(this.getChatLogs(5)).toContain('player1 puts Hida Guardian into play');
+                expect(this.getChatLogs(5)).toContain('player1 discards Hida Kisada, Favorable Ground, Imperial Storehouse and Borderlands Defender');
             });
 
             it('should work with less than 5 cards', function () {
@@ -110,9 +108,8 @@ describe('Shinjo Gunso', function () {
                 expect(this.getChatLogs(5)).toContain(
                     'player1 uses Shinjo Gunsō to search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play'
                 );
-                expect(this.getChatLogs(5)).toContain(
-                    'player1 puts Hida Guardian into play and discards Borderlands Defender'
-                );
+                expect(this.getChatLogs(5)).toContain('player1 puts Hida Guardian into play');
+                expect(this.getChatLogs(5)).toContain('player1 discards Borderlands Defender');
             });
 
             it('should work with 0 cards', function () {
@@ -147,6 +144,7 @@ describe('Shinjo Gunso', function () {
             });
 
             it('should work if you take nothing', function () {
+                this.player1.player.moveCard(this.dealbroker, 'dynasty deck', { bottom: true });
                 this.player1.clickCard(this.gunso);
                 this.player1.clickPrompt('0');
                 this.player1.clickCard(this.gunso);
@@ -158,6 +156,7 @@ describe('Shinjo Gunso', function () {
 
                 this.player1.clickPrompt('Take Nothing');
 
+                expect(this.dealbroker.location).toBe('dynasty deck');
                 expect(this.hidaGuardian.location).toBe('dynasty discard pile');
                 expect(this.storehouse.location).toBe('dynasty discard pile');
                 expect(this.favorableGround.location).toBe('dynasty discard pile');
@@ -167,6 +166,9 @@ describe('Shinjo Gunso', function () {
                     'player1 uses Shinjo Gunsō to search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play'
                 );
                 expect(this.getChatLogs(5)).toContain('player1 takes nothing');
+                expect(this.getChatLogs(5)).toContain(
+                    'player1 discards Hida Guardian, Hida Kisada, Favorable Ground, Imperial Storehouse and Borderlands Defender'
+                );
             });
 
             it('bug report - duplicate uniques', function () {

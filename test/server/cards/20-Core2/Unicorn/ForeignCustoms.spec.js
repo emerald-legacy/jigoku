@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Foreign Customs', function () {
     integration(function () {
@@ -6,7 +6,7 @@ describe('Foreign Customs', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     player1: {
                         hand: ['foreign-customs'],
                         inPlay: ['adept-of-the-waves', 'sand-road-merchant', 'worldly-shiotome']
@@ -41,7 +41,7 @@ describe('Foreign Customs', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     player1: {
                         hand: ['foreign-customs', 'composite-yumi'],
                         inPlay: ['adept-of-the-waves', 'wandering-ronin']
@@ -75,7 +75,7 @@ describe('Foreign Customs', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     player1: {
                         fate: 20,
                         inPlay: ['doji-challenger', 'kakita-yoshi', 'daidoji-uji']
@@ -161,6 +161,39 @@ describe('Foreign Customs', function () {
 
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
             });
+        });
+    });
+});
+
+describe('Foreign Customs and a Unicorn attachment on an enemy character', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                gameMode: GameMode.Emerald,
+                player1: {
+                    stronghold: ['kyuden-kakita'],
+                    hand: ['foreign-customs', 'sigil-of-condemnation'],
+                    inPlay: ['doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['doji-challenger']
+                }
+            });
+            this.foreignCustoms = this.player1.findCardByName('foreign-customs');
+            this.sigil = this.player1.findCardByName('sigil-of-condemnation');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.whisperer.bow();
+        });
+
+        it('counts the Unicorn attachment you control, wherever it is attached', function () {
+            this.player1.playAttachment(this.sigil, this.challenger);
+            this.player2.pass();
+            this.player1.clickCard(this.foreignCustoms);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.bowed).toBe(false);
         });
     });
 });

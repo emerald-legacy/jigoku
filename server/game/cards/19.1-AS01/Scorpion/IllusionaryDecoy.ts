@@ -1,57 +1,52 @@
-import { CardType, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Location, Players, Trait, elementTrait } from '../../../Constants.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import {
+    noAction,
+    selectCard,
+    sendHome
+} from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type Ring from '../../../Ring.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class IllusionaryDecoy extends DrawCard {
     static id = 'illusionary-decoy';
 
-    public setupCardAbilities() {
-        this.reaction({
-            title: 'Put into play',
-            location: Location.Hand,
-            when: {
-                onConflictStarted: (event, context) =>
-                    context.player.anyCardsInPlay((card: BaseCard) => card.hasTrait('shugenja'))
-            },
-            gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.putIntoConflict((context) => ({ target: context.source })),
-                AbilityDsl.actions.chooseAction({
-                    options: {
-                        'Move another of your characters home': {
-                            action: AbilityDsl.actions.selectCard((context) => ({
-                                controller: Players.Self,
-                                cardType: CardType.Character,
-                                cardCondition: (card) => card.isParticipating(),
-                                message: '{0} moves home {1} - they were an {2}!',
-                                messageArgs: (card, player) => [player, card, context.source],
-                                gameAction: AbilityDsl.actions.sendHome()
-                            }))
-                        },
-                        Done: { action: AbilityDsl.actions.noAction() }
-                    }
-                })
-            ]),
-            effect: 'put {0} into play in the conflict',
-            max: AbilityDsl.limit.perConflict(1)
-        });
+    public override setupCardAbilities() {
+        this.reaction('Put into play')
+            .when({
+                onConflictStarted: (_event, context) => controlsShugenja(context.player)
+            })
+            .location(Location.Hand)
+            .putIntoConflict()
+            .chooseAction({
+                choices: {
+                    'Move another of your characters home': selectCard({
+                        controller: Players.Self,
+                        cardType: CardType.Character,
+                        cardCondition: (card) => card.isCharacter() && card.isParticipating(),
+                        message: (context, card, player) => msg`${player} moves home ${card} - they were an ${context.source}`,
+                        gameAction: sendHome()
+                    }),
+                    Done: noAction()
+                }
+            })
+            .chatText('put {0} into play in the conflict')
+            .max(perConflict(1));
 
-        this.action({
-            title: 'Return to hand',
-            condition: (context) => {
-                const claimedRings: Ring[] = context.source.controller.getClaimedRings();
-                const matchShugenjaElementWithClaimedRing = (context.source.controller.cardsInPlay as BaseCard[]).some(
+        this.action('Return to hand')
+            .ifCondition((context) => {
+                const claimedRings = context.source.controller.getClaimedRings();
+                const matchShugenjaElementWithClaimedRing = context.source.controller.cardsInPlay.some(
                     (card) =>
-                        card.getType() === CardType.Character &&
-                        card.hasTrait('shugenja') &&
+                        card.type === CardType.Character &&
+                        card.hasTrait(Trait.Shugenja) &&
                         claimedRings.some((ring) =>
-                            ring.getElements().some((element: string) => card.hasTrait(element))
+                            ring.getElements().some((element) => card.hasTrait(elementTrait(element)))
                         )
                 );
                 return matchShugenjaElementWithClaimedRing;
-            },
-            gameAction: AbilityDsl.actions.returnToHand()
-        });
+            })
+            .returnToHand();
     }
 }

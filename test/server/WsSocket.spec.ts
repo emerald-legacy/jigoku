@@ -1,5 +1,6 @@
-import { WsSocket } from '../../server/gamenode/WsSocket.js';
+import { WsSocket, type LobbyHandlers } from '../../server/gamenode/WsSocket.js';
 import { PROTOCOL_VERSION } from '../../server/gamenode/LobbyProtocol.js';
+import { callMethod } from '../helpers/methodaccess.js';
 
 type WsSpy = jasmine.SpyObj<{ send: (data: string) => void }> & { readyState: number };
 
@@ -12,27 +13,24 @@ type WsSocketCtx = {
     heartbeatInterval: ReturnType<typeof setInterval> | null;
     reconnectDelay: number;
     reconnectTimer: ReturnType<typeof setTimeout> | null;
-    emit: jasmine.Spy;
+    handlers: jasmine.SpyObj<LobbyHandlers>;
     send?: (command: string, arg?: unknown) => void;
     onMessage?: (msg: string) => void;
     onGameSync?: (games: unknown[]) => void;
     parseMsg?: (msg: string) => unknown;
 };
 
-const proto = (WsSocket as unknown as { prototype: Record<string, (...args: unknown[]) => unknown> }).prototype;
-
-function call<T = unknown>(method: string, ctx: unknown, ...args: unknown[]): T {
-    return proto[method].apply(ctx, args) as T;
+function call(method: string, ctx: WsSocketCtx, ...args: unknown[]): unknown {
+    return callMethod(ctx, method, ...args);
 }
 
 function makeWs(open = true): WsSpy {
-    const ws = jasmine.createSpyObj<{ send: (data: string) => void }>('ws', ['send']) as WsSpy;
-    ws.readyState = open ? 1 : 3;
-    return ws;
+    return Object.assign(jasmine.createSpyObj<{ send: (data: string) => void }>('ws', ['send']), { readyState: open ? 1 : 3 });
 }
 
 function makeCtx(overrides: Partial<WsSocketCtx> = {}): WsSocketCtx {
-    const ctx = Object.create(proto) as WsSocketCtx;
+    // built on the prototype: the real constructor connects to the lobby and starts a heartbeat
+    const ctx: WsSocketCtx = Object.create(WsSocket.prototype);
     Object.assign(ctx, {
         ws: null,
         running: true,
@@ -42,10 +40,16 @@ function makeCtx(overrides: Partial<WsSocketCtx> = {}): WsSocketCtx {
         heartbeatInterval: null,
         reconnectDelay: 1000,
         reconnectTimer: null,
-        emit: jasmine.createSpy('emit'),
+        handlers: jasmine.createSpyObj<LobbyHandlers>('handlers', ['onStartGame', 'onSpectator', 'onGameSync', 'onFailedConnect', 'onCloseGame', 'onCardData']),
         ...overrides
     });
     return ctx;
+}
+
+function expectNoHandlerCalled(ctx: WsSocketCtx): void {
+    for(const handler of Object.values(ctx.handlers)) {
+        expect(handler).not.toHaveBeenCalled();
+    }
 }
 
 describe('WsSocket.send', () => {
@@ -87,9 +91,8 @@ describe('WsSocket.send', () => {
 describe('WsSocket.parseMsg', () => {
     it('returns the parsed message for valid envelopes', () => {
         const ctx = makeCtx();
-        const result = call('parseMsg', ctx, JSON.stringify({ command: 'CLOSEGAME', arg: { gameId: 'g1' } })) as { command: string };
-        expect(result).toBeDefined();
-        expect(result.command).toBe('CLOSEGAME');
+        const result = call('parseMsg', ctx, JSON.stringify({ command: 'CLOSEGAME', arg: { gameId: 'g1' } }));
+        expect(result).toEqual(jasmine.objectContaining({ command: 'CLOSEGAME' }));
     });
 
     it('returns undefined for malformed JSON', () => {
@@ -122,59 +125,73 @@ describe('WsSocket.onMessage', () => {
         expect(ctx.registered).toBe(true);
     });
 
-    it('REGISTER clears registered and emits onGameSync with the bound callback', () => {
+    it('REGISTER clears registered and asks the server for its games', () => {
         const { ctx } = withSendSpy({ registered: true });
         call('onMessage', ctx, JSON.stringify({ command: 'REGISTER' }));
         expect(ctx.registered).toBe(false);
-        expect(ctx.emit).toHaveBeenCalledWith('onGameSync', jasmine.any(Function));
+        expect(ctx.handlers.onGameSync).toHaveBeenCalledWith(jasmine.any(Function));
     });
 
-    it('STARTGAME emits onStartGame with the pendingGame payload', () => {
+    it('STARTGAME calls onStartGame with the pendingGame payload', () => {
         const { ctx } = withSendSpy();
-        const pendingGame = { id: 'g1', players: {}, spectators: {} };
+        const pendingGame = {
+            id: 'g1',
+            name: 'Game',
+            owner: 'alice',
+            allowSpectators: true,
+            players: { alice: { id: 'p1', name: 'alice', user: { username: 'alice' } } },
+            spectators: {}
+        };
         call('onMessage', ctx, JSON.stringify({ command: 'STARTGAME', arg: pendingGame }));
-        expect(ctx.emit).toHaveBeenCalledWith('onStartGame', jasmine.objectContaining({ id: 'g1' }));
+        expect(ctx.handlers.onStartGame).toHaveBeenCalledWith(jasmine.objectContaining({ id: 'g1' }));
     });
 
-    it('SPECTATOR emits onSpectator with game and user', () => {
+    it('drops STARTGAME when a player has no user', () => {
+        const { ctx } = withSendSpy();
+        const pendingGame = { id: 'g1', name: 'Game', owner: 'alice', allowSpectators: true, players: { alice: { id: 'p1', name: 'alice' } }, spectators: {} };
+        call('onMessage', ctx, JSON.stringify({ command: 'STARTGAME', arg: pendingGame }));
+        expectNoHandlerCalled(ctx);
+    });
+
+    it('SPECTATOR calls onSpectator with game and user', () => {
         const { ctx } = withSendSpy();
         const game = { id: 'g1', players: {}, spectators: {} };
         const user = { username: 'alice' };
         call('onMessage', ctx, JSON.stringify({ command: 'SPECTATOR', arg: { game, user } }));
-        expect(ctx.emit).toHaveBeenCalledWith('onSpectator', jasmine.objectContaining({ id: 'g1' }), jasmine.objectContaining({ username: 'alice' }));
+        expect(ctx.handlers.onSpectator).toHaveBeenCalledWith(jasmine.objectContaining({ id: 'g1' }), jasmine.objectContaining({ username: 'alice' }));
     });
 
-    it('CONNECTFAILED emits onFailedConnect with gameId + username', () => {
+    it('CONNECTFAILED calls onFailedConnect with gameId + username', () => {
         const { ctx } = withSendSpy();
         call('onMessage', ctx, JSON.stringify({ command: 'CONNECTFAILED', arg: { gameId: 'g1', username: 'alice' } }));
-        expect(ctx.emit).toHaveBeenCalledWith('onFailedConnect', 'g1', 'alice');
+        expect(ctx.handlers.onFailedConnect).toHaveBeenCalledWith('g1', 'alice');
     });
 
-    it('CLOSEGAME emits onCloseGame with gameId', () => {
+    it('CLOSEGAME calls onCloseGame with gameId', () => {
         const { ctx } = withSendSpy();
         call('onMessage', ctx, JSON.stringify({ command: 'CLOSEGAME', arg: { gameId: 'g1' } }));
-        expect(ctx.emit).toHaveBeenCalledWith('onCloseGame', 'g1');
+        expect(ctx.handlers.onCloseGame).toHaveBeenCalledWith('g1');
     });
 
-    it('CARDDATA emits onCardData with arg', () => {
+    it('CARDDATA calls onCardData with arg', () => {
         const { ctx } = withSendSpy();
-        const cardData = { someCard: { id: 'x' } };
+        const cardData = { titleCardData: {}, shortCardData: [{ id: 'x', name: 'X' }] };
         call('onMessage', ctx, JSON.stringify({ command: 'CARDDATA', arg: cardData }));
-        expect(ctx.emit).toHaveBeenCalledWith('onCardData', jasmine.objectContaining(cardData));
+        expect(ctx.handlers.onCardData).toHaveBeenCalledWith(jasmine.objectContaining(cardData));
     });
 
-    it('drops malformed messages silently (no emit, no send, no throw)', () => {
+    it('drops malformed messages silently (no handler, no send, no throw)', () => {
         const { ctx, sendSpy } = withSendSpy();
         expect(() => call('onMessage', ctx, '{not-json')).not.toThrow();
         expect(sendSpy).not.toHaveBeenCalled();
-        expect(ctx.emit).not.toHaveBeenCalled();
+        expectNoHandlerCalled(ctx);
     });
 
     it('drops unknown commands silently', () => {
         const { ctx, sendSpy } = withSendSpy();
         call('onMessage', ctx, JSON.stringify({ command: 'WAT' }));
         expect(sendSpy).not.toHaveBeenCalled();
-        expect(ctx.emit).not.toHaveBeenCalled();
+        expectNoHandlerCalled(ctx);
     });
 });
 

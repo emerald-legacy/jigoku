@@ -109,6 +109,7 @@ describe('Ikoma Ujiaki', function() {
             this.player1.clickPrompt('Done');
             expect(this.fushicho.location).toBe('play area');
             expect(this.game.currentConflict.attackers).toContain(this.fushicho);
+            expect(this.getChatLogs(5)).toContain('player1 puts Fushichō into play in the conflict');
         });
 
         it('should reveal and trigger rally before character selection', function() {

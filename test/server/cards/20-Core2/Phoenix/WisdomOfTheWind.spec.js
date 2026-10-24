@@ -32,16 +32,13 @@ describe('Wisdom of the Wind', function () {
                 expect(this.player1).toHavePrompt('Choose a character');
 
                 this.player1.clickCard(this.mystic);
-                expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Wisdom of the Wind to honor or dishonor Miya Mystic'
-                );
-                expect(this.player1).toHavePrompt('Select an action:');
+                expect(this.player1).toHavePrompt('Select one');
                 expect(this.player1).toHavePromptButton('Honor this character');
                 expect(this.player1).toHavePromptButton('Dishonor this character');
 
                 this.player1.clickPrompt('Honor this character');
                 expect(this.mystic.isHonored).toBe(true);
-                expect(this.getChatLogs(5)).toContain('player1 chooses to honor Miya Mystic');
+                expect(this.getChatLogs(5)).toContain('player1 plays Wisdom of the Wind to honor Miya Mystic');
             });
 
             it('dishonors a character', function () {
@@ -49,16 +46,13 @@ describe('Wisdom of the Wind', function () {
                 expect(this.player1).toHavePrompt('Choose a character');
 
                 this.player1.clickCard(this.mystic);
-                expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Wisdom of the Wind to honor or dishonor Miya Mystic'
-                );
-                expect(this.player1).toHavePrompt('Select an action:');
+                expect(this.player1).toHavePrompt('Select one');
                 expect(this.player1).toHavePromptButton('Honor this character');
                 expect(this.player1).toHavePromptButton('Dishonor this character');
 
                 this.player1.clickPrompt('Dishonor this character');
                 expect(this.mystic.isDishonored).toBe(true);
-                expect(this.getChatLogs(5)).toContain('player1 chooses to dishonor Miya Mystic');
+                expect(this.getChatLogs(5)).toContain('player1 plays Wisdom of the Wind to dishonor Miya Mystic');
             });
         });
 
@@ -72,10 +66,7 @@ describe('Wisdom of the Wind', function () {
                 expect(this.player1).toHavePrompt('Choose a character');
 
                 this.player1.clickCard(this.mystic);
-                expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Wisdom of the Wind to honor or dishonor Miya Mystic'
-                );
-                expect(this.player1).toHavePrompt('Select an action:');
+                expect(this.player1).toHavePrompt('Select one');
                 expect(this.player1).toHavePromptButton('Honor this character');
                 expect(this.player1).toHavePromptButton('Dishonor this character');
 

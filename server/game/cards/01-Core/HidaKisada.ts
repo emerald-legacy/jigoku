@@ -1,40 +1,32 @@
+import { msg } from '../../GameChat.js';
 import { AbilityType, CardType, EventName, Location } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { Event } from '../../Events/Event.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
-import type CardAbility from '../../CardAbility.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class HidaKisada extends DrawCard {
     static id = 'hida-kisada';
 
-    private abilityRegistrar?: EventRegistrar;
     private firstActionEvent = new Map<string, Event>();
 
-    public setupCardAbilities() {
-        this.abilityRegistrar = new EventRegistrar(this.game, this);
-        this.abilityRegistrar.register([
-            {
-                [EventName.OnInitiateAbilityEffects + ':' + AbilityType.WouldInterrupt]:
-                    'onInitiateAbilityEffectsWouldInterrupt'
-            }
-        ]);
-        this.abilityRegistrar.register([
-            {
-                [EventName.OnInitiateAbilityEffects + ':' + AbilityType.OtherEffects]:
-                    'onInitiateAbilityEffectsOtherEffects'
-            }
-        ]);
-        this.abilityRegistrar.register([EventName.OnConflictDeclared]);
+    public override setupCardAbilities() {
+        const abilityRegistrar = new EventRegistrar(this.game);
+        abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.WouldInterrupt, (event) => this.onInitiateAbilityEffectsWouldInterrupt(event));
+        abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.OtherEffects, (event) => this.onInitiateAbilityEffectsOtherEffects(event));
+        abilityRegistrar.register({
+            [EventName.OnConflictDeclared]: () => this.onConflictDeclared()
+        });
     }
 
     public onInitiateAbilityEffectsWouldInterrupt(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
         if(
+            !event.resolvedWithoutTriggering &&
             !this.firstActionEvent.has(event.context.player.uuid) &&
             this.game.isDuringConflict() &&
-            event.context.ability.abilityType === 'action' &&
+            event.context.ability.abilityType === AbilityType.Action &&
             !event.context.ability.isKeywordAbility() &&
-            !(event.context.ability as CardAbility).cannotBeCancelled
+            !event.context.ability.cannotBeCancelled
         ) {
             this.firstActionEvent.set(event.context.player.uuid, event);
         }
@@ -50,13 +42,7 @@ export default class HidaKisada extends DrawCard {
             !this.game.conflictRecord.some((conflict) => conflict.winner === this.controller.opponent)
         ) {
             event.cancel();
-            this.game.addMessage(
-                '{0} attempts to initiate {1}{2}, but {3} cancels it',
-                event.context.player,
-                event.card,
-                event.card.type === CardType.Event ? '' : '\'s ability',
-                this
-            );
+            this.game.addMessage(msg`${event.context.player} attempts to initiate ${event.card}${event.card.type === CardType.Event ? '' : '\'s ability'}, but ${this} cancels it`);
         }
     }
 

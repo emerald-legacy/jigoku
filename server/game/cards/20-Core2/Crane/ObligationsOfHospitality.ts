@@ -1,36 +1,28 @@
 import { CardType, Players, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { reduceCost, takeControl } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class ObligationsOfHospitality extends DrawCard {
     static id = 'obligations-of-hospitality';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            match: (player: Player) => player.imperialFavor !== '',
-            effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
+            match: (player) => player.imperialFavor !== '',
+            effect: reduceCost({ match: (card, source) => card === source })
         });
 
-        this.action({
-            title: 'Take control of a character',
-            condition: () => this.game.isDuringConflict(),
-            target: {
+        this.conflictAction('Take control of a character')
+            .ifCondition((context) => !!context.player.opponent && context.player.isMoreHonorable())
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.takeControl(context.player)
-                }))
-            },
-            effect: 'take control of {0}'
-        });
-    }
-
-    canPlay(context: TriggeredAbilityContext, playType: string) {
-        return !!context.player.opponent && context.player.isMoreHonorable() && super.canPlay(context, playType);
+                cardCondition: (card, context) => card.isParticipating() && !card.anotherUniqueInPlay(context.player) && card.costLessThan(3)
+            }, cardLastingEffect((context) => ({
+                effect: takeControl(context.player)
+            })))
+            .chatText('take control of {0}');
     }
 }

@@ -1,3 +1,5 @@
+import { addTrait, loseTrait } from '../../../../../build/server/game/effects.js';
+
 describe('Mangrove Safehouse', function () {
     integration(function () {
         describe('Mangrove Safehouse\'s ability', function () {
@@ -189,6 +191,38 @@ describe('Mangrove Safehouse', function () {
                             expect(this.getChatLogs(3)).toContain(
                                 'player1 uses Mangrove Safehouse to move Kudaka home and steal 1 fate'
                             );
+                        });
+                    });
+
+                    describe('if a character that gained the Mantis Clan trait is selected', function () {
+                        beforeEach(function () {
+                            this.adeptOfTheWaves.applyDurationEffect('untilEndOfRound', {
+                                match: this.adeptOfTheWaves,
+                                effect: addTrait('mantis-clan')
+                            });
+                            this.player1.clickCard(this.adeptOfTheWaves);
+                        });
+
+                        it('moves the target home and steals 1 fate', function () {
+                            expect(this.adeptOfTheWaves.inConflict).toBe(false);
+                            expect(this.player1.fate).toBe(this.p1FateBefore + 1);
+                            expect(this.player2.fate).toBe(this.p2FateBefore - 1);
+                        });
+                    });
+
+                    describe('if a Mantis character that lost the Mantis Clan trait is selected', function () {
+                        beforeEach(function () {
+                            this.kudaka.applyDurationEffect('untilEndOfRound', {
+                                match: this.kudaka,
+                                effect: loseTrait('mantis-clan')
+                            });
+                            this.player1.clickCard(this.kudaka);
+                        });
+
+                        it('moves the target home and steals no fate', function () {
+                            expect(this.kudaka.inConflict).toBe(false);
+                            expect(this.player1.fate).toBe(this.p1FateBefore);
+                            expect(this.player2.fate).toBe(this.p2FateBefore);
                         });
                     });
 

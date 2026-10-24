@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Crafty Tsukumogami', function() {
     integration(function() {
@@ -13,7 +13,7 @@ describe('Crafty Tsukumogami', function() {
                     inPlay: ['doji-whisperer', 'crafty-tsukumogami'],
                     hand: ['a-fate-worse-than-death', 'way-of-the-crane']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.crafty = this.player1.filterCardsByName('crafty-tsukumogami')[0];
@@ -44,6 +44,14 @@ describe('Crafty Tsukumogami', function() {
             this.player1.clickRing('fire');
             expect(this.game.rings['fire'].attachments).toContain(this.crafty);
             expect(this.crafty.getType()).toBe('attachment');
+        });
+
+        it('should leave the other characters in play', function() {
+            this.player1.clickCard(this.crafty);
+            this.player1.clickRing('fire');
+            expect(this.player1.player.cardsInPlay).not.toContain(this.crafty);
+            expect(this.player1.player.cardsInPlay).toContain(this.crafty2);
+            expect(this.player1.player.cardsInPlay).toContain(this.challenger);
         });
 
         it('should remove attachments, status tokens, fate, and no longer count skill in a conflict', function() {
@@ -90,7 +98,7 @@ describe('Crafty Tsukumogami', function() {
             expect(this.player1).toBeAbleToSelect(this.scorpion);
 
             this.player1.clickCard(this.swim);
-            expect(this.getChatLogs(5)).toContain('player1 uses Crafty Tsukumogami to make player1 discard 1 cards');
+            expect(this.getChatLogs(5)).toContain('player1 uses Crafty Tsukumogami to make player1 discard 1 card');
             expect(this.getChatLogs(5)).toContain('player1 discards I Can Swim');
         });
 
@@ -120,7 +128,7 @@ describe('Crafty Tsukumogami', function() {
             expect(this.player2).toBeAbleToSelect(this.crane);
 
             this.player2.clickCard(this.crane);
-            expect(this.getChatLogs(5)).toContain('player1 uses Crafty Tsukumogami to make player2 discard 1 cards');
+            expect(this.getChatLogs(5)).toContain('player1 uses Crafty Tsukumogami to make player2 discard 1 card');
             expect(this.getChatLogs(5)).toContain('player2 discards Way of the Crane');
         });
 

@@ -1,23 +1,18 @@
-import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Duration } from '../../Constants.js';
+import { cannotContribute } from '../../effects.js';
 
 class SuperiorAuthority extends DrawCard {
     static id = 'superior-authority';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Stop characters with 0 fate from contributing skill',
-            condition: () => this.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.conflictLastingEffect(context => ({
-                duration: Duration.UntilEndOfConflict,
-                effect: AbilityDsl.effects.cannotContribute(() => {
-                    return (card: BaseCard) => (card as DrawCard).getFate() === 0 && card.checkRestrictions('', context);
+    override setupCardAbilities() {
+        this.action('Stop characters with 0 fate from contributing skill')
+            .condition((context) => context.game.isDuringConflict())
+            .conflictLastingEffect((context) => ({
+                effect: cannotContribute(() => {
+                    return (card) => card.getFate() === 0 && card.checkRestrictions(undefined, context);
                 })
-            })),
-            effect: 'make it so that participating characters with 0 fate cannot contribute skill to conflict resolution'
-        });
+            }))
+            .chatText('make it so that participating characters with 0 fate cannot contribute skill to conflict resolution');
     }
 }
 

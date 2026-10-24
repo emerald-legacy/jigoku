@@ -73,13 +73,13 @@ describe('Stoke Insurrection', function () {
         });
 
         it('should cost 2 if your opponent has 4 or more facedown cards', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.player2.clickCard(this.insurrection);
             expect(this.player2.fate).toBe(fate - 2);
         });
 
         it('should cost 4 if your opponent has 4 or more facedown cards', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.ujina.facedown = false;
             this.game.checkGameState(true);
             this.player2.clickCard(this.insurrection);
@@ -158,8 +158,15 @@ describe('Stoke Insurrection', function () {
                 'player2 plays Stoke Insurrection to reveal player1\'s dynasty cards and put up to two of them into play'
             );
             expect(this.getChatLogs(5)).toContain(
-                'player2 puts Isawa Ujina and Moto Youth into play into the conflict'
+                'player2 puts Isawa Ujina and Moto Youth into play in the conflict'
             );
+        });
+
+        it('should say no characters are put into play when none is chosen', function () {
+            this.player2.clickCard(this.insurrection);
+            this.player2.clickPrompt('Done');
+
+            expect(this.getChatLogs(5)).toContain('player2 puts no characters into play in the conflict');
         });
 
         it('you should control the characters', function () {
@@ -210,10 +217,10 @@ describe('Stoke Insurrection', function () {
             this.ground = this.player1.placeCardInProvince('favorable-ground', 'province 3');
             this.lies = this.player1.placeCardInProvince('city-of-lies', 'province 4');
 
-            let locations = ['province 1', 'province 2', 'province 3', 'province 4'];
+            const locations = ['province 1', 'province 2', 'province 3', 'province 4'];
 
             locations.forEach((location) => {
-                let cards = this.player1.player.getDynastyCardsInProvince(location);
+                const cards = this.player1.player.getDynastyCardsInProvince(location);
                 cards.forEach((card) => {
                     if(card.type !== 'holding') {
                         this.player1.moveCard(card, 'dynasty discard pile');

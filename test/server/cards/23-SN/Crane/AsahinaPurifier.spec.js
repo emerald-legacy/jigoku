@@ -50,7 +50,7 @@ describe('Asahina Purifier', function () {
 
         it('should work when you defend tainted province', function () {
             this.shameful.taint();
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -59,16 +59,16 @@ describe('Asahina Purifier', function () {
                 defenders: [this.sotorii, this.shugenja],
                 province: this.shameful
             });
-            expect(this.getChatLogs(10)).toContain('player2 loses 1 honor in order to declare defending characters');
             expect(this.player2).toBeAbleToSelect(this.purifier);
             this.player2.clickCard(this.purifier);
             expect(this.player2.honor).toBe(honor + 1);
             expect(this.getChatLogs(10)).toContain('player2 uses Asahina Purifier to gain 1 honor rather than having player2 lose 1 honor from a status token');
+            expect(this.getChatLogs(10)).not.toContain('player2 loses 1 honor in order to declare defending characters');
         });
 
         it('should NOT work if no honor loss', function () {
             this.shameful.taint();
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -85,20 +85,19 @@ describe('Asahina Purifier', function () {
             this.brash.taint();
             this.sotorii.taint();
             this.shugenja.taint();
-            let honor2 = this.player2.honor;
+            const honor2 = this.player2.honor;
 
-            let honor1 = this.player1.honor;
+            const honor1 = this.player1.honor;
             this.noMoreActions();
             this.initiateConflict({
                 type: 'political',
                 attackers: [this.brash, this.whisperer],
                 province: this.shameful
             });
-            expect(this.getChatLogs(10)).toContain('player1 pays 1 honor to declare their attackers');
-
             expect(this.player2).toBeAbleToSelect(this.purifier);
             this.player2.clickCard(this.purifier);
             expect(this.getChatLogs(10)).toContain('player2 uses Asahina Purifier to gain 1 honor rather than having player1 lose 1 honor from a status token');
+            expect(this.getChatLogs(10)).not.toContain('player1 pays 1 honor to declare their attackers');
 
             expect(this.player1.honor).toBe(honor1);
             expect(this.player2.honor).toBe(honor2 + 1);
@@ -107,7 +106,7 @@ describe('Asahina Purifier', function () {
         it('should work when you assign a tainted character', function () {
             this.sotorii.taint();
             this.shugenja.taint();
-            let honor2 = this.player2.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -116,19 +115,18 @@ describe('Asahina Purifier', function () {
                 defenders: [this.sotorii, this.shugenja],
                 province: this.shameful
             });
-            expect(this.getChatLogs(10)).toContain('player2 pays 2 honor to declare their defenders');
-
             expect(this.player2).toBeAbleToSelect(this.purifier);
             this.player2.clickCard(this.purifier);
             expect(this.player2).toHavePrompt('Choose an event to respond to');
             expect(this.player2).toHavePromptButton('onModifyHonor');
             this.player2.clickPrompt('onModifyHonor');
             expect(this.getChatLogs(10)).toContain('player2 uses Asahina Purifier to gain 1 honor rather than having player2 lose 1 honor from a status token');
+            expect(this.getChatLogs(10)).toContain('player2 pays 1 honor to declare their defenders');
             expect(this.player2.honor).toBe(honor2);
         });
 
         it('should not work on card costs', function () {
-            let honor2 = this.player2.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -145,7 +143,7 @@ describe('Asahina Purifier', function () {
         });
 
         it('should not work on direct honor loss', function () {
-            let honor2 = this.player2.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -163,7 +161,7 @@ describe('Asahina Purifier', function () {
         });
 
         it('should not work on ring or unopposed', function () {
-            let honor2 = this.player2.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -183,7 +181,7 @@ describe('Asahina Purifier', function () {
 
         it('should work when a dishonored character leaves play', function () {
             this.shugenja.dishonor();
-            let honor2 = this.player2.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -202,7 +200,7 @@ describe('Asahina Purifier', function () {
         });
 
         it('should not work with other assign costs', function () {
-            let honor2 = this.player2.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({

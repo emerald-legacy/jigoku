@@ -144,8 +144,8 @@ describe('Embrace the Void', function() {
             });
 
             it('should give Embrace the Void\'s controller the fate but still let A Legion Of One trigger a second time', function() {
-                this.milStat = this.adept.getMilitarySkill();
-                this.polStat = this.adept.getMilitarySkill();
+                this.milStat = this.adept.militarySkill;
+                this.polStat = this.adept.militarySkill;
                 this.fateStat = this.adept.fate;
                 this.player2Fate = this.player2.fate;
                 this.player2.playAttachment('embrace-the-void', this.adept);
@@ -161,8 +161,8 @@ describe('Embrace the Void', function() {
                 expect(this.player1).toBeAbleToSelect(this.adept);
                 this.player1.clickCard(this.adept);
                 this.player1.clickPrompt('Done');
-                expect(this.adept.getMilitarySkill()).toBe(this.milStat + 6);
-                expect(this.adept.getPoliticalSkill()).toBe(this.polStat);
+                expect(this.adept.militarySkill).toBe(this.milStat + 6);
+                expect(this.adept.politicalSkill).toBe(this.polStat);
             });
         });
 

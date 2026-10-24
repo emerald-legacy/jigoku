@@ -1,26 +1,26 @@
 import DrawCard from '../../DrawCard.js';
-import { Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Element, RestrictionScope } from '../../Constants.js';
+import { addKeyword, immunity } from '../../effects.js';
 
 const elementKey = 'reclusive-zokujin-earth';
 
 class ReclusiveZokujin extends DrawCard {
     static id = 'reclusive-zokujin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             effect: [
-                AbilityDsl.effects.addKeyword('covert'),
-                AbilityDsl.effects.immunity({
-                    restricts: 'opponentsCardEffects'
+                addKeyword('covert'),
+                immunity({
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 })
             ]
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+    override getPrintedElementSymbols() {
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',

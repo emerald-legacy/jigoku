@@ -56,10 +56,10 @@ describe('Two Hands', function () {
                 this.player1.clickCard(this.yoshi);
                 this.player1.clickCard(this.challenger);
                 this.player1.clickPrompt('Done');
-                expect(this.challenger.getMilitarySkill()).toBe(2);
-                expect(this.yoshi.getMilitarySkill()).toBe(2);
-                expect(this.challenger.getPoliticalSkill()).toBe(3);
-                expect(this.yoshi.getPoliticalSkill()).toBe(6);
+                expect(this.challenger.militarySkill).toBe(2);
+                expect(this.yoshi.militarySkill).toBe(2);
+                expect(this.challenger.politicalSkill).toBe(3);
+                expect(this.yoshi.politicalSkill).toBe(6);
                 expect(this.getChatLogs(5)).toContain(
                     'player2 plays Two Hands to set Kakita Yoshi and Doji Challenger military skills equal to 2'
                 );
@@ -104,6 +104,23 @@ describe('Two Hands', function () {
 
                 expect(this.challenger.location).toBe('dynasty discard pile');
                 expect(this.yoshi.location).toBe('dynasty discard pile');
+            });
+
+            it('can add a character with a dash in the other skill', function () {
+                this.challenger.dishonor();
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.challenger, this.berserker],
+                    defenders: [this.toshimoko, this.tsukune]
+                });
+
+                this.player2.clickCard(this.dttd);
+                this.player2.clickCard(this.toshimoko);
+                this.player2.clickCard(this.challenger);
+                this.player2.clickCard(this.hands);
+                expect(this.player2).toBeAbleToSelect(this.berserker);
             });
 
             it('disparaging challenge - another condition, no valid 2nd target', function () {
@@ -164,6 +181,54 @@ describe('Two Hands', function () {
                 expect(this.challenger.isParticipating()).toBe(true);
                 expect(this.yojiro.isParticipating()).toBe(true);
             });
+        });
+    });
+});
+
+describe('Two Hands against Talented Performers', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger', 'talented-performer', 'talented-performer', 'talented-performer']
+                },
+                player2: {
+                    inPlay: ['kakita-toshimoko'],
+                    hand: ['two-hands', 'fine-katana']
+                },
+                gameMode: 'emerald'
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.performers = this.player1.filterCardsByName('talented-performer');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.hands = this.player2.findCardByName('two-hands');
+            this.player1.pass();
+            this.player2.clickCard('fine-katana');
+            this.player2.clickCard(this.toshimoko);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger, ...this.performers],
+                defenders: [this.toshimoko]
+            });
+        });
+
+        it('lets the opponent choose two of the three performers', function () {
+            const [first, second, third] = this.performers;
+            this.player2.clickCard(this.hands);
+            expect(this.player1).toHavePrompt('Choose two characters');
+            expect(this.player1).toBeAbleToSelect(first);
+            expect(this.player1).toBeAbleToSelect(second);
+            expect(this.player1).toBeAbleToSelect(third);
+            expect(this.player1).not.toBeAbleToSelect(this.challenger);
+            this.player1.clickCard(first);
+            this.player1.clickCard(third);
+            this.player1.clickPrompt('Done');
+            expect(this.getChatLogs(5)).toContain(
+                'player2 plays Two Hands to set Talented Performer and Talented Performer military skills equal to 0'
+            );
+            expect(this.player1).toHavePrompt('Conflict Action Window');
         });
     });
 });

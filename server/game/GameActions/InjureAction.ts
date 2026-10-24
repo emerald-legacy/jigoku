@@ -1,44 +1,36 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
-import { GameAction, GameActionProperties } from './GameAction.js';
+import { GameAction, type GameActionProperties, targetList } from './GameAction.js';
 import { RemoveFateAction } from './RemoveFateAction.js';
-import { CardType, Location } from '../Constants.js';
-import { DiscardFromPlayAction } from './DiscardFromPlayAction.js';
-import DrawCard from '../DrawCard.js';
-import BaseCard from '../BaseCard.js';
+import { CardType, Location, type EventName } from '../Constants.js';
+import { DiscardFromPlayAction } from './LeavesPlayAction.js';
+import type BaseCard from '../BaseCard.js';
 
-export interface InjureActionProperties extends GameActionProperties {
+export interface InjureProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
 
-export class InjureAction extends GameAction<InjureActionProperties> {
-    name = 'injure';
-    targetType = [CardType.Character];
+export class InjureAction<Context extends AbilityContext = AbilityContext> extends GameAction<InjureProperties, EventName, Context> {
+    override name = 'injure';
+    override targetType = [CardType.Character];
+    override effect = 'injure {0}';
     removeFateGameAction: GameAction;
     discardGameAction: GameAction;
 
-    constructor(propertyFactory: InjureActionProperties | ((context: AbilityContext) => InjureActionProperties)) {
+    constructor(propertyFactory: InjureProperties | ((context: Context) => InjureProperties)) {
         super(propertyFactory);
         this.removeFateGameAction = new RemoveFateAction({ amount: 1 });
         this.discardGameAction = new DiscardFromPlayAction({});
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): InjureActionProperties {
-        let properties = super.getProperties(context, additionalProperties);
-        this.removeFateGameAction.setDefaultTarget(() => properties.target);
-        this.discardGameAction.setDefaultTarget(() => properties.target);
-        return properties;
+    override defaultTargets(context: Context): GameObject[] {
+        return [context.source];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context);
-        return ['injure {0}', [properties.target]];
-    }
-
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
-        if(!(target instanceof DrawCard)) {
+    override canAffect(target: GameObject, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        if(!target.isCard() || !target.isDrawCard()) {
             return false;
         }
 
@@ -46,22 +38,24 @@ export class InjureAction extends GameAction<InjureActionProperties> {
             return false;
         }
 
+        const overrides = { ...additionalProperties, target: this.getProperties(context, additionalProperties).target };
         if(target.getFate() === 0) {
-            return this.discardGameAction.canAffect(target, context, additionalProperties);
+            return this.discardGameAction.canAffect(target, context, overrides);
         }
-        return this.removeFateGameAction.canAffect(target, context, additionalProperties);
+        return this.removeFateGameAction.canAffect(target, context, overrides);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
-        for(let target of properties.target as DrawCard[]) {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
+        const overrides = { ...additionalProperties, target: properties.target };
+        for(const target of targetList(properties.target)) {
             if(target.getFate() === 0) {
-                if(this.discardGameAction.canAffect(target, context, additionalProperties)) {
-                    events.push(this.discardGameAction.getEvent(target, context, additionalProperties));
+                if(this.discardGameAction.canAffect(target, context, overrides)) {
+                    events.push(this.discardGameAction.getEvent(target, context, overrides));
                 }
             } else {
-                if(this.removeFateGameAction.canAffect(target, context, additionalProperties)) {
-                    events.push(this.removeFateGameAction.getEvent(target, context, additionalProperties));
+                if(this.removeFateGameAction.canAffect(target, context, overrides)) {
+                    events.push(this.removeFateGameAction.getEvent(target, context, overrides));
                 }
             }
         }

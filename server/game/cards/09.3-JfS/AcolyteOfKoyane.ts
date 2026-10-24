@@ -1,38 +1,40 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players, TargetMode } from '../../Constants.js';
+import { addKeyword, loseKeyword } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { CardType, Players, ConflictType } from '../../Constants.js';
 
 class AcolyteOfKoyane extends DrawCard {
     static id = 'acolyte-of-koyane';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Gain or lose pride',
-            condition: context => context.game.isDuringConflict('political'),
-            targets: {
-                character: {
-                    controller: Players.Any,
-                    cardType: CardType.Character,
-                    cardCondition: card => card.isParticipating()
+    override setupCardAbilities() {
+        this.action('Gain or lose pride')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
+            .target({
+                name: 'character',
+                controller: Players.Any,
+                cardType: CardType.Character,
+                cardCondition: (card) => card.isParticipating()
+            })
+            .select({
+                name: 'select',
+                dependsOn: 'character'
+            }, {
+                'Gain Pride': {
+                    action: cardLastingEffect((context) => ({
+                        effect: addKeyword('pride'),
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`give ${context.targets.character} Pride until the end of the conflict`
                 },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'character',
-                    choices: {
-                        'Gain Pride': AbilityDsl.actions.cardLastingEffect(context => ({
-                            effect: AbilityDsl.effects.addKeyword('pride'),
-                            target: context.targets.character
-                        })),
-                        'Lose Pride': AbilityDsl.actions.cardLastingEffect(context => ({
-                            effect: AbilityDsl.effects.loseKeyword('pride'),
-                            target: context.targets.character
-                        }))
-                    }
+                'Lose Pride': {
+                    action: cardLastingEffect((context) => ({
+                        effect: loseKeyword('pride'),
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`make ${context.targets.character} lose Pride until the end of the conflict`
                 }
-            },
-            effect: '{1} until the end of the conflict',
-            effectArgs: context => [[context.selects.select.choice === 'Gain Pride' ? 'give {0} Pride' : 'make {0} lose Pride', context.targets.character]]
-        });
+            });
     }
 }
 

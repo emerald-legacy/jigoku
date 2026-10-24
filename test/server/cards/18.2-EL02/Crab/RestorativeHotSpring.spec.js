@@ -37,7 +37,7 @@ describe('Hot Springs', function() {
                 type: 'military'
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.clickCard(this.assassination);
             this.player2.clickCard(this.warrior);

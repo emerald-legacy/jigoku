@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { CardAction } from '../../CardAction.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration, Players, AbilityType, CardType } from '../../Constants.js';
@@ -7,27 +8,22 @@ import { Location, Duration, Players, AbilityType, CardType } from '../../Consta
 class IllustriousPlagiarist extends DrawCard {
     static id = 'illustrious-plagiarist';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Copy action abilty of opponent\'s top event',
-            condition: (context: AbilityContext) => !!context.player.opponent &&
-                context.player.opponent.conflictDiscardPile.some((card) => card.type === CardType.Event && card.abilities.actions.length > 0),
-            target: {
-                player: Players.Opponent,
+    override setupCardAbilities() {
+        this.action('Copy action ability of opponent\'s top event')
+            .target({
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent,
-                cardCondition: (card, context: AbilityContext) => card.location === Location.ConflictDiscardPile &&
-                    card.type === CardType.Event &&
-                    card.controller === context.player.opponent &&
-                    card.abilities.actions.length > 0,
-                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
-                    duration: Duration.UntilEndOfPhase,
-                    target: context.source,
-                    effect: context.target?.abilities.actions.map((action: CardAction) => AbilityDsl.effects.gainAbility(AbilityType.Action, action)) ?? []
-                }))
-            },
-            effect: 'copy {0}\'s action abilities'
-        });
+                cardCondition: (card, context) => card === this.topmostEvent(context) && card.abilities.actions.length > 0
+            }, cardLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                target: context.source,
+                effect: context.target?.abilities.actions.map((action: CardAction) => gainAbility(AbilityType.Action, action)) ?? []
+            })))
+            .chatText('copy {0}\'s action abilities');
+    }
+
+    private topmostEvent(context: AbilityContext): DrawCard | undefined {
+        return context.player.opponent?.conflictDiscardPile.find((card) => card.type === CardType.Event);
     }
 }
 

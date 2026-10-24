@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addElementAsAttacker } from '../../effects.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'seeker-of-knowledge-air';
@@ -7,14 +7,14 @@ const elementKey = 'seeker-of-knowledge-air';
 class SeekerOfKnowledge extends DrawCard {
     static id = 'seeker-of-knowledge';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
+            effect: addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+    override getPrintedElementSymbols() {
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Add Element',

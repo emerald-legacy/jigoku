@@ -1,43 +1,35 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, Location, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { Location, Element } from '../../Constants.js';
+import { atEndOfConflict, putIntoConflict, returnToDeck, sequential } from '../../GameActions/GameActions.js';
 
 const elementKey = 'feral-ningyo-water';
 
 class FeralNingyo extends DrawCard {
     static id = 'feral-ningyo';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Put into play',
-            condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            location: [Location.Hand, Location.PlayArea],
-            effect: '{1}return {0} to the deck at the end of the conflict',
-            effectArgs: context => [context.source.location !== Location.PlayArea ? ['put {0} into play into the conflict and ', context.source] : ''],
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.putIntoConflict(context => ({
+    override setupCardAbilities() {
+        this.action('Put into play')
+            .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
+            // also while in play, when it was played normally: then it only returns at the end of the conflict
+            .location([Location.Hand, Location.PlayArea])
+            .gameAction(sequential([
+                putIntoConflict((context) => ({
                     target: context.source
                 })),
-                AbilityDsl.actions.cardLastingEffect(context => ({
+                atEndOfConflict((context) => ({
                     target: context.source,
-                    location: [Location.Hand, Location.PlayArea],
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.delayedEffect({
-                        when: {
-                            onConflictFinished: () => true
-                        },
-                        message: '{0} returns to the deck and shuffles due to its delayed effect',
-                        messageArgs: (context: AbilityContext) => [context.source],
-                        gameAction: AbilityDsl.actions.returnToDeck({ shuffle: true })
-                    })
+                    message: (context) => msg`${context.source} returns to the deck and shuffles due to its delayed effect`,
+                    gameAction: returnToDeck({ shuffle: true })
                 }))
-            ])
-        });
+            ]))
+            .chatText((context) => context.source.location === Location.PlayArea
+                ? msg`return ${context.source} to the deck at the end of the conflict`
+                : msg`put ${context.source} into play into the conflict and return ${context.chatTarget()} to the deck at the end of the conflict`);
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+    override getPrintedElementSymbols() {
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',

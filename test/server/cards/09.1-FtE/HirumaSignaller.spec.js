@@ -95,7 +95,7 @@ describe('Hiruma Signaller', function() {
                 expect(this.player2).toBeAbleToSelect(this.hirumaSignaller);
                 this.player2.clickCard(this.hirumaSignaller);
                 expect(this.hirumaSignaller.location).toBe('dynasty discard pile');
-                expect(this.spy).toHaveBeenCalledWith('{0} attempted to use {1}, but there are insufficient legal targets', this.player2.player, this.hirumaSignaller);
+                expect(this.spy).toHaveBeenCalledWith(['{0} attempted to use {1}, but there are insufficient legal targets', [this.player2.player, this.hirumaSignaller]]);
             });
 
             it('should not able to choose an opponent\'s character', function() {

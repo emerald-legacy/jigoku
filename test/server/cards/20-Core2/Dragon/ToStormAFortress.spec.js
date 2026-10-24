@@ -50,15 +50,16 @@ describe('To Storm A Fortress', function () {
             expect(this.player1).not.toBeAbleToSelect(this.miyaMystic);
 
             this.player1.clickCard(this.togashiInitiate);
-            expect(this.togashiInitiate.getMilitarySkill()).toBe(3);
             expect(this.getChatLogs(5)).toContain(
                 'player1 plays To Storm a Fortress to grant +2military to Togashi Initiate'
             );
 
+            // the discard is decided first; the bonus applies with it (no "then")
             expect(this.player1).toHavePrompt('Discard each card in the attacked province?');
             expect(this.player1).toHavePromptButton('Yes');
             expect(this.player1).toHavePromptButton('No');
             this.player1.clickPrompt('Yes');
+            expect(this.togashiInitiate.militarySkill).toBe(3);
             expect(this.favorableGround.location).toBe('dynasty discard pile');
             expect(this.getChatLogs(5)).toContain('player1\'s To Storm a Fortress discards Favorable Ground');
         });
@@ -78,16 +79,17 @@ describe('To Storm A Fortress', function () {
             expect(this.player1).not.toBeAbleToSelect(this.miyaMystic);
 
             this.player1.clickCard(this.togashiInitiate);
-            expect(this.togashiInitiate.getMilitarySkill()).toBe(3);
             expect(this.getChatLogs(5)).toContain(
                 'player1 plays To Storm a Fortress to grant +2military to Togashi Initiate'
             );
 
+            // the discard is decided first; the bonus applies with it (no "then")
             expect(this.player1).toHavePrompt('Discard each card in the attacked province?');
             expect(this.player1).toHavePromptButton('Yes');
             expect(this.player1).toHavePromptButton('No');
 
             this.player1.clickPrompt('No');
+            expect(this.togashiInitiate.militarySkill).toBe(3);
             expect(this.favorableGround.location).toBe('province 1');
             expect(this.getChatLogs(5)).not.toContain('player1\'s To Storm a Fortress discards Favorable Ground');
         });

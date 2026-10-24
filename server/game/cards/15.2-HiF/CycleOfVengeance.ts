@@ -1,24 +1,21 @@
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor, multiple, placeFate } from '../../GameActions/GameActions.js';
 
 export default class CycleOfVengeance extends ProvinceCard {
     static id = 'cycle-of-vengeance';
 
-    setupCardAbilities() {
-        this.interrupt({
-            title: 'Place a fate on a character then honor it',
-            when: {
+    override setupCardAbilities() {
+        this.interrupt('Place a fate on a character then honor it')
+            .when({
                 onBreakProvince: (event, context) => event.card === context.source
-            },
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.placeFate({ amount: 1 }),
-                    AbilityDsl.actions.honor()
-                ])
-            },
-            effect: 'honor and place a fate on {0}'
-        });
+            })
+            .target({
+                cardType: CardType.Character
+            }, multiple([
+                placeFate(),
+                honor()
+            ]))
+            .chatText('honor and place a fate on {0}');
     }
 }

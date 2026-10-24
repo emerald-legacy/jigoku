@@ -19,6 +19,12 @@ describe('Invocation of Ash', function () {
                 this.player2.pass();
             });
 
+            it('can\'t move to the character it is attached to (RRG Move)', function () {
+                this.player1.clickCard(this.ash);
+                expect(this.player1).not.toBeAbleToSelect(this.mystic);
+                expect(this.player1).toBeAbleToSelect(this.rider);
+            });
+
             it('should cost the player 1 honor to use', function () {
                 this.initHonor = this.player1.honor;
                 this.player1.clickCard(this.ash);
@@ -39,6 +45,30 @@ describe('Invocation of Ash', function () {
                 expect(this.ash.parent).toBe(this.scout);
                 expect(this.scout.fate).toBe(this.initFate - 1);
             });
+        });
+    });
+});
+
+describe('Invocation of Ash and a character it can\'t move to', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic', 'bayushi-s-whisperers'],
+                    hand: ['invocation-of-ash']
+                }
+            });
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.whisperers = this.player1.findCardByName('bayushi-s-whisperers');
+            this.whisperers.modifyFate(1);
+            this.ash = this.player1.playAttachment('invocation-of-ash', this.mystic);
+            this.player2.pass();
+        });
+
+        it('can\'t choose a character with "No attachments"', function () {
+            this.player1.clickCard(this.ash);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperers);
         });
     });
 });

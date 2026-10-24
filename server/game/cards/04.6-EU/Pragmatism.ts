@@ -1,21 +1,22 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { RestrictionType } from '../../Constants.js';
 
 class Pragmatism extends DrawCard {
     static id = 'pragmatism';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
         this.whileAttached({
-            condition: context => context.player.isLessHonorable(),
+            condition: (context) => context.player.isLessHonorable(),
             effect: [
-                AbilityDsl.effects.modifyMilitarySkill(1),
-                AbilityDsl.effects.modifyPoliticalSkill(1),
-                AbilityDsl.effects.cardCannot('honor'),
-                AbilityDsl.effects.cardCannot('dishonor')
+                modifyMilitarySkill(1),
+                modifyPoliticalSkill(1),
+                cardCannot(RestrictionType.Honor),
+                cardCannot(RestrictionType.Dishonor)
             ]
         });
     }

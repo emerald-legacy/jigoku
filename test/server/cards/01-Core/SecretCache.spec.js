@@ -29,7 +29,7 @@ describe('Secret Cache', function() {
             });
 
             it('should put the card in the player\'s hand, and display an anonymous message', function() {
-                let handsize = this.player2.player.hand.length;
+                const handsize = this.player2.player.hand.length;
                 this.player2.clickCard('secret-cache');
                 this.player2.clickPrompt('Supernatural Storm (5)');
                 expect(this.player2.player.hand.length).toBe(handsize + 1);

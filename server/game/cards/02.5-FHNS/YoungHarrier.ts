@@ -1,22 +1,20 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import * as costs from '../../costs/index.js';
+import { cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
+import { Duration, RestrictionType } from '../../Constants.js';
 
 class YoungHarrier extends DrawCard {
     static id = 'young-harrier';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Prevent other characters from being dishonored',
-            cost: ability.costs.dishonorSelf(),
-            effect: 'prevent Crane characters from being dishonored this phase',
-            gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
+    override setupCardAbilities() {
+        this.action('Prevent other characters from being dishonored')
+            .cost(costs.dishonorSelf())
+            .cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                target: context.player.cardsInPlay.filter((card: DrawCard) => card.isFaction('crane')),
-                effect: ability.effects.cardCannot('dishonor')
+                target: context.player.cardsInPlay.filter((card) => card.isFaction('crane')),
+                effect: cardCannot(RestrictionType.Dishonor)
             }))
-        });
+            .chatText('prevent Crane characters from being dishonored this phase');
     }
 }
 

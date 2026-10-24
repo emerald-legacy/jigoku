@@ -168,3 +168,37 @@ describe('White Horde Vanguard', function() {
         });
     });
 });
+
+describe('White Horde Vanguard during the reactions to the first conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['white-horde-vanguard', 'doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['asako-maezawa-2']
+                }
+            });
+            this.whiteHordeVanguard = this.player1.findCardByName('white-horde-vanguard');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.maezawa = this.player2.findCardByName('asako-maezawa-2');
+        });
+
+        it('cannot be bowed by an opponent\'s reaction to winning the first conflict', function() {
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.maezawa],
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.maezawa);
+            expect(this.player2).toBeAbleToSelect(this.whisperer);
+            expect(this.player2).not.toBeAbleToSelect(this.whiteHordeVanguard);
+        });
+    });
+});

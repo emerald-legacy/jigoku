@@ -98,12 +98,12 @@ describe('SoD - Unicorn', function () {
                 expect(this.player1).not.toBeAbleToSelect(this.liar);
                 expect(this.player1).not.toBeAbleToSelect(this.brash);
 
-                let mil = this.toshimoko.getMilitarySkill();
+                const mil = this.toshimoko.militarySkill;
 
                 this.player1.clickCard(this.toshimoko);
                 expect(this.getChatLogs(5)).toContain('player1 plays Cornering Maneuver to give Kakita Toshimoko +2military');
 
-                expect(this.toshimoko.getMilitarySkill()).toBe(mil + 2);
+                expect(this.toshimoko.militarySkill).toBe(mil + 2);
                 expect(this.player1).toHavePrompt('Choose a character to move');
                 expect(this.player1).toBeAbleToSelect(this.toshimoko);
                 expect(this.player1).toBeAbleToSelect(this.keeper);
@@ -241,7 +241,7 @@ describe('SoD - Unicorn', function () {
             });
 
             it('when winning should gain honor', function () {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -263,7 +263,7 @@ describe('SoD - Unicorn', function () {
             });
 
             it('when losing should ready', function () {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -297,6 +297,47 @@ describe('SoD - Unicorn', function () {
                 this.player2.pass();
                 this.player1.pass();
 
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+        });
+
+        describe('Utaku Tomoe sent home by False Loyalties', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        honor: 10,
+                        inPlay: ['togashi-yokuni'],
+                        hand: ['false-loyalties']
+                    },
+                    player2: {
+                        honor: 12,
+                        inPlay: ['utaku-tomoe', 'moto-youth', 'moto-horde']
+                    }
+                });
+                this.tomoe = this.player2.findCardByName('utaku-tomoe');
+                this.youth = this.player2.findCardByName('moto-youth');
+                this.horde = this.player2.findCardByName('moto-horde');
+                this.yokuni = this.player1.findCardByName('togashi-yokuni');
+            });
+
+            it('can\'t react: it wasn\'t defending when the conflict finished', function () {
+                const honor = this.player2.honor;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.yokuni],
+                    defenders: [this.tomoe, this.horde]
+                });
+                this.player2.pass();
+                this.player1.pass();
+                this.player1.clickCard('false-loyalties');
+                this.player1.clickCard(this.tomoe);
+                this.player1.clickCard(this.youth);
+                expect(this.getChatLogs(1)).toContain('player1 plays False Loyalties to switch Utaku Tomoe and Moto Youth');
+                expect(this.tomoe.isParticipating()).toBe(false);
+                expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2.honor).toBe(honor);
                 expect(this.player1).toHavePrompt('Action Window');
             });
         });
@@ -377,8 +418,8 @@ describe('SoD - Unicorn', function () {
                     defenders: [this.moto]
                 });
 
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.clickCard(this.storm);
 
@@ -420,8 +461,8 @@ describe('SoD - Unicorn', function () {
                     defenders: [this.moto]
                 });
 
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player2.clickCard(this.storm);
 

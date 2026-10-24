@@ -1,3 +1,5 @@
+import { discardFromPlay } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Oni Tyrant', function() {
     integration(function() {
         beforeEach(function() {
@@ -53,6 +55,24 @@ describe('Oni Tyrant', function() {
             expect(this.oni.isAttacking()).toBe(true);
             expect(this.getChatLogs(5)).toContain('player1 uses Oni Tyrant, losing 1 honor to summon a Lost Samurai from the depths of the Shadowlands!');
             expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+
+        it('should remove the summoned character from the game when it would leave play', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.tyrant],
+                defenders: [this.whisperer],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.tyrant);
+            this.player1.clickPrompt('Lost Samurai');
+            const summoned = this.player1.player.cardsInPlay.find((card) => card.id === 'lost-samurai');
+
+            this.game.queueSimpleStep(() => discardFromPlay().resolve(summoned, this.game.getFrameworkContext(this.player2.player)));
+            this.game.continue();
+
+            expect(summoned.location).toBe('removed from game');
         });
 
         it('should not work when not participating', function() {

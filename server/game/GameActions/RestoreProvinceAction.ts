@@ -1,19 +1,20 @@
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName } from '../Constants.js';
+import { CardType, EventName, RestrictionType } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export type RestoreProvinceProperties = CardActionProperties;
 
-export class RestoreProvinceAction extends CardGameAction<CardActionProperties, EventName.OnRestoreProvince> {
-    name = 'restoreProvince';
-    eventName = EventName.OnRestoreProvince;
-    targetType = [CardType.Province];
-    cost = 'restoring {0}';
-    effect = 'restore {0}';
+export class RestoreProvinceAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<CardActionProperties, EventName.OnRestoreProvince, Context> {
+    override name = 'restoreProvince';
+    override restriction = RestrictionType.RestoreProvince;
+    override eventName = EventName.OnRestoreProvince;
+    override targetType = [CardType.Province];
+    override cost = 'restoring {0}';
+    override effect = 'restore {0}';
 
-    canAffect(card: ProvinceCard, context: AbilityContext): boolean {
+    override canAffect(card: ProvinceCard, context: Context): boolean {
         if(!card.isProvince) {
             return false;
         }
@@ -23,11 +24,7 @@ export class RestoreProvinceAction extends CardGameAction<CardActionProperties, 
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnRestoreProvince>, card: ProvinceCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        super.addPropertiesToEvent(event, card, context, additionalProperties);
-    }
-
-    eventHandler(event: GameEvent<EventName.OnRestoreProvince>): void {
-        (event.card as ProvinceCard).restoreProvince();
+    override eventHandler(event: ActionEvent<EventName.OnRestoreProvince, Context>): void {
+        event.card.restoreProvince();
     }
 }

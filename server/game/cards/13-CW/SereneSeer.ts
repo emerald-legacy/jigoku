@@ -1,38 +1,30 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { lookAt } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType, Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'serene-seer-void';
+const elementSymbol = { key: 'serene-seer-void', element: Element.Void };
 
 class SereneSeer extends DrawCard {
     static id = 'serene-seer';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Look at a province',
-            condition: context => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player.opponent),
-            effect: 'look at a province',
-            gameAction: AbilityDsl.actions.selectCard({
+    override setupCardAbilities() {
+        this.action('Look at a province')
+            .condition((context) => context.player.opponent !== undefined && hasClaimedRing(this, elementSymbol.key, context.player.opponent))
+            .target({
                 activePromptTitle: 'Choose a province to look at',
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.lookAt(context => ({
-                    message: '{0} sees {1} in {2}',
-                    messageArgs: (cards) => [context.source, cards[0], cards[0].location]
-                }))
-            })
-        });
+                controller: Players.Opponent
+            }, lookAt({
+                message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+            }))
+            .chatText('look at a province');
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Void
-        });
-        return symbols;
+    override getPrintedElementSymbols() {
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

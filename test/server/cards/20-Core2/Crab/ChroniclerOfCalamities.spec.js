@@ -44,10 +44,12 @@ describe('Chronicler of Calamities', function () {
             expect(this.player2).toHavePrompt('Select one');
             expect(this.player2).toHavePromptButton('Move it home');
             expect(this.player2).toHavePromptButton('Dishonor it');
-            expect(this.player2).toHavePromptButton('Sacrifice a character to perform both');
+            expect(this.player2).not.toHavePromptButton('Sacrifice a character to perform both');
             this.player2.clickPrompt('Move it home');
-            expect(this.getChatLogs(5)).toContain('player2 uses Chronicler of Calamities to dishonor or send home Kakita Toshimoko');
-            expect(this.getChatLogs(5)).toContain('player2 chooses to send Kakita Toshimoko home');
+            expect(this.getChatLogs(5)).toContain('player2 uses Chronicler of Calamities to send Kakita Toshimoko home');
+
+            expect(this.player2).toHavePrompt('Sacrifice a character to also dishonor it?');
+            this.player2.clickPrompt('No');
             expect(this.toshimoko.isParticipating()).toBe(false);
             expect(this.toshimoko.isDishonored).toBe(false);
         });
@@ -56,33 +58,55 @@ describe('Chronicler of Calamities', function () {
             this.player2.clickCard(this.chronicler);
             this.player2.clickCard(this.toshimoko);
             this.player2.clickPrompt('Dishonor it');
+            expect(this.getChatLogs(5)).toContain('player2 uses Chronicler of Calamities to dishonor Kakita Toshimoko');
 
-            expect(this.getChatLogs(5)).toContain('player2 uses Chronicler of Calamities to dishonor or send home Kakita Toshimoko');
-            expect(this.getChatLogs(5)).toContain('player2 chooses to dishonor Kakita Toshimoko');
+            this.player2.clickPrompt('No');
             expect(this.toshimoko.isParticipating()).toBe(true);
             expect(this.toshimoko.isDishonored).toBe(true);
         });
 
-        it('Should not be able to cancel the sacrifice', function () {
+        it('chooses the effect before the ability initiates and the sacrifice while it resolves', function () {
+            this.player2.clickCard(this.chronicler);
+            this.player2.clickCard(this.toshimoko);
+            expect(this.getChatLogs(5)).not.toContain('player2 uses Chronicler of Calamities to dishonor Kakita Toshimoko');
+            this.player2.clickPrompt('Dishonor it');
+            expect(this.getChatLogs(5)).toContain('player2 uses Chronicler of Calamities to dishonor Kakita Toshimoko');
+            expect(this.player2).toHavePrompt('Sacrifice a character to also move it home?');
+        });
+
+        it('does both effects when the sacrifice resolves', function () {
+            this.player2.clickCard(this.chronicler);
+            this.player2.clickCard(this.toshimoko);
+            this.player2.clickPrompt('Dishonor it');
+            this.player2.clickPrompt('Yes');
+            this.player2.clickCard(this.sotorii);
+
+            expect(this.getChatLogs(5)).toContain('player2 chooses to sacrifice Hantei Sotorii');
+            expect(this.sotorii.location).toBe('dynasty discard pile');
+            expect(this.toshimoko.isDishonored).toBe(true);
+            expect(this.toshimoko.isParticipating()).toBe(false);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+
+        it('does both effects only if the sacrifice resolves', function () {
             this.player2.moveCard(this.duty, 'hand');
             this.game.checkGameState(true);
 
             this.player2.clickCard(this.chronicler);
             this.player2.clickCard(this.toshimoko);
-            this.player2.clickPrompt('Sacrifice a character to perform both');
+            this.player2.clickPrompt('Dishonor it');
+            this.player2.clickPrompt('Yes');
 
             expect(this.player2).toHavePrompt('Select a character to sacrifice');
-            expect(this.player2).toBeAbleToSelect(this.chronicler);
-            expect(this.player2).toBeAbleToSelect(this.sotorii);
             this.player2.clickCard(this.sotorii);
 
-            expect(this.getChatLogs(5)).toContain('player2 uses Chronicler of Calamities to dishonor or send home Kakita Toshimoko');
-            expect(this.getChatLogs(5)).toContain('player2 chooses to sacrifice a character to both dishonor and send Kakita Toshimoko home');
-            expect(this.getChatLogs(5)).toContain('player2 chooses to sacrifice Hantei Sotorii');
-            expect(this.sotorii.location).toBe('dynasty discard pile');
-            expect(this.toshimoko.isParticipating()).toBe(false);
-            expect(this.toshimoko.isDishonored).toBe(true);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.duty);
+            this.player2.clickCard(this.duty);
 
+            expect(this.sotorii.location).toBe('play area');
+            expect(this.toshimoko.isDishonored).toBe(true);
+            expect(this.toshimoko.isParticipating()).toBe(true);
             expect(this.player1).toHavePrompt('Conflict Action Window');
         });
     });

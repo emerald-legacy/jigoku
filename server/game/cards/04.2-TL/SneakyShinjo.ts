@@ -1,20 +1,17 @@
-import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 
 class SneakyShinjo extends DrawCard {
     static id = 'sneaky-shinjo';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Play this character',
-            location: Location.Provinces,
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Play this character')
+            .when({
                 onPassDuringDynasty: (event, context) => event.player === context.player
-            },
-            effect: 'play {0}',
-            gameAction: AbilityDsl.actions.playCard({ location: Location.ProvinceOne, source: this })
-        });
+            })
+            .location(Location.Provinces)
+            .playCard({ source: this })
+            .chatText('play {0}');
     }
 }
 

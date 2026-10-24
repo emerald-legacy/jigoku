@@ -1,20 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, ConflictType } from '../../Constants.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class ExposedSecrets extends DrawCard {
     static id = 'exposed-secrets';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow attacking character',
-            condition: context => context.game.isDuringConflict('political'),
-            target: {
+    override setupCardAbilities() {
+        this.action('Bow a participating character')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating() && card.getPoliticalSkill() <= card.controller.showBid,
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating() && card.politicalSkill <= card.controller.showBid
+            }, bow());
     }
 }
 

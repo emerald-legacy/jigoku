@@ -33,7 +33,7 @@ describe('Garanto Guardian', function() {
             });
 
             it('should let you choose and resolve the air ring', function() {
-                let startingHonor = this.player2.honor;
+                const startingHonor = this.player2.honor;
                 this.initiateConflict({
                     province: 'manicured-garden',
                     ring: 'earth',

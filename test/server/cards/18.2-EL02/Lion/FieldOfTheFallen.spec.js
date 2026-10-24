@@ -43,7 +43,7 @@ describe('Field of the Fallen', function() {
             });
             this.player2.pass();
             this.player1.clickCard(this.courtyard);
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             expect(this.player1).toBeAbleToSelect(this.crab);
             expect(this.player1).toBeAbleToSelect(this.letGo);
             this.player1.clickCard(this.crab);
@@ -63,7 +63,7 @@ describe('Field of the Fallen', function() {
             });
             this.player2.pass();
             this.player1.clickCard(this.courtyard);
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             expect(this.player1).toBeAbleToSelect(this.crab);
             expect(this.player1).toBeAbleToSelect(this.letGo);
             this.player1.clickCard(this.crab);
@@ -83,7 +83,7 @@ describe('Field of the Fallen', function() {
             });
             this.player2.pass();
             this.player1.clickCard(this.courtyard);
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             expect(this.player1).toBeAbleToSelect(this.crab);
             expect(this.player1).toBeAbleToSelect(this.letGo);
             this.player1.clickCard(this.crab);

@@ -24,7 +24,7 @@ describe('Demonstrating Excellence', function() {
                 this.noMoreActions();
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect('demonstrating-excellence');
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.demonstratingExcellence = this.player2.clickCard('demonstrating-excellence');
                 expect(this.player1).toHavePrompt('Break Demonstrating Excellence');
                 expect(this.player2.fate).toBe(fate + 1);

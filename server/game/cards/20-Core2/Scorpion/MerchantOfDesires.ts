@@ -1,30 +1,19 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class MerchantOfDesires extends DrawCard {
     static id = 'merchant-of-desires';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Draw a card',
-            cost: [
-                AbilityDsl.costs.payHonor(1),
-                AbilityDsl.costs.optionalOpponentLoseHonor('Lose 1 honor to draw a card?')
-            ],
-            gameAction: AbilityDsl.actions.draw((context) => ({
-                amount: 1,
+    override setupCardAbilities() {
+        this.action('Draw a card')
+            .cost(costs.payHonor(1))
+            .cost(costs.optionalOpponentLoseHonor('Lose 1 honor to draw a card?'))
+            .draw((context) => ({
                 target: context.costs.optionalOpponentLoseHonorPaid && context.player.opponent
                     ? [context.player, context.player.opponent]
                     : context.player
-            })),
-            effect: 'draw a card. {1} {2}',
-            effectArgs: (context) => [
-                context.player.opponent as Player,
-                context.costs.optionalOpponentLoseHonorPaid
-                    ? 'does not resist and lose 1 honor to also draw a card'
-                    : 'resists the temptation'
-            ]
-        });
+            }))
+            .chatText((context) => msg`draw a card. ${context.player.opponent} ${context.costs.optionalOpponentLoseHonorPaid ? 'does not resist and loses 1 honor to also draw a card' : 'resists the temptation'}`);
     }
 }

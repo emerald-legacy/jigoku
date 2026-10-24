@@ -1,29 +1,24 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Element } from '../../Constants.js';
+import { immunity } from '../../effects.js';
+import { Element, RestrictionScope } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'inscribed-tanto-void';
+const elementSymbol = { key: 'inscribed-tanto-void', element: Element.Void };
 
 class InscribedTanto extends DrawCard {
     static id = 'inscribed-tanto';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
-            condition: context => context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player),
-            effect: AbilityDsl.effects.immunity({
-                restricts: 'opponentsRingEffects'
+            condition: (context) => hasClaimedRing(this, elementSymbol.key, context.player),
+            effect: immunity({
+                appliesTo: RestrictionScope.OpponentsRingEffects
             })
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Void
-        });
-        return symbols;
+    override getPrintedElementSymbols() {
+        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
     }
 }
 

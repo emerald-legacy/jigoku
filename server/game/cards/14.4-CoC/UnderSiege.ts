@@ -1,96 +1,65 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, Duration, EventName } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type Player from '../../Player.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
+import { Location, Duration } from '../../Constants.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { playerDelayedEffect } from '../../effects.js';
+import {
+    chatMessage,
+    chosenDiscard,
+    conditional,
+    draw,
+    moveCard,
+    noAction,
+    playerLastingEffect,
+    sequential,
+    setAside
+} from '../../GameActions/GameActions.js';
 
 class UnderSiege extends DrawCard {
     static id = 'under-siege';
 
-    setAsideCards!: DrawCard[];
-    targetPlayer!: Player | null;
-
-    setupCardAbilities() {
-        this.setAsideCards = [];
-        this.targetPlayer = null;
-
-        this.reaction({
-            title: 'Place defender under siege',
-            when: {
-                onConflictDeclared: (event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null
-            },
-            max: AbilityDsl.limit.perConflict(1),
-            effect: 'place {1} under siege!',
-            effectArgs: context => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''],
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.playerLastingEffect(context => ({
-                    duration: Duration.UntilEndOfRound,
-                    targetController: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
-                    effect: AbilityDsl.effects.playerDelayedEffect({
-                        when: {
-                            onConflictFinished: () => true
-                        },
-                        gameAction: AbilityDsl.actions.sequential([
-                            AbilityDsl.actions.chosenDiscard(() => ({
-                                amount: 1000 //discard the entire hand
-                            })),
-                            AbilityDsl.actions.handler({
-                                handler: context => {
-                                    if(this.targetPlayer && this.setAsideCards && this.setAsideCards.length > 0) {
-                                        const targetPlayer = this.targetPlayer;
-                                        context.game.addMessage('{0} picks up their original hand', targetPlayer);
-
-                                        this.setAsideCards.forEach((card) => {
-                                            targetPlayer.moveCard(card, Location.Hand);
-                                        });
-                                    }
-                                }
-                            })
-                        ])
+    override setupCardAbilities() {
+        this.reaction('Place defender under siege')
+            .when({
+                // RRG appendix: with no cards in the defender's hand it can't be played
+                onConflictDeclared: (_event, context) =>
+                    (context.game.currentConflict?.defendingPlayer?.hand.length ?? 0) > 0
+            })
+            .gameAction(sequential((context) => {
+                const defender = context.game.currentConflict?.defendingPlayer ?? undefined;
+                const hand = defender ? [...defender.hand] : [];
+                const setAsideHand = () => hand.filter((card) => card.location === Location.RemovedFromGame);
+                return [
+                    playerLastingEffect({
+                        duration: Duration.UntilEndOfRound,
+                        target: defender,
+                        effect: playerDelayedEffect({
+                            when: {
+                                onConflictFinished: () => true
+                            },
+                            gameAction: sequential([
+                                chosenDiscard(() => ({
+                                    amount: 1000 //discard the entire hand
+                                })),
+                                chatMessage(() => setAsideHand().length > 0 ? msg`${defender} picks up their original hand` : undefined),
+                                moveCard(() => ({ target: setAsideHand(), destination: Location.Hand }))
+                            ])
+                        })
+                    }),
+                    setAside({
+                        target: hand,
+                        hidden: true,
+                        message: () => msg`${defender} sets their hand aside and draws 5 cards`
+                    }),
+                    conditional({
+                        condition: hand.length > 0,
+                        trueGameAction: draw({ target: defender, amount: 5 }),
+                        falseGameAction: noAction()
                     })
-                })),
-                AbilityDsl.actions.conditional(({
-                    condition: context => {
-                        const conflict = context.game.currentConflict;
-                        return conflict !== null && conflict.defendingPlayer !== null && conflict.defendingPlayer.hand.length > 0;
-                    },
-                    trueGameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.handler({
-                            handler: context => {
-                                const conflict = context.game.currentConflict;
-                                if(!conflict || !conflict.defendingPlayer) {
-                                    return;
-                                }
-                                const player = conflict.defendingPlayer;
-                                const setAsideCards = [...player.hand];
-                                this.targetPlayer = player;
-                                this.setAsideCards = setAsideCards;
-                                this.game.addMessage('{0} sets their hand aside and draws 5 cards', player);
-                                if(setAsideCards.length > 0) {
-                                    setAsideCards.forEach((card) => {
-                                        player.moveCard(card, Location.RemovedFromGame);
-                                        card.lastingEffect(() => ({
-                                            until: {
-                                                onCardMoved: (event: EventPayload<EventName.OnCardMoved>) => event.card === card && event.originalLocation === Location.RemovedFromGame
-                                            },
-                                            match: card,
-                                            effect: AbilityDsl.effects.hideWhenFaceUp()
-                                        }));
-                                    });
-                                }
-                            }
-                        }),
-                        AbilityDsl.actions.draw(context => ({
-                            target: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
-                            amount: 5
-                        }))
-                    ]),
-                    falseGameAction: AbilityDsl.actions.handler({
-                        handler: () => {}
-                    })
-                }))
-            ])
-        });
+                ];
+            }))
+            .chatText((context) => msg`place ${context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''} under siege`)
+            .max(perConflict(1));
     }
 }
 

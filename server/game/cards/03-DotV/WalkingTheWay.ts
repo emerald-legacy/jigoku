@@ -1,48 +1,43 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../BaseCard.js';
-import type Player from '../../Player.js';
-import { Location, Players, CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { reduceCost } from '../../effects.js';
+import { Location, Players, CardType, DeckType, TargetMode } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import { controlsShugenja } from '../controlsShugenja.js';
+import { placeInProvince } from '../../GameActions/GameActions.js';
 
 class WalkingTheWay extends DrawCard {
     static id = 'walking-the-way';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            match: (player: Player) => player.cardsInPlay.some((card: BaseCard) => card.hasTrait('shugenja')),
-            effect: ability.effects.reduceCost({ match: (card: BaseCard, source: BaseCard) => card === source })
+            match: (player) => controlsShugenja(player),
+            effect: reduceCost({ match: (card, source) => card === source })
         });
 
-        this.action({
-            title: 'Place a card from your deck faceup on a province',
-            condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
-            effect: 'look at the top three cards of their dynasty deck',
-            handler: (context: AbilityContext) => {
-                this.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'Choose a card to place in a province',
+        this.action('Place a card from your deck faceup on a province')
+            .condition((context) => context.player.dynastyDeck.length > 0)
+            .deckSearch({
+                activePromptTitle: 'Choose a card to place in a province',
+                cardsToLookAt: 3,
+                deck: DeckType.Dynasty,
+                mode: TargetMode.Exactly,
+                numCards: 1,
+                selectedCardsHandler: (context, _event, [cardFromDeck]) => cardFromDeck && this.game.promptForSelect(context.player, {
+                    activePromptTitle: 'Choose a card to replace with ' + cardFromDeck.name,
                     context: context,
-                    cards: context.player.dynastyDeck.slice(0, 3),
-                    cardHandler: (cardFromDeck: BaseCard) => this.game.promptForSelect(context.player, {
-                        activePromptTitle: 'Choose a card to replace with ' + cardFromDeck.name,
-                        context: context,
-                        cardType: [CardType.Holding, CardType.Character, CardType.Event],
-                        location: Location.Provinces,
-                        controller: Players.Self,
-                        onSelect: (player: Player, card: BaseCard) => {
-                            this.game.addMessage('{0} discards {1}, replacing it with {2}', player, card, cardFromDeck);
-                            player.moveCard(cardFromDeck, card.location);
-                            cardFromDeck.facedown = false;
-                            player.moveCard(card, Location.DynastyDiscardPile);
-                            player.shuffleDynastyDeck();
-                            return true;
-                        }
-                    })
-                });
-            }
-        });
+                    cardType: [CardType.Holding, CardType.Character, CardType.Event],
+                    location: Location.Provinces,
+                    controller: Players.Self,
+                    onSelect: (player, card) => {
+                        this.game.addMessage(msg`${player} discards ${card}, replacing it with ${cardFromDeck}`);
+                        placeInProvince({ destination: card.location, discard: [card] }).resolve(cardFromDeck, context);
+                        return true;
+                    }
+                })
+            })
+            .chatText('look at the top three cards of their dynasty deck');
     }
 }
 

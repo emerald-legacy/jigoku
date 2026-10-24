@@ -50,8 +50,8 @@ describe('Open Field Skirmisher', function() {
             });
 
             this.player2.pass();
-            let fate = this.skirmisher.fate;
-            let strength = this.pilgrimage.getStrength();
+            const fate = this.skirmisher.fate;
+            const strength = this.pilgrimage.getStrength();
             this.player1.clickCard(this.skirmisher);
 
             expect(this.skirmisher.fate).toBe(fate - 1);

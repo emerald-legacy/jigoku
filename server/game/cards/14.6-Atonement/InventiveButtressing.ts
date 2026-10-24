@@ -1,21 +1,20 @@
-import AbilityDsl from '../../abilitydsl.js';
-import { Location } from '../../Constants.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { Location, ConflictType } from '../../Constants.js';
 import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
 class InventiveButtressing extends ProvinceAttachment {
     static id = 'inventive-buttressing';
 
-    setupCardAbilities() {
-        super.setupCardAbilities();
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.isDuringConflict('military'),
+            condition: () => this.game.isDuringConflict(ConflictType.Military),
             targetLocation: Location.Provinces,
             match: (card, context) => card === context?.source.parent,
-            effect: AbilityDsl.effects.modifyProvinceStrength(3)
+            effect: modifyProvinceStrength(3)
         });
     }
 
-    protected controllerProvinceOnly(): boolean {
+    protected override controllerProvinceOnly(): boolean {
         return true;
     }
 }

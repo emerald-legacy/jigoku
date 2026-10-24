@@ -46,7 +46,7 @@ describe('Merchant of Desires', function () {
             expect(this.player2.hand.length).toBe(p2Hand + 1);
             expect(this.player2.honor).toBe(p2Honor - 1);
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Merchant of Desires, losing 1 honor to draw a card. player2 does not resist and lose 1 honor to also draw a card'
+                'player1 uses Merchant of Desires, losing 1 honor to draw a card. player2 does not resist and loses 1 honor to also draw a card'
             );
         });
     });

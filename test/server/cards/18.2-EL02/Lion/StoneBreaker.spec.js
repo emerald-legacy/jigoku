@@ -407,7 +407,7 @@ describe('Stone Breaker - Strength reduction ability', function () {
                 defenders: []
             });
 
-            let provinceStrength = this.game.currentConflict.conflictProvince.getStrength();
+            const provinceStrength = this.game.currentConflict.conflictProvince.getStrength();
             this.player2.pass();
             this.player1.clickCard(this.breaker);
             this.player1.clickPrompt('Reduce province strength');

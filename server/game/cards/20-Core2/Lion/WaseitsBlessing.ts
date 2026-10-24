@@ -1,26 +1,26 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { sendHome } from '../../../GameActions/GameActions.js';
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class WaseitsBlessing extends DrawCard {
     static id = 'waseit-s-blessing';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Send a character home from each side',
-            targets: {
-                myCharacter: {
-                    cardCondition: (card) => card.isDefending(),
-                    gameAction: AbilityDsl.actions.sendHome()
-                },
-                oppCharacter: {
-                    dependsOn: 'myCharacter',
-                    cardCondition: (card) => card.isAttacking(),
-                    gameAction: AbilityDsl.actions.sendHome()
-                }
-            },
-            effect: 'send home {1} and {2}',
-            effectArgs: (context) => [context.targets.myCharacter, context.targets.oppCharacter],
-            max: AbilityDsl.limit.perRound(1)
-        });
+    override setupCardAbilities() {
+        this.conflictAction('Send a character home from each side')
+            .target({
+                name: 'myCharacter',
+                cardType: CardType.Character,
+                cardCondition: (card) => card.isDefending()
+            }, sendHome())
+            .target({
+                name: 'oppCharacter',
+                dependsOn: 'myCharacter',
+                cardType: CardType.Character,
+                cardCondition: (card) => card.isAttacking()
+            }, sendHome())
+            .chatText((context) => msg`send home ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
+            .max(perRound(1));
     }
 }

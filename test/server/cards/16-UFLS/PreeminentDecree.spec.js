@@ -59,13 +59,13 @@ describe('Preeminent Decree', function() {
             this.player1.clickCard(this.decree);
             this.player1.clickCard(this.yoshi);
 
-            expect(this.yoshi.getPoliticalSkill()).toBe(6);
-            expect(this.whisperer.getPoliticalSkill()).toBe(0);
-            expect(this.steward.getPoliticalSkill()).toBe(0);
-            expect(this.hotaru.getPoliticalSkill()).toBe(3);
-            expect(this.ujiaki.getPoliticalSkill()).toBe(2);
-            expect(this.toturi.getPoliticalSkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.yoshi.politicalSkill).toBe(6);
+            expect(this.whisperer.politicalSkill).toBe(0);
+            expect(this.steward.politicalSkill).toBe(0);
+            expect(this.hotaru.politicalSkill).toBe(3);
+            expect(this.ujiaki.politicalSkill).toBe(2);
+            expect(this.toturi.politicalSkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
             expect(this.getChatLogs(5)).toContain('player1 plays Preeminent Decree to give all participating characters except Kakita Yoshi -3political');
         });
@@ -83,13 +83,13 @@ describe('Preeminent Decree', function() {
             this.player1.clickCard(this.decree);
             this.player1.clickCard(this.yoshi);
 
-            expect(this.yoshi.getPoliticalSkill()).toBe(11);
-            expect(this.whisperer.getPoliticalSkill()).toBe(0);
-            expect(this.steward.getPoliticalSkill()).toBe(0);
-            expect(this.hotaru.getPoliticalSkill()).toBe(1);
-            expect(this.ujiaki.getPoliticalSkill()).toBe(0);
-            expect(this.toturi.getPoliticalSkill()).toBe(3);
-            expect(this.challenger.getPoliticalSkill()).toBe(3);
+            expect(this.yoshi.politicalSkill).toBe(11);
+            expect(this.whisperer.politicalSkill).toBe(0);
+            expect(this.steward.politicalSkill).toBe(0);
+            expect(this.hotaru.politicalSkill).toBe(1);
+            expect(this.ujiaki.politicalSkill).toBe(0);
+            expect(this.toturi.politicalSkill).toBe(3);
+            expect(this.challenger.politicalSkill).toBe(3);
 
             expect(this.getChatLogs(5)).toContain('player1 plays Preeminent Decree to give all participating characters except Kakita Yoshi -5political');
         });

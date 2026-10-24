@@ -21,7 +21,7 @@ describe('Soshi Yuka', function () {
 
         it('bows a character out of 2 options', function () {
             this.player1.clickCard(this.soshiYuka);
-            expect(this.player2).toHavePrompt('Choose 2 character');
+            expect(this.player2).toHavePrompt('Choose 2 characters');
             expect(this.player2).toBeAbleToSelect(this.dojiChallenger);
             expect(this.player2).toBeAbleToSelect(this.whisperer);
             expect(this.player2).toBeAbleToSelect(this.brashSamurai);

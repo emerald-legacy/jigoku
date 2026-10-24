@@ -1,51 +1,46 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardMenu, lookAt, moveCard, sequential, shuffleDeck } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class ThePerfectGift extends DrawCard {
     static id = 'the-perfect-gift';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Give each player a gift',
-            effect: 'give each player a gift',
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.lookAt(context => ({
+    override setupCardAbilities() {
+        this.action('Give each player a gift')
+            .gameAction(sequential([
+                lookAt((context) => ({
                     target: context.player.conflictDeck.slice(0, 4),
-                    message: '{0} reveals the top {1} from their conflict deck: {2}',
-                    messageArgs: cards => [context.player, cards.length, cards]
+                    message: (context, cards) => msg`${context.player} reveals the top ${cards.length} from their conflict deck: ${cards}`
                 })),
-                AbilityDsl.actions.lookAt(context => ({
+                lookAt((context) => ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
-                    message: '{0} reveals the top {1} from their conflict deck: {2}',
-                    messageArgs: cards => [context.player.opponent, cards.length, cards]
+                    message: (context, cards) => msg`${context.player.opponent} reveals the top ${cards.length} from their conflict deck: ${cards}`
                 })),
-                AbilityDsl.actions.cardMenu(context => ({
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to give to yourself',
                     cards: context.player.conflictDeck.slice(0, 4),
                     targets: true,
-                    message: '{0} chooses {1} to give to {2}',
-                    messageArgs: (card, player) => [player, card, context.player],
-                    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
+                    message: (context, card, player) => msg`${player} chooses ${card} to give to ${context.player}`,
+                    gameAction: moveCard({ destination: Location.Hand })
                 })),
-                AbilityDsl.actions.cardMenu(context => ({
+                cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to give your opponent',
                     cards: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                     targets: true,
-                    message: '{0} chooses {1} to give to {2}',
-                    messageArgs: (card, player) => [player, card, context.player.opponent],
-                    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
+                    message: (context, card, player) => msg`${player} chooses ${card} to give to ${context.player.opponent}`,
+                    gameAction: moveCard({ destination: Location.Hand })
                 })),
-                AbilityDsl.actions.shuffleDeck(context => ({
+                shuffleDeck((context) => ({
                     target: context.player,
                     deck: Location.ConflictDeck
                 })),
-                AbilityDsl.actions.shuffleDeck(context => ({
+                shuffleDeck((context) => ({
                     target: context.player.opponent || [],
                     deck: Location.ConflictDeck
                 }))
-            ])
-        });
+            ]))
+            .chatText('give each player a gift');
     }
 }
 

@@ -1,32 +1,26 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Element, EventName } from '../../../Constants.js';
+import { ready } from '../../../GameActions/GameActions.js';
+import { CardType, Element, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { claimsRingOf } from '../../claimedRings.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 const RING_CLAIM = 'henshin-seeker-fire';
 
 export default class HenshinSeeker extends DrawCard {
     static id = 'henshin-seeker';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Ready a character',
-            when: {
-                onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => {
-                    const element = this.getCurrentElementSymbol(RING_CLAIM) as Element;
-                    return (event.conflict && event.conflict.hasElement(element)) || event.ring.hasElement(element);
-                }
-            },
-            target: {
+    override setupCardAbilities() {
+        this.reaction('Ready a character')
+            .when({
+                onClaimRing: (event) => claimsRingOf(this, RING_CLAIM, event)
+            })
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasSomeTrait('scholar', 'monk'),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                cardCondition: (card) => card.hasSomeTrait(Trait.Scholar, Trait.Monk)
+            }, ready());
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+    override getPrintedElementSymbols() {
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({ key: RING_CLAIM, prettyName: 'Ring', element: Element.Fire });
         return symbols;
     }

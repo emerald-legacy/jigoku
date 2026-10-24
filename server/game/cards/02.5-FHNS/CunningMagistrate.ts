@@ -1,16 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { EffectTarget } from '../../Effects/EffectBuilder.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotContribute } from '../../effects.js';
 
 class CunningMagistrate extends DrawCard {
     static id = 'cunning-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
-            effect: AbilityDsl.effects.cannotContribute((_conflict: EffectTarget, context: AbilityContext) => {
-                return (card: DrawCard) => card.isDishonored && card !== context.source;
+            condition: (context) => context.source.isParticipating(),
+            effect: cannotContribute((_conflict, context) => {
+                return (card) => card.isDishonored && card !== context.source;
             })
         });
     }

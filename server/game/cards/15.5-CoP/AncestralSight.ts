@@ -1,41 +1,39 @@
 import DrawCard from '../../DrawCard.js';
-import BaseCard from '../../BaseCard.js';
-import { CardType, Players, AbilityType, TargetMode, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../BaseCard.js';
+import { CardType, Players, Location, Trait } from '../../Constants.js';
+import { gainAbility } from '../../effects.js';
+import { placeFate, returnToDeck } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../Player.js';
 import type { Cost } from '../../costs/Cost.js';
 
-const isCopyInPlay = function(card: BaseCard, context: AbilityContext) {
-    return context.game.findAnyCardsInPlay((c: BaseCard) => c.name === card.name).length > 0;
-};
+function isCopyInPlay(card: BaseCard, context: AbilityContext) {
+    return context.game.findAnyCardsInPlay((c) => c.name === card.name).length > 0;
+}
 
-const ancestralSightCost = function (): Cost {
+function ancestralSightCost(): Cost<{ ancestralSightCost: DrawCard }> {
     return {
-        getActionName(_context: AbilityContext) {
+        getActionName(_context) {
             return 'ancestralSightCost';
         },
-        getCostMessage: function (_context: AbilityContext) {
+        getCostMessage(_context) {
             return ['returning {0} to the bottom of the dynasty deck'];
         },
-        canPay: function (context: AbilityContext) {
-            const discardPile = context.player.dynastyDiscardPile;
-            if(!discardPile) {
-                return false;
-            }
-            return discardPile.some((card: BaseCard) => isCopyInPlay(card, context));
+        canPay(context) {
+            return context.player.dynastyDiscardPile.some((card) => isCopyInPlay(card, context));
         },
-        resolve: function (context: AbilityContext, result: { cancelled?: boolean }) {
+        resolve(context, result) {
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a card to return to your deck',
                 context: context,
-                mode: TargetMode.Single,
+
                 location: Location.DynastyDiscardPile,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card: BaseCard, ctx: AbilityContext) => isCopyInPlay(card, ctx),
-                onSelect: (_player: Player, card: BaseCard) => {
-                    context.costs.ancestralSightCost = card;
+                cardCondition: (card, ctx) => isCopyInPlay(card, ctx),
+                onSelect: (_player, card) => {
+                    if(card.isDrawCard()) {
+                        context.costs.ancestralSightCost = card;
+                    }
                     return true;
                 },
                 onCancel: () => {
@@ -44,36 +42,33 @@ const ancestralSightCost = function (): Cost {
                 }
             });
         },
-        payEvent: function (context: AbilityContext) {
-            const action = context.game.actions.returnToDeck({ target: context.costs.ancestralSightCost as DrawCard, bottom: true, location: Location.DynastyDiscardPile });
+        payEvent(context) {
+            const action = returnToDeck({ target: context.costs.ancestralSightCost, bottom: true, location: Location.DynastyDiscardPile });
             return action.getEvent(context.costs.ancestralSightCost, context);
         },
         promptsPlayer: true
     };
-};
+}
 
 class AncestralSight extends DrawCard {
     static id = 'ancestral-sight';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'shugenja'
+            trait: Trait.Shugenja
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Put a fate on a character',
-                cost: ancestralSightCost(),
-                printedAbility: false,
-                cannotTargetFirst: true,
-                target: {
+            effect: gainAbility.action('Put a fate on a character', (ability) => ability
+                .cost(ancestralSightCost())
+                .target({
                     cardType: CardType.Character,
-                    cardCondition: (card, context: AbilityContext) => {
-                        return !context.costs.ancestralSightCost || context.costs.ancestralSightCost && card.name === (context.costs.ancestralSightCost as DrawCard).name;
-                    },
-                    gameAction: AbilityDsl.actions.placeFate((context: AbilityContext) => ({ origin: context.player }))
-                }
-            })
+                    cardCondition: (card, context) => {
+                        const returned = context.costs.ancestralSightCost;
+                        return !returned || (returned.isDrawCard() && card.name === returned.name);
+                    }
+                }, placeFate((context) => ({ origin: context.player })))
+                .cannotTargetFirst())
         });
     }
 }

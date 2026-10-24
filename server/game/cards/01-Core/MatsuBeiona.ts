@@ -1,23 +1,21 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class MatsuBeiona extends DrawCard {
     static id = 'matsu-beiona';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Put 2 fate on this character',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Put 2 fate on this character')
+            .when({
                 onCharacterEntersPlay: (event, context) => (
                     event.card === context.source &&
-                    context.player.cardsInPlay.filter(card => (
-                        card.hasTrait('bushi') &&
+                    context.player.cardsInPlay.filter((card) => (
+                        card.hasTrait(Trait.Bushi) &&
                         card !== context.source
                     )).length >= 3
                 )
-            },
-            gameAction: ability.actions.placeFate({ amount: 2 })
-        });
+            })
+            .placeFate({ amount: 2 });
     }
 }
 

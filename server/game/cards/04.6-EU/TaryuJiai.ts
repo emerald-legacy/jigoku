@@ -1,47 +1,43 @@
-import { CardType, DuelType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { CardType, DuelType, Players, Trait } from '../../Constants.js';
+import { duel, resolveRingEffect, selectRing } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class TaryuJiai extends DrawCard {
     static id = 'taryu-jiai';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Initiate a glory duel between two shugenja',
-            condition: () => this.game.isDuringConflict(),
-            targets: {
-                myShugenja: {
-                    activePromptTitle: 'Choose a friendly shugenja',
-                    controller: Players.Self,
-                    cardType: CardType.Character,
-                    cardCondition: (card) => card.hasTrait('shugenja')
-                },
-                oppShugenja: {
-                    dependsOn: 'myShugenja',
-                    activePromptTitle: 'Choose an opposing shugenja',
-                    controller: Players.Opponent,
-                    cardType: CardType.Character,
-                    cardCondition: (card) => card.hasTrait('shugenja'),
-                    gameAction: AbilityDsl.actions.duel((context) => ({
-                        type: DuelType.Glory,
-                        challenger: context.targets.myShugenja,
-                        message: '{0} chooses a ring effect to resolve',
-                        messageArgs: (duel) => duel.winnerController,
-                        gameAction: (duel) =>
-                            AbilityDsl.actions.selectRing({
-                                activePromptTitle: 'Choose a ring effect to resolve',
-                                player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
-                                ringCondition: () => (duel.winner?.length ?? 0) > 0,
-                                targets: true,
-                                message: '{0} chooses to resolve {1}\'s effect',
-                                messageArgs: (ring) => [duel.winnerController, ring],
-                                gameAction: AbilityDsl.actions.resolveRingEffect({
-                                    player: duel.winnerController
-                                })
-                            })
-                    }))
-                }
-            }
-        });
+    override setupCardAbilities() {
+        this.action('Initiate a glory duel between two shugenja')
+            .condition((context) => context.game.isDuringConflict())
+            .target({
+                name: 'myShugenja',
+                activePromptTitle: 'Choose a friendly shugenja',
+                controller: Players.Self,
+                cardType: CardType.Character,
+                cardCondition: (card) => card.hasTrait(Trait.Shugenja)
+            })
+            .target({
+                name: 'oppShugenja',
+                dependsOn: 'myShugenja',
+                activePromptTitle: 'Choose an opposing shugenja',
+                controller: Players.Opponent,
+                cardType: CardType.Character,
+                cardCondition: (card) => card.hasTrait(Trait.Shugenja)
+            }, duel((context) => ({
+                type: DuelType.Glory,
+                challenger: context.targets.myShugenja,
+                targetCondition: (card) => card.hasTrait(Trait.Shugenja),
+                chatText: (_context, duel) => msg`${duel.winnerController} chooses a ring effect to resolve`,
+                gameAction: (duel) =>
+                    selectRing({
+                        activePromptTitle: 'Choose a ring effect to resolve',
+                        player: duel.winnerController,
+                        targets: true,
+                        message: (_context, ring) => msg`${duel.winnerController} chooses to resolve ${ring}'s effect`,
+                        gameAction: resolveRingEffect({
+                            player: duel.winnerController
+                        })
+                    })
+            })));
     }
 }

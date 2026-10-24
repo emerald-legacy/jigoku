@@ -1,16 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type { EffectTarget } from '../../Effects/EffectBuilder.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { cannotContribute } from '../../effects.js';
 
 class HaughtyMagistrate extends DrawCard {
     static id = 'haughty-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isAttacking(),
-            effect: AbilityDsl.effects.cannotContribute((_conflict: EffectTarget, context: AbilityContext) => {
-                return (card: DrawCard) => card.getGlory() < (context.source as DrawCard).getGlory() && card !== context.source;
+            condition: (context) => context.source.isAttacking(),
+            effect: cannotContribute((_conflict, context) => {
+                return (card) => context.source.isDrawCard() && card.glory < context.source.glory && card !== context.source;
             })
         });
     }

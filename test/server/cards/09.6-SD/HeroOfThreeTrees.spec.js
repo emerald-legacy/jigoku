@@ -60,7 +60,7 @@ describe('Hero Of Three Trees', function() {
                 defenders: []
             });
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.jewel);
@@ -85,7 +85,7 @@ describe('Hero Of Three Trees', function() {
                 province: this.p2Shameful
             });
 
-            let strength = this.p2Shameful.strength;
+            const strength = this.p2Shameful.strength;
 
             this.player2.pass();
             this.player1.clickCard(this.jewel);
@@ -123,7 +123,7 @@ describe('Hero Of Three Trees', function() {
                 this.player2.pass();
             }
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player1.clickCard(this.hero);
             expect(this.player1).toHavePrompt('Select one');
@@ -142,7 +142,7 @@ describe('Hero Of Three Trees', function() {
                 province: this.p2Shameful
             });
 
-            let strength = this.p2Shameful.strength;
+            const strength = this.p2Shameful.strength;
 
             this.player2.pass();
             this.player1.clickCard(this.jewel);
@@ -174,7 +174,7 @@ describe('Hero Of Three Trees', function() {
                 province: this.p1Shameful
             });
 
-            let strength = this.p1Shameful.strength;
+            const strength = this.p1Shameful.strength;
 
             this.player1.clickCard(this.jewel);
             this.player1.clickCard(this.hero);

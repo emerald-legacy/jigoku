@@ -74,7 +74,7 @@ describe('Iron Foundations Stance', function() {
             });
 
             this.player2.pass();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand - 1);
@@ -90,7 +90,7 @@ describe('Iron Foundations Stance', function() {
 
             this.player2.clickCard(this.hurricane2);
             this.player2.clickCard(this.kazue);
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand - 1);
@@ -108,7 +108,7 @@ describe('Iron Foundations Stance', function() {
             this.player1.clickCard(this.katana);
             this.player1.clickCard(this.initiate);
             this.player2.pass();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand - 1);
@@ -126,7 +126,7 @@ describe('Iron Foundations Stance', function() {
             this.player1.clickCard(this.hurricane);
             this.player1.clickCard(this.initiate);
             this.player2.pass();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand);
@@ -158,7 +158,7 @@ describe('Iron Foundations Stance', function() {
                 ring: 'fire'
             });
 
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand - 1);

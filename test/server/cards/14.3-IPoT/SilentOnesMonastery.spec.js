@@ -1,3 +1,5 @@
+import * as costs from '../../../../build/server/game/costs/index.js';
+
 describe('Silent Ones Monastery', function() {
     integration(function() {
         describe('functionality from an opponent standpoint', function () {
@@ -31,7 +33,14 @@ describe('Silent Ones Monastery', function() {
                 this.silentOnesMonastery = this.player2.findCardByName('silent-ones-monastery', 'province 1');
                 this.dispatch = this.player2.placeCardInProvince('dispatch-to-nowhere', 'province 4');
                 this.city = this.player2.findCardByName('city-of-the-open-hand');
-                this.city.loadOriginalAction();
+                // the FFG version of the stronghold: "Steal an honor"
+                this.city.abilities.actions = [];
+                this.city.declareAbilities(() => {
+                    this.city.action('Steal an honor')
+                        .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
+                        .cost(costs.bowSelf())
+                        .takeHonor();
+                });
             });
 
             it('should limit the phate gained by the opponent in one phase to 2', function() {
@@ -179,14 +188,56 @@ describe('Silent Ones Monastery', function() {
                 expect(this.player2.honor).toBe(this.preDrawBidHonorSOMPlayer - 2); // 1 to 5 bid, player 2 should technically pay 4, but SOM prevents all but 2
                 expect(this.getChatLogs(10)).toContain('player2 gives player1 2 honor');
 
-                let p1Honor = this.player1.honor;
-                let p2Honor = this.player2.honor;
+                const p1Honor = this.player1.honor;
+                const p2Honor = this.player2.honor;
 
                 this.player1.pass();
                 this.player2.clickCard(this.city);
                 expect(this.player1.honor).toBe(p1Honor - 1);
                 expect(this.player2.honor).toBe(p2Honor + 1);
                 expect(this.getChatLogs(5)).toContain('player2 uses City of the Open Hand, bowing City of the Open Hand to take 1 honor from player1');
+            });
+        });
+        describe('when the owner starts a new dynasty phase with A Season of War', function () {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'dynasty',
+                    player1: {
+                        fate: 30,
+                        dynastyDiscard: ['ikoma-prodigy', 'ikoma-prodigy', 'ikoma-prodigy']
+                    },
+                    player2: {
+                        provinces: ['silent-ones-monastery'],
+                        dynastyDiscard: ['eager-scout', 'a-season-of-war']
+                    }
+                });
+
+                [this.prodigy1, this.prodigy2, this.prodigy3] = this.player1.filterCardsByName('ikoma-prodigy', 'dynasty discard pile');
+                this.player1.placeCardInProvince(this.prodigy1, 'province 1');
+                this.player1.placeCardInProvince(this.prodigy2, 'province 2');
+                this.scout = this.player2.placeCardInProvince('eager-scout', 'province 2');
+                this.asow = this.player2.placeCardInProvince('a-season-of-war', 'province 3');
+            });
+
+            it('should let the opponent gain honor again in the new phase', function() {
+                const honor = this.player1.honor;
+                this.player1.clickCard(this.prodigy1);
+                this.player1.clickPrompt('1');
+                this.player1.clickCard(this.prodigy1);
+                this.player2.clickCard(this.scout);
+                this.player2.clickPrompt('0');
+                this.player1.clickCard(this.prodigy2);
+                this.player1.clickPrompt('1');
+                this.player1.clickCard(this.prodigy2);
+                expect(this.player1.honor).toBe(honor + 2);
+
+                this.player2.clickCard(this.asow);
+                this.player1.placeCardInProvince(this.prodigy3, 'province 3');
+                this.player1.clickCard(this.prodigy3);
+                this.player1.clickPrompt('1');
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                this.player1.clickCard(this.prodigy3);
+                expect(this.player1.honor).toBe(honor + 3);
             });
         });
         describe('functionality when the honor gain would surpass the limit', function () {

@@ -65,9 +65,7 @@ describe('Togashi Mitsu 2', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 5; i++) {
+                for(let i = 0; i < 5; i++) {
                     expect(this.player2).toHavePrompt('Conflict Action Window');
                     this.player2.clickCard(this.mitsu);
                     expect(this.player2).toHavePrompt('Conflict Action Window');
@@ -88,9 +86,7 @@ describe('Togashi Mitsu 2', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 5; i++) {
+                for(let i = 0; i < 5; i++) {
                     this.player2.playAttachment(this.player2.filterCardsByName('a-new-name')[i], this.mitsu);
                     this.player1.pass();
                 }
@@ -108,9 +104,7 @@ describe('Togashi Mitsu 2', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 5; i++) {
+                for(let i = 0; i < 5; i++) {
                     this.player2.playAttachment(this.player2.filterCardsByName('a-new-name')[i], this.mitsu);
                     this.player1.pass();
                 }
@@ -141,9 +135,7 @@ describe('Togashi Mitsu 2', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 5; i++) {
+                for(let i = 0; i < 5; i++) {
                     this.player2.playAttachment(this.player2.filterCardsByName('a-new-name')[i], this.mitsu);
                     this.player1.pass();
                 }
@@ -169,9 +161,7 @@ describe('Togashi Mitsu 2', function() {
                 this.player1.pass();
                 this.mitsu.bowed = true;
 
-                let i = 0;
-
-                for(i = 0; i < 5; i++) {
+                for(let i = 0; i < 5; i++) {
                     this.player2.playAttachment(this.player2.filterCardsByName('a-new-name')[i], this.mitsu);
                     this.player1.pass();
                 }

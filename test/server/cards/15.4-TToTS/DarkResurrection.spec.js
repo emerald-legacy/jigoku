@@ -45,6 +45,21 @@ describe('Dark Resurrection', function() {
             expect(this.player1).toHavePrompt('Conflict Action Window');
         });
 
+        it('should not be playable without a character it could put into play (choosing none changes nothing)', function() {
+            this.player1.moveCard(this.vice, 'removed from game');
+            this.player1.moveCard(this.tsanuri, 'removed from game');
+            this.player1.moveCard(this.motso, 'removed from game');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderRider],
+                defenders: [],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.dark);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+
         it('should allow targeting characters that costs 3 or less in your dynasty discard pile', function() {
             this.noMoreActions();
 

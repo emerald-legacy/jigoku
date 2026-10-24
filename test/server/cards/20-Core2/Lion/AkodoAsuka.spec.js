@@ -35,6 +35,7 @@ describe('Akodo Asuka', function () {
             this.player1.clickCard(this.akodoAsuka);
 
             expect(this.player1).toHavePrompt('Akodo Asuka');
+            expect(this.player1).not.toHavePromptButton('Take nothing');
             this.player1.clickPrompt('Supernatural Storm (2)');
             expect(this.player1.hand.length).toBe(initialHandSize + 1);
             expect(this.getChatLogs(5)).toContain(

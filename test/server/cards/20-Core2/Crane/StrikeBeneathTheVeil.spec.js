@@ -35,8 +35,8 @@ describe('Strike Beneath the Veil', function () {
             expect(this.player2).toHavePrompt('Choose a character');
 
             this.player2.clickCard(this.toturi);
-            expect(this.toturi.getMilitarySkill()).toBe(2);
-            expect(this.toturi.getPoliticalSkill()).toBe(0);
+            expect(this.toturi.militarySkill).toBe(2);
+            expect(this.toturi.politicalSkill).toBe(0);
             expect(this.getChatLogs(5)).toContain(
                 'player2 plays Strike Beneath the Veil to give Akodo Toturi -6military and -6political'
             );

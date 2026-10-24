@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Covert - Emerald', function() {
     integration(function() {
@@ -12,7 +12,7 @@ describe('Covert - Emerald', function() {
                     inPlay: ['hantei-sotorii', 'master-alchemist', 'doji-challenger', 'doji-whisperer'],
                     hand: ['vine-tattoo', 'finger-of-jade']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.shameful = this.player2.findCardByName('shameful-display', 'province 1');
@@ -145,7 +145,7 @@ describe('Covert - Emerald', function() {
                 expect(this.player1).toHavePrompt('Choose character to evade with covert');
             });
 
-            it('FoJ should still prevent', function() {
+            it('FoJ cancels only one instance of covert (EmeraldDB ruling)', function() {
                 this.player1.pass();
                 this.player2.playAttachment(this.jade, this.sotorii);
                 this.noMoreActions();
@@ -162,15 +162,16 @@ describe('Covert - Emerald', function() {
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect(this.jade);
                 this.player2.clickCard(this.jade);
+                this.player2.clickCard(this.mitsu);
+                expect(this.jade.location).toBe('conflict discard pile');
+                expect(this.sotorii.covert).toBe(true);
                 expect(this.player2).toHavePrompt('Choose defenders');
 
                 this.player2.clickCard(this.sotorii);
                 this.player2.clickCard(this.masterAlchemist);
-                expect(this.game.currentConflict.defenders).toContain(this.masterAlchemist);
-                expect(this.game.currentConflict.defenders).toContain(this.sotorii);
                 this.player2.clickPrompt('Done');
                 expect(this.game.currentConflict.defenders).toContain(this.masterAlchemist);
-                expect(this.game.currentConflict.defenders).toContain(this.sotorii);
+                expect(this.game.currentConflict.defenders).not.toContain(this.sotorii);
             });
         });
 
@@ -205,7 +206,7 @@ describe('Covert - Emerald Bug Checking', function() {
                     provinces: ['retire-to-the-brotherhood'],
                     role: ['seeker-of-void']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.shameful = this.player2.findCardByName('shameful-display', 'province 4');

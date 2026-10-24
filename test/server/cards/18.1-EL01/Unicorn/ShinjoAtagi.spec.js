@@ -45,8 +45,8 @@ describe('Shinjo Atagi', function () {
             expect(this.player2).toBeAbleToSelect(this.yoshi);
             expect(this.player2).not.toBeAbleToSelect(this.whisperer);
             this.player2.clickCard(this.rider);
-            expect(this.rider.getMilitarySkill()).toBe(4);
-            expect(this.rider.getPoliticalSkill()).toBe(1);
+            expect(this.rider.militarySkill).toBe(4);
+            expect(this.rider.politicalSkill).toBe(1);
             expect(this.getChatLogs(5)).toContain(
                 'player2 uses Shinjo Atagi to set the military skill of Border Rider to the strength of an attacked province'
             );
@@ -69,8 +69,8 @@ describe('Shinjo Atagi', function () {
             expect(this.player2).toBeAbleToSelect(this.yoshi);
             expect(this.player2).not.toBeAbleToSelect(this.whisperer);
             this.player2.clickCard(this.rider);
-            expect(this.rider.getMilitarySkill()).toBe(2);
-            expect(this.rider.getPoliticalSkill()).toBe(4);
+            expect(this.rider.militarySkill).toBe(2);
+            expect(this.rider.politicalSkill).toBe(4);
             expect(this.getChatLogs(5)).toContain(
                 'player2 uses Shinjo Atagi to set the political skill of Border Rider to the strength of an attacked province'
             );
@@ -98,8 +98,8 @@ describe('Shinjo Atagi', function () {
             expect(this.player2).toBeAbleToSelect(this.yoshi);
             expect(this.player2).not.toBeAbleToSelect(this.whisperer);
             this.player2.clickCard(this.rider);
-            expect(this.rider.getMilitarySkill()).toBe(2);
-            expect(this.rider.getPoliticalSkill()).toBe(7);
+            expect(this.rider.militarySkill).toBe(2);
+            expect(this.rider.politicalSkill).toBe(7);
             expect(this.getChatLogs(5)).toContain(
                 'player2 uses Shinjo Atagi to set the political skill of Border Rider to the strength of an attacked province'
             );

@@ -34,7 +34,7 @@ describe('Hida Kisada', function() {
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.akodoToturi);
                 expect(this.getChatLogs(3)).toContain('player2 attempts to initiate Banzai!, but Hida Kisada cancels it');
-                expect(this.akodoToturi.getMilitarySkill()).toBe(6);
+                expect(this.akodoToturi.militarySkill).toBe(6);
             });
 
             it('should not cancel the second action ability triggered by your opponent', function() {
@@ -52,7 +52,7 @@ describe('Hida Kisada', function() {
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.akodoToturi);
                 this.player2.clickPrompt('Done');
-                expect(this.akodoToturi.getMilitarySkill()).toBe(8);
+                expect(this.akodoToturi.militarySkill).toBe(8);
             });
 
             it('should not cancel reactions triggered by your opponent', function() {
@@ -95,7 +95,36 @@ describe('Hida Kisada', function() {
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.akodoToturi);
                 this.player2.clickPrompt('Done');
-                expect(this.akodoToturi.getMilitarySkill()).toBe(8);
+                expect(this.akodoToturi.militarySkill).toBe(8);
+            });
+
+            it('should cancel the first action again in the next conflict of the same phase', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.hidaKisada],
+                    defenders: []
+                });
+                this.player2.clickCard(this.banzai);
+                this.player2.clickCard(this.hidaKisada);
+                expect(this.getChatLogs(3)).toContain('player2 attempts to initiate Banzai!, but Hida Kisada cancels it');
+                this.noMoreActions();
+                this.player1.clickPrompt('No');
+                this.player1.clickPrompt('Don\'t Resolve');
+                expect(this.game.conflictRecord.length).toBe(1);
+                expect(this.game.conflictRecord[0].winner).toBe(this.player1.player);
+
+                this.player2.moveCard(this.banzai, 'hand');
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.akodoToturi],
+                    defenders: [],
+                    ring: 'fire'
+                });
+                this.player1.pass();
+                this.player2.clickCard(this.banzai);
+                this.player2.clickCard(this.akodoToturi);
+                expect(this.getChatLogs(3)).toContain('player2 attempts to initiate Banzai!, but Hida Kisada cancels it');
+                expect(this.akodoToturi.militarySkill).toBe(6);
             });
 
             it('should not cancel the second action if the first is cancelled', function() {
@@ -115,7 +144,7 @@ describe('Hida Kisada', function() {
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('1');
                 expect(this.getChatLogs(3)).toContain('Duel Effect: cancel the effects of Banzai!');
-                expect(this.akodoToturi.getMilitarySkill()).toBe(6);
+                expect(this.akodoToturi.militarySkill).toBe(6);
                 this.player1.pass();
                 this.player2.clickCard(this.shamefulDisplay);
                 this.player2.clickCard(this.akodoToturi);
@@ -205,6 +234,53 @@ describe('Hida Kisada', function() {
                 this.player1.clickCard(this.samurai);
                 expect(this.getChatLogs(10)).toContain('player1 attempts to initiate Banzai!, but Hida Kisada cancels it');
             });
+        });
+    });
+});
+
+describe('Hida Kisada and resolved abilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-kisada', 'brash-samurai'],
+                    hand: ['banzai']
+                },
+                player2: {
+                    honor: 11,
+                    inPlay: ['asahina-storyteller', 'seppun-guardsman'],
+                    hand: ['the-mirror-s-gaze', 'assassination']
+                }
+            });
+            this.hidaKisada = this.player1.findCardByName('hida-kisada');
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.storyteller = this.player2.findCardByName('asahina-storyteller');
+            this.guardsman = this.player2.findCardByName('seppun-guardsman');
+            this.assassination = this.player2.findCardByName('assassination');
+            this.player1.pass();
+            this.gaze = this.player2.playAttachment('the-mirror-s-gaze', this.storyteller);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.hidaKisada, this.brash],
+                defenders: [this.guardsman]
+            });
+            this.player2.pass();
+        });
+
+        it('does not cancel a copy (resolved, not triggered), but the opponent\'s first triggered action', function() {
+            const mil = this.guardsman.getMilitarySkill();
+            this.player1.clickCard('banzai');
+            this.player1.clickCard(this.brash);
+            this.player1.clickPrompt('Done');
+            this.player2.clickCard(this.gaze);
+            this.player2.clickCard(this.guardsman);
+            this.player2.clickPrompt('Done');
+            expect(this.guardsman.getMilitarySkill()).toBe(mil + 2);
+            this.player2.clickCard(this.assassination);
+            this.player2.clickCard(this.brash);
+            expect(this.brash.location).toBe('play area');
+            expect(this.getChatLogs(5)).toContain('player2 attempts to initiate Assassination, but Hida Kisada cancels it');
         });
     });
 });

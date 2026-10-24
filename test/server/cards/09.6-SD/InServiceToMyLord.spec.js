@@ -31,11 +31,11 @@ describe('In Service to My Lord', function() {
                 this.dojiKuwanan.bowed = true;
             });
 
-            it('should bow a non-unique to stand a unique and go to the bottom of the deck (should also allow you to choose an already standing unique)', function() {
+            it('should bow a non-unique to stand a bowed unique and go to the bottom of the deck', function() {
                 this.player1.clickCard(this.service);
                 expect(this.player1).toHavePrompt('Choose a unique character');
                 expect(this.player1).not.toBeAbleToSelect(this.brashSamurai);
-                expect(this.player1).toBeAbleToSelect(this.kakitaToshimoko);
+                expect(this.player1).not.toBeAbleToSelect(this.kakitaToshimoko); // already ready (RRG Target)
                 expect(this.player1).toBeAbleToSelect(this.daidojiUji);
                 expect(this.player1).not.toBeAbleToSelect(this.dojiChallenger);
                 expect(this.player1).not.toBeAbleToSelect(this.naiveStudent);
@@ -55,22 +55,16 @@ describe('In Service to My Lord', function() {
                 this.player1.clickCard(this.brashSamurai);
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.daidojiUji.bowed).toBe(false);
-                expect(this.getChatLogs(1)).toContain('player1 plays In Service to My Lord, bowing Brash Samurai to ready Daidoji Uji.  In Service to My Lord is placed on the bottom of player1\'s conflict deck');
+                expect(this.getChatLogs(1)).toContain('player1 plays In Service to My Lord, bowing Brash Samurai to ready Daidoji Uji. In Service to My Lord is placed on the bottom of player1\'s conflict deck');
                 expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
             });
 
-            it('should go to the bottom of the deck even if you stand no one', function() {
+            it('cannot be played when no unique character can be readied', function() {
+                this.daidojiUji.bowed = false;
+                this.dojiKuwanan.bowed = false;
                 this.player1.clickCard(this.service);
-                expect(this.player1).toHavePrompt('Choose a unique character');
-                expect(this.kakitaToshimoko.bowed).toBe(false);
-                this.player1.clickCard(this.kakitaToshimoko);
-                expect(this.player1).toHavePrompt('Select card to bow');
-                expect(this.player1).toBeAbleToSelect(this.brashSamurai);
-                this.player1.clickCard(this.brashSamurai);
-                expect(this.brashSamurai.bowed).toBe(true);
-                expect(this.kakitaToshimoko.bowed).toBe(false);
-                expect(this.getChatLogs(1)).toContain('player1 plays In Service to My Lord, bowing Brash Samurai to ready Kakita Toshimoko.  In Service to My Lord is placed on the bottom of player1\'s conflict deck');
-                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.service.location).toBe('hand');
             });
 
             it('should go to the discard pile if cancelled', function() {
@@ -245,7 +239,7 @@ describe('In Service to My Lord', function() {
                 expect(this.dojiKuwanan.bowed).toBe(false);
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
-                expect(this.getChatLogs(3)).toContain('player2 plays In Service to My Lord, bowing Brash Samurai to ready Doji Kuwanan.  In Service to My Lord is placed on the bottom of player1\'s conflict deck');
+                expect(this.getChatLogs(3)).toContain('player2 plays In Service to My Lord, bowing Brash Samurai to ready Doji Kuwanan. In Service to My Lord is placed on the bottom of player1\'s conflict deck');
             });
 
             it('should go to the owners discard if played by non-owner and cancelled', function() {

@@ -1,43 +1,78 @@
-import AbilityTargetAbility from './AbilityTargets/AbilityTargetAbility.js';
-import AbilityTargetCard from './AbilityTargets/AbilityTargetCard.js';
-import AbilityTargetRing from './AbilityTargets/AbilityTargetRing.js';
-import AbilityTargetSelect from './AbilityTargets/AbilityTargetSelect.js';
-import AbilityTargetToken from './AbilityTargets/AbilityTargetToken.js';
-import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSymbol.js';
-import { Stage, TargetMode, AbilityType, Players } from './Constants.js';
+import type { ActionOverrides, HeldAction } from './GameActions/GameAction.js';
+import { AbilityTargetAbility } from './AbilityTargets/AbilityTargetAbility.js';
+import { AbilityTargetCard } from './AbilityTargets/AbilityTargetCard.js';
+import { AbilityTargetRing } from './AbilityTargets/AbilityTargetRing.js';
+import { AbilityTargetSelect } from './AbilityTargets/AbilityTargetSelect.js';
+import { AbilityTargetToken } from './AbilityTargets/AbilityTargetToken.js';
+import { AbilityTargetElementSymbol } from './AbilityTargets/AbilityTargetElementSymbol.js';
+import { Stage, TargetMode, AbilityType, type Players, Blocker } from './Constants.js';
+import type Player from './Player.js';
 import type { AbilityContext } from './AbilityContext.js';
-import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
-import type { GameAction } from './GameActions/GameAction.js';
+import { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { Cost } from './costs/Cost.js';
+import { addCostEvents } from './costs/addCostEvents.js';
 import type { TargetPropertiesInput } from './Interfaces.js';
+import type { AbilityLimit } from './AbilityLimit.js';
+import type BaseCard from './BaseCard.js';
+import type { CardAbility } from './CardAbility.js';
+import type { TriggeredAbility } from './TriggeredAbility.js';
 
 interface AbilityTargetProperties {
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
 }
 
-interface AbilityTarget {
+/** What a target knows of the target that depends on it (of any kind): it checks it for each candidate. */
+export interface DependentTarget {
+    hasLegalTarget(context: AbilityContext): boolean;
+    checkGameActionsForTargetsChosenByInitiatingPlayer?(context: AbilityContext): boolean;
+}
+
+/** The ability a target belongs to, as seen by the target: its sibling targets, its own game actions and whether a step follows. */
+export interface OwningAbility {
+    targets: { name: string; dependentTarget: DependentTarget | null }[];
+    /** The ability's own game actions (not its targets'). */
+    gameAction: GameAction[];
+    hasFollowingStep(): boolean;
+}
+
+interface AbilityTarget extends DependentTarget {
     name: string;
     properties: AbilityTargetProperties;
+    dependentTarget: DependentTarget | null;
     dependentCost?: Cost | null;
     canResolve(context: AbilityContext): boolean;
     resolve(context: AbilityContext, targetResults: TargetResults): void;
     checkTarget(context: AbilityContext): boolean;
-    hasLegalTarget(context: AbilityContext): boolean;
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean;
-    getGameAction(context: AbilityContext): GameAction[];
+    getGameAction(context: AbilityContext): HeldAction[];
+    getChoosingPlayer(context: AbilityContext): Player | undefined;
+}
+
+/**
+ * A game action as ability properties declare it: typed for the ability's own context, so nested
+ * property factories get that context. The ability checks that it is a `GameAction` when stored.
+ */
+export interface DeclaredGameAction<Context = never> {
+    hasLegalTarget(context: Context, additionalProperties?: ActionOverrides): boolean;
+}
+
+export function toGameAction(action: object, message = 'An ability\'s gameAction must be a game action'): GameAction {
+    if(!(action instanceof GameAction)) {
+        throw new Error(message);
+    }
+    return action;
 }
 
 export interface BaseAbilityProperties {
     cost?: Cost | Cost[];
     target?: TargetPropertiesInput;
     targets?: Record<string, TargetPropertiesInput>;
-    gameAction?: GameAction | GameAction[];
+    gameAction?: DeclaredGameAction | DeclaredGameAction[];
 }
 
-interface TargetResults {
-    canIgnoreAllCosts?: boolean;
+export interface TargetResults {
     cancelled?: boolean;
     payCostsFirst?: boolean;
     delayTargeting?: AbilityTarget | null;
@@ -56,12 +91,24 @@ interface TargetResults {
  * `player` that is executing the action, and the `source` card object that the
  * ability is generated from.
  */
-class BaseAbility {
+export class BaseAbility {
     abilityType: AbilityType = AbilityType.Action;
     gameAction: GameAction[];
     targets: AbilityTarget[];
     cost: Cost[];
     nonDependentTargets: AbilityTarget[];
+    // set by card abilities; the engine and cards read them from any ability
+    title?: string;
+    limit?: AbilityLimit;
+    max?: AbilityLimit;
+    maxIdentifier?: string;
+    cannotTargetFirst?: boolean;
+    /** Both players choose, the first player first (developer rulings). */
+    firstPlayerChoosesFirst?: boolean;
+    cannotBeCancelled?: boolean;
+    cannotBeMirrored?: boolean;
+    printedAbility?: boolean;
+    origin?: BaseCard;
 
     /**
      * Creates an ability.
@@ -72,7 +119,8 @@ class BaseAbility {
      * @param properties.gameAction - optional array of game actions
      */
     constructor(properties: BaseAbilityProperties) {
-        this.gameAction = properties.gameAction ? (Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction]) : [];
+        const gameActions = properties.gameAction ? (Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction]) : [];
+        this.gameAction = gameActions.map((action) => toGameAction(action));
         this.targets = [];
         this.buildTargets(properties);
         this.cost = this.buildCost(properties.cost);
@@ -97,6 +145,11 @@ class BaseAbility {
         }
 
         return cost;
+    }
+
+    /** Whether a step follows the ability (then()/afterwards()), which may change the game state on its own. */
+    hasFollowingStep(): boolean {
+        return false;
     }
 
     buildTargets(properties: BaseAbilityProperties): void {
@@ -129,20 +182,20 @@ class BaseAbility {
         return new AbilityTargetCard(name, normalized, this);
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
+    meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {
         // check legal targets exist
         // check costs can be paid
         // check for potential to change game state
-        if(!this.canPayCosts(context) && !ignoredRequirements.includes('cost')) {
-            return 'cost';
+        if(!this.canPayCosts(context) && !ignoredBlockers.includes(Blocker.CannotPayCost)) {
+            return Blocker.CannotPayCost;
         }
         if(this.targets.length === 0) {
             if(this.gameAction.length > 0 && !this.checkGameActionsForPotential(context)) {
-                return 'condition';
+                return Blocker.ConditionNotMet;
             }
-            return '';
+            return Blocker.None;
         }
-        return this.canResolveTargets(context) ? '' : 'target';
+        return this.canResolveTargets(context) ? Blocker.None : Blocker.NoLegalTarget;
     }
 
     checkGameActionsForPotential(context: AbilityContext): boolean {
@@ -167,37 +220,34 @@ class BaseAbility {
             costs = costs.filter((cost) => !cost.isPlayCost);
         }
 
-        if(context.payFateCostToOpponent) {
-            costs.forEach(cost => cost.payFateCostToOpponent = true);
+        if(this.opponentChoosesFirst(context)) {
+            costs = [...costs.filter((cost) => cost.chosenByOpponent), ...costs.filter((cost) => !cost.chosenByOpponent)];
         }
+
         return costs;
+    }
+
+    private opponentChoosesFirst(context: AbilityContext): boolean {
+        return !!this.firstPlayerChoosesFirst && !!context.player.opponent?.firstPlayer;
+    }
+
+    /** The targets in the order they're chosen: the first player's first if the ability says so. */
+    private targetsInOrder(context: AbilityContext): AbilityTarget[] {
+        if(!this.firstPlayerChoosesFirst) {
+            return this.targets;
+        }
+        const firstPlayer = context.game.getFirstPlayer();
+        return [
+            ...this.targets.filter((target) => target.getChoosingPlayer(context) === firstPlayer),
+            ...this.targets.filter((target) => target.getChoosingPlayer(context) !== firstPlayer)
+        ];
     }
 
     resolveCosts(context: AbilityContext, results: TargetResults): void {
         for(const cost of this.getCosts(context, results.playCosts, results.triggerCosts)) {
             context.game.queueSimpleStep(() => {
                 if(!results.cancelled) {
-                    if(cost.addEventsToArray) {
-                        cost.addEventsToArray(results.events ?? [], context, results);
-                    } else {
-                        if(cost.resolve) {
-                            cost.resolve(context, results);
-                        }
-                        context.game.queueSimpleStep(() => {
-                            if(!results.cancelled) {
-                                const newEvents = cost.payEvent
-                                    ? cost.payEvent(context as TriggeredAbilityContext)
-                                    : context.game.getEvent('payCost', {}, () => cost.pay?.(context as TriggeredAbilityContext));
-                                if(Array.isArray(newEvents)) {
-                                    for(const event of newEvents) {
-                                        results.events?.push(event);
-                                    }
-                                } else {
-                                    results.events?.push(newEvents);
-                                }
-                            }
-                        });
-                    }
+                    addCostEvents(cost, results.events ?? [], context, results);
                 }
             });
         }
@@ -215,21 +265,19 @@ class BaseAbility {
      */
     resolveTargets(context: AbilityContext): TargetResults {
         const targetResults: TargetResults = {
-            canIgnoreAllCosts:
-                context.stage === Stage.PreTarget ? this.cost.every((cost) => cost.canIgnoreForTargeting) : false,
             cancelled: false,
             payCostsFirst: false,
             delayTargeting: null
         };
-        for(const target of this.targets) {
+        for(const target of this.targetsInOrder(context)) {
             context.game.queueSimpleStep(() => target.resolve(context, targetResults));
         }
         return targetResults;
     }
 
     resolveRemainingTargets(context: AbilityContext, nextTarget: AbilityTarget): TargetResults {
-        const index = this.targets.indexOf(nextTarget);
-        let targets = this.targets.slice();
+        let targets = this.targetsInOrder(context);
+        const index = targets.indexOf(nextTarget);
         if(targets.slice(0, index).every((target) => target.checkTarget(context))) {
             targets = targets.slice(index);
         }
@@ -260,6 +308,11 @@ class BaseAbility {
 
     displayMessage(_context: AbilityContext): void {}
 
+    /** The fate cost after reductions; only play actions and events have one. */
+    getReducedCost(_context: AbilityContext): number {
+        return 0;
+    }
+
     /**
      * Executes the ability once all costs have been paid. Inheriting classes
      * should override this method to implement their behavior; by default it
@@ -267,11 +320,12 @@ class BaseAbility {
      */
     executeHandler(_context: AbilityContext): void {}
 
-    isAction(): boolean {
+    isCardPlayed(): boolean {
         return false;
     }
 
-    isCardPlayed(): boolean {
+    /** Playing a character as an attachment: the card is played as an attachment, not as a character. */
+    isCharacterPlayedAsAttachment(): boolean {
         return false;
     }
 
@@ -279,7 +333,20 @@ class BaseAbility {
         return false;
     }
 
+    /** A step after then()/afterwards(): part of an ability already initiated, not a new one. */
+    isStep(): boolean {
+        return false;
+    }
+
     isTriggeredAbility(): boolean {
+        return false;
+    }
+
+    isCardAbilityInstance(): this is CardAbility {
+        return false;
+    }
+
+    isTriggeredAbilityInstance(): this is TriggeredAbility {
         return false;
     }
 
@@ -288,4 +355,3 @@ class BaseAbility {
     }
 }
 
-export default BaseAbility;

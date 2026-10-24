@@ -112,7 +112,7 @@ describe('Third Whisker Warrens', function() {
                     defenders: [],
                     province: this.pWarrens
                 });
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
                 this.player2.clickCard(this.storehouse);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.player2.hand.length).toBe(hand);

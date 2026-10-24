@@ -58,7 +58,18 @@ describe('A Swallow\'s Return', function () {
                 expect(this.player2).toHavePromptButton('Honored Blade');
                 expect(this.player2).toHavePromptButton('Play nothing');
                 expect(this.getChatLogs(3)).toContain(
-                    'player2 plays A Swallow\'s Return, revealing Ready for Battle, Honored Blade and Assassination to choose one of those to play'
+                    'player2 plays A Swallow\'s Return to look at the top 3 cards of player1\'s conflict deck'
+                );
+            });
+
+            it('should discard all three when nothing is played', function () {
+                this.player2.clickCard(this.swallowsReturn);
+                this.player2.clickPrompt('Play nothing');
+                expect(this.assassination.location).toBe('conflict discard pile');
+                expect(this.honoredBlade.location).toBe('conflict discard pile');
+                expect(this.readyForBattle.location).toBe('conflict discard pile');
+                expect(this.getChatLogs(5)).toContain(
+                    'player2 plays nothing and discards Ready for Battle, Honored Blade and Assassination'
                 );
             });
 

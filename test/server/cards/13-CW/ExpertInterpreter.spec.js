@@ -45,6 +45,19 @@ describe('Expert Interpreter', function () {
             this.player2.clickPrompt('1');
         });
 
+        it('lets the opponent choose first when they are the first player (EmeraldDB ruling)', function () {
+            this.game.setFirstPlayer(this.player2.player);
+            this.noMoreActions();
+            this.player1.clickCard(this.interpreter);
+            expect(this.player2).toHavePrompt('Give an honor to your opponent?');
+            this.player2.clickPrompt('Yes');
+            expect(this.player2).toHavePrompt('Choose a ring');
+            this.player2.clickRing('fire');
+            expect(this.player1).toHavePrompt('Choose a ring');
+            this.player1.clickRing('air');
+            expect(this.getChatLogs(1)).toContain('player1 uses Expert Interpreter to prevent characters from entering play while the Air Ring is contested. player2 gives player1 1 honor to also apply this effect to the Fire Ring');
+        });
+
         it('should trigger at the start of the conflict phase', function () {
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -81,23 +94,23 @@ describe('Expert Interpreter', function () {
         });
 
         it('should transfer honor and display correct message (opponent chooses a ring)', function () {
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
             this.noMoreActions();
             this.player1.clickCard(this.interpreter);
             this.player1.clickRing('air');
             this.player2.clickPrompt('Yes');
             this.player2.clickRing('fire');
             expect(this.getChatLogs(3)).toContain(
-                'player1 uses Expert Interpreter to prevent characters from entering play while the Air Ring is contested.  player2 gives player1 1 honor to also apply this effect to the Fire Ring'
+                'player1 uses Expert Interpreter to prevent characters from entering play while the Air Ring is contested. player2 gives player1 1 honor to also apply this effect to the Fire Ring'
             );
             expect(this.player1.honor).toBe(p1Honor + 1);
             expect(this.player2.honor).toBe(p2Honor - 1);
         });
 
         it('should NOT transfer honor and display correct message (opponent does not choose a ring)', function () {
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
             this.noMoreActions();
             this.player1.clickCard(this.interpreter);
             this.player1.clickRing('air');

@@ -63,7 +63,7 @@ describe('Spoils Of War', function() {
             });
 
             it('should draw 3 cards', function() {
-                let P1hand = this.player1.hand.length; //5
+                const P1hand = this.player1.hand.length; //5
                 this.noMoreActions();
                 expect(this.player1).toBeAbleToSelect(this.spoilsOfWar);
                 this.player1.clickCard(this.spoilsOfWar);
@@ -92,6 +92,44 @@ describe('Spoils Of War', function() {
                 this.player1.clickCard(this.ornateFan);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
+        });
+    });
+});
+
+describe('Spoils of War and Subterfuge', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['student-of-war'],
+                    hand: ['spoils-of-war', 'fine-katana']
+                },
+                player2: {
+                    honor: 9,
+                    hand: ['subterfuge']
+                }
+            });
+            this.studentOfWar = this.player1.findCardByName('student-of-war');
+            this.spoilsOfWar = this.player1.findCardByName('spoils-of-war');
+            this.subterfuge = this.player2.findCardByName('subterfuge');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.studentOfWar],
+                defenders: []
+            });
+            this.noMoreActions();
+        });
+
+        it('does not discard when the draw was replaced', function() {
+            this.player1.clickCard(this.spoilsOfWar);
+            expect(this.player2).toBeAbleToSelect(this.subterfuge);
+            this.player2.clickCard(this.subterfuge);
+            this.player2.clickPrompt('3');
+            expect(this.player1).not.toHavePrompt('Choose a card to discard');
+            expect(this.player1.hand.length).toBe(1);
         });
     });
 });

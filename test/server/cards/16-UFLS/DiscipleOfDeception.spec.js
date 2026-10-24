@@ -131,14 +131,14 @@ describe('Disciple of Deception', function() {
             this.player1.clickCard(this.kakitaYoshi);
             expect(this.kakitaYoshi.isDishonored).toBe(true);
             expect(this.kakitaYoshi.isHonored).toBe(false);
-            expect(this.kakitaYoshi.getMilitarySkill()).toBe(0);
-            expect(this.kakitaYoshi.getPoliticalSkill()).toBe(3);
+            expect(this.kakitaYoshi.militarySkill).toBe(0);
+            expect(this.kakitaYoshi.politicalSkill).toBe(3);
             this.noMoreActions();
 
             expect(this.kakitaYoshi.isDishonored).toBe(false);
             expect(this.kakitaYoshi.isHonored).toBe(true);
-            expect(this.kakitaYoshi.getMilitarySkill()).toBe(5);
-            expect(this.kakitaYoshi.getPoliticalSkill()).toBe(9);
+            expect(this.kakitaYoshi.militarySkill).toBe(5);
+            expect(this.kakitaYoshi.politicalSkill).toBe(9);
         });
 
         it('shouldn\'t revert anything if the token gets removed mid-conflict', function() {
@@ -166,8 +166,8 @@ describe('Disciple of Deception', function() {
             expect(this.kakitaYoshi.isDishonored).toBe(false);
             expect(this.kakitaYoshi.isHonored).toBe(true);
             expect(this.kakitaYoshi.isTainted).toBe(false);
-            expect(this.kakitaYoshi.getMilitarySkill()).toBe(5);
-            expect(this.kakitaYoshi.getPoliticalSkill()).toBe(9);
+            expect(this.kakitaYoshi.militarySkill).toBe(5);
+            expect(this.kakitaYoshi.politicalSkill).toBe(9);
         });
 
         it('should expire at the end of the conflict even if Disciple leaves play', function() {
@@ -184,8 +184,8 @@ describe('Disciple of Deception', function() {
             this.player1.clickCard(this.kakitaYoshi);
             expect(this.kakitaYoshi.isDishonored).toBe(true);
             expect(this.kakitaYoshi.isHonored).toBe(false);
-            expect(this.kakitaYoshi.getMilitarySkill()).toBe(0);
-            expect(this.kakitaYoshi.getPoliticalSkill()).toBe(3);
+            expect(this.kakitaYoshi.militarySkill).toBe(0);
+            expect(this.kakitaYoshi.politicalSkill).toBe(3);
             this.player2.clickCard(this.assassination);
             this.player2.clickCard(this.deception);
             expect(this.deception.location).toBe('dynasty discard pile');
@@ -193,8 +193,8 @@ describe('Disciple of Deception', function() {
 
             expect(this.kakitaYoshi.isDishonored).toBe(false);
             expect(this.kakitaYoshi.isHonored).toBe(true);
-            expect(this.kakitaYoshi.getMilitarySkill()).toBe(5);
-            expect(this.kakitaYoshi.getPoliticalSkill()).toBe(9);
+            expect(this.kakitaYoshi.militarySkill).toBe(5);
+            expect(this.kakitaYoshi.politicalSkill).toBe(9);
         });
     });
 });

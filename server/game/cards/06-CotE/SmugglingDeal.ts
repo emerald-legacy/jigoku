@@ -1,30 +1,29 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players, Duration, TargetMode } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { increaseLimitOnAbilities } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { CardType, Players } from '../../Constants.js';
+import { getExtraUseDuration } from '../extraAbilityUse.js';
+import { msg } from '../../GameChat.js';
 
 class SmugglingDeal extends DrawCard {
     static id = 'smuggling-deal';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Increase an ability\'s limit',
-            cost: AbilityDsl.costs.giveHonorToOpponent(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Increase an ability\'s limit')
+            .cost(costs.giveHonorToOpponent())
+            .abilityTarget({
                 activePromptTitle: 'Select an ability to increase limits on',
-                mode: TargetMode.Ability,
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: context.targetAbility?.card,
-                    duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.increaseLimitOnAbilities({
-                        targetAbility: context.targetAbility
-                    })
-                }))
-            },
-            effect: 'increase the limit on {1}\'s \'{2}\' ability',
-            effectArgs: context => [context.targetAbility?.card as DrawCard, context.targetAbility?.title ?? '']
-        });
+                controller: Players.Self
+            }, cardLastingEffect((context) => ({
+                target: context.targetAbility?.card,
+                duration: getExtraUseDuration(context.targetAbility),
+                effect: increaseLimitOnAbilities({
+                    targetAbility: context.targetAbility
+                })
+            })))
+            .chatText((context) => msg`increase the limit on ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
     }
 }
 

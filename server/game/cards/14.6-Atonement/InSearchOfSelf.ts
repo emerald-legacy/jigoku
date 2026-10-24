@@ -1,19 +1,16 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class InSearchOfSelf extends DrawCard {
     static id = 'in-search-of-self';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow attacking character',
-            target: {
+    override setupCardAbilities() {
+        this.action('Bow attacking character')
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isAttacking() && card.costLessThan(context.player.getNumberOfFacedownProvinces() + 1),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card, context) => card.isAttacking() && card.costLessThan(context.player.getNumberOfFacedownProvinces() + 1)
+            }, bow());
     }
 }
 

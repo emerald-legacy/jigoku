@@ -1,25 +1,24 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players, Trait } from '../../Constants.js';
+import { addKeyword, addTrait } from '../../effects.js';
 
 class PhoenixTattoo extends DrawCard {
     static id = 'phoenix-tattoo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.addTrait('tattooed')
+            effect: addTrait(Trait.Tattooed)
         });
 
         this.persistentEffect({
             targetController: Players.Any,
-            condition: (context: AbilityContext<this>) => Boolean(context.source.parentCharacter && context.source.parentCharacter.isParticipating() && context.game.isDuringConflict()),
-            match: (card: DrawCard, context?: AbilityContext<this>) => card !== context?.source?.parentCharacter && card.isParticipating(),
-            effect: AbilityDsl.effects.addKeyword('pride')
+            condition: (context) => Boolean(context.source.parentCharacter && context.source.parentCharacter.isParticipating() && context.game.isDuringConflict()),
+            match: (card, context) => card !== context?.source.parentCharacter && card.isParticipating(),
+            effect: addKeyword('pride')
         });
     }
 }

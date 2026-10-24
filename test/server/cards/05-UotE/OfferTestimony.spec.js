@@ -11,7 +11,7 @@ describe('Offer Testimony', function() {
                     player2: {
                         inPlay: ['borderlands-defender', 'intimidating-hida'],
                         dynastyDiscard: ['favorable-ground'],
-                        hand: ['way-of-the-crab', 'assassination']
+                        hand: ['way-of-the-crab', 'assassination', 'stinger']
                     }
                 });
                 this.favorableGround = this.player2.placeCardInProvince('favorable-ground');
@@ -58,6 +58,17 @@ describe('Offer Testimony', function() {
                 this.intimidatingHida = this.player2.clickCard('intimidating-hida');
                 this.player1.clickCard('banzai');
                 this.player2.clickCard('assassination');
+                expect(this.adeptOfTheWaves.bowed).toBe(true);
+                expect(this.intimidatingHida.bowed).toBe(true);
+            });
+
+            it('should count a dash cost as 0', function() {
+                this.player2.pass();
+                this.player1.clickCard('offer-testimony');
+                this.adeptOfTheWaves = this.player1.clickCard('adept-of-the-waves');
+                this.intimidatingHida = this.player2.clickCard('intimidating-hida');
+                this.player1.clickCard('banzai');
+                this.player2.clickCard('stinger');
                 expect(this.adeptOfTheWaves.bowed).toBe(true);
                 expect(this.intimidatingHida.bowed).toBe(true);
             });

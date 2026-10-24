@@ -1,87 +1,33 @@
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import CardAbility from '../../CardAbility.js';
-import { Location, TargetMode } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { lookAt, moveCard, multiple, takeHonor } from '../../GameActions/GameActions.js';
+import { Location, ConflictType, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import { shuffle } from '../../utils/shuffle.js';
+import { shuffle } from '../../utils/random.js';
 
 export default class Overhear extends DrawCard {
     static id = 'overhear';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Place random card on top of deck',
-            effect: 'reveal a random card from {1}\'s hand and place it on top of {1}\'s deck',
-            effectArgs: (context) => (context.player.opponent ? [context.player.opponent] : []),
-            gameAction: AbilityDsl.actions.multipleContext((context) => {
-                let card: DrawCard[] = context.player.opponent ? (shuffle(context.player.opponent.hand) as DrawCard[]).slice(0, 1) : [];
-                return {
-                    gameActions: [
-                        AbilityDsl.actions.lookAt(() => ({
-                            target: card,
-                            message: '{0} sees {1}',
-                            messageArgs: (cards) => [context.player, cards]
-                        })),
-                        AbilityDsl.actions.moveCard(() => ({
-                            target: card,
-                            destination: Location.ConflictDeck
-                        }))
-                    ]
-                };
-            }),
-            condition: (context) => context.game.isDuringConflict('political') && context.player.opponent !== undefined,
-            then: (context: AbilityContext) => {
-                if(!context || !context.game.currentConflict) {
-                    return {};
-                }
-                if(
-                    context.game.currentConflict
-                        .getCharacters(context.player)
-                        .filter((card: DrawCard) => card.hasTrait('courtier')).length < 1
-                ) {
-                    return {};
-                }
-                if(context.subResolution) {
-                    return {
-                        target: {
-                            mode: TargetMode.Select,
-                            choices: {
-                                'Give 1 honor for no effect': AbilityDsl.actions.takeHonor({ target: context.player }),
-                                Done: () => true
-                            }
-                        },
-                        message: '{0} chooses {3}to give an honor to {4} for no effect',
-                        messageArgs: (innerContext: AbilityContext) => [
-                            innerContext.select === 'Done' ? 'not ' : '',
-                            innerContext.player.opponent
-                        ]
-                    };
-                }
-                const ability = context.ability instanceof CardAbility ? context.ability : undefined;
-                return {
-                    target: {
-                        mode: TargetMode.Select,
-                        choices: {
-                            'Give 1 honor to resolve this ability again': AbilityDsl.actions.takeHonor({
-                                target: context.player
-                            }),
-                            Done: () => true
-                        }
-                    },
-                    message: '{0} chooses {3}to give an honor to {4} to resolve {1} again',
-                    messageArgs: (innerContext: AbilityContext) => [
-                        innerContext.select === 'Done' ? 'not ' : '',
-                        innerContext.player.opponent
-                    ],
-                    then: ability ? {
-                        gameAction: AbilityDsl.actions.resolveAbility({
-                            ability: ability,
-                            subResolution: true,
-                            choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
-                        })
-                    } : undefined
-                };
-            }
-        });
+    public override setupCardAbilities() {
+        this.action('Place random card on top of deck')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.opponent !== undefined)
+            .gameAction(multiple((context) => {
+                const card = context.player.opponent ? shuffle(context.player.opponent.hand).slice(0, 1) : [];
+                return [
+                    lookAt(() => ({
+                        target: card,
+                        message: (context, cards) => msg`${context.player} sees ${cards}`
+                    })),
+                    moveCard(() => ({
+                        target: card,
+                        destination: Location.ConflictDeck
+                    }))
+                ];
+            }))
+            .chatText((context) => msg`reveal a random card from ${context.player.opponent}'s hand and place it on top of ${context.player.opponent}'s deck`)
+            .mayResolveAgain({
+                cost: takeHonor((context) => ({ target: context.player })),
+                label: 'Give 1 honor',
+                condition: (context) => !!context.game.currentConflict?.getCharacters(context.player).some((card) => card.hasTrait(Trait.Courtier))
+            });
     }
 }

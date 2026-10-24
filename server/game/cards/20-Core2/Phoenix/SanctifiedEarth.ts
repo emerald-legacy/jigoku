@@ -1,9 +1,11 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, EventName, Players } from '../../../Constants.js';
+import { cardCannot, modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, onAffinity } from '../../../GameActions/GameActions.js';
+import { CardType, type EventName, Players, RestrictionType, RestrictionScope, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
+import { msg } from '../../../GameChat.js';
 
 const controlledBy = (player: Player) => (character: DrawCard) => character.controller === player;
 
@@ -13,7 +15,7 @@ const trigger = {
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.attackers ?? []).includes(card)
     },
     onDefendersDeclared: {
-        when: (event: EventPayload<EventName.OnDefendersDeclared>, context: TriggeredAbilityContext) => (event.defenders ?? []).some(controlledBy(context.player)),
+        when: (event: EventPayload<EventName.OnDefendersDeclared>, context: TriggeredAbilityContext) => event.defenders.some(controlledBy(context.player)),
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.defenders ?? []).includes(card)
     },
     onMoveToConflict: {
@@ -25,41 +27,31 @@ const trigger = {
 export default class SanctifiedEarth extends DrawCard {
     static id = 'sanctified-earth';
 
-    public setupCardAbilities() {
-        this.attachmentConditions({ trait: 'shugenja', myControl: true });
+    public override setupCardAbilities() {
+        this.attachmentConditions({ trait: Trait.Shugenja, myControl: true });
 
-        this.reaction<DrawCard>({
-            title: 'Give character a skill bonus',
-            when: {
+        this.reaction('Give character a skill bonus')
+            .when({
                 onConflictDeclared: trigger.onConflictDeclared.when,
                 onDefendersDeclared: trigger.onDefendersDeclared.when,
                 onMoveToConflict: trigger.onMoveToConflict.when
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
                 player: Players.Self,
-                cardCondition: (card, context) => trigger[(context as TriggeredAbilityContext<DrawCard>).event.name as keyof typeof trigger]?.cardCondition(card, context as TriggeredAbilityContext<DrawCard>) ?? false,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect({
-                        effect: AbilityDsl.effects.modifyBothSkills(2)
-                    }),
-
-                    AbilityDsl.actions.onAffinity({
-                        trait: 'earth',
-                        effect: 'make {0} invulnerable to opponent\'s send home',
-                        effectArgs: (context) => [context.target],
-                        gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                            target: context.target,
-                            effect: AbilityDsl.effects.cardCannot({
-                                cannot: 'sendHome',
-                                restricts: 'opponentsCardEffects'
-                            })
-                        }))
+                cardCondition: (card, context) => Object.entries(trigger).find(([name]) => name === context.event.name)?.[1].cardCondition(card, context) ?? false
+            }, cardLastingEffect({
+                effect: modifyBothSkills(2)
+            }), onAffinity({
+                trait: Trait.Earth,
+                chatText: (context) => msg`make ${context.target} invulnerable to opponent's send home`,
+                gameAction: cardLastingEffect({
+                    effect: cardCannot({
+                        cannot: RestrictionType.SendHome,
+                        appliesTo: RestrictionScope.OpponentsCardEffects
                     })
-                ])
-            },
-            effect: 'give +2{1} and +2{2} to {3}',
-            effectArgs: (context) => ['military', 'political', context.target ?? '']
-        });
+                })
+            }))
+            .chatText((context) => msg`give +2${'military'} and +2${'political'} to ${context.target}`);
     }
 }

@@ -77,7 +77,7 @@ describe('Make Your Case', function() {
                 defenders: [this.yoshi],
                 type: 'political'
             });
-            let yoshiFate = this.yoshi.fate;
+            const yoshiFate = this.yoshi.fate;
             this.player2.clickCard(this.case);
             this.player2.clickCard(this.yoshi);
             this.player1.clickCard(this.borderRider);

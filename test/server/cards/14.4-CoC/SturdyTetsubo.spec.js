@@ -28,7 +28,7 @@ describe('Sturdy Tetsubo', function () {
         it('should make opponent discard a card when parent wins a conflict', function () {
             this.player1.playAttachment(this.tetsubo, this.manipulator);
             this.noMoreActions();
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.initiateConflict({
                 type: 'political',
@@ -47,7 +47,7 @@ describe('Sturdy Tetsubo', function () {
             this.player2.clickCard(this.assassination);
             expect(this.assassination.location).toBe('conflict discard pile');
             expect(this.player2.hand.length).toBe(hand - 1);
-            expect(this.getChatLogs(10)).toContain('player1 uses Bayushi Manipulator\'s gained ability from Sturdy Tetsubō to make player2 discard 1 cards');
+            expect(this.getChatLogs(10)).toContain('player1 uses Bayushi Manipulator\'s gained ability from Sturdy Tetsubō to make player2 discard 1 card');
             expect(this.getChatLogs(10)).toContain('player2 discards Assassination');
         });
 
@@ -78,7 +78,7 @@ describe('Sturdy Tetsubo', function () {
         it('attaching to an opponents character', function () {
             this.player1.playAttachment(this.tetsubo, this.yogoHiroue);
             this.noMoreActions();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.initiateConflict({
                 type: 'political',
@@ -97,7 +97,7 @@ describe('Sturdy Tetsubo', function () {
             this.player1.clickCard(this.fan);
             expect(this.fan.location).toBe('conflict discard pile');
             expect(this.player1.hand.length).toBe(hand - 1);
-            expect(this.getChatLogs(10)).toContain('player2 uses Yogo Hiroue\'s gained ability from Sturdy Tetsubō to make player1 discard 1 cards');
+            expect(this.getChatLogs(10)).toContain('player2 uses Yogo Hiroue\'s gained ability from Sturdy Tetsubō to make player1 discard 1 card');
             expect(this.getChatLogs(10)).toContain('player1 discards Ornate Fan');
         });
     });
@@ -133,7 +133,7 @@ describe('Sturdy Tetsubo - moving it around', function () {
         it('should work 4x per turn if you move it', function () {
             this.player1.playAttachment(this.tetsubo, this.manipulator);
             this.noMoreActions();
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.initiateConflict({
                 type: 'military',
@@ -214,7 +214,7 @@ describe('Sturdy Tetsubo - moving it around', function () {
         it('if you move it, then move it back should only work 3x per turn', function () {
             this.player1.playAttachment(this.tetsubo, this.manipulator);
             this.noMoreActions();
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.initiateConflict({
                 type: 'military',

@@ -1,14 +1,15 @@
 import type BaseCard from '../../BaseCard.js';
+import type DrawCard from '../../DrawCard.js';
 import type { StoredPersistentEffect } from '../../BaseCard.js';
 import { AbilityType, Location, CardType, EffectName } from '../../Constants.js';
 import type { CardAction } from '../../CardAction.js';
-import type TriggeredAbility from '../../TriggeredAbility.js';
+import type { TriggeredAbility } from '../../TriggeredAbility.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
-import GainAbility from '../GainAbility.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
+import { GainAbility, gainedPersistentEffect } from '../GainAbility.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 
-class CopyCard extends EffectValue<BaseCard> {
+export class CopyCard<Card extends BaseCard> extends EffectValue<Card, BaseCard> {
     actions: Array<GainAbility>;
     reactions: Array<GainAbility>;
     persistentEffects: StoredPersistentEffect[];
@@ -20,24 +21,24 @@ class CopyCard extends EffectValue<BaseCard> {
         }
     >();
 
-    constructor(card: BaseCard) {
+    constructor(card: Card) {
         super(card);
         this.actions = card.abilities.actions.map((action: CardAction) => new GainAbility(AbilityType.Action, action));
         this.reactions = card.abilities.reactions.map(
             (ability: TriggeredAbility) => new GainAbility(ability.abilityType, ability)
         );
-        this.persistentEffects = card.abilities.persistentEffects.map((effect) => Object.assign({}, effect));
+        this.persistentEffects = card.abilities.persistentEffects.map(gainedPersistentEffect);
     }
 
-    apply(target: BaseCard) {
+    override apply(target: BaseCard) {
         this.abilitiesForTargets.set(target, {
-            actions: this.actions.map((value) => {
+            actions: this.actions.flatMap((value) => {
                 value.apply(target);
-                return value.getValue() as CardAction;
+                return value.grantedAction ?? [];
             }),
-            reactions: this.reactions.map((value) => {
+            reactions: this.reactions.flatMap((value) => {
                 value.apply(target);
-                return value.getValue() as TriggeredAbility;
+                return value.grantedTriggered ?? [];
             })
         });
         for(const effect of this.persistentEffects) {
@@ -47,12 +48,12 @@ class CopyCard extends EffectValue<BaseCard> {
                 (target.getType() === CardType.Holding && effect.location === Location.Provinces) ||
                 (target.getType() === CardType.Province && effect.location === Location.Provinces)
             ) {
-                effect.ref = target.addEffectToEngine({ ...effect, location: effect.location });
+                effect.ref = target.addEffectToEngine(effect);
             }
         }
     }
 
-    unapply(target: BaseCard) {
+    override unapply(target: BaseCard) {
         for(const value of this.abilitiesForTargets.get(target)?.reactions ?? []) {
             value.unregisterEvents();
         }
@@ -72,7 +73,7 @@ class CopyCard extends EffectValue<BaseCard> {
     getReactions(target: BaseCard) {
         const copied = this.abilitiesForTargets.get(target)?.reactions ?? [];
         const ownKeywordReactions = target.abilities.reactions.filter(
-            (ability) => typeof ability.isKeywordAbility === 'function' && ability.isKeywordAbility()
+            (ability) => ability.isKeywordAbility()
         );
         return [...copied, ...ownKeywordReactions];
     }
@@ -82,7 +83,7 @@ class CopyCard extends EffectValue<BaseCard> {
     }
 }
 
-export function copyCard(character: BaseCard) {
+export function copyCard(character: DrawCard) {
     return EffectBuilder.card.static(EffectName.CopyCharacter, new CopyCard(character));
 }
 

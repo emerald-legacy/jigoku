@@ -1,33 +1,28 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players, CardType, ConflictType, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class ClarityOfPurpose extends DrawCard {
     static id = 'clarity-of-purpose';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Character cannot be bowed and doesn\'t bow during political conflicts',
-            condition: () => this.game.isDuringConflict(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Character cannot be bowed and doesn\'t bow during political conflicts')
+            .condition((context) => context.game.isDuringConflict())
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: [
-                    ability.actions.cardLastingEffect({
-                        condition: () => this.game.isDuringConflict('political'),
-                        effect: ability.effects.doesNotBow()
-                    }),
-                    ability.actions.cardLastingEffect(context => ({
-                        effect: ability.effects.cardCannot({
-                            cannot: 'bow',
-                            restricts: 'opponentsCardEffects',
-                            applyingPlayer: context.player
-                        })
-                    }))
-                ]
-            },
-            effect: 'prevent opponents\' actions from bowing {0} and stop it bowing at the end of a political conflict'
-        });
+                controller: Players.Self
+            }, cardLastingEffect({
+                condition: () => this.game.isDuringConflict(ConflictType.Political),
+                effect: doesNotBow()
+            }), cardLastingEffect((context) => ({
+                effect: cardCannot({
+                    cannot: RestrictionType.Bow,
+                    appliesTo: RestrictionScope.OpponentsCardEffects,
+                    applyingPlayer: context.player
+                })
+            })))
+            .chatText('prevent opponents\' actions from bowing {0} and stop it bowing at the end of a political conflict');
     }
 }
 

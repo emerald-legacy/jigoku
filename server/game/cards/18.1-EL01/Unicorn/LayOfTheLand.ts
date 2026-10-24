@@ -1,31 +1,22 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { reveal, turnFacedown } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
-import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class LayOfTheLand extends DrawCard {
     static id = 'lay-of-the-land';
 
-    setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Reveal a province and discard status tokens',
-            target: {
+    override setupCardAbilities() {
+        this.action('Reveal a province or turn it facedown')
+            .target({
                 activePromptTitle: 'Choose an unbroken province',
                 cardType: CardType.Province,
                 controller: Players.Any,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard) => !(card as ProvinceCard).isBroken && card.location !== Location.StrongholdProvince,
-                gameAction: [AbilityDsl.actions.reveal(), AbilityDsl.actions.turnFacedown()]
-            },
-            effect: '{1} {2}',
-            effectArgs: (context) => {
-                const target = context.target;
-                if(!target) {
-                    return ['reveal', ''];
-                }
-                return target.isFaceup() ? ['flip facedown', target] : ['reveal', target.location];
-            }
-        });
+                cardCondition: (card) => !card.isBroken && card.location !== Location.StrongholdProvince
+            }, reveal(), turnFacedown())
+            .chatText((context) => context.target.isFaceup()
+                ? msg`flip facedown ${context.target}`
+                : msg`reveal ${context.target.location}`);
     }
 }

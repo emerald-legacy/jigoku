@@ -1,26 +1,25 @@
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type { Conflict } from '../Conflict.js';
 import type DrawCard from '../DrawCard.js';
-import { CardType, EffectName, EventName, Location } from '../Constants.js';
+import { CardType, EffectName, EventName, Location, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface MoveToConflictProperties extends CardActionProperties {
     side?: Player;
 }
 
-export class MoveToConflictAction extends CardGameAction {
-    name = 'moveToConflict';
-    eventName = EventName.OnMoveToConflict;
-    cost = 'moving {0} into the conflict';
-    effect = 'move {0} into the conflict';
-    targetType = [CardType.Character];
-    defaultProperties: MoveToConflictProperties = { side: undefined };
-
-    canAffect(card: DrawCard, context: AbilityContext): boolean {
-        let properties = this.getProperties(context) as MoveToConflictProperties;
+export class MoveToConflictAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<MoveToConflictProperties, EventName.OnMoveToConflict, Context> {
+    override name = 'moveToConflict';
+    override restriction = RestrictionType.MoveToConflict;
+    override eventName = EventName.OnMoveToConflict;
+    override cost = 'moving {0} into the conflict';
+    override effect = 'move {0} into the conflict';
+    override targetType = [CardType.Character];
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         if(!super.canAffect(card, context)) {
             return false;
         }
@@ -44,16 +43,16 @@ export class MoveToConflictAction extends CardGameAction {
         return card.location === Location.PlayArea;
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnMoveToConflict>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(context) as MoveToConflictProperties;
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveToConflict, Context>, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.side = properties.side || card.controller;
     }
 
-    eventHandler(event: GameEvent<EventName.OnMoveToConflict>): void {
-        const context = event.context as AbilityContext;
-        const player = event.side as Player;
-        const conflict = context.game.currentConflict as Conflict;
+    override eventHandler(event: ActionEvent<EventName.OnMoveToConflict, Context>): void {
+        const context = event.context;
+        const player = event.side;
+        const conflict = context.game.requireConflict();
 
         if(player.isAttackingPlayer()) {
             conflict.addAttacker(event.card);

@@ -42,7 +42,7 @@ describe('River of the Last Stand', function() {
                     province: this.p1
                 });
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(1);
@@ -59,7 +59,7 @@ describe('River of the Last Stand', function() {
                     province: this.p2
                 });
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(1);
@@ -76,7 +76,7 @@ describe('River of the Last Stand', function() {
                     province: this.p3
                 });
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(2);
@@ -91,7 +91,7 @@ describe('River of the Last Stand', function() {
                     province: this.p4
                 });
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(2);
@@ -108,7 +108,7 @@ describe('River of the Last Stand', function() {
                 });
 
                 this.player1.pass();
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(2);

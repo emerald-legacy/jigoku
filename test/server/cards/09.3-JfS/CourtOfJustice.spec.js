@@ -34,10 +34,10 @@ describe('Court of Justice', function () {
                 this.player2.pass();
                 this.player1.pass();
 
-                this.chat = spyOn(this.game, 'addMessage');
-
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.courtOfJustice);
+                this.player1.clickCard(this.courtOfJustice);
+                expect(this.getChatLogs(5).some((line) => line.startsWith('player1 sees ') && line.endsWith(' from player2\'s hand'))).toBe(true);
             });
 
             it('shouldn\'t allow you to look at 3 cards in the opponents hand after you lose a political conflict', function() {

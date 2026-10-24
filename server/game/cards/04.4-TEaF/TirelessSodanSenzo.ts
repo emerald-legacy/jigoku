@@ -1,16 +1,13 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class TirelessSodanSenzo extends DrawCard {
     static id = 'tireless-sodan-senzo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => {
-                const conflict = this.game.currentConflict;
-                return context.source.isParticipating() && conflict !== null && conflict.loser === context.player;
-            },
-            effect: AbilityDsl.effects.doesNotBow()
+            condition: (context) => !!this.game.currentConflict?.isOnLosingSide(context.source),
+            effect: doesNotBow()
         });
     }
 }

@@ -107,7 +107,7 @@ describe('Ancestor Attendant', function () {
             this.player1.clickCard(this.whisperer);
             expect(this.whisperer.isDishonored).toBe(true);
             expect(this.player1.dynastyDeck.length).toBe(2);
-            expect(this.getChatLogs(5)).toContain('player1 uses Ancestor Attendant to dishonor Doji Whisperer and discard the top 1 cards of their dynasty deck');
+            expect(this.getChatLogs(5)).toContain('player1 uses Ancestor Attendant to dishonor Doji Whisperer and discard the top 1 card of their dynasty deck');
         });
 
         it('needs participation', function () {

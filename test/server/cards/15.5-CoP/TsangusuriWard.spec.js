@@ -9,7 +9,7 @@ describe('Tsangusuri Ward', function () {
                 },
                 player2: {
                     inPlay: ['doji-challenger', 'asahina-artisan'],
-                    hand: ['fine-katana']
+                    hand: ['fine-katana', 'tattooed-wanderer']
                 }
             });
 
@@ -59,6 +59,15 @@ describe('Tsangusuri Ward', function () {
             expect(this.yoshi.attachments).not.toContain(this.katana);
         });
 
+        it('should block opponent characters played as attachments on the character', function () {
+            this.player1.clickCard(this.ward);
+            this.player1.clickCard(this.yoshi);
+            this.player2.clickCard('tattooed-wanderer');
+            this.player2.clickPrompt('Play Tattooed Wanderer as an attachment');
+            expect(this.player2).toBeAbleToSelect(this.challenger);
+            expect(this.player2).not.toBeAbleToSelect(this.yoshi);
+        });
+
         it('should not block your attachments on the character', function () {
             this.player1.clickCard(this.ward);
             this.player1.clickCard(this.yoshi);
@@ -79,6 +88,43 @@ describe('Tsangusuri Ward', function () {
             expect(this.yoshi.attachments).toContain(this.katana);
             expect(this.yoshi.attachments).toContain(this.ward);
             expect(this.player2).toHavePrompt('Action Window');
+        });
+    });
+});
+
+describe('Tsangusuri Ward and a control change', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer', 'solemn-scholar'],
+                    hand: ['tsangusuri-ward']
+                },
+                player2: {
+                    honor: 15,
+                    inPlay: ['kakita-yoshi'],
+                    hand: ['obligations-of-hospitality']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.ward = this.player1.findCardByName('tsangusuri-ward');
+            this.player1.playAttachment(this.ward, this.whisperer);
+        });
+
+        it('stays attached when the opponent takes control of the character', function () {
+            expect(this.ward.parent).toBe(this.whisperer);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [],
+                type: 'political'
+            });
+            this.player2.clickCard('obligations-of-hospitality');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.controller).toBe(this.player2.player);
+            expect(this.ward.location).toBe('play area');
+            expect(this.ward.parent).toBe(this.whisperer);
         });
     });
 });

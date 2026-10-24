@@ -1,3 +1,6 @@
+import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
+import { sacrifice } from '../../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Hojatsu Devotee', function () {
     integration(function () {
         beforeEach(function () {
@@ -72,6 +75,32 @@ describe('Hojatsu Devotee', function () {
 
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
             expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});
+
+describe('Hojatsu Devotee sacrificed', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger']
+                },
+                player2: {
+                    inPlay: ['hojatsu-devotee']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.hojatsuDevotee = this.player2.findCardByName('hojatsu-devotee');
+        });
+
+        it('does not react when an opponent\'s ability sacrifices it', function () {
+            const context = new ResolvableAbility(this.challenger, {}).createContext(this.player1.player);
+            this.game.queueSimpleStep(() => sacrifice().resolve(this.hojatsuDevotee, context));
+            this.game.continue();
+            expect(this.hojatsuDevotee.location).toBe('dynasty discard pile');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
         });
     });
 });

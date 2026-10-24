@@ -67,8 +67,8 @@ describe('Mercenary Company', function() {
                 province: this.garden
             });
 
-            let cFate = this.company.fate;
-            let pFate = this.player2.fate;
+            const cFate = this.company.fate;
+            const pFate = this.player2.fate;
 
             this.noMoreActions();
             expect(this.player2).toHavePrompt('Place a fate on Mercenary Company to take control of it?');
@@ -80,6 +80,28 @@ describe('Mercenary Company', function() {
 
             expect(this.getChatLogs(10)).toContain('player1 uses Mercenary Company to let player2 hire their services');
             expect(this.getChatLogs(10)).toContain('player2 places a fate on and takes control of Mercenary Company');
+        });
+
+        it('should move the fate from the opponent\'s fate pool', function() {
+            const moveFateEvents = [];
+            this.game.on('onMoveFate', (event) => {
+                if(event.recipient === this.company) {
+                    moveFateEvents.push(event);
+                }
+            });
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.company],
+                defenders: [this.toturi, this.yokuni],
+                province: this.garden
+            });
+
+            this.noMoreActions();
+            this.player2.clickPrompt('Yes');
+            expect(moveFateEvents.length).toBe(1);
+            expect(moveFateEvents[0].origin).toBe(this.player2.player);
+            expect(moveFateEvents[0].fate).toBe(1);
+            expect(this.company.controller).toBe(this.player2.player);
         });
 
         it('should allow switching back', function() {
@@ -102,8 +124,8 @@ describe('Mercenary Company', function() {
                 ring: 'earth'
             });
 
-            let cFate = this.company.fate;
-            let pFate = this.player1.fate;
+            const cFate = this.company.fate;
+            const pFate = this.player1.fate;
 
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Place a fate on Mercenary Company to take control of it?');
@@ -117,7 +139,7 @@ describe('Mercenary Company', function() {
             expect(this.getChatLogs(10)).toContain('player1 places a fate on and takes control of Mercenary Company');
         });
 
-        it('should not let you take control if you cannot spend fate', function() {
+        it('should let you hire it at Blood of Onnotangu, as moving fate isn\'t spending it', function() {
             this.initiateConflict({
                 type: 'military',
                 attackers: [this.company],
@@ -126,7 +148,9 @@ describe('Mercenary Company', function() {
             });
 
             this.noMoreActions();
-            expect(this.player2).not.toHavePrompt('Place a fate on Mercenary Company to take control of it?');
+            expect(this.player2).toHavePrompt('Place a fate on Mercenary Company to take control of it?');
+            this.player2.clickPrompt('Yes');
+            expect(this.company.controller).toBe(this.player2.player);
         });
     });
 });

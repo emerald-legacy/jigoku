@@ -1,41 +1,35 @@
+import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, ConflictType, Trait } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { unlimited } from '../../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class JadeInfusedArrows extends DrawCard {
     static id = 'jade-infused-arrows';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Give attached character a skill bonus',
-            condition: (context) => context.source.parentCharacter?.isParticipating(ConflictType.Military) ?? false,
-            cost: AbilityDsl.costs.payFate(1),
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source.parentCharacter,
-                effect: AbilityDsl.effects.modifyMilitarySkill(this.#bonusAmount(context))
-            })),
-            effect: 'give +{1}{2} to {3}{4}',
-            effectArgs: (context) => [
-                this.#bonusAmount(context),
-                'military',
-                context.source.parentCharacter ?? '',
-                this.#isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku!' : ''
-            ],
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+    override setupCardAbilities() {
+        this.conflictAction('Give attached character a skill bonus', { conflictType: ConflictType.Military })
+            .cost(costs.payFate(1))
+            .cardLastingEffect((context) => ({
+                target: context.source.parentCharacter ?? [],
+                effect: modifyMilitarySkill(this.bonusAmount(context))
+            }))
+            .chatText((context) => msg`give +${this.bonusAmount(context)}${'military'} to ${context.source.parentCharacter ?? ''}${this.isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku' : ''}`)
+            .limit(unlimited());
     }
 
-    #isAgainstEvil(context: AbilityContext): boolean {
+    private isAgainstEvil(context: AbilityContext): boolean {
         return context.player.opponent?.cardsInPlay.some(
-            (card: DrawCard) =>
-                card.getType() === CardType.Character &&
+            (card) =>
+                card.type === CardType.Character &&
                 card.isParticipating() &&
-                (card.isTainted || card.hasTrait('shadowlands'))
+                (card.isTainted || card.hasTrait(Trait.Shadowlands))
         ) ?? false;
     }
 
-    #bonusAmount(context: AbilityContext): number {
-        return this.#isAgainstEvil(context) ? 4 : 2;
+    private bonusAmount(context: AbilityContext): number {
+        return this.isAgainstEvil(context) ? 4 : 2;
     }
 }

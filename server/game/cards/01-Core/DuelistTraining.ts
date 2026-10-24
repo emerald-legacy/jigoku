@@ -1,58 +1,56 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { bow, duel } from '../../GameActions/GameActions.js';
+import { gainAbility } from '../../effects.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { AbilityType, CardType, DuelType, Players } from '../../Constants.js';
+import { CardType, DuelType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { Duel } from '../../Duel.js';
-import type HonorBidPrompt from '../../gamesteps/HonorBidPrompt.js';
+import { HonorBidPrompt } from '../../gamesteps/HonorBidPrompt.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 
 class DuelistTraining extends DrawCard {
     static id = 'duelist-training';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.whileAttached({
-            effect: ability.effects.gainAbility(AbilityType.Action, {
-                title: 'Initiate a duel to bow',
-                condition: (context: AbilityContext<this>) => context.source.isParticipating(),
-                printedAbility: false,
-                target: {
+            effect: gainAbility.action('Initiate a duel to bow', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .target({
                     cardType: CardType.Character,
                     controller: Players.Opponent,
-                    cardCondition: (card: DrawCard) => card.isParticipating(),
-                    gameAction: ability.actions.duel((context: AbilityContext<this>) => ({
-                        type: DuelType.Military,
-                        challenger: context.source,
-                        gameAction: (duel: Duel) => ability.actions.bow({ target: duel.loser }),
-                        costHandler: (context: AbilityContext, prompt: unknown) => this.costHandler(context, prompt as HonorBidPrompt)
-                    }))
-                }
-            })
+                    cardCondition: (card) => card.isParticipating()
+                }, duel({
+                    type: DuelType.Military,
+                    gameAction: (duel) => bow({ target: duel.loser }),
+                    costHandler: (context, prompt) => {
+                        if(prompt instanceof HonorBidPrompt) {
+                            this.costHandler(context, prompt);
+                        }
+                    }
+                })))
         });
     }
 
-    costHandler(context: AbilityContext, prompt: HonorBidPrompt) {
-        let lowBidder = this.game.getFirstPlayer();
-        if(!lowBidder || !lowBidder.opponent) {
+    private costHandler(context: AbilityContext, prompt: HonorBidPrompt) {
+        let higherBidder = this.game.getFirstPlayer();
+        if(!higherBidder || !higherBidder.opponent) {
             return;
         }
-        let difference = lowBidder.honorBid - lowBidder.opponent.honorBid;
+        let difference = higherBidder.honorBid - higherBidder.opponent.honorBid;
         if(difference < 0) {
-            lowBidder = lowBidder.opponent;
+            higherBidder = higherBidder.opponent;
             difference = -difference;
         } else if(difference === 0) {
             return;
         }
-        if(lowBidder.hand.length < difference) {
+        if(higherBidder.hand.length < difference) {
             prompt.transferHonorAfterBid(context);
             return;
         }
-        this.game.promptWithHandlerMenu(lowBidder, {
-            activePromptTite: 'Difference in bids: ' + difference.toString(),
+        this.game.promptWithHandlerMenu(higherBidder, {
+            activePromptTitle: 'Difference in bids: ' + difference.toString(),
             source: this,
-            choices: ['Pay with honor', 'Pay with cards'],
-            handlers: [
-                () => prompt.transferHonorAfterBid(context),
-                () => GameActions.chosenDiscard({ amount: difference }).resolve(lowBidder, context)
+            options: [
+                { text: 'Pay with honor', handler: () => prompt.transferHonorAfterBid(context) },
+                { text: 'Pay with cards', handler: () => GameActions.chosenDiscard({ amount: difference }).resolve(higherBidder, context) }
             ]
         });
     }

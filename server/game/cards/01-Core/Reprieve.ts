@@ -1,24 +1,22 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import { Location } from '../../Constants.js';
 
 class Reprieve extends DrawCard {
     static id = 'reprieve';
 
-    setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Prevent a character from leaving play',
-            when: {
+    override setupCardAbilities() {
+        this.wouldInterrupt('Prevent a character from leaving play')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter && event.card.location === Location.PlayArea &&
-                                                      context.source.allowGameAction('discardFromPlay', context)
-            },
-            effect: 'prevent {1} from leaving play',
-            effectArgs: context => context.event.card ?? '',
-            gameAction: AbilityDsl.actions.cancel(context => ({
+                                                      discardFromPlay().canAffect(context.source, context)
+            })
+            .cancel((context) => ({
                 target: context.source,
-                replacementGameAction: AbilityDsl.actions.discardFromPlay()
+                replacementGameAction: discardFromPlay()
             }))
-        });
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play`);
     }
 }
 

@@ -169,7 +169,7 @@ describe('Hantei XXXVII', function() {
             });
 
             it('should trigger for Backhanded Compliment', function() {
-                let handSize = this.player2.hand.length;
+                const handSize = this.player2.hand.length;
                 this.player2.clickCard('backhanded-compliment');
                 expect(this.player2).toHavePrompt('Backhanded Compliment');
                 this.player2.clickPrompt('player1');
@@ -358,7 +358,7 @@ describe('Hantei XXXVII', function() {
             });
 
             it('should trigger for Utako Kamoko', function() {
-                let handSize = this.player2.hand.length;
+                const handSize = this.player2.hand.length;
                 this.asahinaStoryteller.honor();
                 this.player2.pass();
                 this.player1.clickCard(this.hantei);
@@ -414,7 +414,7 @@ describe('Hantei XXXVII', function() {
 
             describe('when Duelist Training is triggered', function() {
                 it('should allow Hantei to be used', function() {
-                    let handSize = this.player2.hand.length;
+                    const handSize = this.player2.hand.length;
                     this.player2.clickCard(this.prudentChallenger);
                     this.player2.clickPrompt('Initiate a duel to bow');
                     expect(this.player2).toHavePrompt('Prudent Challenger');
@@ -509,6 +509,196 @@ describe('Hantei XXXVII', function() {
                     expect(this.player1).toBeAbleToSelect(this.asahinaStoryteller);
                 });
             });
+        });
+    });
+});
+
+describe('Hantei XXXVIII and the Pass button', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['mantis-tenkinja'],
+                    dynastyDiscard: ['awakened-tsukumogami'],
+                    hand: ['charge']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.tenkinja = this.player1.findCardByName('mantis-tenkinja');
+            this.tsukumogami = this.player1.placeCardInProvince('awakened-tsukumogami', 'province 2');
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.tenkinja],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.player.firstPlayer = false;
+            this.player2.player.firstPlayer = true;
+            this.player1.fate = 0;
+        });
+
+        it('lets the opponent pass while the player still needs a cost reduction', function() {
+            this.player1.clickCard('charge');
+            this.player1.clickCard(this.tsukumogami);
+            expect(this.player2).toBeAbleToSelect(this.hantei);
+            expect(this.player2).toHavePromptButton('Pass');
+            this.player2.clickPrompt('Pass');
+            expect(this.player1).toBeAbleToSelect(this.tenkinja);
+        });
+    });
+});
+
+describe('Hantei XXXVIII and choices from the hand', function() {
+    integration(function() {
+        it('chooses a random card for Dragonfly Mediator', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['dragonfly-mediator'],
+                    hand: ['i-can-swim']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii'],
+                    hand: ['way-of-the-crane', 'let-go', 'fine-katana']
+                }
+            });
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+
+            this.player1.clickCard('dragonfly-mediator');
+            this.player1.clickCard('i-can-swim');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.hantei);
+
+            expect(this.player2).not.toHavePrompt('Choose a card to reveal');
+            expect(this.getChatLogs(10)).toContain('player1 reveals I Can Swim due to Dragonfly Mediator');
+            expect(this.player2).toHavePrompt('Choose three cards to reveal');
+        });
+
+        it('discards a card at random for Day of Brother Horse', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic'],
+                    hand: ['day-of-brother-horse']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            const handSize = this.player1.hand.length;
+
+            this.noMoreActions();
+            this.player1.clickPrompt('Pass Conflict');
+            this.player1.clickPrompt('Yes');
+            this.player1.clickCard('day-of-brother-horse');
+            this.player1.clickRing('fire');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.hantei);
+            this.player2.clickRing('water');
+
+            expect(this.player1).not.toHavePrompt('Choose a card to discard');
+            expect(this.player2).not.toHavePrompt('Choose a card to discard');
+            expect(this.player1.hand.length).toBe(handSize + 1);
+            expect(this.player1.conflictDiscard.length).toBe(2);
+        });
+
+        it('chooses no Kihō for Laughing Thunder', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['laughing-thunder'],
+                    hand: ['centered-breath']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii'],
+                    hand: ['fine-katana']
+                }
+            });
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.breath = this.player1.findCardByName('centered-breath');
+
+            this.player1.clickCard('laughing-thunder');
+            this.player1.clickCard(this.breath);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.hantei);
+
+            expect(this.breath.location).toBe('hand');
+            expect(this.player1.findCardByName('laughing-thunder').attachments).toEqual([]);
+            expect(this.player2).toHavePrompt('Action Window');
+        });
+    });
+});
+
+describe('Hantei XXXVIII and targets after "then"', function() {
+    integration(function() {
+        it('chooses the target of the step after "then" (Cornering Maneuver)', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker', 'doji-whisperer'],
+                    hand: ['cornering-maneuver']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.player2.pass();
+
+            this.player1.clickCard('cornering-maneuver');
+            this.player1.clickCard(this.berserker);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.hantei);
+            this.player2.clickCard(this.berserker);
+
+            expect(this.player2).toHavePrompt('Choose a character to move');
+            expect(this.player1).not.toHavePrompt('Choose a character to move');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.isParticipating()).toBe(true);
+        });
+
+        it('can interrupt an ability whose only choice comes after "then" (Second Wind)', function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker'],
+                    hand: ['second-wind'],
+                    dynastyDiscard: ['doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['hantei-xxxviii']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.hantei = this.player2.findCardByName('hantei-xxxviii');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.player2.pass();
+
+            this.player1.clickCard('second-wind');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.hantei);
+            this.player2.clickCard(this.hantei);
+            expect(this.player2).toHavePrompt('Choose a character');
+            expect(this.player1).not.toHavePrompt('Choose a character');
         });
     });
 });

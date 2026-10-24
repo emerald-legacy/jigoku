@@ -28,6 +28,10 @@ describe('Shosuro Technique', function () {
         });
 
         describe('Duel Challenge', function () {
+            it('is titled for ignoring printed skill', function () {
+                expect(this.technique.abilities.reactions.map((ability) => ability.title)).toEqual(['Ignore printed skill in the duel']);
+            });
+
             it('should make printed skill not count if you are challenged', function () {
                 this.noMoreActions();
                 this.initiateConflict({
@@ -97,9 +101,9 @@ describe('Shosuro Technique', function () {
 
                 this.player2.clickCard(this.aramoro);
 
-                expect(this.sadako.getMilitarySkill()).toBe(this.aramoro.getMilitarySkill());
+                expect(this.sadako.militarySkill).toBe(this.aramoro.militarySkill);
                 expect(this.getChatLogs(5)).toContain(
-                    'player2 plays Shosuro Technique to set the military of Shosuro Sadako to 5military (equal to Bayushi Aramoro). There\'s no blade as keen as surprise.'
+                    'player2 plays Shosuro Technique to set the military of Shosuro Sadako to 5military (equal to Bayushi Aramoro). There\'s no blade as keen as surprise'
                 );
             });
 

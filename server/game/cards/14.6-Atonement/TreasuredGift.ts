@@ -1,16 +1,16 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotBeDeclaredAsAttacker } from '../../effects.js';
 
 class TreasuredGift extends DrawCard {
     static id = 'treasured-gift';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             opponentControlOnly: true
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
+            effect: cannotBeDeclaredAsAttacker()
         });
     }
 }

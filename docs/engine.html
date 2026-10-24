@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engine internals — Jigoku card builder</title>
+<meta name="description" content="How the engine checks and resolves an ability, how engine code runs game actions, and how cards listen to events.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@500;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+    <p class="brand">Jigoku <small>Card builder reference</small></p>
+    <div class="search">
+        <input type="search" id="search" placeholder="Jump to… (press /)" aria-label="Jump to an entry" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="jump" aria-autocomplete="list">
+    </div>
+    <nav class="pages" id="pages" aria-label="Pages"></nav>
+    <nav class="toc" id="toc" aria-label="On this page"></nav>
+</aside>
+<main id="content">
+<header class="hero">
+    <h1>Engine internals</h1>
+    <p>How the engine checks and resolves an ability, how engine code runs game actions, how cards listen to events, and where the engine knowingly differs from the rules.</p>
+</header>
+<div class="note"><p>This page is for work on the engine itself. Card code rarely needs it; the other pages describe what a card writes.</p></div>
+
+<h2 id="eng-checks">How an ability is checked</h2>
+<p>Before an ability is offered, <code>meetsRequirements(context, ignoredBlockers)</code> runs its checks in order. It returns the first <code>Blocker</code> that stops the ability, or <code>Blocker.None</code>. The checks come from three classes. Each class runs its own checks, then calls the checks of its base class.</p>
+<ol>
+    <li><strong>The action</strong> (<code>CardAction</code>):
+        <ol>
+            <li><code>WrongLocation</code>: the card is where the ability works.</li>
+            <li><code>WrongProvince</code>: a province's action needs a conflict at a province that passes <code>conflictProvinceCondition</code> (see below).</li>
+            <li><code>WrongPhase</code>: the ability's <code>phase()</code>; in the Dynasty phase also the rules for which actions are usable then.</li>
+            <li><code>WrongPlayer</code>: the card's controller, unless <code>anyPlayer()</code> or an effect lets the opponent trigger it. Not checked for events.</li>
+            <li><code>ConditionNotMet</code>: the ability's <code>condition()</code>.</li>
+        </ol>
+        A triggered ability (<code>TriggeredAbility</code>) checks only <code>WrongPlayer</code> and <code>ConditionNotMet</code> at this level. Opponents can't trigger forced abilities, even with an effect that lets them trigger the card. An event passes <code>WrongPlayer</code> for any player who can play it from where it is. The ability listens only while its card is in one of its locations, and its <code>when()</code> is checked when the event happens.
+    </li>
+    <li><strong>The card ability</strong> (<code>CardAbility</code>):
+        <ol>
+            <li><code>Blanked</code>: a printed ability on a blank card, or a gained one while the card loses gained abilities.</li>
+            <li><code>CannotTrigger</code> (triggered abilities only): the card is facedown, or a restriction stops its abilities from being triggered. <code>CannotTrigger</code> in <code>ignoredBlockers</code> skips the restrictions; a facedown card still can't trigger.</li>
+            <li><code>CannotPlay</code>: an event that can't be played (ignored when another ability resolves it).</li>
+            <li><code>ConditionNotMet</code>: an event's "Play only if" (<code>meetsPlayConditions</code>) fails; this check can't be skipped.</li>
+            <li><code>IfConditionNotMet</code>: the ability's <code>ifCondition()</code> is false.</li>
+            <li><code>CannotInitiate</code>: a keyword ability while keywords can't be initiated.</li>
+            <li><code>LimitReached</code>, then <code>MaxReached</code>: the ability's <code>limit()</code> and <code>max()</code>.</li>
+            <li><code>LimitedAlreadyPlayed</code>: a Limited card when one was played this round.</li>
+            <li><code>WrongPhase</code>: a dynasty event outside the Dynasty phase.</li>
+        </ol>
+    </li>
+    <li><strong>The ability</strong> (<code>BaseAbility</code>):
+        <ol>
+            <li><code>CannotPayCost</code>: some cost can't be paid.</li>
+            <li>Without targets: <code>ConditionNotMet</code> when none of its game actions has a legal target. An ability without game actions (only a handler) passes. With targets: <code>NoLegalTarget</code> when a target has no legal choice.</li>
+            <li>A card target with no game action of its own, whose effect is the ability's (<code>.target({ … }).bow()</code>), offers only cards for which one of the ability's game actions has a legal target (RRG: an ability needs the potential to change the game state; Wildfire Kick can't be played with no defenders). Only for a single-card target that is the ability's only target, with no dependent target and no following step (<code>hasFollowingStep()</code>): an action may read a target not chosen yet, and a step may change the game on its own.</li>
+        </ol>
+    </li>
+</ol>
+<p>The province check:</p>
+<pre><code>card.type !== CardType.Province            // other cards always pass
+|| canTriggerOutsideConflict               // canTriggerOutsideConflict()
+|| currentConflict.getConflictProvinces().some((province) =&gt; conflictProvinceCondition(province, context))
+// the default conflictProvinceCondition is province === this card</code></pre>
+
+<h3 id="eng-ignored-blockers">Ignoring blockers</h3>
+<p><code>resolveAbility</code> and the play actions pass <code>ignoredBlockers</code> to skip checks. Only these blockers can be skipped:</p>
+<table>
+    <thead><tr><th>Blocker</th><th>Skips</th></tr></thead>
+    <tbody>
+        <tr><td><code>WrongLocation</code></td><td>Where the card is.</td></tr>
+        <tr><td><code>WrongProvince</code></td><td>The province check (Keeper of Secret Names resolves a province's action this way).</td></tr>
+        <tr><td><code>WrongPhase</code></td><td>All three phase checks.</td></tr>
+        <tr><td><code>WrongPlayer</code></td><td>Who may use the ability.</td></tr>
+        <tr><td><code>ConditionNotMet</code></td><td>The ability's <code>condition()</code>; not the check that a game action has a legal target.</td></tr>
+        <tr><td><code>LimitReached</code>, <code>MaxReached</code></td><td>The limit and the max.</td></tr>
+        <tr><td><code>CannotPayCost</code></td><td>Whether the costs can be paid; <code>resolveAbility</code> then also skips paying them.</td></tr>
+        <tr><td><code>CannotTrigger</code></td><td>Restrictions on triggering the card's abilities (not a facedown card).</td></tr>
+        <tr><td><code>CannotPlay</code></td><td>Whether an event can be played.</td></tr>
+        <tr><td><code>IfConditionNotMet</code></td><td>The ability's <code>ifCondition()</code> (Countryside Trader, The Mirror's Gaze).</td></tr>
+        <tr><td><code>LimitedAlreadyPlayed</code></td><td>The Limited rule, in card abilities; play actions always check it.</td></tr>
+        <tr><td><code>Facedown</code></td><td>That the card is facedown. Only the play actions check it: playing a dynasty character from a province, and adding a duplicate to a unique character.</td></tr>
+    </tbody>
+</table>
+<p><code>resolveAbility</code> always ignores <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>CannotTrigger</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> (resolving isn't playing); a sub-resolution also ignores <code>MaxReached</code>.</p>
+<p><code>Blanked</code>, <code>CannotInitiate</code> and <code>NoLegalTarget</code> always apply. For a facedown card <code>CannotTrigger</code> always applies. The play actions report a play restriction as <code>CannotPlay</code>, like events do. <code>DuplicateUnique</code>, <code>EnterPlayRestricted</code>, <code>CannotEnterConflict</code> and <code>CannotPlaceFate</code> come from playing a card, not from abilities. <code>EnterPlayRestricted</code> checks the player and, for every play action, the card itself (Legendary can only enter play in the Dynasty phase). A play that may only go into the conflict is <code>CannotEnterConflict</code> when the character can't be put into it; it never falls back to playing at home.</p>
+
+<h2 id="eng-resolver">How an ability resolves</h2>
+<p><code>AbilityResolver</code> runs these steps:</p>
+<ol>
+    <li><code>createSnapshot()</code>: the state of a character, holding or attachment source goes into <code>context.cardStateWhenInitiated</code> (events get no snapshot).</li>
+    <li><code>resolveEarlyTargets()</code>: at <code>Stage.PreTarget</code>, the targets are offered before the costs (with "Pay costs first"), unless <code>cannotTargetFirst()</code>.</li>
+    <li><code>checkForCancel()</code>.</li>
+    <li><code>openInitiateAbilityEventWindow()</code>: one event window with <code>onCardAbilityInitiated</code> (<code>onAbilityResolverInitiated</code> when <code>isCardAbility()</code> is false or <code>isStep()</code> is true), plus <code>onCardPlayed</code> for a played card and <code>onCardAbilityTriggered</code> for a card ability with <code>isTriggeredAbility()</code>, actions included. The initiate event's handler queues:
+        <ol>
+            <li><code>resolveCosts()</code>, <code>payCosts()</code> (all costs in one event window), <code>checkCostsWerePaid()</code> (if a cost was cancelled, the ability stops: <code>stopForUnpaidCosts()</code>, see below);</li>
+            <li><code>resolveTargets()</code> at <code>Stage.Target</code>, then <code>checkForCancel()</code>;</li>
+            <li><code>initiateAbilityEffects()</code>: checks that the costs of targeting can be paid (effects that make choosing a card cost fate; if not, <code>stopForUnpaidCosts()</code>), counts the limit and the max, writes the chat line, then pays the costs of targeting. The limit isn't counted for a card in hand, or for a card that changed location since it was used. For an ability with <code>isTriggeredAbility()</code> it then moves a played event to "being played" (where the player playing it controls it, also an opponent's card, until it goes to its owner's discard pile) and opens a then-window with <code>onInitiateAbilityEffects</code>. Cancelling that event cancels the effects; the costs stay paid and the limit stays counted. Other abilities go straight on.</li>
+            <li><code>executeHandler()</code> at <code>Stage.Effect</code>: the game actions resolve.</li>
+            <li><code>moveEventCardToDiscard()</code>. <code>stopForUnpaidCosts()</code> is the one way an ability stops for costs, also in <code>ResolveAbilityActionResolver</code>: the "did not successfully pay the required costs" chat line, a played event whose costs were paid in part goes to its discard pile, <code>onCardPlayCostsNotPaid</code> with <code>{ playEvent }</code> for a played card, and the initiate events are cancelled. An event that stops after its costs were paid (a cost was prevented, or no legal target is left) also goes to its discard pile (RRG Event); one cancelled before any cost was paid stays in hand.</li>
+        </ol>
+    </li>
+    <li><code>refillProvinces()</code>.</li>
+</ol>
+<p>An ability resolved by another one (<code>resolveAbility</code>) runs <code>ResolveAbilityActionResolver</code>: no early targets, no play or trigger costs (its own costs and the costs of targeting are paid unless <code>CannotPayCost</code> is ignored; only those are checked when deciding whether it can resolve, so an event's fate cost never blocks it), <code>onCardAbilityInitiated</code> with <code>resolvedWithoutTriggering: true</code> in a normal window (with, unless it is a sub-resolution, <code>onCardAbilityTriggered</code> with the same flag), then <code>onInitiateAbilityEffects</code> with the same flag in a then-window like a triggered ability's (reactions to the effects, such as Supporting Cast, come after them). It counts the max (not for a sub-resolution) but not the limit.</p>
+<ul>
+    <li>A reaction to <code>onCardAbilityInitiated</code> fires after the early targets were chosen: a select before the dash is answered before the reaction's window opens.</li>
+    <li>In the interrupt window when a card is played, the player playing it gets no Pass button while they still need a cost reduction to afford it (<code>getMinCostReduction()</code> above 0). Their opponent always gets one.</li>
+    <li><code>isTriggeredAbility()</code> is true for every card ability, actions included. It is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), for steps and for a bare <code>BaseAbility</code>. So a reaction that filters on <code>event.ability.isTriggeredAbility()</code> also reacts to actions.</li>
+    <li><code>isTriggeredAbilityInstance()</code> is true only for a <code>TriggeredAbility</code>: reactions and interrupts, forced ones and duel triggers included. The keyword abilities built on it (Pride, Rally, Tutored, Thriving, Courtesy, Sincerity) are instances too; Covert is not.</li>
+    <li><code>isCardAbility()</code> is true for every <code>ResolvableAbility</code> (card abilities, keyword abilities and steps) and for Covert. A step after <code>then()</code> or <code>afterwards()</code> runs through its own <code>AbilityResolver</code>; <code>isStep()</code> tells it apart. A step raises <code>onAbilityResolverInitiated</code>, not <code>onCardAbilityInitiated</code>, and a step without a legal target ends without the "insufficient legal targets" line.</li>
+</ul>
+
+<h3 id="eng-rule-steps">Rule steps worth knowing</h3>
+<ul>
+    <li><strong>Illegal participants</strong> (<code>Conflict.checkForIllegalParticipants()</code>, RRG Dash / Participating): a participant that can no longer take part (a dash in the conflict's type after the type switched, or a restriction) is removed from the conflict and placed at home bowed. This is a rule, not a card effect, so "cannot be moved home" or "cannot be sent home" (Dead Eyes) doesn't stop it.</li>
+    <li><strong>Taking a ring's fate</strong>: claiming or taking a ring, declaring a conflict at it and switching the contested ring all use <code>takeAllFateFromRing(ring, context)</code> (in <code>TakeFateFromRingAction.ts</code>), which returns the <code>takeFateFromRing</code> events (none if the player can't take fate from rings) and adds the "takes N fate" chat line. The fate moves in a then-window right after the claim or switch.</li>
+    <li><strong>Hantei XXXVIII's blind choice</strong> (ruling #926): when he takes over a choice and every card on offer is in the other player's hand or deck (<code>isBlindChoice</code> in <code>GameActions/blindChoice.ts</code>), he chooses at random (<code>chooseBlindly</code>, <code>selectBlindly</code>), or nothing when the cards must have certain properties (a <code>cardCondition</code>). Card targets, select card actions (and select costs), chosen discards, chosen returns to deck and deck searches use it.</li>
+    <li><strong>Foothills Keep and other fate costs to attack a province</strong>: a province can be declared against only if the fate can be paid to another unclaimed ring; the fate is paid with a cost context, and the conflict fails to initiate if it isn't paid.</li>
+    <li><strong>Costs to declare</strong> (<code>ConflictFlow.payDeclarationCosts</code>, <code>DeclarationCost</code> in <code>gamesteps/conflict/declarationCosts.ts</code>): the attackers' fate, honor and card costs, <code>costToDeclareAnyParticipants</code> and the province's fate to a ring (or the defenders' honor and participant costs) are paid in one window, once their choices are made. A <code>DeclarationCost</code> is <code>{ costs, paidMessages?, failed? }</code>: <code>paidMessages(events)</code> gets the events that weren't cancelled and its lines follow the window (none when all were cancelled); a cost with <code>failed</code> that wasn't paid (no event, or one cancelled) calls it instead, which stops the declaration (the province's fate to a ring: the conflict fails to initiate).</li>
+</ul>
+
+<h2 id="eng-game-actions">Running game actions from engine code</h2>
+<p>A game action doesn't change the game by itself. It first collects its events with <code>action.addEventsToArray(events, context)</code>. Most actions add one event per legal target. A card game action adds one for every target, and the event window cancels the events whose target it can't affect (events without a name skip that check). Then the event window resolves them. Open that window one step later, as the entry points below do: some actions add their events only after a prompt.</p>
+<p>Engine code that acts for a player, outside any card ability, uses <code>game.getFrameworkContext(player)</code> as its context. A cost the rules charge, such as the honor to declare an attacker or defender, uses <code>game.getFrameworkCostContext(player)</code>: a framework context at <code>Stage.Cost</code>, so "cannot lose honor to pay costs" (Kuni Juurou) stops it and effect-only restrictions don't. Declaring is refused when that honor can't be paid; for attackers the cost is summed over all of them. There is no context without a player: a rule acts with the framework context of the player it acts for, the controller of the card it affects (a ring's claimant). A step that affects both players' cards (bowing illegal participants, readying, removing fate in the fate phase, returning rings) uses <code>game.resolveRuleAction(action, [{ target, player }])</code>, one context per player in one window, so it never looks like an opponent's doing to reactions such as Ready for Battle. The glory count's Imperial Favor claim acts for the winner. A lasting effect acts for the player who created it (<code>controller</code> in its properties: the ability's player), and so does a persistent effect whose source has no controller (a ring, the framework).</p>
+<table>
+    <thead><tr><th>Entry point</th><th>Use</th></tr></thead>
+    <tbody>
+        <tr><td><code>game.resolveActions([bow({ target }), dishonor({ target })], context)</code></td><td>Several actions in one window, then emptied provinces refill; returns the events. For rules, rings, keywords, prompts, and a handler resolving things that happen together. The context is required.</td></tr>
+        <tr><td><code>action.resolve(target, context)</code></td><td>One action inside an ability, such as in a handler; the ability refills at its end.</td></tr>
+        <tr><td><code>game.openEventWindow(events)</code></td><td>Events already collected (costs, contingent events).</td></tr>
+        <tr><td><code>game.openThenEventWindow(events)</code></td><td>Events resolved while another event window is open; their reactions wait for that window. With no window open, it opens a normal one.</td></tr>
+        <tr><td><code>game.raiseEvent(name, params, handler)</code></td><td>A framework event without a game action.</td></tr>
+    </tbody>
+</table>
+<h3 id="eng-imports">Imports and cycles</h3>
+<ul>
+    <li>Engine code imports the factories by name. Files whose own names clash with them (the costs, <code>AbilityBuilder</code>) use <code>import * as GameActions</code>.</li>
+    <li>The modules in <code>GameActions/</code> and <code>AbilityResolver</code> construct the action classes instead (<code>new MoveCardAction(…)</code>). The factory module imports them, so importing it back closes an import cycle that only breaks when such a module happens to load first.</li>
+    <li>A class must not share an import cycle with the class it extends: <code>class DrawCard extends BaseCard</code> needs <code>BaseCard</code> loaded, so nothing that <code>BaseCard</code>, <code>CardAbility</code> or <code>ReduceableFateCost</code> imports may import their subclasses as values.</li>
+    <li>Engine code tells cards and abilities apart with the guards (<code>isCard()</code>, <code>isDrawCard()</code>, <code>isRing()</code>, <code>isPlayer()</code>, <code>isToken()</code>, <code>isTriggeredAbilityInstance()</code>; <code>value instanceof GameObject &amp;&amp; value.isCard()</code> for an <code>unknown</code>), not with <code>instanceof</code> on the class.</li>
+    <li>The modules in <code>GameActions/</code> import their effects from <code>Effects/Library/</code>, not the <code>effects</code> index, which pulls in the ability builder.</li>
+</ul>
+
+<h2 id="eng-registrar">Listening to events: EventRegistrar</h2>
+<p>A card that has to remember something across events (which characters were bowed this conflict, which provinces were attacked) listens with an <code>EventRegistrar</code>. Its listeners stay for the whole game. It has two methods:</p>
+<ul>
+    <li><code>register({ [EventName.X]: handler })</code> runs the handler after the event happened. The handler gets the event, typed by its name.</li>
+    <li><code>registerTriggerWindow(eventName, abilityType, handler)</code> runs the handler in the event's trigger window of that type, before the abilities in that window are offered.</li>
+</ul>
+<pre><code>// Kakita's First Kata: Conflict Action: Choose a [clan-crane] or Duelist character you control – until the end of the conflict, that character cannot be bowed or moved by opponents' card effects. If it was bowed during this conflict, ready it.
+this.eventRegistrar = new EventRegistrar(this.game);
+this.eventRegistrar.register({
+    [EventName.OnConflictFinished]: () =&gt; this.onConflictFinished(),
+    [EventName.OnCardBowed]: (event) =&gt; this.onCardBowed(event)
+});</code></pre>
+<pre><code>// Pilgrimage: During conflicts at this province, cancel all ring effects.
+const eventRegistrar = new EventRegistrar(this.game);
+eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) =&gt; this.cancelRingEffect(event));</code></pre>
+<ul>
+    <li><code>register()</code> listens to the event itself, so it also sees the events that open no window (<code>onCardMoved</code>, <code>onDeckShuffled</code>).</li>
+    <li>A listener changes nothing through the ability system: no costs, limits, chat or restrictions. Effects on the game still go through game actions (<code>game.resolveActions</code>).</li>
+    <li><code>unregisterAll()</code> removes the listeners; the duel uses it for its own registrar.</li>
+</ul>
+
+<h2 id="eng-limitations">Technical Limitations And Known Issues</h2>
+<p>Where the engine knowingly differs from the rules, because fixing it would cost more than the case is worth.</p>
+
+<h3 id="eng-limit-side-control">"Characters you control" is read as "characters on your side"</h3>
+<p>In a conflict a character is normally on its controller's side. Cards say either "on your side" / "the enemy side" or "you control" / "your opponent controls". The engine reads both as the side: <code>conflict.getCharacters(player)</code>, <code>hasMoreParticipants</code> and <code>getNumberOfParticipantsFor</code> all go by side.</p>
+<ul>
+    <li>They differ only when a character is on the other side than its controller: Endless Plains Skirmisher ("move this character to the conflict on that player's side. You still control this character") or Join the Fray moving a character to the opponent's side. Then, for example, Misinformation ("each participating character your opponent controls") misses that character, and "if you control more participating characters" counts it for the wrong player.</li>
+    <li>Affected wording: Arrows from the Woods, Void Fist, Ramparts of Stone, Wildfire Kick, Warrior Poet, Fearsome Mystic, Isawa Atsuko, Capture the False Eye, Misinformation, Shinjo Shono, Menacing Iron Warrior, Subdue the Spirits, Overhear, Show Me Your Stance; the counts of Press of Battle, Even the Odds, Flank the Enemy, Moment of Perfect Beauty.</li>
+    <li>Not fixed (decision, 2026-10-20): putting a character on the opponent's side is a rare choice (mostly multiplayer, where Join the Fray targets you or your partner).</li>
+</ul>
+
+</main>
+</div>
+<div class="jump" id="jump" role="listbox" aria-label="Matches" hidden></div>
+<script src="assets/search-index.js"></script>
+<script src="assets/docs.js"></script>
+</body>
+</html>

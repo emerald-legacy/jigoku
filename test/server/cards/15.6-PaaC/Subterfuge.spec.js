@@ -55,15 +55,21 @@ describe('Subterfuge', function() {
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.subterfuge);
             this.player2.clickCard(this.subterfuge);
+            expect(this.player2).toHavePromptButton('1');
+            expect(this.player2).toHavePromptButton('2');
+            expect(this.player2).toHavePromptButton('3');
+            this.player2.clickPrompt('3');
             expect(this.player1.hand.length).toBe(playerHandSize + 1);
             expect(this.honoredBlade.location).toBe('conflict discard pile');
             expect(this.ornateFan.location).toBe('conflict discard pile');
             expect(this.sharpenTheMind.location).toBe('conflict discard pile');
             expect(this.fineKatana.location).toBe('hand');
-            expect(this.getChatLogs(10)).toContain('player1 plays Regal Bearing to set their bid dial to 1 and draw 4 cards.');
-            expect(this.getChatLogs(10)).toContain('player2 plays Subterfuge to prevent 3 cards from being drawn, discarding them instead');
+            expect(this.getChatLogs(10)).toContain('player1 plays Regal Bearing to set their bid dial to 1 and draw 4 cards');
+            expect(this.getChatLogs(10)).toContain('player2 plays Subterfuge to prevent up to 3 cards from being drawn, discarding them instead');
             expect(this.getChatLogs(10)).toContain('player1 discards Honored Blade, Sharpen the Mind and Ornate Fan');
             expect(this.getChatLogs(10)).toContain('player1 draws 1 card');
+            expect(this.getChatLogs(10).filter((log) => log === 'player1 discards Honored Blade, Sharpen the Mind and Ornate Fan').length).toBe(1);
+            expect(this.getChatLogs(10).filter((log) => log === 'player1 draws 1 card').length).toBe(1);
         });
 
         it('discard all cards if 3 are drawn', function () {
@@ -80,13 +86,35 @@ describe('Subterfuge', function() {
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.subterfuge);
             this.player2.clickCard(this.subterfuge);
+            this.player2.clickPrompt('3');
             expect(this.player1.hand.length).toBe(0);
             expect(this.honoredBlade.location).toBe('conflict discard pile');
             expect(this.ornateFan.location).toBe('conflict discard pile');
             expect(this.sharpenTheMind.location).toBe('conflict discard pile');
-            expect(this.getChatLogs(10)).toContain('player2 uses Master Whisperer to make player1 discard 1 cards and draw 3 cards');
-            expect(this.getChatLogs(10)).toContain('player2 plays Subterfuge to prevent 3 cards from being drawn, discarding them instead');
+            expect(this.getChatLogs(10)).toContain('player2 uses Master Whisperer to make player1 discard 1 card and draw 3 cards');
+            expect(this.getChatLogs(10)).toContain('player2 plays Subterfuge to prevent up to 3 cards from being drawn, discarding them instead');
             expect(this.getChatLogs(10)).toContain('player1 discards Honored Blade, Sharpen the Mind and Ornate Fan');
+            expect(this.getChatLogs(10).filter((log) => log === 'player1 discards Honored Blade, Sharpen the Mind and Ornate Fan').length).toBe(1);
+        });
+
+        it('lets the player discard fewer than 3 cards', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.ikomaProdigy],
+                defenders: [this.whisperer]
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.regalBearing);
+            this.player2.clickCard(this.subterfuge);
+            this.player2.clickPrompt('1');
+            expect(this.honoredBlade.location).toBe('conflict discard pile');
+            expect(this.sharpenTheMind.location).toBe('hand');
+            expect(this.ornateFan.location).toBe('hand');
+            expect(this.fineKatana.location).toBe('hand');
+            expect(this.getChatLogs(10)).toContain('player1 discards Honored Blade');
+            expect(this.getChatLogs(10)).toContain('player1 draws 3 cards');
         });
 
         it('discard less cards if less than 3 are drawn', function () {
@@ -102,6 +130,7 @@ describe('Subterfuge', function() {
             expect(this.getChatLogs(10)).toContain('player1 uses Imperial Storehouse, sacrificing Imperial Storehouse to draw 1 card');
             expect(this.getChatLogs(10)).toContain('player2 plays Subterfuge to prevent 1 card from being drawn, discarding it instead');
             expect(this.getChatLogs(10)).toContain('player1 discards Honored Blade');
+            expect(this.getChatLogs(10).filter((log) => log === 'player1 discards Honored Blade').length).toBe(1);
         });
 
         it('should not be playable if you are more honorable', function () {

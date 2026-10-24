@@ -190,6 +190,7 @@ describe('Kitsuki Kagi', function() {
                 expect(this.p1d1.location).toBe('removed from game');
                 expect(this.p1d2.location).toBe('removed from game');
                 expect(this.p1d3.location).toBe('removed from game');
+                expect(this.getChatLogs(5)).toContain('player1 uses Kitsuki Kagi to remove Imperial Storehouse, Seppun Guardsman and Otomo Courtier from the game');
             });
 
             it('should not allow selecting already selected cards', function() {
@@ -220,6 +221,7 @@ describe('Kitsuki Kagi', function() {
                 this.player1.clickPrompt('Done');
                 expect(this.p1d1.location).toBe('removed from game');
                 expect(this.p1d2.location).toBe('removed from game');
+                expect(this.getChatLogs(5)).toContain('player1 uses Kitsuki Kagi to remove Imperial Storehouse and Seppun Guardsman from the game');
             });
         });
     });

@@ -1,4 +1,4 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { loseKeyword } from '../../../effects.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
@@ -6,7 +6,7 @@ import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js
 export default class GoldenEagle extends DrawCard {
     static id = 'golden-eagle';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
 
         this.persistentEffect({
@@ -14,7 +14,7 @@ export default class GoldenEagle extends DrawCard {
             targetController: Players.Opponent,
             targetLocation: Location.PlayArea,
             match: (card) => card.type === CardType.Character,
-            effect: AbilityDsl.effects.loseKeyword('covert')
+            effect: loseKeyword('covert')
         });
     }
 }

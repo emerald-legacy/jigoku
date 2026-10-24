@@ -146,7 +146,7 @@ describe('Raze to the Ground', function() {
             expect(this.garden.isBroken).toBe(true);
         });
 
-        it('should give you the option to discard cards in the province you broke', function() {
+        it('should give your opponent the option to discard cards in the province you broke', function() {
             this.initiateConflict({
                 attackers: [this.challenger],
                 defenders: [this.mirumotoRaitsugu],
@@ -158,9 +158,10 @@ describe('Raze to the Ground', function() {
             this.player1.clickCard(this.raze);
             this.player1.clickCard(this.challenger);
             this.player1.clickCard(this.garden);
-            expect(this.player1).toHavePrompt('Break Manicured Garden');
-            expect(this.player1).toHavePromptButton('Yes');
-            expect(this.player1).toHavePromptButton('No');
+            expect(this.player1).toHavePrompt('Waiting for opponent to use Break Manicured Garden');
+            expect(this.player2).toHavePrompt('Break Manicured Garden');
+            expect(this.player2).toHavePromptButton('Yes');
+            expect(this.player2).toHavePromptButton('No');
         });
 
         it('should break the province', function() {
@@ -175,7 +176,7 @@ describe('Raze to the Ground', function() {
             this.player1.clickCard(this.raze);
             this.player1.clickCard(this.challenger);
             this.player1.clickCard(this.garden);
-            this.player1.clickPrompt('No');
+            this.player2.clickPrompt('No');
             expect(this.entrenched.isBroken).toBe(true);
             expect(this.getChatLogs(10)).toContain('player1 plays Raze to the Ground, dishonoring Doji Challenger and breaking Manicured Garden to break an attacked province');
             expect(this.getChatLogs(10)).toContain('player1 breaks Entrenched Position');
@@ -194,15 +195,15 @@ describe('Raze to the Ground', function() {
             this.player1.clickCard(this.challenger);
             this.player1.clickCard(this.throne);
 
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.entrenched.isBroken).toBe(false);
             expect(this.player1).toBeAbleToSelect(this.throne);
             this.player1.clickCard(this.throne);
             expect(this.player1.honor).toBe(p1Honor + 2);
             expect(this.player2.honor).toBe(p2Honor - 2);
-            this.player1.clickPrompt('No');
+            this.player2.clickPrompt('No');
             expect(this.entrenched.isBroken).toBe(true);
         });
 
@@ -218,7 +219,7 @@ describe('Raze to the Ground', function() {
             this.player1.clickCard(this.raze);
             this.player1.clickCard(this.challenger);
             this.player1.clickCard(this.garden);
-            this.player1.clickPrompt('No');
+            this.player2.clickPrompt('No');
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.publicForum);
             this.player2.clickCard(this.publicForum);
@@ -228,7 +229,7 @@ describe('Raze to the Ground', function() {
             expect(this.getChatLogs(10)).toContain('player2 uses Public Forum to add an honor token to Public Forum instead of breaking it');
         });
 
-        it('should work on defense not react if you lose', function() {
+        it('does not work on defense', function() {
             this.player1.passConflict();
             this.noMoreActions();
 
@@ -240,27 +241,7 @@ describe('Raze to the Ground', function() {
             });
 
             this.noMoreActions();
-            expect(this.player1).toHavePrompt('Triggered Abilities');
-            expect(this.player1).toBeAbleToSelect(this.raze);
-        });
-
-        it('should allow you to break the attacked province as a cost', function() {
-            this.player1.passConflict();
-            this.noMoreActions();
-
-            this.initiateConflict({
-                attackers: [this.mirumotoRaitsugu],
-                defenders: [this.akodoToturi, this.challenger],
-                province: this.garden,
-                type: 'military'
-            });
-
-            this.noMoreActions();
-            this.player1.clickCard(this.raze);
-            this.player1.clickCard(this.akodoToturi);
-            this.player1.clickCard(this.garden);
-            this.player2.clickPrompt('No');
-            expect(this.getChatLogs(10)).toContain('player1 plays Raze to the Ground, dishonoring Akodo Toturi and breaking Manicured Garden to break an attacked province');
+            expect(this.player1).not.toBeAbleToSelect(this.raze);
         });
     });
 });

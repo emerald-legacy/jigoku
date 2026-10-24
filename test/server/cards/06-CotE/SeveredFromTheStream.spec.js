@@ -77,3 +77,38 @@ describe('Severed From the Stream', function() {
         });
     });
 });
+
+describe('Severed From the Stream with Secluded Shrine', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['severed-from-the-stream']
+                },
+                player2: {
+                    dynastyDiscard: ['secluded-shrine']
+                }
+            });
+            this.shrine = this.player2.findCardByName('secluded-shrine');
+            this.player2.placeCardInProvince(this.shrine, 'province 1');
+            this.shrine.facedown = false;
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player2.clickCard(this.shrine);
+            this.player2.clickRing('fire');
+            this.player1.claimRing('fire');
+            this.player2.claimRing('void');
+        });
+
+        it('returns only the rings physically in the loser\'s claimed ring pool (EmeraldDB ruling)', function() {
+            expect(this.game.rings.fire.isConsideredClaimed(this.player2.player)).toBe(true);
+            this.player1.clickCard('severed-from-the-stream');
+            expect(this.game.rings.void.claimed).toBe(false);
+            expect(this.game.rings.fire.claimedBy).toBe(this.player1.player.name);
+        });
+    });
+});

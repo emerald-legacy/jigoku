@@ -74,10 +74,47 @@ describe('Kiku Matsuri', function() {
                     this.player2.clickCard(this.kikuMatsuri);
                 });
 
-                it('should not be able to be used', function() {
-                    expect(this.player2).toHavePrompt('Conflict Action Window');
+                it('only chooses a character for the player who controls a participating one (EmeraldDB ruling)', function() {
+                    expect(this.player2).toHavePrompt('Choose a character');
+                    expect(this.player2).toBeAbleToSelect(this.yoshi);
+                    this.player2.clickCard(this.yoshi);
+                    expect(this.yoshi.isHonored).toBe(true);
+                    expect(this.getChatLogs(3)).toContain('player2 uses Kiku Matsuri to honor Kakita Yoshi');
                 });
             });
+        });
+    });
+});
+
+describe('Kiku Matsuri with no eligible character on one side', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi']
+                },
+                player2: {
+                    inPlay: ['prodigy-of-the-waves'],
+                    provinces: ['kiku-matsuri']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.prodigy = this.player2.findCardByName('prodigy-of-the-waves');
+            this.kikuMatsuri = this.player2.findCardByName('kiku-matsuri');
+            this.yoshi.honor();
+            this.noMoreActions();
+            this.initiateConflict({
+                province: this.kikuMatsuri,
+                attackers: [this.yoshi],
+                defenders: [this.prodigy]
+            });
+        });
+
+        it('cannot be used while a side with participating characters has none that can be honored', function() {
+            this.player2.clickCard(this.kikuMatsuri);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.prodigy.isHonored).toBe(false);
         });
     });
 });

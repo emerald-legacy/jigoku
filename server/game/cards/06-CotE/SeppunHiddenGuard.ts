@@ -1,34 +1,27 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, EventName, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Location } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class SeppunHiddenGuard extends DrawCard {
     static id = 'seppun-hidden-guard';
 
-    setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel ability',
-            when: {
-                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context: TriggeredAbilityContext) =>
+    override setupCardAbilities() {
+        this.wouldInterrupt('Cancel ability')
+            .when({
+                onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Character &&
-                    (event.cardTargets ?? []).some(
+                    event.cardTargets.some(
                         (card) =>
                             card.isUnique() &&
                             card.controller === context.player &&
                             card.location === Location.PlayArea
                     )
-            },
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            effect: 'cancel the effects of {1}, and force {2} to discard a card at random',
-            effectArgs: (context: AbilityContext) => [(context as TriggeredAbilityContext).event.card as DrawCard, ((context as TriggeredAbilityContext).event.context as AbilityContext).player],
-            gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.discardAtRandom((context: AbilityContext) => ({ target: ((context as TriggeredAbilityContext).event.context as AbilityContext).player }))
-            ])
-        });
+            })
+            .cost(costs.sacrificeSelf())
+            .cancel()
+            .discardAtRandom((context) => ({ target: context.event.context.player }))
+            .chatText((context) => msg`cancel the effects of ${context.event.card}, and force ${context.event.context.player} to discard a card at random`);
     }
 }
 

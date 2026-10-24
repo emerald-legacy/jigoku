@@ -1,24 +1,23 @@
-import { Players } from '../../Constants.js';
+import { Players, RestrictionType, RestrictionScope } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
 
 export default class ConflictBetweenKin extends ProvinceCard {
     static id = 'conflict-between-kin';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,
-            match: (card: DrawCard) => card.isParticipating(),
+            match: (card) => card.isParticipating(),
             effect: [
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'target',
-                    restricts: 'eventsWithSameClan'
+                cardCannot({
+                    cannot: RestrictionType.Target,
+                    appliesTo: RestrictionScope.EventsWithSameClan
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'target',
-                    restricts: 'attachmentsWithSameClan'
+                cardCannot({
+                    cannot: RestrictionType.Target,
+                    appliesTo: RestrictionScope.AttachmentsWithSameClan
                 })
             ]
         });

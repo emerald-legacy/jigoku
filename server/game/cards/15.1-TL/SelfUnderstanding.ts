@@ -1,36 +1,30 @@
-import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { AbilityType, EventName } from '../../Constants.js';
+import { cardCannot, gainAbility } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { TriggeredAbilityProps } from '../../Interfaces.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class SelfUnderstanding extends DrawCard {
     static id = 'self-understanding';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot({
-                cannot: 'target',
-                restricts: 'opponentsEvents',
+            effect: cardCannot({
+                cannot: RestrictionType.Target,
+                appliesTo: RestrictionScope.OpponentsEvents,
                 source: this
             })
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
-                title: 'Resolve all claimed ring effects',
-                when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context) =>
-                        event.conflict.winner === context.source.controller && context.source.isParticipating()
-                },
-                condition: (context: AbilityContext) => context.player.getClaimedRings().length > 0,
-                gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({
+            effect: gainAbility.reaction('Resolve all claimed ring effects', (ability) => ability
+                .when({
+                    afterConflict: (event, context) =>
+                        event.conflict.isOnWinningSide(context.source)
+                })
+                .resolveRingEffect((context) => ({
                     player: context.player,
                     target: context.player.getClaimedRings()
-                })),
-                effect: 'resolve all their claimed ring effects'
-            } as TriggeredAbilityProps<DrawCard>)
+                }))
+                .chatText('resolve all their claimed ring effects'))
         });
     }
 }

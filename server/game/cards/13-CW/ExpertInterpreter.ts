@@ -1,62 +1,49 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import type Ring from '../../Ring.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { Duration, Players, TargetMode, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Duration, Players, Phase, RestrictionType, RestrictionScope } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { playerCannot } from '../../effects.js';
+import { ringLastingEffect } from '../../GameActions/GameActions.js';
+import { honorTransferMessage } from '../honorTransferMessage.js';
 
 class ExpertInterpreter extends DrawCard {
     static id = 'expert-interpreter';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Prevent characters from entering play while contesting a ring',
-            cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(),
-            when: {
-                onPhaseStarted: event => event.phase === Phases.Conflict
-            },
-            targets: {
-                myRing: {
-                    mode: TargetMode.Ring,
-                    ringCondition: () => true,
-                    gameAction: AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
-                        duration: Duration.UntilEndOfPhase,
-                        targetController: Players.Any,
-                        condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.myRing,
-                        effect: AbilityDsl.effects.playerCannot({
-                            cannot: 'enterPlay',
-                            restricts: 'characters'
-                        })
-                    }))
-                },
-                oppRing: {
-                    player: Players.Opponent,
-                    optional: true,
-                    hideIfNoLegalTargets: true,
-                    mode: TargetMode.Ring,
-                    ringCondition: (_ring: Ring, context?: AbilityContext) => !!(context && context.costs.optionalHonorTransferFromOpponentCostPaid),
-                    gameAction: AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
-                        duration: Duration.UntilEndOfPhase,
-                        targetController: Players.Any,
-                        condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.oppRing,
-                        effect: AbilityDsl.effects.playerCannot({
-                            cannot: 'enterPlay',
-                            restricts: 'characters'
-                        })
-                    }))
-                }
-            },
-            effect: 'prevent characters from entering play while the {1} is contested{2}',
-            effectArgs: context => [context.rings.myRing, this.buildString(context)]
-        });
-    }
-
-    buildString(context: AbilityContext) {
-        if(context.rings.oppRing && !Array.isArray(context.rings.oppRing)) {
-            let ring = context.rings.oppRing;
-            return '.  ' + (context.player.opponent as Player).name + ' gives ' + context.player.name + ' 1 honor to also apply this effect to the ' + ring.name;
-        }
-        return '';
+    override setupCardAbilities() {
+        this.reaction('Prevent characters from entering play while contesting a ring')
+            .when({
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
+            })
+            .cost(costs.optionalTakeHonorFromOpponent())
+            .ringTarget({
+                name: 'myRing',
+                ringCondition: () => true
+            }, ringLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                targetController: Players.Any,
+                condition: () => context.rings.myRing.isContested() && this.game.currentConflict?.ring === context.rings.myRing,
+                effect: playerCannot({
+                    cannot: RestrictionType.EnterPlay,
+                    appliesTo: RestrictionScope.Characters
+                })
+            })))
+            .ringTarget({
+                name: 'oppRing',
+                player: Players.Opponent,
+                optional: true,
+                hideIfNoLegalTargets: true,
+                ringCondition: (_ring, context) => !!context.costs.honorTakenFromOpponent
+            }, ringLastingEffect((context) => ({
+                duration: Duration.UntilEndOfPhase,
+                targetController: Players.Any,
+                condition: () => context.rings.oppRing.isContested() && this.game.currentConflict?.ring === context.rings.oppRing,
+                effect: playerCannot({
+                    cannot: RestrictionType.EnterPlay,
+                    appliesTo: RestrictionScope.Characters
+                })
+            })))
+            .firstPlayerChoosesFirst()
+            .chatText((context) => msg`prevent characters from entering play while the ${context.rings.myRing} is contested${honorTransferMessage(context, context.rings.oppRing, (ring) => msg`also apply this effect to the ${ring}`)}`);
     }
 }
 

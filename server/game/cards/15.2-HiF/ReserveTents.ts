@@ -1,21 +1,19 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 class ReserveTents extends DrawCard {
     static id = 'reserve-tents';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move a character to the conflict',
-            limit: AbilityDsl.limit.perRound(2),
-            target: {
+    override setupCardAbilities() {
+        this.action('Move a character to the conflict')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                player: Players.Self,
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                player: Players.Self
+            }, moveToConflict())
+            .limit(perRound(2));
     }
 }
 

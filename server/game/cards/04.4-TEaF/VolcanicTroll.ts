@@ -1,20 +1,20 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import { Element } from '../../Constants.js';
 
-const elementKey = 'isawa-tsuke-2-fire';
+const elementKey = 'volcanic-troll-fire';
 class VolcanicTroll extends DrawCard {
     static id = 'volcanic-troll';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed(),
-            effect: AbilityDsl.effects.modifyBothSkills(2)
+            effect: modifyBothSkills(2)
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+    override getPrintedElementSymbols() {
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Unclaimed Ring',
