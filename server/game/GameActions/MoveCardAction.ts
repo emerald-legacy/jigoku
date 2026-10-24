@@ -63,6 +63,7 @@ export class MoveCardAction<Context extends AbilityContext = AbilityContext> ext
             (!destination || context.player.isLegalLocationForCard(card, destination)) &&
             (destination !== Location.Hand || card.checkRestrictions(RestrictionType.MoveToHand, context)) &&
             card.location !== Location.PlayArea &&
+            !(card.isDrawCard() && card.isRemovedByEphemeral()) &&
             super.canAffect(card, context)
         );
     }

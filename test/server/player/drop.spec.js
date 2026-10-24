@@ -17,7 +17,7 @@ describe('Player - drop', () => {
             this.gameSpy.manualMode = true;
             this.gameSpy.getProvinceArray.and.returnValue(['province 1', 'province 2', 'province 3', 'province 4', 'stronghold province']);
 
-            this.cardSpy = jasmine.createSpyObj('card', ['getType', 'leavesPlay', 'moveTo', 'isFacedown', 'isFaceup']);
+            this.cardSpy = jasmine.createSpyObj('card', ['getType', 'leavesPlay', 'moveTo', 'isFacedown', 'isFaceup', 'isDrawCard']);
             this.cardSpy.uuid = '1111';
             this.cardSpy.controller = this.cardSpy.owner = this.player;
             this.cardSpy.type = 'character';

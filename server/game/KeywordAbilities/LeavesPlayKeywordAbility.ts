@@ -17,7 +17,7 @@ interface LeavesPlayKeyword {
 
 /** Where a card can go when it leaves play. */
 const OUT_OF_PLAY = [Location.Hand, Location.ConflictDeck, Location.DynastyDeck, Location.ConflictDiscardPile, Location.DynastyDiscardPile,
-    Location.RemovedFromGame, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour, Location.StrongholdProvince];
+    Location.RemovedFromGame, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour, Location.StrongholdProvince, Location.Underneath];
 
 /**
  * A keyword that gives its controller something when the card leaves play (Courtesy, Sincerity).

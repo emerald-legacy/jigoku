@@ -96,6 +96,8 @@ function formatSkill(skill: number): string {
 export class DrawCard extends BaseCard {
     fromOutOfPlaySource?: BaseCard[];
     eventRegistrarForEphemeral?: EventRegistrar;
+    /** RRG Ephemeral: removed from game by its own keyword, so no other effect moves it out (manual moves excepted). */
+    removedByEphemeral = false;
 
     override menu: MenuItem[] = [
         { command: 'bow', text: 'Bow/Ready' },
@@ -200,8 +202,13 @@ export class DrawCard extends BaseCard {
             if(this.location !== Location.RemovedFromGame) {
                 this.owner.moveCard(this, Location.RemovedFromGame);
             }
+            this.removedByEphemeral = this.location === Location.RemovedFromGame;
             this.fromOutOfPlaySource = undefined;
         }
+    }
+
+    isRemovedByEphemeral(): boolean {
+        return this.removedByEphemeral && this.location === Location.RemovedFromGame;
     }
 
     removeOutOfPlaySource(source: BaseCard): void {

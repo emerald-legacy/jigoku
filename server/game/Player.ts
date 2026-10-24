@@ -929,6 +929,9 @@ export class Player extends GameObject {
         }
 
         this.game.addMessage(msg`${this} manually moves ${display} from their ${source} to their ${target}`);
+        if(card.isDrawCard()) {
+            card.removedByEphemeral = false;
+        }
         this.moveCard(card, target);
         this.game.checkGameState(true);
     }
@@ -1146,7 +1149,8 @@ export class Player extends GameObject {
     }
 
     moveCard(card: BaseCard, targetLocation: Location, options: MoveCardOptions = {}): void {
-        if(!this.isLegalLocationForCard(card, targetLocation) || (targetLocation === Location.Underneath && !options.host)) {
+        if(!this.isLegalLocationForCard(card, targetLocation) || (targetLocation === Location.Underneath && !options.host) ||
+            (card.isDrawCard() && card.isRemovedByEphemeral())) {
             return;
         }
         this.removeCardFromPile(card);

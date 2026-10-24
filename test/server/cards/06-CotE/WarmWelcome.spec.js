@@ -77,6 +77,34 @@ describe('Warm Welcome', function() {
             });
         });
 
+        describe('an Ephemeral event', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['doji-whisperer'],
+                        hand: ['warm-welcome'],
+                        conflictDiscard: ['levy-2']
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger']
+                    }
+                });
+                this.levy = this.player1.findCardByName('levy-2');
+                this.player1.player.showBid = 1;
+                this.player2.player.showBid = 3;
+            });
+
+            it('stays removed from game instead of going to the bottom of the conflict deck', function() {
+                this.player1.clickCard('warm-welcome');
+                this.player1.clickCard(this.levy);
+                this.player2.clickPrompt('Give your opponent 1 fate');
+
+                expect(this.levy.location).toBe('removed from game');
+                expect(this.player1.player.conflictDeck).not.toContain(this.levy);
+            });
+        });
+
         describe('Multiple Warm Welcomes', function() {
             beforeEach(function() {
                 this.setupTest({

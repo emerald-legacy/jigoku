@@ -113,6 +113,46 @@ describe('Back-Alley Hideaway', function() {
             });
         });
 
+        describe('a character with Sincerity hidden in the Hideaway', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kakita-yoshi'],
+                        hand: ['assassination']
+                    },
+                    player2: {
+                        inPlay: ['bayushi-liar'],
+                        dynastyDiscard: ['back-alley-hideaway'],
+                        conflictDeck: ['fine-katana', 'ornate-fan']
+                    }
+                });
+
+                this.yoshi = this.player1.findCardByName('kakita-yoshi');
+                this.liar = this.player2.findCardByName('bayushi-liar');
+                this.backAlley = this.player2.placeCardInProvince('back-alley-hideaway', 'province 1');
+                this.player1.player.honor = 10;
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.yoshi],
+                    defenders: []
+                });
+                this.player2.pass();
+            });
+
+            it('still resolves Sincerity, as the character leaves play (EmeraldDB ruling)', function() {
+                const handSize = this.player2.hand.length;
+                assassinate(this.player1, this.liar);
+                this.player2.clickCard(this.backAlley);
+
+                expect(this.liar.parent).toBe(this.backAlley);
+                expect(this.player2.hand.length).toBe(handSize + 1);
+                expect(this.getChatLogs(5)).toContain('player2 draws a card due to Bayushi Liar\'s Sincerity');
+            });
+        });
+
         describe('Play this character from Back-Alley Hideaway action', function() {
             beforeEach(function() {
                 this.setupTest({
