@@ -173,6 +173,23 @@ describe('Duel to the Death', function() {
                 expect(this.dojiChallenger.location).toBe('dynasty discard pile');
                 expect(this.getChatLogs(5)).toContain('Duel Effect: discard Doji Challenger');
             });
+
+            it('should not say the duel was refused', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.dojiChallenger],
+                    defenders: [this.mirumotoRaitsugu],
+                    type: 'military'
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.duelToTheDeath);
+                this.player1.clickCard(this.dojiChallenger);
+                this.player1.clickCard(this.mirumotoRaitsugu);
+                this.player2.clickPrompt('Yes');
+                this.player2.clickCard(this.shomon);
+                expect(this.player1).toHavePrompt('Honor Bid');
+                expect(this.getChatLogs(10).filter((line) => line.includes('refuse'))).toEqual([]);
+            });
         });
     });
 });

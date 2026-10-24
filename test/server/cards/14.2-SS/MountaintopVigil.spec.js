@@ -116,5 +116,59 @@ describe('Mountaintop Vigil', function() {
                 expect(this.naiveStudent.location).toBe('province 1');
             });
         });
+
+        describe('Mountaintop Vigil and Display of Power', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shiba-tsukune']
+                    },
+                    player2: {
+                        provinces: ['manicured-garden'],
+                        inPlay: ['garanto-guardian'],
+                        hand: ['mountaintop-vigil', 'display-of-power']
+                    }
+                });
+                this.tsukune = this.player1.findCardByName('shiba-tsukune');
+                this.guardian = this.player2.findCardByName('garanto-guardian');
+                this.vigil = this.player2.findCardByName('mountaintop-vigil');
+                this.displayOfPower = this.player2.findCardByName('display-of-power');
+                this.noMoreActions();
+                this.initiateConflict({
+                    province: 'manicured-garden',
+                    ring: 'fire',
+                    type: 'military',
+                    attackers: [this.tsukune],
+                    defenders: []
+                });
+                this.player2.clickCard(this.vigil);
+                this.player1.pass();
+                this.player2.pass();
+                this.player2.clickCard(this.displayOfPower);
+                this.player1.clickPrompt('No');
+            });
+
+            it('should cancel the ring effect before Display of Power can replace it', function() {
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.getChatLogs(5)).toContain('player1\'s ring effect is cancelled');
+                expect(this.getChatLogs(5).filter((line) => line.includes('Display of Power cancels'))).toEqual([]);
+                expect(this.game.rings.fire.isConsideredClaimed(this.player1)).toBe(true);
+            });
+
+            it('should not replace the ring effect of a later conflict', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    ring: 'water',
+                    type: 'political',
+                    attackers: [this.guardian],
+                    defenders: []
+                });
+                this.noMoreActions();
+                this.player2.clickPrompt('No');
+                expect(this.getChatLogs(10).filter((line) => line.includes('Display of Power cancels'))).toEqual([]);
+                expect(this.player2).toHavePrompt('Water Ring');
+            });
+        });
     });
 });

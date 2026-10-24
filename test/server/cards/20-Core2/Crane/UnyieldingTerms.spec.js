@@ -50,9 +50,6 @@ describe('Unyielding Terms', function () {
             expect(this.player2).toBeAbleToSelect(this.atw);
 
             expect(this.player2).toHavePrompt('Choose 2 cards to discard');
-            expect(this.getChatLogs(5)).toContain(
-                'player2 chooses to refuse the duel and discard 2 cards from their hand'
-            );
 
             this.player2.clickCard(this.letgo);
             expect(this.player2).not.toHavePromptButton('Done');
@@ -64,6 +61,9 @@ describe('Unyielding Terms', function () {
             expect(this.katana.location).toBe('conflict discard pile');
 
             expect(this.getChatLogs(5)).toContain('player2 discards Let Go and Fine Katana');
+            expect(this.getChatLogs(5)).toContain(
+                'player2 chooses to refuse the duel and discard 2 cards from their hand'
+            );
             expect(this.player2).toHavePrompt('Action Window');
         });
 

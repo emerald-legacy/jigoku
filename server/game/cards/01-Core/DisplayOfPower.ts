@@ -14,9 +14,14 @@ class DisplayOfPower extends DrawCard {
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed
             })
             .handler((context) => {
-                this.game.onceTriggerWindow(EventName.OnResolveConflictRing, AbilityType.WouldInterrupt, (event) => {
-                    this.onResolveConflictRing(event, context);
-                });
+                const onResolveConflictRing = (event: GameEvent<EventName.OnResolveConflictRing>) => this.onResolveConflictRing(event, context);
+                // a ring effect cancelled before its would-interrupt window (Mountaintop Vigil) never calls it
+                const onConflictFinished = () => {
+                    this.game.offTriggerWindow(EventName.OnResolveConflictRing, AbilityType.WouldInterrupt, onResolveConflictRing);
+                    this.game.off(EventName.OnConflictFinished, onConflictFinished);
+                };
+                this.game.onceTriggerWindow(EventName.OnResolveConflictRing, AbilityType.WouldInterrupt, onResolveConflictRing);
+                this.game.on(EventName.OnConflictFinished, onConflictFinished);
             })
             .chatText('resolve and claim the ring when the ring effect resolves')
             .cannotBeMirrored();

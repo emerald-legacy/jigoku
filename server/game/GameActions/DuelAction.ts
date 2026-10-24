@@ -129,11 +129,9 @@ export class DuelAction<Context extends AbilityContext = AbilityContext> extends
                     {
                         text: 'Yes',
                         handler: () => {
-                            if(refusalMessage) {
-                                context.game.addMessage(refusalMessage(context, opponent));
-                            } else {
-                                context.game.addMessage(msg`${opponent} chooses to refuse the duel and ${context.game.gameChat.nested(refuseGameAction.getEffectMessage(context))}`);
-                            }
+                            const refusalMessageArgs = refusalMessage
+                                ? refusalMessage(context, opponent)
+                                : msg`${opponent} chooses to refuse the duel and ${context.game.gameChat.nested(refuseGameAction.getEffectMessage(context))}`;
                             const refusalEvents: Event[] = [];
                             refuseGameAction.addEventsToArray(refusalEvents, context, additionalProperties);
                             context.game.queueSimpleStep(() => context.game.openThenEventWindow(refusalEvents));
@@ -141,6 +139,8 @@ export class DuelAction<Context extends AbilityContext = AbilityContext> extends
                                 // "to": the duel is refused only if the refusal resolved (Kitsuki Shomon can redirect it)
                                 if(refusalEvents.length === 0 || refusalEvents.some((event) => !event.isFullyResolved())) {
                                     addDuelEventsHandler();
+                                } else {
+                                    context.game.addMessage(refusalMessageArgs);
                                 }
                             });
                         }

@@ -77,28 +77,23 @@ export class ResolveRingEffectAction<Context extends AbilityContext = AbilityCon
         if(!super.checkEventCondition(event, additionalProperties)) {
             return false;
         }
-        return !this.ringEffectIsCancelled(event);
+        return !ringEffectIsCancelled(event.context.player);
     }
 
     override eventHandler(event: ActionEvent<EventName.OnResolveRingElement, Context>): void {
-        if(this.ringEffectIsCancelled(event)) {
-            event.cancel();
-            return;
-        }
-
         event.context.game.resolveAbility(
             RingAbilities.contextFor(event.player, event.ring.element, event.optional, (resolved) => {
                 event.effectResolved = resolved;
             })
         );
     }
+}
 
-    private ringEffectIsCancelled(event: ActionEvent<EventName.OnResolveRingElement, Context>): boolean {
-        const player = event.context.player;
-        if(!player.anyEffect(EffectName.CannotResolveRings)) {
-            return false;
-        }
-        event.context.game.addMessage(msg`${player}'s ring effect is cancelled`);
-        return true;
+/** Mountaintop Vigil: checked in the event's condition, before its would-interrupt window (ruling #636). */
+export function ringEffectIsCancelled(player: Player): boolean {
+    if(!player.anyEffect(EffectName.CannotResolveRings)) {
+        return false;
     }
+    player.game.addMessage(msg`${player}'s ring effect is cancelled`);
+    return true;
 }

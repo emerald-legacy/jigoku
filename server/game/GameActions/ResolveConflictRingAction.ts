@@ -1,13 +1,13 @@
 import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EffectName, Element, EventName } from '../Constants.js';
+import { Element, EventName } from '../Constants.js';
 import { isEnumValue } from '../utils/helpers.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { PromptButton } from '../PlayerPromptState.js';
-import { ResolveRingEffectAction } from './ResolveRingEffectAction.js';
+import { ResolveRingEffectAction, ringEffectIsCancelled } from './ResolveRingEffectAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 
@@ -27,17 +27,16 @@ export class ResolveConflictRingAction<Context extends AbilityContext = AbilityC
         event.player = context.player;
     }
 
+    // checked before the would-interrupt window, so a cancelled ring effect cannot be replaced (Display of Power)
+    override checkEventCondition(event: ActionEvent<EventName.OnResolveConflictRing, Context> & { ring: Ring }, additionalProperties: ActionOverrides = {}): boolean {
+        if(!super.checkEventCondition(event, additionalProperties)) {
+            return false;
+        }
+        return !ringEffectIsCancelled(event.context.player);
+    }
+
     override eventHandler(event: ActionEvent<EventName.OnResolveConflictRing, Context>): void {
         if(event.name !== this.eventName) {
-            return;
-        }
-
-        const eventContext = event.context;
-        const cannotResolveRingEffects = eventContext.player.getEffects(EffectName.CannotResolveRings);
-
-        if(cannotResolveRingEffects.length) {
-            eventContext.game.addMessage(msg`${eventContext.player}'s ring effect is cancelled`);
-            event.cancel();
             return;
         }
 
