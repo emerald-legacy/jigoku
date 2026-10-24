@@ -30,12 +30,16 @@ export class MoveStatusTokenAction<Context extends AbilityContext = AbilityConte
             return false;
         } else if(
             token.grantedStatus === CharacterStatus.Honored &&
-            (recipient.isHonored || !recipient.checkRestrictions(RestrictionType.ReceiveHonorToken, context))
+            (recipient.isHonored ||
+                !recipient.checkRestrictions(RestrictionType.ReceiveHonorToken, context) ||
+                !recipient.checkRestrictions(RestrictionType.Honor, context))
         ) {
             return false;
         } else if(
             token.grantedStatus === CharacterStatus.Dishonored &&
-            (recipient.isDishonored || !recipient.checkRestrictions(RestrictionType.ReceiveDishonorToken, context))
+            (recipient.isDishonored ||
+                !recipient.checkRestrictions(RestrictionType.ReceiveDishonorToken, context) ||
+                !recipient.checkRestrictions(RestrictionType.Dishonor, context))
         ) {
             return false;
         } else if(
