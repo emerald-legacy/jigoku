@@ -283,7 +283,7 @@ this.action('Honor a character')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The recipient must be in play. It can't get an honored token if it is already honored or has a "cannot receive an honor token" restriction (<code>RestrictionType.ReceiveHonorToken</code>); the same goes for dishonored (<code>ReceiveDishonorToken</code>) and tainted (<code>ReceiveTaintedToken</code>) tokens.</li>
+      <li>The recipient must be in play. It can't get an honored token if it is already honored or has a "cannot receive an honor token" (<code>RestrictionType.ReceiveHonorToken</code>) or "cannot become honored" (<code>RestrictionType.Honor</code>) restriction; the same goes for dishonored (<code>ReceiveDishonorToken</code>, <code>Dishonor</code>) and tainted (<code>ReceiveTaintedToken</code>) tokens.</li>
       <li>Nothing is checked on the token's side: token actions don't check restrictions on the token or the card that has it.</li>
       <li>Raises <code>onStatusTokenMoved</code> (with <code>donor</code> and <code>recipient</code>), then <code>onStatusTokenGained</code> for the recipient.</li>
       <li>Chat: <code>move {0}'s {1} to {2}</code>: the card that had the token, the token, the recipient.</li>
@@ -1162,6 +1162,7 @@ this.action('Give a character a +1/+1 attachment')
       <li><code>changePlayer</code> needs a card that allows its control to change (<code>RestrictionType.TakeControl</code>) and, for a unique card, no other copy in play for the ability's player.</li>
       <li>Leaving a province refills it, unless the card is switched. Checks <code>RestrictionType.Move</code>, and <code>RestrictionType.MoveToHand</code> when the destination is the hand. The action has no event of its own; the move raises <code>onCardMoved</code>.</li>
       <li>These checks only filter a card target. A card in a <code>target</code> list you pass is moved even when they fail (see <a href="#ga-legality">legality</a>).</li>
+      <li>A card its own Ephemeral keyword removed from the game (<code>card.isRemovedByEphemeral()</code>) can't be affected, and <code>player.moveCard</code> refuses to move it whatever the caller; only a manual move from the card menu clears the flag (<code>removedByEphemeral</code>).</li>
       <li>Chat: <code>move {0} to {1}'s {2}</code> ({1} is the destination's player, {2} the location), <code>move {0} to the bottom of {1}'s {2}</code> with <code>bottom</code>, <code>shuffle {0} into {1}'s {2}</code> with <code>shuffle</code>.</li>
       <li>Builder shortcut: <code>.moveCard(…)</code>.</li>
     </ul>
@@ -1922,7 +1923,7 @@ this.action('Remove a ring from the unclaimed ring pool')
       </tbody>
     </table>
     <ul class="edge">
-      <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled</code>.</li>
+      <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled in its condition, before the would-interrupt window (so nothing can replace it), with the chat line <code>{player}'s ring effect is cancelled</code>.</li>
       <li>A ring with several elements needs a conflict: the player chooses up to the conflict's number of elements to resolve, one ring at a time. Buttons: "Done" once one is chosen, "Resolve All Elements" when all may be resolved, and "Don't Resolve the Conflict Ring".</li>
       <li>Each element then resolves as an optional <a href="#ga-resolveRingEffect"><code>resolveRingEffect</code></a>. It has no restriction type of its own. Raises <code>onResolveConflictRing</code>.</li>
       <li>Chat: <code>resolve {0}</code>.</li>
@@ -3427,11 +3428,24 @@ gameAction: (duel) =&gt;
         player: duel.winnerController,
         …
         gameAction: selectAttackedProvince({
-            gameAction: (province) =&gt; triggerAbility({
-                player: duel.winnerController,
-                ability: province.abilities.actions[0],
-                ignoredBlockers: [Blocker.LimitReached]
-            })
+            player: duel.winnerController,
+            gameAction: (province) =&gt; {
+                const trigger = (ability: CardAbility) =&gt; triggerAbility({
+                    player: duel.winnerController,
+                    ability,
+                    ignoredBlockers: [Blocker.LimitReached]
+                });
+                const actions = province.abilities.actions;
+                if(actions.length &lt; 2) {
+                    return trigger(actions[0]);
+                }
+                // a province with several actions: the winner chooses one
+                return chooseAction({
+                    activePromptTitle: 'Choose an ability to trigger',
+                    player: duel.winnerController,
+                    choices: Object.fromEntries(actions.map((ability) =&gt; [ability.title, trigger(ability)]))
+                });
+            }
         })
     })</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/CunningNegotiator.ts">Cunning Negotiator</a></p>

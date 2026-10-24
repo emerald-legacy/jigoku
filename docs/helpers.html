@@ -882,7 +882,7 @@ private getNumberOfLegalTargets(context: AbilityContext) {
 
   <div class="ref" id="he-extraConflictPossible" data-name="extraConflictPossible">
     <h3><code>extraConflictPossible(player)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-extraConflictPossible">#</a></h3>
-    <p>For "you may declare an additional conflict this phase": false while the player is under a set conflict maximum (<a href="effects.html#ef-setMaxConflicts"><code>setMaxConflicts</code></a>, Waning Hostilities), where an additional conflict changes nothing.</p>
+    <p>For "you may declare an additional conflict this phase": false while the player is under a set conflict maximum (<a href="effects.html#ef-setMaxConflicts"><code>setMaxConflicts</code></a>, Waning Hostilities), or once a declared-conflict maximum (<a href="effects.html#ef-setMaxDeclaredConflicts"><code>setMaxDeclaredConflicts</code></a>, Privileged Position) is reached (<code>player.conflictManager.declaredConflictCapReached()</code>), where an additional conflict changes nothing.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>

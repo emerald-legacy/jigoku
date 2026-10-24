@@ -150,7 +150,7 @@ this.whileAttached({
     <ul class="edge">
       <li>Printed actions and triggered abilities can't be used (their requirement check returns <code>Blocker.Blanked</code>); the card's own persistent effects stop, and with them its printed keywords.</li>
       <li>Abilities it gained from other cards (<code>gainAbility</code>) keep working, and effects other cards put on it stay. Use <code>loseGainedAbilities</code> for gained ones.</li>
-      <li>A blank card ignores its "No attachments except …" restriction: any attachment is allowed.</li>
+      <li>A blank card ignores its own "No attachments [except …]" restriction (<code>allowAttachment</code>). One it has from a copied card (<code>copyCard</code>) or a card whose abilities it gained (<code>gainAllAbilities</code>) still applies, unless it also has <code>loseGainedAbilities</code>; each such restriction must allow the attachment.</li>
       <li>One <code>blank</code> is enough; any copy with <code>blankTraits</code> true removes the traits. <code>copyCard</code> and <code>copyProvince</code> also make the card count as blank (<code>isBlank()</code>).</li>
       <li>A province also counts as blank while it is broken or dishonored.</li>
     </ul>
@@ -202,7 +202,8 @@ this.action('Turn attachment into character')
     </table>
     <ul class="edge">
       <li><code>copyCard</code> also takes the other card's printed cost, skills and glory: <code>getCost()</code>, the base skills and the base glory use them. The fields <code>printedCost</code>, <code>printedMilitarySkill</code> and <code>printedGlory</code> keep the card's own values. <code>copyProvince</code> takes the printed strength (<code>printedStrength</code> too, which Opportunistic Rustler and Paths Not Taken read) and the province elements. Modifiers on the card still apply on top.</li>
-      <li>The copied abilities are read when <code>copyCard(…)</code> is called. Copied actions and triggered abilities get fresh limits; copied persistent effects only start if their location fits the card (play area for a character, provinces for a holding or province, or <code>Location.Any</code>).</li>
+      <li>The copied abilities are read when <code>copyCard(…)</code> is called. Copied actions and triggered abilities get fresh limits; copied persistent effects only start if their location fits the card (play area for a character, provinces for a holding or province, or <code>Location.Any</code>), and stop while the card has <a href="#ef-loseGainedAbilities"><code>loseGainedAbilities</code></a>.</li>
+      <li>The copied card's "No attachments [except …]" restriction applies (<code>allowAttachment</code>), unless the card loses gained abilities; the card's own no longer does. A copied holding uses the copied card's printed province strength bonus (<code>SkillCalculator</code>).</li>
       <li>The card's own printed abilities are blanked (<code>isBlank()</code> is true), except its own keyword reactions. Abilities and effects from other cards stay.</li>
       <li>With several copy effects, the most recent one wins.</li>
     </ul>
@@ -1093,7 +1094,7 @@ cardLastingEffect((context) =&gt; ({
     <ul class="edge">
       <li>The abilities are read when <code>gainAllAbilities(card)</code> is called: actions, triggered abilities except keyword ones (Courtesy, Pride, Sincerity are not doubled), and persistent effects whose location is the play area or any.</li>
       <li><code>printedOnly</code> filters actions and triggered abilities only; persistent effects are always copied (the filter is commented out in <code>Effects/Library/gainAllAbilities.ts</code>).</li>
-      <li>The copied abilities have their own limits. They keep working if the target is blanked.</li>
+      <li>The copied abilities have their own limits. They keep working if the target is blanked, and stop under <a href="#ef-loseGainedAbilities"><code>loseGainedAbilities</code></a> (persistent effects included). The card's "No attachments [except …]" restriction is gained as well (<code>allowAttachment</code>).</li>
       <li>Apply it to one card: the copied persistent effects keep a single reference, so a second target would overwrite the first one's.</li>
     </ul>
     <pre><code>// Spirit of Valor: Action: Sacrifice this attachment and choose a [clan-lion] character in one of your discard piles - for this conflict, attached character gains each printed ability of the chosen character.
@@ -1233,7 +1234,8 @@ this.dire({
     <p>The card loses all gained abilities; printed ones are kept. "With Air affinity, it also loses all gained abilities."</p>
     <ul class="edge">
       <li>Every action and triggered ability that is not printed and not a keyword ability stops working (<code>Blocker.Blanked</code>): gained ones, copied ones (<code>copyCard</code>, <code>gainAllAbilities</code>) and the card's own <code>.notPrinted()</code> ones.</li>
-      <li>Persistent effects granted with <code>gainAbility</code> stop too. Persistent effects copied by <code>copyCard</code> or <code>gainAllAbilities</code> are not checked and keep working.</li>
+      <li>Persistent effects granted with <code>gainAbility</code> stop too, and so do those copied by <code>copyCard</code> or <code>gainAllAbilities</code> (their copies carry a condition that checks for this effect).</li>
+      <li>A "No attachments [except …]" restriction from a copied card or one gained with <code>gainAllAbilities</code> no longer applies (<code>allowAttachment</code>).</li>
       <li>Keywords: only <code>addKeyword</code> effects whose source is the card itself still count, so keywords from attachments and other cards are lost.</li>
       <li>Pair it with <code>blank()</code> for "loses all abilities".</li>
     </ul>
@@ -1545,7 +1547,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>When the card is a legal target of a matching ability, the target prompt preselects it and it can't be deselected (<code>mustSelect</code>). This works for card targets (<code>.target(…)</code>) and for <code>selectCard</code> with <code>targets: true</code>.</li>
+      <li>When the card is a legal target of a matching ability, the target prompt must include it (<code>mustSelect</code>): if the must-select cards already reach the selector's limit (one card for a single target), only they may be chosen; otherwise they are preselected and can't be deselected. This works for card targets (<code>.target(…)</code>) and for <code>selectCard</code> with <code>targets: true</code>.</li>
       <li>If the card is not a legal target, it has no effect.</li>
     </ul>
     <pre><code>// Talented Performer: This character must be chosen as the target of each event, if able.
@@ -1827,7 +1829,7 @@ this.action('Prevent an opponent contesting a ring')
     <h3><code>cannotResolveRings()</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-cannotResolveRings">#</a></h3>
     <p>"Cancel all ring effects until the end of the conflict" for the affected players.</p>
     <ul class="edge">
-      <li>Cancels both the conflict ring's resolution and any <code>resolveRingEffect</code> for that player, with "&lt;player&gt;'s ring effect is cancelled".</li>
+      <li>Cancels both the conflict ring's resolution and any <code>resolveRingEffect</code> for that player, with "&lt;player&gt;'s ring effect is cancelled". Both are cancelled in the event's condition, before its would-interrupt window, so no interrupt can replace them (ruling #636).</li>
       <li>For "all ring effects", target both players: <code>playerLastingEffect({ target: Players.Any, … })</code>.</li>
     </ul>
     <pre><code>// Mountaintop Vigil: Void role only. Action: During a conflict - cancel all ring effects until the end of the conflict.
@@ -1969,7 +1971,7 @@ this.persistentEffect({
     <ul class="edge">
       <li>Each effect adds one opportunity of its type; copies add up.</li>
       <li>Always pass a type. An effect without one only counts while the player has a set, forced or provided conflict type; otherwise it adds nothing.</li>
-      <li>Usually a <code>playerLastingEffect</code> with <code>Duration.UntilEndOfPhase</code>. Under <a href="#ef-setMaxConflicts"><code>setMaxConflicts</code></a> it changes nothing, so the abilities granting it check <a href="helpers.html#he-extraConflictPossible"><code>extraConflictPossible</code></a>.</li>
+      <li>Usually a <code>playerLastingEffect</code> with <code>Duration.UntilEndOfPhase</code>. Under <a href="#ef-setMaxConflicts"><code>setMaxConflicts</code></a>, or once a <a href="#ef-setMaxDeclaredConflicts"><code>setMaxDeclaredConflicts</code></a> cap is reached, it changes nothing, so the abilities granting it check <a href="helpers.html#he-extraConflictPossible"><code>extraConflictPossible</code></a>.</li>
     </ul>
     <pre><code>// Hida O-Ushi: Reaction: After you win a conflict as the defending player - you may declare an additional
 // [conflict-military] conflict this phase. (Max 1 per phase.)
@@ -2383,6 +2385,7 @@ this.reaction('Both players may only declare 1 conflict opportunity this turn')
     </table>
     <ul class="edge">
       <li>Only lowers the opportunities the player has anyway; the most recent effect wins.</li>
+      <li>Once the cap is reached, <code>player.conflictManager.declaredConflictCapReached()</code> is true and <a href="helpers.html#he-extraConflictPossible"><code>extraConflictPossible</code></a> is false.</li>
     </ul>
     <pre><code>// Privileged Position: Reaction: After honor dials are revealed during an honor bid - each opponent who bid higher than you cannot declare more than one conflict against you this round.
 effect: setMaxDeclaredConflicts(1)</code></pre>
@@ -2807,7 +2810,7 @@ this.legendary(1);</code></pre>
       </tbody>
     </table>
     <ul class="edge">
-      <li>Read from the controller of the ability's source card. A target that player can't pay for (or can't spend fate) can't be chosen.</li>
+      <li>Read from the ability's player (<code>context.player</code>, who pays), not from the controller of its source card. A target that player can't pay for (or can't spend fate) can't be chosen.</li>
       <li>The object may also be a function <code>(player, context) =&gt; ({ amount, match })</code>, recalculated for each player.</li>
       <li>For a cost written on the target card itself, see <code>fateCostToTarget</code>.</li>
     </ul>
@@ -3231,7 +3234,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>While either player has it, the dynasty action window ends. At the end of the phase a new dynasty phase starts without fate collection, and the honor gained this phase is reset.</li>
+      <li>While either player has it, the dynasty action window ends. At the end of the phase a new dynasty phase starts without fate collection, and both players' honor gained this phase is reset (their dynasty-phase honor tracking), not only that of the player with the effect.</li>
       <li>The effect must end when the new phase starts, or that phase ends at once as well: use <code>Duration.Custom</code> with <code>until: { onPhaseStarted: … }</code>.</li>
     </ul>
     <pre><code>// A Season of War: Action: Discard each card in each province, refilling each province faceup. End the dynasty phase. Then there is an additional dynasty phase, during which players do not collect fate.
@@ -3511,7 +3514,7 @@ this.persistentEffect({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>value</code></td><td><code>number | (card, context) =&gt; number</code></td><td>required</td><td>The amount added to the holding's printed bonus.</td></tr>
+        <tr><td><code>value</code></td><td><code>number | (card, context) =&gt; number</code></td><td>required</td><td>The amount added to the holding's printed bonus (a copied card's, under <code>copyCard</code>: Floating Fortress).</td></tr>
       </tbody>
     </table>
     <ul class="edge">

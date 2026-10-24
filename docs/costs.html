@@ -102,7 +102,7 @@ this.conflictAction('Discard a character')
         <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something. If so, the action window skips its one-click confirmation menu and starts the ability directly.</td></tr>
         <tr><td><code>dependsOn</code></td><td>The name of a target the cost depends on: while that target is offered first, a candidate is legal only if the cost can be paid for it (<code>targetDependentFate</code>).</td></tr>
         <tr><td><code>hasTargetsChosenByInitiatingPlayer(context)</code></td><td>Whether paying makes the ability's player choose cards. It counts toward the ability's <code>hasTargetsChosenByInitiatingPlayer</code> (Hantei XXXVIII).</td></tr>
-        <tr><td><code>fateSpent(context)</code></td><td>The fate the player spends paying it (set by <code>payFate</code> and <code>payFateToRing</code>). Targeting costs checked before the costs are paid subtract it from the fate available, and the reduceable fate costs add it to their own when checking they can be paid.</td></tr>
+        <tr><td><code>fateSpent(context)</code></td><td>The fate the player spends paying it (set by <code>payFate</code>, <code>payFateToRing</code> and <code>giveFateToOpponent</code>). Targeting costs checked before the costs are paid subtract it from the fate available, and the reduceable fate costs add it to their own when checking they can be paid.</td></tr>
         <tr><td><code>chosenByOpponent</code></td><td>The opponent makes this choice (set by <code>optionalTakeHonorFromOpponent</code>). With <code>firstPlayerChoosesFirst()</code> and the opponent as first player, these costs are chosen first.</td></tr>
         <tr><td><code>isPrintedFateCost</code>, <code>isPlayCost</code>, <code>getReducedCost(context)</code></td><td>Engine-only, set by the fate and play costs: <code>playCard</code> with <code>ignoreFateCost</code> skips the first, a play without play costs skips the second, and the ability's fate cost after reductions comes from the third.</td></tr>
         <tr><td><code>action</code>, <code>activePromptTitle</code></td><td>Fields of some built-in costs. The engine does not read them through <code>Cost</code>.</td></tr>
@@ -861,6 +861,7 @@ super(card, [chooseFate(PlayType.PlayFromHand), payReduceableFateCost()]);</code
     </table>
     <ul class="edge">
       <li>Can't be paid without an opponent (solo game), or when the player has fewer than <code>amount</code> fate.</li>
+      <li>Its <code>fateSpent</code> (<code>amount</code>) is counted by the ability's reduceable fate cost and the costs of targeting.</li>
       <li>Chat: <code>giving {1} fate to {2}</code> (the amount, the opponent).</li>
     </ul>
     <pre><code>// Doji Gift Giver: Action: While this character is participating in a conflict, give your opponent 1 fate. That opponent must choose a ready participating character he or she controls – bow that character.

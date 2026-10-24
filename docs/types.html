@@ -1283,7 +1283,7 @@ this.reaction('Mirror an opponent\'s event')
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card affected (card lasting effects, <code>takeControl</code>).</td></tr>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring affected (<code>ringLastingEffect</code>).</td></tr>
-          <tr><td><code>effectTypes</code></td><td><code>string[]</code></td><td>The <code>EffectName</code>s of the effects (<code>cardLastingEffect</code> only).</td></tr>
+          <tr><td><code>effectTypes</code></td><td><code>EffectName[]</code></td><td>The <code>EffectName</code>s of the effects (<code>cardLastingEffect</code> only).</td></tr>
           <tr><td><code>matches</code></td><td><code>EffectMatch[]</code></td><td>What each effect matches (<code>cardLastingEffect</code> only).</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
@@ -1462,7 +1462,7 @@ cardLastingEffect({
       </table>
   <ul class="edge">
     <li>For an event card its interrupts come before costs, which is how "reduce the cost" interrupts work (Earnest Sculptor); reactions come after the event resolved.</li>
-    <li>The Ephemeral keyword of events listens to it.</li>
+    <li>The Ephemeral keyword of events listens to it (and to <code>onCardLeavesPlay</code>): the card is removed from the game and flagged <code>removedByEphemeral</code>, so no other effect moves it out again (<code>isRemovedByEphemeral()</code>; <a href="game-actions.html#ga-moveCard"><code>moveCard</code></a>). A manual move clears the flag.</li>
   </ul>
   <pre><code>// Shosuro Miyako: Reaction: After you play a character from your hand, your opponent must select one – discard 1 card at random from his or her hand or choose and dishonor a character he or she controls.
 this.reaction('Opponent discards or dishonors')
@@ -1565,7 +1565,7 @@ this.reaction('Refill province faceup')
     <li>Just before the handler: Ancestral sends a contingent attachment to hand instead, and <code>removeFromGameInsteadOfLeavingPlay</code> changes the destination.</li>
     <li>It cannot be cancelled for a card that cannot be prevented from leaving play (Legendary).</li>
     <li>Interrupts see the card still in play; reactions should read <code>cardStateWhenLeftPlay</code> (the card has moved by then).</li>
-    <li>Courtesy and Sincerity are keyword reactions to it, using <code>cardStateWhenLeftPlay</code>.</li>
+    <li>Courtesy and Sincerity are keyword reactions to it, using <code>cardStateWhenLeftPlay</code>. They trigger wherever the card went: hand, a deck or discard pile, a province, removed from game, or underneath another card (<code>Location.Underneath</code>).</li>
   </ul>
   <pre><code>// Vengeful Berserker: Reaction: After another character you control leaves play during a conflict – double this character's [conflict-military] skill until the end of the conflict.
 this.reaction('Double military skill')
@@ -2452,14 +2452,19 @@ this.reaction('Resolve ring effect')
         </tbody>
       </table>
   <ul class="edge">
-    <li>If the player has a <code>cannotResolveRings</code> effect, the handler cancels the event.</li>
-    <li>Cancelling it stops all the ring's effects. Display of Power cancels it from a would-interrupt window and adds its own <code>resolveConflictRing</code> and <code>onClaimRing</code> events to the window.</li>
+    <li>If the player has a <code>cannotResolveRings</code> effect, the event's condition cancels it before the would-interrupt window, so nothing can replace it (Display of Power's interrupt never fires).</li>
+    <li>Cancelling it stops all the ring's effects. Display of Power cancels it from a would-interrupt window (registered with <code>onceTriggerWindow</code>, removed again with <code>offTriggerWindow</code> when the conflict finishes if that window never opened) and adds its own <code>resolveConflictRing</code> and <code>onClaimRing</code> events to the window.</li>
   </ul>
   <pre><code>// Display of Power: Reaction: After you lose an unopposed conflict – cancel the ring effect of that conflict. Then, you resolve that ring effect as if you had won the conflict as the attacking player. Claim that ring.
 .handler((context) =&gt; {
-    this.game.onceTriggerWindow(EventName.OnResolveConflictRing, AbilityType.WouldInterrupt, (event) =&gt; {
-        this.onResolveConflictRing(event, context);
-    });
+    const onResolveConflictRing = (event: GameEvent&lt;EventName.OnResolveConflictRing&gt;) =&gt; this.onResolveConflictRing(event, context);
+    // a ring effect cancelled before its would-interrupt window (Mountaintop Vigil) never calls it
+    const onConflictFinished = () =&gt; {
+        this.game.offTriggerWindow(EventName.OnResolveConflictRing, AbilityType.WouldInterrupt, onResolveConflictRing);
+        this.game.off(EventName.OnConflictFinished, onConflictFinished);
+    };
+    this.game.onceTriggerWindow(EventName.OnResolveConflictRing, AbilityType.WouldInterrupt, onResolveConflictRing);
+    this.game.on(EventName.OnConflictFinished, onConflictFinished);
 })</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a></p>
 </div>
@@ -2478,7 +2483,7 @@ this.reaction('Resolve ring effect')
         </tbody>
       </table>
   <ul class="edge">
-    <li>If the player has a <code>cannotResolveRings</code> effect, the event's condition cancels it before the would-interrupt window, so a cancelled ring effect can't be replaced (ruling #636: All and Nothing); the handler checks again.</li>
+    <li>If the player has a <code>cannotResolveRings</code> effect, the event's condition cancels it before the would-interrupt window, so a cancelled ring effect can't be replaced (ruling #636: All and Nothing). Chat: <code>{player}'s ring effect is cancelled</code>.</li>
   </ul>
   <pre><code>// All and Nothing: Interrupt: When you would resolve the [element-void] ring effect, choose another ring – resolve that ring's effect instead. Draw 1 card.
 .when({

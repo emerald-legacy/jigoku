@@ -801,7 +801,8 @@ this.action('Ready a character')
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>abilityCondition</code></td><td><code>(ability: CardAbility) =&gt; boolean</code></td><td>any</td><td>Which abilities can be chosen (<code>ability.printedAbility</code> for "printed").</td></tr>
+        <tr><td><code>abilityCondition</code></td><td><code>(ability: CardAbility) =&gt; boolean</code></td><td>any</td><td>Which abilities can be chosen (<code>ability.printedAbility</code> for "printed", not added with <code>.notPrinted()</code>).</td></tr>
+        <tr><td><code>printedOn</code></td><td><code>boolean</code></td><td><code>false</code></td><td>"Printed on" the card: offer only the card's own printed actions and reactions (<code>card.abilities</code> with <code>printedAbility</code>), not gained ones, and for a copy of another card its own printed abilities rather than the copied card's.</td></tr>
         <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>any</td><td>Which cards; <code>context.targetAbility</code> is set to the ability being checked.</td></tr>
         <tr><td><code>cardType</code></td><td><code>CardType</code></td><td>required</td><td>The type of the card the ability is printed on. One type, not a list.</td></tr>
         <tr><td><code>location</code></td><td><code>Location | Location[]</code></td><td><code>Location.PlayArea</code></td><td>Where the card is.</td></tr>
@@ -823,7 +824,7 @@ this.action('Copy another character\'s ability')
         activePromptTitle: 'Select a character to copy from',
         cardType: CardType.Character,
         cardCondition: (card, context) =&gt; card !== context.source,
-        abilityCondition: (ability) =&gt; ability.printedAbility
+        printedOn: true
     }, cardLastingEffect((context) =&gt; ({
         duration: Duration.UntilEndOfPhase,
         effect: context.targetAbility ? gainAbility(context.targetAbility.abilityType, context.targetAbility) : []
@@ -1183,7 +1184,7 @@ this.action('Ready a character')
         <tr><td><code>onTie</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>none</td><td>The effect on a tie; without it a tie does nothing.</td></tr>
         <tr><td><code>chatText</code></td><td><code>(context, duel) =&gt; msg…</code></td><td>the game action's text</td><td>The text after "Duel Effect: ".</td></tr>
         <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The effect when the opponent refuses the duel; it resolves first and the duel is refused only if it fully resolved.</td></tr>
-        <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; msg…</code></td><td>"… chooses to refuse the duel and …"</td><td>The chat line when refused.</td></tr>
+        <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; msg…</code></td><td>"… chooses to refuse the duel and …"</td><td>The chat line when refused: built when the opponent chooses to refuse, posted only once the refusal fully resolved.</td></tr>
         <tr><td><code>statistic</code></td><td><code>(card, duelRules) =&gt; number | { printed, bonus }</code></td><td>the duel type's skill</td><td>The value each character duels with (<a href="game-actions.html#ga-duel"><code>DuelStatistic</code></a>).</td></tr>
         <tr><td><code>challengerEffect</code>, <code>targetEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>Effects on each side while the duel resolves.</td></tr>
         <tr><td><code>costHandler</code></td><td><code>(context, prompt) =&gt; void</code></td><td>none</td><td>Custom handling of the honor bid's cost.</td></tr>
