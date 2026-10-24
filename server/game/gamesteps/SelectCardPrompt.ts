@@ -188,8 +188,7 @@ export class SelectCardPrompt<Types extends CardTypes = CardTypes> extends UiPro
         this.onlyMustSelectMayBeChosen = false;
         this.cannotUnselectMustSelect = false;
         if(properties.mustSelect) {
-            const numCards = this.selector.numCards ?? 0;
-            if(this.selector.hasEnoughSelected(properties.mustSelect, properties.context) && numCards > 0 && properties.mustSelect.length >= numCards) {
+            if(properties.mustSelect.length > 0 && this.selector.hasReachedLimit(properties.mustSelect, this.context)) {
                 this.onlyMustSelectMayBeChosen = true;
             } else {
                 this.selectedCards = [...properties.mustSelect];

@@ -323,3 +323,38 @@ describe('Imbued with Shadows with only a tainted character', function() {
         });
     });
 });
+
+describe('Imbued with Shadows and Talented Performer', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['imbued-with-shadows']
+                },
+                player2: {
+                    inPlay: ['talented-performer', 'kakita-toshimoko']
+                }
+            });
+            this.shadows = this.player1.findCardByName('imbued-with-shadows');
+            this.performer = this.player2.findCardByName('talented-performer');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.performer.honor();
+            this.toshimoko.dishonor();
+        });
+
+        it('makes you choose the performer when you pay 1 honor', function() {
+            const honor = this.player1.honor;
+            this.player1.clickCard(this.shadows);
+            this.player1.clickPrompt('1');
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.performer);
+            expect(this.player1).not.toBeAbleToSelect(this.toshimoko);
+            this.player1.clickCard(this.performer);
+            expect(this.performer.isHonored).toBe(false);
+            expect(this.toshimoko.isDishonored).toBe(true);
+            expect(this.player1.honor).toBe(honor - 1);
+        });
+    });
+});

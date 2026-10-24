@@ -184,3 +184,51 @@ describe('Two Hands', function () {
         });
     });
 });
+
+describe('Two Hands against Talented Performers', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger', 'talented-performer', 'talented-performer', 'talented-performer']
+                },
+                player2: {
+                    inPlay: ['kakita-toshimoko'],
+                    hand: ['two-hands', 'fine-katana']
+                },
+                gameMode: 'emerald'
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.performers = this.player1.filterCardsByName('talented-performer');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.hands = this.player2.findCardByName('two-hands');
+            this.player1.pass();
+            this.player2.clickCard('fine-katana');
+            this.player2.clickCard(this.toshimoko);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger, ...this.performers],
+                defenders: [this.toshimoko]
+            });
+        });
+
+        it('lets the opponent choose two of the three performers', function () {
+            const [first, second, third] = this.performers;
+            this.player2.clickCard(this.hands);
+            expect(this.player1).toHavePrompt('Choose two characters');
+            expect(this.player1).toBeAbleToSelect(first);
+            expect(this.player1).toBeAbleToSelect(second);
+            expect(this.player1).toBeAbleToSelect(third);
+            expect(this.player1).not.toBeAbleToSelect(this.challenger);
+            this.player1.clickCard(first);
+            this.player1.clickCard(third);
+            this.player1.clickPrompt('Done');
+            expect(this.getChatLogs(5)).toContain(
+                'player2 plays Two Hands to set Talented Performer and Talented Performer military skills equal to 0'
+            );
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});
