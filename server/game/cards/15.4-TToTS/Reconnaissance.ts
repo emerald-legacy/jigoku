@@ -37,7 +37,7 @@ class Reconnaissance extends DrawCard {
                             location: [Location.Provinces],
                             controller: Players.Any,
                             cardCondition: (card) => provinces.some((province) => province.location === card.location && province.controller === card.controller),
-                            message: (_context, cards) => msg`${context.player} chooses to discard ${cards}`,
+                            message: (_context, cards) => msg`${context.player} chooses to discard ${cards.length === 0 ? 'no cards' : cards}`,
                             gameAction: moveCard({ destination: Location.DynastyDiscardPile })
                         });
                     })

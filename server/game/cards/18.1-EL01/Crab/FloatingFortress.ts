@@ -30,7 +30,7 @@ export default class FloatingFortress extends DrawCard {
                     effect: copyCard(context.target)
                 })),
                 chooseAction({
-                    activePromptTitle: 'Move the holding to into the attacked provinces?',
+                    activePromptTitle: 'Move this holding to the attacked province?',
                     choices: {
                         Yes: selectAttackedProvince((context) => ({
                             message: (context, province, player) => msg`${player} moves ${context.source} to ${province}`,

@@ -26,7 +26,7 @@ class InvokeTheDivine extends DrawCard {
         });
         this.action('Play 3 spells')
             .gameAction(getSelectCardAction(5, 0))
-            .chatText('play 3 spells from their hand');
+            .chatText('play up to 3 spells from their hand');
     }
 }
 

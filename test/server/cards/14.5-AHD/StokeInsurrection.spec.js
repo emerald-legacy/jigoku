@@ -158,8 +158,15 @@ describe('Stoke Insurrection', function () {
                 'player2 plays Stoke Insurrection to reveal player1\'s dynasty cards and put up to two of them into play'
             );
             expect(this.getChatLogs(5)).toContain(
-                'player2 puts Isawa Ujina and Moto Youth into play into the conflict'
+                'player2 puts Isawa Ujina and Moto Youth into play in the conflict'
             );
+        });
+
+        it('should say no characters are put into play when none is chosen', function () {
+            this.player2.clickCard(this.insurrection);
+            this.player2.clickPrompt('Done');
+
+            expect(this.getChatLogs(5)).toContain('player2 puts no characters into play in the conflict');
         });
 
         it('you should control the characters', function () {

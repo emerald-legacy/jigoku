@@ -33,7 +33,7 @@ export default class SpiderwebPassage extends DrawCard {
                 player: Players.Opponent
             }, (context) => ({
                 // a smaller hand can still be discarded: the option changes the game state (RRG Select)
-                [`Discard ${shinobiCount(context)} random cards from hand`]: joint([
+                [`Discard ${shinobiCount(context)} random card${shinobiCount(context) === 1 ? '' : 's'} from hand`]: joint([
                     discardAtRandom({
                         amount: shinobiCount(context),
                         target: context.player.opponent
@@ -44,7 +44,7 @@ export default class SpiderwebPassage extends DrawCard {
                     discardFromPlay({ target: context.target }),
                     // with an empty hand there was nothing to refuse
                     chatMessage(() => (context.player.opponent?.hand.length ?? 0) > 0
-                        ? msg`${context.player.opponent} refuses to discard ${shinobiCount(context)} cards. ${context.target} is discarded`
+                        ? msg`${context.player.opponent} refuses to discard ${shinobiCount(context)} card${shinobiCount(context) === 1 ? '' : 's'}. ${context.target} is discarded`
                         : undefined)
                 ])
             }))

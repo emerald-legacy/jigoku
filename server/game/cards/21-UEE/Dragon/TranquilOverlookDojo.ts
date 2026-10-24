@@ -2,9 +2,9 @@ import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
 import {
     cardMenu,
-    conditional,
     discardCard,
     lookAt,
+    noAction,
     sequential
 } from '../../../GameActions/GameActions.js';
 import { DuelType, Players } from '../../../Constants.js';
@@ -26,30 +26,30 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
     self.action(title)
         .condition((context) => context.game.isDuringConflict())
         .cost(costs.bowSelf())
-        .initiateDuel(() => ({
+        .initiateDuel((context) => ({
             type,
             opponentChoosesDuelTarget: true,
-            gameAction: (duel) =>
-                conditional({
-                    condition: (context) => duel.winningPlayer === context.player,
-                    trueGameAction: sequential((context) => {
-                        const revealedCards = randomHandCards(context.player.opponent, 2);
-                        return [
-                            lookAt({
-                                target: revealedCards,
-                                message: (context, cards) => msg`${context.player.opponent} reveals ${cards} from their hand`
-                            }),
-                            cardMenu({
-                                activePromptTitle: 'Choose a card to discard',
-                                cards: revealedCards,
-                                targets: true,
-                                player: Players.Self,
-                                message: (_context, card, player) => msg`${player} discards ${card}`,
-                                gameAction: discardCard()
-                            })
-                        ];
-                    })
+            // losing the duel resolves nothing: "The duel has no effect"
+            gameAction: (duel) => duel.winningPlayer === context.player
+                ? sequential((context) => {
+                    const revealedCards = randomHandCards(context.player.opponent, 2);
+                    return [
+                        lookAt({
+                            target: revealedCards,
+                            message: (context, cards) => msg`${context.player.opponent} reveals ${cards} from their hand`
+                        }),
+                        cardMenu({
+                            activePromptTitle: 'Choose a card to discard',
+                            cards: revealedCards,
+                            targets: true,
+                            player: Players.Self,
+                            message: (_context, card, player) => msg`${player} discards ${card}`,
+                            gameAction: discardCard()
+                        })
+                    ];
                 })
+                : noAction(),
+            chatText: (context) => msg`reveal 2 random cards from ${context.player.opponent}'s hand and discard 1 of them`
         }))
         .max(limit);
 }

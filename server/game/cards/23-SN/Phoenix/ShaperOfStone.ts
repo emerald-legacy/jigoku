@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
 import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
-import { conditional, gainHonor, playerLastingEffect } from '../../../GameActions/GameActions.js';
+import { gainHonor, playerLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players, Phase, Duration } from '../../../Constants.js';
 
 export default class ShaperOfStone extends DrawCard {
@@ -35,13 +35,12 @@ export default class ShaperOfStone extends DrawCard {
                     when: {
                         onPhaseEnded: (event) => event.phase === Phase.Conflict
                     },
-                    message: () => context.target.isBroken ? msg`` : msg`${context.player}${' gains 1 honor due to the delayed effect of '}${context.source}`,
-                    gameAction: conditional({
-                        condition: () => !context.target.isBroken,
-                        trueGameAction: gainHonor({
-                            target: context.player
-                        })
-                    })
+                    message: () => msg`${context.player} gains 1 honor due to the delayed effect of ${context.source}`,
+                    // a broken province gains nothing, so neither the honor nor the line
+                    gameAction: gainHonor(() => ({
+                        target: context.player,
+                        amount: context.target.isBroken ? 0 : 1
+                    }))
                 }),
                 duration: Duration.UntilEndOfRound
             })))

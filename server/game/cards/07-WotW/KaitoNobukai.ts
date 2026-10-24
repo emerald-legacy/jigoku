@@ -7,7 +7,7 @@ class KaitoNobukai extends DrawCard {
     static id = 'kaito-nobukai';
 
     override setupCardAbilities() {
-        this.action('Bow each participating characters')
+        this.action('Bow each participating character')
             .condition((context) => context.source.isParticipating())
             .cost(costs.sacrificeSelf())
             .bow(() => ({

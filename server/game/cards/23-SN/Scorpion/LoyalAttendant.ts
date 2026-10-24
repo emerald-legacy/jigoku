@@ -25,7 +25,10 @@ export default class LoyalAttendant extends DrawCard {
                     chooseCardToDiscard(cards)
                 ];
             }))
-            .chatText((context) => msg`look at ${context.target.attachments.length} random cards in ${context.player.opponent}'s hand and discard one of them`)
+            .chatText((context) => {
+                const amount = context.target.attachments.length;
+                return msg`look at ${amount} random card${amount === 1 ? '' : 's'} in ${context.player.opponent}'s hand and discard one of them`;
+            })
             .max(perConflict(1));
     }
 }

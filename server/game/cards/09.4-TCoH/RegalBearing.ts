@@ -24,7 +24,10 @@ class RegalBearing extends DrawCard {
                     amount: this.getHonorDialDifference(context)
                 }))
             ]))
-            .chatText((context) => msg`set their bid dial to 1 and draw ${this.getHonorDialDifference(context)} cards`)
+            .chatText((context) => {
+                const amount = this.getHonorDialDifference(context);
+                return msg`set their bid dial to 1 and draw ${amount} card${amount === 1 ? '' : 's'}`;
+            })
             .max(perConflict(1));
     }
 

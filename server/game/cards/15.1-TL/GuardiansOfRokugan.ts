@@ -21,7 +21,10 @@ class GuardiansOfRokugan extends DrawCard {
                     ? RemainingCards.Shuffle
                     : RemainingCards.Top
             })
-            .chatText((context) => msg`look at the top ${context.game.currentConflict?.skillDifference ?? 0} cards of their deck for a character costing ${context.game.currentConflict?.skillDifference ?? 0} or less to put into play`);
+            .chatText((context) => {
+                const amount = context.game.currentConflict?.skillDifference ?? 0;
+                return msg`look at the top ${amount} card${amount === 1 ? '' : 's'} of their deck for a character costing ${amount} or less to put into play`;
+            });
     }
 }
 

@@ -9,7 +9,7 @@ export default class KikuMatsuri extends ProvinceCard {
 
     override setupCardAbilities() {
         // "each player": a player with no participating character gets no target
-        this.action('Honor a character home from each side')
+        this.action('Honor a participating character from each side')
             .skippableTarget({
                 name: 'myCharacter',
                 cardType: CardType.Character,

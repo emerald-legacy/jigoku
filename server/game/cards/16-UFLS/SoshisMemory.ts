@@ -16,7 +16,10 @@ class SoshisMemory extends DrawCard {
                 targets: true,
                 activePromptTitle: 'Choose a player'
             }, (context) => playerChoices(context.player, (player) => this.drawAbility(player)))
-            .chatText((context) => msg`let ${context.select} look at the top ${context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait(Trait.Shugenja) ? 1 : 0), 0)} cards of their conflict deck`);
+            .chatText((context) => {
+                const amount = context.player.cardsInPlay.filter((card) => card.hasTrait(Trait.Shugenja)).length;
+                return msg`let ${context.select} look at the top ${amount} card${amount === 1 ? '' : 's'} of their conflict deck`;
+            });
     }
 
     drawAbility(player: Player) {

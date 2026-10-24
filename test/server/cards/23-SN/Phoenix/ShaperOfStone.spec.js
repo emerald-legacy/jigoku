@@ -162,6 +162,8 @@ describe('Shaper of Stone', function () {
                 this.player2.clickPrompt('military');
 
                 expect(this.getChatLogs(10)).not.toContain('player1 gains 1 honor due to the delayed effect of Shaper of Stone');
+                // the phase alert reads as '' here: no other empty line from the delayed effect
+                expect(this.getChatLogs(10).filter((line) => line === '').length).toBe(1);
                 expect(this.game.currentPhase).toBe('fate');
                 expect(this.player1.honor).toBe(honor);
                 expect(this.player2.honor).toBe(honor2);

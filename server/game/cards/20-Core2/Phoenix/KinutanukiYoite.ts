@@ -6,7 +6,7 @@ export default class KinutanukiYoite extends DrawCard {
     static id = 'kinutanuki-yoite';
 
     override setupCardAbilities() {
-        this.reaction('Discard an enemy character')
+        this.reaction('Injure an enemy character')
             .when({
                 onCardPlayed: (event, context) =>
                     event.player === context.player &&

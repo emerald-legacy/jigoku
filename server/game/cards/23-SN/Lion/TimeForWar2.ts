@@ -9,7 +9,7 @@ export default class TimeForWar2 extends DrawCard {
 
     override setupCardAbilities() {
         const attachAction = attach();
-        this.reaction('Put a weapon into play')
+        this.reaction('Put an attachment into play')
             .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player
             })

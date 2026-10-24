@@ -7,7 +7,7 @@ class InspiredVisionary extends DrawCard {
     static id = 'inspired-visionary';
 
     override setupCardAbilities() {
-        this.reaction('Bow to discard an attachment')
+        this.reaction('Bow to shuffle an attachment into its owner\'s deck')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Fate
             })

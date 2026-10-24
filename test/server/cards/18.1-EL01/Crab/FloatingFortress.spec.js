@@ -48,7 +48,7 @@ describe('Floating Fortress', function () {
                 'player2 uses Floating Fortress, spending 1 fate to turn Floating Fortress into a copy of Fire and Oil'
             );
 
-            expect(this.player2).toHavePrompt('Move the holding to into the attacked provinces?');
+            expect(this.player2).toHavePrompt('Move this holding to the attacked province?');
             expect(this.player2).toHavePromptButton('No');
             expect(this.player2).toHavePromptButton('Yes');
 

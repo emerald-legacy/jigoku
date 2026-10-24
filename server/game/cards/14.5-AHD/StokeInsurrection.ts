@@ -38,7 +38,7 @@ export default class StokeInsurrection extends DrawCard {
                     location: [Location.Provinces],
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isFaceup() && card.isDrawCard() && putIntoConflict().canAffect(card, context),
-                    message: (context, cards) => msg`${context.player} puts ${cards} into play into the conflict`,
+                    message: (context, cards) => msg`${context.player} puts ${cards.length === 0 ? 'no characters' : cards} into play in the conflict`,
                     gameAction: putIntoConflict()
                 }))
             ]))

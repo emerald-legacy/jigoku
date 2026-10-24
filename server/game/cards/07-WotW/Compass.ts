@@ -34,7 +34,7 @@ class Compass extends DrawCard {
                 mode: TargetMode.Unlimited,
                 doneButtonText: 'Done',
                 gameAction: moveCard({ destination: location, bottom: true }),
-                message: (context, cards) => msg`${context.player} places ${cards.length} card${cards.length > 1 ? 's' : ''} on the bottom of their ${location}`,
+                message: (context, cards) => msg`${context.player} places ${cards.length} card${cards.length === 1 ? '' : 's'} on the bottom of their ${location}`,
                 takesNothingMessage: () => undefined,
                 remainingCardsHandler: (context, _event, cards) => this.placeOnTop(context, cards, deck, location)
             }),

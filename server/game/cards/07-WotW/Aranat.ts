@@ -27,7 +27,7 @@ class Aranat extends DrawCard {
             .placeFate((context) => ({ amount: context.player.getNumberOfOpponentsFacedownProvinces() }))
             .message((context) => {
                 const facedown = context.player.getNumberOfOpponentsFacedownProvinces();
-                return msg`${context.player.opponent} has ${facedown} facedown provinces so ${facedown} fate is placed on ${context.source}`;
+                return msg`${context.player.opponent} has ${facedown} facedown province${facedown === 1 ? '' : 's'} so ${facedown} fate is placed on ${context.source}`;
             });
     }
 }

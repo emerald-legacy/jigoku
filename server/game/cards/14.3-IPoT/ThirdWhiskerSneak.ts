@@ -29,7 +29,10 @@ class ThirdWhiskerSneak extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .chatText((context) => msg`look at the top ${context.player.getProvinces((a) => !a.isBroken).length} cards of their conflict deck`);
+            .chatText((context) => {
+                const amount = context.player.getProvinces((a) => !a.isBroken).length;
+                return msg`look at the top ${amount} card${amount === 1 ? '' : 's'} of their conflict deck`;
+            });
     }
 }
 

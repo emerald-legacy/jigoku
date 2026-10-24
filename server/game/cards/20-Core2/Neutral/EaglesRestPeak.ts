@@ -29,6 +29,9 @@ export default class EaglesRestPeak extends ProvinceCard {
                     })
                 ];
             }))
-            .chatText((context) => msg`use the insight of ${context.chatTarget()}, revealing and setting aside ${context.target.getCost() ?? 0} cards from ${context.player.opponent}'s hand`);
+            .chatText((context) => {
+                const amount = Math.min(context.target.getCost() ?? 0, context.player.opponent?.hand.length ?? 0);
+                return msg`use the insight of ${context.chatTarget()}, revealing and setting aside ${amount} card${amount === 1 ? '' : 's'} from ${context.player.opponent}'s hand`;
+            });
     }
 }

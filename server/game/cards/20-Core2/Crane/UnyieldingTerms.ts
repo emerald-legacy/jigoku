@@ -18,8 +18,10 @@ export default class UnyieldingTerms extends DrawCard {
                     target: context.player.opponent,
                     amount: Math.floor((context.player.opponent?.hand.length ?? 0) / 2)
                 })),
-                refusalMessage: (_context, refuser) =>
-                    msg`${refuser} chooses to refuse the duel and discard ${Math.floor(refuser.hand.length / 2)} cards from their hand`,
+                refusalMessage: (_context, refuser) => {
+                    const amount = Math.floor(refuser.hand.length / 2);
+                    return msg`${refuser} chooses to refuse the duel and discard ${amount} card${amount === 1 ? '' : 's'} from their hand`;
+                },
                 gameAction: (duel) =>
                     multiple([
                         bow({ target: duel.loser }),

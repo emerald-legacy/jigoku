@@ -53,6 +53,7 @@ describe('Tranquil Overlook Dojo', function() {
                 expect(this.letGo.location).toBe('conflict discard pile');
                 expect(this.banzai.location).toBe('hand');
                 expect(this.getChatLogs(5)).toContain('player1 discards Let Go');
+                expect(this.getChatLogs(5)).toContain('Duel Effect: reveal 2 random cards from player2\'s hand and discard 1 of them');
             });
 
             it('initiates a political duel', function() {
@@ -72,6 +73,8 @@ describe('Tranquil Overlook Dojo', function() {
                 this.player2.clickPrompt('1');
 
                 expect(this.player1).not.toHavePrompt('Choose a card to discard');
+                expect(this.getChatLogs(3)).toContain('The duel has no effect');
+                expect(this.getChatLogs(3)).not.toContain('Duel Effect: ');
                 expect(this.letGo.location).toBe('hand');
                 expect(this.banzai.location).toBe('hand');
             });

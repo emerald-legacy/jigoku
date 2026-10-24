@@ -17,9 +17,11 @@ class AnOceanInADrop extends DrawCard {
             .selectFrom({
                 targets: true
             }, (context) => playerChoices(context.player, (player) => sequential(this.getGameActions(player))))
-            .chatText((context) => (context.select === context.player.name || !context.player.opponent)
-                ? msg`place ${context.player.name}'s hand on the bottom of their deck and have them draw ${context.player.hand.length} cards`
-                : msg`place ${context.player.opponent.name}'s hand on the bottom of their deck and have them draw ${context.player.opponent.hand.length} cards`);
+            .chatText((context) => {
+                const player = (context.select === context.player.name || !context.player.opponent) ? context.player : context.player.opponent;
+                const amount = player.hand.length;
+                return msg`place ${player.name}'s hand on the bottom of their deck and have them draw ${amount} card${amount === 1 ? '' : 's'}`;
+            });
     }
 
     getGameActions(player: Player) {

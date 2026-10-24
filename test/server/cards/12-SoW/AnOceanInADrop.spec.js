@@ -296,7 +296,7 @@ describe('An Ocean In A Drop', function() {
             it('should count the hand of the chosen player in the message (controller)', function() {
                 this.player2.clickCard(this.ocean);
                 this.player2.clickPrompt('player2');
-                expect(this.getChatLogs(3)).toContain('player2 uses An Ocean in a Drop, sacrificing An Ocean in a Drop to place player2\'s hand on the bottom of their deck and have them draw 1 cards');
+                expect(this.getChatLogs(3)).toContain('player2 uses An Ocean in a Drop, sacrificing An Ocean in a Drop to place player2\'s hand on the bottom of their deck and have them draw 1 card');
             });
         });
     });

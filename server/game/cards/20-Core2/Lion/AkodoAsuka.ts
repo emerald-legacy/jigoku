@@ -28,6 +28,9 @@ export default class AkodoAsuka extends DrawCard {
                 }),
                 reveal: false
             })
-            .chatText((context) => msg`look at the top ${charactersOnYourSide(context)} cards of their conflict deck`);
+            .chatText((context) => {
+                const amount = charactersOnYourSide(context);
+                return msg`look at the top ${amount} card${amount === 1 ? '' : 's'} of their conflict deck`;
+            });
     }
 }

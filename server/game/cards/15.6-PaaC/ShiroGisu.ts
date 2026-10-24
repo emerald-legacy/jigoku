@@ -23,7 +23,10 @@ export default class ShiroGisu extends StrongholdCard {
                 remainingCards: RemainingCards.BottomRandom,
                 reveal: false
             })
-            .chatText((context) => msg`look at the top ${this.getCharactersWithoutFate(context)} cards of their conflict deck`);
+            .chatText((context) => {
+                const amount = this.getCharactersWithoutFate(context);
+                return msg`look at the top ${amount} card${amount === 1 ? '' : 's'} of their conflict deck`;
+            });
     }
 
     private getCharactersWithoutFate(context: AbilityContext) {

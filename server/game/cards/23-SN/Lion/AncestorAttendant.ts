@@ -20,6 +20,9 @@ export default class AncestorAttendant extends DrawCard {
                 })),
                 dishonor()
             ]))
-            .chatText((context) => msg`dishonor ${context.chatTarget()} and discard the top ${context.target.getCost()} cards of their dynasty deck`);
+            .chatText((context) => {
+                const cost = context.target.getCost() ?? 0;
+                return msg`dishonor ${context.chatTarget()} and discard the top ${cost} card${cost === 1 ? '' : 's'} of their dynasty deck`;
+            });
     }
 }

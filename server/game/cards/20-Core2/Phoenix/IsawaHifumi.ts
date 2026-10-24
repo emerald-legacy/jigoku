@@ -100,7 +100,7 @@ export default class IsawaHifumi extends DrawCard {
                     }
                 })
             }))
-            .chatText((context) => msg`play an event from their discard pile (the next time it is used this round will cost ${hifumiCost.currentCost(context.player)} fate from ${context.player} characters)`)
+            .chatText((context) => msg`play an event from their discard pile (the next time it is used this round will cost ${hifumiCost.currentCost(context.player)} fate from their characters)`)
             .limit(unlimited())
             .cannotTargetFirst();
     }

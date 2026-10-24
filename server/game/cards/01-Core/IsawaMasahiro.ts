@@ -9,7 +9,7 @@ class IsawaMasahiro extends DrawCard {
     static id = 'isawa-masahiro';
 
     override setupCardAbilities() {
-        this.action('Bow to discard an enemy character')
+        this.action('Bow to discard a participating character')
             .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
             .cost(costs.bowSelf())
             .target({

@@ -182,6 +182,9 @@ describe('Reconnaissance', function() {
                 expect(this.player1).toBeAbleToSelect(this.ballista);
                 expect(this.player1).not.toBeAbleToSelect(this.whisperer);
                 expect(this.player1).not.toBeAbleToSelect(this.challenger);
+
+                this.player1.clickPrompt('Done');
+                expect(this.getChatLogs(3)).toContain('player1 chooses to discard no cards');
             });
 
             it('only discards from the chosen provinces, not the other player\'s province with the same number', function () {
