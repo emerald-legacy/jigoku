@@ -101,3 +101,38 @@ describe('Hisu Mori Toride under Waning Hostilities', function() {
         });
     });
 });
+
+describe('Hisu Mori Toride under Privileged Position', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    stronghold: 'hisu-mori-toride-lion',
+                    inPlay: ['matsu-berserker', 'matsu-seventh-legion'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    hand: ['privileged-position']
+                }
+            });
+            this.player1.clickPrompt('2');
+            this.player2.clickPrompt('1');
+            this.player2.clickCard('privileged-position');
+        });
+
+        it('is not offered after the only conflict player1 may declare', function() {
+            expect(this.getChatLogs(6)).toContain('player2 plays Privileged Position to limit player1 to a single conflict this turn');
+            this.noMoreActions();
+            this.player1.playAttachment('fine-katana', 'matsu-berserker');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['matsu-berserker'],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.pass();
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

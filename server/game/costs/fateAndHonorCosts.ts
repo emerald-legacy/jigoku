@@ -71,7 +71,10 @@ export function payFateToRing(amount = 1, ringCondition = (ring: Ring) => ring.i
 }
 
 export function giveFateToOpponent(amount = 1): Cost {
-    return new GameActionCost(GameActions.takeFate((context) => ({ target: context.player, amount })));
+    return Object.assign(
+        new GameActionCost(GameActions.takeFate((context) => ({ target: context.player, amount }))),
+        { fateSpent: () => amount }
+    );
 }
 
 export function payVariableHonor(amountFunc: (context: AbilityContext) => number): Cost<{ honorPaid: number }> {

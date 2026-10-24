@@ -62,12 +62,21 @@ export class PlayerConflictManager {
 
     getConflictOpportunities(): number {
         const opportunities = this.#getUncappedConflictOpportunities();
+        const remainingDeclarations = this.#getRemainingDeclarationsUnderCap();
+        return remainingDeclarations === undefined ? opportunities : Math.min(opportunities, remainingDeclarations);
+    }
+
+    /** True if a declared-conflict maximum (Privileged Position) is set and already reached. */
+    declaredConflictCapReached(): boolean {
+        return this.#getRemainingDeclarationsUnderCap() === 0;
+    }
+
+    #getRemainingDeclarationsUnderCap(): number | undefined {
         const maxDeclared = this.player.mostRecentEffect(EffectName.SetMaxDeclaredConflicts);
         if(maxDeclared === undefined) {
-            return opportunities;
+            return undefined;
         }
-        const declared = this.game.getDeclaredConflictCount(this.player);
-        return Math.min(opportunities, Math.max(0, maxDeclared - declared));
+        return Math.max(0, maxDeclared - this.game.getDeclaredConflictCount(this.player));
     }
 
     #getUncappedConflictOpportunities(): number {

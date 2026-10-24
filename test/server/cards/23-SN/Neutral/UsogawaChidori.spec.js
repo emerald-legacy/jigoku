@@ -61,3 +61,38 @@ describe('Usogawa Chidori', function () {
         });
     });
 });
+
+describe('Usogawa Chidori against To Show the Path', function () {
+    integration(function () {
+        describe('with exactly 1 fate', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 1,
+                        inPlay: ['usogawa-chidori']
+                    },
+                    player2: {
+                        inPlay: ['henshin-disciple', 'doji-whisperer'],
+                        hand: ['to-show-the-path']
+                    }
+                });
+
+                this.chidori = this.player1.findCardByName('usogawa-chidori');
+                this.henshinDisciple = this.player2.findCardByName('henshin-disciple');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+
+                this.player1.pass();
+                this.player2.clickCard('to-show-the-path');
+                this.player2.clickCard(this.whisperer);
+            });
+
+            it('should not target the protected character when the given fate leaves none for the targeting cost', function () {
+                this.player1.clickCard(this.chidori);
+                expect(this.player1).toHavePrompt('Usogawa Chidori');
+                expect(this.player1).toBeAbleToSelect(this.henshinDisciple);
+                expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            });
+        });
+    });
+});

@@ -82,16 +82,16 @@ export class DynastyPhase extends PhaseStep {
     }
 
     #checkForRepeatDynasty() {
-        let restarted = false;
-        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
-            if(!restarted && player.anyEffect(EffectName.RestartDynastyPhase)) {
-                restarted = true;
-                player.resetHonorEvents(this.game.roundNumber, Phase.Dynasty);
-                const effectSource = player.mostRecentEffect(EffectName.RestartDynastyPhase);
-                this.game.addMessage(msg`${effectSource} has started a new dynasty phase!`);
-                const dynastyPhase = new DynastyPhase(this.game, false);
-                this.game.queueStep(dynastyPhase);
-            }
+        const players = this.game.getPlayersInFirstPlayerOrder();
+        const player = players.find((player) => player.anyEffect(EffectName.RestartDynastyPhase));
+        if(!player) {
+            return;
         }
+        for(const each of players) {
+            each.resetHonorEvents(this.game.roundNumber, Phase.Dynasty);
+        }
+        const effectSource = player.mostRecentEffect(EffectName.RestartDynastyPhase);
+        this.game.addMessage(msg`${effectSource} has started a new dynasty phase!`);
+        this.game.queueStep(new DynastyPhase(this.game, false));
     }
 }
