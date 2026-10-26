@@ -32,7 +32,15 @@ class RecklessAvenger extends DrawCard {
             .honor()
             .otherwise()
             .ready()
-            .chatText((context) => msg`ready ${this.isTargetValid(context.targets.firstCharacter) ? context.targets.firstCharacter : context.targets.secondCharacter}${this.isTargetValid(context.targets.firstCharacter) ? ' and honor ' : ''}${this.isTargetValid(context.targets.firstCharacter) ? context.targets.secondCharacter : ''}`);
+            .chatText((context) => {
+                const { firstCharacter, secondCharacter } = context.targets;
+                if(!this.isTargetValid(firstCharacter)) {
+                    return msg`ready ${secondCharacter}`;
+                }
+                return this.isTargetValid(secondCharacter)
+                    ? msg`ready ${firstCharacter} and honor ${secondCharacter}`
+                    : msg`ready ${firstCharacter}`;
+            });
     }
 
     isTargetValid(target: BaseCard | BaseCard[] | undefined) {

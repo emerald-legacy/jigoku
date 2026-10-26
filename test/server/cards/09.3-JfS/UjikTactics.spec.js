@@ -38,6 +38,13 @@ describe('Ujik Tactics', function () {
 
                 expect(this.motoNergui.militarySkill).toBe(2);
             });
+
+            it('should post a chat line', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.ujikTactics);
+                expect(this.borderRider.militarySkill).toBe(3);
+                expect(this.getChatLogs(5)).toContain('player1 plays Ujik Tactics to give each non-unique character they control +1military');
+            });
         });
     });
 });

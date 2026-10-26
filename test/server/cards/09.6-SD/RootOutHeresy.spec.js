@@ -61,6 +61,20 @@ describe('Root Out Heresy', function() {
                 expect(this.shameful2.strength).toBe(strength - 1);
             });
 
+            it('should report the strength reduction as a positive amount', function() {
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.moto],
+                    defenders: [this.whisperer],
+                    province: this.shameful2
+                });
+                const strength = this.shameful2.strength;
+                this.player2.pass();
+                this.player1.clickCard(this.root);
+                expect(this.shameful2.strength).toBe(strength - 1);
+                expect(this.getChatLogs(5)).toContain('player1 reduces the strength of Shameful Display by 1');
+            });
+
             it('should reduce the attacked provinces strength on defense', function() {
                 this.initiateConflict({
                     type: 'political',

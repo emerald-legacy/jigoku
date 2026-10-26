@@ -14,7 +14,7 @@ class RootOutHeresy extends DrawCard {
             .discardAtRandom()
             .then()
             .selectAttackedProvince((context) => ({
-                message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by ${this.getStrengthModifier(context)}`,
+                message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by ${-this.getStrengthModifier(context)}`,
                 gameAction: cardLastingEffect(() => ({
                     effect: modifyProvinceStrength(this.getStrengthModifier(context))
                 }))
