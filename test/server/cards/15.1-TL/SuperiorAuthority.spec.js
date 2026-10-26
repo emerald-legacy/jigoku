@@ -186,7 +186,7 @@ describe('Superior Authority', function() {
             expect(this.game.currentConflict.defenderSkill).toBe(5);
         });
 
-        it('Zokujin should be immune during earth conflicts', function() {
+        it('should stop Zokujin in earth conflicts too: the effect is on the conflict (ruling #946)', function() {
             this.noMoreActions();
 
             this.initiateConflict({
@@ -201,7 +201,7 @@ describe('Superior Authority', function() {
             this.player2.pass();
             this.player1.clickCard(this.authority);
             expect(this.game.currentConflict.attackerSkill).toBe(0);
-            expect(this.game.currentConflict.defenderSkill).toBe(3);
+            expect(this.game.currentConflict.defenderSkill).toBe(0);
         });
 
         it('Yoshino character shouldn\'t count', function() {
