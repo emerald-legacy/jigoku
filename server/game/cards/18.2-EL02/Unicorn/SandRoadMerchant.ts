@@ -16,7 +16,7 @@ export default class SandRoadMerchant extends DrawCard {
     static id = 'sand-road-merchant';
 
     public override setupCardAbilities() {
-        this.persistentEffect(playableFromUnderneath(this));
+        this.persistentEffect(playableFromUnderneath());
 
         this.reaction('Look at your opponent\'s conflict deck')
             .when({

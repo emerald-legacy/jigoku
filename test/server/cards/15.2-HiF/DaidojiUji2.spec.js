@@ -356,3 +356,45 @@ describe('Daidoji Uji 2', function () {
         });
     });
 });
+
+describe('Daidoji Uji 2\'s abilities gained through Contemplative Wisdom', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'daidoji-uji-2', attachments: ['contemplative-wisdom'] }, 'doji-whisperer'],
+                    conflictDiscard: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['doji-challenger']
+                }
+            });
+            this.uji = this.player1.findCardByName('daidoji-uji-2');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.player1.player.placeUnderneath(this.katana, this.uji);
+            this.whisperer.honor();
+            this.player1.claimRing('air');
+            this.game.checkGameState(true);
+        });
+
+        it('doesn\'t let you play the cards under a Uji who isn\'t honored', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.whisperer],
+                defenders: [],
+                ring: 'fire'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.uji);
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickRing('air');
+            expect(this.game.rings.air.isUnclaimed()).toBe(true);
+            this.player2.pass();
+            this.player1.clickCard(this.katana);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

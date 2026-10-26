@@ -138,3 +138,49 @@ describe('Miya Library and Hantei XXXVIII', function () {
         });
     });
 });
+
+describe('Miya Library copied by Floating Fortress', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-diplomat']
+                },
+                player2: {
+                    inPlay: ['brash-samurai'],
+                    dynastyDiscard: ['floating-fortress', 'miya-library', 'miya-satoshi', 'kudaka', 'adept-of-the-waves', 'naive-student']
+                }
+            });
+            this.fortress = this.player2.findCardByName('floating-fortress');
+            this.library = this.player2.findCardByName('miya-library');
+            this.satoshi = this.player2.findCardByName('miya-satoshi');
+            this.sd1 = this.player2.findCardByName('shameful-display', 'province 1');
+            this.player2.reduceDeckToNumber('dynasty deck', 0);
+            for(const name of ['naive-student', 'adept-of-the-waves', 'kudaka', 'miya-satoshi']) {
+                this.player2.moveCard(name, 'dynasty deck');
+            }
+            this.player2.placeCardInProvince(this.fortress, 'province 2');
+            this.fortress.facedown = false;
+        });
+
+        it('puts the copy back with the other cards', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['doji-diplomat'],
+                defenders: ['brash-samurai'],
+                province: this.sd1
+            });
+            this.player2.clickCard(this.fortress);
+            this.player2.clickCard(this.library);
+            this.player2.clickPrompt('No');
+            this.player1.pass();
+            this.player2.clickCard(this.fortress);
+            this.player2.clickPrompt('Miya Satoshi');
+            expect(this.satoshi.location).toBe('province 2');
+            expect(this.fortress.location).toBe('dynasty deck');
+            expect(this.player2).toHavePrompt('Select the card you would like to place on top of your dynasty deck');
+            expect(this.player2).toHavePromptButton('Floating Fortress');
+        });
+    });
+});

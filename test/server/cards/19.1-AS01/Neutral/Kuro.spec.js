@@ -307,3 +307,44 @@ describe('Kuro at a province where fate cannot be spent', function () {
         });
     });
 });
+
+describe('Kuro\'s action gained through Contemplative Wisdom', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'kuro', attachments: ['contemplative-wisdom'] }, 'adept-of-the-waves']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar'],
+                    conflictDiscard: ['grasp-of-earth-2']
+                }
+            });
+            this.kuro = this.player1.findCardByName('kuro');
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.grasp = this.player2.findCardByName('grasp-of-earth-2');
+            this.player1.claimRing('air');
+        });
+
+        it('plays an attachment the character using it can take', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.adept],
+                defenders: [],
+                ring: 'fire'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.kuro);
+            this.player1.clickCard(this.adept);
+            this.player1.clickRing('air');
+            this.player2.pass();
+            this.player1.clickCard(this.adept);
+            this.player1.clickPrompt('Play opponent discarded attachment');
+            expect(this.player1).toBeAbleToSelect(this.grasp);
+            this.player1.clickCard(this.grasp);
+            expect(this.grasp.parent).toBe(this.adept);
+        });
+    });
+});

@@ -21,11 +21,11 @@ class Stowaway extends DrawCard {
                 numCards: 2,
                 activePromptTitle: 'Choose up to 2 cards in a discard pile',
                 sameDiscardPile: true
-            }, placeCardUnderneath({ destination: this }))
+            }, placeCardUnderneath((context) => ({ destination: context.source })))
             .chatText((context) => msg`place ${context.chatTarget()} beneath ${context.source}`);
 
         this.persistentEffect({
-            effect: modifyMilitarySkill(() => Math.floor(countCardsUnderneath(this) / 2))
+            effect: modifyMilitarySkill((card) => Math.floor(countCardsUnderneath(card) / 2))
         });
     }
 }

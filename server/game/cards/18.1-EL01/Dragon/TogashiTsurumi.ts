@@ -10,10 +10,10 @@ export default class TogashiTsurumi extends DrawCard {
 
     public override setupCardAbilities() {
         this.persistentEffect({
-            effect: modifyBothSkills(() => countCardsUnderneath(this))
+            effect: modifyBothSkills((card) => countCardsUnderneath(card))
         });
 
-        this.persistentEffect(playableFromUnderneath(this, (card) => card.hasTrait(Trait.Kiho)));
+        this.persistentEffect(playableFromUnderneath((card) => card.hasTrait(Trait.Kiho)));
 
         this.action('Place a card underneath self')
             .selectCard({
@@ -22,7 +22,7 @@ export default class TogashiTsurumi extends DrawCard {
                 controller: Players.Self,
                 cardType: [CardType.Event, CardType.Attachment, CardType.Character],
                 targets: false,
-                gameAction: placeCardUnderneath({ destination: this })
+                gameAction: placeCardUnderneath((context) => ({ destination: context.source }))
             })
             .chatText((context) => msg`place a card from their hand beneath ${context.source} and draw a card`)
             .then()

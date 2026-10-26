@@ -122,3 +122,54 @@ describe('Togashi Tsurumi with an empty hand', function () {
         });
     });
 });
+
+describe('Togashi Tsurumi\'s abilities gained through Contemplative Wisdom', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'togashi-tsurumi', attachments: ['contemplative-wisdom'] }, 'mirumoto-raitsugu'],
+                    hand: ['banzai'],
+                    conflictDiscard: ['fine-katana', 'ornate-fan', 'let-go']
+                },
+                player2: {
+                    inPlay: ['doji-challenger']
+                }
+            });
+            this.tsurumi = this.player1.findCardByName('togashi-tsurumi');
+            this.raitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+            for(const name of ['fine-katana', 'ornate-fan', 'let-go']) {
+                this.player1.player.placeUnderneath(this.player1.findCardByName(name), this.tsurumi);
+            }
+            this.player1.claimRing('air');
+            this.game.checkGameState(true);
+        });
+
+        it('counts and fills the cards under the character that gained them', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.raitsugu],
+                defenders: [],
+                ring: 'fire'
+            });
+            const military = this.raitsugu.militarySkill;
+            this.player2.pass();
+            this.player1.clickCard(this.tsurumi);
+            this.player1.clickPrompt('Give all abilities to another character');
+            this.player1.clickCard(this.raitsugu);
+            this.player1.clickRing('air');
+            expect(this.raitsugu.militarySkill).toBe(military);
+
+            this.player2.pass();
+            this.player1.clickCard(this.raitsugu);
+            if(this.player1.currentPrompt().buttons.some((button) => button.text === 'Place a card underneath self')) {
+                this.player1.clickPrompt('Place a card underneath self');
+            }
+            this.player1.clickCard('banzai');
+            expect(this.player1.findCardByName('banzai').isUnderneath(this.raitsugu)).toBe(true);
+            expect(this.raitsugu.militarySkill).toBe(military + 1);
+        });
+    });
+});

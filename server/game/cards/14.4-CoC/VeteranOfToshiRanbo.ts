@@ -6,7 +6,7 @@ class VeteranOfToshiRanbo extends DrawCard {
 
     override setupCardAbilities() {
         this.persistentEffect({
-            effect: modifyGlory(() => this.controller ? this.controller.getNumberOfFaceupProvinces() : 0)
+            effect: modifyGlory((card) => card.controller.getNumberOfFaceupProvinces())
         });
     }
 }

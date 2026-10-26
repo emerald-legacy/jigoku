@@ -67,7 +67,7 @@ export default class LoyalWarhound extends DrawCard {
                 }));
 
                 gameActions.push(attach({
-                    attachment: this,
+                    attachment: context.source,
                     target: context.target
                 }));
 

@@ -184,3 +184,41 @@ describe('Stowaway after a change of control', function() {
     });
 });
 
+
+describe('Stowaway copied by Shosuro Actor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor']
+                },
+                player2: {
+                    inPlay: ['stowaway'],
+                    conflictDiscard: ['let-go', 'fine-katana', 'ornate-fan', 'banzai']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.stowaway = this.player2.findCardByName('stowaway');
+            for(const name of ['let-go', 'fine-katana', 'ornate-fan', 'banzai']) {
+                this.player2.player.placeUnderneath(this.player2.findCardByName(name), this.stowaway);
+            }
+            this.game.checkGameState(true);
+        });
+
+        it('counts the cards under the copy', function() {
+            expect(this.stowaway.militarySkill).toBe(this.stowaway.printedMilitarySkill + 2);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.actor],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.stowaway);
+            expect(this.actor.name).toBe('Stowaway');
+            expect(this.actor.militarySkill).toBe(this.stowaway.printedMilitarySkill);
+        });
+    });
+});

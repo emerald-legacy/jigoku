@@ -27,7 +27,7 @@ class DaidojiUji2 extends DrawCard {
 
         this.persistentEffect({
             condition: (context) => context.source.isHonored,
-            ...playableFromUnderneath(this)
+            ...playableFromUnderneath()
         });
     }
 }

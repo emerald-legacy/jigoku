@@ -8,6 +8,11 @@ import { claimedRingSymbols, hasClaimedRing } from '../../claimedRings.js';
 
 const elementSymbol = { key: 'cinder-salamander-fire', element: Element.Fire };
 
+/** "Copies of this card": the same title as the card using the ability (one that gained it too). */
+function isCopyOf(card: BaseCard, source: BaseCard): boolean {
+    return card.name === source.name;
+}
+
 export default class CinderSalamander extends DrawCard {
     static id = 'cinder-salamander';
 
@@ -29,7 +34,7 @@ export default class CinderSalamander extends DrawCard {
                 deck: DeckType.Dynasty,
                 mode: TargetMode.UpTo,
                 numCards: 3,
-                cardCondition: (card) => this.isSalamanderCard(card),
+                cardCondition: (card, context) => isCopyOf(card, context.source),
                 gameAction: putIntoPlay(),
                 message: (context, cards) => msg`${context.player} finds ${this.salamanderCountToText(cards.length)} in their deck`
             })
@@ -40,7 +45,7 @@ export default class CinderSalamander extends DrawCard {
                 location: Location.Provinces,
                 mode: TargetMode.UpTo,
                 numCards: 3,
-                cardCondition: (card) => this.isSalamanderCard(card),
+                cardCondition: (card, context) => isCopyOf(card, context.source),
                 gameAction: putIntoPlay(),
                 message: (_context, cards, player) => msg`${player} finds ${this.salamanderCountToText(cards.length)} in their provinces`
             })
@@ -50,10 +55,6 @@ export default class CinderSalamander extends DrawCard {
 
     public override getPrintedElementSymbols() {
         return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
-
-    private isSalamanderCard(card: BaseCard): boolean {
-        return card.id === this.id;
     }
 
     private salamanderCountToText(salamanderCount: number): string {

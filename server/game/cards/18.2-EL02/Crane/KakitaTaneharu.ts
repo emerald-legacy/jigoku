@@ -16,12 +16,12 @@ class KakitaTaneharu extends DrawCard {
                 reveal: false,
                 remainingCards: RemainingCards.BottomRandom,
                 message: (context) => msg`${context.player} puts a card underneath ${context.source}`,
-                gameAction: placeCardUnderneath({
-                    destination: this
-                })
+                gameAction: placeCardUnderneath((context) => ({
+                    destination: context.source
+                }))
             });
 
-        this.persistentEffect(playableFromUnderneath(this));
+        this.persistentEffect(playableFromUnderneath());
     }
 }
 

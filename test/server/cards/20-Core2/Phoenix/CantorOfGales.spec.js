@@ -77,3 +77,46 @@ describe('Cantor of Gales', function () {
         });
     });
 });
+
+describe('Cantor of Gales\'s ability gained through Contemplative Wisdom', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'cantor-of-gales', attachments: ['contemplative-wisdom'] }, 'adept-of-the-waves', 'doji-challenger'],
+                    hand: ['retreat']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+            this.cantor = this.player1.findCardByName('cantor-of-gales');
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.adept.honor();
+            this.player1.claimRing('air');
+        });
+
+        it('contributes the base skill of the character that gained it', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.adept, this.challenger],
+                defenders: [],
+                ring: 'fire'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.cantor);
+            this.player1.clickCard(this.challenger);
+            this.player1.clickRing('air');
+            this.player2.pass();
+            this.player1.clickCard('retreat');
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.isParticipating()).toBe(false);
+            expect(this.game.currentConflict.attackerSkill).toBe(
+                this.adept.militarySkill + this.cantor.getBaseMilitarySkill() + this.challenger.getBaseMilitarySkill()
+            );
+        });
+    });
+});

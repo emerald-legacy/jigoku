@@ -153,3 +153,46 @@ describe('Cinder Salamander', function () {
         });
     });
 });
+
+describe('Cinder Salamander\'s action gained through Contemplative Wisdom', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'cinder-salamander', attachments: ['contemplative-wisdom'] }, 'borderlands-defender'],
+                    dynastyDiscard: ['borderlands-defender', 'cinder-salamander']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+            this.salamander = this.player1.filterCardsByName('cinder-salamander', 'play area')[0];
+            this.defender = this.player1.filterCardsByName('borderlands-defender', 'play area')[0];
+            this.player1.moveCard(this.player1.filterCardsByName('borderlands-defender', 'dynasty discard pile')[0], 'dynasty deck');
+            this.player1.moveCard(this.player1.filterCardsByName('cinder-salamander', 'dynasty discard pile')[0], 'dynasty deck');
+            this.player1.claimRing('fire');
+            this.player1.claimRing('air');
+        });
+
+        it('searches for copies of the character using it', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.defender],
+                defenders: [],
+                ring: 'water'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.salamander);
+            this.player1.clickPrompt('Give all abilities to another character');
+            this.player1.clickCard(this.defender);
+            this.player1.clickRing('air');
+            this.player2.pass();
+            this.player1.clickCard(this.defender);
+            expect(this.player1).toHavePrompt('Select characters to put into play from your deck');
+            expect(this.player1).toHavePromptButton('Borderlands Defender');
+            expect(this.player1).not.toHavePromptButton('Cinder Salamander');
+        });
+    });
+});

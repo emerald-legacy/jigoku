@@ -10,10 +10,15 @@ export default class CantorOfGales extends DrawCard {
             condition: (context) =>
                 context.source.isAtHome() &&
                 context.player.cardsInPlay.some((card) => card.isParticipating() && card.isHonored),
-            effect: changePlayerSkillModifier((_player, context) =>
-                context.game.currentConflict?.conflictType === ConflictType.Military
-                    ? this.getBaseMilitarySkill()
-                    : this.getBasePoliticalSkill())
+            effect: changePlayerSkillModifier((_player, context) => {
+                const source = context.source;
+                if(!source.isDrawCard()) {
+                    return 0;
+                }
+                return context.game.currentConflict?.conflictType === ConflictType.Military
+                    ? source.getBaseMilitarySkill()
+                    : source.getBasePoliticalSkill();
+            })
         });
     }
 }

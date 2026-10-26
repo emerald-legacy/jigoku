@@ -26,7 +26,7 @@ class MiyaLibrary extends DrawCard {
                     }
                 },
                 remainingCardsHandler: (context, _event, cards) => rearrangeDeck({
-                    cards: this.location === Location.DynastyDeck ? [this, ...cards] : cards,
+                    cards: context.source.location === Location.DynastyDeck ? [context.source, ...cards] : cards,
                     deck: DeckType.Dynasty,
                     activePromptTitle: 'Select the card you would like to place on top of your dynasty deck'
                 }).resolve(context.player, context)

@@ -192,3 +192,47 @@ describe('Kakita Taneharu', function () {
         });
     });
 });
+
+describe('Kakita Taneharu\'s abilities gained through Contemplative Wisdom', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'kakita-taneharu', attachments: ['contemplative-wisdom'] }, 'doji-whisperer'],
+                    conflictDiscard: ['fine-katana', 'ornate-fan', 'let-go', 'banzai']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+            this.taneharu = this.player1.findCardByName('kakita-taneharu');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.player1.reduceDeckToNumber('conflict deck', 0);
+            this.katana = this.player1.moveCard('fine-katana', 'conflict deck');
+            this.player1.moveCard('ornate-fan', 'conflict deck');
+            this.player1.moveCard('let-go', 'conflict deck');
+            this.player1.moveCard('banzai', 'conflict deck');
+            this.player1.claimRing('air');
+        });
+
+        it('places the card under the character that gained the action', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.whisperer],
+                defenders: [],
+                ring: 'fire'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.taneharu);
+            this.player1.clickPrompt('Give all abilities to another character');
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickRing('air');
+            this.player2.pass();
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickPrompt('Fine Katana');
+            expect(this.katana.isUnderneath(this.whisperer)).toBe(true);
+        });
+    });
+});

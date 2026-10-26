@@ -278,3 +278,40 @@ describe('Loyal Warhound - host replaced by its twin', function () {
         });
     });
 });
+
+describe('Loyal Warhound copied by Shosuro Actor', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor', 'doji-challenger']
+                },
+                player2: {
+                    inPlay: ['loyal-warhound']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.hound = this.player2.findCardByName('loyal-warhound');
+        });
+
+        it('attaches the copy, not the original', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.actor],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.hound);
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.challenger);
+            expect(this.actor.parent).toBe(this.challenger);
+            expect(this.hound.parent).toBe(null);
+            expect(this.hound.type).toBe('character');
+        });
+    });
+});

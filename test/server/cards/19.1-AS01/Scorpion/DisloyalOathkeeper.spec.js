@@ -144,3 +144,44 @@ describe('Disloyal Oathkeeper after a change of control', function () {
         });
     });
 });
+
+describe('Disloyal Oathkeeper\'s reaction gained by Shosuro Deceiver', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['way-of-the-crane']
+                },
+                player2: {
+                    inPlay: ['disloyal-oathkeeper', 'shosuro-deceiver'],
+                    conflictDiscard: ['banzai']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.crane = this.player1.findCardByName('way-of-the-crane');
+            this.oathkeeper = this.player2.findCardByName('disloyal-oathkeeper');
+            this.deceiver = this.player2.findCardByName('shosuro-deceiver');
+            this.oathkeeper.dishonor();
+            this.player2.player.placeUnderneath(this.player2.findCardByName('banzai'), this.oathkeeper);
+            this.game.checkGameState(true);
+        });
+
+        it('checks and fills the Deceiver\'s own cards underneath', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.whisperer],
+                defenders: [this.oathkeeper, this.deceiver]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.crane);
+            this.player1.clickCard(this.whisperer);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.deceiver);
+            this.player2.clickCard(this.deceiver);
+            expect(this.crane.isUnderneath(this.deceiver)).toBe(true);
+        });
+    });
+});
