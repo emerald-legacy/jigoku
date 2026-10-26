@@ -1,11 +1,10 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Duration, Element, Location, Players } from '../../../Constants.js';
+import { CardType, Element, Location, Players } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
-import { delayedEffect } from '../../../effects.js';
 import {
-    cardLastingEffect,
+    atEndOfConflict,
     chosenDiscard,
     discardCard,
     handler,
@@ -98,17 +97,14 @@ export default class Maelstrom extends ProvinceCard {
                 const triggeringPlayer = context.player;
                 return [
                     moveToConflict(),
-                    cardLastingEffect({
-                        target: target,
-                        duration: Duration.UntilEndOfPhase,
-                        effect: delayedEffect({
-                            when: {
-                                afterConflict: (event) =>
-                                    event.conflict.isOnWinningSide(target) && target.controller === triggeringPlayer
-                            },
+                    atEndOfConflict(() => {
+                        const conflict = context.game.currentConflict;
+                        return {
+                            target: target,
+                            onlyIf: () => !!conflict?.wonAtResolution(target) && target.controller === triggeringPlayer,
                             message: () => msg`${target} is honored due to ${context.source}'s effect`,
                             gameAction: honor()
-                        })
+                        };
                     })
                 ];
             }))

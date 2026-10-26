@@ -18,7 +18,7 @@ export default class DisloyalOathkeeper extends DrawCard {
             })
             .placeCardUnderneath((context) => ({
                 target: context.event.card,
-                hideWhenFaceup: true,
+                hideWhenFaceup: false,
                 destination: context.source
             }));
     }

@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { CardType, CharacterStatus } from '../../../Constants.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
-import { discardStatusToken, dishonor, gainStatusToken, honor, joint, taint } from '../../../GameActions/GameActions.js';
+import { discardStatusToken, gainStatusToken, joint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const ORIGINL_TOKEN = 'original';
@@ -35,7 +35,7 @@ export default class AsakoKousuke extends DrawCard {
                         'Turn it into Honored',
                         joint([
                             discardStatusToken({ target: targetToken }),
-                            honor({ target: targetCard })
+                            gainStatusToken({ target: targetCard, token: CharacterStatus.Honored })
                         ])
                     ]);
                 }
@@ -45,7 +45,7 @@ export default class AsakoKousuke extends DrawCard {
                         'Turn it into Dishonored',
                         joint([
                             discardStatusToken({ target: targetToken }),
-                            dishonor({ target: targetCard })
+                            gainStatusToken({ target: targetCard, token: CharacterStatus.Dishonored })
                         ])
                     ]);
                 }
@@ -55,7 +55,7 @@ export default class AsakoKousuke extends DrawCard {
                         'Turn it into Tainted',
                         joint([
                             discardStatusToken({ target: targetToken }),
-                            taint({ target: targetCard })
+                            gainStatusToken({ target: targetCard, token: CharacterStatus.Tainted })
                         ])
                     ]);
                 }

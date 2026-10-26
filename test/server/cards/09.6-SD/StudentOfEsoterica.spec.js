@@ -292,3 +292,51 @@ describe('Student of Esoterica', function() {
         });
     });
 });
+
+describe('Student of Esoterica copied by Shosuro Actor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 2,
+                    inPlay: ['shosuro-actor'],
+                    hand: ['against-the-waves']
+                },
+                player2: {
+                    inPlay: ['student-of-esoterica']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.waves = this.player1.findCardByName('against-the-waves');
+            this.student = this.player2.findCardByName('student-of-esoterica');
+            this.actor.fate = 1;
+            this.student.fate = 3;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.actor],
+                defenders: [],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.student);
+            this.player2.pass();
+        });
+
+        it('should pay Spells from the copy\'s own fate', function() {
+            this.player1.clickCard(this.waves);
+            expect(this.player1).toHavePrompt('Against the Waves');
+            this.player1.clickCard(this.actor);
+            expect(this.player1).toHavePrompt('Choose a card to help pay the fate cost of Against the Waves');
+            expect(this.player1).toBeAbleToSelect(this.actor);
+            expect(this.player1).not.toBeAbleToSelect(this.student);
+            this.player1.clickCard(this.actor);
+            expect(this.player1).toHavePrompt('Choose amount of fate to spend from Student of Esoterica');
+            this.player1.clickPrompt('1');
+            expect(this.actor.fate).toBe(0);
+            expect(this.student.fate).toBe(3);
+        });
+    });
+});

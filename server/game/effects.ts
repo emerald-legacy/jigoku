@@ -238,7 +238,9 @@ export const additionalCharactersInConflict = (amount: FlexibleValue<number, Pla
 export const additionalConflict = (type?: ConflictType) => EffectBuilder.player.static(EffectName.AdditionalConflict, type ?? true);
 export const additionalTriggerCost = (func: EffectValueMap[EffectName.AdditionalTriggerCost]) => EffectBuilder.player.static(EffectName.AdditionalTriggerCost, func);
 export const additionalPlayCost = (func: EffectValueMap[EffectName.AdditionalPlayCost]) => EffectBuilder.player.static(EffectName.AdditionalPlayCost, func);
-export const alternateFatePool = (match: EffectValueMap[EffectName.AlternateFatePool]) => EffectBuilder.player.static(EffectName.AlternateFatePool, match);
+/** `match` gets the effect's context: a copy of the card (Shosuro Actor) is `context.source`. */
+export const alternateFatePool = (match: (card: Parameters<EffectValueMap[EffectName.AlternateFatePool]>[0], context: AbilityContext) => ReturnType<EffectValueMap[EffectName.AlternateFatePool]>) =>
+    EffectBuilder.player.dynamic(EffectName.AlternateFatePool, (_player, context) => (card) => match(card, context));
 export const cannotDeclareConflictsOfType = (type: ConflictType) => EffectBuilder.player.static(EffectName.CannotDeclareConflictsOfType, type);
 export const canPlayFromOpponents = (location: Location, cards: DrawCard[], sourceOfEffect: BaseCard, playType: PlayType = PlayType.PlayFromHand) =>
     EffectBuilder.player.detached(EffectName.CanPlayFromOpponents, getPlayFromLocation((player) => player.opponent, location, cards, sourceOfEffect, playType));

@@ -165,3 +165,39 @@ describe('Asako Kousuke with Blessed by Fukurokujin', function () {
         });
     });
 });
+
+describe('Asako Kousuke under Ichiro', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asako-kousuke', { card: 'solemn-scholar', attachments: ['fine-katana'] }]
+                },
+                player2: {
+                    inPlay: ['ichiro']
+                }
+            });
+            this.kousuke = this.player1.findCardByName('asako-kousuke');
+            this.scholar = this.player1.findCardByName('solemn-scholar');
+            this.scholar.dishonor();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.scholar],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        // receiving a status token isn't honoring (rulings #839, #900)
+        it('should turn a dishonored status token into an honored one', function () {
+            this.player1.clickCard(this.kousuke);
+            this.player1.clickCard(this.scholar);
+            expect(this.player1).toHavePromptButton('Turn it into Honored');
+            this.player1.clickPrompt('Turn it into Honored');
+            expect(this.scholar.isDishonored).toBe(false);
+            expect(this.scholar.isHonored).toBe(true);
+        });
+    });
+});

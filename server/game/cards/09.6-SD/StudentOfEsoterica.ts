@@ -7,9 +7,9 @@ class StudentOfEsoterica extends DrawCard {
 
     override setupCardAbilities() {
         this.persistentEffect({
-            effect: alternateFatePool((card) => {
-                if(card.hasTrait(Trait.Spell)) {
-                    return this;
+            effect: alternateFatePool((card, context) => {
+                if(card.hasTrait(Trait.Spell) && context.source.isDrawCard()) {
+                    return context.source;
                 }
                 return false;
             })

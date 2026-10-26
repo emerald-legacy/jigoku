@@ -45,6 +45,17 @@ describe('Disloyal Oathkeeper', function () {
             );
         });
 
+        it('should put the event underneath faceup, visible to the opponent', function () {
+            this.player1.clickCard(this.crane);
+            this.player1.clickCard(this.whisperer);
+            this.player2.clickCard(this.oathkeeper);
+            expect(this.crane.isUnderneath(this.oathkeeper)).toBe(true);
+
+            const seenByOpponent = this.crane.getSummary(this.player1.player, false);
+            expect(seenByOpponent.facedown).toBe(false);
+            expect(seenByOpponent.name).toBe('Way of the Crane');
+        });
+
         it('event should be playable', function () {
             this.player1.clickCard(this.crane);
             this.player1.clickCard(this.whisperer);
