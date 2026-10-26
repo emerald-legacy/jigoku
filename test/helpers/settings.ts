@@ -3,8 +3,7 @@ const defaultWindows = {
     draw: false,
     preConflict: true,
     conflict: true,
-    fate: false,
-    regroup: false
+    fate: false
 };
 
 const defaultOptionSettings = {
@@ -43,7 +42,6 @@ type User = {
         preConflict: boolean;
         conflict: boolean;
         fate: boolean;
-        regroup: boolean;
     };
     settings: Partial<{
         disableGravatar: boolean;
@@ -66,13 +64,7 @@ type User = {
     }>;
 };
 
-export function getUserWithDefaultsSet(user: Partial<User> & Pick<User, 'username'>): Partial<User> & Pick<User, 'username'>;
-export function getUserWithDefaultsSet(user?: Partial<User> & Pick<User, 'username'>): (Partial<User> & Pick<User, 'username'>) | undefined;
-export function getUserWithDefaultsSet(user?: Partial<User> & Pick<User, 'username'>) {
-    if(!user) {
-        return undefined;
-    }
-
+export function getUserWithDefaultsSet(user: Partial<User> & Pick<User, 'username'>): Partial<User> & Pick<User, 'username'> {
     user.blockList = Array.isArray(user.blockList) ? user.blockList : [];
     user.settings = Object.assign({}, defaultSettings, user.settings);
     user.settings.optionSettings = Object.assign({}, defaultOptionSettings, user.settings.optionSettings);

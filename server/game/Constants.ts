@@ -7,6 +7,7 @@ export { Stage } from './Constants/Stage.js';
 export { Players } from './Constants/Players.js';
 export { TargetMode } from './Constants/TargetMode.js';
 export { Phase } from './Constants/Phase.js';
+export { ActionWindowName } from './Constants/ActionWindowName.js';
 export { CardType, ALL_CARD_TYPES } from './Constants/CardType.js';
 export { PlayType } from './Constants/PlayType.js';
 export { EventName } from './Constants/EventName.js';

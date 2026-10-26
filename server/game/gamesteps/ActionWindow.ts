@@ -1,6 +1,6 @@
 import { msg } from '../GameChat.js';
 import { UiPrompt } from './UiPrompt.js';
-import { EventName, Location, Players, EffectName, Blocker } from '../Constants.js';
+import { EventName, Location, Players, EffectName, Blocker, type ActionWindowName } from '../Constants.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
@@ -9,14 +9,14 @@ import type { AbilityResolver } from './AbilityResolver.js';
 
 export class ActionWindow extends UiPrompt {
     title: string;
-    windowName: string;
+    windowName: ActionWindowName;
     currentPlayer: Player;
     currentPlayerConsecutiveActions: number;
     opportunityCounter: number;
     prevPlayerPassed: boolean;
     bonusActions: Record<string, { actionCount: number; actionsTaken: boolean; takingActions: boolean }> | undefined;
 
-    constructor(game: Game, title: string, windowName: string) {
+    constructor(game: Game, title: string, windowName: ActionWindowName) {
         super(game);
 
         this.title = title;

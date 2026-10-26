@@ -1,4 +1,5 @@
 import type { EntersPlayStatus } from '../Constants.js';
+import type { PrintedKeyword } from '../KeywordParser.js';
 import type { CardType, ConflictType, Element, EventName, Players, PlayType, RestrictionType, SkillType, Trait } from '../Constants.js';
 import type { EffectName } from '../Constants.js';
 import type { traitLimit } from '../Interfaces.js';
@@ -94,7 +95,7 @@ export interface EffectValueMap {
     [EffectName.AddFlag]: string;
     [EffectName.AddFaction]: string;
     [EffectName.LoseFaction]: string;
-    [EffectName.AddKeyword]: string;
+    [EffectName.AddKeyword]: PrintedKeyword;
     [EffectName.AddTrait]: Trait;
     [EffectName.LoseTrait]: string;
     [EffectName.AttachmentCardCondition]: (card: DrawCard) => boolean;
@@ -134,7 +135,7 @@ export interface EffectValueMap {
     [EffectName.FateCostToTarget]: { cardType?: CardType; targetPlayer?: Players; amount: number };
     [EffectName.PlayerFateCostToTargetCard]: { match: TargetingCallbacks['match']; amount: number };
     [EffectName.GainAbility]: GainedAbilityValue;
-    [EffectName.GainAllAbilities]: BaseCard;
+    [EffectName.GainPrintedAbilities]: BaseCard;
     [EffectName.GainAllAbilitiesDynamic]: DynamicMatch;
     [EffectName.GainExtraFateWhenPlayed]: number;
     [EffectName.GainPlayAction]: boolean;
@@ -147,7 +148,7 @@ export interface EffectValueMap {
     [EffectName.IncreaseLimitOnAbilities]: AbilityLimitIncrease | true;
     [EffectName.IncreaseLimitOnPrintedAbilities]: CardAbility | true;
     [EffectName.LegendaryFate]: number;
-    [EffectName.LoseKeyword]: string;
+    [EffectName.LoseKeyword]: PrintedKeyword;
     [EffectName.ModifyBaseMilitarySkillMultiplier]: number;
     [EffectName.ModifyBasePoliticalSkillMultiplier]: number;
     [EffectName.ModifyBaseProvinceStrength]: number;

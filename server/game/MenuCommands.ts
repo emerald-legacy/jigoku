@@ -1,5 +1,5 @@
 import { msg } from './GameChat.js';
-import { Location } from './Constants.js';
+import { ActionWindowName, Location } from './Constants.js';
 import { Conflict } from './Conflict.js';
 import type BaseCard from './BaseCard.js';
 import type Game from './Game.js';
@@ -162,7 +162,7 @@ export function ringMenuClick(menuItem: MenuItem, game: Game, player: Player, ri
             ring.modifyFate(-ring.fate);
             return;
         case 'conflict':
-            if(game.currentActionWindow && game.currentActionWindow.windowName === 'preConflict') {
+            if(game.currentActionWindow && game.currentActionWindow.windowName === ActionWindowName.PreConflict) {
                 game.addMessage(msg`${player} initiates a conflict`);
                 const conflict = new Conflict(game, player, player.opponent, ring);
                 game.updateCurrentConflict(conflict);

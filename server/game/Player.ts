@@ -20,6 +20,7 @@ import type { RoleCard } from './RoleCard.js';
 import { StrongholdCard } from './StrongholdCard.js';
 
 import {
+    type ActionWindowName,
     CardType,
     type ConflictType,
     DeckType,
@@ -64,7 +65,7 @@ export interface PlayerState extends Partial<ReturnType<PlayerPromptState['getSt
     numProvinceCards: number;
     optionSettings: OptionSettings;
     phase: string;
-    promptedActionWindows: Record<string, boolean>;
+    promptedActionWindows: Partial<Record<ActionWindowName, boolean>>;
     provinces: { one: CardSummary[]; two: CardSummary[]; three: CardSummary[]; four: CardSummary[] };
     showBid: number;
     stats: ReturnType<PlayerStateBuilder['getStats']>;
@@ -127,7 +128,6 @@ export interface GamePlayerUserSettings {
     windowTimer?: number | string;
     background?: string;
     optionSettings?: OptionSettings;
-    promptedActionWindows?: Record<string, boolean>;
     timerSettings?: TimerSettings;
     patron?: PatronSettings;
 }
@@ -172,7 +172,7 @@ export class Player extends GameObject {
     deck: DeckDTO;
     costManager: PlayerCostManager;
     abilityMaxByIdentifier: Record<string, AbilityLimit>;
-    promptedActionWindows: Record<string, boolean>;
+    promptedActionWindows: Partial<Record<ActionWindowName, boolean>>;
     timerSettings: TimerSettings;
     optionSettings: OptionSettings;
     resetTimerAtEndOfRound: boolean;
@@ -231,8 +231,7 @@ export class Player extends GameObject {
             draw: true,
             preConflict: true,
             conflict: true,
-            fate: true,
-            regroup: true
+            fate: true
         };
         const settings = user.settings ?? {};
         this.timerSettings = settings.timerSettings ?? {};

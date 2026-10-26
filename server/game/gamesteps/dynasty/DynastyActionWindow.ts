@@ -1,11 +1,11 @@
 import { msg } from '../../GameChat.js';
-import { EffectName, EventName } from '../../Constants.js';
+import { EffectName, EventName, ActionWindowName } from '../../Constants.js';
 import type Game from '../../Game.js';
 import { ActionWindow } from '../ActionWindow.js';
 
 export class DynastyActionWindow extends ActionWindow {
     constructor(game: Game) {
-        super(game, 'Play cards from provinces', 'dynasty');
+        super(game, 'Play cards from provinces', ActionWindowName.Dynasty);
     }
 
     override activePrompt() {

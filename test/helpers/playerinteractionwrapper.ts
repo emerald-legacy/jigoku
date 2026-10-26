@@ -1,7 +1,7 @@
 import { matchCardByNameAndPack } from './cardutil.js';
 import { detectBinary } from '../../server/util.js';
 import { GameMode } from '../../server/GameMode.js';
-import { ConflictType, Location } from '../../server/game/Constants.js';
+import { ActionWindowName, ConflictType, Location } from '../../server/game/Constants.js';
 import { isEnumValue } from '../../server/game/utils/helpers.js';
 import type Game from '../../server/game/Game.js';
 import type Player from '../../server/game/Player.js';
@@ -554,6 +554,9 @@ class PlayerInteractionWrapper {
     }
 
     togglePromptedActionWindow(window: string, value: boolean): void {
+        if(!isEnumValue(ActionWindowName, window)) {
+            throw new Error(`${window} is not an action window`);
+        }
         this.player.promptedActionWindows[window] = value;
     }
 

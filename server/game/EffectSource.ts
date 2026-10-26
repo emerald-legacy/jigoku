@@ -1,4 +1,5 @@
 import { GameObject } from './GameObject.js';
+import type { PrintedKeyword } from './KeywordParser.js';
 import { Location, Duration, type Trait } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
@@ -26,7 +27,7 @@ export class EffectSource extends GameObject {
         return null;
     }
 
-    public hasKeyword(_keyword: string) {
+    public hasKeyword(_keyword: PrintedKeyword) {
         return false;
     }
 

@@ -46,7 +46,7 @@ export enum EffectName {
     FateCostToTarget = 'fateCostToTarget',
     PlayerFateCostToTargetCard = 'playerFateCostToTargetCard',
     GainAbility = 'gainAbility',
-    GainAllAbilities = 'gainAllAbilities',
+    GainPrintedAbilities = 'gainPrintedAbilities',
     GainAllAbilitiesDynamic = 'gainAllAbilitiesDynamic',
     GainExtraFateWhenPlayed = 'gainExtraFateWhenPlayed',
     GainPlayAction = 'gainPlayAction',

@@ -1,7 +1,8 @@
 import { msg } from './GameChat.js';
 import * as MenuCommands from './MenuCommands.js';
 import type { MenuItem } from './MenuCommands.js';
-import { Phase } from './Constants.js';
+import { ActionWindowName, Phase } from './Constants.js';
+import { isEnumValue } from './utils/helpers.js';
 import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
 import type BaseCard from './BaseCard.js';
@@ -14,10 +15,6 @@ type ChangeableStat = (typeof CHANGEABLE_STATS)[number];
 function isChangeableStat(stat: string): stat is ChangeableStat {
     return CHANGEABLE_STATS.some((changeable) => changeable === stat);
 }
-
-const TOGGLE_WINDOWS = new Set([
-    'dynasty', 'draw', 'preConflict', 'conflict', 'fate', 'regroup'
-]);
 
 const TOGGLE_TIMER_SETTINGS = new Set([
     'events', 'eventsInDeck'
@@ -279,7 +276,7 @@ export class GameInputHandler {
         if(!player) {
             return;
         }
-        if(!TOGGLE_WINDOWS.has(windowName)) {
+        if(!isEnumValue(ActionWindowName, windowName)) {
             return;
         }
 

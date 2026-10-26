@@ -5,7 +5,7 @@ import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import type { AbilityResolver } from '../AbilityResolver.js';
 import type { Conflict } from '../../Conflict.js';
-import { RestrictionType } from '../../Constants.js';
+import { RestrictionType, ActionWindowName } from '../../Constants.js';
 import { capitalize } from '../../utils/capitalize.js';
 
 export class ConflictActionWindow extends ActionWindow {
@@ -13,7 +13,7 @@ export class ConflictActionWindow extends ActionWindow {
     displayTotals: boolean;
 
     constructor(game: Game, title: string, conflict: Conflict) {
-        super(game, title, 'conflict');
+        super(game, title, ActionWindowName.Conflict);
         this.conflict = conflict;
         this.displayTotals = true;
     }

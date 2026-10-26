@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import { Phase, CardType, Players, EffectName, EventName, Location, TargetMode } from '../Constants.js';
+import { Phase, CardType, Players, EffectName, EventName, Location, TargetMode, ActionWindowName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
@@ -33,7 +33,7 @@ export class FatePhase extends PhaseStep {
             new SimpleStep(game, () => this.removeFateFromCharacters()),
             new SimpleStep(game, () => this.placeFateOnUnclaimedRings()),
             // built when it runs: the first player may have changed since the round began
-            new SimpleStep(game, () => this.game.queueStep(new ActionWindow(this.game, 'Action Window', 'fate'))),
+            new SimpleStep(game, () => this.game.queueStep(new ActionWindow(this.game, 'Action Window', ActionWindowName.Fate))),
             new SimpleStep(game, () => this.readyCards()),
             new SimpleStep(game, () => this.discardFromProvinces()),
             new SimpleStep(game, () => this.returnRings()),

@@ -10,7 +10,7 @@ import type PlayerInteractionWrapper from './playerinteractionwrapper.js';
 import type { CardLike } from './playerinteractionwrapper.js';
 import BaseCard from '../../server/game/BaseCard.js';
 import Ring from '../../server/game/Ring.js';
-import { Location } from '../../server/game/Constants.js';
+import { ActionWindowName, Location } from '../../server/game/Constants.js';
 import type Game from '../../server/game/Game.js';
 
 const deckBuilder = new DeckBuilder();
@@ -226,7 +226,7 @@ globalThis.integration = function (definitions: () => void): void {
                 }
 
                 if(options.phase !== 'setup') {
-                    if(options.phase && ['draw', 'fate'].includes(options.phase)) {
+                    if(options.phase === ActionWindowName.Draw || options.phase === ActionWindowName.Fate) {
                         flow.player1.player.promptedActionWindows[options.phase] = true;
                         flow.player2.player.promptedActionWindows[options.phase] = true;
                     }

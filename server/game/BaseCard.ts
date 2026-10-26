@@ -37,7 +37,7 @@ import type { ActiveEffect } from './Effects/ActiveEffect.js';
 import { isEffectOf } from './Effects/types.js';
 import type { AbilityLimitIncrease } from './Effects/EffectValueMap.js';
 import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
-import { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
+import { GainPrintedAbilities } from './Effects/Library/gainPrintedAbilities.js';
 import { GainAllAbilitiesDynamic } from './Effects/GainAllAbilitiesDynamic.js';
 import { CopyCard } from './Effects/Library/copyCard.js';
 import { isPersistentGain } from './Effects/GainAbility.js';
@@ -219,7 +219,7 @@ export class BaseCard extends EffectSource {
     private gainedFromAllAbilities<Value>(abilitiesOf: (value: ProvidedAbilities) => Value[], ignoreDynamicGains: boolean): Value[] {
         let gained: Value[] = [];
         for(const effect of this.getRawEffects()) {
-            if(effect.type === EffectName.GainAllAbilities && effect.value instanceof GainAllAbilities) {
+            if(effect.type === EffectName.GainPrintedAbilities && effect.value instanceof GainPrintedAbilities) {
                 gained = gained.concat(abilitiesOf(effect.value));
             }
         }
@@ -507,7 +507,7 @@ export class BaseCard extends EffectSource {
         return false;
     }
 
-    override hasKeyword(keyword: string): boolean {
+    override hasKeyword(keyword: PrintedKeyword): boolean {
         const targetKeyword = keyword.toLowerCase();
         // with lost gained abilities, only the card's own effects add keywords (by uuid: also on a snapshot of the card)
         const added = this.anyEffect(EffectName.LoseGainedAbilities)
@@ -941,7 +941,7 @@ export class BaseCard extends EffectSource {
     /** The traits each "No attachments [except …]" on this card allows: its own, a copied card's, or one gained with all of a card's abilities. */
     private attachmentRestrictions(): string[][] {
         const losesGained = this.anyEffect(EffectName.LoseGainedAbilities);
-        const gained: BaseCard[] = losesGained ? [] : this.getEffects(EffectName.GainAllAbilities);
+        const gained: BaseCard[] = losesGained ? [] : this.getEffects(EffectName.GainPrintedAbilities);
         const copied = this.copiedCard;
         const own = copied ? (losesGained ? [] : [copied]) : (this.isBlank() ? [] : [this]);
         return [...own, ...gained]

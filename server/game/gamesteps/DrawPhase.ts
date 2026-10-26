@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import { EffectName, Phase } from '../Constants.js';
+import { EffectName, Phase, ActionWindowName } from '../Constants.js';
 import { draw } from '../GameActions/GameActions.js';
 import type Game from '../Game.js';
 import { PhaseStep } from './PhaseStep.js';
@@ -23,7 +23,7 @@ export class DrawPhase extends PhaseStep {
         this.initialise([
             new SimpleStep(game, () => this.displayHonorBidPrompt()),
             new SimpleStep(game, () => this.drawConflictCards()),
-            new ActionWindow(this.game, 'Action Window', 'draw')
+            new ActionWindow(this.game, 'Action Window', ActionWindowName.Draw)
         ]);
     }
 

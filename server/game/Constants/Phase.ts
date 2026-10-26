@@ -3,6 +3,5 @@ export enum Phase {
     Dynasty = 'dynasty',
     Draw = 'draw',
     Conflict = 'conflict',
-    Fate = 'fate',
-    Regroup = 'regroup'
+    Fate = 'fate'
 }

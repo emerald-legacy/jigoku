@@ -1,6 +1,6 @@
 import Game from '../../server/game/Game.js';
 import PlayerInteractionWrapper from './playerinteractionwrapper.js';
-import * as Settings from '../../server/settings.js';
+import * as Settings from './settings.js';
 import { cards as cardLibrary } from '../../server/game/cards/index.js';
 import type { GameRouter } from '../../server/game/GameRouter.js';
 
@@ -158,27 +158,6 @@ class GameFlowWrapper {
         this.guardCurrentPhase('dynasty');
     }
 
-    finishRegroupPhase(): void {
-        this.guardCurrentPhase('regroup');
-        const playersInPromptedOrder = this.allPlayers.slice().sort(
-            (a, b) =>
-                (a.hasPrompt('Waiting for opponent to discard dynasty cards') ? 1 : 0) -
-                (b.hasPrompt('Waiting for opponent to discard dynasty cards') ? 1 : 0)
-        );
-        playersInPromptedOrder.forEach((player) => {
-            if(player.hasPromptButton('Done')) {
-                player.clickPrompt('Done');
-            }
-        });
-        const promptedToEnd = this.allPlayers.slice().sort(
-            (a, b) =>
-                (a.hasPrompt('Waiting for opponent to end the round') ? 1 : 0) -
-                (b.hasPrompt('Waiting for opponent to end the round') ? 1 : 0)
-        );
-        promptedToEnd.forEach((player) => player.clickPrompt('End Round'));
-        this.guardCurrentPhase('dynasty');
-    }
-
     nextPhase(): number {
         let phaseChange = 0;
         switch(this.game.currentPhase) {
@@ -200,10 +179,6 @@ class GameFlowWrapper {
             case 'fate':
                 this.finishFatePhase();
                 phaseChange = -1;
-                break;
-            case 'regroup':
-                this.finishRegroupPhase();
-                phaseChange = 4;
                 break;
             default:
                 break;

@@ -1,4 +1,5 @@
 import * as AbilityLimit from './AbilityLimit.js';
+import type { PrintedKeyword } from './KeywordParser.js';
 import { GainAllAbilitiesDynamic } from './Effects/GainAllAbilitiesDynamic.js';
 import { Restriction } from './Effects/Restriction.js';
 import { SuppressEffect } from './Effects/SuppressEffect.js';
@@ -10,7 +11,7 @@ import { cardCannot } from './Effects/Library/cardCannot.js';
 import { changePlayerGloryModifier } from './Effects/Library/changePlayerGloryModifier.js';
 import { copyCard, copyProvince } from './Effects/Library/copyCard.js';
 import { delayedEffect, playerDelayedEffect } from './Effects/Library/delayedEffect.js';
-import { gainAllAbilities } from './Effects/Library/gainAllAbilities.js';
+import { gainPrintedAbilities } from './Effects/Library/gainPrintedAbilities.js';
 import { gainAbility } from './Effects/Library/gainAbility.js';
 import { hideWhenFaceUp } from './Effects/Library/hideWhenFaceUp.js';
 import { mustBeDeclaredAsAttacker } from './Effects/Library/mustBeDeclaredAsAttacker.js';
@@ -65,7 +66,7 @@ export const addElementAsAttacker = (element: FlexibleValue<Element | Element[]>
 export const addFlag = (flag: string) => EffectBuilder.card.static(EffectName.AddFlag, flag);
 export const addFaction = (faction: Faction) => EffectBuilder.card.static(EffectName.AddFaction, faction);
 export const loseFaction = (faction: string) => EffectBuilder.card.static(EffectName.LoseFaction, faction);
-export const addKeyword = (keyword: string) => EffectBuilder.card.static(EffectName.AddKeyword, keyword);
+export const addKeyword = (keyword: PrintedKeyword) => EffectBuilder.card.static(EffectName.AddKeyword, keyword);
 export const addTrait = (trait: Trait) => EffectBuilder.card.static(EffectName.AddTrait, trait);
 export const additionalTriggerCostForCard = (func: EffectValueMap[EffectName.AdditionalTriggerCost]) => EffectBuilder.card.static(EffectName.AdditionalTriggerCost, func);
 export const attachmentCardCondition = (func: (card: DrawCard) => boolean) => EffectBuilder.card.static(EffectName.AttachmentCardCondition, func);
@@ -156,7 +157,7 @@ export const legendaryFate = (amount: FlexibleValue<number> = 1) => EffectBuilde
 export const loseAllNonKeywordAbilities = () => EffectBuilder.card.static(EffectName.LoseAllNonKeywordAbilities, true);
 /** Gained actions, reactions, constant abilities and keywords stop working; printed ones are kept. */
 export const loseGainedAbilities = () => EffectBuilder.card.static(EffectName.LoseGainedAbilities, true);
-export const loseKeyword = (keyword: string) => EffectBuilder.card.static(EffectName.LoseKeyword, keyword);
+export const loseKeyword = (keyword: PrintedKeyword) => EffectBuilder.card.static(EffectName.LoseKeyword, keyword);
 export const loseTrait = (trait: string) => EffectBuilder.card.static(EffectName.LoseTrait, trait);
 export const modifyBaseMilitarySkillMultiplier = (value: FlexibleValue<number>) =>
     EffectBuilder.card.flexible(EffectName.ModifyBaseMilitarySkillMultiplier, value);
@@ -332,7 +333,7 @@ export const applyStatusTokensToDuel = () => EffectBuilder.duel.static(EffectNam
 export const duelIgnorePrintedSkill = () => EffectBuilder.duel.static(EffectName.DuelIgnorePrintedSkill, true);
 
 export {
-    cardCannot, copyCard, copyProvince, gainAbility, gainAllAbilities, switchAttachmentSkillModifiers,
+    cardCannot, copyCard, copyProvince, gainAbility, gainPrintedAbilities, switchAttachmentSkillModifiers,
     attachmentMilitarySkillModifier, attachmentPoliticalSkillModifier, mustBeDeclaredAsAttacker, canPlayFromOwn,
     changePlayerGloryModifier, reduceCost, modifyDuelistSkill, delayedEffect, playerDelayedEffect, hideWhenFaceUp, takeControl
 };

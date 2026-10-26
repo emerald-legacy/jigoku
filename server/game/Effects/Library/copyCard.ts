@@ -1,85 +1,23 @@
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
 import type { StoredPersistentEffect } from '../../BaseCard.js';
-import { AbilityType, Location, CardType, EffectName } from '../../Constants.js';
-import type { CardAction } from '../../CardAction.js';
+import { Location, CardType, EffectName } from '../../Constants.js';
 import type { TriggeredAbility } from '../../TriggeredAbility.js';
 import { EffectBuilder } from '../EffectBuilder.js';
-import { EffectValue } from '../EffectValue.js';
-import { GainAbility, gainedPersistentEffect } from '../GainAbility.js';
+import { CarriedAbilities } from '../CarriedAbilities.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
-export class CopyCard<Card extends BaseCard> extends EffectValue<Card, BaseCard> {
-    actions: Array<GainAbility>;
-    reactions: Array<GainAbility>;
-    persistentEffects: StoredPersistentEffect[];
-    abilitiesForTargets = new WeakMap<
-        BaseCard,
-        {
-            actions: CardAction[];
-            reactions: TriggeredAbility[];
-        }
-    >();
-
-    constructor(card: Card) {
-        super(card);
-        this.actions = card.abilities.actions.map((action: CardAction) => new GainAbility(AbilityType.Action, action));
-        this.reactions = card.abilities.reactions.map(
-            (ability: TriggeredAbility) => new GainAbility(ability.abilityType, ability)
-        );
-        this.persistentEffects = card.abilities.persistentEffects.map(gainedPersistentEffect);
+export class CopyCard<Card extends BaseCard> extends CarriedAbilities<Card> {
+    protected override persistentEffectApplies(effect: StoredPersistentEffect, target: BaseCard): boolean {
+        return effect.location === Location.Any ||
+            (target.getType() === CardType.Character && effect.location === Location.PlayArea) ||
+            (target.getType() === CardType.Holding && effect.location === Location.Provinces) ||
+            (target.getType() === CardType.Province && effect.location === Location.Provinces);
     }
 
-    override apply(target: BaseCard) {
-        this.abilitiesForTargets.set(target, {
-            actions: this.actions.flatMap((value) => {
-                value.apply(target);
-                return value.grantedAction ?? [];
-            }),
-            reactions: this.reactions.flatMap((value) => {
-                value.apply(target);
-                return value.grantedTriggered ?? [];
-            })
-        });
-        for(const effect of this.persistentEffects) {
-            if(
-                effect.location === Location.Any ||
-                (target.getType() === CardType.Character && effect.location === Location.PlayArea) ||
-                (target.getType() === CardType.Holding && effect.location === Location.Provinces) ||
-                (target.getType() === CardType.Province && effect.location === Location.Provinces)
-            ) {
-                effect.ref = target.addEffectToEngine(effect);
-            }
-        }
-    }
-
-    override unapply(target: BaseCard) {
-        for(const value of this.abilitiesForTargets.get(target)?.reactions ?? []) {
-            value.unregisterEvents();
-        }
-        for(const effect of this.persistentEffects) {
-            if(effect.ref) {
-                target.removeEffectFromEngine(effect.ref);
-                delete effect.ref;
-            }
-        }
-        this.abilitiesForTargets.delete(target);
-    }
-
-    getActions(target: BaseCard) {
-        return this.abilitiesForTargets.get(target)?.actions ?? [];
-    }
-
-    getReactions(target: BaseCard) {
-        const copied = this.abilitiesForTargets.get(target)?.reactions ?? [];
-        const ownKeywordReactions = target.abilities.reactions.filter(
-            (ability) => ability.isKeywordAbility()
-        );
-        return [...copied, ...ownKeywordReactions];
-    }
-
-    getPersistentEffects() {
-        return this.persistentEffects;
+    override getReactions(target: BaseCard): TriggeredAbility[] {
+        const ownKeywordReactions = target.abilities.reactions.filter((ability) => ability.isKeywordAbility());
+        return [...super.getReactions(target), ...ownKeywordReactions];
     }
 }
 

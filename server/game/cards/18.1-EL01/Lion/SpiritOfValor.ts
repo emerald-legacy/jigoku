@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
-import { gainAllAbilities, reduceCost } from '../../../effects.js';
+import { gainPrintedAbilities, reduceCost } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import { captureParentCost, capturedParent } from '../../captureParentCost.js';
@@ -32,7 +32,7 @@ export default class SpiritOfValor extends DrawCard {
                 cardCondition: (card) => card.isFaction('lion')
             }, cardLastingEffect((context) => ({
                 target: capturedParent(context) ?? [],
-                effect: context.target ? gainAllAbilities(context.target) : []
+                effect: context.target ? gainPrintedAbilities(context.target) : []
             })))
             .chatText((context) => msg`copy ${context.chatTarget()}'s abilities onto ${capturedParent(context)}`);
     }

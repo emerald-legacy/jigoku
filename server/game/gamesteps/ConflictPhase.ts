@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import { Phase, EffectName } from '../Constants.js';
+import { Phase, EffectName, ActionWindowName } from '../Constants.js';
 import { claimImperialFavor, initiateConflict, performGloryCount } from '../GameActions/GameActions.js';
 import { Conflict } from '../Conflict.js';
 import type Game from '../Game.js';
@@ -40,7 +40,7 @@ export class ConflictPhase extends PhaseStep {
     }
 
     queueSteps() {
-        this.game.queueStep(new ActionWindow(this.game, 'Action Window', 'preConflict'));
+        this.game.queueStep(new ActionWindow(this.game, 'Action Window', ActionWindowName.PreConflict));
         this.game.queueStep(new SimpleStep(this.game, () => this.startConflictChoice()));
     }
 
@@ -67,7 +67,7 @@ export class ConflictPhase extends PhaseStep {
             if(this.currentPlayer.opponent) {
                 this.currentPlayer = this.currentPlayer.opponent;
             }
-            this.game.queueStep(new ActionWindow(this.game, 'Action Window', 'preConflict'));
+            this.game.queueStep(new ActionWindow(this.game, 'Action Window', ActionWindowName.PreConflict));
             this.game.queueStep(new SimpleStep(this.game, () => this.startConflictChoice()));
         } else {
             this.game.queueStep(new SimpleStep(this.game, () => this.claimImperialFavor()));

@@ -84,7 +84,6 @@ const UserSettingsSchema: z.ZodType<GamePlayerUserSettings> = z.looseObject({
     windowTimer: z.union([z.number(), z.string()]).optional().catch(undefined),
     background: z.string().optional().catch(undefined),
     optionSettings: z.record(z.string(), z.boolean()).optional().catch(undefined),
-    promptedActionWindows: z.record(z.string(), z.boolean()).optional().catch(undefined),
     timerSettings: z.record(z.string(), z.union([z.boolean(), z.number(), z.string()])).optional().catch(undefined),
     patron: z.looseObject({
         dial: z.string().optional().catch(undefined),

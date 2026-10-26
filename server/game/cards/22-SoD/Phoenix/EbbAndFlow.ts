@@ -1,5 +1,5 @@
 import { CardType, Players, Trait } from '../../../Constants.js';
-import { blank, gainAllAbilities, switchBaseSkills } from '../../../effects.js';
+import { blank, gainPrintedAbilities, switchBaseSkills } from '../../../effects.js';
 import { cardLastingEffect, joint, loseFate, noAction } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
@@ -35,14 +35,14 @@ export default class EbbAndFlow extends DrawCard {
                     target: context.targets.mine,
                     effect: [
                         blank(),
-                        gainAllAbilities(context.targets.opponents, true)
+                        gainPrintedAbilities(context.targets.opponents)
                     ]
                 })),
                 cardLastingEffect((context) => ({
                     target: context.targets.opponents,
                     effect: [
                         blank(),
-                        gainAllAbilities(context.targets.mine, true)
+                        gainPrintedAbilities(context.targets.mine)
                     ]
                 }))
             ]));
