@@ -4,6 +4,10 @@ import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 import { EventName, AbilityType, RestrictionType } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
+import type { Conflict } from '../../Conflict.js';
+
+// a second copy would have nothing to cancel (ruling #771)
+const pendingIn = new WeakSet<Conflict>();
 
 class DisplayOfPower extends DrawCard {
     static id = 'display-of-power';
@@ -11,9 +15,11 @@ class DisplayOfPower extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Cancel opponent\'s ring effect and claim and resolve the ring')
             .when({
-                afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed
+                afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed &&
+                    !pendingIn.has(event.conflict)
             })
             .handler((context) => {
+                pendingIn.add(context.event.conflict);
                 const onResolveConflictRing = (event: GameEvent<EventName.OnResolveConflictRing>) => this.onResolveConflictRing(event, context);
                 // a ring effect cancelled before its would-interrupt window (Mountaintop Vigil) never calls it
                 const onConflictFinished = () => {

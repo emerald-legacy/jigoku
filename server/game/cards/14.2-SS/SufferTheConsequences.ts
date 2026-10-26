@@ -4,13 +4,14 @@ import * as costs from '../../costs/index.js';
 import { perPhase } from '../../AbilityLimit.js';
 import { additionalConflict } from '../../effects.js';
 import { msg } from '../../GameChat.js';
+import { extraConflictPossible } from '../extraConflictPossible.js';
 
 class SufferTheConsequences extends DrawCard {
     static id = 'suffer-the-consequences';
 
     override setupCardAbilities() {
         this.action('Gain another political conflict')
-            .condition((context) => context.game.currentPhase === Phase.Conflict)
+            .condition((context) => context.game.currentPhase === Phase.Conflict && extraConflictPossible(context.player))
             .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasSomeTrait(Trait.Courtier, Trait.Bushi, Trait.Shugenja) && card.bowed

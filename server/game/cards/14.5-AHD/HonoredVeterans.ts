@@ -20,7 +20,7 @@ export default class HonoredVeterans extends DrawCard {
         });
 
         this.action('Honor characters')
-            .condition(() => this.canBePlayed())
+            .condition((context) => this.canBePlayed(context))
             .target({
                 name: 'myCharacter',
                 cardType: CardType.Character,
@@ -51,9 +51,9 @@ export default class HonoredVeterans extends DrawCard {
         this.charactersPlayedThisPhase.clear();
     }
 
-    private canBePlayed(): boolean {
+    private canBePlayed(context: AbilityContext): boolean {
         for(const card of this.charactersPlayedThisPhase) {
-            if(card.hasTrait(Trait.Bushi)) {
+            if(card.hasTrait(Trait.Bushi) && honor().canAffect(card, context)) {
                 return true;
             }
         }

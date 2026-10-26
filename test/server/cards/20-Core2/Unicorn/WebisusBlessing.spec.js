@@ -101,3 +101,39 @@ describe('Webisus Blessing', function () {
         });
     });
 });
+
+describe('Webisus Blessing on a province', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['webisu-s-blessing']
+                },
+                player2: {
+                    inPlay: ['doji-kuwanan']
+                }
+            });
+            this.blessing = this.player1.findCardByName('webisu-s-blessing');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.whisperer.dishonor();
+            this.shamefulDisplay = this.player2.findCardByName('shameful-display', 'province 1');
+            this.shamefulDisplay.facedown = false;
+            this.shamefulDisplay.dishonor();
+            this.game.checkGameState(true);
+        });
+
+        it('should be able to choose a status token on a province', function () {
+            expect(this.shamefulDisplay.isDishonored).toBe(true);
+            this.player1.clickCard(this.blessing);
+            expect(this.player1).toBeAbleToSelect(this.shamefulDisplay);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            this.player1.clickCard(this.shamefulDisplay);
+            expect(this.player1).toHavePromptButton('Done');
+            this.player1.clickPrompt('Done');
+            expect(this.shamefulDisplay.isDishonored).toBe(false);
+            expect(this.whisperer.isDishonored).toBe(true);
+        });
+    });
+});

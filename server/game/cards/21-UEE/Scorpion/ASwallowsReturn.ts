@@ -13,7 +13,7 @@ export default class ASwallowsReturn extends DrawCard {
             .condition((context) =>
                 context.game.currentConflict !== null &&
                 context.player.opponent !== undefined &&
-                context.player.opponent.conflictDeck.length >= CARD_COUNT)
+                context.player.opponent.conflictDeck.length > 0)
             .gameAction(sequential((context) => {
                 const cards = context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? [];
                 const rest = () => cards.filter((card) => card.location === Location.ConflictDeck);

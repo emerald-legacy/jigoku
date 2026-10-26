@@ -71,3 +71,34 @@ describe('Suffer the Consequences', function() {
         });
     });
 });
+
+describe('Suffer the Consequences under Waning Hostilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: [{ card: 'matsu-berserker', bowed: true }],
+                    hand: ['waning-hostilities', 'suffer-the-consequences']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.waning = this.player1.findCardByName('waning-hostilities');
+            this.suffer = this.player1.findCardByName('suffer-the-consequences');
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.waning);
+        });
+
+        // an additional conflict would change nothing (RRG playing cards, ruling #372)
+        it('should not be playable when no further conflict can be declared', function() {
+            expect(this.waning.location).toBe('conflict discard pile');
+            expect(this.player1).toHavePrompt('Initiate an action');
+            this.player1.clickCard(this.suffer);
+            expect(this.player1).toHavePrompt('Initiate an action');
+            expect(this.berserker.location).toBe('play area');
+            expect(this.suffer.location).toBe('hand');
+        });
+    });
+});

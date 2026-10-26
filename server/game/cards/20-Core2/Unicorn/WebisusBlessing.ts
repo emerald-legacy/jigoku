@@ -1,4 +1,5 @@
 import { msg } from '../../../GameChat.js';
+import { CardType, Location } from '../../../Constants.js';
 import { discardStatusToken } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 import { perRound } from '../../../AbilityLimit.js';
@@ -10,10 +11,14 @@ export default class WebisusBlessing extends DrawCard {
         this.action('Discard status tokens')
             .tokenTarget({
                 name: 'first',
+                cardType: [CardType.Character, CardType.Province],
+                location: Location.Any,
                 activePromptTitle: 'Choose a status token'
             }, discardStatusToken())
             .tokenTarget({
                 name: 'second',
+                cardType: [CardType.Character, CardType.Province],
+                location: Location.Any,
                 activePromptTitle: 'Choose a status token',
                 dependsOn: 'first',
                 optional: true,

@@ -10,7 +10,7 @@ class EnigmaticMagistrate extends DrawCard {
             effect: cannotContribute(() => {
                 return (card) => {
                     const cost = card.getCost();
-                    return cost === null || cost % 2 === 0;
+                    return cost !== null && cost % 2 === 0;
                 };
             })
         });
