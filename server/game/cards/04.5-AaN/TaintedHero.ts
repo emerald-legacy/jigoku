@@ -16,11 +16,11 @@ class TaintedHero extends DrawCard {
 
         this.action('Make text box blank')
             .cost(costs.sacrifice({ cardType: CardType.Character }))
-            .cardLastingEffect({
-                target: this,
+            .cardLastingEffect((context) => ({
+                target: context.source,
                 duration: Duration.UntilEndOfPhase,
                 effect: blank()
-            })
+            }))
             .chatText('blank himself');
     }
 }

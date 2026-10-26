@@ -1,26 +1,20 @@
 import { CardType } from '../../../Constants.js';
 import { modifyGlory } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
+
+function holdingsControlledBy(player: Player): number {
+    return player.game.allCards.filter((card) =>
+        card.type === CardType.Holding && card.controller === player && card.isFaceup() && card.isInProvince()
+    ).length;
+}
 
 export default class ProtectedMerchant extends DrawCard {
     static id = 'protected-merchant';
 
     public override setupCardAbilities() {
         this.persistentEffect({
-            effect: modifyGlory(() => Math.min(2, this.getHoldingsInPlay()))
+            effect: modifyGlory((card) => Math.min(2, holdingsControlledBy(card.controller)))
         });
-    }
-
-    private getHoldingsInPlay(): number {
-        return this.game.allCards.reduce(
-            (sum, card) =>
-                card.type === CardType.Holding &&
-                card.controller === this.controller &&
-                card.isFaceup() &&
-                card.isInProvince()
-                    ? sum + 1
-                    : sum,
-            0
-        );
     }
 }

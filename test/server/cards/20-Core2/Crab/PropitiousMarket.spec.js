@@ -70,3 +70,45 @@ describe('Propitious Market timing', function () {
         });
     });
 });
+
+describe('Propitious Market copied by Floating Fortress', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-diplomat']
+                },
+                player2: {
+                    inPlay: ['brash-samurai'],
+                    dynastyDiscard: ['floating-fortress', 'propitious-market']
+                }
+            });
+            this.fortress = this.player2.findCardByName('floating-fortress');
+            this.market = this.player2.findCardByName('propitious-market');
+            this.sd1 = this.player2.findCardByName('shameful-display', 'province 1');
+            this.player2.placeCardInProvince(this.fortress, 'province 2');
+            this.fortress.facedown = false;
+        });
+
+        it('gets strength from the copy\'s own honor tokens', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['doji-diplomat'],
+                defenders: ['brash-samurai'],
+                province: this.sd1
+            });
+            this.player2.clickCard(this.fortress);
+            this.player2.clickCard(this.market);
+            this.player2.clickPrompt('Yes');
+            expect(this.fortress.location).toBe('province 1');
+            const strength = this.sd1.getStrength();
+
+            this.player1.pass();
+            this.player2.clickCard(this.fortress);
+            this.player2.clickPrompt('No');
+            expect(this.fortress.getTokenCount('honor')).toBe(1);
+            expect(this.sd1.getStrength()).toBe(strength + 1);
+        });
+    });
+});

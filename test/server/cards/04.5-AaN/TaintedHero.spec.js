@@ -140,3 +140,38 @@ describe('Tainted Hero', function() {
         });
     });
 });
+
+describe('Tainted Hero copied by Shosuro Actor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor', 'doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['tainted-hero']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.taintedHero = this.player2.findCardByName('tainted-hero');
+        });
+
+        it('blanks the copy, not the original', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.actor],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.taintedHero);
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard('doji-whisperer');
+            expect(this.actor.isBlank()).toBe(true);
+            expect(this.taintedHero.isBlank()).toBe(false);
+        });
+    });
+});

@@ -19,7 +19,7 @@ export default class PropitiousMarket extends DrawCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             match: (card, context) => !!context && card.isProvinceCard() && card.location === context.source.location,
-            effect: modifyProvinceStrength(() => this.getTokenCount(TokenType.Honor))
+            effect: modifyProvinceStrength((_province, context) => context.source.getTokenCount(TokenType.Honor))
         });
 
         this.action('Place an honor token')
