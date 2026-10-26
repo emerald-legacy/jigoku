@@ -93,6 +93,7 @@ describe('Isawa Kaede', function() {
             });
 
             it('should allow the defender to resolve multiple rings when Display of Power is played', function() {
+                this.player2.player.optionSettings.orderForcedAbilities = true;
                 this.player2.pass();
                 this.player1.clickCard('assassination');
                 this.player1.clickCard('shinjo-outrider', 'any', 'opponent');
@@ -102,9 +103,9 @@ describe('Isawa Kaede', function() {
                 this.player2.clickCard('display-of-power');
                 expect(this.player2).toHavePrompt('Resolve Ring Effect');
                 this.player2.clickPrompt('Resolve All Elements');
-                expect(this.player1).toHavePrompt('Choose an effect to be resolved');
-                expect(this.player1.currentButtons).toContain('Fire Ring Effect');
-                expect(this.player1.currentButtons).toContain('Void Ring Effect');
+                expect(this.player2).toHavePrompt('Choose an effect to be resolved');
+                expect(this.player2.currentButtons).toContain('Fire Ring Effect');
+                expect(this.player2.currentButtons).toContain('Void Ring Effect');
             });
         });
     });

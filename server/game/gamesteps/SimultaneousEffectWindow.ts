@@ -56,9 +56,9 @@ export class SimultaneousEffectWindow extends BaseStep {
         if(choices.length === 0) {
             return true;
         }
-        const player = this.currentPlayer;
-        // RRG: the first player orders delayed effects, regardless of who controls them
+        // RRG: the first player orders delayed effects, regardless of who controls them; one player's own effects (several ring effects) they order themselves
         const severalPlayers = new Set(choices.map((choice) => choice.player)).size > 1;
+        const player = severalPlayers ? this.currentPlayer : choices[0].player ?? this.currentPlayer;
         if(choices.length === 1 || !player || (!severalPlayers && !player.optionSettings.orderForcedAbilities)) {
             this.resolveEffect(choices[0]);
         } else {

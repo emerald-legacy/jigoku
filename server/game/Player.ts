@@ -1359,7 +1359,6 @@ export class Player extends GameObject {
         if(!Array.isArray(elements)) {
             elements = [elements];
         }
-        optional = optional && elements.length === 1;
         const effects = RingAbilities.sortedForResolution(
             this,
             elements.map((element) => RingAbilities.contextFor(this, element, optional, onResolution)),
@@ -1368,6 +1367,7 @@ export class Player extends GameObject {
         this.game.openSimultaneousEffectWindow(
             effects.map((context) => ({
                 title: context.ability.title,
+                player: this,
                 handler: () => this.game.resolveAbility(context)
             }))
         );

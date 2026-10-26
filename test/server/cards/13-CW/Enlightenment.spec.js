@@ -28,6 +28,8 @@ describe('Enlightenment', function() {
                 this.player1.claimRing('void');
 
                 this.player1.clickCard(this.enlightenment);
+                expect(this.player1).toHavePrompt('Earth Ring');
+                this.player1.clickPrompt('Draw a card and opponent discards');
                 expect(this.player1).toHavePrompt('Fire Ring');
                 this.player1.clickCard(this.brash);
                 this.player1.clickPrompt('Dishonor Brash Samurai');
@@ -60,6 +62,8 @@ describe('Enlightenment', function() {
                 this.player1.claimRing('water');
 
                 this.player1.clickCard(this.enlightenment);
+                expect(this.player1).toHavePrompt('Earth Ring');
+                this.player1.clickPrompt('Draw a card and opponent discards');
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.azunami);
                 this.player1.clickPrompt('Pass');

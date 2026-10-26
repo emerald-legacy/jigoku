@@ -46,17 +46,23 @@ export class ResolveRingEffectAction<Context extends AbilityContext = AbilityCon
                     rings,
                     (ring) => RingAbilities.contextFor(context.player, ring.element).ability.defaultPriority
                 );
-            const ringProperties = { ...additionalProperties, optional: false };
+            // RRG Ring Effects: the player resolves (or passes on) each effect in turn, in the order they choose
+            const ringProperties = { ...additionalProperties, optional: true };
+            const resolvingPlayer = properties.player ?? context.player;
             const ringEvents: Event[] = [];
             const effectObjects = sortedRings.map((ring) => ({
                 title: RingAbilities.getRingName(ring.element) + ' Effect',
+                player: resolvingPlayer,
                 handler: () => {
                     const ringEvent = this.getEvent(ring, context, ringProperties);
                     ringEvents.push(ringEvent);
                     context.game.openEventWindow(ringEvent);
                 }
             }));
-            const event = new Event(EventName.Unnamed, { context }, () => context.game.openSimultaneousEffectWindow(effectObjects));
+            // an order the card already fixed (Riddles of the Henshin) is kept
+            const event = new Event(EventName.Unnamed, { context }, () => properties.enforceOrderedResolution
+                ? effectObjects.forEach((effect) => effect.handler())
+                : context.game.openSimultaneousEffectWindow(effectObjects));
             // resolved in full unless a ring effect was cancelled (a replaced one counts)
             event.checkFullyResolved = (wrapper) => !wrapper.cancelled && ringEvents.every((ringEvent) => !ringEvent.getResolutionEvent().cancelled);
             events.push(event);

@@ -170,3 +170,38 @@ describe('Riddles of the Henshin', function () {
         });
     });
 });
+
+describe('Riddles of the Henshin played by the second player', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['ancient-master', 'togashi-initiate', 'brash-samurai'],
+                    hand: ['riddles-of-the-henshin']
+                }
+            });
+            this.player1.player.optionSettings.orderForcedAbilities = true;
+            this.player2.claimRing('water');
+            this.player2.claimRing('earth');
+        });
+
+        it('resolves the rings in the chosen order, each of which may be passed', function() {
+            this.player1.pass();
+            this.player2.clickCard('riddles-of-the-henshin');
+            this.player2.clickRing('water');
+            this.player2.clickRing('earth');
+            expect(this.player1).not.toHavePrompt('Choose an effect to be resolved');
+            expect(this.player2).toHavePrompt('Choose character to bow or unbow');
+            expect(this.player2).toHavePromptButton('Don\'t resolve');
+            this.player2.clickPrompt('Don\'t resolve');
+            expect(this.player2).toHavePromptButton('Draw a card and opponent discards');
+            this.player2.clickPrompt('Don\'t resolve');
+            expect(this.getChatLogs(3)).toContain('player2 chooses not to resolve the water ring');
+            expect(this.getChatLogs(3)).toContain('player2 chooses not to resolve the earth ring');
+        });
+    });
+});
