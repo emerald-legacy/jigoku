@@ -857,7 +857,12 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
         this.conflict.provincesAtEnd = this.conflict.getConflictProvinces();
         this.game.updateCurrentConflict(null);
-        this.game.raiseEvent(EventName.OnConflictFinished, { conflict: this.conflict });
+        if(this.conflict.conflictFailedToInitiate) {
+            // RRG 3.2: no conflict took place, so nothing reacts to it ending; until-end-of-conflict effects and limits still end
+            this.game.emitEvent(EventName.OnConflictFinished, { conflict: this.conflict });
+        } else {
+            this.game.raiseEvent(EventName.OnConflictFinished, { conflict: this.conflict });
+        }
         this.game.queueSimpleStep(() => this.resetCards());
     }
 }

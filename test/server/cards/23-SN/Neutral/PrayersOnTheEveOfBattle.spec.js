@@ -162,3 +162,71 @@ describe('Prayers on the Eve of Battle when the conflict ends', function () {
         });
     });
 });
+
+describe('Prayers on the Eve of Battle and a conflict that fails to initiate', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['master-of-gisei-toshi', 'ikoma-kiyono', 'guest-of-honor'],
+                    hand: ['prayers-on-the-eve-of-battle'],
+                    conflictDiscard: ['forged-edict']
+                },
+                player2: {
+                    inPlay: ['bayushi-kachiko'],
+                    hand: ['know-the-terrain', 'castigated'],
+                    provinces: ['endless-plains', 'rally-to-the-cause', 'secret-cache', 'manicured-garden'],
+                    role: 'keeper-of-void'
+                }
+            });
+            this.rally = this.player2.findCardByName('rally-to-the-cause');
+            this.garden = this.player2.findCardByName('manicured-garden');
+            this.gisei = this.player1.findCardByName('master-of-gisei-toshi');
+            this.kiyono = this.player1.findCardByName('ikoma-kiyono');
+            this.prayers = this.player1.findCardByName('prayers-on-the-eve-of-battle');
+            this.edict = this.player1.findCardByName('forged-edict');
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.garden.facedown = false;
+            this.noMoreActions();
+            this.player1.clickCard(this.gisei);
+            this.player1.clickRing('earth');
+        });
+
+        it('does not react to it ending', function() {
+            this.player1.moveCard(this.edict, 'hand');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.kiyono],
+                defenders: [],
+                province: this.garden,
+                ring: 'air'
+            });
+            this.player2.clickCard('castigated');
+            this.player2.clickCard(this.kiyono);
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t Resolve');
+            this.kiyono.bowed = false;
+            this.noMoreActions();
+            this.player2.passConflict();
+            this.player1.playAttachment(this.prayers, 'guest-of-honor');
+            this.noMoreActions();
+
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kiyono],
+                province: this.rally,
+                ring: 'void'
+            });
+            this.player2.clickCard('know-the-terrain');
+            this.player1.clickCard(this.edict);
+            this.player1.clickCard(this.kiyono);
+            expect(this.getChatLogs(3)).toContain('player1 has failed to initiate a conflict because they no longer have any legal attackers');
+            expect(this.prayers.location).toBe('play area');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});
