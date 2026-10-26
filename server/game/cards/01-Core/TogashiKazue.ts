@@ -21,6 +21,6 @@ export default class TogashiKazue extends DrawCard {
                 recipient: context.source.parentCharacter ?? undefined
             })))
             .chatText((context) => msg`steal a fate from ${context.chatTarget()} and place it on ${context.source.parentCharacter ?? ''}`)
-            .notPrinted();
+            .attachmentText();
     }
 }

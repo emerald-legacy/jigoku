@@ -18,11 +18,11 @@ export class GainAllAbilities extends EffectValue<BaseCard, BaseCard> {
         super(card);
         this.printedOnly = printedOnly;
         this.actions = card.abilities.actions
-            .filter((action: CardAction) => !this.printedOnly || action.printedAbility)
+            .filter((action: CardAction) => !this.printedOnly || action.isPrintedAbility())
             .map((action: CardAction) => new GainAbility(AbilityType.Action, action));
         //Need to ignore keyword reactions or we double up on the pride / courtesy / sincerity triggers
         this.reactions = card.abilities.reactions
-            .filter((a: TriggeredAbility) => !this.printedOnly || a.printedAbility)
+            .filter((a: TriggeredAbility) => !this.printedOnly || a.isPrintedAbility())
             .filter((a: TriggeredAbility) => !a.isKeywordAbility())
             .map((ability: TriggeredAbility) => new GainAbility(ability.abilityType, ability));
         this.persistentEffects = card.abilities.persistentEffects

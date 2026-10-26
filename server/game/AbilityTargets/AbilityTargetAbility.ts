@@ -36,7 +36,7 @@ export class AbilityTargetAbility extends AbilityTargetBase<AbilityTargetAbility
     /** The abilities of `card` that can be chosen: their game actions have a legal target. */
     private legalAbilities(card: BaseCard, context: AbilityContext) {
         const abilities = (this.properties.printedOn
-            ? [...card.abilities.actions, ...card.abilities.reactions].filter((ability) => ability.printedAbility)
+            ? [...card.abilities.actions, ...card.abilities.reactions].filter((ability) => ability.isPrintedAbility())
             : [...card.getCardActions(), ...card.getReactions()]
         ).filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
         return abilities.filter((ability) => {

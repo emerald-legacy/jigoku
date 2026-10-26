@@ -19,6 +19,8 @@ export interface CardAbilityProperties<Context extends AbilityContext = AbilityC
     limit?: IAbilityLimit;
     location?: Location | Location[];
     printedAbility?: boolean;
+    /** Text the card has as an attachment (Togashi Kazue): blanked like printed text, but not a printed ability to copy or count. */
+    attachmentText?: boolean;
     cannotBeCancelled?: boolean;
     cannotTargetFirst?: boolean;
     firstPlayerChoosesFirst?: boolean;
@@ -72,6 +74,7 @@ export class CardAbility extends ResolvableAbility {
     override limit: IAbilityLimit;
     location: Location[];
     override printedAbility: boolean;
+    attachmentText: boolean;
     override cannotBeCancelled?: boolean;
     declare cannotTargetFirst: boolean;
     override cannotBeMirrored: boolean;
@@ -97,6 +100,7 @@ export class CardAbility extends ResolvableAbility {
         this.limit.ability = this;
         this.location = this.buildLocation(card, properties.location);
         this.printedAbility = properties.printedAbility === false ? false : true;
+        this.attachmentText = !!properties.attachmentText;
         this.cannotBeCancelled = properties.cannotBeCancelled;
         this.cannotTargetFirst = !!properties.cannotTargetFirst;
         this.firstPlayerChoosesFirst = !!properties.firstPlayerChoosesFirst;
@@ -105,7 +109,7 @@ export class CardAbility extends ResolvableAbility {
         this.abilityIdentifier = properties.abilityIdentifier || '';
         this.origin = properties.origin;
         if(!this.abilityIdentifier) {
-            this.abilityIdentifier = this.printedAbility ? this.card.id + nextPrintedAbilityNumber(this.card) : '';
+            this.abilityIdentifier = this.isPrintedAbility() ? this.card.id + nextPrintedAbilityNumber(this.card) : '';
         }
         this.maxIdentifier = this.card.name + this.abilityIdentifier;
 
@@ -134,6 +138,11 @@ export class CardAbility extends ResolvableAbility {
         }
 
         return defaultedLocation;
+    }
+
+    /** A printed ability for effects that copy or count them (Togashi Yokuni, Centered Breath): not text the card has as an attachment. */
+    isPrintedAbility(): boolean {
+        return this.printedAbility && !this.attachmentText;
     }
 
     override meetsRequirements(context: AbilityContext, ignoredBlockers: Blocker[] = []): Blocker {

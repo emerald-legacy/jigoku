@@ -136,6 +136,25 @@ describe('Togashi Yokuni', function() {
             });
         });
 
+        describe('Togashi Yokuni and characters played as attachments', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['togashi-yokuni']
+                    },
+                    player2: {
+                        inPlay: ['togashi-acolyte', 'promising-youth']
+                    }
+                });
+            });
+
+            it('should not let Yokuni copy the text they have as attachments', function() {
+                this.player1.clickCard('togashi-yokuni');
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+        });
+
         describe('Togashi Yokuni/Adept of Shadows interaction', function() {
             beforeEach(function() {
                 this.setupTest({

@@ -23,6 +23,6 @@ export default class AncientMaster extends DrawCard {
                 })
             })
             .chatText('look at the top five cards of their deck')
-            .notPrinted();
+            .attachmentText();
     }
 }

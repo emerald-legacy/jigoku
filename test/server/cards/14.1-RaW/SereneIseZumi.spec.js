@@ -191,3 +191,48 @@ describe('Serene Ise Zumi as an attachment, later', function() {
     });
 });
 
+
+describe('Serene Ise Zumi as a blanked attachment', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['agasha-hiyori', 'doji-challenger'],
+                    hand: ['serene-ise-zumi']
+                }
+            });
+            this.hiyori = this.player1.findCardByName('agasha-hiyori');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.sereneIseZumi = this.player1.findCardByName('serene-ise-zumi');
+            this.hiyori.fate = 2;
+        });
+
+        it('loses the text it has as an attachment', function() {
+            this.player1.bidHonor(1);
+            this.player2.bidHonor(1);
+            this.player1.clickCard(this.sereneIseZumi);
+            this.player1.clickPrompt('Play Serene Ise Zumi as an attachment');
+            this.player1.clickCard(this.challenger);
+            expect(this.sereneIseZumi.parent).toBe(this.challenger);
+            this.player2.pass();
+            this.player1.pass();
+            expect(this.game.currentPhase).toBe('conflict');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.hiyori);
+            this.player1.clickCard(this.sereneIseZumi);
+            this.player1.clickRing('air');
+            expect(this.sereneIseZumi.isBlank()).toBe(true);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.sereneIseZumi);
+            expect(this.challenger.isParticipating()).toBe(true);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

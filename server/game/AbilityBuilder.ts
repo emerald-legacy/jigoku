@@ -172,7 +172,7 @@ interface AbilityDraft {
     evenDuringDynasty?: boolean;
     conflictProvinceCondition?: (province: ProvinceCard, context: AbilityContext) => boolean;
     canTriggerOutsideConflict?: boolean;
-    notPrinted?: boolean;
+    attachmentText?: boolean;
     anyPlayer?: boolean;
     collectiveTrigger?: boolean;
     playCondition?: (context: AbilityContext) => boolean;
@@ -180,7 +180,7 @@ interface AbilityDraft {
 
 /** Settings of the ability itself: a then step can't have them. */
 const ABILITY_ONLY = ['condition', 'ifCondition', 'limit', 'max', 'location', 'cannotBeMirrored', 'cannotTargetFirst', 'firstPlayerChoosesFirst', 'initiateDuel', 'phase', 'evenDuringDynasty',
-    'conflictProvinceCondition', 'canTriggerOutsideConflict', 'notPrinted', 'anyPlayer', 'collectiveTrigger', 'playCondition'] as const;
+    'conflictProvinceCondition', 'canTriggerOutsideConflict', 'attachmentText', 'anyPlayer', 'collectiveTrigger', 'playCondition'] as const;
 
 /** What only an action's context has; a trigger's or a step's `ability` isn't a `CardAction`. */
 type ActionOnly = { ability: CardAction };
@@ -1348,9 +1348,9 @@ export class AbilityBuilder<
         return this;
     }
 
-    /** Not printed on the card, so effects that copy or count printed abilities skip it. */
-    notPrinted(): this {
-        this.#once('notPrinted', true, 'notPrinted()');
+    /** Text the card has as an attachment: effects that copy or count printed abilities skip it, but blanking the card removes it. */
+    attachmentText(): this {
+        this.#once('attachmentText', true, 'attachmentText()');
         return this;
     }
 
@@ -1494,7 +1494,7 @@ function commonProperties(ability: AbilityDraft) {
         ...(draft.firstPlayerChoosesFirst ? { firstPlayerChoosesFirst: true } : {}),
         ...thenProperties(draft),
         ...(draft.initiateDuel ? { initiateDuel: draft.initiateDuel } : {}),
-        ...(draft.notPrinted ? { printedAbility: false } : {})
+        ...(draft.attachmentText ? { attachmentText: true } : {})
     };
 }
 

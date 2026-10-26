@@ -769,7 +769,7 @@ export class BaseCard extends EffectSource {
         }
         for(const effect of this.getRawEffects().filter((effect) => isEffectOf(effect, EffectName.IncreaseLimitOnPrintedAbilities))) {
             const value = effect.getValue(this);
-            if(ability.printedAbility && (value === true || value === ability) && effect.context.player === player) {
+            if(ability.isPrintedAbility() && (value === true || value === ability) && effect.context.player === player) {
                 total++;
             }
         }

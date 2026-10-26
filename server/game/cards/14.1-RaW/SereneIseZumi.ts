@@ -19,7 +19,7 @@ export default class SereneIseZumi extends DrawCard {
             .sendHome((context) => ({
                 target: context.source.parentCharacter ?? []
             }))
-            .notPrinted();
+            .attachmentText();
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
