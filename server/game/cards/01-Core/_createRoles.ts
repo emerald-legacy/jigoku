@@ -1,8 +1,7 @@
 import { elementTrait } from '../../Constants.js';
-import type { Element } from '../../Constants.js';
 import { RoleCard } from '../../RoleCard.js';
 
-export function createKeeperRole(id: string, element: Element) {
+export function createKeeperRole(id: string) {
     return class KeeperRole extends RoleCard {
         static id = id;
 
@@ -16,14 +15,10 @@ export function createKeeperRole(id: string, element: Element) {
                 })
                 .gainFate();
         }
-
-        override getElement(): Element[] {
-            return [element];
-        }
     };
 }
 
-export function createSeekerRole(id: string, element: Element) {
+export function createSeekerRole(id: string) {
     return class SeekerRole extends RoleCard {
         static id = id;
 
@@ -36,10 +31,6 @@ export function createSeekerRole(id: string, element: Element) {
                         event.card.getElement().some((element) => context.source.hasTrait(elementTrait(element)))
                 })
                 .gainFate();
-        }
-
-        override getElement(): Element[] {
-            return [element];
         }
     };
 }

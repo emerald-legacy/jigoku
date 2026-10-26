@@ -1,7 +1,7 @@
 import type { AbilityContext } from './AbilityContext.js';
 import type { GameActionName } from './GameActions/GameActionRegistry.js';
 import BaseCard from './BaseCard.js';
-import { EffectName, type Element } from './Constants.js';
+import { EffectName, Element, elementTrait } from './Constants.js';
 import type { StateViewer } from './types/StateViewer.js';
 
 const illegalActions = new Set([
@@ -42,7 +42,8 @@ export class RoleCard extends BaseCard {
         return !illegalActions.has(actionType) && super.allowGameAction(actionType, context);
     }
 
+    /** The elements of the role, from its traits (an Allied role has all five). */
     getElement(): Element[] {
-        return [];
+        return Object.values(Element).filter((element) => this.hasTrait(elementTrait(element)));
     }
 }
