@@ -21,7 +21,7 @@ export default class Funeral extends DrawCard {
                 cancel(),
                 gainHonor((context) => ({ target: context.player }))
             ]))
-            .condition((context) => context.game.currentPhase !== Phase.Draw && context.game.getFavorSide() === FavorType.Political)
+            .ifCondition((context) => context.game.currentPhase !== Phase.Draw && context.game.getFavorSide() === FavorType.Political)
             .chatText('cancel their honor loss, then gain 1 honor')
             .cannotBeMirrored();
     }

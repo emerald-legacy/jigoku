@@ -2,6 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import { gainAbility, reduceCost } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { AbilityContext } from '../../../AbilityContext.js';
 
 export default class GraspOfEarth2 extends DrawCard {
     static id = 'grasp-of-earth-2';
@@ -13,8 +14,8 @@ export default class GraspOfEarth2 extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             effect: reduceCost({
-                amount: 1,
-                targetCondition: (_target, _source, context) => context.player.hasAffinity(Trait.Earth, context),
+                // the affinity of the player playing it, who has this reducer
+                amount: (card, player) => player.hasAffinity(Trait.Earth, new AbilityContext({ game: card.game, player, source: card })) ? 1 : 0,
                 match: (card, source) => card === source
             })
         });

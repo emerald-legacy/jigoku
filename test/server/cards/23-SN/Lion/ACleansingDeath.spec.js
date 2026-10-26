@@ -110,3 +110,39 @@ describe('A Cleansing Death sacrifice cost', function () {
         });
     });
 });
+
+describe('A Cleansing Death when you cannot gain honor', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger', 'akodo-toturi'],
+                    dynastyDeck: ['doji-whisperer'],
+                    hand: ['a-cleansing-death']
+                },
+                player2: {
+                    inPlay: ['righteous-magistrate']
+                }
+            });
+            this.whisperer = this.player1.placeCardInProvince('doji-whisperer', 'province 1');
+            this.whisperer.facedown = false;
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['akodo-toturi'],
+                defenders: ['righteous-magistrate']
+            });
+            this.player2.pass();
+        });
+
+        it('still puts the character into play', function () {
+            const honor = this.player1.honor;
+            this.player1.clickCard('a-cleansing-death');
+            this.player1.clickCard(this.challenger);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.location).toBe('play area');
+            expect(this.player1.honor).toBe(honor);
+        });
+    });
+});

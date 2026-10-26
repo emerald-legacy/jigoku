@@ -61,6 +61,26 @@ describe('Asako Togama', function() {
             expect(this.getChatLogs(5)).toContain('player1 takes 2 fate from Void Ring');
         });
 
+        it('should give the taken ring the returned ring\'s conflict type', function() {
+            this.player1.claimRing('air');
+            this.game.rings.air.conflictType = 'political';
+            this.game.rings.void.conflictType = 'military';
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.togama],
+                defenders: [],
+                type: 'military',
+                ring: 'water'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.togama);
+            this.player1.clickRing('void');
+            this.player1.clickRing('air');
+            expect(this.game.rings.void.isUnclaimed()).toBe(false);
+            expect(this.game.rings.void.conflictType).toBe('political');
+        });
+
         it('should not work while not participating', function() {
             this.player1.claimRing('air');
             this.noMoreActions();

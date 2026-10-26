@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location, Players, Stage } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
-import { gainHonor, joint, putIntoPlay } from '../../../GameActions/GameActions.js';
+import { putIntoPlay } from '../../../GameActions/GameActions.js';
 
 export default class ACleansingDeath extends DrawCard {
     static id = 'a-cleansing-death';
@@ -41,12 +41,8 @@ export default class ACleansingDeath extends DrawCard {
                 },
                 location: Location.Provinces,
                 controller: Players.Self
-            }, joint([
-                putIntoPlay(),
-                gainHonor((context) => ({
-                    target: context.player
-                }))
-            ]))
+            }, putIntoPlay())
+            .gainHonor()
             .chatText('put {0} into play and gain 1 honor')
             .cannotTargetFirst();
     }

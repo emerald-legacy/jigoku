@@ -8,7 +8,7 @@ class ShinjoAltansarnai extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Discard a character')
             .when({
-                onBreakProvince: (event, context) => event.breaker === context.player && event.conflict?.conflictType === ConflictType.Military && context.source.isAttacking()
+                onBreakProvince: (event, context) => event.breaker === context.player && event.conflict?.conflictType === ConflictType.Military && context.source.isParticipating()
             })
             .target({
                 activePromptTitle: 'Choose a character to discard',

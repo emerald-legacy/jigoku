@@ -11,13 +11,10 @@ export default class SupportingCast extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Give +3 military to a character')
             .when({
-                onInitiateAbilityEffects: (event, context) => {
-                    return (
-                        context.game.isDuringConflict(ConflictType.Military) &&
-                        event.cardTargets.some((card) => card.type === CardType.Character && card.controller === context.player)
-                    );
-                }
+                onInitiateAbilityEffects: (event, context) =>
+                    event.cardTargets.some((card) => card.type === CardType.Character && card.controller === context.player)
             })
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
             .target({
                 activePromptTitle: 'Choose a character to give +3 military skill',
                 cardType: CardType.Character,

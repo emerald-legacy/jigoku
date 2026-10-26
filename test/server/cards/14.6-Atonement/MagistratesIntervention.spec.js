@@ -280,3 +280,56 @@ describe('Magistrate\'s Intervention and a redirected dishonor', function() {
         });
     });
 });
+
+describe('Magistrate\'s Intervention on your own attacker', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger', 'kakita-yoshi']
+                },
+                player2: {
+                    inPlay: ['akodo-toturi', 'doji-whisperer'],
+                    hand: ['magistrate-s-intervention']
+                }
+            });
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.resolveConflict = () => {
+                this.noMoreActions();
+                for(let i = 0; i < 4; i++) {
+                    for(const player of [this.player1, this.player2]) {
+                        const prompt = player.currentPrompt();
+                        if(prompt.buttons.some((button) => button.text === 'Don\'t resolve')) {
+                            player.clickPrompt('Don\'t resolve');
+                        } else if(prompt.menuTitle.startsWith('Do you wish to discard')) {
+                            player.clickPrompt('No');
+                        } else if(prompt.menuTitle.startsWith('Any reactions')) {
+                            player.clickPrompt('Pass');
+                        }
+                    }
+                }
+                if(![this.player1, this.player2].some((player) => player.currentPrompt().menuTitle === 'Choose an elemental ring')) {
+                    this.noMoreActions();
+                }
+            };
+        });
+
+        it('should not announce a second dishonor', function() {
+            this.noMoreActions();
+            this.initiateConflict({ attackers: ['doji-challenger'], defenders: [], type: 'military', ring: 'air' });
+            this.resolveConflict();
+            this.initiateConflict({ attackers: ['akodo-toturi'], defenders: [], type: 'military', ring: 'earth' });
+            this.resolveConflict();
+            this.initiateConflict({ attackers: ['kakita-yoshi'], defenders: [], type: 'political', ring: 'fire', province: this.player2.provinces['province 2'].provinceCard });
+            this.resolveConflict();
+            this.initiateConflict({ attackers: [this.whisperer], defenders: [], type: 'political', ring: 'water', province: this.player1.provinces['province 2'].provinceCard });
+
+            this.player1.pass();
+            this.player2.clickCard('magistrate-s-intervention');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player2 plays Magistrate\'s Intervention to dishonor Doji Whisperer');
+        });
+    });
+});
