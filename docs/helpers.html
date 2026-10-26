@@ -503,26 +503,26 @@ this.action('Reveal cards and take ones matching named type')
   </div>
 
   <div class="ref" id="he-playableFromUnderneath" data-name="playableFromUnderneath">
-    <h3><code>playableFromUnderneath(card, match?)</code> <span class="kind">Persistent effect properties</span> <a class="anchor" href="#he-playableFromUnderneath">#</a></h3>
-    <p>"You may play each card underneath it as if it were in your hand." Returns the properties for <code>this.persistentEffect(…)</code>: while <code>card</code> is in play, its controller can play the cards underneath it that pass <code>match</code>.</p>
+    <h3><code>playableFromUnderneath(match?)</code> <span class="kind">Persistent effect properties</span> <a class="anchor" href="#he-playableFromUnderneath">#</a></h3>
+    <p>"You may play each card underneath it as if it were in your hand." Returns the properties for <code>this.persistentEffect(…)</code>: while the card with the effect is in play, its controller can play the cards underneath it that pass <code>match</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>required</td><td>The card the others are underneath (<code>this</code>).</td></tr>
         <tr><td><code>match</code></td><td><code>(underneath: BaseCard) =&gt; boolean</code></td><td>every card</td><td>Which cards underneath may be played, for example Kihō only.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Cards underneath a card are in <code>Location.Underneath</code> with <code>host</code> set to it: <code>underneath.isUnderneath(card)</code>. <code>cardsUnderneath(card)</code> lists them.</li>
-      <li>Spread the result to add a condition: <code>this.persistentEffect({ condition: …, ...playableFromUnderneath(this) })</code>.</li>
+      <li>The card is the effect's <code>context.source</code>, not the card that wrote it: a copy or a card that gained the effect (Contemplative Wisdom) offers the cards underneath itself, to its own controller.</li>
+      <li>Spread the result to add a condition: <code>this.persistentEffect({ condition: …, ...playableFromUnderneath() })</code>.</li>
     </ul>
     <pre><code>// Togashi Tsurumi: … You may play Kihō cards under this character as if they were in your hand.
-this.persistentEffect(playableFromUnderneath(this, (card) =&gt; card.hasTrait(Trait.Kiho)));
+this.persistentEffect(playableFromUnderneath((card) =&gt; card.hasTrait(Trait.Kiho)));
 
 // Daidoji Uji: While this character is honored, you may play each card underneath it as if it were in your hand. …
 this.persistentEffect({
     condition: (context) =&gt; context.source.isHonored,
-    ...playableFromUnderneath(this)
+    ...playableFromUnderneath()
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/DaidojiUji2.ts">Daidoji Uji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Dragon/TogashiTsurumi.ts">Togashi Tsurumi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Crane/KakitaTaneharu.ts">Kakita Taneharu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Unicorn/SandRoadMerchant.ts">Sand Road Merchant</a> (5 card files)</p>
   </div>
@@ -833,7 +833,7 @@ return controlsParticipating(context.player, Trait.Scout, Trait.Shinobi) ? -2 : 
     </table>
     <pre><code>// Togashi Tsurumi: This character gets +1[conflict-military] and +1[conflict-political] for each card under it. …
 this.persistentEffect({
-    effect: modifyBothSkills(() =&gt; countCardsUnderneath(this))
+    effect: modifyBothSkills((card) =&gt; countCardsUnderneath(card))
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Dragon/TogashiTsurumi.ts">Togashi Tsurumi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Neutral/Stowaway.ts">Stowaway</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Scorpion/DisloyalOathkeeper.ts">Disloyal Oathkeeper</a></p>
   </div>
@@ -1111,6 +1111,7 @@ class ThirdTowerGuard extends DrawCard {
     </table>
     <ul class="edge">
       <li><code>false</code> when the player has no role. It doesn't check who claimed the ring: add <code>event.player === context.player</code>.</li>
+      <li><code>player.role.getElement()</code> gives the same elements as a list (Venerable Fortunist, Unveiled Destiny): every element trait of the role card, so all five for an "Allied with the &lt;Clan&gt;" role.</li>
     </ul>
     <pre><code>// Keeper Initiate: Reaction: After you claim a ring that matches the element of your role – put this character into play
 // from your dynasty discard pile or provinces. Then, put 1 fate on this character.
@@ -1242,7 +1243,7 @@ this.action('Gain abilities from a character in your discard pile')
     .cost(costs.sacrificeSelf())
     .target({ … }, cardLastingEffect((context) =&gt; ({
         target: capturedParent(context) ?? [],
-        effect: context.target ? gainAllAbilities(context.target) : []
+        effect: context.target ? gainPrintedAbilities(context.target) : []
     })))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/SteedOfTheSteppes.ts">Steed of the Steppes</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Lion/SpiritOfValor.ts">Spirit of Valor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Neutral/AyubunePilot.ts">Ayubune Pilot</a> (5 card files)</p>
   </div>
@@ -1434,7 +1435,7 @@ event.card.hasEveryTrait(Trait.Fire, Trait.Spell)</code></pre>
 
   <div class="ref" id="q-hasKeyword" data-name="hasKeyword">
     <h3><code>card.hasKeyword(keyword)</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasKeyword">#</a></h3>
-    <p>True if the card currently has the keyword (covert, pride, sincerity, …): printed or gained, and not lost.</p>
+    <p>True if the card currently has the keyword (a <code>PrintedKeyword</code>: covert, pride, sincerity, …): printed or gained, and not lost.</p>
     <ul class="edge">
       <li>A gained and a lost copy cancel out: the keyword counts if it was added more often than removed.</li>
       <li>A card that lost its gained abilities only keeps keywords from its own effects, including its printed ones.</li>
@@ -1499,7 +1500,7 @@ return defenders.filter((a) =&gt; a.sharesTrait(card));</code></pre>
     </ul>
     <pre><code>// Master of Bindings: Reaction: After a character an opponent controls with printed cost 3 or lower is readied - bow that character.
 card.isCharacter() &amp;&amp;</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CourtGames.ts">Court Games</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/CeaselessDuty.ts">Ceaseless Duty</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/PromisingHohei.ts">Promising Hohei</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/LiaisonToTheAncestors.ts">Liaison to the Ancestors</a> (55 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CourtGames.ts">Court Games</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/CeaselessDuty.ts">Ceaseless Duty</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/PromisingHohei.ts">Promising Hohei</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/LiaisonToTheAncestors.ts">Liaison to the Ancestors</a> (71 card files)</p>
   </div>
 
   <div class="ref" id="q-isFaction" data-name="isFaction">
@@ -1614,7 +1615,10 @@ cardCondition: (card) =&gt; card.isFaction('lion') &amp;&amp; card.getBaseMilita
       </tbody>
     </table>
     <pre><code>// Bayushi Gensato: Action: During a conflict, initiate a [conflict-military] duel - resolve the duel, ignoring the skill modifiers of attachments …
-statistic: (card) =&gt; card.getMilitarySkillExcludingModifiers([EffectName.AttachmentMilitarySkillModifier, EffectName.AttachmentPoliticalSkillModifier])</code></pre>
+statistic: (card, duelRules) =&gt;
+    duelRules === 'printedSkill'
+        ? card.printedMilitarySkill
+        : card.getMilitarySkillExcludingModifiers([EffectName.AttachmentMilitarySkillModifier, EffectName.AttachmentPoliticalSkillModifier])</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/BayushiGensato.ts">Bayushi Gensato</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/ShoreOfTheAshenFlames.ts">Shore of the Ashen Flames</a></p>
   </div>
 
@@ -1630,10 +1634,9 @@ statistic: (card) =&gt; card.getMilitarySkillExcludingModifiers([EffectName.Atta
     <ul class="edge">
       <li>Always <code>false</code> for <code>DuelType.Glory</code> and for cards not printed as characters.</li>
     </ul>
-    <pre><code>// Spiderweb Passage: … choose a character on the enemy side with 0[conflict-military] or 0[conflict-political]. …
-(!card.hasDash(SkillType.Political) &amp;&amp; card.politicalSkill === 0) ||
-    (!card.hasDash(SkillType.Military) &amp;&amp; card.militarySkill === 0)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/MyAncestorsStrength.ts">My Ancestor's Strength</a>, and through <code>canSwitchSkills</code> and <code>copyBaseSkills</code></p>
+    <pre><code>// Castigated: If attached character's [conflict-political] skill is 0, discard it. (Do not discard if its skill is a dash.)
+condition: (context) =&gt; !!context.source.parentCharacter &amp;&amp; !context.source.parentCharacter.hasDash(SkillType.Political) &amp;&amp; context.source.parentCharacter.politicalSkill &lt; 1</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/MyAncestorsStrength.ts">My Ancestor's Strength</a>, and through <code>canSwitchSkills</code> and <code>copyBaseSkills</code></p>
   </div>
 
   <div class="ref" id="q-bowed" data-name="bowed">
@@ -1672,7 +1675,7 @@ target: context.source.getStatusToken(CharacterStatus.Honored),</code></pre>
     <h3><code>card.getTokenCount(type)</code>, <code>card.hasToken(type)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getTokenCount">#</a></h3>
     <p>How many tokens of <code>type</code> (<code>TokenType.Honor</code>, the only type) are on the card; <code>hasToken</code> is true for one or more. These are the honor tokens of holdings and provinces, not status tokens.</p>
     <pre><code>// Fortified Assembly: … This province gets +2 strength for each honor token on it. …
-effect: modifyProvinceStrength(() =&gt; this.getTokenCount(TokenType.Honor) * 2)</code></pre>
+effect: modifyProvinceStrength((_province, context) =&gt; context.source.getTokenCount(TokenType.Honor) * 2)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/FortifiedAssembly.ts">Fortified Assembly</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/EndlessArchives.ts">Endless Archives</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/PropitiousMarket.ts">Propitious Market</a> (5 card files)</p>
   </div>
 </section>
@@ -1710,7 +1713,7 @@ context.source.parentProvince?.isConflictProvince()</code></pre>
     </ul>
     <pre><code>// Niten: Action: During a conflict in which attached character is participating, return this attachment to your hand - put an attachment from your hand into play attached to the same character. (Max 1 per round.)
 cardCondition: (card, context) =&gt; card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.captureParentCost ?? undefined)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiMasanori.ts">Kitsuki Masanori</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/Kuro.ts">Kuro</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiMasanori.ts">Kitsuki Masanori</a></p>
   </div>
 
   <div class="ref" id="q-canBeAttacked" data-name="canBeAttacked">
@@ -2062,7 +2065,7 @@ context.player.moveCard(chosenProvince, attackedLocation);</code></pre>
     </ul>
     <pre><code>// Kaiu Scout: … Then you may turn any of them faceup.
 this.game.addMessage(msg`${context.player} turns ${chosen} faceup`);</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/UpholdingAuthority.ts">Upholding Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/GovernorsSpy.ts">Governor's Spy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/PalmStrike.ts">Palm Strike</a> (47 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/UpholdingAuthority.ts">Upholding Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/GovernorsSpy.ts">Governor's Spy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/PalmStrike.ts">Palm Strike</a> (52 card files)</p>
   </div>
 
   <div class="ref" id="q-conflictRecord" data-name="conflictRecord">
@@ -2455,7 +2458,7 @@ condition: (context) =&gt;
 
 <section class="group">
   <h3 class="group-title" id="q-group-ring">Ring</h3>
-  <p>Methods of <code>Ring</code>, on <code>event.ring</code>, <code>context.ring</code> (a ring target), <code>context.game.rings[element]</code> or a ring in a <code>ringCondition</code>. A ring also has the properties <code>element</code>, <code>conflictType</code>, <code>fate</code> and <code>claimedBy</code> (a player name).</p>
+  <p>Methods of <code>Ring</code>, on <code>event.ring</code>, <code>context.ring</code> (a ring target), <code>context.game.rings[element]</code> or a ring in a <code>ringCondition</code>. A ring also has the properties <code>element</code>, <code>conflictType</code>, <code>fate</code> and <code>claimedBy</code> (a player name, for the client state). Compare players with <code>ring.isClaimedBy(player)</code> (false for <code>undefined</code>) or read <code>ring.claimant</code> (the player, or <code>undefined</code> while unclaimed).</p>
 
   <div class="ref" id="q-canDeclare" data-name="canDeclare">
     <h3><code>ring.canDeclare(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-canDeclare">#</a></h3>
@@ -2528,7 +2531,7 @@ ringCondition: (ring) =&gt; ring.fate &gt;= 1 &amp;&amp; ring.isUnclaimed(),</co
     <pre><code>// Elemental Inversion: Action: During a conflict, choose a ring - move all fate from the chosen ring to the contested ring and switch them. …
 // RRG Rings: only rings in the attacking player's claimed or unclaimed pools
 ringCondition: (ring, context) =&gt; !ring.isContested() &amp;&amp; !ring.isRemovedFromGame() &amp;&amp;
-    (ring.isUnclaimed() || ring.claimedBy === context.game.currentConflict?.attackingPlayer.name)</code></pre>
+    (ring.isUnclaimed() || ring.isClaimedBy(context.game.currentConflict?.attackingPlayer))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/HenshinDisciple.ts">Henshin Disciple</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/EtherealDreamer.ts">Ethereal Dreamer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/ElementalInversion.ts">Elemental Inversion</a> (6 card files)</p>
   </div>
 </section>

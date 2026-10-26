@@ -56,7 +56,7 @@
     <li>Targets: <code>target()</code>, <code>targetCards()</code>, <code>ringTarget()</code>, <code>select()</code>, <code>selectFrom()</code>, <code>abilityTarget()</code>, <code>elementTarget()</code>, <code>tokenTarget()</code>.</li>
     <li>Effects: game actions (a shortcut such as <code>.bow()</code>, or <code>gameAction()</code>), <code>if()</code>/<code>ifAble()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>onResolve()</code>.</li>
     <li>Chat: <code>chatText()</code> on the ability, <code>message()</code> on a step.</li>
-    <li>Limits and flags: <code>limit()</code>, <code>max()</code>, <code>cannotTargetFirst()</code>, <code>firstPlayerChoosesFirst()</code>, <code>cannotBeMirrored()</code>, <code>notPrinted()</code>.</li>
+    <li>Limits and flags: <code>limit()</code>, <code>max()</code>, <code>cannotTargetFirst()</code>, <code>firstPlayerChoosesFirst()</code>, <code>cannotBeMirrored()</code>, <code>attachmentText()</code>.</li>
     <li>What comes next: a step with <code>then()</code>, <code>afterwards()</code>, <code>thenIf()</code> or <code>afterwardsIf()</code>, or <code>mayResolveAgain()</code>. A step is written in the same order, without the ability's own settings.</li>
 </ol>
 <p>The order matters. The builder fixes its types from left to right, so each call sees only what the calls before it declared. A <code>chatText()</code> after a <code>target()</code> knows the target's card type; one before it doesn't. The <a href="builder.html">ability builder</a> page documents every call.</p>

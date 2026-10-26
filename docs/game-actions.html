@@ -1947,13 +1947,14 @@ this.reaction('Resolve the ring effect')
       <tbody>
         <tr><td><code>target</code></td><td><code>Ring | Ring[]</code></td><td>the conflict's ring</td><td>The rings whose effects resolve.</td></tr>
         <tr><td><code>player</code></td><td><code>Player</code></td><td>the ability's player</td><td>Who resolves the effect.</td></tr>
-        <tr><td><code>optional</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The player may choose not to resolve it (a "Don't resolve" choice).</td></tr>
+        <tr><td><code>optional</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The player may choose not to resolve it (a "Don't resolve" choice). Only for a single ring: with several, each is always optional.</td></tr>
         <tr><td><code>physicalRing</code></td><td><code>Ring</code></td><td>none</td><td>The ring the effect comes from, when it differs (set by <code>resolveConflictRing</code>).</td></tr>
-        <tr><td><code>enforceOrderedResolution</code></td><td><code>boolean</code></td><td>none</td><td>With several rings, keep the given order.</td></tr>
+        <tr><td><code>enforceOrderedResolution</code></td><td><code>boolean</code></td><td>none</td><td>With several rings, resolve them in the given order, without an order prompt (Riddles of the Henshin).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>Several rings: one event opens a window where the effects resolve one at a time. They are ordered by the rings' priority (reversed when the ability's player is not the first player), unless <code>enforceOrderedResolution</code> keeps the given order. The action's own <code>optional</code> applies to each of them.</li>
+      <li>Several rings (RRG Ring Effects): one event opens a window where the resolving player (<code>player</code>) resolves the effects one at a time, each in full. They are ordered by the rings' priority (reversed when that player is not the first player); with that player's "order forced abilities" setting on, they choose the order. <code>enforceOrderedResolution</code> keeps the given order without a prompt.</li>
+      <li>Several rings: each effect may be passed ("Don't resolve"), whatever <code>optional</code> says; Earth asks too.</li>
       <li>Several rings: the event counts as resolved in full (for <code>then()</code>) unless one of the ring effects was cancelled; a replaced one counts as resolved (Enlightenment).</li>
       <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled</code>, before its would-interrupt window (ruling #636: a cancelled ring effect can't be replaced). Raises <code>onResolveRingElement</code>.</li>
       <li>Chat: <code>resolve {0} effect</code>.</li>
@@ -1984,7 +1985,7 @@ this.action('Switch a claimed ring with an unclaimed one')
     .gameAction(joint([
         selectRing((context) =&gt; ({
             activePromptTitle: 'Choose a ring to return',
-            ringCondition: (ring) =&gt; ring.claimedBy === context.player.name,
+            ringCondition: (ring) =&gt; ring.isClaimedBy(context.player),
             message: (context, ring) =&gt; msg`${context.player} returns ${ring}`,
             gameAction: returnRing()
         })),
@@ -2201,9 +2202,14 @@ this.action('Flip the Imperial Favor')
         condition: context.player.imperialFavor !== '',
         trueGameAction: chooseAction({
             choices: {
-                'Discard the Imperial Favor': joint([
+                'Discard the Imperial Favor': sequential([
                     loseImperialFavor({ target: context.player }),
-                    honor({ target: context.target })
+                    conditional({
+                        // "to": only if the favor was discarded (Ikoma Yumiko's Dagger can replace it)
+                        condition: (context) =&gt; context.events.some((event) =&gt;
+                            event.is(EventName.OnDiscardFavor) &amp;&amp; event.isFullyResolved()),
+                        trueGameAction: honor({ target: context.target })
+                    })
                 ]),
                 Done: noAction()
             }
@@ -2231,7 +2237,7 @@ this.action('Flip the Imperial Favor')
 this.action('Return player\'s rings')
     .gameAction(performGloryCount({
         gameAction: (winner) =&gt; (winner &amp;&amp; winner.opponent)
-            ? returnRing({ target: winner.opponent.getClaimedRings().filter((ring) =&gt; ring.claimedBy === winner.opponent?.name) })
+            ? returnRing({ target: winner.opponent.getClaimedRings().filter((ring) =&gt; ring.isClaimedBy(winner.opponent)) })
             : noAction()
     }));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SeveredFromTheStream.ts">Severed from the Stream</a></p>
@@ -2528,7 +2534,7 @@ this.action('Stop characters from triggering abilities')
       <li>Builder shortcut: <code>.duelLastingEffect(…)</code>.</li>
     </ul>
     <pre><code>// Shosuro Technique: Duel Challenge: If you were challenged - characters do not contribute their printed statistic to the resolution of this duel.
-this.duelChallenge('Apply status tokens to the duel', (duel, context) =&gt; duel.challengingPlayer &amp;&amp; duel.challengingPlayer.opponent === context.player)
+this.duelChallenge('Ignore printed skill in the duel', (duel, context) =&gt; duel.challengingPlayer &amp;&amp; duel.challengingPlayer.opponent === context.player)
     .duelLastingEffect({
         effect: duelIgnorePrintedSkill()
     })
@@ -2722,7 +2728,7 @@ this.action('Move a character into or out of the conflict')
                     return false;
                 }
                 const first = target[0];
-                return first instanceof DrawCard &amp;&amp; first.inConflict;
+                return first.isCard() &amp;&amp; first.isDrawCard() &amp;&amp; first.inConflict;
             },
             trueGameAction: sendHome(),
             falseGameAction: moveToConflict()
@@ -2812,7 +2818,7 @@ this.conflictAction('Switch 2 characters you control', { evenFromHome: true })
             moveToConflict()
         ])
     ]))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Lion/SupplyOfficer.ts">Supply Officer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Lion/DeedsNotWords.ts">Deeds, not Words</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/FalseLoyalties.ts">False Loyalties</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiSeiji.ts">Kitsuki Seiji</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Lion/SupplyOfficer.ts">Supply Officer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Unicorn/IuchiHatsue.ts">Iuchi Hatsue</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/FalseLoyalties.ts">False Loyalties</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiSeiji.ts">Kitsuki Seiji</a></p>
   </div>
 <div class="ref" id="ga-multiple" data-name="multiple">
     <h3><code>multiple(gameActions)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-multiple">#</a></h3>
@@ -2883,7 +2889,7 @@ this.action('Remove a ring from the unclaimed ring pool')
     <pre><code>// Deeds, not Words: … You may discard the Imperial Favor to honor that character. …
 chooseAction({
     choices: {
-        'Discard the Imperial Favor': joint([…]),
+        'Discard the Imperial Favor': sequential([…]),
         Done: noAction()
     }
 })</code></pre>

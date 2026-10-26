@@ -104,13 +104,13 @@ this.whileAttached({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>keyword</code></td><td><code>string</code></td><td>required</td><td>The keyword in lower case: <code>'pride'</code>, <code>'covert'</code>, <code>'sincerity'</code>, <code>'ancestral'</code>, … A fixed value.</td></tr>
+        <tr><td><code>keyword</code></td><td><code>PrintedKeyword</code></td><td>required</td><td>The keyword in lower case: <code>'pride'</code>, <code>'covert'</code>, <code>'sincerity'</code>, <code>'ancestral'</code>, … A fixed value; the type (<code>KeywordParser.ts</code>) only accepts keywords the engine knows.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li><code>hasKeyword(k)</code> counts the <code>addKeyword</code> effects for <code>k</code> and the <code>loseKeyword</code> effects for it, and is true while there are more added than lost. Two copies of the keyword survive one <code>loseKeyword</code>.</li>
       <li>Printed keywords are applied the same way: the engine gives every card an <code>addKeyword</code> persistent effect per printed keyword. Blanking the card removes those, not keywords other cards give it.</li>
-      <li><code>hasKeyword</code> lower-cases the name it is asked about, not the stored value, so pass the keyword in lower case.</li>
+      <li><code>hasKeyword</code> takes a <code>PrintedKeyword</code> too; it still lower-cases the name it is asked about (not the stored value).</li>
       <li>While the card has <code>loseGainedAbilities</code>, only keywords from its own effects count. <code>loseAllNonKeywordAbilities</code> keeps keyword effects.</li>
     </ul>
     <pre><code>// Magnificent Kimono: Attached character gains pride. (…)
@@ -148,9 +148,9 @@ this.whileAttached({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Printed actions and triggered abilities can't be used (their requirement check returns <code>Blocker.Blanked</code>); the card's own persistent effects stop, and with them its printed keywords.</li>
+      <li>Printed actions and triggered abilities can't be used (their requirement check returns <code>Blocker.Blanked</code>), including text the card has as an attachment (<code>.attachmentText()</code>: Serene Ise Zumi); the card's own persistent effects stop, and with them its printed keywords.</li>
       <li>Abilities it gained from other cards (<code>gainAbility</code>) keep working, and effects other cards put on it stay. Use <code>loseGainedAbilities</code> for gained ones.</li>
-      <li>A blank card ignores its own "No attachments [except …]" restriction (<code>allowAttachment</code>). One it has from a copied card (<code>copyCard</code>) or a card whose abilities it gained (<code>gainAllAbilities</code>) still applies, unless it also has <code>loseGainedAbilities</code>; each such restriction must allow the attachment.</li>
+      <li>A blank card ignores its own "No attachments [except …]" restriction (<code>allowAttachment</code>). One it has from a copied card (<code>copyCard</code>) or a card whose abilities it gained (<code>gainPrintedAbilities</code>) still applies, unless it also has <code>loseGainedAbilities</code>; each such restriction must allow the attachment.</li>
       <li>One <code>blank</code> is enough; any copy with <code>blankTraits</code> true removes the traits. <code>copyCard</code> and <code>copyProvince</code> also make the card count as blank (<code>isBlank()</code>).</li>
       <li>A province also counts as blank while it is broken or dishonored.</li>
     </ul>
@@ -202,7 +202,7 @@ this.action('Turn attachment into character')
     </table>
     <ul class="edge">
       <li><code>copyCard</code> also takes the other card's printed cost, skills and glory: <code>getCost()</code>, the base skills and the base glory use them. The fields <code>printedCost</code>, <code>printedMilitarySkill</code> and <code>printedGlory</code> keep the card's own values. <code>copyProvince</code> takes the printed strength (<code>printedStrength</code> too, which Opportunistic Rustler and Paths Not Taken read) and the province elements. Modifiers on the card still apply on top.</li>
-      <li>The copied abilities are read when <code>copyCard(…)</code> is called. Copied actions and triggered abilities get fresh limits; copied persistent effects only start if their location fits the card (play area for a character, provinces for a holding or province, or <code>Location.Any</code>), and stop while the card has <a href="#ef-loseGainedAbilities"><code>loseGainedAbilities</code></a>.</li>
+      <li>The copied abilities are read when <code>copyCard(…)</code> is called (<code>Effects/CarriedAbilities.ts</code>, shared with <code>gainPrintedAbilities</code>). Copied actions and triggered abilities get fresh limits; keyword reactions (Courtesy, Pride, Sincerity) aren't copied: the card's own keywords trigger them; copied persistent effects only start if their location fits the card (play area for a character, provinces for a holding or province, or <code>Location.Any</code>), and stop while the card has <a href="#ef-loseGainedAbilities"><code>loseGainedAbilities</code></a>.</li>
       <li>The copied card's "No attachments [except …]" restriction applies (<code>allowAttachment</code>), unless the card loses gained abilities; the card's own no longer does. A copied holding uses the copied card's printed province strength bonus (<code>SkillCalculator</code>).</li>
       <li>The card's own printed abilities are blanked (<code>isBlank()</code> is true), except its own keyword reactions. Abilities and effects from other cards stay.</li>
       <li>With several copy effects, the most recent one wins.</li>
@@ -256,7 +256,7 @@ this.action('Choose a character to copy')
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>keyword</code></td><td><code>string</code></td><td>required</td><td>The keyword in lower case, e.g. <code>'covert'</code>, <code>'sincerity'</code>.</td></tr>
+        <tr><td><code>keyword</code></td><td><code>PrintedKeyword</code></td><td>required</td><td>The keyword in lower case, e.g. <code>'covert'</code>, <code>'sincerity'</code>.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -640,6 +640,7 @@ this.dire({
     <ul class="edge">
       <li>A conflict effect always applies to the current conflict and does nothing outside one; <code>match</code> is ignored. Use it in a <code>persistentEffect</code> with a <code>condition</code>, or in <code>conflictLastingEffect</code>.</li>
       <li>With several effects, a character is left out if any of them matches it.</li>
+      <li>The effect is on the conflict, not the characters (ruling #946): an immune character (Reclusive Zokujin in an Earth conflict) doesn't count either.</li>
     </ul>
     <pre><code>// Swift Magistrate: While this character is attacking, each other character that has 1 or more fate
 // on it does not count its skill toward the resolution of this conflict.
@@ -769,10 +770,15 @@ this.persistentEffect({
     condition: (context) =&gt;
         context.source.isAtHome() &amp;&amp;
         context.player.cardsInPlay.some((card) =&gt; card.isParticipating() &amp;&amp; card.isHonored),
-    effect: changePlayerSkillModifier((_player, context) =&gt;
-        context.game.currentConflict?.conflictType === ConflictType.Military
-            ? this.getBaseMilitarySkill()
-            : this.getBasePoliticalSkill())
+    effect: changePlayerSkillModifier((_player, context) =&gt; {
+        const source = context.source;
+        if(!source.isDrawCard()) {
+            return 0;
+        }
+        return context.game.currentConflict?.conflictType === ConflictType.Military
+            ? source.getBaseMilitarySkill()
+            : source.getBasePoliticalSkill();
+    })
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/CantorOfGales.ts">Cantor of Gales</a></p>
   </div>
@@ -1081,19 +1087,18 @@ cardLastingEffect((context) =&gt; ({
 <section class="group">
 <h3 class="group-title" id="ef-group-2-abilities">Copying and losing abilities, extra uses</h3>
 <p>Card effects that give a card the abilities of other cards, take abilities away, or change how often an ability can be used. Gained abilities are not printed (<code>printedAbility: false</code>): <code>blank()</code> doesn't stop them, <code>loseGainedAbilities()</code> does.</p>
-<div class="ref" id="ef-gainAllAbilities" data-name="gainAllAbilities">
-    <h3><code>gainAllAbilities(card, printedOnly?)</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-gainAllAbilities">#</a></h3>
-    <p>The target gains each ability of another card: "gains each printed ability of the chosen character".</p>
+<div class="ref" id="ef-gainPrintedAbilities" data-name="gainPrintedAbilities">
+    <h3><code>gainPrintedAbilities(card)</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-gainPrintedAbilities">#</a></h3>
+    <p>The target gains each printed ability of another card: "gains each printed ability of the chosen character", "switch the printed abilities".</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>required</td><td>The card whose abilities are copied.</td></tr>
-        <tr><td><code>printedOnly</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Copy only the actions and triggered abilities marked as printed (not those added with <code>.notPrinted()</code>).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>The abilities are read when <code>gainAllAbilities(card)</code> is called: actions, triggered abilities except keyword ones (Courtesy, Pride, Sincerity are not doubled), and persistent effects whose location is the play area or any.</li>
-      <li><code>printedOnly</code> filters actions and triggered abilities only; persistent effects are always copied (the filter is commented out in <code>Effects/Library/gainAllAbilities.ts</code>).</li>
+      <li>The abilities are read when <code>gainPrintedAbilities(card)</code> is called: printed actions and triggered abilities except keyword ones (Courtesy, Pride, Sincerity are not doubled), and persistent effects whose location is the play area or any.</li>
+      <li>Text the card has as an attachment (<code>.attachmentText()</code>) is not printed (<code>isPrintedAbility()</code>) and isn't carried; persistent effects always are (<code>Effects/CarriedAbilities.ts</code>).</li>
       <li>The copied abilities have their own limits. They keep working if the target is blanked, and stop under <a href="#ef-loseGainedAbilities"><code>loseGainedAbilities</code></a> (persistent effects included). The card's "No attachments [except …]" restriction is gained as well (<code>allowAttachment</code>).</li>
       <li>Apply it to one card: the copied persistent effects keep a single reference, so a second target would overwrite the first one's.</li>
     </ul>
@@ -1108,7 +1113,7 @@ this.action('Gain abilities from a character in your discard pile')
         cardCondition: (card) =&gt; card.isFaction('lion')
     }, cardLastingEffect((context) =&gt; ({
         target: capturedParent(context) ?? [],
-        effect: context.target ? gainAllAbilities(context.target) : []
+        effect: context.target ? gainPrintedAbilities(context.target) : []
     })))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Lion/SpiritOfValor.ts">Spirit of Valor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ContemplativeWisdom.ts">Contemplative Wisdom</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/EbbAndFlow.ts">Ebb and Flow</a></p>
   </div>
@@ -1200,7 +1205,7 @@ cardLastingEffect((context) =&gt; ({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Only abilities with <code>printedAbility</code> count, and only for the effect source's controller. Each copy adds 1.</li>
+      <li>Only printed abilities count (<code>isPrintedAbility()</code>: not <code>.attachmentText()</code> text), and only for the effect source's controller. Each copy adds 1.</li>
     </ul>
     <pre><code>// Centered Breath: Action: During a conflict, choose a participating Monk character – You may trigger each ability printed on that character an additional time this round (or specified period). …
 .target({
@@ -1233,9 +1238,9 @@ this.dire({
     <h3><code>loseGainedAbilities()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-loseGainedAbilities">#</a></h3>
     <p>The card loses all gained abilities; printed ones are kept. "With Air affinity, it also loses all gained abilities."</p>
     <ul class="edge">
-      <li>Every action and triggered ability that is not printed and not a keyword ability stops working (<code>Blocker.Blanked</code>): gained ones, copied ones (<code>copyCard</code>, <code>gainAllAbilities</code>) and the card's own <code>.notPrinted()</code> ones.</li>
-      <li>Persistent effects granted with <code>gainAbility</code> stop too, and so do those copied by <code>copyCard</code> or <code>gainAllAbilities</code> (their copies carry a condition that checks for this effect).</li>
-      <li>A "No attachments [except …]" restriction from a copied card or one gained with <code>gainAllAbilities</code> no longer applies (<code>allowAttachment</code>).</li>
+      <li>Every action and triggered ability that is not printed and not a keyword ability stops working (<code>Blocker.Blanked</code>): gained ones and copied ones (<code>copyCard</code>, <code>gainPrintedAbilities</code>). The card's own <code>.attachmentText()</code> text is printed text: <code>blank()</code> stops it, this effect doesn't.</li>
+      <li>Persistent effects granted with <code>gainAbility</code> stop too, and so do those copied by <code>copyCard</code> or <code>gainPrintedAbilities</code> (their copies carry a condition that checks for this effect).</li>
+      <li>A "No attachments [except …]" restriction from a copied card or one gained with <code>gainPrintedAbilities</code> no longer applies (<code>allowAttachment</code>).</li>
       <li>Keywords: only <code>addKeyword</code> effects whose source is the card itself still count, so keywords from attachments and other cards are lost.</li>
       <li>Pair it with <code>blank()</code> for "loses all abilities".</li>
     </ul>
@@ -1256,7 +1261,7 @@ this.whileAttached({
     <ul class="edge">
       <li>Use it together with <code>canPlayFromOutOfPlay</code>; on its own it lets nothing be played.</li>
       <li>A detached effect: on apply it calls <code>registerEvents()</code> on each of the card's triggered abilities (<code>getReactions()</code>: reactions and interrupts). Unapply does nothing.</li>
-      <li><code>playableFromUnderneath(card, match?)</code> in <code>server/game/cards/cardsUnderneath.ts</code> builds the usual pair for cards underneath another card.</li>
+      <li><code>playableFromUnderneath(match?)</code> in <code>server/game/cards/cardsUnderneath.ts</code> builds the usual pair for cards underneath another card.</li>
     </ul>
     <pre><code>// Exposed Courtyard: … Choose an event in your conflict discard pile - you may play that card as if it were in your hand until the end of the conflict. …
 cardLastingEffect({
@@ -1459,7 +1464,7 @@ this.action('Stop characters from triggering abilities')
         })
     })
     .chatText('make it so that characters cannot trigger abilities this conflict');</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/ExemplaryEtiquette.ts">Exemplary Etiquette</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Crab/AshenFlamePlateau.ts">Ashen Flame Plateau</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/ExemplaryEtiquette.ts">Exemplary Etiquette</a></p>
   </div>
 <div class="ref" id="ef-doesNotBow" data-name="doesNotBow">
     <h3><code>doesNotBow()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-doesNotBow">#</a></h3>
@@ -2339,8 +2344,7 @@ this.persistentEffect({
     <pre><code>// Castle of the Forgotten: Reaction:  After you break a province, bow this stronghold - each conflict declared this round is [conflict-military] instead of its normal type.
 this.reaction('Make all conflicts military')
     .when({
-        // RRG: a province broken outside conflict resolution is broken by its controller's opponent
-        onBreakProvince: (event, context) =&gt; event.card.controller !== context.player
+        onBreakProvince: (event, context) =&gt; event.breaker === context.player
     })
     .cost(costs.bowSelf())
     .playerLastingEffect({
@@ -2845,6 +2849,7 @@ this.legendary(1);</code></pre>
     <ul class="edge">
       <li>The target is a player: in a <code>persistentEffect</code> the default <code>targetController</code> is <code>Players.Self</code>; a card that reduces its own cost needs <code>location: Location.Any</code> (it is in hand) and <code>match: (card, source) =&gt; card === source</code>.</li>
       <li>A detached effect: each application adds its own reducer; copies add up. <code>amount: 0</code> becomes 1.</li>
+      <li>A function <code>amount</code> gets the player who has the reducer, i.e. the one playing the card; it may return 0. "With Earth affinity, costs 1 less" (Grasp of Earth 2) reads that player's affinity there, with <code>targetController: Players.Any</code>: <code>targetCondition</code>'s context is the card's controller, who isn't always the player playing it (Trading on the Sand Road).</li>
       <li>It reduces the card's cost (<code>card.getCost()</code>), i.e. playing cards, not ability costs.</li>
     </ul>
     <pre><code>// Bamboo Tattoo: Monk character you control only. Costs 1 less to play on a character with printed cost 3 or less. …
@@ -2958,7 +2963,7 @@ this.persistentEffect({
     <ul class="edge">
       <li>The card counts as being in a playable location for that player; with several effects the most recent one's <code>playType</code> is used.</li>
       <li>The effect must reach the card where it is: set <code>targetLocation</code> (<code>Location.ConflictDeck</code>, <code>Location.ConflictDiscardPile</code>, <code>Location.Underneath</code> for cards underneath).</li>
-      <li>Reactions and interrupts on events played this way also need <a href="#ef-registerToPlayFromOutOfPlay"><code>registerToPlayFromOutOfPlay()</code></a>. The helper <code>playableFromUnderneath(card, match?)</code> in <code>cards/cardsUnderneath.ts</code> builds both.</li>
+      <li>Reactions and interrupts on events played this way also need <a href="#ef-registerToPlayFromOutOfPlay"><code>registerToPlayFromOutOfPlay()</code></a>. The helper <code>playableFromUnderneath(match?)</code> in <code>cards/cardsUnderneath.ts</code> builds both.</li>
     </ul>
     <pre><code>// Bayushi Kachiko: During [conflict-political] conflicts in which this character is participating, you may play each
 // event in your opponent's discard pile as if it were in your hand. … You cannot play more than 3 cards per round this way.
@@ -3356,7 +3361,7 @@ this.persistentEffect({
     </ul>
     <pre><code>// Shosuro Technique: Duel Challenge: If you were challenged - characters do not contribute their printed statistic to
 // the resolution of this duel. …
-this.duelChallenge('Apply status tokens to the duel', (duel, context) =&gt; duel.challengingPlayer &amp;&amp; duel.challengingPlayer.opponent === context.player)
+this.duelChallenge('Ignore printed skill in the duel', (duel, context) =&gt; duel.challengingPlayer &amp;&amp; duel.challengingPlayer.opponent === context.player)
     .duelLastingEffect({
         effect: duelIgnorePrintedSkill()
     })

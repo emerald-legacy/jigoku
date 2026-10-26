@@ -488,7 +488,7 @@ this.declareAbilities(() =&gt; {
     <li>Targets</li>
     <li>Effects: game actions, <code>if()</code>/<code>ifAble()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>onResolve()</code></li>
     <li>Chat: <code>chatText()</code> on the ability, <code>message()</code> on a step</li>
-    <li><code>limit()</code> / <code>max()</code>, <code>cannotTargetFirst()</code>, <code>firstPlayerChoosesFirst()</code>, <code>cannotBeMirrored()</code>, <code>notPrinted()</code></li>
+    <li><code>limit()</code> / <code>max()</code>, <code>cannotTargetFirst()</code>, <code>firstPlayerChoosesFirst()</code>, <code>cannotBeMirrored()</code>, <code>attachmentText()</code></li>
     <li><code>then()</code> and the other next steps; a following step uses the same order, without the ability's settings</li>
   </ol>
   <p>Most of this order is a convention for readability. The code enforces some of it:</p>
@@ -496,7 +496,7 @@ this.declareAbilities(() =&gt; {
     <li>Types flow left to right: a callback only sees the targets, selects and costs declared before it, so targets and costs come before the game actions, <code>handler()</code>, <code>chatText()</code> and steps that read them.</li>
     <li>Targets come before <code>if()</code>/<code>ifAble()</code>: a target after them throws <code>"targets come before if()"</code>.</li>
     <li>Each setting is given once: a second call throws <code>"&lt;call&gt; is already set"</code>.</li>
-    <li>The ability's own settings (<code>condition</code>, <code>ifCondition</code>, <code>playOnlyIf</code>, <code>location</code>, <code>phase</code>, <code>evenDuringDynasty</code>, <code>canTriggerOutsideConflict</code>, <code>conflictProvinceCondition</code>, <code>anyPlayer</code>, <code>collectiveTrigger</code>, <code>initiateDuel</code>, <code>limit</code>, <code>max</code>, <code>cannotTargetFirst</code>, <code>firstPlayerChoosesFirst</code>, <code>cannotBeMirrored</code>, <code>notPrinted</code>) can't be set on a step: after <code>then()</code> they throw <code>"&lt;call&gt; belongs to the ability, before then()"</code>. A step has its own costs, targets, game actions, <code>if()</code>, <code>onAffinity()</code>, <code>handler()</code>, <code>onResolve()</code>, <code>message()</code> and next step.</li>
+    <li>The ability's own settings (<code>condition</code>, <code>ifCondition</code>, <code>playOnlyIf</code>, <code>location</code>, <code>phase</code>, <code>evenDuringDynasty</code>, <code>canTriggerOutsideConflict</code>, <code>conflictProvinceCondition</code>, <code>anyPlayer</code>, <code>collectiveTrigger</code>, <code>initiateDuel</code>, <code>limit</code>, <code>max</code>, <code>cannotTargetFirst</code>, <code>firstPlayerChoosesFirst</code>, <code>cannotBeMirrored</code>, <code>attachmentText</code>) can't be set on a step: after <code>then()</code> they throw <code>"&lt;call&gt; belongs to the ability, before then()"</code>. A step has its own costs, targets, game actions, <code>if()</code>, <code>onAffinity()</code>, <code>handler()</code>, <code>onResolve()</code>, <code>message()</code> and next step.</li>
   </ul>
 </section>
 
@@ -801,8 +801,8 @@ this.action('Ready a character')
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>abilityCondition</code></td><td><code>(ability: CardAbility) =&gt; boolean</code></td><td>any</td><td>Which abilities can be chosen (<code>ability.printedAbility</code> for "printed", not added with <code>.notPrinted()</code>).</td></tr>
-        <tr><td><code>printedOn</code></td><td><code>boolean</code></td><td><code>false</code></td><td>"Printed on" the card: offer only the card's own printed actions and reactions (<code>card.abilities</code> with <code>printedAbility</code>), not gained ones, and for a copy of another card its own printed abilities rather than the copied card's.</td></tr>
+        <tr><td><code>abilityCondition</code></td><td><code>(ability: CardAbility) =&gt; boolean</code></td><td>any</td><td>Which abilities can be chosen (<code>ability.isPrintedAbility()</code> for "printed": not gained, not added with <code>.attachmentText()</code>).</td></tr>
+        <tr><td><code>printedOn</code></td><td><code>boolean</code></td><td><code>false</code></td><td>"Printed on" the card: offer only the card's own printed actions and reactions (<code>card.abilities</code> with <code>isPrintedAbility()</code>, so not <code>.attachmentText()</code> text), not gained ones, and for a copy of another card its own printed abilities rather than the copied card's.</td></tr>
         <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>any</td><td>Which cards; <code>context.targetAbility</code> is set to the ability being checked.</td></tr>
         <tr><td><code>cardType</code></td><td><code>CardType</code></td><td>required</td><td>The type of the card the ability is printed on. One type, not a list.</td></tr>
         <tr><td><code>location</code></td><td><code>Location | Location[]</code></td><td><code>Location.PlayArea</code></td><td>Where the card is.</td></tr>
@@ -1648,19 +1648,19 @@ this.action('Place a fate on a bushi')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CourtGames.ts">Court Games</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Banzai.ts">Banzai!</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FallenInBattle.ts">Fallen in Battle</a></p>
   </div>
 
-  <div class="ref" id="b-notPrinted" data-name="notPrinted">
-    <h3><code>notPrinted()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-notPrinted">#</a></h3>
-    <p>The ability isn't printed on the card (Togashi Kazue's text as an attachment): effects that copy or count printed abilities skip it.</p>
+  <div class="ref" id="b-attachmentText" data-name="attachmentText">
+    <h3><code>attachmentText()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-attachmentText">#</a></h3>
+    <p>Text the card has as an attachment (Togashi Kazue's text when played as one): effects that copy or count printed abilities skip it (<code>ability.isPrintedAbility()</code> is false: Togashi Yokuni, ruling #146; Centered Breath; <code>gainPrintedAbilities(card)</code>).</p>
     <ul class="edge">
-      <li>Blanking the card doesn't remove it; "loses its gained abilities" does.</li>
+      <li>The card has it only through its printed "you may play this character as an attachment" ability: blanking the card removes it (Agasha Hiyori), "loses its gained abilities" doesn't.</li>
     </ul>
     <pre><code>// Togashi Kazue: You may play this character as an attachment with the text: "Action: During a conflict in which attached character is participating, choose another participating character – move 1 fate from that character to the attached character."
 this.action('Steal a fate')
     .condition(…)
     .target({ … }, removeFate(…))
     .chatText(…)
-    .notPrinted();</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/TogashiKazue.ts">Togashi Kazue</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/AncientMaster.ts">Ancient Master</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/SereneIseZumi.ts">Serene Ise Zumi</a></p>
+    .attachmentText();</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/TogashiKazue.ts">Togashi Kazue</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/AncientMaster.ts">Ancient Master</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/SereneIseZumi.ts">Serene Ise Zumi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/TogashiAcolyte.ts">Togashi Acolyte</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/PromisingYouth.ts">Promising Youth</a></p>
   </div>
 </section>
 
@@ -2080,7 +2080,7 @@ this.action('Steal a fate')
 .placeCardUnderneath((context) =&gt; ({
     target: context.event.card,
     hideWhenFaceup: true,
-    destination: this
+    destination: context.source
 }))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Scorpion/DisloyalOathkeeper.ts">Disloyal Oathkeeper</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/StrangeMirror.ts">Strange Mirror</a></p>
   </div>
@@ -2716,7 +2716,7 @@ this.action('Wield the power of the void')
       </tbody>
     </table>
     <pre><code>// Propitious Market: This holding gets +1 bonus strength for each honor token on it.
-    effect: modifyProvinceStrength(() =&gt; this.getTokenCount(TokenType.Honor))</code></pre>
+    effect: modifyProvinceStrength((_province, context) =&gt; context.source.getTokenCount(TokenType.Honor))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/PropitiousMarket.ts">Propitious Market</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DistinguishedDojo.ts">Distinguished Dōjō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/FortifiedAssembly.ts">Fortified Assembly</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/EndlessArchives.ts">Endless Archives</a></p>
   </div>
 

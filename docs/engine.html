@@ -178,6 +178,21 @@ eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType
     <li>Not fixed (decision, 2026-10-20): putting a character on the opponent's side is a rare choice (mostly multiplayer, where Join the Fray targets you or your partner).</li>
 </ul>
 
+<h3 id="eng-limit-element-symbols">Copies read the original card's element symbols</h3>
+<p>Cards with an element symbol in their text (Isawa Skycaller, Kitsuki Seiji, Courteous Greeting and the other province-element cards, about 45) read it with <code>this.getCurrentElementSymbol(key)</code> or helpers such as <code>claimsRingOf(this, key, event)</code>, so from the card that wrote the ability. <code>getPrintedElementSymbols</code> is a per-class override: a copy (Shosuro Actor, Illusionary Terrain) or a card that gained the ability has no element symbols of its own.</p>
+<ul>
+    <li>It differs only after Twin Soul Temple changed the original's symbol: the copy then reads the changed element instead of the printed one. Twin Soul Temple also can't choose the copy's symbol.</li>
+    <li>An original that isn't in play (Floating Fortress or Spirit of Valor copying a card from a discard pile) keeps its printed symbols, so the copy reads the right element.</li>
+    <li>Not fixed (decision, 2026-10-24): giving copies their own element symbols would change the element-symbol model for a rare combination.</li>
+</ul>
+
+<h3 id="eng-limit-facedown-attachments">A province turned facedown keeps its attachments</h3>
+<p>Turning a province facedown makes it leave play (RRG Facedown Province; rulings #248, #606, #986), and a card leaving play discards its attachments. <code>TurnFacedownAction</code> treats the province as leaving play (its lasting effects end), but attachments on it stay attached.</p>
+<ul>
+    <li>Affected: Makeshift War Camp and Inventive Buttressing on a province that Saadiyah al-Mozedu or Kitsuki Yaruma turns facedown. The attachment stays and applies again when the province is revealed.</li>
+    <li>Not fixed (decision, 2026-10-24).</li>
+</ul>
+
 </main>
 </div>
 <div class="jump" id="jump" role="listbox" aria-label="Matches" hidden></div>

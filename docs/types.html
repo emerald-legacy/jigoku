@@ -78,11 +78,16 @@ this.reaction('Disable a character')
     <li><code>gainStatusToken()</code> defaults <code>token</code> to <code>CharacterStatus.Honored</code>.</li>
     <li>The <code>onStatusTokenGained</code> event carries either a <code>StatusToken</code> (from honor, dishonor, taint, moving a token) or a <code>CharacterStatus</code> (from <code>gainStatusToken</code>); check <code>event.token instanceof StatusToken</code> before reading <code>grantedStatus</code>.</li>
   </ul>
-  <pre><code>// Final Whisper: Reaction: After an opponent's character receives a status token, that opponent chooses another character they control - the chosen character receives the same status token as well.
-}, gainStatusToken((context) =&gt; ({
-    token: context.event.token instanceof StatusToken ? context.event.token.grantedStatus : context.event.token
-    …</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/FinalWhisper.ts">Final Whisper</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/OrigamiMaster.ts">Origami Master</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/BayushiCollector.ts">Bayushi Collector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/CourtOfDeception.ts">Court of Deception</a></p>
+  <pre><code>// A Game of Letters: … choose a participating character and a status token on a character controlled by a different player - if you chose an honored status token, honor the chosen character. …
+.tokenTarget({
+    name: 'token',
+    activePromptTitle: 'Choose a token',
+    cardType: CardType.Character,
+    tokenCondition: (token) =&gt; token.grantedStatus === CharacterStatus.Honored || token.grantedStatus === CharacterStatus.Dishonored
+})
+…
+.if((context) =&gt; context.tokens.token[0].grantedStatus === CharacterStatus.Honored)</code></pre>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/AGameOfLetters.ts">A Game of Letters</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/OrigamiMaster.ts">Origami Master</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/BayushiCollector.ts">Bayushi Collector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/CourtOfDeception.ts">Court of Deception</a></p>
 </div>
 <div class="ref" id="en-EntersPlayStatus" data-name="EntersPlayStatus">
   <h3><code>EntersPlayStatus</code> <span class="kind">Enum</span> <a class="anchor" href="#en-EntersPlayStatus">#</a></h3>
@@ -566,7 +571,6 @@ this.wouldInterrupt('Replace a void effect with another ring effect')
           <tr><td><code>Draw</code></td><td><code>'draw'</code></td><td>The draw phase.</td></tr>
           <tr><td><code>Conflict</code></td><td><code>'conflict'</code></td><td>The conflict phase.</td></tr>
           <tr><td><code>Fate</code></td><td><code>'fate'</code></td><td>The fate phase (it also returns rings and passes the first player token).</td></tr>
-          <tr><td><code>Regroup</code></td><td><code>'regroup'</code></td><td>Declared but no phase uses it; the game has no regroup phase step.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -582,6 +586,23 @@ this.action('Taint a character')
     }, taint())</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/KuniJuurou.ts">Kuni Juurou</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ArtisanAcademy.ts">Artisan Academy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForgottenLibrary.ts">Forgotten Library</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/MiyaMystic.ts">Miya Mystic</a></p>
 </div>
+<div class="ref" id="en-ActionWindowName" data-name="ActionWindowName">
+  <h3><code>ActionWindowName</code> <span class="kind">Enum</span> <a class="anchor" href="#en-ActionWindowName">#</a></h3>
+  <p>The action windows a player can choose to be prompted in: the <code>windowName</code> of an <code>ActionWindow</code> and the keys of <code>player.promptedActionWindows</code> (the player's settings from the lobby, toggled in the game).</p>
+  <table>
+        <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>Dynasty</code></td><td><code>'dynasty'</code></td><td>The dynasty phase's action window.</td></tr>
+          <tr><td><code>Draw</code></td><td><code>'draw'</code></td><td>The draw phase's action window.</td></tr>
+          <tr><td><code>PreConflict</code></td><td><code>'preConflict'</code></td><td>The action window before each conflict is declared.</td></tr>
+          <tr><td><code>Conflict</code></td><td><code>'conflict'</code></td><td>The conflict's action window.</td></tr>
+          <tr><td><code>Fate</code></td><td><code>'fate'</code></td><td>The fate phase's action window.</td></tr>
+        </tbody>
+      </table>
+  <ul class="edge">
+    <li>Engine only: no card uses it. In a window the player didn't choose, <code>ActionWindow</code> passes for them.</li>
+  </ul>
+</div>
 <div class="ref" id="en-SkillType" data-name="SkillType">
   <h3><code>SkillType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-SkillType">#</a></h3>
   <p>Military or political skill. Taken by <code>card.hasDash(type)</code>, <code>setDash(type)</code>, <code>setBaseDash(type)</code> and the <code>copyBaseSkillEffects</code> helper.</p>
@@ -596,7 +617,7 @@ this.action('Taint a character')
 effect: delayedEffect({
     condition: (context) =&gt; !!context.source.parentCharacter &amp;&amp; !context.source.parentCharacter.hasDash(SkillType.Political) &amp;&amp; context.source.parentCharacter.politicalSkill &lt; 1,
     …</code></pre>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ByAnyMeans.ts">By Any Means</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SpiderwebPassage.ts">Spiderweb Passage</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/MyAncestorsStrength.ts">My Ancestor's Strength</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/Castigated.ts">Castigated</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ByAnyMeans.ts">By Any Means</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/MyAncestorsStrength.ts">My Ancestor's Strength</a></p>
 </div>
 </section>
 
@@ -656,7 +677,7 @@ effect: delayedEffect({
           <tr><td><code>FateCostToTarget</code></td><td><code>'fateCostToTarget'</code></td><td><code>fateCostToTarget</code></td></tr>
           <tr><td><code>PlayerFateCostToTargetCard</code></td><td><code>'playerFateCostToTargetCard'</code></td><td><code>playerFateCostToTargetCard</code></td></tr>
           <tr><td><code>GainAbility</code></td><td><code>'gainAbility'</code></td><td><code>gainAbility</code></td></tr>
-          <tr><td><code>GainAllAbilities</code></td><td><code>'gainAllAbilities'</code></td><td><code>gainAllAbilities</code></td></tr>
+          <tr><td><code>GainPrintedAbilities</code></td><td><code>'gainPrintedAbilities'</code></td><td><code>gainPrintedAbilities</code></td></tr>
           <tr><td><code>GainAllAbilitiesDynamic</code></td><td><code>'gainAllAbilitiesDynamic'</code></td><td><code>gainAllAbilitiesDynamic</code></td></tr>
           <tr><td><code>GainExtraFateWhenPlayed</code></td><td><code>'gainExtraFateWhenPlayed'</code></td><td><code>gainExtraFateWhenPlayed</code></td></tr>
           <tr><td><code>GainPlayAction</code></td><td><code>'gainPlayAction'</code></td><td><code>gainPlayAction</code></td></tr>
@@ -2106,7 +2127,7 @@ this.wouldInterrupt('Switch the attacked province with a facedown province')
       </table>
   <ul class="edge">
     <li>No handler. <code>UntilEndOfConflict</code> lasting effects end when it resolves, before its reactions, so a province added by one (A War on Two Fronts) is no longer in <code>getConflictProvinces()</code>: read <a href="helpers.html#q-brokenProvinces"><code>event.conflict.provincesAtEnd</code></a>.</li>
-    <li>Not raised for a passed conflict; raised for one that failed to initiate.</li>
+    <li>Not raised for a passed conflict. For one that failed to initiate (RRG 3.2: no conflict took place) it is only emitted to the game's listeners, without an event window: <code>UntilEndOfConflict</code> effects and per-conflict limits end, but no "after a conflict ends" ability reacts (Prayers on the Eve of Battle).</li>
   </ul>
   <pre><code>// Breakthrough: Reaction: After the resolution of your first conflict this phase as the attacking player, if that conflict broke a province – immediately declare your second conflict for this phase.
 this.reaction('Declare a new conflict')
@@ -2514,7 +2535,7 @@ this.reaction('Resolve ring effect')
   <pre><code>// Wholeness of the World: Interrupt: When a ring in your claimed ring pool would be returned to the unclaimed ring pool – it remains claimed instead. (Max 1 per round.)
 this.wouldInterrupt('Keep a claimed ring')
     .when({
-        onReturnRing: (event, context) =&gt; event.ring.claimedBy === context.player.name
+        onReturnRing: (event, context) =&gt; event.ring.isClaimedBy(context.player)
     })
     .cancel()</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/WholenessOfTheWorld.ts">Wholeness of the World</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KnowTheWorld.ts">Know the World</a></p>
@@ -3125,7 +3146,7 @@ this.interrupt('Ready for Glory Count')
     <li>A context created by <code>game.getFrameworkContext(player)</code> has a plain source named "Framework effect" and <code>stage</code> <code>Effect</code>. Rules use them (bowing at the end of a conflict, fate phase steps), so <code>event.context.source</code> may not be a card.</li>
     <li><code>copy(props)</code> makes a new context with the same choices; game actions use it to check a candidate.</li>
   </ul>
-  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DuelistTraining.ts">Duelist Training</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/ShrineMaiden.ts">Shrine Maiden</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BackAlleyHideaway.ts">Back-Alley Hideaway</a></p>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DuelistTraining.ts">Duelist Training</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/ShrineMaiden.ts">Shrine Maiden</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/IchigoKun.ts">Ichigo-kun</a></p>
 </div>
 <div class="ref" id="ctx-TriggeredAbilityContext" data-name="TriggeredAbilityContext">
   <h3><code>TriggeredAbilityContext&lt;Source, Target, Trigger&gt;</code> <span class="kind">Class</span> <a class="anchor" href="#ctx-TriggeredAbilityContext">#</a></h3>

@@ -747,7 +747,7 @@ this.action('Put a holding into play from your discard')
     <pre><code>// Unveiled Corruption: Action: Taint a (friendly) unbroken province - each opponent discards cards from their hand, until they have an equal or fewer number of cards in their hand as you.
 this.action('Force opponent to discard cards to match your hand size')
     .cost(costs.taint({ cardCondition: (card) =&gt; {
-        return card.type === CardType.Province &amp;&amp; !(card instanceof ProvinceCard &amp;&amp; card.isBroken);
+        return card.type === CardType.Province &amp;&amp; !(card.isProvinceCard() &amp;&amp; card.isBroken);
     } }))
     …</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/UnveiledCorruption.ts">Unveiled Corruption</a></p>
