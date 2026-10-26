@@ -2594,7 +2594,7 @@ this.whileAttached({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>match</code></td><td><code>(card: BaseCard) =&gt; DrawCard | Ring | false</code></td><td>required</td><td>Called with the card being paid for; returns the card or ring whose fate may be used, or <code>false</code>.</td></tr>
+        <tr><td><code>match</code></td><td><code>(card: BaseCard, context: AbilityContext) =&gt; DrawCard | Ring | false</code></td><td>required</td><td>Called with the card being paid for and the effect's context; returns the card or ring whose fate may be used, or <code>false</code>. Return <code>context.source</code>, not <code>this</code>, so a copy (Shosuro Actor) offers its own fate.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -2604,9 +2604,9 @@ this.whileAttached({
     </ul>
     <pre><code>// Student of Esoterica: You may spend fate from this character to pay for Spell cards.
 this.persistentEffect({
-    effect: alternateFatePool((card) =&gt; {
-        if(card.hasTrait(Trait.Spell)) {
-            return this;
+    effect: alternateFatePool((card, context) =&gt; {
+        if(card.hasTrait(Trait.Spell) &amp;&amp; context.source.isDrawCard()) {
+            return context.source;
         }
         return false;
     })
