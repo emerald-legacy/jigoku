@@ -11,3 +11,13 @@ export enum AbilityType {
     Persistent = 'persistent',
     OtherEffects = 'otherEffects'
 }
+
+/** The triggered abilities a card offers in trigger windows (not keyword ones). */
+export const TRIGGERED_ABILITY_TYPES: ReadonlySet<AbilityType> = new Set([
+    AbilityType.DuelReaction,
+    AbilityType.ForcedInterrupt,
+    AbilityType.ForcedReaction,
+    AbilityType.Interrupt,
+    AbilityType.Reaction,
+    AbilityType.WouldInterrupt
+]);

@@ -11,7 +11,7 @@ class SpecializedDefenses extends DrawCard {
             .condition((context) => context.game.isDuringConflict())
             .selectAttackedProvince((context) => ({
                 cardCondition: (card) => card.element.some((element) =>
-                    this.game.ringFor(element)?.isConsideredClaimed(context.player) ||
+                    this.game.rings[element].isConsideredClaimed(context.player) ||
                     (this.game.currentConflict?.ring?.getElements().includes(element) ?? false)
                 ),
                 message: (context, cards) => msg`${context.player} doubles the province strength of ${cards}`,

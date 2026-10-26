@@ -15,7 +15,7 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
         promptsPlayer: true,
         canPay(context) {
             for(const ring of Object.values(context.game.rings)) {
-                if(ring.claimedBy === context.player.name && ringCondition(ring, context)) {
+                if(ring.isClaimedBy(context.player) && ringCondition(ring, context)) {
                     return true;
                 }
             }
@@ -43,14 +43,14 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
                     buttons: buttons,
                     ringCondition: (ring: Ring) =>
                         ringCondition(ring, context) &&
-                        ring.claimedBy === context.player.name &&
+                        ring.isClaimedBy(context.player) &&
                         !chosenRings.includes(ring),
                     onSelect: (_player: Player, ring: Ring) => {
                         chosenRings.push(ring);
                         if(
                             Object.values(context.game.rings).some(
                                 (ring: Ring) =>
-                                    ring.claimedBy === context.player.name &&
+                                    ring.isClaimedBy(context.player) &&
                                     !chosenRings.includes(ring) &&
                                     (amount < 0 || chosenRings.length < amount)
                             )

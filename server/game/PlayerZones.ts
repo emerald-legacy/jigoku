@@ -166,15 +166,15 @@ export class PlayerZones {
         return this.hasAdditionalPile(name) ? this.additionalPiles[name] : this.createAdditionalPile(name);
     }
 
-    getDynastyCardInProvince(location: string): DrawCard | undefined {
+    getDynastyCardInProvince(location: Location): DrawCard | undefined {
         return this.getSourceList(location).find((card) => card.isDynastyCard());
     }
 
-    getDynastyCardsInProvince(location: string): DrawCard[] {
+    getDynastyCardsInProvince(location: Location): DrawCard[] {
         return this.getSourceList(location).filter((card) => card.isDynastyCard());
     }
 
-    getProvinceCardInProvince(location: string): ProvinceCard | undefined {
+    getProvinceCardInProvince(location: Location): ProvinceCard | undefined {
         return this.getSourceList(location).find((card) => card.isProvinceCard());
     }
 }

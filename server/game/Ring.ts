@@ -37,10 +37,20 @@ export class Ring extends EffectSource {
         return true;
     }
 
+    /** Whether `player` has this ring in their claimed ring pool. */
+    isClaimedBy(player: Player | undefined): boolean {
+        return !!player && this.claimedBy === player.name;
+    }
+
+    /** The player who has this ring in their claimed ring pool. */
+    get claimant(): Player | undefined {
+        return this.claimed ? this.game.getPlayerByName(this.claimedBy) : undefined;
+    }
+
     isConsideredClaimed(player: Player | null = null): boolean {
         const check = (p: Player) =>
             this.getEffects(EffectName.ConsiderRingAsClaimed).some((match) => match(p)) ||
-            this.claimedBy === p.name;
+            this.isClaimedBy(p);
         if(player) {
             return check(player);
         }

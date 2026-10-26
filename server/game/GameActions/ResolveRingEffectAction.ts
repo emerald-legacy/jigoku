@@ -9,29 +9,20 @@ import { RingAbilities } from '../RingAbilities.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import { targetList, type ActionEvent } from './GameAction.js';
 
-export interface ResolveElementProperties extends RingActionProperties {
+export interface ResolveRingEffectProperties extends RingActionProperties {
     physicalRing?: Ring;
     player?: Player;
     enforceOrderedResolution?: boolean;
 }
 
-export class ResolveRingEffectAction<Context extends AbilityContext = AbilityContext> extends RingAction<ResolveElementProperties, EventName.OnResolveRingElement, Context> {
+export class ResolveRingEffectAction<Context extends AbilityContext = AbilityContext> extends RingAction<ResolveRingEffectProperties, EventName.OnResolveRingElement, Context> {
     override name = 'resolveRingEffect';
     override eventName = EventName.OnResolveRingElement;
     override effect = 'resolve {0} effect';
 
     override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        const rings = targetList(properties.target).flatMap((element) => {
-            if(typeof element === 'string') {
-                const ring = context.game.rings[element];
-                return ring ? [ring] : [];
-            }
-            if(element instanceof Ring) {
-                return [element];
-            }
-            return [];
-        });
+        const rings = targetList(properties.target).flatMap((ring) => ring instanceof Ring ? [ring] : []);
 
         if(rings.length === 1) {
             events.push(this.getEvent(rings[0], context, additionalProperties));
@@ -51,7 +42,7 @@ export class ResolveRingEffectAction<Context extends AbilityContext = AbilityCon
             const resolvingPlayer = properties.player ?? context.player;
             const ringEvents: Event[] = [];
             const effectObjects = sortedRings.map((ring) => ({
-                title: RingAbilities.getRingName(ring.element) + ' Effect',
+                title: ring.name + ' Effect',
                 player: resolvingPlayer,
                 handler: () => {
                     const ringEvent = this.getEvent(ring, context, ringProperties);

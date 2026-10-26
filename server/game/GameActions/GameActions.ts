@@ -77,7 +77,7 @@ import { RemoveFromGameAction, type RemoveFromGameProperties } from './RemoveFro
 import { RemoveRingFromPlayAction, type RemoveRingFromPlayProperties } from './RemoveRingFromPlayAction.js';
 import { ResolveAbilityAction, type ResolveAbilityProperties } from './ResolveAbilityAction.js';
 import { ResolveConflictRingAction } from './ResolveConflictRingAction.js';
-import { ResolveRingEffectAction, type ResolveElementProperties } from './ResolveRingEffectAction.js';
+import { ResolveRingEffectAction, type ResolveRingEffectProperties } from './ResolveRingEffectAction.js';
 import { RestoreProvinceAction, type RestoreProvinceProperties } from './RestoreProvinceAction.js';
 import { ReturnRingAction, type ReturnRingProperties } from './ReturnRingAction.js';
 import { ReturnRingToPlayAction, type ReturnRingToPlayProperties } from './ReturnRingToPlayAction.js';
@@ -356,7 +356,7 @@ export function placeFateOnRing<Context extends AbilityContext = AbilityContext>
 export function resolveConflictRing<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<RingActionProperties, Context> = {}): ResolveConflictRingAction<Context> {
     return new ResolveConflictRingAction<Context>(propertyFactory);
 }
-export function resolveRingEffect<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ResolveElementProperties, Context> = {}): ResolveRingEffectAction<Context> {
+export function resolveRingEffect<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ResolveRingEffectProperties, Context> = {}): ResolveRingEffectAction<Context> {
     return new ResolveRingEffectAction<Context>(propertyFactory);
 }
 export function returnRing<Context extends AbilityContext = AbilityContext>(propertyFactory: Derivable<ReturnRingProperties, Context> = {}): ReturnRingAction<Context> {
@@ -543,7 +543,7 @@ export interface ActionProps<Context extends AbilityContext> {
     removeFate: RemoveFateProperties;
     removeFromGame: RemoveFromGameProperties;
     resolveConflictRing: RingActionProperties;
-    resolveRingEffect: ResolveElementProperties;
+    resolveRingEffect: ResolveRingEffectProperties;
     returnToDeck: ReturnToDeckProperties;
     returnToHand: ReturnToHandProperties;
     reveal: RevealProperties;

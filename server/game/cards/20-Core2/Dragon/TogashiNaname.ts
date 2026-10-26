@@ -1,5 +1,4 @@
 import { CardType, Players } from '../../../Constants.js';
-import { RingAbilities } from '../../../RingAbilities.js';
 import { cannotReceiveDishonorToken } from '../../../effects.js';
 import { placeFateOnRing, resolveRingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -29,13 +28,11 @@ export default class TogashiNaname extends DrawCard {
                 dependsOn: 'ring',
                 player: Players.Opponent
             }, (context) => ({
-                [`Move a fate from ${context.targets.character?.name ?? ''} to the ${RingAbilities.getRingName(
-                    context.rings.ring.element
-                )}`]: placeFateOnRing((context) => ({
+                [`Move a fate from ${context.targets.character?.name ?? ''} to the ${context.rings.ring.name}`]: placeFateOnRing((context) => ({
                     target: context.rings.ring,
                     origin: context.targets.character
                 })),
-                [`Let Opponent Resolve the ${RingAbilities.getRingName(context.rings.ring.element)}`]:
+                [`Let Opponent Resolve the ${context.rings.ring.name}`]:
                             resolveRingEffect((context) => ({
                                 player: context.player,
                                 target: context.rings.ring

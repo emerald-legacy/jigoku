@@ -3,7 +3,6 @@ import axios from 'axios';
 import fs from 'fs';
 import http from 'http';
 import https from 'https';
-import jwt from 'jsonwebtoken';
 import * as socketio from 'socket.io';
 import { z } from 'zod';
 
@@ -12,7 +11,7 @@ import { cards as cardLibrary } from '../game/cards/index.js';
 import type { GameRouter } from '../game/GameRouter.js';
 import type Player from '../game/Player.js';
 import { logger } from '../logger.js';
-import { Socket, SocketUserSchema } from '../Socket.js';
+import { Socket, verifyUserToken } from '../Socket.js';
 import { detectBinary } from '../util.js';
 import { isOwnKey } from '../game/utils/helpers.js';
 import { stringifyWithoutCycles, WsSocket, type LobbyHandlers } from './WsSocket.js';
@@ -302,19 +301,13 @@ export class GameServer implements GameRouter, LobbyHandlers {
     handshake(socket: socketio.Socket, next: (err?: Error) => void) {
         const token = socket.handshake.auth?.token;
         if(token && token !== 'undefined') {
-            jwt.verify(token, env.secret, { algorithms: ['HS256'] }, function (err, user) {
-                if(err) {
-                    logger.info(`JWT verification failed: ${err.message}`);
+            verifyUserToken(token, (error, user) => {
+                if(error || !user) {
+                    logger.info(error);
                     return next(new Error('Invalid authentication token'));
                 }
 
-                const parsed = SocketUserSchema.safeParse(user);
-                if(!parsed.success) {
-                    logger.info('JWT payload has no username');
-                    return next(new Error('Invalid authentication token'));
-                }
-
-                socket.request.user = parsed.data;
+                socket.request.user = user;
                 next();
             });
         } else {

@@ -8,7 +8,7 @@ class WholenessOfTheWorld extends DrawCard {
     override setupCardAbilities() {
         this.wouldInterrupt('Keep a claimed ring')
             .when({
-                onReturnRing: (event, context) => event.ring.claimedBy === context.player.name
+                onReturnRing: (event, context) => event.ring.isClaimedBy(context.player)
             })
             .cancel()
             .chatText((context) => msg`prevent ${context.event.ring} from returning to the unclaimed pool`)

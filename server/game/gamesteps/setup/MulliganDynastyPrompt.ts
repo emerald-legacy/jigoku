@@ -16,7 +16,7 @@ export class MulliganDynastyPrompt extends MulliganPrompt {
     }
 
     protected override mulliganableCards(player: Player): DrawCard[] {
-        return this.game.getProvinceArray(false).map((location: string) => player.getDynastyCardsInProvince(location)).flat()
+        return this.game.getProvinceArray(false).flatMap((location) => player.getDynastyCardsInProvince(location))
             .filter((card) => card.isDynasty && card.isInProvince());
     }
 

@@ -39,6 +39,11 @@ interface TargetingCallbacks {
 /** A conflict type, or both for an effect that applies to either. */
 export type ConflictTypeOrBoth = ConflictType | 'both';
 
+/** Whether an effect for `value` applies to a conflict of `type`. */
+export function appliesToConflictType(value: ConflictTypeOrBoth, type: ConflictType | undefined): boolean {
+    return value === 'both' || value === type;
+}
+
 export interface ParticipantCostEffect {
     type: 'attackers' | 'defenders';
     cost: GameAction | ((player: Player) => GameAction);

@@ -62,7 +62,7 @@ function playersFor(target: Players | Player | Player[], context: AbilityContext
 }
 
 export class LastingEffectAction<Context extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName.OnEffectApplied, Context, 'duration'> {
-    override name = 'applyLastingEffect';
+    override name = 'conflictLastingEffect';
     override eventName = EventName.OnEffectApplied;
     override effect = 'apply a lasting effect';
     override defaultProperties = {
@@ -96,6 +96,7 @@ export class LastingEffectAction<Context extends AbilityContext = AbilityContext
 
 /** A lasting effect on a duel: by default the current duel, until it ends. */
 export class DuelLastingEffectAction<Context extends AbilityContext = AbilityContext> extends LastingEffectAction<Context> {
+    override name = 'duelLastingEffect';
     override defaultProperties = {
         duration: Duration.UntilEndOfDuel
     };
@@ -115,7 +116,7 @@ export class PlayerLastingEffectAction<Context extends AbilityContext = AbilityC
         });
     }
 
-    override name = 'applyLastingEffect';
+    override name = 'playerLastingEffect';
     override eventName = EventName.OnEffectApplied;
     override effect = 'apply a lasting effect';
     override defaultProperties = {

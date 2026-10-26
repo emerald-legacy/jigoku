@@ -14,7 +14,7 @@ class EtherealAlignment extends DrawCard {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card, context) => {
-                    return card.isBroken && card.element.some((element) => this.game.ringFor(element)?.isConsideredClaimed(context.player) ?? false);
+                    return card.isBroken && card.element.some((element) => this.game.rings[element].isConsideredClaimed(context.player));
                 }
             }, multiple([
                 restoreProvince(),

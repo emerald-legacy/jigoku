@@ -60,7 +60,7 @@ export class FireRingAbility extends BaseAbility {
             });
         }
 
-        options.push({ text: 'Back', handler: () => context.player.resolveRingEffects([Element.Fire], this.optional, this.onResolution) });
+        options.push({ text: 'Back', handler: () => context.player.resolveRingEffect(Element.Fire, this.optional, this.onResolution) });
 
         if(this.optional) {
             options.push({

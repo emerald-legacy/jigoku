@@ -25,7 +25,7 @@ export class ClaimRingAction<Context extends AbilityContext = AbilityContext> ex
             return false;
         }
 
-        return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
+        return !ring.isRemovedFromGame() && !ring.isClaimedBy(context.player) && super.canAffect(ring, context);
     }
 
     override addPropertiesToEvent(event: ActionEvent<EventName.OnClaimRing, Context>, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): void {

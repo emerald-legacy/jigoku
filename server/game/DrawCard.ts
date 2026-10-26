@@ -1,4 +1,5 @@
 import { msg, type MessageArgs } from './GameChat.js';
+import { appliesToConflictType } from './Effects/EffectValueMap.js';
 import BaseCard, { type CardSummary } from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { attachmentMilitarySkillModifier, attachmentPoliticalSkillModifier } from './effects.js';
@@ -613,8 +614,8 @@ export class DrawCard extends BaseCard {
         return (this.playConditions ?? []).every((condition) => condition(context));
     }
 
-    override getActions(location: string = this.location): BaseCardAbility[] {
-        if(location === Location.PlayArea || this.type === CardType.Event) {
+    override getActions(): BaseCardAbility[] {
+        if(this.location === Location.PlayArea || this.type === CardType.Event) {
             return super.getActions();
         }
         const actions: BaseCardAbility[] = this.type === CardType.Character ? [new DuplicateUniqueAction(this)] : [];
@@ -823,14 +824,14 @@ export class DrawCard extends BaseCard {
 
     canParticipateAsAttacker(conflictType: ConflictType | undefined = this.game.currentConflict?.conflictType): boolean {
         const effects = this.getEffects(EffectName.CannotParticipateAsAttacker);
-        return !effects.some((value) => value === 'both' || value === conflictType) && !this.hasDash(conflictType);
+        return !effects.some((value) => appliesToConflictType(value, conflictType)) && !this.hasDash(conflictType);
     }
 
     canParticipateAsDefender(conflictType: ConflictType | undefined = this.game.currentConflict?.conflictType): boolean {
         const effects = this.getEffects(EffectName.CannotParticipateAsDefender);
         const hasDash = conflictType ? this.hasDash(conflictType) : false;
 
-        return !effects.some((value) => value === 'both' || value === conflictType) && !hasDash;
+        return !effects.some((value) => appliesToConflictType(value, conflictType)) && !hasDash;
     }
 
     bowsOnReturnHome(): boolean {

@@ -9,7 +9,7 @@ export default class SigilOfCondemnation extends DrawCard {
             .ifCondition((context) =>
                 !!(context.source.parentCharacter &&
                 context.source.parentCharacter.controller.opponent &&
-                context.game.currentConflict?.hasMoreParticipants(context.source.parentCharacter.controller.opponent, () => true)))
+                context.game.currentConflict?.hasMoreParticipants(context.source.parentCharacter.controller.opponent)))
             .injure((context) => ({ target: context.source.parentCharacter ?? [] }));
     }
 }

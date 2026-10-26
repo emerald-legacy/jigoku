@@ -1,5 +1,5 @@
 import { EffectValue } from './EffectValue.js';
-import { AbilityType, EffectName, Location } from '../Constants.js';
+import { AbilityType, EffectName, Location, TRIGGERED_ABILITY_TYPES } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Duration } from '../Constants.js';
 import type { AbilityLimit } from '../AbilityLimit.js';
@@ -199,18 +199,9 @@ export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
         if(this.grantedAbilityLimits[target.uuid]) {
             this.grantedAbilityLimits[target.uuid].currentUser = null;
         }
-        if(
-            [
-                AbilityType.DuelReaction,
-                AbilityType.ForcedInterrupt,
-                AbilityType.ForcedReaction,
-                AbilityType.Interrupt,
-                AbilityType.Reaction,
-                AbilityType.WouldInterrupt
-            ].includes(this.abilityType)
-        ) {
+        if(TRIGGERED_ABILITY_TYPES.has(this.abilityType)) {
             this.grantedTriggered?.unregisterEvents();
-        } else if(this.abilityType === AbilityType.Persistent) {
+        } else if(this.grant.kind === AbilityType.Persistent) {
             const value = this.grantedPersistent;
             if(value?.ref) {
                 target.removeEffectFromEngine(value.ref);

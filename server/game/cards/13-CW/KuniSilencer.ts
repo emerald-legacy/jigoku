@@ -14,7 +14,7 @@ class KuniSilencer extends DrawCard {
             .selectRing((context) => ({
                 activePromptTitle: 'Choose a ring to return',
                 player: Players.Opponent,
-                ringCondition: (ring) => ring.claimedBy !== undefined && ring.claimedBy === context.player.opponent?.name,
+                ringCondition: (ring) => ring.isClaimedBy(context.player.opponent),
                 message: (context, ring) => msg`${context.player.opponent} returns ${ring}`,
                 gameAction: returnRing()
             }))

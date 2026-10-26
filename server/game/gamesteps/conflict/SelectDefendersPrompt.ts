@@ -1,4 +1,5 @@
 import { UiPrompt } from '../UiPrompt.js';
+import { appliesToConflictType } from '../../Effects/EffectValueMap.js';
 import { CardType, EffectName, EventName } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
@@ -16,7 +17,7 @@ export class SelectDefendersPrompt extends UiPrompt {
         this.player = player;
         this.conflict = conflict;
         const mustBeDeclared = this.player.cardsInPlay.filter((card: DrawCard) =>
-            card.getEffects(EffectName.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === conflict.conflictType));
+            card.getEffects(EffectName.MustBeDeclaredAsDefender).some((effect) => appliesToConflictType(effect, conflict.conflictType)));
         for(const card of mustBeDeclared) {
             if(this.checkCardCondition(card) && !this.conflict.defenders.includes(card)) {
                 this.selectCard(card);
@@ -59,7 +60,7 @@ export class SelectDefendersPrompt extends UiPrompt {
     }
 
     checkCardCondition(card: DrawCard): boolean {
-        if(this.conflict.defenders.includes(card) && card.getEffects(EffectName.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === this.conflict.conflictType)) {
+        if(this.conflict.defenders.includes(card) && card.getEffects(EffectName.MustBeDeclaredAsDefender).some((effect) => appliesToConflictType(effect, this.conflict.conflictType))) {
             return false;
         }
         return (

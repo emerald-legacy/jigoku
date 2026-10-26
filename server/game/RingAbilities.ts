@@ -64,21 +64,4 @@ export class RingAbilities {
             .sort((a, b) => a.priority - b.priority)
             .map(({ item }) => item);
     }
-
-    static getRingName(element: string) {
-        switch(element) {
-            case 'air':
-                return 'Air Ring';
-            case 'earth':
-                return 'Earth Ring';
-            case 'fire':
-                return 'Fire Ring';
-            case 'void':
-                return 'Void Ring';
-            case 'water':
-                return 'Water Ring';
-            default:
-                return undefined;
-        }
-    }
 }

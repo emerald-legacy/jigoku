@@ -22,7 +22,7 @@ import type Game from './Game.js';
 import { type ActionContext, AbilityBuilder, TriggerBuilder, toActionProps, toAggregateProps, createDraft, holdsTriggerEvent, holdsAggregateEvents, toTriggerProps } from './AbilityBuilder.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
-import { AbilityType, CardType, type CharacterStatus, Duration, EffectName, type Element, EventName, Location, type Players, type PlayType, Blocker, RestrictionType, RestrictionScope, type Trait } from './Constants.js';
+import { AbilityType, CardType, type CharacterStatus, Duration, EffectName, type Element, EventName, Location, type Players, type PlayType, Blocker, RestrictionType, RestrictionScope, type Trait, TRIGGERED_ABILITY_TYPES } from './Constants.js';
 import { ElementSymbol, type ElementSymbolInfo } from './ElementSymbol.js';
 import type { ActionProps, AttachmentConditionProps, PersistentEffectProps, TargetLocation, TriggeredAbilityProps } from './Interfaces.js';
 import type { GameObject } from './GameObject.js';
@@ -78,15 +78,6 @@ interface CardAbilities {
     /** Ways to play the card: its play actions, or an ability of another card that plays it (Back-Alley Hideaway). */
     playActions: Array<BaseAction | CardAction>;
 }
-
-const TRIGGERED_ABILITY_TYPES = new Set<AbilityType>([
-    AbilityType.DuelReaction,
-    AbilityType.ForcedInterrupt,
-    AbilityType.ForcedReaction,
-    AbilityType.Interrupt,
-    AbilityType.Reaction,
-    AbilityType.WouldInterrupt
-]);
 
 const FACEUP_LOCATIONS = new Set([Location.PlayArea, Location.ConflictDiscardPile, Location.DynastyDiscardPile, Location.Hand]);
 
@@ -150,12 +141,12 @@ export class BaseCard extends EffectSource {
 
     /** The attached character, in the cards' sense; null when attached to anything else. */
     get parentCharacter(): DrawCard | null {
-        return this.parent instanceof BaseCard && this.parent.isCharacter() ? this.parent : null;
+        return this.parent?.isCard() && this.parent.isCharacter() ? this.parent : null;
     }
 
     /** The attached province, in the cards' sense; null when attached to anything else. */
     get parentProvince(): ProvinceCard | null {
-        return this.parent instanceof BaseCard && this.parent.isProvinceCard() ? this.parent : null;
+        return this.parent?.isCard() && this.parent.isProvinceCard() ? this.parent : null;
     }
 
     get attachments(): DrawCard[] {
@@ -959,7 +950,7 @@ export class BaseCard extends EffectSource {
      * with `mustAttachToRing()`.
      */
     canAttach(parent?: BaseCard | Ring, properties = { ignoreType: false, controller: this.controller }) {
-        if(!(parent instanceof BaseCard)) {
+        if(!parent?.isCard()) {
             return false;
         }
 

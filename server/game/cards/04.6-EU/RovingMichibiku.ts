@@ -15,7 +15,7 @@ export default class RovingMichibiku extends DrawCard {
             })
             .selectRing((context) => ({
                 activePromptTitle: 'Choose a ring to take',
-                ringCondition: (ring) => ring.claimedBy === context.player.opponent?.name,
+                ringCondition: (ring) => ring.isClaimedBy(context.player.opponent),
                 message: (context, ring) => msg`${context.player} takes ${ring}`,
                 gameAction: takeRing()
             }));

@@ -9,6 +9,20 @@ import { secret } from './env.js';
 export const SocketUserSchema = z.looseObject({ username: z.string() });
 type SocketUser = z.infer<typeof SocketUserSchema>;
 
+/** Verifies a user's JWT: `done` gets why it failed, or the user it names. */
+export function verifyUserToken(token: string, done: (error: string | undefined, user?: SocketUser) => void): void {
+    jwt.verify(token, secret, { algorithms: ['HS256'] }, (err, payload) => {
+        if(err) {
+            return done(`JWT verification failed: ${err.message}`);
+        }
+        const parsed = SocketUserSchema.safeParse(payload);
+        if(!parsed.success) {
+            return done('JWT payload has no username');
+        }
+        done(undefined, parsed.data);
+    });
+}
+
 declare module 'http' {
     interface IncomingMessage {
         /** Set by the game server's handshake once the token has been verified. */
@@ -75,14 +89,12 @@ export class Socket extends EventEmitter {
     }
 
     onAuthenticate(token: string): void {
-        jwt.verify(token, secret, { algorithms: ['HS256'] }, (err, user) => {
-            const parsed = SocketUserSchema.safeParse(user);
-            if(err || !parsed.success) {
-                logger.info(err);
+        verifyUserToken(token, (error, payload) => {
+            if(error || !payload) {
+                logger.info(error);
                 return;
             }
 
-            const payload = parsed.data;
             if(this.user && this.user.username !== payload.username) {
                 this.socket.disconnect();
                 return;

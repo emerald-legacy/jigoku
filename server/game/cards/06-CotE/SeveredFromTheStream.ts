@@ -8,7 +8,7 @@ class SeveredFromTheStream extends DrawCard {
         this.action('Return player\'s rings')
             .gameAction(performGloryCount({
                 gameAction: (winner) => (winner && winner.opponent)
-                    ? returnRing({ target: winner.opponent.getClaimedRings().filter((ring) => ring.claimedBy === winner.opponent?.name) })
+                    ? returnRing({ target: winner.opponent.getClaimedRings().filter((ring) => ring.isClaimedBy(winner.opponent)) })
                     : noAction()
             }));
     }

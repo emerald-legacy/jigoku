@@ -14,9 +14,7 @@ export type RestrictionAppliesTo = ScopeEntry | ScopeEntry[];
 const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.AbilitiesTriggeredByOpponents]: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent &&
-        context.ability.isTriggeredAbility() &&
-        context.ability.abilityType !== AbilityType.ForcedReaction &&
-        context.ability.abilityType !== AbilityType.ForcedInterrupt,
+        checkRestrictions[RestrictionScope.NonForcedAbilities](context, effect),
     [RestrictionScope.AdjacentCharacters]: (context, effect) =>
         context.source.type === CardType.Character &&
         context.player.areLocationsAdjacent(context.source.location, effect.requireContext().source.location),
@@ -25,11 +23,9 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         isAttachment(context) &&
         context.source.getPrintedFaction() !== 'neutral' &&
         !!card && card.isFaction(context.source.getPrintedFaction()),
-    [RestrictionScope.AttackedProvinceNonForced]: (context) =>
+    [RestrictionScope.AttackedProvinceNonForced]: (context, effect) =>
         !!context.game.currentConflict?.getConflictProvinces().some((province) => province === context.source) &&
-        context.ability.isTriggeredAbility() &&
-        context.ability.abilityType !== AbilityType.ForcedReaction &&
-        context.ability.abilityType !== AbilityType.ForcedInterrupt,
+        checkRestrictions[RestrictionScope.NonForcedAbilities](context, effect),
     [RestrictionScope.CardEffects]: (context) => isCardEffect(context),
     [RestrictionScope.CardEffectsExceptOwn]: (context, effect) =>
         checkRestrictions[RestrictionScope.CardEffects](context, effect) && context.source !== effect.requireContext().source,

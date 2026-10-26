@@ -18,7 +18,7 @@ export class TakeRingAction<Context extends AbilityContext = AbilityContext> ext
     override effect = 'take {0}';
     override defaultProperties = { takeFate: true };
     override canAffect(ring: Ring, context: Context): boolean {
-        return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
+        return !ring.isRemovedFromGame() && !ring.isClaimedBy(context.player) && super.canAffect(ring, context);
     }
 
     override eventHandler(event: ActionEvent<EventName.OnTakeRing, Context>, additionalProperties: ActionOverrides = {}): void {

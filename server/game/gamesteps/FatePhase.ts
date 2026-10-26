@@ -188,7 +188,7 @@ export class FatePhase extends PhaseStep {
 
     returnRings() {
         const claimedRings = Object.values(this.game.rings).flatMap((ring) => {
-            const claimant = ring.claimed ? this.game.getPlayerByName(ring.claimedBy) : undefined;
+            const claimant = ring.claimant;
             return claimant ? [{ target: ring, player: claimant }] : [];
         });
         this.game.resolveRuleAction(returnRing(), claimedRings);

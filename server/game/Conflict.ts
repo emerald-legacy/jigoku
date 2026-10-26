@@ -210,7 +210,7 @@ export class Conflict extends GameObject {
         }
         if(this.ring) {
             if(newRing.isClaimed()) {
-                const claimedPlayer = this.game.getPlayerByName(newRing.claimedBy);
+                const claimedPlayer = newRing.claimant;
                 if(claimedPlayer) {
                     this.ring.contested = false;
                     this.ring.claimRing(claimedPlayer);
@@ -246,22 +246,19 @@ export class Conflict extends GameObject {
         }
     }
 
+    /** A character that participates from home (Iuchi Soulweaver) on the attacking or defending side. */
+    #participatesFromHome(card: DrawCard, attacking: boolean): boolean {
+        return card.anyEffect(EffectName.ParticipatesFromHome) &&
+            (attacking ? card.canParticipateAsAttacker(this.conflictType) : card.canParticipateAsDefender(this.conflictType)) &&
+            card.isAtHome();
+    }
+
     isAttacking(card: DrawCard) {
-        return this.#attackers.has(card) || (
-            card.anyEffect(EffectName.ParticipatesFromHome) &&
-            card.canParticipateAsAttacker(this.conflictType) &&
-            card.isAtHome() &&
-            card.controller === this.attackingPlayer
-        );
+        return this.#attackers.has(card) || (this.#participatesFromHome(card, true) && card.controller === this.attackingPlayer);
     }
 
     isDefending(card: DrawCard) {
-        return this.#defenders.has(card) || (
-            card.anyEffect(EffectName.ParticipatesFromHome) &&
-            card.canParticipateAsDefender(this.conflictType) &&
-            card.isAtHome() &&
-            card.controller === this.defendingPlayer
-        );
+        return this.#defenders.has(card) || (this.#participatesFromHome(card, false) && card.controller === this.defendingPlayer);
     }
 
     isParticipating(card: DrawCard): boolean {
@@ -277,12 +274,7 @@ export class Conflict extends GameObject {
         }
 
         for(const card of this.attackingPlayer.cardsInPlay) {
-            if(
-                card.anyEffect(EffectName.ParticipatesFromHome) &&
-                card.canParticipateAsAttacker(this.conflictType) &&
-                card.isAtHome() &&
-                (!predicate || predicate(card))
-            ) {
+            if(this.#participatesFromHome(card, true) && (!predicate || predicate(card))) {
                 attackersArray.push(card);
             }
         }
@@ -297,12 +289,7 @@ export class Conflict extends GameObject {
             }
         }
         for(const card of this.defendingPlayer?.cardsInPlay ?? []) {
-            if(
-                card.anyEffect(EffectName.ParticipatesFromHome) &&
-                card.canParticipateAsDefender(this.conflictType) &&
-                card.isAtHome() &&
-                (!predicate || predicate(card))
-            ) {
+            if(this.#participatesFromHome(card, false) && (!predicate || predicate(card))) {
                 defendersArray.push(card);
             }
         }
@@ -336,12 +323,12 @@ export class Conflict extends GameObject {
         return characters.length + _player.sumEffects(EffectName.AdditionalCharactersInConflict);
     }
 
-    hasMoreParticipants(player: Player | undefined, predicate: Predicate = () => true) {
+    hasMoreParticipants(player: Player | undefined) {
         if(!player) {
             return false;
         }
         if(!player.opponent) {
-            return !!this.getNumberOfParticipantsFor(player, predicate);
+            return !!this.getNumberOfParticipantsFor(player);
         }
         return this.getNumberOfParticipantsFor(player) > this.getNumberOfParticipantsFor(player.opponent);
     }

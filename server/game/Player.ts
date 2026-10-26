@@ -365,15 +365,15 @@ export class Player extends GameObject {
         return this.zones.getSourceList(source);
     }
 
-    getDynastyCardInProvince(location: string): DrawCard | undefined {
+    getDynastyCardInProvince(location: Location): DrawCard | undefined {
         return this.zones.getDynastyCardInProvince(location);
     }
 
-    getDynastyCardsInProvince(location: string): DrawCard[] {
+    getDynastyCardsInProvince(location: Location): DrawCard[] {
         return this.zones.getDynastyCardsInProvince(location);
     }
 
-    getProvinceCardInProvince(location: string): ProvinceCard | undefined {
+    getProvinceCardInProvince(location: Location): ProvinceCard | undefined {
         return this.zones.getProvinceCardInProvince(location);
     }
 
@@ -1354,22 +1354,9 @@ export class Player extends GameObject {
         return this.anyEffect(EffectName.ShowTopDynastyCard);
     }
 
-    resolveRingEffects(elements: Element | Element[], optional: boolean = true, onResolution?: (resolved: boolean) => void): void {
-        if(!Array.isArray(elements)) {
-            elements = [elements];
-        }
-        const effects = RingAbilities.sortedForResolution(
-            this,
-            elements.map((element) => RingAbilities.contextFor(this, element, optional, onResolution)),
-            (context) => context.ability.defaultPriority
-        );
-        this.game.openSimultaneousEffectWindow(
-            effects.map((context) => ({
-                title: context.ability.title,
-                player: this,
-                handler: () => this.game.resolveAbility(context)
-            }))
-        );
+    /** Resolves the effect of the ring of `element` again (the Fire ring's Back option). */
+    resolveRingEffect(element: Element, optional: boolean = true, onResolution?: (resolved: boolean) => void): void {
+        this.game.resolveAbility(RingAbilities.contextFor(this, element, optional, onResolution));
     }
 
     isKihoPlayedThisConflict(context: AbilityContext, cardBeingPlayed: BaseCard): boolean {

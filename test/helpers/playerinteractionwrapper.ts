@@ -742,9 +742,9 @@ class PlayerInteractionWrapper {
     }
 
     setupSkirmishProvinces(): void {
-        const p1 = this.player.getProvinceCardInProvince('province 1');
-        const p2 = this.player.getProvinceCardInProvince('province 2');
-        const p3 = this.player.getProvinceCardInProvince('province 3');
+        const p1 = this.player.getProvinceCardInProvince(Location.ProvinceOne);
+        const p2 = this.player.getProvinceCardInProvince(Location.ProvinceTwo);
+        const p3 = this.player.getProvinceCardInProvince(Location.ProvinceThree);
         if(p1) {
             this.provinceDeck.push(p1);
         }

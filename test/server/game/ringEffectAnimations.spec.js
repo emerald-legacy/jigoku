@@ -20,7 +20,7 @@ function makeContext(overrides = {}) {
         player: {
             name: 'player1',
             opponent: { name: 'player2', hand: [] },
-            resolveRingEffects: jasmine.createSpy('resolveRingEffects'),
+            resolveRingEffect: jasmine.createSpy('resolveRingEffect'),
             checkRestrictions: jasmine.createSpy('checkRestrictions').and.returnValue(true),
             getEffects: () => []
         },

@@ -15,7 +15,7 @@ class AsakoTogama extends DrawCard {
             }, joint([
                 selectRing((context) => ({
                     activePromptTitle: 'Choose a ring to return',
-                    ringCondition: (ring) => ring.claimedBy === context.player.name,
+                    ringCondition: (ring) => ring.isClaimedBy(context.player),
                     message: (context, ring) => msg`${context.player} returns the ${ring}`,
                     gameAction: returnRing()
                 })),
