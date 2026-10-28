@@ -50,6 +50,15 @@ describe('Recalled Defenses', function() {
             expect(this.kd.location).toBe('stronghold province');
         });
 
+        it('should not name a facedown card in chat', function() {
+            this.kd.facedown = true;
+            this.player1.clickCard(this.defenses);
+            this.player1.clickCard(this.kd);
+            expect(this.kd.location).toBe('stronghold province');
+            expect(this.kd.facedown).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 plays Recalled Defenses to move a facedown card to their stronghold province');
+        });
+
         it('should correctly discard itself', function() {
             this.player1.clickCard(this.defenses);
             this.player1.clickCard(this.ba);

@@ -13,7 +13,7 @@ class RecalledDefenses extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) => card.type !== CardType.Province && card !== context.source && card.location !== Location.StrongholdProvince
             }, moveCard({ destination: Location.StrongholdProvince }))
-            .chatText((context) => msg`move ${context.target} to their stronghold province`);
+            .chatText((context) => msg`move ${context.target.isFacedown() ? 'a facedown card' : context.target} to their stronghold province`);
     }
 }
 

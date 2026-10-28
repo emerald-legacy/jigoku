@@ -922,8 +922,14 @@ export class Player extends GameObject {
             Location.ConflictDiscardPile,
             Location.RemovedFromGame
         ];
+        const hiddenSources: string[] = [
+            Location.Hand,
+            Location.ConflictDeck,
+            Location.DynastyDeck,
+            Location.ProvinceDeck
+        ];
         let display: string | BaseCard = 'a card';
-        if((card.isFaceup() && source !== Location.Hand) || revealingPiles.includes(target)) {
+        if((card.isFaceup() && !hiddenSources.includes(source)) || revealingPiles.includes(target)) {
             display = card;
         }
 

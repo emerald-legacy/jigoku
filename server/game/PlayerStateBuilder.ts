@@ -95,12 +95,12 @@ export class PlayerStateBuilder {
             }
         }
 
-        if(player.showConflict) {
+        if(isActivePlayer && player.showConflict) {
             state.showConflictDeck = true;
             state.cardPiles.conflictDeck = this.getSummaryForCardList(player.conflictDeck, activePlayer);
         }
 
-        if(player.showDynasty) {
+        if(isActivePlayer && player.showDynasty) {
             state.showDynastyDeck = true;
             state.cardPiles.dynastyDeck = this.getSummaryForCardList(player.dynastyDeck, activePlayer);
         }

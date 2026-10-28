@@ -37,9 +37,10 @@ class CycleOfRebirth extends DrawCard {
             ]))
             .chatText((context) => {
                 const target = context.target;
+                const display = target.isFacedown() ? 'a facedown card' : target;
                 return target.controller === context.source.controller
-                    ? msg`shuffle ${target} and ${context.source} into ${target.controller}'s dynasty deck`
-                    : msg`shuffle ${target} into ${target.controller}'s dynasty deck. ${context.source} is shuffled into ${context.source.controller}'s dynasty deck`;
+                    ? msg`shuffle ${display} and ${context.source} into ${target.controller}'s dynasty deck`
+                    : msg`shuffle ${display} into ${target.controller}'s dynasty deck. ${context.source} is shuffled into ${context.source.controller}'s dynasty deck`;
             })
             .max(perRound(1));
     }
