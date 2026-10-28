@@ -118,6 +118,11 @@ export class GameInputHandler {
             this.ringClicked(sourcePlayer, ring.element);
             return;
         }
+
+        if(!this.game.manualMode) {
+            return;
+        }
+
         MenuCommands.ringMenuClick(menuItem, this.game, player, ring);
         this.game.checkGameState(true);
     }

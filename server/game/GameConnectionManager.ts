@@ -11,7 +11,7 @@ export class GameConnectionManager {
 
     watch(socketId: string, user: UserIdentity): boolean {
         const game = this.game;
-        if(!game.allowSpectators) {
+        if(!game.allowSpectators || game.getPlayerByName(user.username)) {
             return false;
         }
 
