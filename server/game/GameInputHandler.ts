@@ -81,8 +81,8 @@ export class GameInputHandler {
             return;
         }
 
-        // If it's not the conflict phase and the ring hasn't been claimed, flip it
-        if(this.game.currentPhase !== Phase.Conflict && !ring.claimed) {
+        // In manual mode, outside the conflict phase, clicking an unclaimed ring flips it
+        if(this.game.manualMode && this.game.currentPhase !== Phase.Conflict && !ring.claimed) {
             ring.flipConflictType();
         }
     }
@@ -135,6 +135,9 @@ export class GameInputHandler {
         }
 
         if(!player.showConflict) {
+            if(!this.game.manualMode) {
+                return;
+            }
             player.showConflictDeck();
 
             this.game.addMessage(msg`${player} is looking at their conflict deck`);
@@ -153,6 +156,9 @@ export class GameInputHandler {
         }
 
         if(!player.showDynasty) {
+            if(!this.game.manualMode) {
+                return;
+            }
             player.showDynastyDeck();
 
             this.game.addMessage(msg`${player} is looking at their dynasty deck`);
@@ -182,6 +188,9 @@ export class GameInputHandler {
             return;
         }
         if(!Number.isInteger(value) || Math.abs(value) > 1) {
+            return;
+        }
+        if(!this.game.manualMode) {
             return;
         }
 
@@ -254,14 +263,14 @@ export class GameInputHandler {
 
     shuffleConflictDeck(playerName: string): void {
         const player = this.game.getPlayerByName(playerName);
-        if(player) {
+        if(player && this.game.manualMode) {
             player.shuffleConflictDeck();
         }
     }
 
     shuffleDynastyDeck(playerName: string): void {
         const player = this.game.getPlayerByName(playerName);
-        if(player) {
+        if(player && this.game.manualMode) {
             player.shuffleDynastyDeck();
         }
     }

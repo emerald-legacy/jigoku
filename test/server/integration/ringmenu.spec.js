@@ -29,3 +29,25 @@ describe('Ring menu commands', function() {
         });
     });
 });
+
+describe('Clicking a ring outside the conflict phase', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'fate'
+            });
+            this.game.rings.air.conflictType = 'military';
+        });
+
+        it('does not flip it outside manual mode', function() {
+            this.game.ringClicked('player1', 'air');
+            expect(this.game.rings.air.conflictType).toBe('military');
+        });
+
+        it('flips it in manual mode', function() {
+            this.game.manualMode = true;
+            this.game.ringClicked('player1', 'air');
+            expect(this.game.rings.air.conflictType).toBe('political');
+        });
+    });
+});

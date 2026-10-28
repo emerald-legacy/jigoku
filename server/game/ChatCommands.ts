@@ -397,6 +397,11 @@ export class ChatCommands {
         if(this.game.manualMode) {
             this.game.manualMode = false;
             this.game.addMessage(msg`${player} switches manual mode off`);
+            // Deck views are a manual-mode tool; don't leave them open
+            for(const p of this.game.getPlayers()) {
+                p.showConflict = false;
+                p.showDynasty = false;
+            }
         } else {
             this.game.manualMode = true;
             this.game.addMessage(msg`${player} switches manual mode on`);
