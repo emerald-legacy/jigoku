@@ -246,6 +246,7 @@ describe('Meticulous Scout', function() {
             this.player1.clickCard(this.scout);
             this.player1.clickCard(this.manicured);
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 uses Meticulous Scout to place a dishonored status token on Manicured Garden, blanking it');
         });
 
         it('should not trigger Ardent Omoidasu', function () {
@@ -261,6 +262,7 @@ describe('Meticulous Scout', function() {
             this.player1.clickCard(this.scout);
             this.player1.clickCard(this.manicured);
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 uses Meticulous Scout to place a dishonored status token on Manicured Garden, blanking it');
         });
     });
 });

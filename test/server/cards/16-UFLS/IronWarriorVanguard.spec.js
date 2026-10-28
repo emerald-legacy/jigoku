@@ -44,6 +44,7 @@ describe('Iron Warrior Vanguard', function () {
             this.player2.pass();
             this.player1.pass();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a military conflict 4 vs 0');
         });
 
         it('should not trigger after losing the conflict', function () {
@@ -54,6 +55,7 @@ describe('Iron Warrior Vanguard', function () {
             this.player2.pass();
             this.player1.pass();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 6 vs 2');
         });
     });
 });

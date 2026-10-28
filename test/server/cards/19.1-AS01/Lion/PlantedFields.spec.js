@@ -32,12 +32,6 @@ describe('Planted Fields', function() {
             expect(this.player1).toBeAbleToSelect(this.plantedFields);
         });
 
-        it('should not trigger at the end of the conflict phase if it is in a broken province', function() {
-            this.shameful.isBroken = true;
-            this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilities');
-        });
-
         it('should sacrifice itself to give 2 fate and draw 2 cards on first trigger', function() {
             const honor = this.player1.honor;
             const fate = this.player1.fate;
@@ -90,6 +84,50 @@ describe('Planted Fields', function() {
             this.player1.clickCard(this.plantedFields);
 
             expect(honorGained).toHaveBeenCalledWith(jasmine.objectContaining({ amount: 2 }));
+        });
+    });
+});
+
+describe('Planted Fields in a broken province', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['vanguard-warrior'],
+                    dynastyDiscard: ['planted-fields']
+                },
+                player2: {
+                    inPlay: ['akodo-toturi']
+                }
+            });
+            this.plantedFields = this.player1.placeCardInProvince('planted-fields', 'province 1');
+            this.shameful = this.player1.findCardByName('shameful-display', 'province 1');
+            this.toturi = this.player2.findCardByName('akodo-toturi');
+
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.toturi],
+                province: this.shameful
+            });
+            this.player1.clickPrompt('Done');
+            this.noMoreActions();
+            this.player2.clickPrompt('No');
+            this.player2.clickPrompt('Don\'t resolve');
+            this.player2.clickPrompt('Pass');
+            this.noMoreActions();
+        });
+
+        it('should not trigger at the end of the conflict phase', function() {
+            expect(this.shameful.isBroken).toBe(true);
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.noMoreActions();
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.game.currentPhase).toBe('fate');
+            expect(this.plantedFields.location).toBe('province 1');
         });
     });
 });

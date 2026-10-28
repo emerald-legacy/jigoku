@@ -36,6 +36,22 @@ describe('Good Omen', function() {
             this.player2.pass();
             this.player1.clickCard(this.plagiarist);
             expect(this.player1).toHavePrompt('Action Window');
+            expect(this.kuwanan.fate).toBe(0);
+        });
+
+        it('should let an Illustrious Plagiarist use a copy with composure', function() {
+            this.player1.pass();
+            this.player2.clickCard(this.goodOmen);
+            this.player2.clickCard(this.shoju);
+            this.player1.clickCard(this.plagiarist);
+            this.player1.clickCard(this.goodOmen);
+            this.player1.player.showBid = 1;
+            this.player2.player.showBid = 5;
+            this.player2.pass();
+            this.player1.clickCard(this.plagiarist);
+            expect(this.player1).toBeAbleToSelect(this.kuwanan);
+            this.player1.clickCard(this.kuwanan);
+            expect(this.kuwanan.fate).toBe(1);
         });
     });
 });

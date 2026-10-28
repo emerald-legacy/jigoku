@@ -295,34 +295,26 @@ describe('Magistrate\'s Intervention on your own attacker', function() {
                 }
             });
             this.whisperer = this.player2.findCardByName('doji-whisperer');
-            this.resolveConflict = () => {
-                this.noMoreActions();
-                for(let i = 0; i < 4; i++) {
-                    for(const player of [this.player1, this.player2]) {
-                        const prompt = player.currentPrompt();
-                        if(prompt.buttons.some((button) => button.text === 'Don\'t resolve')) {
-                            player.clickPrompt('Don\'t resolve');
-                        } else if(prompt.menuTitle.startsWith('Do you wish to discard')) {
-                            player.clickPrompt('No');
-                        } else if(prompt.menuTitle.startsWith('Any reactions')) {
-                            player.clickPrompt('Pass');
-                        }
-                    }
-                }
-                if(![this.player1, this.player2].some((player) => player.currentPrompt().menuTitle === 'Choose an elemental ring')) {
-                    this.noMoreActions();
-                }
-            };
         });
 
         it('should not announce a second dishonor', function() {
             this.noMoreActions();
             this.initiateConflict({ attackers: ['doji-challenger'], defenders: [], type: 'military', ring: 'air' });
-            this.resolveConflict();
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t resolve');
+            this.noMoreActions();
             this.initiateConflict({ attackers: ['akodo-toturi'], defenders: [], type: 'military', ring: 'earth' });
-            this.resolveConflict();
+            this.noMoreActions();
+            this.player2.clickPrompt('No');
+            this.player2.clickPrompt('Don\'t resolve');
+            this.player2.clickPrompt('Pass');
+            this.noMoreActions();
             this.initiateConflict({ attackers: ['kakita-yoshi'], defenders: [], type: 'political', ring: 'fire', province: this.player2.provinces['province 2'].provinceCard });
-            this.resolveConflict();
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t resolve');
+            this.noMoreActions();
             this.initiateConflict({ attackers: [this.whisperer], defenders: [], type: 'political', ring: 'water', province: this.player1.provinces['province 2'].provinceCard });
 
             this.player1.pass();

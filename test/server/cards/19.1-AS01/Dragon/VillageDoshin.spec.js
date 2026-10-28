@@ -97,7 +97,7 @@ describe('Village Doshin', function () {
             this.player2.clickCard(this.fineKatana);
 
             this.player1.clickCard(this.villageDoshin);
-            expect(this.player2.fate).toBeGreaterThanOrEqual(1);
+            expect(this.player2.hand.length).toBe(2);
             expect(this.player2).not.toHavePrompt('Select one');
             expect(this.villageDoshin.location).toBe('conflict discard pile');
             expect(this.letGo.location).toBe('conflict discard pile');

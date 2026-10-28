@@ -98,8 +98,8 @@ describe('Ofushikai', function() {
                     expect(this.getChatLogs(3)).toContain('player1 uses Shiba Tsukune\'s gained ability from Ofushikai to send Crisis Breaker home and prevent it from attacking this phase');
                     expect(this.player2).toHavePrompt('Conflict Action Window');
                     expect(this.crisisBreaker.inConflict).toBe(false);
-                    const cannotParticipateAsAttackerEffects = this.crisisBreaker.effects.filter(effect => effect.type === 'cannotParticipateAsAttacker' && effect.duration === 'untilEndOfPhase');
-                    expect(cannotParticipateAsAttackerEffects.length).toBeGreaterThan(0);
+                    expect(this.crisisBreaker.canParticipateAsAttacker('military')).toBe(false);
+                    expect(this.crisisBreaker.canParticipateAsAttacker('political')).toBe(false);
                 });
 
                 it('should not trigger action if champion it is attached to is not participating', function() {
@@ -111,6 +111,7 @@ describe('Ofushikai', function() {
                     this.player2.pass();
                     this.player1.clickCard(this.shibaTsukune);
                     expect(this.player1).not.toHavePrompt('Choose a character');
+                    expect(this.player1).toHavePrompt('Conflict Action Window');
                 });
             });
         });

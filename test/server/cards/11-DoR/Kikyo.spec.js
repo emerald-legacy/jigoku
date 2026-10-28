@@ -92,7 +92,7 @@ describe('kikyo', function() {
                     expect(this.player1).not.toBeAbleToSelect(this.kikyo);
                 });
 
-                it('should trigger when opponent draws a card', function() {
+                it('should not trigger when opponent draws a card', function() {
                     this.initiateConflict({
                         type: 'military',
                         attackers: [this.kisadaP1, this.oushi, this.yoritomo],
@@ -102,6 +102,7 @@ describe('kikyo', function() {
                     this.player1.clickCard(this.bhc);
                     this.player1.clickPrompt('player2');
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                    expect(this.getChatLogs(5)).toContain('player1 plays Backhanded Compliment to make player2 lose an honor and draw a card');
                 });
 
                 it('should not trigger if holder is not participating', function() {
@@ -114,6 +115,7 @@ describe('kikyo', function() {
                     this.player1.clickCard(this.bhc);
                     this.player1.clickPrompt('player1');
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                    expect(this.getChatLogs(5)).toContain('player1 plays Backhanded Compliment to make player1 lose an honor and draw a card');
                 });
 
                 it('should force opponent to discard at random', function() {

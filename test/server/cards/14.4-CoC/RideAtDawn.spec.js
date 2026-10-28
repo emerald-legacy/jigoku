@@ -37,6 +37,8 @@ describe('Ride at Dawn', function() {
             this.player2.pass();
             this.player1.pass();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 passes');
+            expect(this.game.currentPhase).toBe('draw');
         });
     });
 });

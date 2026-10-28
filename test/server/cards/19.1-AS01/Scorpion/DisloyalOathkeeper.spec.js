@@ -148,10 +148,9 @@ describe('Disloyal Oathkeeper after a change of control', function () {
             expect(this.oathkeeper.controller).toBe(this.player2.player);
             this.player1.clickCard('banzai');
             this.player1.clickCard(this.berserker);
-            if(this.player1.currentButtons.includes('Done')) {
-                this.player1.clickPrompt('Done');
-            }
+            this.player1.clickPrompt('Done');
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(4)).toContain('player1 plays Banzai! to grant 2 military skill to Matsu Berserker');
         });
     });
 });

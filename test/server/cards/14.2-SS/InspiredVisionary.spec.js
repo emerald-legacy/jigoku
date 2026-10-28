@@ -36,6 +36,7 @@ describe('Inspired Visionary', function() {
             this.noMoreActions();
             this.player1.clickPrompt('military');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 claims the Emperor\'s military favor!');
         });
 
         it('should allow bowing to shuffle an attachment back into the deck and have the owner draw a card', function() {
@@ -108,6 +109,7 @@ describe('Inspired Visionary', function() {
             this.noMoreActions();
             this.player1.clickPrompt('military');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 claims the Emperor\'s military favor!');
         });
     });
 });

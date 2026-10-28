@@ -54,6 +54,7 @@ describe('Daidoji Harrier', function() {
                 });
                 this.noMoreActions();
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 1 vs 0');
             });
 
             it('should not prompt if your opponent has less than 2 cards', function() {
@@ -67,6 +68,8 @@ describe('Daidoji Harrier', function() {
                 this.player2.playAttachment(this.katana, this.whisperer);
                 this.noMoreActions();
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 0');
+                expect(this.player2.hand.length).toBe(1);
             });
 
             it('should prompt your opponent to choose two cards in their hand', function() {

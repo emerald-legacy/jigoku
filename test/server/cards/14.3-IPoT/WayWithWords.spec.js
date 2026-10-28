@@ -48,6 +48,7 @@ describe('Way with Words', function () {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a military conflict 1 vs 0');
         });
 
         it('can\'t trigger at home', function () {
@@ -59,7 +60,8 @@ describe('Way with Words', function () {
                 defenders: []
             });
             this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilites');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 3 vs 0');
         });
 
         it('can\'t trigger after losing the conflict', function () {
@@ -71,7 +73,8 @@ describe('Way with Words', function () {
                 defenders: [this.yogoHiroue]
             });
             this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilites');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a political conflict 4 vs 2');
         });
 
         it('attaching to an opponents character', function () {

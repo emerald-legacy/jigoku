@@ -52,6 +52,8 @@ describe('Way Station Trader', function () {
                 attackers: [this.trader]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 reveals Shameful Display due to Framework effect');
+            expect(this.player2.fate).toBe(0);
         });
 
         it('should not activate when this character is not participating', function () {
@@ -60,6 +62,7 @@ describe('Way Station Trader', function () {
                 attackers: [this.outrider]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 reveals Shameful Display due to Framework effect');
         });
 
         it('should activate when a province is revealed mid-conflict', function () {

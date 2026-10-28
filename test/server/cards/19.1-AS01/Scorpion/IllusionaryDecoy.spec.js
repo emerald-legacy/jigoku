@@ -38,6 +38,8 @@ describe('Illusionary Decoy', function () {
 
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
             expect(this.player2).not.toBeAbleToSelect(this.decoy);
+            expect(this.getChatLogs(3)).toContain('player2 has defended with skill 3');
+            expect(this.decoy.location).toBe('hand');
         });
 
         it('should trigger when conflict begins', function () {

@@ -164,9 +164,7 @@ describe('Togashi Tsurumi\'s abilities gained through Contemplative Wisdom', fun
 
             this.player2.pass();
             this.player1.clickCard(this.raitsugu);
-            if(this.player1.currentPrompt().buttons.some((button) => button.text === 'Place a card underneath self')) {
-                this.player1.clickPrompt('Place a card underneath self');
-            }
+            expect(this.player1).toHavePrompt('Choose a card');
             this.player1.clickCard('banzai');
             expect(this.player1.findCardByName('banzai').isUnderneath(this.raitsugu)).toBe(true);
             expect(this.raitsugu.militarySkill).toBe(military + 1);

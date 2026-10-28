@@ -66,6 +66,7 @@ describe('Eloquent Advocate', function() {
             this.advocate.bow();
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 1 vs 0');
         });
 
         it('should not react to winning a mil conflict', function() {
@@ -79,6 +80,7 @@ describe('Eloquent Advocate', function() {
 
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 6 vs 2');
         });
     });
 });

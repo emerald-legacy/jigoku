@@ -63,6 +63,7 @@ describe('Daidoji Iron Warrior', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 4 vs 3');
         });
 
         it('should not trigger when winning a conflict on attack without being participating', function() {
@@ -74,6 +75,7 @@ describe('Daidoji Iron Warrior', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a military conflict 3 vs 2');
         });
 
         it('should trigger on winning a conflict on defense', function() {
@@ -102,6 +104,7 @@ describe('Daidoji Iron Warrior', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 4 vs 3');
         });
 
         it('should prompt both players to discard down to four cards', function() {

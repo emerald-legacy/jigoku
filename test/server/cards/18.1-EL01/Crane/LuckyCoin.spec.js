@@ -79,6 +79,7 @@ describe('Lucky Coin', function () {
 
                 it('nothing happens', function () {
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                    expect(this.getChatLogs(3)).toContain('player1 reveals Iron Mine, Miya Library, Fushichō and Miya Mystic');
                 });
             });
 
@@ -92,6 +93,7 @@ describe('Lucky Coin', function () {
 
                 it('nothing happens', function () {
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                    expect(this.getChatLogs(3)).toContain('player1 reveals Iron Mine, Miya Library, Fushichō and Miya Mystic');
                 });
             });
         });

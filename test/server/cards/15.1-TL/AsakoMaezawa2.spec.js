@@ -73,7 +73,8 @@ describe('Asako Maezawa 2', function () {
                 defenders: []
             });
             this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilites');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 1 vs 0');
         });
 
         it('can target a bowed Phoenix character', function() {

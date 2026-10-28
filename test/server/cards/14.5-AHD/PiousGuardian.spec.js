@@ -61,6 +61,7 @@ describe('Pious Guardian', function() {
             this.sd2.isBroken = true;
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.game.currentPhase).toBe('fate');
         });
     });
 });

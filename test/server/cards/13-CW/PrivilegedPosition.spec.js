@@ -44,12 +44,16 @@ describe('Priviledged Position', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(4)).toContain('player2 draws 1 card for the draw phase');
+                expect(this.player2.player.getConflictOpportunities()).toBe(2);
             });
 
             it('should not trigger when your opponent bids lower and reduce opponent to 1 conflict opportunity', function() {
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('1');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(4)).toContain('player2 draws 1 card for the draw phase');
+                expect(this.player2.player.getConflictOpportunities()).toBe(2);
             });
 
             it('should trigger on a duel and remove your opponents last conflict choice', function() {

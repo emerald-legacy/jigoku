@@ -82,6 +82,8 @@ describe('Inquisitorial Initiate', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 2 vs 0');
+            expect(this.player2.hand.length).toBe(0);
         });
 
         it('should prompt your opponent to choose cards in their hand equal to the number of characters they control with no fate', function() {

@@ -112,6 +112,7 @@ describe('Ki Alignment', function() {
                 attackers: [this.nitenMaster]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 has initiated a military conflict with skill 3');
         });
 
         it('should not trigger its reaction if your opponent defends with a monk', function() {
@@ -120,6 +121,7 @@ describe('Ki Alignment', function() {
                 defenders: [this.wanderer]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 has defended with skill 2');
         });
 
         it('should not trigger its reaction if your opponent attacks with a monk and you defend without one', function() {
@@ -130,6 +132,7 @@ describe('Ki Alignment', function() {
                 defenders: [this.nitenMaster]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 has defended with skill 3');
         });
 
         it('should trigger its reaction if you defend with a monk', function() {

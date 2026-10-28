@@ -22,18 +22,12 @@ describe('Make An Opening', function() {
             });
 
             describe('When played, it', function() {
-                var milBefore;
-                var polBefore;
-                beforeEach(function() {
-                    milBefore = this.tenguSensei.militarySkill;
-                    polBefore = this.tenguSensei.politicalSkill;
-                });
-
+                // Tengu Sensei is 4 military / 2 political
                 [
-                    { p1: 5, p2: 4, diff: 1 },
-                    { p1: 4, p2: 5, diff: 1 },
-                    { p1: 5, p2: 3, diff: 2 },
-                    { p1: 1, p2: 5, diff: 4 }
+                    { p1: 5, p2: 4, mil: 3, pol: 1 },
+                    { p1: 4, p2: 5, mil: 3, pol: 1 },
+                    { p1: 5, p2: 3, mil: 2, pol: 0 },
+                    { p1: 1, p2: 5, mil: 0, pol: 0 }
                 ].forEach(function(bids) {
                     it(`should apply absolute diff of honor dial to military and political skill of target character (bids ${bids.p1} vs ${bids.p2})`, function() {
                         this.player1.player.showBid = bids.p1;
@@ -41,8 +35,8 @@ describe('Make An Opening', function() {
                         this.player2.pass();
                         this.player1.clickCard('make-an-opening');
                         this.player1.clickCard(this.tenguSensei);
-                        expect(this.tenguSensei.militarySkill).toBe(Math.max(milBefore - bids.diff, 0));
-                        expect(this.tenguSensei.politicalSkill).toBe(Math.max(polBefore - bids.diff, 0));
+                        expect(this.tenguSensei.militarySkill).toBe(bids.mil);
+                        expect(this.tenguSensei.politicalSkill).toBe(bids.pol);
                     });
                 });
             });
@@ -52,8 +46,10 @@ describe('Make An Opening', function() {
                 this.player2.player.showBid = 5;
                 this.player2.pass();
                 this.player1.clickCard('make-an-opening');
-                expect(this.player1).not.toHavePrompt('Make An Opening');
+                expect(this.player1).not.toHavePrompt('Make an Opening');
                 expect(this.player1).not.toBeAbleToSelect(this.tenguSensei);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.player1.findCardByName('make-an-opening').location).toBe('hand');
             });
         });
     });

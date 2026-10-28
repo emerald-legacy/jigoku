@@ -61,6 +61,7 @@ describe('Raze to the Ground', function() {
             this.noMoreActions();
 
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 3 vs 2');
         });
 
         it('should not react with no faceup provinces', function() {
@@ -77,6 +78,7 @@ describe('Raze to the Ground', function() {
             this.noMoreActions();
 
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a military conflict 3 vs 3');
         });
 
         it('should not react if you lose', function() {
@@ -90,6 +92,7 @@ describe('Raze to the Ground', function() {
             this.challenger.bowed = true;
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 3 vs 0');
         });
 
         it('should ask you to dishonor a participating character you control', function() {
@@ -241,7 +244,9 @@ describe('Raze to the Ground', function() {
             });
 
             this.noMoreActions();
+            expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).not.toBeAbleToSelect(this.raze);
+            expect(this.getChatLogs(3)).toContain('player1 won a military conflict 9 vs 3');
         });
     });
 });

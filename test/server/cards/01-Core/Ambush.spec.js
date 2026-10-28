@@ -9,7 +9,8 @@ describe('Ambush', function() {
                 player2: {
                     fate: 50,
                     inPlay: ['Adept of the Waves'],
-                    hand: ['Ambush', 'Adept of Shadows', 'Adept of Shadows', 'Adept of Shadows', 'bayushi-kachiko', 'vengeful-oathkeeper']
+                    hand: ['Ambush', 'Adept of Shadows', 'Adept of Shadows', 'Adept of Shadows', 'bayushi-kachiko', 'vengeful-oathkeeper'],
+                    dynastyDiscard: ['bayushi-manipulator']
                 }
             });
             this.noMoreActions();
@@ -23,6 +24,20 @@ describe('Ambush', function() {
             this.adept3 = this.player2.hand[3];
             this.kachiko = this.player2.hand[4];
             this.lion = this.player2.hand[5];
+        });
+
+        it('should put characters from hand and provinces into play as participating characters', function() {
+            this.manipulator = this.player2.placeCardInProvince('bayushi-manipulator', 'province 1');
+            this.manipulator.facedown = false;
+            this.player2.clickCard(this.ambush, 'hand');
+            this.player2.clickCard(this.adept1, 'hand');
+            this.player2.clickCard(this.manipulator);
+            this.player2.clickPrompt('Done');
+            expect(this.adept1.location).toBe('play area');
+            expect(this.manipulator.location).toBe('play area');
+            expect(this.adept1.isParticipating()).toBe(true);
+            expect(this.manipulator.isParticipating()).toBe(true);
+            expect(this.ambush.location).toBe('conflict discard pile');
         });
 
         describe('When playing Ambush', function() {

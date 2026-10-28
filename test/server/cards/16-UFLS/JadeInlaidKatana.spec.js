@@ -57,7 +57,8 @@ describe('Jade Inlaid Katana', function () {
                 defenders: []
             });
             this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilites');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 3 vs 0');
         });
 
         it('can\'t trigger after losing the conflict', function () {
@@ -68,7 +69,8 @@ describe('Jade Inlaid Katana', function () {
                 defenders: [this.yogoHiroue]
             });
             this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilites');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a political conflict 6 vs 3');
         });
     });
 });

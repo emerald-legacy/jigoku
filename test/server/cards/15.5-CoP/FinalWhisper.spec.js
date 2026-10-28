@@ -49,6 +49,7 @@ describe('Final Whisper', function() {
             this.player2.clickCard(this.scorp);
             this.player2.clickCard(this.yokuni);
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 plays Way of the Scorpion to dishonor Togashi Yokuni');
         });
 
         it('should react to honoring a neutral character', function() {
@@ -63,6 +64,7 @@ describe('Final Whisper', function() {
             this.player2.clickCard(this.scorp);
             this.player2.clickCard(this.brash);
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 plays Way of the Scorpion to dishonor Brash Samurai');
         });
 
         it('should react to dishonoring as a cost', function() {

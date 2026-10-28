@@ -50,6 +50,7 @@ describe('Hida Backbreaker', function () {
             this.player2.pass();
             this.player1.pass();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 4 vs 2');
         });
 
         it('should not trigger after losing the conflict', function () {
@@ -60,6 +61,7 @@ describe('Hida Backbreaker', function () {
             this.player2.pass();
             this.player1.pass();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 6 vs 3');
         });
 
         it('no opponents attachments', function () {

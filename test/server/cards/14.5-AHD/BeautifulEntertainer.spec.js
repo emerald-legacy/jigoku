@@ -45,6 +45,8 @@ describe('Beautiful Entertainer', function() {
             this.player1.clickCard(this.bayushiShoju);
             this.player1.clickCard(this.entertainer);
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.entertainer.location).toBe('dynasty discard pile');
+            expect(this.player2.honor).toBe(9);
         });
 
         it('should not prompt you to gain 2 honor if you are more honorable', function() {
@@ -54,6 +56,8 @@ describe('Beautiful Entertainer', function() {
             this.player1.clickCard(this.bayushiShoju);
             this.player1.clickCard(this.entertainer);
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.entertainer.location).toBe('dynasty discard pile');
+            expect(this.player2.honor).toBe(10);
         });
     });
 });
