@@ -14,7 +14,7 @@ export class StaticEffect<EffectType extends EffectName = EffectName, Target ext
     constructor(type: EffectType, value: StaticValue<EffectType, Target>) {
         super(type);
         if(value instanceof EffectValueBase) {
-            this.value = value;
+            this.value = value.copyForEffect();
         } else {
             this.value = new EffectValue(value);
         }

@@ -25,6 +25,11 @@ export abstract class EffectValueBase<Value, Target = unknown> {
 
     public reset(): void {}
 
+    /** The holder for one effect. Effects made from one factory share the factory's holder unless this copies it. */
+    public copyForEffect(): EffectValueBase<Value, Target> {
+        return this;
+    }
+
     /** A holder to apply to this target instead of this one. */
     public copyForTarget(): EffectValueBase<Value, Target> | undefined {
         return undefined;

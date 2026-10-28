@@ -162,6 +162,11 @@ export class Restriction extends EffectValueBase<Restriction> {
         return this;
     }
 
+    // each effect sets its own context: a copy of the card (Shosuro Actor) must not take over the original's
+    override copyForEffect(): Restriction {
+        return new Restriction({ cannot: this.type, appliesTo: this.appliesTo, applyingPlayer: this.applyingPlayer, params: this.params });
+    }
+
     /** `type` undefined: only a restriction that names no type matches. */
     isMatch(type: RestrictionType | PlayType | undefined, context: AbilityContext, card?: BaseCard): boolean {
         if(this.type === RestrictionType.LeavePlay) {

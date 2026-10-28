@@ -139,11 +139,14 @@ export class PutIntoPlayAction<Context extends AbilityContext = AbilityContext> 
 
         player.moveCard(card, Location.PlayArea);
 
-        //moveCard sets all this stuff and only works if the owner is moving cards, so we're switching it around
+        // moveCard put the card into the pile of the player who put it into play
         if(card.controller !== finalController) {
+            const index = player.cardsInPlay.indexOf(card);
+            if(index >= 0) {
+                player.cardsInPlay.splice(index, 1);
+            }
             card.controller = finalController;
             card.setDefaultController(card.controller);
-            card.owner.cardsInPlay.splice(card.owner.cardsInPlay.indexOf(card), 1);
             card.controller.cardsInPlay.push(card);
         }
 
