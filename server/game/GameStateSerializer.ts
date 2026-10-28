@@ -16,8 +16,17 @@ export interface FormattedDeck {
     role: string | undefined;
 }
 
+/** Hidden card identities from state `seq` on, until the next entry. */
+export interface HiddenInfoChange {
+    seq: number;
+    info: Record<string, unknown>;
+}
+
 export class GameStateSerializer {
     private lastHiddenInfoFingerprint = '';
+    private stateSeq = 0;
+    /** The replay covers the game up to and including the winning state; states after it aren't numbered. */
+    private hiddenInfoClosed = false;
 
     constructor(private readonly game: Game) {}
 
@@ -172,15 +181,19 @@ export class GameStateSerializer {
         return parts.join('|');
     }
 
-    recordHiddenInfoIfChanged(): void {
+    recordHiddenInfo(): number | undefined {
+        if(this.hiddenInfoClosed) {
+            return undefined;
+        }
+        this.hiddenInfoClosed = !!this.game.winner;
+        const seq = ++this.stateSeq;
         const log = this.game.hiddenInfoLog;
         const fingerprint = this.getHiddenInfoFingerprint();
-        if(fingerprint === this.lastHiddenInfoFingerprint && log.length > 0) {
-            log.push(log[log.length - 1]);
-            return;
+        if(fingerprint !== this.lastHiddenInfoFingerprint || log.length === 0) {
+            this.lastHiddenInfoFingerprint = fingerprint;
+            log.push({ seq, info: this.getHiddenInfo() });
         }
-        this.lastHiddenInfoFingerprint = fingerprint;
-        log.push(this.getHiddenInfo());
+        return seq;
     }
 
     getHiddenInfo(): Record<string, unknown> {

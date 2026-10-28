@@ -205,11 +205,8 @@ export class GameServer implements GameRouter, LobbyHandlers {
         const allMessages = game.gameChat.messages;
         const totalMessages = allMessages.length;
         let spectatorState: ReturnType<Game['getState']> | null = null;
-
-        // Record hidden info (hands + facedown provinces) for replay enrichment — only when changed
-        if(game.started) {
-            game.recordHiddenInfoIfChanged();
-        }
+        // the client pairs its recorded states with the hidden-info log by this number
+        const stateSeq = game.started ? game.recordHiddenInfo() : undefined;
 
         for(const player of Object.values(game.getPlayersAndSpectators())) {
             if(player.socket && !player.left && !player.disconnected) {
@@ -233,11 +230,17 @@ export class GameServer implements GameRouter, LobbyHandlers {
                 // Replace full messages with just new ones, add flag for client
                 const stateWithMessages = Object.assign({}, state, {
                     messages: newMessages,
-                    newMessages: lastSent > 0
+                    newMessages: lastSent > 0,
+                    stateSeq
                 });
 
                 player.socket.send('gamestate', stateWithMessages);
             }
+        }
+
+        // the winning state is the last one numbered: the log is complete
+        if(stateSeq !== undefined && game.winner) {
+            this.sendHiddenInfoLog(game);
         }
 
         game.clearAnimations();
@@ -324,12 +327,13 @@ export class GameServer implements GameRouter, LobbyHandlers {
                 .post(`${env.analyticsUrl}/${env.environment}`, saveState)
                 .catch((err: unknown) => logger.warn(`Game report failed: ${err instanceof Error ? err.message : String(err)}`));
         }
+    }
 
-        // Send hidden info log (hands + provinces) to both players for replay enrichment
-        const hiddenInfoLog = game.hiddenInfoLog;
+    /** Sent to both players with the winning state; the replay ends there, even if play continues. */
+    private sendHiddenInfoLog(game: Game): void {
         for(const player of game.getPlayers()) {
             if(player.socket && !player.disconnected) {
-                player.socket.send('hiddeninfo', hiddenInfoLog);
+                player.socket.send('hiddeninfo', game.hiddenInfoLog);
             }
         }
     }
@@ -486,6 +490,11 @@ export class GameServer implements GameRouter, LobbyHandlers {
             }
 
             this.sendGameState(game);
+
+            // a player who missed the winning state still gets the replay's log
+            if(game.winner && !game.isSpectator(player)) {
+                socket.send('hiddeninfo', game.hiddenInfoLog);
+            }
         });
     }
 

@@ -39,7 +39,7 @@ import type { Duel } from './Duel.js';
 import { ConflictFlow } from './gamesteps/conflict/ConflictFlow.js';
 import { GameInputHandler } from './GameInputHandler.js';
 import { GameStateSerializer } from './GameStateSerializer.js';
-import type { FormattedDeck } from './GameStateSerializer.js';
+import type { FormattedDeck, HiddenInfoChange } from './GameStateSerializer.js';
 import type { MenuItem } from './MenuCommands.js';
 import type { MenuArg, Step } from './gamesteps/Step.js';
 import { GameEventManager } from './GameEventManager.js';
@@ -144,7 +144,7 @@ export class Game {
     winner?: Player;
     finishedAt?: Date;
     winReason?: string;
-    hiddenInfoLog: Record<string, unknown>[];
+    hiddenInfoLog: HiddenInfoChange[];
     startedAt?: Date;
     private _playersCache: Player[] | null = null;
     private _spectatorsCache: Spectator[] | null = null;
@@ -1067,16 +1067,17 @@ export class Game {
         return this.serializer.getState(activePlayerName, sharedState);
     }
 
-    /**
-     * Build a snapshot of hidden card identities (hands + facedown provinces) for replay enrichment.
-     * Called each time game state is sent so the log can be merged into the client replay at game end.
-     */
     getHiddenInfoFingerprint(): string {
         return this.serializer.getHiddenInfoFingerprint();
     }
 
-    recordHiddenInfoIfChanged(): void {
-        this.serializer.recordHiddenInfoIfChanged();
+    /**
+     * Numbers the state about to be sent and logs the hidden card identities (hands + facedown provinces)
+     * for the replay when they changed since the last entry. Returns the state's number, or undefined once
+     * the winning state was recorded: the replay ends there.
+     */
+    recordHiddenInfo(): number | undefined {
+        return this.serializer.recordHiddenInfo();
     }
 
     getHiddenInfo(): Record<string, unknown> {
