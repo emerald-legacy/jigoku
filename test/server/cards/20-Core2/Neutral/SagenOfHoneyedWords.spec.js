@@ -69,3 +69,35 @@ describe('Sagen of Honeyed Words', function () {
         });
     });
 });
+
+describe('Sagen of Honeyed Words - companion with 0 glory', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['sagen-of-honeyed-words', 'bayushi-manipulator', 'malicious-timekeeper']
+                },
+                player2: {}
+            });
+            this.sagen = this.player1.findCardByName('sagen-of-honeyed-words');
+            this.manipulator = this.player1.findCardByName('bayushi-manipulator');
+            this.timekeeper = this.player1.findCardByName('malicious-timekeeper');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.sagen, this.manipulator, this.timekeeper],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        // RRG Target: a referential target must let the effect change the game state
+        it('should not be able to choose a 0-glory character', function () {
+            expect(this.timekeeper.glory).toBe(0);
+            this.player1.clickCard(this.sagen);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.manipulator);
+            expect(this.player1).not.toBeAbleToSelect(this.timekeeper);
+        });
+    });
+});

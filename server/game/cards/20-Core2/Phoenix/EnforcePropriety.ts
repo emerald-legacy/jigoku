@@ -39,6 +39,7 @@ export default class EnforcePropriety extends DrawCard {
                 }))
             .otherwise()
                 .cancel()
-            .chatText('enforce the proper protocol');
+            .chatText('enforce the proper protocol')
+            .cannotBeMirrored();
     }
 }

@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { delayedEffect } from '../../effects.js';
-import { cardLastingEffect, putIntoPlay, removeFromGame, sequential } from '../../GameActions/GameActions.js';
+import { removeFromGame } from '../../GameActions/GameActions.js';
 import {CardType, Duration, Location} from '../../Constants.js';
 
 class ChampionsOfYomi extends DrawCard {
@@ -20,23 +20,20 @@ class ChampionsOfYomi extends DrawCard {
             .cost(costs.bow({
                 cardType: CardType.Stronghold
             }))
-            .gameAction(sequential([
-                putIntoPlay((context) => ({
-                    target: context.source
-                })),
-                cardLastingEffect((context) => ({
-                    target: context.source,
-                    duration: Duration.UntilEndOfRound,
-                    effect: delayedEffect({
-                        when: {
-                            onPhaseEnded: () => true
-                        },
-                        message: (context) => msg`${context.source} is removed from the game due to its delayed effect`,
-                        gameAction: removeFromGame()
-                    })
-                }))
-            ]))
-            .chatText('put {0} into play and remove {0} from the game at the end of the phase');
+            .putIntoPlay()
+            .chatText('put {0} into play and remove {0} from the game at the end of the phase')
+            .then()
+            .cardLastingEffect((context) => ({
+                target: context.source,
+                duration: Duration.UntilEndOfRound,
+                effect: delayedEffect({
+                    when: {
+                        onPhaseEnded: () => context.source.location === Location.PlayArea
+                    },
+                    message: (context) => msg`${context.source} is removed from the game due to its delayed effect`,
+                    gameAction: removeFromGame()
+                })
+            }));
     }
 }
 

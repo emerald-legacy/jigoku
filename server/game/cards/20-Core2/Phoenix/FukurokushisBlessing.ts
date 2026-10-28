@@ -12,6 +12,7 @@ export default class FukurokushisBlessing extends DrawCard {
             })
             .cancel()
             .chatText((context) => msg`cancel the effects of ${context.event.card}'s ability`)
-            .max(perRound(1));
+            .max(perRound(1))
+            .cannotBeMirrored();
     }
 }

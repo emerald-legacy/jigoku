@@ -44,15 +44,16 @@ describe('Kaiu Forges', function() {
                 this.pStronghold = this.player1.findCardByName('shameful-display', 'stronghold province');
             });
 
-            it('should allow you to choose a province when selected', function() {
+            // RRG Target: a referential target must let the effect change the game state
+            it('should only allow you to choose a province with a faceup Kaiu Wall', function() {
                 expect(this.kaiuForges.location).toBe('province 1');
                 this.player1.clickCard(this.kaiuForges);
                 expect(this.player1).toHavePrompt('Choose a province');
                 expect(this.player1).toBeAbleToSelect(this.p1);
                 expect(this.player1).toBeAbleToSelect(this.p2);
-                expect(this.player1).toBeAbleToSelect(this.p3);
-                expect(this.player1).toBeAbleToSelect(this.p4);
-                expect(this.player1).toBeAbleToSelect(this.pStronghold);
+                expect(this.player1).not.toBeAbleToSelect(this.p3);
+                expect(this.player1).not.toBeAbleToSelect(this.p4);
+                expect(this.player1).not.toBeAbleToSelect(this.pStronghold);
             });
 
             it('should allow you to choose a holding to place in a province', function() {
@@ -76,14 +77,15 @@ describe('Kaiu Forges', function() {
                 expect(this.player1).toHavePromptButton('Take nothing');
             });
 
-            it('should not swap with a facedown Kaiu Wall', function() {
+            it('should not allow you to choose a province with a facedown Kaiu Wall', function() {
                 this.watchtowerOfValor.facedown = true;
                 this.player1.clickCard(this.kaiuForges);
+                expect(this.player1).toHavePrompt('Choose a province');
+                expect(this.player1).toBeAbleToSelect(this.p1);
+                expect(this.player1).not.toBeAbleToSelect(this.p2);
                 this.player1.clickCard(this.p2);
-                this.player1.clickPrompt('Forgotten Library');
-                expect(this.getChatLogs(3)).toContain('player1 cannot put a holding into play because there is no Kaiu Wall in the selected province');
+                expect(this.player1).toHavePrompt('Choose a province');
                 expect(this.watchtowerOfValor.location).toBe('province 2');
-                expect(this.player2).toHavePrompt('Action Window');
             });
 
             it('should allow you to take nothing', function() {
@@ -119,18 +121,12 @@ describe('Kaiu Forges', function() {
                 expect(this.getChatLogs(2)).toContain('player1 is shuffling their dynasty deck');
             });
 
-            it('should allow you to choose a province without a kaiu wall to shuffle your deck', function() {
-                expect(this.kaiuForges.location).toBe('province 1');
+            it('should not allow you to choose a province without a Kaiu Wall', function() {
                 this.player1.clickCard(this.kaiuForges);
                 expect(this.player1).toHavePrompt('Choose a province');
                 this.player1.clickCard(this.p3);
-                expect(this.player1).toHavePrompt('Choose a holding to swap with a Kaiu Wall');
-                expect(this.player1).toHavePromptButton('Forgotten Library');
-                this.player1.clickPrompt('Forgotten Library');
-
-                expect(this.getChatLogs(3)).toContain('player1 uses Kaiu Forges to look at the top ten cards of their dynasty deck');
-                expect(this.getChatLogs(2)).toContain('player1 cannot put a holding into play because there is no Kaiu Wall in the selected province');
-                expect(this.getChatLogs(2)).toContain('player1 is shuffling their dynasty deck');
+                expect(this.player1).toHavePrompt('Choose a province');
+                expect(this.player1).not.toHavePrompt('Choose a holding to swap with a Kaiu Wall');
             });
         });
     });

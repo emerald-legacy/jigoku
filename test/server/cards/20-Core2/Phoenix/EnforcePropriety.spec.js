@@ -130,3 +130,46 @@ describe('Enforce Propriety on its controller\'s own event', function () {
         });
     });
 });
+
+describe('Enforce Propriety and The Mirror\'s Gaze', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asahina-storyteller', 'matsu-berserker'],
+                    hand: ['the-mirror-s-gaze', 'a-perfect-cut']
+                },
+                player2: {
+                    inPlay: ['adept-of-the-waves', 'solemn-scholar'],
+                    hand: ['enforce-propriety']
+                }
+            });
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.perfectCut = this.player1.findCardByName('a-perfect-cut');
+            this.enforcePropriety = this.player2.findCardByName('enforce-propriety');
+            this.mirrorGaze = this.player1.playAttachment('the-mirror-s-gaze', 'asahina-storyteller');
+            this.storyteller.bow();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        // ruling #376: the Gaze cannot copy an interrupt that cancels a card effect
+        it('should not be copied after the fate was paid', function () {
+            const p2Fate = this.player2.fate;
+            this.player1.clickCard(this.perfectCut);
+            this.player1.clickCard(this.berserker);
+            this.player2.clickCard(this.enforcePropriety);
+            this.player1.clickPrompt('Give 1 fate to player2');
+            expect(this.player2.fate).toBe(p2Fate + 1);
+            expect(this.player1).not.toBeAbleToSelect(this.mirrorGaze);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

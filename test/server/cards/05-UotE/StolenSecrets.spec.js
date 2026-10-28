@@ -100,6 +100,17 @@ describe('Stolen Secrets', function () {
                         expect(this.player1).toHavePromptButton(this.tattooedWanderer.name);
                         expect(this.player1).toHavePromptButton(this.kamiUnleashed.name);
                     });
+
+                    // RRG Search: a player is not obliged to find the object of a search effect
+                    it('should let you take nothing', function () {
+                        this.player1.clickPrompt('Take nothing');
+                        this.player1.clickPrompt(this.tattooedWanderer.name);
+                        this.player1.clickPrompt(this.kamiUnleashed.name);
+                        this.player1.clickPrompt(this.assassination.name);
+                        expect(this.player2.conflictDeck.slice(0, 4)).toEqual([this.tattooedWanderer, this.kamiUnleashed, this.assassination, this.fingerOfJade]);
+                        expect(this.player1.player.removedFromGame.length).toBe(0);
+                        expect(this.player2.player.removedFromGame.length).toBe(0);
+                    });
                 });
 
                 describe('if there are 4 or more cards in deck', function () {

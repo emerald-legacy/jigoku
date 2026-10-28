@@ -17,7 +17,8 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                 cardStat: (card) => card.getCost() ?? 0,
                 maxStat: () => 4,
                 cardType: CardType.Character,
-                cardCondition: (card, _context) => card.isParticipating() && !card.isUnique()
+                // tokens have no printed cost (ruling #1116)
+                cardCondition: (card, _context) => card.isParticipating() && !card.isUnique() && card.getCost() !== null
             }, sendHome())
             .max(perConflict(1))
             .afterwards()

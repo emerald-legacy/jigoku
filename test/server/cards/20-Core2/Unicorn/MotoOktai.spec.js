@@ -105,3 +105,37 @@ describe('Moto Oktai timing', function () {
         });
     });
 });
+
+describe('Moto Oktai - character with 0 military skill', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['moto-oktai', 'ikoma-prodigy']
+                },
+                player2: {}
+            });
+            this.motoOktai = this.player1.findCardByName('moto-oktai');
+            this.prodigy = this.player1.findCardByName('ikoma-prodigy');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.motoOktai],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        // a triggered ability needs an effect that can change the game state on its own
+        it('should not offer the interrupt for a +0 bonus', function () {
+            const mil = this.motoOktai.militarySkill;
+            expect(this.prodigy.militarySkill).toBe(0);
+            this.player1.clickCard(this.motoOktai);
+            this.player1.clickCard(this.prodigy);
+            expect(this.getChatLogs(5)).toContain('player1 uses Moto Oktai to discard Ikoma Prodigy - purge the weak');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.prodigy.location).toBe('dynasty discard pile');
+            expect(this.motoOktai.militarySkill).toBe(mil);
+        });
+    });
+});

@@ -136,8 +136,11 @@ export class DuelAction<Context extends AbilityContext = AbilityContext> extends
                             refuseGameAction.addEventsToArray(refusalEvents, context, additionalProperties);
                             context.game.queueSimpleStep(() => context.game.openThenEventWindow(refusalEvents));
                             context.game.queueSimpleStep(() => {
-                                // "to": the duel is refused only if the refusal resolved (Kitsuki Shomon can redirect it)
-                                if(refusalEvents.length === 0 || refusalEvents.some((event) => !event.isFullyResolved())) {
+                                // "to": the duel is refused only if the refusal resolved; a replaced one (Kitsuki Shomon)
+                                // still counts, a cancelled one doesn't (ruling #646)
+                                const refused = (event: Event) => event.isFullyResolved() ||
+                                    (!!event.replacementEvent && !event.getResolutionEvent().cancelled);
+                                if(refusalEvents.length === 0 || !refusalEvents.every(refused)) {
                                     addDuelEventsHandler();
                                 } else {
                                     context.game.addMessage(refusalMessageArgs);

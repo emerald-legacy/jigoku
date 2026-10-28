@@ -201,3 +201,49 @@ describe('Crane Industry and events played before the conflict', function() {
         });
     });
 });
+
+describe('Crane Industry copied by The Mirror\'s Gaze', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['crane-industry']
+                },
+                player2: {
+                    fate: 5,
+                    inPlay: ['doji-whisperer', { card: 'asahina-storyteller', attachments: ['the-mirror-s-gaze'] }],
+                    hand: ['peerless-discipline', 'peerless-discipline']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.industry = this.player1.findCardByName('crane-industry');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.gaze = this.player2.findCardByName('the-mirror-s-gaze');
+            this.discipline1 = this.player2.filterCardsByName('peerless-discipline')[0];
+            this.discipline2 = this.player2.filterCardsByName('peerless-discipline')[1];
+        });
+
+        it('should reduce only the first copy of each event the Gaze\'s controller plays', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.whisperer]
+            });
+            this.player1.clickCard(this.industry);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.gaze);
+
+            const fate = this.player2.fate;
+            this.player2.clickCard(this.discipline1);
+            expect(this.discipline1.location).toBe('conflict discard pile');
+            expect(this.player2.fate).toBe(fate);
+
+            this.player1.pass();
+            this.player2.clickCard(this.discipline2);
+            expect(this.discipline2.location).toBe('conflict discard pile');
+            expect(this.player2.fate).toBe(fate - 1);
+        });
+    });
+});

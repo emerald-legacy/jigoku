@@ -5,11 +5,13 @@ import { CardType, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
+import type Player from '../../../Player.js';
 
 export default class CraneIndustry extends DrawCard {
     static id = 'crane-industry';
 
-    private eventsPlayedThisConflictByThisPlayer = new Set<string>();
+    // per player: a copy (The Mirror's Gaze) reduces the events its own player plays
+    private eventsPlayedThisConflict = new Map<Player, Set<string>>();
 
     public override setupCardAbilities() {
         new EventRegistrar(this.game).register({
@@ -20,27 +22,30 @@ export default class CraneIndustry extends DrawCard {
             .when({
                 onConflictStarted: () => true
             })
-            .playerLastingEffect({
+            .playerLastingEffect((context) => ({
                 effect: reduceCost({
                     amount: 1,
-                    match: (card) => card.type === CardType.Event && !this.hasEventBeenPlayedByThisPlayer(card)
+                    match: (card) => card.type === CardType.Event && !this.hasEventBeenPlayed(context.player, card)
                 })
-            })
+            }))
             .chatText('reduce the cost of the first copy of each event they play this conflict by 1')
             .max(perConflict(1));
     }
 
     public onConflictFinished() {
-        this.eventsPlayedThisConflictByThisPlayer.clear();
+        this.eventsPlayedThisConflict.clear();
     }
 
     public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {
-        if(event.card.type === CardType.Event && event.context?.player === this.controller && this.game.isDuringConflict()) {
-            this.eventsPlayedThisConflictByThisPlayer.add(event.card.name);
+        const player = event.context?.player;
+        if(event.card.type === CardType.Event && player && this.game.isDuringConflict()) {
+            const names = this.eventsPlayedThisConflict.get(player) ?? new Set<string>();
+            names.add(event.card.name);
+            this.eventsPlayedThisConflict.set(player, names);
         }
     }
 
-    private hasEventBeenPlayedByThisPlayer(card: BaseCard) {
-        return this.eventsPlayedThisConflictByThisPlayer.has(card.name);
+    private hasEventBeenPlayed(player: Player, card: BaseCard) {
+        return !!this.eventsPlayedThisConflict.get(player)?.has(card.name);
     }
 }

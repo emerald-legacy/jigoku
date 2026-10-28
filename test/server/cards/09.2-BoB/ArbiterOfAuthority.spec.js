@@ -88,7 +88,8 @@ describe('Arbiter of Authority', function() {
                 this.shomon = this.player2.findCardByName('kitsuki-shomon');
             });
 
-            it('should resolve the duel if Kitsuki Shomon is dishonored instead', function() {
+            // ruling #646: if the dishonor for refusing is replaced, the refusal is still successful
+            it('should refuse the duel if Kitsuki Shomon is dishonored instead', function() {
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.arbiterOfAuthority],
@@ -103,8 +104,11 @@ describe('Arbiter of Authority', function() {
                 this.player2.clickCard(this.shomon);
                 expect(this.mirumotoRaitsugu.isDishonored).toBe(false);
                 expect(this.shomon.isDishonored).toBe(true);
-                expect(this.player1).toHavePrompt('Honor Bid');
-                expect(this.player2).toHavePrompt('Honor Bid');
+                expect(this.player1).not.toHavePrompt('Honor Bid');
+                expect(this.player2).not.toHavePrompt('Honor Bid');
+                expect(this.arbiterOfAuthority.bowed).toBe(false);
+                expect(this.mirumotoRaitsugu.bowed).toBe(false);
+                expect(this.getChatLogs(5)).toContain('player2 uses Kitsuki Shomon to dishonor Kitsuki Shomon instead of Mirumoto Raitsugu');
             });
         });
     });

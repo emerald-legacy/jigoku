@@ -150,7 +150,8 @@ describe('Duel to the Death', function() {
                 this.shomon = this.player2.findCardByName('kitsuki-shomon');
             });
 
-            it('should resolve the duel if Kitsuki Shomon is dishonored instead', function() {
+            // ruling #646: if the dishonor for refusing is replaced, the refusal is still successful
+            it('should refuse the duel if Kitsuki Shomon is dishonored instead', function() {
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.dojiChallenger],
@@ -166,29 +167,13 @@ describe('Duel to the Death', function() {
                 this.player2.clickCard(this.shomon);
                 expect(this.mirumotoRaitsugu.isDishonored).toBe(false);
                 expect(this.shomon.isDishonored).toBe(true);
-                expect(this.player1).toHavePrompt('Honor Bid');
-                expect(this.player2).toHavePrompt('Honor Bid');
-                this.player1.clickPrompt('1');
-                this.player2.clickPrompt('5');
-                expect(this.dojiChallenger.location).toBe('dynasty discard pile');
-                expect(this.getChatLogs(5)).toContain('Duel Effect: discard Doji Challenger');
-            });
-
-            it('should not say the duel was refused', function() {
-                this.noMoreActions();
-                this.initiateConflict({
-                    attackers: [this.dojiChallenger],
-                    defenders: [this.mirumotoRaitsugu],
-                    type: 'military'
-                });
-                this.player2.pass();
-                this.player1.clickCard(this.duelToTheDeath);
-                this.player1.clickCard(this.dojiChallenger);
-                this.player1.clickCard(this.mirumotoRaitsugu);
-                this.player2.clickPrompt('Yes');
-                this.player2.clickCard(this.shomon);
-                expect(this.player1).toHavePrompt('Honor Bid');
-                expect(this.getChatLogs(10).filter((line) => line.includes('refuse'))).toEqual([]);
+                expect(this.player1).not.toHavePrompt('Honor Bid');
+                expect(this.player2).not.toHavePrompt('Honor Bid');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.dojiChallenger.location).toBe('play area');
+                expect(this.mirumotoRaitsugu.location).toBe('play area');
+                expect(this.getChatLogs(5)).toContain('player2 uses Kitsuki Shomon to dishonor Kitsuki Shomon instead of Mirumoto Raitsugu');
+                expect(this.getChatLogs(5)).toContain('player2 chooses to refuse the duel and dishonor Mirumoto Raitsugu');
             });
         });
     });

@@ -12,7 +12,9 @@ class KaiuForges extends DrawCard {
             .target({
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardType: CardType.Province
+                cardType: CardType.Province,
+                // RRG Target: only a province where the swap can happen
+                cardCondition: (card, context) => this.hasKaiuWall(context.player.getDynastyCardsInProvince(card.location))
             })
             .deckSearch({
                 activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
@@ -22,6 +24,14 @@ class KaiuForges extends DrawCard {
                 selectedCardsHandler: (context, _event, [cardFromDeck]) => this.swapWithKaiuWall(context, cardFromDeck)
             })
             .chatText('look at the top ten cards of their dynasty deck');
+    }
+
+    private isKaiuWall(card: DrawCard): boolean {
+        return card.type === CardType.Holding && card.isFaceup() && card.hasTrait(Trait.KaiuWall);
+    }
+
+    private hasKaiuWall(cards: DrawCard[]): boolean {
+        return cards.some((card) => this.isKaiuWall(card));
     }
 
     private swapWithKaiuWall(context: AbilityContext, cardFromDeck: DrawCard | undefined): void {
@@ -34,7 +44,7 @@ class KaiuForges extends DrawCard {
         }
         const provinceLocation = context.target.location;
         const cards = context.player.getDynastyCardsInProvince(provinceLocation);
-        if(!cards.some((card) => card.type === CardType.Holding && card.isFaceup() && card.hasTrait(Trait.KaiuWall))) {
+        if(!this.hasKaiuWall(cards)) {
             this.game.addMessage(msg`${context.player} cannot put a holding into play because there is no Kaiu Wall in the selected province`);
             return;
         }
@@ -45,7 +55,7 @@ class KaiuForges extends DrawCard {
             controller: Players.Self,
             context: context,
             targets: false,
-            cardCondition: (card) => cards.includes(card) && card.isFaceup() && card.hasTrait(Trait.KaiuWall),
+            cardCondition: (card) => cards.includes(card) && this.isKaiuWall(card),
             onSelect: (player, card) => {
                 this.game.addMessage(msg`${player} chooses to replace ${card} with ${cardFromDeck}`);
                 sequential([

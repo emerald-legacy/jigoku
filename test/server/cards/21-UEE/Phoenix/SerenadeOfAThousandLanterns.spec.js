@@ -85,3 +85,45 @@ describe('Serenade of a Thousand Lanterns with only an attached Shugenja', funct
         });
     });
 });
+
+describe('Serenade of a Thousand Lanterns and tokens', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doomed-shugenja'],
+                    hand: ['serenade-of-a-thousand-lanterns']
+                },
+                player2: {
+                    inPlay: ['shinjo-sora', 'doji-challenger'],
+                    dynastyDiscard: ['hida-kisada']
+                }
+            });
+            this.doomed = this.player1.findCardByName('doomed-shugenja');
+            this.serenade = this.player1.findCardByName('serenade-of-a-thousand-lanterns');
+            this.sora = this.player2.findCardByName('shinjo-sora');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.kisada = this.player2.findCardByName('hida-kisada');
+            this.player2.moveCard(this.kisada, 'province 1');
+            this.kisada.facedown = true;
+        });
+
+        // tokens have no printed cost (ruling #1116)
+        it('should not be able to choose an Unleashed Hound', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.doomed],
+                defenders: [this.sora, this.challenger]
+            });
+            this.player2.clickCard(this.sora);
+            const hound = this.game.currentConflict.defenders.find((card) => card.name === 'Unleashed Hound');
+            expect(hound).toBeDefined();
+            expect(hound.getCost()).toBe(null);
+
+            this.player1.clickCard(this.serenade);
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+            expect(this.player1).not.toBeAbleToSelect(hound);
+        });
+    });
+});

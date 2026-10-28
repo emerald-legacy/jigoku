@@ -166,3 +166,44 @@ describe('Champions of Yomi', function() {
         });
     });
 });
+
+describe('Champions of Yomi - another copy already in play', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    stronghold: 'yojin-no-shiro',
+                    inPlay: ['miwaku-kabe-guard', 'champions-of-yomi'],
+                    dynastyDiscard: ['champions-of-yomi']
+                },
+                player2: {
+                    inPlay: ['kakita-toshimoko']
+                }
+            });
+            this.yojinNoShiro = this.player1.findCardByName('yojin-no-shiro');
+            this.championsInPlay = this.player1.findCardByName('champions-of-yomi', 'play area');
+            this.championsInDiscard = this.player1.findCardByName('champions-of-yomi', 'dynasty discard pile');
+            this.miwakuKabeGuard = this.player1.findCardByName('miwaku-kabe-guard');
+            this.kakitaToshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'water',
+                attackers: [this.miwakuKabeGuard],
+                defenders: [this.kakitaToshimoko]
+            });
+        });
+
+        // a triggered ability needs an effect that can change the game state on its own (RRG Triggered Abilities)
+        it('should not be able to trigger when it cannot be put into play', function() {
+            this.noMoreActions();
+            expect(this.player1).not.toBeAbleToSelect(this.championsInDiscard);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.game.rings.water.isClaimedBy(this.player2.player)).toBe(true);
+            expect(this.yojinNoShiro.bowed).toBe(false);
+            this.nextPhase();
+            expect(this.championsInDiscard.location).toBe('dynasty discard pile');
+            expect(this.championsInPlay.location).toBe('play area');
+        });
+    });
+});

@@ -15,7 +15,7 @@ export default class SagenOfHoneyedWords extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, context) => card.isParticipating() && card !== context.source
+                cardCondition: (card, context) => card.isParticipating() && card !== context.source && card.glory > 0
             })
             .cardLastingEffect((context) => ({
                 effect: modifyBothSkills(skillBonus(context.target))

@@ -18,7 +18,8 @@ export default class FeignedWeakness extends DrawCard {
                 location: Location.Hand,
                 cardCondition: (card, context) => card !== context.source
             }))
-            .cancel();
+            .cancel()
+            .cannotBeMirrored();
     }
 
     private hasEqualOrLessSkill(conflict: Conflict, player: Player): boolean {

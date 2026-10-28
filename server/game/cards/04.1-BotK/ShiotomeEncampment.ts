@@ -10,7 +10,9 @@ class ShiotomeEncampment extends DrawCard {
             .ifCondition((context) =>
                 Object.values(this.game.rings).some(
                     (ring) =>
+                        // a contested ring considered claimed (Secluded Shrine) has no type until claimed (ruling #666)
                         ring.isConsideredClaimed(context.player) &&
+                        ring.isClaimed() &&
                         ring.isConflictType(ConflictType.Military)
                 ))
             .target({

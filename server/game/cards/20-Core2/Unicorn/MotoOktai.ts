@@ -15,7 +15,8 @@ export default class MotoOktai extends DrawCard {
         this.interrupt('Increase this character\'s skill')
             .when({
                 onCardLeavesPlay: ({ card }, context) =>
-                    context.game.currentPhase === Phase.Conflict && card.location === Location.PlayArea && card.type === CardType.Character
+                    context.game.currentPhase === Phase.Conflict && card.location === Location.PlayArea && card.type === CardType.Character &&
+                    card.militarySkill > 0
             })
             .cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
