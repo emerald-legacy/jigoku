@@ -117,3 +117,65 @@ describe('Abandoning Honor', function() {
         });
     });
 });
+
+describe('Abandoning Honor strength with a Fire role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    role: 'keeper-of-fire',
+                    provinces: ['abandoning-honor']
+                }
+            });
+            this.abandoningHonor = this.player2.findCardByName('abandoning-honor');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                province: this.abandoningHonor,
+                defenders: []
+            });
+        });
+
+        it('should get +2 strength', function() {
+            expect(this.abandoningHonor.facedown).toBe(false);
+            expect(this.player2.player.role.id).toBe('keeper-of-fire');
+            expect(this.abandoningHonor.getStrength()).toBe(5);
+        });
+    });
+});
+
+describe('Abandoning Honor strength without a Fire role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    role: 'keeper-of-earth',
+                    provinces: ['abandoning-honor']
+                }
+            });
+            this.abandoningHonor = this.player2.findCardByName('abandoning-honor');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                province: this.abandoningHonor,
+                defenders: []
+            });
+        });
+
+        it('should keep its printed strength', function() {
+            expect(this.abandoningHonor.facedown).toBe(false);
+            expect(this.player2.player.role.id).toBe('keeper-of-earth');
+            expect(this.abandoningHonor.getStrength()).toBe(3);
+        });
+    });
+});

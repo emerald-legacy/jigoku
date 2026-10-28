@@ -41,3 +41,47 @@ describe('Daidoji Saboteur', function () {
         });
     });
 });
+
+describe('Daidoji Saboteur and Action abilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['daidoji-saboteur']
+                },
+                player2: {
+                    inPlay: [{ card: 'agasha-swordsmith', fate: 1 }]
+                }
+            });
+            this.swordsmith = this.player2.findCardByName('agasha-swordsmith');
+            this.saboteur = this.player1.playCharacterFromHand('daidoji-saboteur');
+        });
+
+        it('triggers when it enters play and stops the chosen character\'s Action for the rest of the phase', function() {
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.saboteur);
+            expect(this.player1).toBeAbleToSelect(this.saboteur);
+            this.player1.clickCard(this.swordsmith);
+            expect(this.getChatLogs(3)).toContain('player1 uses Daidōji Saboteur to prevent Agasha Swordsmith from using any abilities for the rest of the phase');
+            expect(this.player2).toHavePrompt('Action Window');
+            this.player2.clickCard(this.swordsmith);
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.player2).not.toHavePrompt('Agasha Swordsmith');
+        });
+
+        it('lets the chosen character use its Action in the next phase', function() {
+            this.player1.clickCard(this.saboteur);
+            this.player1.clickCard(this.swordsmith);
+            this.player1.togglePromptedActionWindow('fate', true);
+            this.player2.togglePromptedActionWindow('fate', true);
+            this.flow.finishConflictPhase();
+            this.player1.clickPrompt('Done');
+            expect(this.game.currentPhase).toBe('fate');
+            this.player1.pass();
+            this.player2.clickCard(this.swordsmith);
+            expect(this.player2).toHavePrompt('Agasha Swordsmith');
+            expect(this.getChatLogs(3)).toContain('player2 uses Agasha Swordsmith to look at the top five cards of their deck');
+        });
+    });
+});

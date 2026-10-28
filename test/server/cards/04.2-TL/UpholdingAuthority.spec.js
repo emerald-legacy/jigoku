@@ -133,3 +133,65 @@ describe('Upholding Authority', function() {
 
     });
 });
+
+describe('Upholding Authority strength with an Earth role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    role: 'keeper-of-earth',
+                    provinces: ['upholding-authority']
+                }
+            });
+            this.upholdingAuthority = this.player2.findCardByName('upholding-authority');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                province: this.upholdingAuthority,
+                defenders: []
+            });
+        });
+
+        it('should get +2 strength', function() {
+            expect(this.upholdingAuthority.facedown).toBe(false);
+            expect(this.player2.player.role.id).toBe('keeper-of-earth');
+            expect(this.upholdingAuthority.getStrength()).toBe(5);
+        });
+    });
+});
+
+describe('Upholding Authority strength without an Earth role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    role: 'keeper-of-fire',
+                    provinces: ['upholding-authority']
+                }
+            });
+            this.upholdingAuthority = this.player2.findCardByName('upholding-authority');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                province: this.upholdingAuthority,
+                defenders: []
+            });
+        });
+
+        it('should keep its printed strength', function() {
+            expect(this.upholdingAuthority.facedown).toBe(false);
+            expect(this.player2.player.role.id).toBe('keeper-of-fire');
+            expect(this.upholdingAuthority.getStrength()).toBe(3);
+        });
+    });
+});
