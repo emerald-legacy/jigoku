@@ -207,36 +207,6 @@ this.conflictAction('Remove a character from play')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Neutral/TheMaidensIcyGrasp.ts">The Maiden's Icy Grasp</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/ZealousExorcist.ts">Zealous Exorcist</a></p>
   </div>
 
-  <div class="ref" id="he-ConflictsDeclaredThisRound" data-name="ConflictsDeclaredThisRound">
-    <h3><code>new ConflictsDeclaredThisRound(game)</code> <span class="kind">Tracker</span> <a class="anchor" href="#he-ConflictsDeclaredThisRound">#</a></h3>
-    <p>Records the province each conflict was declared against this round, for "the attacked province has had a previous conflict declared against it this round" and "for each conflict declared against this province this round".</p>
-    <table>
-      <thead><tr><th>Member</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>game</code></td><td><code>Game</code></td><td>required</td><td>Constructor parameter.</td></tr>
-        <tr><td><code>countAgainst(province)</code></td><td><code>(province: ProvinceCard | undefined) =&gt; number</code></td><td></td><td>The number of conflicts declared against the province this round, the current one included. <code>0</code> for <code>undefined</code>.</td></tr>
-        <tr><td><code>wasAttackedBefore(province, conflict)</code></td><td><code>(province: ProvinceCard, conflict: Conflict | null) =&gt; boolean</code></td><td></td><td>Whether a conflict other than <code>conflict</code> was declared against the province this round.</td></tr>
-      </tbody>
-    </table>
-    <ul class="edge">
-      <li>A declaration is recorded when the reaction window of <code>onConflictDeclared</code> opens, so a reaction to the declaration already counts the current conflict.</li>
-      <li>The record is per province card and location: a province that moves counts as a different one. It only looks at the province the conflict was declared against (<code>declaredProvince</code>), not at provinces added later.</li>
-      <li>Cleared at the end of the round.</li>
-    </ul>
-    <pre><code>// Song of the Empty City: Reaction: After your opponent declares a conflict against this holding's province -
-// gain 1 honor for each conflict declared against this province this round. (Unlimited.)
-const declaredConflicts = new ConflictsDeclaredThisRound(this.game);
-this.reaction('Gain honor')
-    .when({
-        onConflictDeclared: (event, context) =&gt; event.conflict.declaredProvince === context.player.getProvinceCardInProvince(context.source.location)
-    })
-    .gainHonor((context) =&gt; ({
-        amount: declaredConflicts.countAgainst(context.player.getProvinceCardInProvince(context.source.location))
-    }))
-    .limit(unlimited());</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/SongOftheEmptyCity.ts">Song of the Empty City</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/VengefulKami.ts">Vengeful Kami</a></p>
-  </div>
-
   <div class="ref" id="he-DuelsThisConflict" data-name="DuelsThisConflict">
     <h3><code>DuelsThisConflict.winners(game)</code> <span class="kind">Tracker</span> <a class="anchor" href="#he-DuelsThisConflict">#</a></h3>
     <p>Remembers characters from each duel resolved during the current conflict. The static factories pick which ones; <code>has(card)</code> answers the question.</p>
@@ -547,7 +517,7 @@ this.persistentEffect({
 // where X is the number of characters on your side. Choose and discard one of those cards.
 .gameAction(multiple((context) =&gt; {
     const count = context.game.currentConflict?.getCharacters(context.player).length ?? 0;
-    const cards = context.player.opponent &amp;&amp; count &gt; 0 ? randomHandCards(context.player.opponent, count) : [context.source];
+    const cards = context.player.opponent &amp;&amp; count &gt; 0 ? randomHandCards(context.player.opponent, count) : [];
     return [
         reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
         chooseCardToDiscard(cards)
@@ -773,7 +743,7 @@ this.action('Select a player to lose an honor and draw a card')
 
   <div class="ref" id="he-canSwitchSkills" data-name="canSwitchSkills">
     <h3><code>canSwitchSkills(card)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-canSwitchSkills">#</a></h3>
-    <p>For "switch that character's base [conflict-military] and [conflict-political] skill": true unless one of its skills is a dash (RRG Dash) or set by an effect (Unleash the Djinn, Wicked Tetsubō; EmeraldDB rulings).</p>
+    <p>For "switch that character's base [conflict-military] and [conflict-political] skill": true unless one of its skills is a dash (RRG Dash) or set by an effect, base skills included (Unleash the Djinn, Wicked Tetsubō, Kaito Temple Protector; ruling #413 and other EmeraldDB rulings).</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -781,7 +751,7 @@ this.action('Select a player to lose an honor and draw a card')
       </tbody>
     </table>
     <ul class="edge">
-      <li>A set <em>base</em> skill (My Ancestor's Strength) doesn't block it: the switch overrides the base, and a later set base still wins.</li>
+      <li>Checks the <code>SetMilitarySkill</code>, <code>SetPoliticalSkill</code>, <code>SetBaseMilitarySkill</code> and <code>SetBasePoliticalSkill</code> effects: a set base skill (My Ancestor's Strength, Kaito Temple Protector) blocks it too.</li>
     </ul>
     <pre><code>// Bayushi Yunako: Action: While this character is participating in a conflict, choose a character – switch that character's base [conflict-military] and [conflict-political] skill until the end of the conflict.
 cardCondition: (card) =&gt; canSwitchSkills(card)</code></pre>
@@ -946,6 +916,27 @@ this.persistentEffect({
     effect: gainExtraFateWhenPlayed()
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Neutral/TheEmeraldCourt.ts">The Emerald Court</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/ToshiRanbo.ts">Toshi Ranbo</a></p>
+  </div>
+
+  <div class="ref" id="he-isReducibleAttachmentPlay" data-name="isReducibleAttachmentPlay">
+    <h3><code>isReducibleAttachmentPlay(context)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-isReducibleAttachmentPlay">#</a></h3>
+    <p>For "when you play an attachment … reduce the cost": whether <code>context</code> plays an attachment (or a card as one) that still costs fate, so a reduction would apply. A type guard: when true, <code>context</code> is set.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>context</code></td><td><code>AbilityContext | undefined</code></td><td>required</td><td>The resolving ability's context, usually <code>event.context</code> of <a href="types.html#ev-onAbilityResolverInitiated"><code>onAbilityResolverInitiated</code></a>.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>An attachment play is a source of type <code>Attachment</code> or a <code>PlayAttachmentAction</code>; "still costs fate" is <code>getReducedCost(context) &gt; 0</code>.</li>
+    </ul>
+    <pre><code>// Iron Mountain Castle: … Interrupt: When you play an attachment on a character you control, bow this stronghold - reduce the cost to play that attachment by 1.
+onAbilityResolverInitiated: (event, context) =&gt;
+    isReducibleAttachmentPlay(event.context) &amp;&amp;
+    event.context.player === context.player &amp;&amp;
+    event.context.target?.controller === context.player &amp;&amp;
+    event.context.target.type === CardType.Character</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/IronMountainCastle.ts">Iron Mountain Castle</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Dragon/MirumotoRikitaro.ts">Mirumoto Rikitaro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/EarnestSculptor.ts">Earnest Sculptor</a></p>
   </div>
 
   <div class="ref" id="he-otherHoldingsInSameProvince" data-name="otherHoldingsInSameProvince">
@@ -2091,7 +2082,8 @@ condition: (context) =&gt; context.game.conflictRecord.filter((record) =&gt; rec
 .ifCondition((context) =&gt; context.player.isDefendingPlayer() &amp;&amp;
     context.game.requireConflict()
         .getConflictProvinces()
-        .some((province) =&gt; declaredConflicts.wasAttackedBefore(province, context.game.currentConflict)))</code></pre>
+        .some((province) =&gt; attackedBefore(province, context)))
+// attackedBefore: another conflict this round has it as declaredProvince (game.getConflicts(Players.All))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SubdueTheSpirits.ts">Subdue the Spirits</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SpellScroll.ts">Spell Scroll</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/TwoHands.ts">Two Hands</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Unicorn/ShinjoIsamu.ts">Shinjo Isamu</a> (171 card files)</p>
   </div>
 
@@ -2108,15 +2100,24 @@ target: this.game.findAnyCardsInPlay((card) =&gt; card.getFate() &gt; 0)</code><
 
   <div class="ref" id="q-getConflicts" data-name="getConflicts">
     <h3><code>game.getConflicts(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getConflicts">#</a></h3>
-    <p>The conflicts declared this round by <code>player</code> (or by anyone with <code>Players.All</code>), as records: <code>attackingPlayer</code>, <code>declaredType</code>, <code>passed</code>, <code>uuid</code>, <code>completed</code>, <code>winner</code>, <code>typeSwitched</code>, <code>brokenProvinces</code>.</p>
+    <p>The conflicts declared this round by <code>player</code> (or by anyone with <code>Players.All</code>), as records: <code>attackingPlayer</code>, <code>declaredType</code>, <code>passed</code>, <code>uuid</code>, <code>completed</code>, <code>winner</code>, <code>typeSwitched</code>, <code>declaredProvince</code>, <code>brokenProvinces</code>.</p>
     <ul class="edge">
       <li>Passed conflict opportunities are in the list too, with <code>passed: true</code>. To count declared conflicts use <a href="#q-getDeclaredConflictCount"><code>getDeclaredConflictCount</code></a>.</li>
       <li><code>brokenProvinces</code> is the conflict's own <a href="#q-brokenProvinces">list</a>, so it also fills while the conflict is running.</li>
+      <li>A declared conflict is recorded as it is declared, before <code>onConflictDeclared</code>, so a reaction to the declaration already finds the current conflict (compare <code>uuid</code> with <code>currentConflict.uuid</code> to leave it out). <code>declaredProvince</code> is the province attacked at declaration (<code>null</code> for a passed opportunity), not provinces added later; it is the card, so a province that moves stays the same one.</li>
       <li>The list is cleared when the dynasty phase starts.</li>
     </ul>
     <pre><code>// Ikoma Anakazu: During each conflict in which this character is participating, it gets +3[conflict-military] and +3[conflict-political] if your opponent has broken one or more of your provinces this phase.
-context.game.getConflicts(context.player.opponent).some((record) =&gt; record.brokenProvinces.length &gt; 0)</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IkomaAnakazu.ts">Ikoma Anakazu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/OutmaneuveredByForce.ts">Outmaneuvered by Force</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a></p>
+// the opponent is considered to have broken any of your provinces, also outside conflict resolution (ruling #634)
+context.game.getConflicts(Players.All).some((record) =&gt;
+    record.brokenProvinces.some((province) =&gt; province.controller === context.player))
+
+// Song of the Empty City: Reaction: After your opponent declares a conflict against this holding's province - gain 1 honor for each conflict declared against this province this round. (Unlimited.)
+.gainHonor((context) =&gt; {
+    const province = context.player.getProvinceCardInProvince(context.source.location);
+    return { amount: context.game.getConflicts(Players.All).filter((conflict) =&gt; conflict.declaredProvince === province).length };
+})</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IkomaAnakazu.ts">Ikoma Anakazu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/OutmaneuveredByForce.ts">Outmaneuvered by Force</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Breakthrough.ts">Breakthrough</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/SongOftheEmptyCity.ts">Song of the Empty City</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/VengefulKami.ts">Vengeful Kami</a></p>
   </div>
 
   <div class="ref" id="q-getDeclaredConflictCount" data-name="getDeclaredConflictCount">
@@ -2496,7 +2497,7 @@ target: context.ring.getElements().map((element) =&gt; this.game.rings[element])
     <h3><code>ring.isConflictType(type)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isConflictType">#</a></h3>
     <p>True if the ring's current conflict type is <code>type</code> ("a [conflict-military] ring in your claimed ring pool").</p>
     <ul class="edge">
-      <li>Always <code>false</code> for a ring in the unclaimed pool. The contested ring and claimed rings are checked.</li>
+      <li>Always <code>false</code> for a ring in the unclaimed pool. The contested ring and claimed rings are checked; a contested ring that only counts as claimed (Secluded Shrine) still has the conflict's type, so check <code>isClaimed()</code> too for "claimed ring pool" (Shiotome Encampment, ruling #666).</li>
     </ul>
     <pre><code>// Honor in Battle: Action: If you have claimed a [conflict-military] ring, choose a character - honor that character.
 .ifCondition((context) =&gt; context.player.getClaimedRings().some((ring) =&gt; ring.isConflictType(ConflictType.Military)))</code></pre>
@@ -2507,7 +2508,10 @@ target: context.ring.getElements().map((element) =&gt; this.game.rings[element])
     <h3><code>ring.isConsideredClaimed(player?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isConsideredClaimed">#</a></h3>
     <p>True if <code>player</code> claimed the ring or an effect makes it count as claimed by <code>player</code>. Without <code>player</code>, true if that holds for any player. Use it for "in your claimed ring pool".</p>
     <pre><code>// Shiotome Encampment: Action: If you have a [conflict-military] ring in your claimed ring pool, choose a Cavalry character – ready that character.
-ring.isConsideredClaimed(context.player) &amp;&amp;</code></pre>
+// a contested ring considered claimed (Secluded Shrine) has no type until claimed (ruling #666)
+ring.isConsideredClaimed(context.player) &amp;&amp;
+ring.isClaimed() &amp;&amp;
+ring.isConflictType(ConflictType.Military)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/ShiotomeEncampment.ts">Shiotome Encampment</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/HallowedGround.ts">Hallowed Ground</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Phoenix/OneWithTheSea.ts">One with the Sea</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Phoenix/RiddlesOfTheHenshin.ts">Riddles of the Henshin</a> (7 card files)</p>
   </div>
 

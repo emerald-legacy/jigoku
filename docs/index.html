@@ -137,7 +137,7 @@ export default Assassination;</code></pre>
 
 <h2 id="start-timing">Timing: costs, targets, effects</h2>
 <p>An ability resolves in a fixed order: the player pays its costs, then chooses its targets, then the effects resolve. The builder follows the Emerald Legacy Rules Reference Guide (RRG) here, and so should a card's code.</p>
-<p>In the game the player sees the targets first and can click "Pay costs first"; the targets are checked again after the costs. Use <a href="builder.html#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a> when a target depends on a cost.</p>
+<p>In the game the player sees the targets first and can click "Pay costs first" (not when a cost depends on a target, as when an attachment is played); the targets are checked again after the costs. Use <a href="builder.html#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a> when a target depends on a cost.</p>
 <div class="rule"><blockquote>If the additional cost cannot be paid, the game action cannot be initiated. All costs are paid simultaneously, including additional ones.</blockquote><cite>Costs</cite></div>
 <div class="rule"><blockquote>The word "choose" indicates that one or more targets must be chosen in order to resolve an ability.</blockquote><cite>Choose</cite></div>
 <p>So "choose a character" is a <code>target()</code>, chosen when the ability initiates, and the ability can't be used without a legal one. A choice made while the effect resolves ("…, then choose") is a game action such as <code>selectCard</code> or <code>chooseAction</code>.</p>
@@ -351,7 +351,7 @@ this.whileAttached({
     <ul>
         <li>A card that searches the top X cards of a deck is tested with more than X cards in the deck, and the spec checks that the rest stays untouched.</li>
         <li>A bug in the engine (rather than in one card) gets its regression spec in <code>test/server/integration/</code>, not in a card's spec.</li>
-        <li>An ability with a <code>select()</code> before the dash shows its prompt when it is used, with "Pay costs first" and "Cancel", even when only one choice is legal (unless the opponent makes the choice). The spec clicks the choice (<code>clickPrompt('Move into conflict')</code>) before it checks anything.</li>
+        <li>An ability with a <code>select()</code> before the dash shows its prompt when it is used, with "Pay costs first" (unless a cost depends on a target) and "Cancel", even when only one choice is legal (unless the opponent makes the choice). The spec clicks the choice (<code>clickPrompt('Move into conflict')</code>) before it checks anything.</li>
         <li>A spec should fail without the fix it tests. Run a subset with <code>npm run jasmine -- &lt;spec paths&gt;</code>.</li>
     </ul>
 </div>

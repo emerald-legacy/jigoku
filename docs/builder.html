@@ -789,7 +789,7 @@ this.action('Ready a character')
   <ul>
     <li>The target's game actions get the choice as their default target. An action that sets its own <code>target</code> keeps it.</li>
     <li>A target without game actions only records the choice. Later game actions, <code>if()</code> or a step read it.</li>
-    <li>Targets are chosen when the ability is used, before costs are paid; the prompt offers "Pay costs first" and "Cancel". Exceptions: <a href="#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a>, and targets the opponent chooses. A step's targets are chosen when the step resolves.</li>
+    <li>Targets are chosen when the ability is used, before costs are paid; the prompt offers "Pay costs first" (not when a cost depends on a target, as an attachment's reduced fate cost does) and "Cancel". Exceptions: <a href="#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a>, and targets the opponent chooses. A step's targets are chosen when the step resolves.</li>
     <li>The ability can only be used when every target that doesn't depend on another has a legal choice, or is optional.</li>
     <li>Two targets with one name throw <code>"two targets named &lt;name&gt;"</code>; a target after <code>if()</code> throws <code>"targets come before if()"</code>.</li>
   </ul>
@@ -921,7 +921,7 @@ this.action('Prevent an opponent contesting a ring')
     </table>
     <ul class="edge">
       <li>The ability can only be used when at least one choice is offered. Choices are listed in the object's key order.</li>
-      <li>When only one choice is offered after costs are paid, it is taken without a prompt (before costs, the "Pay costs first" and "Cancel" buttons still show the prompt).</li>
+      <li>When only one choice is offered after costs are paid, it is taken without a prompt (before costs, the "Cancel" button, and "Pay costs first" when no cost depends on a target, still show the prompt).</li>
       <li>A value that is none of the three throws <code>"not a game action"</code>.</li>
       <li>With <code>{ action, chatText }</code> choices the ability has no <a href="#b-chatText"><code>chatText()</code></a> of its own: both together throw at registration <code>"chatText() and a select's chatText choices both say what the ability does"</code>. A choice without <code>chatText</code> uses its game actions' text. Only one select per ability can have such choices.</li>
       <li>In a step, <code>{ action, chatText }</code> choices throw at registration <code>"a then step prints its message with message()"</code>: a step has no ability line. Use <a href="#b-message"><code>message()</code></a>.</li>
@@ -1069,7 +1069,7 @@ this.conflictAction('Bow a character')
         <tr><td><code>maxStat</code></td><td><code>() =&gt; number</code></td><td>required for <code>MaxStat</code></td><td>The most the chosen cards' values may add up to.</td></tr>
         <tr><td><code>sameDiscardPile</code></td><td><code>boolean</code></td><td><code>false</code></td><td><code>Exactly</code>/<code>UpTo</code> only: after the first card, the others must come from the same pile of the same owner.</td></tr>
         <tr><td><code>optional</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The player may choose no card.</td></tr>
-        <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>from <code>mode</code>, <code>numCards</code> and <code>cardType</code></td><td>The prompt's title. The defaults look like "Choose 2 characters" or "Select up to 3 characters"; <code>UpTo</code> always says "characters", so set a title for other card types.</td></tr>
+        <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>from <code>mode</code>, <code>numCards</code> and <code>cardType</code></td><td>The prompt's title. The defaults look like "Choose 2 characters" or "Select up to 3 attachments": they name the one <code>cardType</code> given, or say "cards" for several types or none.</td></tr>
         <tr><td colspan="4"><code>name</code>, <code>cardType</code>, <code>location</code>, <code>controller</code>, <code>player</code>, <code>cardCondition</code>, <code>dependsOn</code>, <code>hideIfNoLegalTargets</code>: as <a href="#b-target"><code>target()</code></a>.</td></tr>
       </tbody>
     </table>
@@ -1183,8 +1183,8 @@ this.action('Ready a character')
         <tr><td><code>opponentChoosesChallenger</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Not on a character: the opponent chooses the challenger.</td></tr>
         <tr><td><code>onTie</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>none</td><td>The effect on a tie; without it a tie does nothing.</td></tr>
         <tr><td><code>chatText</code></td><td><code>(context, duel) =&gt; msg…</code></td><td>the game action's text</td><td>The text after "Duel Effect: ".</td></tr>
-        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The effect when the opponent refuses the duel; it resolves first and the duel is refused only if it fully resolved.</td></tr>
-        <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; msg…</code></td><td>"… chooses to refuse the duel and …"</td><td>The chat line when refused: built when the opponent chooses to refuse, posted only once the refusal fully resolved.</td></tr>
+        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The effect when the opponent refuses the duel; it resolves first and the duel is refused only if it resolved; a replaced refusal (Kitsuki Shomon) still refuses, a cancelled one doesn't (ruling #646).</td></tr>
+        <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; msg…</code></td><td>"… chooses to refuse the duel and …"</td><td>The chat line when refused: built when the opponent chooses to refuse, posted only once the refusal fully resolved. A refusal that was replaced (Kitsuki Shomon, ruling #646) posts "<em>refuser</em> chooses to refuse the duel" instead.</td></tr>
         <tr><td><code>statistic</code></td><td><code>(card, duelRules) =&gt; number | { printed, bonus }</code></td><td>the duel type's skill</td><td>The value each character duels with (<a href="game-actions.html#ga-duel"><code>DuelStatistic</code></a>).</td></tr>
         <tr><td><code>challengerEffect</code>, <code>targetEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>Effects on each side while the duel resolves.</td></tr>
         <tr><td><code>costHandler</code></td><td><code>(context, prompt) =&gt; void</code></td><td>none</td><td>Custom handling of the honor bid's cost.</td></tr>
@@ -1575,7 +1575,7 @@ this.action('Place a fate on a participating character, bow it, move it home, an
 
   <div class="ref" id="b-cannotTargetFirst" data-name="cannotTargetFirst">
     <h3><code>cannotTargetFirst()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-cannotTargetFirst">#</a></h3>
-    <p>The targets are chosen only after the costs are paid. By default the player chooses targets first (with a "Pay costs first" button); use this when the legal targets depend on what was paid.</p>
+    <p>The targets are chosen only after the costs are paid. By default the player chooses targets first (with a "Pay costs first" button, left out when a cost depends on a target); use this when the legal targets depend on what was paid.</p>
     <pre><code>// Dishonorable Assault: Action: During a conflict at this province, discard one or more cards from your hand. Choose an equal number of attacking characters - dishonor each of those characters.
 this.action('Discard cards to dishonor attackers')
     .cost(costs.discardCardsUpToVariableX((context) =&gt; this.getNumberOfLegalTargets(context)))
@@ -2355,7 +2355,8 @@ this.action('Steal a fate')
     <pre><code>// Exemplary Etiquette: Action: During a conflict - abilities on characters cannot be triggered this conflict.
 .conflictLastingEffect({
     effect: charactersCannot({
-        cannot: RestrictionType.TriggerAbilities
+        cannot: RestrictionType.TriggerAbilities,
+        appliesTo: [RestrictionScope.Characters, RestrictionScope.NonForcedAbilities]
     })
 })</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/ExemplaryEtiquette.ts">Exemplary Etiquette</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/SuperiorAuthority.ts">Superior Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Crab/AshenFlamePlateau.ts">Ashen Flame Plateau</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/GraspOfEarth.ts">Grasp of Earth</a></p>

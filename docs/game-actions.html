@@ -145,7 +145,7 @@ this.action('Bow a character')
     </table>
     <ul class="edge">
       <li>Its legality check only asks whether the target is a status token: no restriction stops it.</li>
-      <li>Raises <code>onStatusTokenDiscarded</code> (<code>event.token</code>, and <code>event.cards</code>: the cards losing a token).</li>
+      <li>Raises one <code>onStatusTokenDiscarded</code> event per token (<code>event.token</code>, and <code>event.cards</code>: the one card losing that token, or empty when the token is on no card).</li>
       <li>Chat: "discard <em>card</em>'s status token", or "discard a status token" when no target token is on a card.</li>
       <li>Builder shortcut: <code>.discardStatusToken(…)</code>.</li>
     </ul>
@@ -227,7 +227,7 @@ this.interrupt('Blank and reveal a province')
       <li>An honored token needs <code>ReceiveHonorToken</code>, a dishonored one <code>ReceiveDishonorToken</code>, a tainted one <code>ReceiveTaintedToken</code>; the first two are checked even when the card holds the opposite token.</li>
       <li>The opposite token cancels out: an honored token on a dishonored character removes its dishonored token and leaves it ordinary (and the other way round).</li>
       <li>The location isn't checked. It has no restriction type of its own.</li>
-      <li>Raises <code>onStatusTokenGained</code> (<code>event.token</code> is the <code>CharacterStatus</code>). Chat: "give <em>card</em> a <em>honored</em> status token".</li>
+      <li>Raises <code>onStatusTokenGained</code> (<code>event.token</code> is the <code>CharacterStatus</code>). Chat: "give <em>card</em> an <em>honored</em> status token" (or "a <em>dishonored</em>/<em>tainted</em> status token").</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// Final Whisper: Reaction: After an opponent's character receives a status token, that opponent chooses another character they control - the chosen character receives the same status token as well.
@@ -2150,7 +2150,7 @@ selectRing({
     <ul class="edge">
       <li>Legal whenever it has a target; it has no restriction type.</li>
       <li>When the game's rules give the favor no sides, it is claimed whole and <code>side</code> is ignored.</li>
-      <li>Raises <code>onClaimFavor</code>. Chat: "claim the Emperor's favor", then "<em>player</em> claims the <em>Imperial</em> <em>military</em> favor!" when it resolves.</li>
+      <li>Raises <code>onClaimFavor</code>. Chat: "claim the <em>sovereign</em> favor", then "<em>player</em> claims the <em>sovereign</em> <em>military</em> favor!" when it resolves (or "… claims the <em>sovereign</em> favor!" without sides). The sovereign is <code>game.rules.imperialFavorSovereign</code>: "Emperor's", or "Empress'" in Emerald and Sanctuary.</li>
       <li>Builder shortcut: <code>.claimImperialFavor(…)</code>.</li>
     </ul>
     <pre><code>// Yatakabune Port: Interrupt: When this province is broken during a conflict - claim the Imperial Favor.
@@ -2262,8 +2262,8 @@ this.action('Return player\'s rings')
         <tr><td><code>costHandler</code></td><td><code>(context, prompt) =&gt; void</code></td><td>none</td><td>Runs after the honor bid instead of the honor transfer (e.g. pay with cards).</td></tr>
         <tr><td><code>challengerEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>A lasting effect on the challenger until the duel ends.</td></tr>
         <tr><td><code>targetEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>A lasting effect on the targets until the duel ends.</td></tr>
-        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The opponent is asked "Do you wish to refuse the duel?" while it has a legal target; "Yes" resolves it first, in its own window, and the duel is refused only if it fully resolved ("to": a refusal an interrupt cancelled or redirected, Kitsuki Shomon, still starts the duel).</td></tr>
-        <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; MessageArgs</code></td><td>"<em>refuser</em> chooses to refuse the duel and …"</td><td>The chat line when the duel is refused: built when "Yes" is chosen (so it can read the state before the refusal), posted after the refusal fully resolved. A refusal that didn't resolve posts none; the duel's own lines follow.</td></tr>
+        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The opponent is asked "Do you wish to refuse the duel?" while it has a legal target; "Yes" resolves it first, in its own window, and the duel is refused only if it resolved ("to"). A refusal whose effect was replaced (Kitsuki Shomon, Young Rumormonger dishonor another character) still refuses the duel (ruling #646); one an interrupt cancelled starts the duel.</td></tr>
+        <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; MessageArgs</code></td><td>"<em>refuser</em> chooses to refuse the duel and …"</td><td>The chat line when the duel is refused: built when "Yes" is chosen (so it can read the state before the refusal), posted after the refusal fully resolved. A refusal that was replaced posts "<em>refuser</em> chooses to refuse the duel" instead; the replacement's own line names what happened. A refusal that didn't resolve posts none; the duel's own lines follow.</td></tr>
         <tr><td><code>requiresConflict</code></td><td><code>boolean</code></td><td>unset (<code>.initiateDuel</code> sets <code>true</code>)</td><td>Characters added to the duel later must be participating. Unset, that holds when the duel was initiated during a conflict (RRG D.1); <code>false</code> lifts it.</td></tr>
         <tr><td><code>targetCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>Who can be added to the duel later (Two Hands); replaces the participation check.</td></tr>
         <tr><td><code>challengerCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>Read only by <code>.initiateDuel</code>, which uses it to choose the challenger.</td></tr>
@@ -2509,7 +2509,8 @@ this.action('Stop characters from triggering abilities')
     .condition((context) =&gt; context.game.isDuringConflict())
     .conflictLastingEffect({
         effect: charactersCannot({
-            cannot: RestrictionType.TriggerAbilities
+            cannot: RestrictionType.TriggerAbilities,
+            appliesTo: [RestrictionScope.Characters, RestrictionScope.NonForcedAbilities]
         })
     })
     .chatText('make it so that characters cannot trigger abilities this conflict');</code></pre>
@@ -3372,7 +3373,7 @@ this.action('Discard status token from attached character')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-2-abilities">Resolving abilities</h3>
-<p>Resolving another card's ability from this one ("resolve that event again", "trigger the province's action ability"). Neither has a named event of its own; the ability's resolution raises its usual events. Both have the chat text <code>resolve {0}'s {1} ability</code> ({0} is the target card, {1} the ability's title).</p>
+<p>Resolving another card's ability from this one ("resolve that event again", "trigger the province's action ability"). Neither has a named event of its own; the ability's resolution raises its usual events. Their chat texts are <code>resolve {0}'s {1} ability</code> (<code>resolveAbility</code>) and <code>trigger {0}'s {1} ability</code> (<code>triggerAbility</code>); {0} is the target card, {1} the ability's title.</p>
 <div class="ref" id="ga-resolveAbility" data-name="resolveAbility">
     <h3><code>resolveAbility(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-resolveAbility">#</a></h3>
     <p>Resolves an ability's effects "as if" it were used, skipping its triggering.</p>
@@ -3419,7 +3420,7 @@ this.reaction('Mirror an opponent\'s event')
         <tr><td><code>player</code></td><td><code>Player</code></td><td>the ability's player</td><td>Who triggers it.</td></tr>
         <tr><td><code>event</code></td><td><code>Event</code></td><td>none</td><td>For a triggered ability: the event it responds to.</td></tr>
         <tr><td><code>ignoredBlockers</code></td><td><code>Blocker[]</code></td><td><code>[]</code></td><td>More reasons to ignore.</td></tr>
-        <tr><td><code>subResolution</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Part of this ability's own resolution: it doesn't count toward the ability's max and isn't stopped by it.</td></tr>
+        <tr><td><code>subResolution</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Part of this ability's own resolution: it isn't stopped by the ability's max (it still counts toward it).</td></tr>
       </tbody>
     </table>
     <ul class="edge">

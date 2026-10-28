@@ -1131,6 +1131,7 @@ this.action('Gain abilities from a character in your discard pile')
       <li>No persistent effects are copied.</li>
       <li>Abilities that the source cards themselves gained through <code>gainAllAbilitiesDynamic</code> are not copied, so two such characters don't copy each other in a loop.</li>
       <li>From a source that is not blank, all its triggered abilities are copied, gained ones included, whatever <code>printedAbilitiesOnly</code> says.</li>
+      <li>The copied abilities and their limits belong to one effect: each effect made from the persistent effect gets its own copy. A new instance of the card (it left play and entered again) starts with no memory of their uses (RRG Limit X per [period]).</li>
     </ul>
     <pre><code>// Shosuro Deceiver: While this character is participating in a conflict it gains each triggered ability on each other participating dishonored character except for abilities granted by instances of this ability.
 this.persistentEffect({
@@ -1386,9 +1387,9 @@ this.persistentEffect({
   </div>
 <div class="ref" id="ef-cannotTriggerAbilities" data-name="cannotTriggerAbilities">
     <h3><code>cannotTriggerAbilities()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-cannotTriggerAbilities">#</a></h3>
-    <p>"Characters in your opponent's home cannot trigger abilities": no player can use the card's actions and triggered abilities.</p>
+    <p>"Characters in your opponent's home cannot trigger abilities": no player can use the card's actions and non-forced triggered abilities.</p>
     <ul class="edge">
-      <li>Short for <code>cardCannot(RestrictionType.TriggerAbilities)</code>. It covers printed and gained abilities; use <code>cardCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo })</code> to narrow it.</li>
+      <li>Short for <code>cardCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo: RestrictionScope.NonForcedAbilities })</code>. It covers printed and gained abilities, but not Forced ones: those are triggered by the game, not a player (rulings #778, #810, #942). Use <code>cardCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo })</code> to narrow it further, and keep <code>NonForcedAbilities</code> in the list.</li>
       <li>Abilities on facedown cards can't be triggered anyway.</li>
     </ul>
     <pre><code>// Tranquility: Action: During a conflict – until the end of the conflict, characters in your opponent's home cannot trigger abilities.
@@ -1407,7 +1408,7 @@ this.action('Opponent\'s characters at home can\'t use abilities')
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>properties</code></td><td><code>RestrictionType | PlayType | { … }</code></td><td>required</td><td>A bare type is short for <code>{ cannot: type }</code>.</td></tr>
-        <tr><td><code>cannot</code></td><td><code>RestrictionType | PlayType</code></td><td>required</td><td>What is forbidden: <code>Bow</code>, <code>Target</code>, <code>SendHome</code>, <code>RemoveFate</code>, <code>DiscardFromPlay</code>, <code>MoveToConflict</code>, <code>TriggerAbilities</code>, … <code>RestrictionType.LeavePlay</code> covers discard from play, sacrifice, return to hand, return to deck and remove from game.</td></tr>
+        <tr><td><code>cannot</code></td><td><code>RestrictionType | PlayType</code></td><td>required</td><td>What is forbidden: <code>Bow</code>, <code>Target</code>, <code>SendHome</code>, <code>RemoveFate</code>, <code>DiscardFromPlay</code>, <code>MoveToConflict</code>, <code>TriggerAbilities</code>, … <code>RestrictionType.LeavePlay</code> covers discard from play, sacrifice, return to hand, return to deck, remove from game and put into a province.</td></tr>
         <tr><td><code>appliesTo</code></td><td><code>RestrictionScope | { trait } | (…)[]</code></td><td>every attempt</td><td>Which attempts are forbidden, judged by the attempt's context: <code>RestrictionScope.OpponentsEvents</code>, <code>OpponentsCardEffects</code>, <code>CardEffects</code>, <code>RingEffects</code>, … <code>{ trait: Trait.Shugenja }</code> matches attempts whose source has the trait. With a list, every entry must match.</td></tr>
         <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the effect source's controller</td><td>"You" for the <code>Opponents…</code> and <code>Own…</code> scopes.</td></tr>
         <tr><td><code>source</code></td><td><code>BaseCard</code></td><td>—</td><td>Accepted by the type but ignored: <code>Restriction</code> does not read it.</td></tr>
@@ -1460,7 +1461,8 @@ this.action('Stop characters from triggering abilities')
     .condition((context) =&gt; context.game.isDuringConflict())
     .conflictLastingEffect({
         effect: charactersCannot({
-            cannot: RestrictionType.TriggerAbilities
+            cannot: RestrictionType.TriggerAbilities,
+            appliesTo: [RestrictionScope.Characters, RestrictionScope.NonForcedAbilities]
         })
     })
     .chatText('make it so that characters cannot trigger abilities this conflict');</code></pre>
@@ -3092,7 +3094,14 @@ this.action('Prevent your events from being cancelled')
 .playerLastingEffect((context) =&gt; ({
     duration: Duration.UntilPassPriority,
     effect: context.source.parentCharacter?.hasTrait(Trait.Monk) ? additionalAction() : []
-}))</code></pre>
+}))
+.chatText((context) =&gt; {
+    const character = context.source.parentCharacter;
+    if(character?.isParticipating()) {
+        return msg`take an additional action`;
+    }
+    return msg`move ${character} into the conflict${character?.hasTrait(Trait.Monk) ? ' and take an additional action' : ''}`;
+})</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/HawkTattoo.ts">Hawk Tattoo</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/CurrentOfTheBeryt.ts">Current of the Beryt</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/CenteredBreath.ts">Centered Breath</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/KakitaBlade2.ts">Kakita Blade</a></p>
   </div>
 <div class="ref" id="ef-additionalActionAfterWindowCompleted" data-name="additionalActionAfterWindowCompleted">

@@ -977,7 +977,7 @@ cardCannot({
 </section>
 
 <h2 id="ev-section-events">Events</h2>
-<p>Everything that happens in a game is an event (<code>Event</code>). A triggered ability names the events it responds to in <code>.when({ onX: (event, context) =&gt; … })</code>: the key is the event's string value, <code>event</code> is typed by the key, and the predicate returns whether the ability may trigger. In code the names are the <code>EventName</code> members (<code>EventName.OnCardPlayed</code>).</p>
+<p>Everything that happens in a game is an event (<code>Event</code>). A triggered ability names the events it responds to in <code>.when({ onX: (event, context) =&gt; … })</code>: the key is the event's string value, <code>event</code> is typed by the key, and the predicate returns whether the ability may trigger. In code the names are the <code>EventName</code> members (<code>EventName.OnCardPlayed</code>). A field typed <code>Type?</code> below is optional in <code>Events/EventPayloads.ts</code>: it may be unset, so check it before use.</p>
 <p>Events resolve in an event window (<code>EventWindow</code>). A window runs these steps for its events, in this order:</p>
 <ol>
     <li>Each event's condition is checked. A game action's event re-checks that its target is still legal, and is cancelled if not. Unnamed events (<code>moveCard</code>, <code>placeCardUnderneath</code>, …) skip this check.</li>
@@ -1225,21 +1225,18 @@ this.wouldInterrupt('Keep the first player token')
         </tbody>
       </table>
   <ul class="edge">
-    <li>Interrupts to it come before any cost is paid, which is where cost reductions for playing attachments hook in (Iron Mountain Castle, Mirumoto Rikitaro).</li>
+    <li>Interrupts to it come before any cost is paid, which is where cost reductions for playing attachments hook in (Iron Mountain Castle, Mirumoto Rikitaro). <a href="helpers.html#he-isReducibleAttachmentPlay"><code>isReducibleAttachmentPlay(event.context)</code></a> tells whether the event plays an attachment that still costs fate.</li>
     <li>Cancelling it stops the ability: its handler, which queues costs, targets and the effect, does not run.</li>
   </ul>
   <pre><code>// Mirumoto Rikitaro: Interrupt: When you play an attachment on this character, if it has no other attachments you control - reduce the cost to play that attachment by 1. …
 this.interrupt('Reduce cost of next attachment')
     .when({
-        onAbilityResolverInitiated: (event, context) =&gt; {
-            if(event.context === undefined) {
-                return false;
-            }
-            const ec = event.context;
-            const isAttachment =
-                ec.source.type === CardType.Attachment ||
-                ec.ability instanceof PlayAttachmentAction;
-            …</code></pre>
+        onAbilityResolverInitiated: (event, context) =&gt;
+            isReducibleAttachmentPlay(event.context) &amp;&amp;
+            !context.source.attachments.some((attachment) =&gt; attachment.controller === context.player) &amp;&amp;
+            event.context.player === context.player &amp;&amp;
+            event.context.target === context.source
+    })</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Dragon/MirumotoRikitaro.ts">Mirumoto Rikitaro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/IronMountainCastle.ts">Iron Mountain Castle</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/EarnestSculptor.ts">Earnest Sculptor</a></p>
 </div>
 <div class="ref" id="ev-onCardAbilityInitiated" data-name="onCardAbilityInitiated OnCardAbilityInitiated">
@@ -1302,10 +1299,10 @@ this.reaction('Mirror an opponent\'s event')
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card affected (card lasting effects, <code>takeControl</code>).</td></tr>
-          <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring affected (<code>ringLastingEffect</code>).</td></tr>
-          <tr><td><code>effectTypes</code></td><td><code>EffectName[]</code></td><td>The <code>EffectName</code>s of the effects (<code>cardLastingEffect</code> only).</td></tr>
-          <tr><td><code>matches</code></td><td><code>EffectMatch[]</code></td><td>What each effect matches (<code>cardLastingEffect</code> only).</td></tr>
+          <tr><td><code>card</code></td><td><code>BaseCard?</code></td><td>The card affected (card lasting effects, <code>takeControl</code>).</td></tr>
+          <tr><td><code>ring</code></td><td><code>Ring?</code></td><td>The ring affected (<code>ringLastingEffect</code>).</td></tr>
+          <tr><td><code>effectTypes</code></td><td><code>EffectName[]?</code></td><td>The <code>EffectName</code>s of the effects (<code>cardLastingEffect</code> only).</td></tr>
+          <tr><td><code>matches</code></td><td><code>EffectMatch[]?</code></td><td>What each effect matches (<code>cardLastingEffect</code> only).</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1394,10 +1391,10 @@ onSpendFate: (event, context) =&gt;
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>Set by card actions.</td></tr>
-          <tr><td><code>player</code></td><td><code>Player</code></td><td>Set by player actions.</td></tr>
-          <tr><td><code>ring</code></td><td><code>Ring</code></td><td>Set by ring actions.</td></tr>
-          <tr><td><code>cardStateWhenMoved</code></td><td><code>DrawCard</code></td><td>Snapshot taken by some move actions.</td></tr>
+          <tr><td><code>card</code></td><td><code>BaseCard?</code></td><td>Set by card actions.</td></tr>
+          <tr><td><code>player</code></td><td><code>Player?</code></td><td>Set by player actions.</td></tr>
+          <tr><td><code>ring</code></td><td><code>Ring?</code></td><td>Set by ring actions.</td></tr>
+          <tr><td><code>cardStateWhenMoved</code></td><td><code>DrawCard?</code></td><td>Snapshot taken by some move actions.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1419,7 +1416,7 @@ onSpendFate: (event, context) =&gt;
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The attachment.</td></tr>
           <tr><td><code>parent</code></td><td><code>BaseCard | Ring</code></td><td>What it is attached to.</td></tr>
-          <tr><td><code>originalLocation</code></td><td><code>Location</code></td><td>Where the attachment was; set by the handler, so only reactions see it.</td></tr>
+          <tr><td><code>originalLocation</code></td><td><code>Location?</code></td><td>Where the attachment was; set by the handler, so only reactions see it.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1471,13 +1468,13 @@ cardLastingEffect({
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player playing it.</td></tr>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The card.</td></tr>
-          <tr><td><code>originalLocation</code></td><td><code>Location</code></td><td>Where it was played from; <code>Location.Underneath</code> from under a card (Back-Alley Hideaway).</td></tr>
-          <tr><td><code>originallyOnTopOfConflictDeck</code></td><td><code>boolean</code></td><td>Whether it was the top card of the player's conflict deck.</td></tr>
-          <tr><td><code>playType</code></td><td><code>PlayType</code></td><td>How it was played.</td></tr>
-          <tr><td><code>onPlayCardSource</code></td><td><code>BaseCard</code></td><td>The card whose effect played it, if any.</td></tr>
-          <tr><td><code>playedFromOutOfPlaySource</code></td><td><code>BaseCard[]</code></td><td>The cards whose effects made it playable from out of play.</td></tr>
-          <tr><td><code>resolver</code></td><td><code>AbilityResolver</code></td><td>The resolver playing an event card.</td></tr>
-          <tr><td><code>limitedPlaySource</code></td><td><code>BaseCard</code></td><td>Set by the card whose limited-use permission let it be played (Master Tactician, Bayushi Kachiko).</td></tr>
+          <tr><td><code>originalLocation</code></td><td><code>Location?</code></td><td>Where it was played from; <code>Location.Underneath</code> from under a card (Back-Alley Hideaway).</td></tr>
+          <tr><td><code>originallyOnTopOfConflictDeck</code></td><td><code>boolean?</code></td><td>Whether it was the top card of the player's conflict deck.</td></tr>
+          <tr><td><code>playType</code></td><td><code>PlayType?</code></td><td>How it was played.</td></tr>
+          <tr><td><code>onPlayCardSource</code></td><td><code>BaseCard?</code></td><td>The card whose effect played it, if any.</td></tr>
+          <tr><td><code>playedFromOutOfPlaySource</code></td><td><code>BaseCard[]?</code></td><td>The cards whose effects made it playable from out of play.</td></tr>
+          <tr><td><code>resolver</code></td><td><code>AbilityResolver?</code></td><td>The resolver playing an event card.</td></tr>
+          <tr><td><code>limitedPlaySource</code></td><td><code>BaseCard?</code></td><td>Set by the card whose limited-use permission let it be played (Master Tactician, Bayushi Kachiko).</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1517,9 +1514,9 @@ this.reaction('Opponent discards or dishonors')
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The character.</td></tr>
           <tr><td><code>originalLocation</code></td><td><code>Location</code></td><td>Where it came from (<code>overrideLocation</code> if given).</td></tr>
-          <tr><td><code>fate</code></td><td><code>number</code></td><td>Fate placed on it.</td></tr>
-          <tr><td><code>status</code></td><td><code>EntersPlayStatus</code></td><td>The status it enters play with.</td></tr>
-          <tr><td><code>controller</code></td><td><code>Players</code></td><td>Who will control it, relative to the ability's player.</td></tr>
+          <tr><td><code>fate</code></td><td><code>number?</code></td><td>Fate placed on it.</td></tr>
+          <tr><td><code>status</code></td><td><code>EntersPlayStatus?</code></td><td>The status it enters play with.</td></tr>
+          <tr><td><code>controller</code></td><td><code>Players?</code></td><td>Who will control it, relative to the ability's player.</td></tr>
           <tr><td><code>intoConflict</code></td><td><code>boolean</code></td><td>Whether it enters the conflict.</td></tr>
           <tr><td><code>side</code></td><td><code>Player</code></td><td>Whose side of the conflict it joins.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
@@ -1546,7 +1543,7 @@ this.reaction('Refill province faceup')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The facedown card turned into the token.</td></tr>
-          <tr><td><code>tokenCharacter</code></td><td><code>DrawCard</code></td><td>The token; set by the handler, so only reactions see it.</td></tr>
+          <tr><td><code>tokenCharacter</code></td><td><code>DrawCard?</code></td><td>The token; set by the handler, so only reactions see it.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1572,12 +1569,12 @@ this.reaction('Refill province faceup')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The card leaving play.</td></tr>
-          <tr><td><code>destination</code></td><td><code>Location</code></td><td>Where it goes; a discard pile by default.</td></tr>
-          <tr><td><code>cardStateWhenLeftPlay</code></td><td><code>DrawCard</code></td><td>A snapshot of the card, taken just before the handler (after interrupts).</td></tr>
-          <tr><td><code>cardStateWhenMoved</code></td><td><code>DrawCard</code></td><td>Snapshot taken by <code>putIntoProvince</code>.</td></tr>
-          <tr><td><code>isSacrifice</code></td><td><code>boolean</code></td><td>Whether it is a sacrifice.</td></tr>
-          <tr><td><code>shuffle</code></td><td><code>boolean</code></td><td><code>returnToDeck</code> with <code>shuffle</code>.</td></tr>
-          <tr><td><code>options</code></td><td><code>{ bottom?: boolean }</code></td><td><code>returnToDeck</code> to the bottom.</td></tr>
+          <tr><td><code>destination</code></td><td><code>Location?</code></td><td>Where it goes; a discard pile by default.</td></tr>
+          <tr><td><code>cardStateWhenLeftPlay</code></td><td><code>DrawCard?</code></td><td>A snapshot of the card, taken just before the handler (after interrupts).</td></tr>
+          <tr><td><code>cardStateWhenMoved</code></td><td><code>DrawCard?</code></td><td>Snapshot taken by <code>putIntoProvince</code>.</td></tr>
+          <tr><td><code>isSacrifice</code></td><td><code>boolean?</code></td><td>Whether it is a sacrifice.</td></tr>
+          <tr><td><code>shuffle</code></td><td><code>boolean?</code></td><td><code>returnToDeck</code> with <code>shuffle</code>.</td></tr>
+          <tr><td><code>options</code></td><td><code>{ bottom?: boolean }?</code></td><td><code>returnToDeck</code> to the bottom.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1604,16 +1601,16 @@ this.reaction('Double military skill')
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card moved (from <code>moveTo</code>).</td></tr>
-          <tr><td><code>originalLocation</code></td><td><code>Location</code></td><td>Where it was (from <code>moveTo</code>).</td></tr>
-          <tr><td><code>newLocation</code></td><td><code>Location</code></td><td>Where it is now (from <code>moveTo</code>).</td></tr>
-          <tr><td><code>player</code></td><td><code>Player</code></td><td>The player returning cards (<code>chosenReturnToDeck</code>).</td></tr>
-          <tr><td><code>cards</code></td><td><code>BaseCard[]</code></td><td>The cards returned (<code>chosenReturnToDeck</code>).</td></tr>
-          <tr><td><code>amount</code></td><td><code>number</code></td><td>How many to return.</td></tr>
-          <tr><td><code>shuffle</code></td><td><code>boolean</code></td><td>Shuffle the deck afterwards.</td></tr>
-          <tr><td><code>bottom</code></td><td><code>boolean</code></td><td>Put them on the bottom.</td></tr>
-          <tr><td><code>options</code></td><td><code>{ bottom?: boolean }</code></td><td>The move options passed on for each card; set by the handler.</td></tr>
-          <tr><td><code>discardedCards</code></td><td><code>BaseCard[]</code></td><td>The cards actually returned; set by the handler.</td></tr>
+          <tr><td><code>card</code></td><td><code>BaseCard?</code></td><td>The card moved (from <code>moveTo</code>).</td></tr>
+          <tr><td><code>originalLocation</code></td><td><code>Location?</code></td><td>Where it was (from <code>moveTo</code>).</td></tr>
+          <tr><td><code>newLocation</code></td><td><code>Location?</code></td><td>Where it is now (from <code>moveTo</code>).</td></tr>
+          <tr><td><code>player</code></td><td><code>Player?</code></td><td>The player returning cards (<code>chosenReturnToDeck</code>).</td></tr>
+          <tr><td><code>cards</code></td><td><code>BaseCard[]?</code></td><td>The cards returned (<code>chosenReturnToDeck</code>).</td></tr>
+          <tr><td><code>amount</code></td><td><code>number?</code></td><td>How many to return.</td></tr>
+          <tr><td><code>shuffle</code></td><td><code>boolean?</code></td><td>Shuffle the deck afterwards.</td></tr>
+          <tr><td><code>bottom</code></td><td><code>boolean?</code></td><td>Put them on the bottom.</td></tr>
+          <tr><td><code>options</code></td><td><code>{ bottom?: boolean }?</code></td><td>The move options passed on for each card; set by the handler.</td></tr>
+          <tr><td><code>discardedCards</code></td><td><code>BaseCard[]?</code></td><td>The cards actually returned; set by the handler.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
         </tbody>
       </table>
@@ -1658,12 +1655,12 @@ onCardsDiscarded: (event, context) =&gt;
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player discarding.</td></tr>
-          <tr><td><code>cards</code></td><td><code>BaseCard[]</code></td><td><code>chosenDiscard</code>: the chosen cards (known before the window). <code>discardAtRandom</code>: set by the handler. <code>discardMatching</code>: the candidate cards, narrowed by the handler.</td></tr>
-          <tr><td><code>amount</code></td><td><code>number</code></td><td>How many to discard.</td></tr>
-          <tr><td><code>reveal</code></td><td><code>boolean</code></td><td><code>discardMatching</code>: reveal the cards.</td></tr>
-          <tr><td><code>match</code></td><td><code>(context, card) =&gt; boolean</code></td><td><code>discardMatching</code>: which cards.</td></tr>
-          <tr><td><code>discardedAtRandom</code></td><td><code>boolean</code></td><td>Whether the cards were chosen at random.</td></tr>
-          <tr><td><code>discardedCards</code></td><td><code>BaseCard[]</code></td><td>The cards discarded; set by the handler.</td></tr>
+          <tr><td><code>cards</code></td><td><code>BaseCard[]?</code></td><td><code>chosenDiscard</code>: the chosen cards (known before the window). <code>discardAtRandom</code>: set by the handler. <code>discardMatching</code>: the candidate cards, narrowed by the handler.</td></tr>
+          <tr><td><code>amount</code></td><td><code>number?</code></td><td>How many to discard.</td></tr>
+          <tr><td><code>reveal</code></td><td><code>boolean?</code></td><td><code>discardMatching</code>: reveal the cards.</td></tr>
+          <tr><td><code>match</code></td><td><code>((context, card) =&gt; boolean)?</code></td><td><code>discardMatching</code>: which cards.</td></tr>
+          <tr><td><code>discardedAtRandom</code></td><td><code>boolean?</code></td><td>Whether the cards were chosen at random.</td></tr>
+          <tr><td><code>discardedCards</code></td><td><code>BaseCard[]?</code></td><td>The cards discarded; set by the handler.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1720,7 +1717,7 @@ this.wouldInterrupt('Prevent draw')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player whose deck is searched.</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>Cards looked at; <code>-1</code> for the whole deck.</td></tr>
-          <tr><td><code>selectedCards</code></td><td><code>DrawCard[]</code></td><td>The cards taken.</td></tr>
+          <tr><td><code>selectedCards</code></td><td><code>DrawCard[]?</code></td><td>The cards taken.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1785,7 +1782,7 @@ until: {
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card.</td></tr>
-          <tr><td><code>tokenType</code></td><td><code>TokenType</code></td><td>The token (default <code>TokenType.Honor</code>).</td></tr>
+          <tr><td><code>tokenType</code></td><td><code>TokenType?</code></td><td>The token (default <code>TokenType.Honor</code>).</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1971,7 +1968,7 @@ onStatusTokenDiscarded: (event, context) =&gt;
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card receiving the token.</td></tr>
-          <tr><td><code>token</code></td><td><code>StatusToken | CharacterStatus</code></td><td>A <code>StatusToken</code>, or the <code>CharacterStatus</code> for <code>gainStatusToken</code>.</td></tr>
+          <tr><td><code>token</code></td><td><code>(StatusToken | CharacterStatus)?</code></td><td>A <code>StatusToken</code>, or the <code>CharacterStatus</code> for <code>gainStatusToken</code>.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1993,7 +1990,7 @@ this.reaction('Copy status token')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>token</code></td><td><code>StatusToken</code></td><td>The token.</td></tr>
-          <tr><td><code>donor</code></td><td><code>BaseCard</code></td><td>The card it came from.</td></tr>
+          <tr><td><code>donor</code></td><td><code>BaseCard?</code></td><td>The card it came from.</td></tr>
           <tr><td><code>recipient</code></td><td><code>DrawCard</code></td><td>The card it goes to.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
@@ -2003,9 +2000,13 @@ this.reaction('Copy status token')
   </ul>
   <pre><code>// Diligent Chaperone: … Reaction: After an honored status token is removed from a character you control by a card ability or ring effect, if this character is ready - honor that character.
 onStatusTokenMoved: (event, context) =&gt;
-    event.token.grantedStatus === CharacterStatus.Honored &amp;&amp;
-    !!event.donor &amp;&amp; isFriendlyCharacter(context, event.donor) &amp;&amp;
-    !context.source.bowed,</code></pre>
+    !context.source.bowed &amp;&amp; (
+        (event.token.grantedStatus === CharacterStatus.Honored &amp;&amp;
+            !!event.donor &amp;&amp; isFriendlyCharacter(context, event.donor)) ||
+        // a dishonored token moved onto an honored character discards both tokens
+        (event.token.grantedStatus === CharacterStatus.Dishonored &amp;&amp;
+            !event.recipient.isDishonored &amp;&amp; isFriendlyCharacter(context, event.recipient))
+    ),</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/DiligentChaperone.ts">Diligent Chaperone</a></p>
 </div>
 </section>
@@ -2068,10 +2069,10 @@ this.interrupt('Force opponent to discard to 4 cards')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The conflict.</td></tr>
-          <tr><td><code>type</code></td><td><code>ConflictType</code></td><td>The declared type; set by the handler.</td></tr>
-          <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The contested ring; set by the handler.</td></tr>
-          <tr><td><code>attackers</code></td><td><code>DrawCard[]</code></td><td>The declared attackers; set by the handler.</td></tr>
-          <tr><td><code>ringFate</code></td><td><code>number</code></td><td>Fate that was on the ring; set by the handler.</td></tr>
+          <tr><td><code>type</code></td><td><code>ConflictType?</code></td><td>The declared type; set by the handler.</td></tr>
+          <tr><td><code>ring</code></td><td><code>Ring?</code></td><td>The contested ring; set by the handler.</td></tr>
+          <tr><td><code>attackers</code></td><td><code>DrawCard[]?</code></td><td>The declared attackers; set by the handler.</td></tr>
+          <tr><td><code>ringFate</code></td><td><code>number?</code></td><td>Fate that was on the ring; set by the handler.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
         </tbody>
       </table>
@@ -2095,10 +2096,10 @@ this.reaction('Gain 1 fate')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The conflict.</td></tr>
-          <tr><td><code>type</code></td><td><code>ConflictType</code></td><td>The conflict type.</td></tr>
-          <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The contested ring.</td></tr>
+          <tr><td><code>type</code></td><td><code>ConflictType?</code></td><td>The conflict type.</td></tr>
+          <tr><td><code>ring</code></td><td><code>Ring?</code></td><td>The contested ring.</td></tr>
           <tr><td><code>attackers</code></td><td><code>DrawCard[]</code></td><td>The attackers.</td></tr>
-          <tr><td><code>ringFate</code></td><td><code>number</code></td><td>Fate on the ring.</td></tr>
+          <tr><td><code>ringFate</code></td><td><code>number?</code></td><td>Fate on the ring.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
         </tbody>
       </table>
@@ -2179,7 +2180,7 @@ this.reaction('Declare a new conflict')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The attacking player.</td></tr>
           <tr><td><code>attackerMatrix</code></td><td><code>AttackersMatrix</code></td><td>Which attackers, rings and types are legal.</td></tr>
-          <tr><td><code>type</code></td><td><code>ConflictType</code></td><td>The conflict type if already set.</td></tr>
+          <tr><td><code>type</code></td><td><code>ConflictType?</code></td><td>The conflict type if already set.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
         </tbody>
       </table>
@@ -2429,7 +2430,7 @@ this.reaction('Move the conflict')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player claiming it.</td></tr>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring.</td></tr>
-          <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The current conflict, if any.</td></tr>
+          <tr><td><code>conflict</code></td><td><code>Conflict?</code></td><td>The current conflict, if any.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The claiming ability's, or the winner's framework context.</td></tr>
         </tbody>
       </table>
@@ -2467,7 +2468,7 @@ this.reaction('Resolve ring effect')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring.</td></tr>
-          <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The current conflict.</td></tr>
+          <tr><td><code>conflict</code></td><td><code>Conflict?</code></td><td>The current conflict.</td></tr>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player resolving it.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
@@ -2498,8 +2499,8 @@ this.reaction('Resolve ring effect')
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player resolving it.</td></tr>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring of the element.</td></tr>
           <tr><td><code>effectResolved</code></td><td><code>boolean</code></td><td><code>false</code> until the ring ability resolved.</td></tr>
-          <tr><td><code>physicalRing</code></td><td><code>Ring</code></td><td>The contested ring, when resolving a conflict ring.</td></tr>
-          <tr><td><code>optional</code></td><td><code>boolean</code></td><td>Whether the player may skip it.</td></tr>
+          <tr><td><code>physicalRing</code></td><td><code>Ring?</code></td><td>The contested ring, when resolving a conflict ring.</td></tr>
+          <tr><td><code>optional</code></td><td><code>boolean?</code></td><td>Whether the player may skip it.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -2579,10 +2580,10 @@ this.wouldInterrupt('Keep a claimed ring')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
-          <tr><td><code>winner</code></td><td><code>DrawCard[]</code></td><td>The winning characters.</td></tr>
-          <tr><td><code>loser</code></td><td><code>DrawCard[]</code></td><td>The losing characters.</td></tr>
-          <tr><td><code>winningPlayer</code></td><td><code>Player | Player[]</code></td><td>The winning player(s).</td></tr>
-          <tr><td><code>losingPlayer</code></td><td><code>Player | Player[]</code></td><td>The losing player(s).</td></tr>
+          <tr><td><code>winner</code></td><td><code>DrawCard[]?</code></td><td>The winning characters.</td></tr>
+          <tr><td><code>loser</code></td><td><code>DrawCard[]?</code></td><td>The losing characters.</td></tr>
+          <tr><td><code>winningPlayer</code></td><td><code>(Player | Player[])?</code></td><td>The winning player(s).</td></tr>
+          <tr><td><code>losingPlayer</code></td><td><code>(Player | Player[])?</code></td><td>The losing player(s).</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
         </tbody>
       </table>
@@ -2816,9 +2817,9 @@ this.reaction('Collect additional fate')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The ability's target player.</td></tr>
-          <tr><td><code>giveHonor</code></td><td><code>boolean</code></td><td>Whether honor is transferred after the bid (default <code>false</code>).</td></tr>
-          <tr><td><code>postBidAction</code></td><td><code>GameAction</code></td><td>Resolved after the bid.</td></tr>
-          <tr><td><code>message</code></td><td><code>(context) =&gt; MessageArgs</code></td><td>Chat message after the bid.</td></tr>
+          <tr><td><code>giveHonor</code></td><td><code>boolean?</code></td><td>Whether honor is transferred after the bid (default <code>false</code>).</td></tr>
+          <tr><td><code>postBidAction</code></td><td><code>GameAction?</code></td><td>Resolved after the bid.</td></tr>
+          <tr><td><code>message</code></td><td><code>((context) =&gt; MessageArgs)?</code></td><td>Chat message after the bid.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -2849,7 +2850,7 @@ this.reaction('Increase bid by 1')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player.</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>By how much.</td></tr>
-          <tr><td><code>direction</code></td><td><code>Direction</code></td><td>Increase or decrease; with <code>Direction.Prompt</code> the player chooses before the event.</td></tr>
+          <tr><td><code>direction</code></td><td><code>Direction?</code></td><td>Increase or decrease; with <code>Direction.Prompt</code> the player chooses before the event.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -2882,8 +2883,8 @@ this.reaction('Increase bid by 1')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player.</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>Positive for a gain, negative for a loss (the requested amount; a gain may be capped by the honor limit when it resolves).</td></tr>
-          <tr><td><code>dueToUnopposed</code></td><td><code>boolean</code></td><td>Lost for an unopposed conflict.</td></tr>
-          <tr><td><code>dueToStatusToken</code></td><td><code>boolean</code></td><td>Caused by a status token.</td></tr>
+          <tr><td><code>dueToUnopposed</code></td><td><code>boolean?</code></td><td>Lost for an unopposed conflict.</td></tr>
+          <tr><td><code>dueToStatusToken</code></td><td><code>boolean?</code></td><td>Caused by a status token.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -2908,12 +2909,12 @@ this.wouldInterrupt('Lose fate instead of honor')
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>fate</code></td><td><code>number</code></td><td>How much fate.</td></tr>
-          <tr><td><code>origin</code></td><td><code>Ring | DrawCard | Player</code></td><td>Where it comes from; none for fate from the general supply.</td></tr>
-          <tr><td><code>recipient</code></td><td><code>Player | DrawCard | Ring</code></td><td>Where it goes; none for fate returned to the supply.</td></tr>
-          <tr><td><code>spend</code></td><td><code>boolean</code></td><td>Fate spent from the origin's fate pool (<code>payFate</code>, <code>payFateToRing</code>, texts that "spend" fate): the player must be allowed to spend it.</td></tr>
-          <tr><td><code>amount</code></td><td><code>number</code></td><td>Only when paying a fate cost to the opponent (then <code>fate</code>, <code>origin</code> and <code>recipient</code> are not set).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
+          <tr><td><code>fate</code></td><td><code>number?</code></td><td>How much fate.</td></tr>
+          <tr><td><code>origin</code></td><td><code>(Ring | DrawCard | Player)?</code></td><td>Where it comes from; none for fate from the general supply.</td></tr>
+          <tr><td><code>recipient</code></td><td><code>(Player | DrawCard | Ring)?</code></td><td>Where it goes; none for fate returned to the supply.</td></tr>
+          <tr><td><code>spend</code></td><td><code>boolean?</code></td><td>Fate spent from the origin's fate pool (<code>payFate</code>, <code>payFateToRing</code>, texts that "spend" fate): the player must be allowed to spend it.</td></tr>
+          <tr><td><code>amount</code></td><td><code>number?</code></td><td>Only when paying a fate cost to the opponent (then <code>fate</code>, <code>origin</code> and <code>recipient</code> are not set).</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext?</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2978,7 +2979,7 @@ this.reaction('Resolve the attached ring\'s effect')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player giving honor (the target of <code>takeHonor</code>, default the opponent).</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>The requested amount; transfer modifiers and the honor limit apply when it resolves.</td></tr>
-          <tr><td><code>afterBid</code></td><td><code>boolean</code></td><td>Caused by an honor bid.</td></tr>
+          <tr><td><code>afterBid</code></td><td><code>boolean?</code></td><td>Caused by an honor bid.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -3305,7 +3306,7 @@ gameAction: multiple((context) =&gt; {
 <div class="ref" id="ctx-target" data-name="target targets">
   <h3><code>context.target</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-target">#</a></h3>
   <p>The card chosen for a target: <code>context.targets[name]</code> for every card target, and <code>context.target</code> when the target is named <code>target</code> (the default for an unnamed target) and holds one card. <code>{0}</code> in a chat text names it (see <a href="#ctx-chatTarget"><code>chatTarget()</code></a>).</p>
-  <p>When it is set: targets are chosen before costs (<code>Stage.PreTarget</code>). They are chosen after costs instead when the ability has <code>cannotTargetFirst()</code>, when the player clicks "Pay costs first", or for a target the opponent chooses (that target and the ones after it wait). After costs (<code>Stage.Target</code>) every target is checked again; if one is no longer legal, all are chosen again.</p>
+  <p>When it is set: targets are chosen before costs (<code>Stage.PreTarget</code>). They are chosen after costs instead when the ability has <code>cannotTargetFirst()</code>, when the player clicks "Pay costs first" (not offered when a cost depends on a target), or for a target the opponent chooses (that target and the ones after it wait). After costs (<code>Stage.Target</code>) every target is checked again; if one is no longer legal, all are chosen again.</p>
   <ul class="edge">
     <li>A multi-card target (<code>targetCards()</code>, or a target with a multi-card <code>mode</code>) stores an array in <code>context.targets[name]</code> and leaves <code>context.target</code> unset.</li>
     <li>A skipped optional target holds <code>[]</code>, or nothing when its prompt was hidden (<code>hideIfNoLegalTargets</code>); <code>context.target</code> is then unset.</li>

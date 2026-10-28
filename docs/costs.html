@@ -43,7 +43,7 @@ this.conflictAction('Discard a character')
 <h3 id="co-how">How the engine pays</h3>
 <ol>
     <li><strong>Legality.</strong> Before the ability can be used, the engine asks every cost <code>canPay(context)</code> on a copy of the context at <code>Stage.Cost</code>. If one says no, the ability is not offered (blocker <code>CannotPayCost</code>). Nothing is chosen or paid yet, so <code>context.costs</code> is empty.</li>
-    <li><strong>Early targets.</strong> Unless the ability has <code>cannotTargetFirst()</code>, its targets are checked and offered first (stage <code>PreTarget</code>); the player may pick "Pay costs first". The targets are confirmed after the costs.</li>
+    <li><strong>Early targets.</strong> Unless the ability has <code>cannotTargetFirst()</code>, its targets are checked and offered first (stage <code>PreTarget</code>); the player may pick "Pay costs first", unless a cost has <code>dependsOn</code> (it can't be paid before its target is chosen). The targets are confirmed after the costs.</li>
     <li><strong>Choosing.</strong> The costs resolve in the order they were declared (with <code>firstPlayerChoosesFirst()</code> and the opponent as first player, costs marked <code>chosenByOpponent</code> come first): each one asks its question (which card, how much fate, Yes or No) and collects the events that pay it. While the resolver allows it, every prompt has a Cancel button; cancelling ends the ability and nothing is paid.</li>
     <li><strong>Paying.</strong> All collected events resolve in one event window, so the costs are paid simultaneously. If any of them is cancelled or prevented, the chat says "<em>player1 attempted to use X, but did not successfully pay the required costs</em>" and the ability ends (for a played card it also raises <a href="types.html#ev-onCardPlayCostsNotPaid"><code>onCardPlayCostsNotPaid</code></a>); what was paid stays paid.</li>
     <li><strong>Then</strong> the targets are chosen or confirmed. Costs of targeting (effects that make choosing a card cost fate) are checked and paid when the effects initiate; if they can't be paid, the chat says "<em>did not successfully pay the required costs</em>" and the ability ends before the limit or max counts. If no legal target is left, the chat says "<em>player1 attempted to use X, but there are insufficient legal targets</em>" and the ability ends; the costs stay paid. Otherwise the limit and max count the use, the chat line is written and the effects initiate. The effects can still be cancelled; the costs stay paid.</li>
@@ -100,7 +100,7 @@ this.conflictAction('Discard a character')
         <tr><td><code>getActionName(context)</code></td><td>The <code>context.costs</code> key the cost records under. Its value is <code>{0}</code> in the cost text.</td></tr>
         <tr><td><code>getCostMessage(context)</code></td><td>The cost text, as <code>[format, args]</code>; <code>args</code> become <code>{1}</code>, <code>{2}</code>, …</td></tr>
         <tr><td><code>promptsPlayer</code></td><td>Whether the cost asks the player something. If so, the action window skips its one-click confirmation menu and starts the ability directly.</td></tr>
-        <tr><td><code>dependsOn</code></td><td>The name of a target the cost depends on: while that target is offered first, a candidate is legal only if the cost can be paid for it (<code>targetDependentFate</code>).</td></tr>
+        <tr><td><code>dependsOn</code></td><td>The name of a target the cost depends on: while that target is offered first, a candidate is legal only if the cost can be paid for it (<code>targetDependentFate</code>). The target prompt then has no "Pay costs first" button.</td></tr>
         <tr><td><code>hasTargetsChosenByInitiatingPlayer(context)</code></td><td>Whether paying makes the ability's player choose cards. It counts toward the ability's <code>hasTargetsChosenByInitiatingPlayer</code> (Hantei XXXVIII).</td></tr>
         <tr><td><code>fateSpent(context)</code></td><td>The fate the player spends paying it (set by <code>payFate</code>, <code>payFateToRing</code> and <code>giveFateToOpponent</code>). Targeting costs checked before the costs are paid subtract it from the fate available, and the reduceable fate costs add it to their own when checking they can be paid.</td></tr>
         <tr><td><code>chosenByOpponent</code></td><td>The opponent makes this choice (set by <code>optionalTakeHonorFromOpponent</code>). With <code>firstPlayerChoosesFirst()</code> and the opponent as first player, these costs are chosen first.</td></tr>
@@ -397,7 +397,7 @@ this.action('Ready a character')
         cardType: CardType.Character,
         cardCondition: (card) =&gt; !card.isUnique()
     }))
-    .target({ activePromptTitle: 'Choose a unique character', cardType: CardType.Character, cardCondition: (card) =&gt; card.isUnique() }, multiple([ … ]));</code></pre>
+    .target({ activePromptTitle: 'Choose a unique character', cardType: CardType.Character, cardCondition: (card, context) =&gt; card.isUnique() &amp;&amp; ready().canAffect(card, context) }, multiple([ … ]));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/InServiceToMyLord.ts">In Service to My Lord</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BentensTouch.ts">Benten's Touch</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/TheEmptyCity.ts">The Empty City</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ToSowTheEarth.ts">To Sow the Earth</a></p>
   </div>
 
@@ -943,6 +943,7 @@ this.reaction('Prevent a ring from being used for a conflict')
     .cost(costs.payFateToRing(1, () =&gt; true))
     .ringLastingEffect((context) =&gt; ({
         duration: Duration.UntilEndOfPhase,
+        // the target is checked before the cost is paid; any ring lets the ability be triggered
         target: context.costs.ringPaidFateTo || context.game.rings.air,
         effect: cannotDeclareRing(() =&gt; true)
     }));</code></pre>

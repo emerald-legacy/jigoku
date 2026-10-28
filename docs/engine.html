@@ -93,7 +93,7 @@
 <p><code>AbilityResolver</code> runs these steps:</p>
 <ol>
     <li><code>createSnapshot()</code>: the state of a character, holding or attachment source goes into <code>context.cardStateWhenInitiated</code> (events get no snapshot).</li>
-    <li><code>resolveEarlyTargets()</code>: at <code>Stage.PreTarget</code>, the targets are offered before the costs (with "Pay costs first"), unless <code>cannotTargetFirst()</code>.</li>
+    <li><code>resolveEarlyTargets()</code>: at <code>Stage.PreTarget</code>, the targets are offered before the costs (with "Pay costs first", unless a cost depends on a target: <code>targetDependentFate</code> when an attachment is played), unless <code>cannotTargetFirst()</code>.</li>
     <li><code>checkForCancel()</code>.</li>
     <li><code>openInitiateAbilityEventWindow()</code>: one event window with <code>onCardAbilityInitiated</code> (<code>onAbilityResolverInitiated</code> when <code>isCardAbility()</code> is false or <code>isStep()</code> is true), plus <code>onCardPlayed</code> for a played card and <code>onCardAbilityTriggered</code> for a card ability with <code>isTriggeredAbility()</code>, actions included. The initiate event's handler queues:
         <ol>
