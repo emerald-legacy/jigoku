@@ -114,7 +114,8 @@ export const cannotParticipateAsDefender = (type: ConflictTypeOrBoth = 'both') =
 export const cannotReceiveDishonorToken = () => cardCannot(RestrictionType.ReceiveDishonorToken);
 export const cannotReceiveHonorToken = () => cardCannot(RestrictionType.ReceiveHonorToken);
 export const cannotReceiveTaintedToken = () => cardCannot(RestrictionType.ReceiveTaintedToken);
-export const cannotTriggerAbilities = () => cardCannot(RestrictionType.TriggerAbilities);
+// Forced abilities are triggered by the game, not a player (rulings #778, #810, #942)
+export const cannotTriggerAbilities = () => cardCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo: RestrictionScope.NonForcedAbilities });
 export const changeContributionFunction = (func: (card: DrawCard) => number) => EffectBuilder.card.static(EffectName.ChangeContributionFunction, func);
 export const changeType = (type: CardType) => EffectBuilder.card.static(EffectName.ChangeType, type);
 export const contributeToConflict = (player: FlexibleValue<Player>) => EffectBuilder.card.flexible(EffectName.ContributeToConflict, player);
