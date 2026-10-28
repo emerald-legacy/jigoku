@@ -133,8 +133,7 @@ describe('Doji Shizue and Fawning Diplomat', function() {
         });
 
         // ruling #332: the first player discards first
-        // card bug: FatePhase picks the characters to discard for both players when step 4.2 starts, so Shizue (protected then) stays in play vs ruling #332 (discarded once the opponent, first player, took the favor)
-        xit('is discarded when the opponent is the first player and claims the favor first', function() {
+        it('is discarded when the opponent is the first player and claims the favor first', function() {
             this.game.setFirstPlayer(this.player2.player);
             this.noMoreActions();
             this.player1.clickPrompt('Military');

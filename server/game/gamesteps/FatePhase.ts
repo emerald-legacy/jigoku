@@ -43,8 +43,9 @@ export class FatePhase extends PhaseStep {
 
     discardCharactersWithNoFate() {
         // only characters with no fate as the step begins (RRG 4.2): one that loses its last fate meanwhile stays (Akodo Kaede)
+        // whether one can be discarded is checked when its controller discards (Doji Shizue, ruling #332)
         for(const player of this.game.getPlayersInFirstPlayerOrder()) {
-            const cardsToDiscard = new Set(player.cardsInPlay.filter(characterShouldBeDiscarded));
+            const cardsToDiscard = new Set(player.cardsInPlay.filter((card) => card.fate === 0));
             this.game.queueSimpleStep(() => this.promptPlayerToDiscard(player, cardsToDiscard));
         }
     }

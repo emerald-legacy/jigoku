@@ -71,8 +71,7 @@ describe('Along the River of Gold', function() {
         });
 
         // ruling #413: skills that have been set cannot be switched
-        // card bug: Kaito Temple Protector (base skills set by its own action) can be chosen vs ruling #413; canSwitchSkills only checks SetMilitarySkill/SetPoliticalSkill, not the SetBase* effects
-        xit('cannot choose a character whose skills have been set', function() {
+        it('cannot choose a character whose skills have been set', function() {
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',
