@@ -14,7 +14,7 @@ export default class HidaMarauder extends DrawCard {
             })
             .gameAction(multiple((context) => {
                 const count = context.game.currentConflict?.getCharacters(context.player).length ?? 0;
-                const cards = context.player.opponent && count > 0 ? randomHandCards(context.player.opponent, count) : [context.source];
+                const cards = context.player.opponent && count > 0 ? randomHandCards(context.player.opponent, count) : [];
                 return [
                     reveal({
                         target: cards,

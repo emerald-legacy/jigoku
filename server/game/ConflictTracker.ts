@@ -11,6 +11,8 @@ export interface ConflictRecord {
     completed?: boolean;
     winner?: Player;
     typeSwitched?: boolean;
+    /** The province attacked when the conflict was declared. */
+    declaredProvince: ProvinceCard | null;
     /** The provinces broken in the conflict: the conflict's own list. */
     brokenProvinces: ProvinceCard[];
 }
@@ -24,6 +26,7 @@ export class ConflictTracker {
             declaredType: conflict.declaredType,
             passed: conflict.conflictPassed,
             uuid: conflict.uuid,
+            declaredProvince: conflict.declaredProvince,
             brokenProvinces: conflict.brokenProvinces
         });
         if(conflict.conflictPassed) {

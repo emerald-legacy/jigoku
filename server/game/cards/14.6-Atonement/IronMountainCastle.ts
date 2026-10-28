@@ -1,8 +1,8 @@
 import { CardType, Players } from '../../Constants.js';
-import { PlayAttachmentAction } from '../../PlayAttachmentAction.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { modifyRestrictedAttachmentAmount, reduceNextPlayedCardCost } from '../../effects.js';
+import { isReducibleAttachmentPlay } from '../attachmentPlay.js';
 
 export default class IronMountainCastle extends StrongholdCard {
     static id = 'iron-mountain-castle';
@@ -16,23 +16,11 @@ export default class IronMountainCastle extends StrongholdCard {
 
         this.interrupt('Reduce cost of next attachment')
             .when({
-                onAbilityResolverInitiated: (event, context) => {
-                    if(event.context === undefined) {
-                        return false;
-                    }
-                    const ec = event.context;
-                    const isAttachment =
-                        ec.source.type === CardType.Attachment ||
-                        ec.ability instanceof PlayAttachmentAction;
-                    return (
-                        isAttachment &&
-                        ec.player === context.player &&
-                        ec.target &&
-                        ec.target.controller === context.player &&
-                        ec.target.type === CardType.Character &&
-                        ec.ability.getReducedCost(ec) > 0
-                    );
-                }
+                onAbilityResolverInitiated: (event, context) =>
+                    isReducibleAttachmentPlay(event.context) &&
+                    event.context.player === context.player &&
+                    event.context.target?.controller === context.player &&
+                    event.context.target.type === CardType.Character
             })
             .cost(costs.bowSelf())
             .playerLastingEffect((context) => ({

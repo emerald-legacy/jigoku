@@ -889,8 +889,12 @@ export class DrawCard extends BaseCard {
         return matching;
     }
 
-    override getSummary(activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary {
-        const baseSummary = super.getSummary(activePlayer, hideWhenFaceup ?? false);
+    override getSummary(activePlayer: StateViewer, hideWhenFaceup = false): CardSummary {
+        const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
+        if(this.isHiddenFrom(activePlayer, hideWhenFaceup)) {
+            // the client picks the card back from these
+            return Object.assign(baseSummary, { isConflict: this.isConflict, isDynasty: this.isDynasty });
+        }
 
         return Object.assign(baseSummary, {
             attached: !!this.parent,

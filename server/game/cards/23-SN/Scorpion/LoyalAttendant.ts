@@ -17,7 +17,7 @@ export default class LoyalAttendant extends DrawCard {
             })
             .gameAction(multiple((context) => {
                 const cardNumber = context.target.attachments.length;
-                const cards = cardNumber ? randomHandCards(context.player.opponent, cardNumber) : [context.source];
+                const cards = cardNumber ? randomHandCards(context.player.opponent, cardNumber) : [];
                 return [
                     lookAt(() => ({
                         target: cards

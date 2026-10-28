@@ -112,16 +112,16 @@ class GameFlowWrapper {
         this.guardCurrentPhase('conflict');
         while(this.player1.player.getConflictOpportunities() > 0 ||
             this.player2.player.getConflictOpportunities() > 0) {
-            try {
+            const declaringPlayer = this.allPlayers.find((player) => player.hasPromptButton('Pass Conflict'));
+            const actingPlayer = this.allPlayers.find((player) => player.hasPromptButton('Pass'));
+            if(declaringPlayer) {
+                declaringPlayer.clickPrompt('Pass Conflict');
+                declaringPlayer.clickPrompt('yes');
+            } else if(actingPlayer) {
+                actingPlayer.clickPrompt('Pass');
+            } else {
+                // fails with the prompts in its message
                 this.noMoreActions();
-            } catch {
-                const playersInPromptedOrder = this.allPlayers.slice().sort(
-                    (a, b) =>
-                        (a.hasPrompt('Waiting for opponent to declare conflict') ? 1 : 0) -
-                        (b.hasPrompt('Waiting for opponent to declare conflict') ? 1 : 0)
-                );
-                playersInPromptedOrder[0].clickPrompt('Pass Conflict');
-                playersInPromptedOrder[0].clickPrompt('yes');
             }
         }
         this.noMoreActions();

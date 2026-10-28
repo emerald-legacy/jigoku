@@ -2,8 +2,8 @@ import { reduceNextPlayedCardCost } from '../../../effects.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
 import { msg } from '../../../GameChat.js';
+import { isReducibleAttachmentPlay } from '../../attachmentPlay.js';
 
 export default class EarnestSculptor extends DrawCard {
     static id = 'earnest-sculptor';
@@ -28,12 +28,9 @@ export default class EarnestSculptor extends DrawCard {
                     event.context !== undefined &&
                     event.context.ability.getReducedCost(event.context) > 0,
                 onAbilityResolverInitiated: (event, context) =>
-                    event.context !== undefined &&
-                    (event.context.source.type === CardType.Attachment ||
-                        event.context.ability instanceof PlayAttachmentAction) &&
+                    isReducibleAttachmentPlay(event.context) &&
                     event.context.player === context.player &&
-                    event.context.source.hasTrait(Trait.Jade) &&
-                    event.context.ability.getReducedCost(event.context) > 0
+                    event.context.source.hasTrait(Trait.Jade)
             })
             .playerLastingEffect((context) => ({
                 effect: reduceNextPlayedCardCost(

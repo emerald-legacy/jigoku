@@ -1138,17 +1138,18 @@ export class BaseCard extends EffectSource {
         return names.length > 0 ? names : undefined;
     }
 
+    /** My facedown card I may not look at, or not my card and either facedown or hidden from me. */
+    isHiddenFrom(activePlayer: StateViewer, hideWhenFaceup: boolean): boolean {
+        return activePlayer === this.controller
+            ? this.isFacedown() && this.hideWhenFacedown()
+            : this.isFacedown() || hideWhenFaceup || this.anyEffect(EffectName.HideWhenFaceUp);
+    }
+
     getSummary(activePlayer: StateViewer, hideWhenFaceup: boolean): CardSummary {
         const isActivePlayer = activePlayer === this.controller;
         const selectionState = activePlayer.getCardSelectionState(this);
 
-        // This is my facedown card, but I'm not allowed to look at it
-        // OR This is not my card, and it's either facedown or hidden from me
-        if(
-            isActivePlayer
-                ? this.isFacedown() && this.hideWhenFacedown()
-                : this.isFacedown() || hideWhenFaceup || this.anyEffect(EffectName.HideWhenFaceUp)
-        ) {
+        if(this.isHiddenFrom(activePlayer, hideWhenFaceup)) {
             const state = {
                 controller: this.controller.getShortSummary(),
                 menu: isActivePlayer ? this.getMenu() : undefined,
