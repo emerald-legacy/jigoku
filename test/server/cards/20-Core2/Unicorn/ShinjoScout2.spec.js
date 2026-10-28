@@ -132,3 +132,38 @@ describe('Shinjo Scout 2 with Contested Countryside', function () {
         });
     });
 });
+
+describe('Shinjo Scout 2 and a Forced ability on the attacked province', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-scout-2']
+                },
+                player2: {
+                    provinces: ['temple-of-jikoju']
+                }
+            });
+            this.shinjoScout = this.player1.findCardByName('shinjo-scout-2');
+            this.temple = this.player2.findCardByName('temple-of-jikoju', 'province 1');
+        });
+
+        // rulings #778, #810, #942: Forced abilities are triggered by the game, not a player
+        it('does not stop the province\'s Forced Reaction', function () {
+            const fate = this.game.rings.air.fate;
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.shinjoScout],
+                type: 'military',
+                province: this.temple,
+                ring: 'earth'
+            });
+            this.player1.clickCard(this.shinjoScout);
+            expect(this.getChatLogs(5)).toContain('player1 prevents Temple of Jikoju from triggering its abilities during this conflict');
+            this.player2.clickPrompt('Done');
+            expect(this.getChatLogs(5)).toContain('player2 uses Temple of Jikoju to place 1 fate on Air Ring');
+            expect(this.game.rings.air.fate).toBe(fate + 1);
+        });
+    });
+});

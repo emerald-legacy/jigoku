@@ -142,8 +142,11 @@ export class DuelAction<Context extends AbilityContext = AbilityContext> extends
                                     (!!event.replacementEvent && !event.getResolutionEvent().cancelled);
                                 if(refusalEvents.length === 0 || !refusalEvents.every(refused)) {
                                     addDuelEventsHandler();
-                                } else {
+                                } else if(refusalEvents.every((event) => event.isFullyResolved())) {
                                     context.game.addMessage(refusalMessageArgs);
+                                } else {
+                                    // the replacement's own line names what happened instead
+                                    context.game.addMessage(msg`${opponent} chooses to refuse the duel`);
                                 }
                             });
                         }

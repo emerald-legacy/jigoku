@@ -173,7 +173,7 @@ describe('Duel to the Death', function() {
                 expect(this.dojiChallenger.location).toBe('play area');
                 expect(this.mirumotoRaitsugu.location).toBe('play area');
                 expect(this.getChatLogs(5)).toContain('player2 uses Kitsuki Shomon to dishonor Kitsuki Shomon instead of Mirumoto Raitsugu');
-                expect(this.getChatLogs(5)).toContain('player2 chooses to refuse the duel and dishonor Mirumoto Raitsugu');
+                expect(this.getChatLogs(5).filter((line) => line.includes('refuse'))).toEqual(['player2 chooses to refuse the duel']);
             });
         });
     });

@@ -16,6 +16,7 @@ export default class YoungIseZumi extends DrawCard {
             .cost(costs.payFateToRing(1, () => true))
             .ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
+                // the target is checked before the cost is paid; any ring lets the ability be triggered
                 target: context.costs.ringPaidFateTo || context.game.rings.air,
                 effect: cannotDeclareRing(() => true)
             }))

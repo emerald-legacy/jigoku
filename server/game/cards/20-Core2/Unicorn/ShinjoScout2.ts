@@ -19,7 +19,7 @@ export default class ShinjoScout2 extends DrawCard {
                 gameAction: cardLastingEffect({
                     effect: cardCannot({
                         cannot: RestrictionType.TriggerAbilities,
-                        appliesTo: RestrictionScope.OpponentsCardAbilities
+                        appliesTo: [RestrictionScope.OpponentsCardAbilities, RestrictionScope.NonForcedAbilities]
                     })
                 })
             })
