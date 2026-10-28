@@ -20,6 +20,8 @@ export default class KhansOrdu extends ProvinceCard {
                 effect: setConflictDeclarationType(ConflictType.Military),
                 duration: Duration.UntilEndOfPhase
             })
-            .chatText(() => msg`switch the conflict type to ${'military'} and make all future conflicts ${'military'} for this phase`);
+            .chatText((context) => context.game.isDuringConflict(ConflictType.Political)
+                ? msg`switch the conflict type to ${'military'} and make all future conflicts ${'military'} for this phase`
+                : msg`make all future conflicts ${'military'} for this phase`);
     }
 }

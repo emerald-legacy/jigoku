@@ -17,10 +17,10 @@ export default class InfernoGuardInvoker extends DrawCard {
                 const conflict = context.game.currentConflict;
                 return {
                     onlyIf: () => !!conflict && conflict.brokenProvinces.length > 0,
-                    message: () => msg`${context.target} is discarded, burned to a pile of ash due to the delayed effect of ${context.source}`,
+                    message: () => msg`${context.target} is sacrificed, burned to a pile of ash due to the delayed effect of ${context.source}`,
                     gameAction: sacrifice({ target: context.target })
                 };
             }))
-            .chatText('honor {0}. It will be discarded if a province is broken this conflict');
+            .chatText('honor {0}. It will be sacrificed if a province is broken this conflict');
     }
 }

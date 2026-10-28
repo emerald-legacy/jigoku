@@ -11,11 +11,11 @@ class ThePerfectGift extends DrawCard {
             .gameAction(sequential([
                 lookAt((context) => ({
                     target: context.player.conflictDeck.slice(0, 4),
-                    message: (context, cards) => msg`${context.player} reveals the top ${cards.length} from their conflict deck: ${cards}`
+                    message: (context, cards) => msg`${context.player} reveals the top ${cards.length} card${cards.length === 1 ? '' : 's'} of their conflict deck: ${cards}`
                 })),
                 lookAt((context) => ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
-                    message: (context, cards) => msg`${context.player.opponent} reveals the top ${cards.length} from their conflict deck: ${cards}`
+                    message: (context, cards) => msg`${context.player} reveals the top ${cards.length} card${cards.length === 1 ? '' : 's'} of ${context.player.opponent}'s conflict deck: ${cards}`
                 })),
                 cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to give to yourself',

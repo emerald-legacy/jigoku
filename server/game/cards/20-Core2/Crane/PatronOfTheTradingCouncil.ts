@@ -39,11 +39,11 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
             .gameAction(sequential([
                 lookAt((context) => ({
                     target: context.player.conflictDeck.slice(0, 2),
-                    message: (context, cards) => msg`${context.player} reveals the top ${cards.length} from their conflict deck: ${cards}`
+                    message: (context, cards) => msg`${context.player} reveals the top ${cards.length} card${cards.length === 1 ? '' : 's'} of their conflict deck: ${cards}`
                 })),
                 lookAt((context) => ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 2) : [],
-                    message: (context, cards) => msg`${context.player.opponent} reveals the top ${cards.length} from their conflict deck: ${cards}`
+                    message: (context, cards) => msg`${context.player} reveals the top ${cards.length} card${cards.length === 1 ? '' : 's'} of ${context.player.opponent}'s conflict deck: ${cards}`
                 })),
                 deckSearch((context) => giveOneCard(context.player, 'Choose a card to give to yourself')),
                 deckSearch((context) => giveOneCard(context.player.opponent, 'Choose a card to give your opponent'))

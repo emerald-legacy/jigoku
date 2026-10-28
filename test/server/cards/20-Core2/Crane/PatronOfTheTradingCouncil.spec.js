@@ -78,6 +78,12 @@ describe('Patron of the Trading Council', function () {
                 this.commander = this.player2.moveCard('watch-commander', 'conflict deck');
             });
 
+            it('should say that player1 reveals the top 2 cards of each deck', function () {
+                this.player1.clickCard(this.patron);
+                expect(this.getChatLogs(3)).toContain('player1 reveals the top 2 cards of their conflict deck: Assassination and Fine Katana');
+                expect(this.getChatLogs(3)).toContain('player1 reveals the top 2 cards of player2\'s conflict deck: Watch Commander and Ornate Fan');
+            });
+
             it('should prompt to choose a card for yourself', function () {
                 this.player1.clickCard(this.patron);
                 expect(this.player1).toHavePrompt('Choose a card to give to yourself');

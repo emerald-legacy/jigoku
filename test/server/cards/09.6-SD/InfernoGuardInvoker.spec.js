@@ -59,6 +59,7 @@ describe('Inferno Guard Invoker', function() {
 
                 this.player1.clickCard(this.sereneWarrior);
                 expect(this.sereneWarrior.isHonored).toBe(true);
+                expect(this.getChatLogs(3)).toContain('player1 uses Inferno Guard Invoker to honor Serene Warrior. It will be sacrificed if a province is broken this conflict');
             });
 
             it('should sacrifice the targeted character at the end of the conflict if the province breaks this conflict', function() {
@@ -84,7 +85,7 @@ describe('Inferno Guard Invoker', function() {
                 this.player1.clickPrompt('No');
                 this.player1.clickPrompt('Don\'t resolve');
                 expect(this.player1).toHavePrompt('Action Window');
-                expect(this.getChatLogs(5)).toContain('Serene Warrior is discarded, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
+                expect(this.getChatLogs(5)).toContain('Serene Warrior is sacrificed, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
                 expect(this.sereneWarrior.location).toBe('dynasty discard pile');
             });
 
@@ -104,7 +105,7 @@ describe('Inferno Guard Invoker', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                expect(this.getChatLogs(5)).not.toContain('Serene Warrior is discarded, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
+                expect(this.getChatLogs(5)).not.toContain('Serene Warrior is sacrificed, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
                 this.player1.clickPrompt('Don\'t Resolve');
 
                 expect(this.sereneWarrior.location).toBe('play area');
@@ -139,7 +140,7 @@ describe('Inferno Guard Invoker', function() {
                 expect(this.player1).toHavePromptButton('Inferno Guard Invoker\'s effect on Akodo Toturi');
 
                 this.player1.clickPrompt('Inferno Guard Invoker\'s effect on Akodo Toturi');
-                expect(this.getChatLogs(5)).toContain('Akodo Toturi is discarded, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
+                expect(this.getChatLogs(5)).toContain('Akodo Toturi is sacrificed, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
                 expect(this.akodoToturi.location).toBe('dynasty discard pile');
                 expect(this.player1).toHavePrompt('Action Window');
             });
@@ -165,7 +166,7 @@ describe('Inferno Guard Invoker', function() {
                 this.player1.pass();
 
                 this.player1.clickPrompt('Don\'t Resolve');
-                expect(this.getChatLogs(5)).toContain('Inferno Guard Invoker is discarded, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
+                expect(this.getChatLogs(5)).toContain('Inferno Guard Invoker is sacrificed, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
 
                 expect(this.infernoGuardInvoker.location).toBe('dynasty discard pile');
                 expect(this.player1).toHavePrompt('Action Window');

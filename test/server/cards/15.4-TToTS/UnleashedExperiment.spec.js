@@ -242,7 +242,7 @@ describe('Unleashed Experiment', function () {
                 this.player1.clickPrompt('No');
                 this.player1.clickPrompt('Don\'t Resolve');
                 expect(this.experiment.location).toBe('dynasty discard pile');
-                expect(this.getChatLogs(5)).toContain('Unleashed Experiment is discarded, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
+                expect(this.getChatLogs(5)).toContain('Unleashed Experiment is sacrificed, burned to a pile of ash due to the delayed effect of Inferno Guard Invoker');
             });
         });
     });

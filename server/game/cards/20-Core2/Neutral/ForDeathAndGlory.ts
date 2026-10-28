@@ -29,7 +29,7 @@ export default class ForDeathAndGlory extends DrawCard {
                     })),
                     chatText: (context) => msg`${'grant 2 military skill to '}${context.targets[CHARACTER]}`
                 },
-                'Gain +4 skill, and get discarded when the conflict ends': {
+                'Gain +4 skill, and be sacrificed when the conflict ends': {
                     action: multiple([
                         cardLastingEffect((context) => ({
                             target: context.targets[CHARACTER],
@@ -37,7 +37,7 @@ export default class ForDeathAndGlory extends DrawCard {
                         })),
                         atEndOfConflict((context) => ({
                             target: context.targets[CHARACTER],
-                            message: () => msg`${context.targets[CHARACTER]} is discarded from play due to the delayed effect of ${context.source}`,
+                            message: () => msg`${context.targets[CHARACTER]} is sacrificed due to the delayed effect of ${context.source}`,
                             gameAction: sacrifice({
                                 target: context.targets[CHARACTER]
                             })
