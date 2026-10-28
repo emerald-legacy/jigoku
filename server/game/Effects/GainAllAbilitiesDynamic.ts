@@ -34,6 +34,11 @@ export class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, BaseCard>
         this.printedAbilitiesOnly = printedAbilitiesOnly;
     }
 
+    // a new effect is a new instance of the card (it entered play again) or a copy: no memory of used limits
+    override copyForEffect(): GainAllAbilitiesDynamic {
+        return new GainAllAbilitiesDynamic(this.match, this.printedAbilitiesOnly);
+    }
+
     _setAbilities(cards: BaseCard | BaseCard[], target: BaseCard) {
         const cardList: BaseCard[] = Array.isArray(cards) ? cards : [cards];
 

@@ -82,5 +82,29 @@ describe('Pay costs first', function() {
                 expect(this.getChatLogs(5)).toContain('player1 resolves Manicured Garden to gain 1 fate');
             });
         });
+
+        describe('on an attachment whose cost depends on its target', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 5,
+                        inPlay: ['relentless-gloryseeker'],
+                        hand: ['promising-hohei']
+                    }
+                });
+                this.gloryseeker = this.player1.findCardByName('relentless-gloryseeker');
+                this.hohei = this.player1.findCardByName('promising-hohei');
+            });
+
+            it('is not offered, so the reduction for the chosen character applies', function() {
+                this.player1.clickCard(this.hohei);
+                expect(this.player1).toHavePrompt('Choose a card');
+                expect(this.player1).not.toHavePromptButton('Pay costs first');
+                this.player1.clickCard(this.gloryseeker);
+                expect(this.gloryseeker.attachments).toContain(this.hohei);
+                expect(this.player1.fate).toBe(5);
+            });
+        });
     });
 });

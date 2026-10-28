@@ -71,7 +71,10 @@ export abstract class AbilityTargetBase<Properties extends AbilityTargetBaseProp
     protected targetPromptProperties(context: AbilityContext, targetResults: TargetResults) {
         const buttons: PromptButton[] = [];
         if(context.stage === Stage.PreTarget) {
-            buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
+            // a cost that depends on a target (an attachment's reducers) can't be paid before it's chosen
+            if(!context.ability.cost.some((cost) => cost.dependsOn)) {
+                buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
+            }
             buttons.push({ text: 'Cancel', arg: 'cancel' });
         }
         return {
