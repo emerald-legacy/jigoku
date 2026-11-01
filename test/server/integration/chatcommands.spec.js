@@ -18,7 +18,18 @@ describe('Chat commands', function() {
 
                 expect(this.banzai.location).toBe('conflict deck');
                 expect(this.player1.conflictDeck[this.player1.conflictDeck.length - 1]).toBe(this.banzai);
-                expect(this.getChatLogs(3)).toContain('player1 uses a command to move Banzai! from their hand to the bottom of their conflict deck.');
+                expect(this.getChatLogs(3)).toContain('player1 uses a command to move a card from their hand to the bottom of their conflict deck.');
+                expect(this.getChatLogs(3).some((line) => line.includes('Banzai!'))).toBe(false);
+            });
+
+            it('should name a card taken from a public pile', function() {
+                this.player1.moveCard(this.banzai, 'conflict discard pile');
+                this.game.chat('player1', '/move-to-bottom-deck');
+                this.game.continue();
+                this.player1.clickCard(this.banzai);
+
+                expect(this.banzai.location).toBe('conflict deck');
+                expect(this.getChatLogs(3)).toContain('player1 uses a command to move Banzai! from their conflict discard pile to the bottom of their conflict deck.');
             });
         });
     });

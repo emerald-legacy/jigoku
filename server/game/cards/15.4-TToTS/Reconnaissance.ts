@@ -3,6 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, Players, Phase, Location, TargetMode } from '../../Constants.js';
 import { conditional, lookAt, moveCard, selectCards, sequential } from '../../GameActions/GameActions.js';
+import { lookAtProvincesMessage } from '../lookAtProvincesMessage.js';
 
 class Reconnaissance extends DrawCard {
     static id = 'reconnaissance';
@@ -51,14 +52,7 @@ class Reconnaissance extends DrawCard {
         return lookAt({
             message: (context) => {
                 const target: BaseCard | BaseCard[] | undefined = context.targets.target;
-                const provinces = Array.isArray(target) ? target : target ? [target] : [];
-                const [first, second, third] = provinces;
-                if(provinces.length === 1) {
-                    return msg`${context.source} sees ${first} in ${first.location}`;
-                } else if(provinces.length === 2) {
-                    return msg`${context.source} sees ${first} in ${first.location} and ${second} in ${second.location}`;
-                }
-                return msg`${context.source} sees ${first} in ${first.location}, ${second} in ${second.location}, and ${third} in ${third.location}`;
+                return lookAtProvincesMessage(context, Array.isArray(target) ? target : target ? [target] : []);
             }
         });
     }

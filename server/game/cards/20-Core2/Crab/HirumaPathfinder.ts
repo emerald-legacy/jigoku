@@ -1,7 +1,7 @@
-import { msg } from '../../../GameChat.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import { lookAt } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { lookAtProvincesMessage } from '../../lookAtProvincesMessage.js';
 
 export default class HirumaPathfinder extends DrawCard {
     static id = 'hiruma-pathfinder';
@@ -17,7 +17,7 @@ export default class HirumaPathfinder extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Opponent,
                 gameAction: lookAt({
-                    message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+                    message: lookAtProvincesMessage
                 })
             })
             .chatText('look at a province');

@@ -1,8 +1,8 @@
-import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { lookAt } from '../../GameActions/GameActions.js';
 import { Location, Players, CardType, Element } from '../../Constants.js';
 import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
+import { lookAtProvincesMessage } from '../lookAtProvincesMessage.js';
 
 const elementSymbol = { key: 'serene-seer-void', element: Element.Void };
 
@@ -18,7 +18,7 @@ class SereneSeer extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Opponent
             }, lookAt({
-                message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+                message: lookAtProvincesMessage
             }))
             .chatText('look at a province');
     }

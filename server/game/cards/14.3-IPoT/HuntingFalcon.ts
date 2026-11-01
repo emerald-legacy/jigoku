@@ -1,7 +1,7 @@
-import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import { lookAt } from '../../GameActions/GameActions.js';
+import { lookAtProvincesMessage } from '../lookAtProvincesMessage.js';
 
 class HuntingFalcon extends DrawCard {
     static id = 'hunting-falcon';
@@ -16,7 +16,7 @@ class HuntingFalcon extends DrawCard {
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isFacedown()
             }, lookAt({
-                message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+                message: lookAtProvincesMessage
             }));
     }
 }

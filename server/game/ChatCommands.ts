@@ -210,6 +210,8 @@ export class ChatCommands {
             controller: Players.Self,
             onSelect: (_p: Player, card: BaseCard) => {
                 const cardInitialLocation = card.location;
+                const hiddenSources: string[] = [Location.Hand, Location.ConflictDeck, Location.DynastyDeck, Location.ProvinceDeck];
+                const display = card.isFaceup() && !hiddenSources.includes(cardInitialLocation) ? card : 'a card';
                 const cardNewLocation = card.isConflict
                     ? Location.ConflictDeck
                     : Location.DynastyDeck;
@@ -217,7 +219,7 @@ export class ChatCommands {
                     player,
                     this.game.getFrameworkContext(player)
                 );
-                this.game.addMessage(msg`${player} uses a command to move ${card} from their ${cardInitialLocation} to the bottom of their ${cardNewLocation}.`);
+                this.game.addMessage(msg`${player} uses a command to move ${display} from their ${cardInitialLocation} to the bottom of their ${cardNewLocation}.`);
                 return true;
             }
         });

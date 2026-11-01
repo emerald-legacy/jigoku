@@ -78,7 +78,8 @@ describe('Reconnaissance', function() {
                 this.player1.clickCard(this.fields);
                 this.player1.clickCard(this.revels);
                 this.player1.clickPrompt('Done');
-                expect(this.getChatLogs(5)).toContain('Reconnaissance sees Manicured Garden in province 1, Fertile Fields in province 2, and Midnight Revels in province 1');
+                expect(this.getChatLogs(5)).toContain('Reconnaissance sees Manicured Garden in province 1 and Fertile Fields in province 2, and looks at player1\'s province 1');
+                expect(this.getChatLogs(5).some((line) => line.includes('Midnight Revels'))).toBe(false);
             });
         });
 

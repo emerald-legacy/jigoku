@@ -65,11 +65,11 @@ export interface PlayerState extends Partial<ReturnType<PlayerPromptState['getSt
     numProvinceCards: number;
     optionSettings: OptionSettings;
     phase: string;
-    promptedActionWindows: Partial<Record<ActionWindowName, boolean>>;
+    promptedActionWindows?: Partial<Record<ActionWindowName, boolean>>;
     provinces: { one: CardSummary[]; two: CardSummary[]; three: CardSummary[]; four: CardSummary[] };
     showBid: number;
     stats: ReturnType<PlayerStateBuilder['getStats']>;
-    timerSettings: TimerSettings;
+    timerSettings?: TimerSettings;
     strongholdProvince: CardSummary[];
     user: {
         username: string;

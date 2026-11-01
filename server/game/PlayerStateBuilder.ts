@@ -1,7 +1,7 @@
 import { ConflictType } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
-import type { PlayerState } from './Player.js';
+import type { GamePlayerUserSettings, PlayerState } from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type { CardSummary } from './BaseCard.js';
 import type { StateViewer } from './types/StateViewer.js';
@@ -69,9 +69,9 @@ export class PlayerStateBuilder {
             numConflictCards: player.conflictDeck.length,
             numDynastyCards: player.dynastyDeck.length,
             numProvinceCards: player.provinceDeck.length,
-            optionSettings: player.optionSettings,
+            // other viewers' boards show ring effects by this player's option
+            optionSettings: isActivePlayer ? player.optionSettings : { showRingEffects: player.optionSettings.showRingEffects },
             phase: this.game.currentPhase,
-            promptedActionWindows: player.promptedActionWindows,
             provinces: {
                 one: this.getSummaryForCardList(player.provinceOne, activePlayer, !player.readyToStart),
                 two: this.getSummaryForCardList(player.provinceTwo, activePlayer, !player.readyToStart),
@@ -80,14 +80,18 @@ export class PlayerStateBuilder {
             },
             showBid: player.showBid,
             stats: this.getStats(),
-            timerSettings: player.timerSettings,
             strongholdProvince: this.getSummaryForCardList(player.strongholdProvince, activePlayer),
             user: {
                 username: player.user.username,
                 emailHash: player.user.emailHash,
-                settings: player.user.settings
+                settings: isActivePlayer ? player.user.settings : this.getPublicUserSettings()
             }
         };
+
+        if(isActivePlayer) {
+            state.promptedActionWindows = player.promptedActionWindows;
+            state.timerSettings = player.timerSettings;
+        }
 
         for(const [key, pile] of Object.entries(player.additionalPiles)) {
             if(pile.cards.length > 0) {
@@ -130,6 +134,20 @@ export class PlayerStateBuilder {
         }
 
         return Object.assign(state, promptState);
+    }
+
+    /** The user settings other viewers need (avatar, patron cosmetics); timer and option settings stay with the player. */
+    getPublicUserSettings(): GamePlayerUserSettings | undefined {
+        const settings = this.player.user.settings;
+        if(!settings) {
+            return undefined;
+        }
+        return {
+            cardSize: settings.cardSize,
+            disableGravatar: settings.disableGravatar,
+            background: settings.background,
+            patron: settings.patron
+        };
     }
 
     getShortSummary() {

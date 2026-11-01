@@ -80,6 +80,17 @@ describe('Hunting Falcon', function() {
             expect(this.getChatLogs(10)).toContain('Hunting Falcon sees Midnight Revels in province 1');
         });
 
+        it('should give only the location of your own facedown province', function() {
+            this.player1.clickCard(this.falcon);
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickCard(this.falcon);
+
+            this.player1.clickCard(this.p1_1);
+            expect(this.getChatLogs(10)).toContain('player1 uses Hunting Falcon to look at a facedown card');
+            expect(this.getChatLogs(10)).toContain('Hunting Falcon looks at player1\'s province 1');
+            expect(this.getChatLogs(10).some((line) => line.includes('Illustrious Forge'))).toBe(false);
+        });
+
         it('should work on opponent\'s characters', function() {
             this.player1.clickCard(this.falcon);
             this.player1.clickCard(this.callow);

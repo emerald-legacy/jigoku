@@ -3,6 +3,7 @@ import * as costs from '../../costs/index.js';
 import { lookAt, moveCard, selectCard, sequential } from '../../GameActions/GameActions.js';
 import { Location, Phase, CardType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
+import { lookAtProvincesMessage } from '../lookAtProvincesMessage.js';
 
 class PeasantsAdvice extends DrawCard {
     static id = 'peasant-s-advice';
@@ -16,7 +17,7 @@ class PeasantsAdvice extends DrawCard {
                 location: Location.Provinces
             }, sequential([
                 lookAt({
-                    message: (context, cards) => msg`${context.source} sees ${cards[0]} in ${cards[0].location}`
+                    message: lookAtProvincesMessage
                 }),
                 selectCard((context) => ({
                     activePromptTitle: 'Choose a faceup card to return to its owner\'s deck',

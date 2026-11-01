@@ -305,7 +305,7 @@ export class ProvinceCard extends BaseCard {
             ...baseSummary,
             isProvince: this.isProvince,
             isBroken: this.isBroken,
-            strengthSummary: this.strengthSummary,
+            strengthSummary: this.isHiddenFrom(activePlayer, hideWhenFaceup) ? {} : this.strengthSummary,
             attachments: this.attachments.map((attachment) => attachment.getSummary(activePlayer, hideWhenFaceup))
         };
     }
