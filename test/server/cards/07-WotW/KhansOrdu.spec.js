@@ -42,6 +42,7 @@ describe('Khan\'s Ordu', function() {
                 this.player2.clickCard(this.khansOrdu);
                 expect(this.getChatLogs(1)).toContain('player1 has initiated a military conflict with skill 2');
                 expect(this.game.currentConflict.conflictType).toBe('military');
+                expect(this.getChatLogs(5)).toContain('player2 uses Khan\'s Ordu to switch the conflict type to military and make all future conflicts military for this phase');
             });
 
             it('should not switch the conflict type if it is already a military conflict', function() {
@@ -53,6 +54,7 @@ describe('Khan\'s Ordu', function() {
                 expect(this.game.currentConflict.conflictType).toBe('military');
                 this.player2.clickCard(this.khansOrdu);
                 expect(this.game.currentConflict.conflictType).toBe('military');
+                expect(this.getChatLogs(5)).toContain('player2 uses Khan\'s Ordu to make all future conflicts military for this phase');
             });
 
             it('should set all future conflicts to be military', function() {

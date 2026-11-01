@@ -1,22 +1,20 @@
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Trait } from '../../Constants.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 class IkomaTsanuri extends DrawCard {
     static id = 'ikoma-tsanuri';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Give your characters +1/+1',
-            condition: (context: AbilityContext<this>) => context.source.isParticipating() &&
-                                  context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait('bushi')).length > 2,
-            effect: 'grant their participating characters +1{1}/+1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
+    override setupCardAbilities() {
+        this.action('Give your characters +1/+1')
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => context.player.cardsInPlay.filter((card) => card.isParticipating() && card.hasTrait(Trait.Bushi)).length > 2)
+            .cardLastingEffect((context) => ({
                 target: context.player.cardsInPlay.filter((card) => card.isParticipating()),
-                effect: AbilityDsl.effects.modifyBothSkills(1)
+                effect: modifyBothSkills(1)
             }))
-        });
+            .chatText(() => msg`grant their participating characters +1${'military'}/+1${'political'}`);
     }
 }
 

@@ -165,3 +165,32 @@ describe('Reclusive Zokujin', function() {
         });
     });
 });
+
+describe('Reclusive Zokujin and printed attachment skill bonuses', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['reclusive-zokujin']
+                },
+                player2: {
+                    hand: ['fiery-madness']
+                }
+            });
+            this.zokujin = this.player1.findCardByName('reclusive-zokujin');
+            this.player1.pass();
+            this.player2.playAttachment('fiery-madness', this.zokujin);
+            this.noMoreActions();
+        });
+
+        it('still gets an opponent\'s attachment skill modifiers in an Earth conflict (EmeraldDB ruling)', function() {
+            this.initiateConflict({
+                ring: 'earth',
+                type: 'military',
+                attackers: [this.zokujin]
+            });
+            expect(this.zokujin.militarySkill).toBe(1);
+        });
+    });
+});

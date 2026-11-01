@@ -48,3 +48,37 @@ describe('Fortified Assembly', function() {
     });
 });
 
+
+describe('Fortified Assembly copied by Illusionary Terrain', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-toshimoko']
+                },
+                player2: {
+                    provinces: ['fortified-assembly', 'shameful-display'],
+                    hand: ['illusionary-terrain']
+                }
+            });
+            this.assembly = this.player2.findCardByName('fortified-assembly');
+            this.display = this.player2.findCardByName('shameful-display', 'province 2');
+            this.assembly.facedown = false;
+            this.assembly.addToken('honor', 2);
+        });
+
+        it('counts the copy\'s own honor tokens', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['kakita-toshimoko'],
+                province: this.display
+            });
+            this.player2.clickCard('illusionary-terrain');
+            this.player2.clickCard(this.assembly);
+            expect(this.display.name).toBe('Fortified Assembly');
+            expect(this.display.getTokenCount('honor')).toBe(0);
+            expect(this.display.getStrength()).toBe(this.assembly.printedStrength);
+        });
+    });
+});

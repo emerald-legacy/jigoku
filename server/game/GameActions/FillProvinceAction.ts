@@ -1,44 +1,51 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName, Location } from '../Constants.js';
-import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { type EventName, Location } from '../Constants.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface FillProvinceProperties extends PlayerActionProperties {
     location: Location;
+    /** Refills the province until it holds this many cards. */
     fillTo?: number;
+    /** Instead: fills it this many times, each time with the top card of the dynasty deck ("fill a province"). */
+    amount?: number;
     faceup?: boolean;
 }
 
-export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
-    defaultProperties: FillProvinceProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
-    name = 'fill';
-    effect = 'fills {0} with more cards';
+export class FillProvinceAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<FillProvinceProperties, EventName.Unnamed, Context, 'location' | 'fillTo' | 'faceup'> {
+    override defaultProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
+    override name = 'fillProvince';
+    override effect = 'fill {0} with more cards';
 
-    defaultTargets(context: AbilityContext): Player[] {
-        return [context.player];
+
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { fillTo, amount } = this.getProperties(context, additionalProperties);
+        return amount === undefined ? ['fill {0} up to {1} cards', [fillTo]] : ['fill {0} with {1} cards', [amount]];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as FillProvinceProperties;
-        return ['fills {0} to {1} cards!', [properties.location, properties.fillTo]];
+    protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {
+        return this.getProperties(context, additionalProperties).location;
     }
 
-    eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
-        let properties = this.getProperties(context, additionalProperties) as FillProvinceProperties;
-        const player = event.player as Player;
-        let currentCards = player.getDynastyCardsInProvince(properties.location).length;
-        player.refillProvince(properties.location, (properties.fillTo ?? 0) - currentCards);
+    override eventHandler(event: PlayerEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
+        const context = event.context;
+        const properties = this.getProperties(context, additionalProperties);
+        const player = event.player;
+        if(properties.amount !== undefined) {
+            for(let i = 0; i < properties.amount; i++) {
+                context.game.queueSimpleStep(() => player.putTopDynastyCardInProvince(properties.location, !properties.faceup));
+            }
+            return;
+        }
+        const currentCards = player.getDynastyCardsInProvince(properties.location).length;
+        player.refillProvince(properties.location, properties.fillTo - currentCards);
 
         if(properties.faceup) {
             context.game.queueSimpleStep(() => {
-                let cards = player.getDynastyCardsInProvince(properties.location);
+                const cards = player.getDynastyCardsInProvince(properties.location);
                 cards.forEach((card) => {
-                    if(card) {
-                        card.facedown = false;
-                    }
+                    card.facedown = false;
                 });
             });
         }

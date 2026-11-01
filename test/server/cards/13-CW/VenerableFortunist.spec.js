@@ -45,10 +45,35 @@ describe('Venerable Fortunist', function() {
             expect(this.player1).not.toBeAbleToSelectRing('void');
             expect(this.player1).not.toBeAbleToSelectRing('water');
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickRing('air');
             expect(this.player1.fate).toBe(fate + 2);
             expect(this.getChatLogs(1)).toContain('player1 uses Venerable Fortunist, returning the Air Ring to gain 2 fate');
+        });
+    });
+});
+
+describe('Venerable Fortunist with an Allied role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['venerable-fortunist'],
+                    role: 'allied-with-the-crane'
+                }
+            });
+            this.fortunist = this.player1.findCardByName('venerable-fortunist');
+        });
+
+        it('returns a ring of any element', function() {
+            this.player1.claimRing('air');
+            const fate = this.player1.fate;
+            this.player1.clickCard(this.fortunist);
+            expect(this.player1).toHavePrompt('Choose a ring to return');
+            this.player1.clickRing('air');
+            expect(this.game.rings.air.isUnclaimed()).toBe(true);
+            expect(this.player1.fate).toBe(fate + 2);
         });
     });
 });

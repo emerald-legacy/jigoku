@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Kaiu Scout', function () {
     integration(function () {
@@ -117,7 +117,7 @@ describe('Kaiu Scout - dynasty phase', function () {
         beforeEach(function () {
             this.setupTest({
                 phase: 'dynasty',
-                gameMode: GameModes.Emerald,
+                gameMode: GameMode.Emerald,
                 player1: {
                     inPlay: ['kaiu-scout', 'adept-of-the-waves']
                 },

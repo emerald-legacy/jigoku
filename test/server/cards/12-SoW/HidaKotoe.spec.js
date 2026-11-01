@@ -52,9 +52,10 @@ describe('Hida Kotoe', function() {
 
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player2 won a military conflict 9 vs 7');
         });
 
-        it('should not trigger if win not attacking', function() {
+        it('should not trigger if win while attacking', function() {
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();
@@ -66,6 +67,7 @@ describe('Hida Kotoe', function() {
 
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player2 won a military conflict 12 vs 7');
         });
     });
 });

@@ -77,13 +77,34 @@ describe('Make Your Case', function() {
                 defenders: [this.yoshi],
                 type: 'political'
             });
-            let yoshiFate = this.yoshi.fate;
+            const yoshiFate = this.yoshi.fate;
             this.player2.clickCard(this.case);
             this.player2.clickCard(this.yoshi);
             this.player1.clickCard(this.borderRider);
             this.player2.clickPrompt('1');
             this.player1.clickPrompt('1');
             expect(this.yoshi.fate).toBe(yoshiFate + 1);
+        });
+
+        it('should place a fate on the opponent\'s character when it wins the duel', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderRider],
+                defenders: [this.yoshi],
+                type: 'political'
+            });
+            this.yoshi.fate = 0;
+            this.borderRider.fate = 0;
+            this.player2.clickCard(this.case);
+            this.player2.clickCard(this.yoshi);
+            this.player1.clickCard(this.borderRider);
+            this.player2.clickPrompt('1');
+            this.player1.clickPrompt('5');
+
+            expect(this.getChatLogs(4)).toContain('Kakita Yoshi: 8 vs 9: Border Rider');
+            expect(this.getChatLogs(3)).toContain('Duel Effect: Border Rider gains a fate');
+            expect(this.borderRider.fate).toBe(1);
+            expect(this.yoshi.fate).toBe(0);
         });
     });
 });

@@ -75,7 +75,7 @@ describe('Whispers Of Power', function() {
             });
 
             this.togashiYokuni.fate = 1;
-            const initialPoliticalPower = this.kudaka.getPoliticalSkill();
+            const initialPoliticalPower = this.kudaka.politicalSkill;
 
             this.player2.pass();
             this.player1.clickCard(this.whispersOfPower);
@@ -83,7 +83,7 @@ describe('Whispers Of Power', function() {
             this.player1.clickCard(this.kudaka);
             this.player1.clickPrompt(1);
 
-            expect(this.kudaka.getPoliticalSkill()).toBe(initialPoliticalPower + 3);
+            expect(this.kudaka.politicalSkill).toBe(initialPoliticalPower + 3);
             expect(this.getChatLogs(5)).toContain('player1 plays Whispers of Power, losing 1 honor to grant Kudaka +3 political until the end of the conflict');
         });
 
@@ -95,7 +95,7 @@ describe('Whispers Of Power', function() {
                 defenders: [this.togashiYokuni]
             });
 
-            const initialPoliticalPower = this.kudaka.getPoliticalSkill();
+            const initialPoliticalPower = this.kudaka.politicalSkill;
 
             this.player2.pass();
             this.player1.clickCard(this.whispersOfPower);
@@ -103,8 +103,62 @@ describe('Whispers Of Power', function() {
             this.player1.clickCard(this.kudaka);
             this.player1.clickPrompt(1);
 
-            expect(this.kudaka.getPoliticalSkill()).toBe(initialPoliticalPower + 6);
+            expect(this.kudaka.politicalSkill).toBe(initialPoliticalPower + 6);
             expect(this.getChatLogs(5)).toContain('player1 plays Whispers of Power, losing 1 honor to grant Kudaka +6 political until the end of the conflict');
+        });
+
+        it('should not be playable when every opponent\'s character has fate', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kudaka],
+                defenders: [this.togashiYokuni]
+            });
+
+            this.togashiYokuni.fate = 1;
+            this.togashiInitiate.fate = 1;
+
+            this.player2.pass();
+            this.player1.clickCard(this.whispersOfPower);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.whispersOfPower.location).toBe('hand');
+        });
+    });
+});
+
+describe('Whispers Of Power\'s target', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kudaka'],
+                    hand: ['whispers-of-power']
+                },
+                player2: {
+                    inPlay: ['togashi-yokuni', 'matsu-berserker']
+                }
+            });
+            this.kudaka = this.player1.findCardByName('kudaka');
+            this.whispersOfPower = this.player1.findCardByName('whispers-of-power');
+            this.togashiYokuni = this.player2.findCardByName('togashi-yokuni');
+            this.matsuBerserker = this.player2.findCardByName('matsu-berserker');
+            this.kudaka.fate = 1;
+        });
+
+        it('should not be able to target a character with a dash political skill', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kudaka],
+                defenders: [this.togashiYokuni]
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.whispersOfPower);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.togashiYokuni);
+            expect(this.player1).not.toBeAbleToSelect(this.matsuBerserker);
         });
     });
 });

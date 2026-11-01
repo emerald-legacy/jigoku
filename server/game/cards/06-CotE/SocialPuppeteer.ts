@@ -1,31 +1,26 @@
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { mustBeChosen } from '../../effects.js';
+import { setHonorDial } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
+import { RestrictionScope } from '../../Constants.js';
 
 class SocialPuppeteer extends DrawCard {
     static id = 'social-puppeteer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.composure({
-            effect: AbilityDsl.effects.mustBeChosen({ restricts: 'opponentsEvents' })
+            effect: mustBeChosen({ appliesTo: RestrictionScope.OpponentsEvents })
         });
 
-        this.action({
-            title: 'Switch honor dials with opponent',
-            condition: (context: AbilityContext<this>) =>
+        this.action('Switch honor dials with opponent')
+            .condition((context) =>
                 context.source.isParticipating() && !!context.player.opponent &&
-                context.player.showBid !== context.player.opponent.showBid,
-            effect: 'switch honor dials with {1}',
-            effectArgs: (context: AbilityContext) => context.player.opponent as Player,
-            gameAction: [
-                AbilityDsl.actions.setHonorDial((context: AbilityContext) => ({ value: context.player.showBid })),
-                AbilityDsl.actions.setHonorDial((context: AbilityContext) => ({
-                    target: context.player,
-                    value: context.player.opponent ? context.player.opponent.showBid : 0
-                }))
-            ]
-        });
+                context.player.showBid !== context.player.opponent.showBid)
+            .gameAction(setHonorDial((context) => ({ target: context.player.opponent ?? [], value: context.player.showBid })), setHonorDial((context) => ({
+                target: context.player,
+                value: context.player.opponent ? context.player.opponent.showBid : 0
+            })))
+            .chatText((context) => msg`switch honor dials with ${context.player.opponent}`);
     }
 }
 

@@ -1,20 +1,19 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { canContributeGloryWhileBowed } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class StewardOfCelestialOrder extends DrawCard {
     static id = 'steward-of-celestial-order';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.canContributeGloryWhileBowed()
+            effect: canContributeGloryWhileBowed()
         });
 
-        this.action({
-            title: 'Return rings to gain honor',
-            cost: AbilityDsl.costs.returnRings(),
-            gameAction: AbilityDsl.actions.gainHonor((context) => ({
-                amount: context.costs.returnRing ? context.costs.returnRing.length : 1
-            }))
-        });
+        this.action('Return rings to gain honor')
+            .cost(costs.returnRings())
+            .gainHonor((context) => ({
+                amount: context.costs.returnedRings ? context.costs.returnedRings.length : 1
+            }));
     }
 }

@@ -1,61 +1,51 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import { CardType, EventName, Location, Players } from '../../../Constants.js';
-import type BaseCard from '../../../BaseCard.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
+import { cancel, discardAtRandom } from '../../../GameActions/GameActions.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 const DOSHIN_TAX = 2;
 
 export default class VillageDoshin extends DrawCard {
     static id = 'village-doshin';
 
-    public setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Protect attachment from leaving play',
-            location: Location.Hand,
-            cost: AbilityDsl.costs.discardSelf(),
-            when: {
-                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) =>
-                    (event.cardTargets ?? []).some((card: BaseCard) => {
+    public override setupCardAbilities() {
+        this.wouldInterrupt('Protect attachment from leaving play')
+            .when({
+                onInitiateAbilityEffects: (event, context) =>
+                    event.cardTargets.some((card) => {
                         const attachment = card.type === CardType.Attachment;
                         const onCharacterYouControl =
-                            card instanceof DrawCard && card.parentCharacter?.controller === context.player;
+                            card.parentCharacter?.controller === context.player;
                         const inPlay = card.location === Location.PlayArea;
                         return attachment && onCharacterYouControl && inPlay;
                     })
-            },
-
-            gameAction: AbilityDsl.actions.conditional({
-                condition: (context) => {
-                    const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
-                    const opponentIsAllowedToDiscardCards = !!context.player.opponent && AbilityDsl.actions
-                        .discardAtRandom({ amount: 2 })
-                        .canAffect(context.player.opponent, context);
-                    return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
-                },
-                falseGameAction: AbilityDsl.actions.cancel(),
-                trueGameAction: AbilityDsl.actions.chooseAction((context) => ({
-                    player: Players.Opponent,
+            })
+            .location(Location.Hand)
+            .cost(costs.discardSelf())
+            .if((context) => {
+                const initiator = context.event.context.player;
+                return initiator.hand.length >= DOSHIN_TAX && discardAtRandom({ amount: DOSHIN_TAX }).canAffect(initiator, context);
+            })
+                .chooseAction((context) => ({
+                    player: context.event.context.player === context.player ? Players.Self : Players.Opponent,
                     activePromptTitle: 'Select one',
-                    options: {
+                    choices: {
                         [`Discard ${DOSHIN_TAX} random cards from hand`]: {
-                            action: AbilityDsl.actions.discardAtRandom({
+                            action: discardAtRandom({
                                 amount: DOSHIN_TAX,
-                                target: context.player.opponent
+                                target: context.event.context.player
                             }),
-                            message: '{0} distracts the Dōshin.'
+                            message: (_context, _target, player) => msg`${player} distracts the Dōshin`
                         },
                         'Let the effect be canceled': {
-                            action: AbilityDsl.actions.cancel(),
-                            message: `{0} refuses to discard ${DOSHIN_TAX} cards. The effects of {2} are canceled.`
+                            action: cancel(),
+                            message: (context, _target, player) => msg`${player} refuses to discard ${DOSHIN_TAX} cards. The effects of ${context.event.card} are canceled`
                         }
-                    },
-                    messageArgs: [(context as TriggeredAbilityContext).event.card]
+                    }
                 }))
-            }),
-            effect: 'protect {1}',
-            effectArgs: (context) => context.event.cardTargets ?? []
-        });
+            .otherwise()
+                .cancel()
+            .chatText((context) => msg`protect ${context.event.cardTargets[0]}`);
     }
 }

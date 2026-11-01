@@ -1,27 +1,21 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 
 class MakeYourCase extends DrawCard {
     static id = 'make-your-case';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
+    override setupCardAbilities() {
+        this.action('Initiate a political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
-                message: '{0}{1}',
-                messageArgs: duel => [
-                    duel.winner,
-                    duel.winner ? ' gains a fate' : ''
-                ],
-                gameAction: duel => AbilityDsl.actions.placeFate({
-                    target: duel.winner,
-                    amount: 1
+                chatText: (_context, duel) => msg`${duel.winner} gains a fate`,
+                gameAction: (duel) => placeFate({
+                    target: duel.winner
                 })
-            }
-        });
+            }));
     }
 }
 

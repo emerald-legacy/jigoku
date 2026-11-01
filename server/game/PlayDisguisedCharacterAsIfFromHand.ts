@@ -1,62 +1,36 @@
-import { AbilityContext } from './AbilityContext.js';
-import { PlayType } from './Constants.js';
-import { PlayDisguisedCharacterAction, PlayDisguisedCharacterIntoLocation } from './PlayDisguisedCharacterAction.js';
-import DrawCard from './DrawCard.js';
-import Player from './Player.js';
+import type { AbilityContext } from './AbilityContext.js';
+import { PlayType, type Blocker } from './Constants.js';
+import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
+import { PlayIntoLocation } from './PlayCharacterAction.js';
+import { asIfFromHandBlockers, type AsIfFromHandOptions, PlayCharacterAsIfFromHand } from './PlayCharacterAsIfFromHand.js';
+import type DrawCard from './DrawCard.js';
+import type Player from './Player.js';
 
+/** Plays a character with Disguised from where it is "as if it were in your hand". */
 export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAction {
-    constructor(card: DrawCard) {
-        super(card);
+    constructor(card: DrawCard, private options: AsIfFromHandOptions = {}) {
+        super(card, options.into ?? PlayIntoLocation.Any);
     }
 
-    createContext(player: Player = this.card.controller) {
+    override createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
         context.playType = PlayType.PlayFromHand;
         return context;
     }
 
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
+    override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
+        return super.meetsRequirements(context, asIfFromHandBlockers(ignoredBlockers));
+    }
+
+    override executeHandler(context: AbilityContext<DrawCard>) {
+        if(this.options.facedown) {
+            context.source.facedown = false;
+        }
+        super.executeHandler(context);
     }
 }
 
-export class PlayDisguisedCharacterAsIfFromHandIntoConflict extends PlayDisguisedCharacterAction {
-    constructor(card: DrawCard) {
-        super(card, PlayDisguisedCharacterIntoLocation.Conflict);
-    }
-
-    createContext(player: Player = this.card.controller) {
-        const context = super.createContext(player);
-        context.playType = PlayType.PlayFromHand;
-        return context;
-    }
-
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
-    }
-}
-
-export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedCharacterAction {
-    constructor(card: DrawCard) {
-        super(card, PlayDisguisedCharacterIntoLocation.Home);
-    }
-
-    createContext(player: Player = this.card.controller) {
-        const context = super.createContext(player);
-        context.playType = PlayType.PlayFromHand;
-        return context;
-    }
-
-    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location')
-            ? ignoredRequirements
-            : ignoredRequirements.concat('location');
-        return super.meetsRequirements(context, newIgnoredRequirements);
-    }
+/** Both ways to play a character "as if from your hand": normally and using Disguised. */
+export function asIfFromHandPlayActions(card: DrawCard, options: AsIfFromHandOptions = {}): [PlayCharacterAsIfFromHand, PlayDisguisedCharacterAsIfFromHand] {
+    return [new PlayCharacterAsIfFromHand(card, options), new PlayDisguisedCharacterAsIfFromHand(card, options)];
 }

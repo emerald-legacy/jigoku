@@ -16,6 +16,8 @@ describe('Ancestral Shrine', function () {
             it('should not prompt the player to return a ring if none are claimed', function () {
                 this.player1.clickCard(this.shrine);
                 expect(this.player1).not.toHavePrompt('Choose a ring to return');
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.player1.honor).toBe(10);
             });
 
             it('should not give honor if action is canceled', function () {

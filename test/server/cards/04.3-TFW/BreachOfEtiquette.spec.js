@@ -36,6 +36,7 @@ describe('Breach of Etiquette', function() {
                 this.player1.clickCard(this.brashSamurai);
                 expect(this.player1.honor).toBe(9);
                 expect(this.brashSamurai.militarySkill).toBe(1);
+                expect(this.getChatLogs(5)).toContain('player1 loses 1 honor due to Breach of Etiquette');
             });
 
             it('should not trigger when an opponent cancels a non-courtier ability', function() {
@@ -50,6 +51,7 @@ describe('Breach of Etiquette', function() {
                 this.player2.clickCard(this.brashSamurai);
                 expect(this.player2.honor).toBe(10);
                 expect(this.brashSamurai.militarySkill).toBe(4);
+                expect(this.getChatLogs(5)).toContain('player2 loses 1 honor due to Breach of Etiquette');
             });
 
             it('should not trigger when a courtier uses an ability', function() {
@@ -70,7 +72,7 @@ describe('Breach of Etiquette', function() {
 
             it('should not trigger when an event is played', function () {
                 this.player1.pass();
-                let honorBefore = this.player2.honor;
+                const honorBefore = this.player2.honor;
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.brashSamurai);
                 this.player2.clickPrompt('Done');
@@ -84,7 +86,7 @@ describe('Breach of Etiquette', function() {
                 expect(this.player1).toHavePrompt('Break Shameful Display');
                 this.player1.clickPrompt('No');
                 this.player1.clickPrompt('Don\'t Resolve');
-                let honorBefore = this.player1.honor;
+                const honorBefore = this.player1.honor;
                 this.player1.clickCard(this.soshiIllusionist);
                 this.player1.clickCard(this.brashSamurai);
                 expect(this.player1.honor).toBe(honorBefore);
@@ -118,10 +120,53 @@ describe('Breach of Etiquette', function() {
             });
 
             it('should not be playable a second time in the same conflict', function() {
-                let secondBreachOfEtiquette = this.player2.filterCardsByName('breach-of-etiquette', 'hand')[0];
+                const secondBreachOfEtiquette = this.player2.filterCardsByName('breach-of-etiquette', 'hand')[0];
                 this.player2.clickCard(secondBreachOfEtiquette);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
+        });
+    });
+});
+
+describe('Breach of Etiquette and resolved abilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    inPlay: ['diplomat-of-the-steppes', 'bayushi-yunako']
+                },
+                player2: {
+                    honor: 10,
+                    fate: 10,
+                    inPlay: ['brash-samurai'],
+                    hand: ['breach-of-etiquette', 'battlefield-orders']
+                }
+            });
+            this.diplomat = this.player1.findCardByName('diplomat-of-the-steppes');
+            this.yunako = this.player1.findCardByName('bayushi-yunako');
+            this.brashSamurai = this.player2.findCardByName('brash-samurai');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.diplomat, this.yunako],
+                defenders: []
+            });
+            this.player2.clickCard('breach-of-etiquette');
+            this.player1.clickCard(this.diplomat);
+        });
+
+        it('does not make a player lose honor for an ability resolved by Battlefield Orders', function() {
+            expect(this.game.currentConflict.conflictType).toBe('military');
+            expect(this.player1.honor).toBe(8);
+            this.player2.clickCard('battlefield-orders');
+            this.player2.clickCard(this.yunako);
+            expect(this.player1).toHavePrompt('Choose a character');
+            this.player1.clickCard(this.brashSamurai);
+            expect(this.brashSamurai.getMilitarySkill()).toBe(1);
+            expect(this.player1.honor).toBe(8);
+            expect(this.player2.honor).toBe(10);
         });
     });
 });

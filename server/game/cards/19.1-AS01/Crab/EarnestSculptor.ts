@@ -1,55 +1,44 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import type BaseAction from '../../../BaseAction.js';
-import type BaseCard from '../../../BaseCard.js';
-import { CardType, Location } from '../../../Constants.js';
+import { reduceNextPlayedCardCost } from '../../../effects.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
+import { CardType, Location, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
+import { msg } from '../../../GameChat.js';
+import { isReducibleAttachmentPlay } from '../../attachmentPlay.js';
 
 export default class EarnestSculptor extends DrawCard {
     static id = 'earnest-sculptor';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Search top 8 card for a spell',
-            effect: 'look at the top 8 cards of their deck',
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: 8,
-                cardCondition: (card) => card.hasTrait('spell'),
-                gameAction: AbilityDsl.actions.moveCard({
+    public override setupCardAbilities() {
+        this.action('Search top 8 card for a spell')
+            .deckSearch({
+                cardsToLookAt: 8,
+                cardCondition: (card) => card.hasTrait(Trait.Spell),
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             })
-        });
+            .chatText('look at the top 8 cards of their deck');
 
-        this.interrupt({
-            title: 'Reduce cost of next Jade card',
-            when: {
+        this.interrupt('Reduce cost of next Jade card')
+            .when({
                 onCardPlayed: (event, context) =>
                     event.card.type === CardType.Event &&
                     event.player === context.player &&
-                    event.card.hasTrait('jade') &&
+                    event.card.hasTrait(Trait.Jade) &&
                     event.context !== undefined &&
-                    (event.context.ability as BaseAction).getReducedCost(event.context) > 0,
+                    event.context.ability.getReducedCost(event.context) > 0,
                 onAbilityResolverInitiated: (event, context) =>
-                    event.context !== undefined &&
-                    (event.context.source.type === CardType.Attachment ||
-                        event.context.ability instanceof PlayAttachmentAction) &&
+                    isReducibleAttachmentPlay(event.context) &&
                     event.context.player === context.player &&
-                    event.context.source.hasTrait('jade') &&
-                    (event.context.ability as BaseAction).getReducedCost(event.context) > 0
-            },
-            effect: 'reduce the cost of {1} by 1',
-            effectArgs: (context) => [(context.event.context as AbilityContext).source],
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
-                targetController: context.player,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(
+                    event.context.source.hasTrait(Trait.Jade)
+            })
+            .playerLastingEffect((context) => ({
+                effect: reduceNextPlayedCardCost(
                     1,
-                    (card: BaseCard) =>
-                        card === (context as TriggeredAbilityContext).event.card || card === ((context as TriggeredAbilityContext).event.context as AbilityContext).source
+                    (card) =>
+                        card === context.event.card || card === context.event.context.source
                 )
             }))
-        });
+            .chatText((context) => msg`reduce the cost of ${context.event.context.source} by 1`);
     }
 }

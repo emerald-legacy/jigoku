@@ -1,7 +1,7 @@
-import { CardType, TargetMode } from '../../../Constants.js';
-import { GameAction } from '../../../GameActions/GameAction.js';
-import { StatusToken } from '../../../StatusToken.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, CharacterStatus } from '../../../Constants.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
+import { discardStatusToken, gainStatusToken, joint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 const ORIGINL_TOKEN = 'original';
@@ -10,73 +10,59 @@ const SELECTION = 'selection';
 export default class AsakoKousuke extends DrawCard {
     static id = 'asako-kousuke';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Treat the status token on a character as if it was another status token',
-
-            cannotTargetFirst: true,
-            targets: {
-                [ORIGINL_TOKEN]: {
-                    mode: TargetMode.Token,
-                    cardType: CardType.Character,
-                    cardCondition: (card: DrawCard, context) =>
-                        card.isParticipating() && card.getGlory() <= context.source.getGlory()
-                },
-                [SELECTION]: {
-                    dependsOn: ORIGINL_TOKEN,
-                    mode: TargetMode.Select,
-                    choices: (context) => {
-                        const targetToken: StatusToken = (context.tokens[ORIGINL_TOKEN] as StatusToken[])[0];
-                        const targetCard = targetToken.card;
-                        if(!(targetCard instanceof DrawCard)) {
-                            // should never happen
-                            return {};
-                        }
-
-                        const choices = [] as Array<[string, GameAction]>;
-                        if(!targetCard.isHonored) {
-                            choices.push([
-                                'Turn it into Honored',
-                                AbilityDsl.actions.joint([
-                                    AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                                    AbilityDsl.actions.honor({ target: targetCard })
-                                ])
-                            ]);
-                        }
-
-                        if(!targetCard.isDishonored) {
-                            choices.push([
-                                'Turn it into Dishonored',
-                                AbilityDsl.actions.joint([
-                                    AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                                    AbilityDsl.actions.dishonor({ target: targetCard })
-                                ])
-                            ]);
-                        }
-
-                        if(!targetCard.isTainted) {
-                            choices.push([
-                                'Turn it into Tainted',
-                                AbilityDsl.actions.joint([
-                                    AbilityDsl.actions.discardStatusToken({ target: targetToken }),
-                                    AbilityDsl.actions.taint({ target: targetCard })
-                                ])
-                            ]);
-                        }
-
-                        return Object.fromEntries(choices);
-                    }
+    override setupCardAbilities() {
+        this.conflictAction('Treat the status token on a character as if it was another status token', { evenFromHome: true })
+            .tokenTarget({
+                name: ORIGINL_TOKEN,
+                cardType: CardType.Character,
+                cardCondition: (card, context) =>
+                    card.isParticipating() && card.glory <= context.source.glory
+            })
+            .selectFrom({
+                name: SELECTION,
+                dependsOn: ORIGINL_TOKEN
+            }, (context) => {
+                const targetToken = context.tokens[ORIGINL_TOKEN][0];
+                const targetCard = targetToken.card;
+                if(!targetCard?.isDrawCard()) {
+                    return {};
                 }
-            },
-            effect: 'clarify what it means to be {2}. The exposition reveals that {1} is {2}',
-            effectArgs: (context) => [
-                (context.tokens[ORIGINL_TOKEN] as StatusToken[])[0].card as DrawCard,
-                context.selects.selection.choice === 'Turn it into Honored'
-                    ? 'honored'
-                    : context.selects.selection.choice === 'Turn it into Dishonored'
-                        ? 'dishonored'
-                        : 'tainted'
-            ]
-        });
+
+                const canReceive = (token: CharacterStatus) => gainStatusToken({ token }).canAffect(targetCard, context);
+                const choices: Array<[string, GameAction]> = [];
+                if(canReceive(CharacterStatus.Honored)) {
+                    choices.push([
+                        'Turn it into Honored',
+                        joint([
+                            discardStatusToken({ target: targetToken }),
+                            gainStatusToken({ target: targetCard, token: CharacterStatus.Honored })
+                        ])
+                    ]);
+                }
+
+                if(canReceive(CharacterStatus.Dishonored)) {
+                    choices.push([
+                        'Turn it into Dishonored',
+                        joint([
+                            discardStatusToken({ target: targetToken }),
+                            gainStatusToken({ target: targetCard, token: CharacterStatus.Dishonored })
+                        ])
+                    ]);
+                }
+
+                if(canReceive(CharacterStatus.Tainted)) {
+                    choices.push([
+                        'Turn it into Tainted',
+                        joint([
+                            discardStatusToken({ target: targetToken }),
+                            gainStatusToken({ target: targetCard, token: CharacterStatus.Tainted })
+                        ])
+                    ]);
+                }
+
+                return Object.fromEntries(choices);
+            })
+            .chatText((context) => msg`clarify what it means to be ${context.selects.selection.choice === 'Turn it into Honored' ? 'honored' : context.selects.selection.choice === 'Turn it into Dishonored' ? 'dishonored' : 'tainted'}. The exposition reveals that ${context.tokens[ORIGINL_TOKEN][0].card} is ${context.selects.selection.choice === 'Turn it into Honored' ? 'honored' : context.selects.selection.choice === 'Turn it into Dishonored' ? 'dishonored' : 'tainted'}`)
+            .cannotTargetFirst();
     }
 }

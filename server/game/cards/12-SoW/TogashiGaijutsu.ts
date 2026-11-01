@@ -1,22 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class TogashiGaijutsu extends DrawCard {
     static id = 'togashi-gaijutsu';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Ready a character',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Ready a character')
+            .when({
                 onCardPlayed: (event, context) =>
                     event.card.parentCharacter &&
                     event.card.type === CardType.Attachment &&
-                    event.card.hasTrait('tattoo') &&
+                    event.card.hasTrait(Trait.Tattoo) &&
                     event.card.controller === context.player
-            },
-            gameAction: AbilityDsl.actions.ready((context) => ({ target: context.event.card.parentCharacter }))
-        });
+            })
+            .ready((context) => ({ target: context.event.card.parentCharacter ?? [] }));
     }
 }
 

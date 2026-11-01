@@ -27,9 +27,7 @@ describe('Wildfire Kick', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 3; i++) {
+                for(let i = 0; i < 3; i++) {
                     this.player2.pass();
                     this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
                 }
@@ -39,6 +37,25 @@ describe('Wildfire Kick', function() {
                 expect(this.player1).toHavePrompt('Wildfire Kick');
                 expect(this.player1).toBeAbleToSelect(this.initiate);
                 expect(this.player1).not.toBeAbleToSelect(this.ancient);
+            });
+
+            it('can\'t be played when no opponent\'s character would be affected', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.initiate, this.challenger],
+                    defenders: [],
+                    type: 'military'
+                });
+
+                for(let i = 0; i < 3; i++) {
+                    this.player2.pass();
+                    this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
+                }
+
+                this.player2.pass();
+                this.player1.clickCard(this.wildfire);
+                expect(this.player1).not.toHavePrompt('Wildfire Kick');
+                expect(this.wildfire.location).toBe('hand');
             });
         });
 
@@ -72,9 +89,7 @@ describe('Wildfire Kick', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 3; i++) {
+                for(let i = 0; i < 3; i++) {
                     this.player2.pass();
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.wildfire);
@@ -96,9 +111,7 @@ describe('Wildfire Kick', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 3; i++) {
+                for(let i = 0; i < 3; i++) {
                     this.player2.pass();
                     this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
                 }
@@ -119,9 +132,7 @@ describe('Wildfire Kick', function() {
                     type: 'military'
                 });
 
-                let i = 0;
-
-                for(i = 0; i < 3; i++) {
+                for(let i = 0; i < 3; i++) {
                     this.player2.pass();
                     this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.initiate);
                 }
@@ -130,15 +141,15 @@ describe('Wildfire Kick', function() {
                 this.player1.clickCard(this.wildfire);
                 this.player1.clickCard(this.initiate);
 
-                expect(this.kuwanan.getMilitarySkill()).toBe(this.kuwanan.getBaseMilitarySkill());
-                expect(this.kuwanan.getPoliticalSkill()).toBe(this.kuwanan.getBasePoliticalSkill());
-                expect(this.adept.getMilitarySkill()).toBe(this.adept.getBaseMilitarySkill() - 2);
-                expect(this.adept.getPoliticalSkill()).toBe(this.adept.getBasePoliticalSkill() - 2);
+                expect(this.kuwanan.militarySkill).toBe(this.kuwanan.getBaseMilitarySkill());
+                expect(this.kuwanan.politicalSkill).toBe(this.kuwanan.getBasePoliticalSkill());
+                expect(this.adept.militarySkill).toBe(this.adept.getBaseMilitarySkill() - 2);
+                expect(this.adept.politicalSkill).toBe(this.adept.getBasePoliticalSkill() - 2);
 
-                expect(this.initiate.getMilitarySkill()).toBe(this.initiate.getBaseMilitarySkill() + 3); //3x new name
-                expect(this.initiate.getPoliticalSkill()).toBe(this.initiate.getBasePoliticalSkill() + 3); //3x new name
-                expect(this.challenger.getMilitarySkill()).toBe(this.challenger.getBaseMilitarySkill());
-                expect(this.challenger.getPoliticalSkill()).toBe(this.challenger.getBasePoliticalSkill());
+                expect(this.initiate.militarySkill).toBe(this.initiate.getBaseMilitarySkill() + 3); //3x new name
+                expect(this.initiate.politicalSkill).toBe(this.initiate.getBasePoliticalSkill() + 3); //3x new name
+                expect(this.challenger.militarySkill).toBe(this.challenger.getBaseMilitarySkill());
+                expect(this.challenger.politicalSkill).toBe(this.challenger.getBasePoliticalSkill());
 
                 expect(this.getChatLogs(4)).toContain('player1 plays Wildfire Kick to give player2\'s participating characters -2military/-2political if their military skill is equal to or lower than 4. This affects: Adept of Shadows');
             });

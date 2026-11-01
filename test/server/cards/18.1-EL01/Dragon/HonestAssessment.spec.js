@@ -48,7 +48,7 @@ describe('Honest Assessment', function() {
         });
 
         it('should let you to name a card and then sac itself to discard all matching cards from a revealed random subset of your opponent\'s hand', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player2.clickCard(this.assessment);
             this.player2.clickCard(this.diplomat);
             this.player2.clickCard(this.assessment);
@@ -64,7 +64,7 @@ describe('Honest Assessment', function() {
         });
 
         it('hand has no matching cards', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player2.clickCard(this.assessment);
             this.player2.clickCard(this.diplomat);
             this.player2.clickCard(this.assessment);
@@ -78,8 +78,8 @@ describe('Honest Assessment', function() {
         });
 
         it('shoud work with less than 4 cards', function() {
-            this.player1.moveCard(this.ornateFan, 'conflict disard pile');
-            let hand = this.player1.hand.length;
+            this.player1.moveCard(this.ornateFan, 'conflict discard pile');
+            const hand = this.player1.hand.length;
             this.player2.clickCard(this.assessment);
             this.player2.clickCard(this.diplomat);
             this.player2.clickCard(this.assessment);
@@ -87,9 +87,52 @@ describe('Honest Assessment', function() {
             this.player2.chooseCardInPrompt(this.letGo.name, 'card-name');
 
             expect(this.player1.hand.length).toBe(hand);
-            expect(this.getChatLogs(15)).toContain('player2 uses Honest Assessment, naming Let Go to reveal 4 random cards from player1\'s hand and discard all copies of Let Go');
+            expect(this.getChatLogs(15)).toContain('player2 uses Honest Assessment, naming Let Go to reveal 3 random cards from player1\'s hand and discard all copies of Let Go');
             expect(this.getChatLogs(15)).toContain('player1 reveals Banzai! due to Honest Assessment');
             expect(this.getChatLogs(15)).toContain('player1 does not discard anything');
+        });
+    });
+});
+
+describe('Honest Assessment - max 1 per round', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['isawa-tadaka-2'],
+                    hand: ['ornate-fan', 'fine-katana', 'banzai']
+                },
+                player2: {
+                    fate: 10,
+                    inPlay: ['doji-diplomat', 'doji-whisperer'],
+                    hand: ['honest-assessment', 'honest-assessment']
+                }
+            });
+
+            this.ornateFan = this.player1.findCardByName('ornate-fan');
+            this.diplomat = this.player2.findCardByName('doji-diplomat');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.assessment = this.player2.filterCardsByName('honest-assessment')[0];
+            this.assessment2 = this.player2.filterCardsByName('honest-assessment')[1];
+            this.player1.pass();
+        });
+
+        it('can only be used once per round', function() {
+            this.player2.clickCard(this.assessment);
+            this.player2.clickCard(this.diplomat);
+            this.player2.clickCard(this.assessment);
+            this.player2.chooseCardInPrompt('Let Go', 'card-name');
+            expect(this.player1.hand.length).toBe(3);
+
+            this.player1.pass();
+            this.player2.clickCard(this.assessment2);
+            this.player2.clickCard(this.whisperer);
+            expect(this.assessment2.parent).toBe(this.whisperer);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.ornateFan.location).toBe('hand');
+            expect(this.player1.hand.length).toBe(3);
         });
     });
 });

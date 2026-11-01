@@ -1,22 +1,18 @@
-import { Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players } from '../../Constants.js';
+import { takeFate, takeHonor } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class Levy extends DrawCard {
     static id = 'levy';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Take an honor or a fate from your opponent',
-            condition: (context) => context.player.opponent !== undefined,
-            target: {
-                player: Players.Opponent,
-                mode: TargetMode.Select,
-                choices: {
-                    'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
-                    'Give your opponent 1 honor': AbilityDsl.actions.takeHonor()
-                }
-            }
-        });
+    public override setupCardAbilities() {
+        this.action('Take an honor or a fate from your opponent')
+            .condition((context) => context.player.opponent !== undefined)
+            .select({
+                player: Players.Opponent
+            }, {
+                'Give your opponent 1 fate': takeFate(),
+                'Give your opponent 1 honor': takeHonor()
+            });
     }
 }

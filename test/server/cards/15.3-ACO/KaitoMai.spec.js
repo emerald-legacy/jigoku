@@ -45,11 +45,11 @@ describe('Kaito Mai', function() {
             this.player1.clickCard(this.mai);
             this.player1.clickPrompt('1');
 
-            expect(this.mai.getGlory()).toBe(this.mai.printedGlory + 3);
+            expect(this.mai.glory).toBe(this.mai.printedGlory + 3);
         });
 
         it('should let you remove a fate from an opponent character', function() {
-            let fate = this.alibi.fate;
+            const fate = this.alibi.fate;
             this.player1.playAttachment(this.steed, this.mai);
             this.player1.clickCard(this.mai);
             this.player1.clickPrompt('1');
@@ -61,7 +61,7 @@ describe('Kaito Mai', function() {
         });
 
         it('should let you remove a fate from your own character', function() {
-            let fate = this.manipulator.fate;
+            const fate = this.manipulator.fate;
             this.player1.playAttachment(this.steed, this.mai);
             this.player1.clickCard(this.mai);
             this.player1.clickPrompt('1');
@@ -83,6 +83,49 @@ describe('Kaito Mai', function() {
             this.player2.clickCard(this.mai);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player1).not.toBeAbleToSelect(this.mai);
+        });
+
+        it('cannot remove fate from itself', function() {
+            this.mai.fate = 2;
+            this.player1.playAttachment(this.steed, this.mai);
+            this.player1.clickCard(this.mai);
+            this.player1.clickPrompt('1');
+            this.player1.clickCard(this.mai);
+            expect(this.player1).not.toBeAbleToSelect(this.mai);
+            expect(this.player1).toBeAbleToSelect(this.alibi);
+        });
+    });
+});
+
+describe('Kaito Mai in the fate phase', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kaito-mai', 'bayushi-manipulator']
+                },
+                player2: {
+                    inPlay: ['alibi-artist']
+                }
+            });
+            this.mai = this.player1.findCardByName('kaito-mai');
+            this.manipulator = this.player1.findCardByName('bayushi-manipulator');
+            this.alibi = this.player2.findCardByName('alibi-artist');
+
+            this.mai.fate = 2;
+            this.manipulator.fate = 2;
+            this.alibi.fate = 2;
+        });
+
+        it('should not react to fate removed in the fate phase', function() {
+            this.noMoreActions();
+            this.flow.finishConflictPhase();
+
+            expect(this.mai.fate).toBe(1);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.manipulator.fate).toBe(1);
+            expect(this.alibi.fate).toBe(1);
         });
     });
 });

@@ -106,7 +106,7 @@ describe('Unveiled Corruption', function() {
             expect(this.player1).toHavePrompt('Select card to taint');
             this.player1.clickCard(this.sd3);
             expect(this.sd3.isTainted).toBe(true);
-            expect(this.getChatLogs(5)).toContain('player1 plays Unveiled Corruption, tainting a facedown card to make player2 discard 1 cards');
+            expect(this.getChatLogs(5)).toContain('player1 plays Unveiled Corruption, tainting a facedown card to make player2 discard 1 card');
         });
     });
 });

@@ -48,6 +48,24 @@ describe('Cycle of Rebirth', function() {
                 expect(this.player1).toBeAbleToSelect(this.yokuni);
             });
 
+            it('should not name a facedown target in chat', function() {
+                this.matsuBerseker.facedown = true;
+                this.player1.clickCard(this.cycleOfRebirth);
+                this.player1.clickCard(this.matsuBerseker);
+
+                expect(this.matsuBerseker.location).toBe('dynasty deck');
+                expect(this.getChatLogs(10)).toContain('player1 plays Cycle of Rebirth to shuffle a facedown card and Cycle of Rebirth into player1\'s dynasty deck');
+            });
+
+            it('should not name a facedown enemy target in chat', function() {
+                this.yokuni.facedown = true;
+                this.player1.clickCard(this.cycleOfRebirth);
+                this.player1.clickCard(this.yokuni);
+
+                expect(this.yokuni.location).toBe('dynasty deck');
+                expect(this.getChatLogs(10)).toContain('player1 plays Cycle of Rebirth to shuffle a facedown card into player2\'s dynasty deck. Cycle of Rebirth is shuffled into player1\'s dynasty deck');
+            });
+
             it('should shuffle Cycle of Rebirth and targeted card back into the deck', function() {
                 this.player1.clickCard(this.cycleOfRebirth);
 

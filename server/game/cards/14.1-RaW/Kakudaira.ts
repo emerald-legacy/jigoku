@@ -1,35 +1,28 @@
-import { Duration, EventName } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playerDelayedEffect } from '../../effects.js';
+import { flipDynasty } from '../../GameActions/GameActions.js';
 
-import type { AbilityContext } from '../../AbilityContext.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class Kakudaira extends ProvinceCard {
     static id = 'kakudaira';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.playerDelayedEffect({
+            effect: playerDelayedEffect({
                 when: {
-                    onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>, context: AbilityContext<this>) =>
+                    onPhaseStarted: (_event, context) =>
+                        context.source.isProvinceCard() &&
                         context.source.isFaceup() &&
                         !context.source.isBroken &&
-                        context.player.getDynastyCardsInProvince(context.source.location).some((a: DrawCard) => a.isFacedown())
+                        context.player.getDynastyCardsInProvince(context.source.location).some((a) => a.isFacedown())
                 },
-                duration: Duration.Persistent,
-                message: '{0} reveals {1} due to the constant effect of {2}',
-                messageArgs: (effectContext: AbilityContext<this>) => [
-                    effectContext.player,
-                    effectContext.player
-                        .getDynastyCardsInProvince(effectContext.source.location)
-                        .filter((a: DrawCard) => a.isFacedown()),
-                    effectContext.source
-                ],
-                gameAction: AbilityDsl.actions.flipDynasty((context) => ({
+                message: (effectContext) => msg`${effectContext.player} reveals ${effectContext.player
+                    .getDynastyCardsInProvince(effectContext.source.location)
+                    .filter((a) => a.isFacedown())} due to the constant effect of ${effectContext.source}`,
+                gameAction: flipDynasty((context) => ({
                     target: context.player
                         .getDynastyCardsInProvince(context.source.location)
-                        .filter((a: DrawCard) => a.isFacedown())
+                        .filter((a) => a.isFacedown())
                 }))
             })
         });

@@ -1,34 +1,29 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName, Players } from '../../Constants.js';
+import { CardType, Players, ConflictType, Trait } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class HonedNodachi extends DrawCard {
     static id = 'honed-nodachi';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'bushi'
+            trait: Trait.Bushi
         });
 
-        this.reaction({
-            title: 'Remove a fate from attached character and force opponent to discard a participating character',
-            when: {
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
-                                                   event.conflict.winner === context.source.parentCharacter.controller &&
-                                                   event.conflict.conflictType === 'military'
-            },
-            cost: ability.costs.removeFateFromParent(),
-            target: {
+        this.reaction('Remove a fate from attached character and force opponent to discard a participating character')
+            .when({
+                afterConflict: (event, context) => !!context.source.parentCharacter && event.conflict.isOnWinningSide(context.source.parentCharacter) &&
+                                                   event.conflict.conflictType === ConflictType.Military
+            })
+            .cost(costs.removeFateFromParent())
+            .target({
                 activePromptTitle: 'Choose a character to discard',
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: ability.actions.discardFromPlay()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, discardFromPlay());
     }
 }
 

@@ -1,27 +1,25 @@
-import { Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { playerCannot } from '../../../effects.js';
+import { returnRing } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DarbukaOfBanishment extends DrawCard {
     static id = 'darbuka-of-banishment';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.playerCannot({
-                cannot: 'haveAffinity',
-                restricts: 'unlessMeishodo'
+            effect: playerCannot({
+                cannot: RestrictionType.HaveAffinity,
+                appliesTo: RestrictionScope.UnlessMeishodo
             })
         });
 
-        this.action({
-            title: 'Return a ring to the unclaimed pool',
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
-                mode: TargetMode.Ring,
-                ringCondition: (ring) => ring.isClaimed(),
-                gameAction: AbilityDsl.actions.returnRing()
-            }
-        });
+        this.action('Return a ring to the unclaimed pool')
+            .cost(costs.payHonor(1))
+            .ringTarget({
+                ringCondition: (ring) => ring.isClaimed()
+            }, returnRing());
     }
 }

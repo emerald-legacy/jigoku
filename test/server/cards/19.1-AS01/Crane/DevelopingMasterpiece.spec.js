@@ -78,11 +78,11 @@ describe('Developing Masterpiece', function () {
             this.player1.clickPrompt('Done');
             this.player2.clickPrompt('Done');
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player1.clickCard(this.masterpiece);
             expect(this.masterpiece.location).toBe('removed from game');
             expect(this.player1.honor).toBe(honor + 3);
-            expect(this.getChatLogs(5)).toContain('player1 uses Developing Masterpiece, removing Developing Masterpiece from the game to gain 3 honor');
+            expect(this.getChatLogs(5)).toContain('player1 uses Developing Masterpiece, sacrificing Developing Masterpiece to gain 3 honor');
         });
 
         it('playable from discard', function () {

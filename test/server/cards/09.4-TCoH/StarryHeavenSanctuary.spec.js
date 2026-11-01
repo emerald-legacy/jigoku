@@ -127,3 +127,49 @@ describe('Starry Heaven Sanctuary', function() {
     });
 });
 
+describe('Starry Heaven Sanctuary and fate taken from rings', function() {
+    integration(function() {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-guardian'],
+                    dynastyDeck: ['starry-heaven-sanctuary'],
+                    hand: ['written-in-the-stars'],
+                    fate: 6
+                },
+                player2: {
+                    inPlay: ['bayushi-aramoro']
+                }
+            });
+            this.hidaGuardian = this.player1.findCardByName('hida-guardian');
+            this.bayushiAramoro = this.player2.findCardByName('bayushi-aramoro');
+            this.writtenInTheStars = this.player1.findCardByName('written-in-the-stars');
+            this.starryHeavenSanctuary = this.player1.placeCardInProvince('starry-heaven-sanctuary', 'province 1');
+
+            this.hidaGuardian.fate = 2;
+            this.bayushiAramoro.fate = 2;
+            this.player1.player.promptedActionWindows.fate = true;
+        });
+
+        it('should not trigger when 4 fate is removed from rings', function () {
+            this.flow.finishConflictPhase();
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.hidaGuardian.fate).toBe(1);
+            expect(this.bayushiAramoro.fate).toBe(1);
+
+            // air left empty, so both options of Written in the Stars are legal
+            this.game.rings.air.fate = 0;
+            this.player1.clickCard(this.writtenInTheStars);
+            this.player1.clickPrompt('Remove one fate from each unclaimed ring');
+
+            expect(this.game.rings.earth.fate).toBe(0);
+            expect(this.game.rings.fire.fate).toBe(0);
+            expect(this.game.rings.water.fate).toBe(0);
+            expect(this.game.rings.void.fate).toBe(0);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).not.toBeAbleToSelect(this.starryHeavenSanctuary);
+            expect(this.player1.fate).toBe(5);
+        });
+    });
+});

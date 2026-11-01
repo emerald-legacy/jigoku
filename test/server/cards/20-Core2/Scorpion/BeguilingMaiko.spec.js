@@ -1,3 +1,6 @@
+import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
+import { putIntoPlay } from '../../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Beguiling Maiko', function () {
     integration(function () {
         beforeEach(function () {
@@ -57,6 +60,30 @@ describe('Beguiling Maiko', function () {
             this.player2.clickCard(this.asahinaArtisan);
             expect(this.asahinaArtisan.isDishonored).toBe(true);
             expect(this.getChatLogs(5)).toContain('player2 dishonors Asahina Artisan');
+        });
+    });
+});
+
+describe('Beguiling Maiko put into play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    dynastyDiscard: ['beguiling-maiko']
+                }
+            });
+            this.maiko = this.player1.findCardByName('beguiling-maiko');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+        });
+
+        it('does not react when put into play', function () {
+            const context = new ResolvableAbility(this.whisperer, {}).createContext(this.player1.player);
+            this.game.queueSimpleStep(() => putIntoPlay().resolve(this.maiko, context));
+            this.game.continue();
+            expect(this.maiko.location).toBe('play area');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
         });
     });
 });

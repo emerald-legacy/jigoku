@@ -1,21 +1,17 @@
-import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
+import { msg } from '../../GameChat.js';
+import * as costs from '../../costs/index.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class PerceptiveKitsuki extends DrawCard {
     static id = 'perceptive-kitsuki';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Look at your opponent\'s hand',
-            condition: (context) => context.source.isParticipating() && context.player.opponent !== undefined,
-            cost: AbilityDsl.costs.returnRings(1),
-            effect: 'look at {1}\'s hand',
-            effectArgs: (context) => context.player.opponent ?? '',
-            gameAction: AbilityDsl.actions.lookAt((context) => ({
-                target: (context.player.opponent?.hand ?? []).slice().sort((a: BaseCard, b: BaseCard) => a.name.localeCompare(b.name)),
-                chatMessage: true
+    public override setupCardAbilities() {
+        this.action('Look at your opponent\'s hand')
+            .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
+            .cost(costs.returnRings(1))
+            .lookAt((context) => ({
+                target: (context.player.opponent?.hand ?? []).slice().sort((a, b) => a.name.localeCompare(b.name))
             }))
-        });
+            .chatText((context) => msg`look at ${context.player.opponent ?? ''}'s hand`);
     }
 }

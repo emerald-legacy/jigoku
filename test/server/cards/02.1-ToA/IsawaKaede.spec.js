@@ -93,6 +93,7 @@ describe('Isawa Kaede', function() {
             });
 
             it('should allow the defender to resolve multiple rings when Display of Power is played', function() {
+                this.player2.player.optionSettings.orderForcedAbilities = true;
                 this.player2.pass();
                 this.player1.clickCard('assassination');
                 this.player1.clickCard('shinjo-outrider', 'any', 'opponent');
@@ -102,10 +103,54 @@ describe('Isawa Kaede', function() {
                 this.player2.clickCard('display-of-power');
                 expect(this.player2).toHavePrompt('Resolve Ring Effect');
                 this.player2.clickPrompt('Resolve All Elements');
-                expect(this.player1).toHavePrompt('Choose an effect to be resolved');
-                expect(this.player1.currentButtons).toContain('Fire Ring Effect');
-                expect(this.player1.currentButtons).toContain('Void Ring Effect');
+                expect(this.player2).toHavePrompt('Choose an effect to be resolved');
+                expect(this.player2.currentButtons).toContain('Fire Ring Effect');
+                expect(this.player2.currentButtons).toContain('Void Ring Effect');
             });
+        });
+    });
+});
+
+describe('Isawa Kaede sent home by False Loyalties', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['isawa-kaede', 'shiba-tsukune'],
+                    hand: ['seeker-of-knowledge']
+                },
+                player2: {
+                    honor: 8,
+                    hand: ['false-loyalties']
+                }
+            });
+            this.kaede = this.player1.findCardByName('isawa-kaede');
+            this.tsukune = this.player1.findCardByName('shiba-tsukune');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'fire',
+                attackers: [this.kaede],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard('seeker-of-knowledge');
+            this.player1.clickPrompt('0');
+            this.player1.clickPrompt('Conflict');
+            this.noMoreActions();
+        });
+
+        it('still resolves each element the ring has left (EmeraldDB ruling)', function() {
+            this.player2.clickCard('false-loyalties');
+            this.player2.clickCard(this.kaede);
+            this.player2.clickCard(this.tsukune);
+            expect(this.kaede.inConflict).toBe(false);
+            this.player1.clickPrompt('No');
+            // Kaede won as an attacker: each element resolves, but the ring has lost her Void
+            expect(this.player1).toHavePromptButton('Resolve All Elements');
+            expect(this.game.currentConflict.ring.getElements()).not.toContain('void');
         });
     });
 });

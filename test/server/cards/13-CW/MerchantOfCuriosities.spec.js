@@ -27,6 +27,18 @@ describe('Merchant of Curiosities', function() {
             this.player2.moveCard(this.fan, 'conflict deck');
         });
 
+        it('lets the opponent choose first when they are the first player (EmeraldDB ruling)', function() {
+            this.game.setFirstPlayer(this.player2.player);
+            this.player1.clickCard(this.merchant);
+            expect(this.player2).toHavePrompt('Give an honor and discard a card?');
+            this.player2.clickPrompt('Yes');
+            this.player2.clickCard(this.katana);
+            expect(this.player1).toHavePrompt('Select card to discard');
+            this.player1.clickCard(this.voice);
+            expect(this.katana.location).toBe('conflict discard pile');
+            expect(this.voice.location).toBe('conflict discard pile');
+        });
+
         it('should allow you to discard a card', function() {
             this.player1.clickCard(this.merchant);
             expect(this.player1).toHavePrompt('Select card to discard');
@@ -66,7 +78,7 @@ describe('Merchant of Curiosities', function() {
             expect(this.player2.honor).toBe(9);
 
             expect(this.getChatLogs(2)).toContain('player2 chooses to discard a card and give player1 1 honor');
-            expect(this.getChatLogs(1)).toContain('player1 uses Merchant of Curiosities, discarding Voice of Honor to draw a card.  player2 gives player1 1 honor to discard Fine Katana and draw a card');
+            expect(this.getChatLogs(1)).toContain('player1 uses Merchant of Curiosities, discarding Voice of Honor to draw a card. player2 gives player1 1 honor to discard Fine Katana and draw a card');
         });
 
         it('should work if opponent chooses not to take the action', function() {

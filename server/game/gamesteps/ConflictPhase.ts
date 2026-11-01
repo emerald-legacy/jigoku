@@ -1,12 +1,12 @@
-import { Phases, EffectName } from '../Constants.js';
-import { initiateConflict } from '../GameActions/GameActions.js';
-import AbilityDsl from '../abilitydsl.js';
+import { msg } from '../GameChat.js';
+import { Phase, EffectName, ActionWindowName } from '../Constants.js';
+import { claimImperialFavor, initiateConflict, performGloryCount } from '../GameActions/GameActions.js';
 import { Conflict } from '../Conflict.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
-import { Phase } from './Phase.js';
+import { PhaseStep } from './PhaseStep.js';
 import { SimpleStep } from './SimpleStep.js';
-import ActionWindow from './ActionWindow.js';
+import { ActionWindow } from './ActionWindow.js';
 
 /**
  * III Conflict Phase
@@ -24,11 +24,11 @@ import ActionWindow from './ActionWindow.js';
  * 3.4.2 Claim Imperial Favor.
  * 3.5 Conflict phase ends.
  */
-export class ConflictPhase extends Phase {
+export class ConflictPhase extends PhaseStep {
     currentPlayer?: Player;
 
     constructor(game: Game) {
-        super(game, Phases.Conflict);
+        super(game, Phase.Conflict);
         this.initialise([
             new SimpleStep(this.game, () => this.beginPhase()),
             new SimpleStep(this.game, () => this.queueSteps())
@@ -40,7 +40,7 @@ export class ConflictPhase extends Phase {
     }
 
     queueSteps() {
-        this.game.queueStep(new ActionWindow(this.game, 'Action Window', 'preConflict'));
+        this.game.queueStep(new ActionWindow(this.game, 'Action Window', ActionWindowName.PreConflict));
         this.game.queueStep(new SimpleStep(this.game, () => this.startConflictChoice()));
     }
 
@@ -59,15 +59,15 @@ export class ConflictPhase extends Phase {
             ) {
                 initiateConflict(props).resolve(this.currentPlayer, this.game.getFrameworkContext(this.currentPlayer));
             } else {
-                var conflict = new Conflict(this.game, this.currentPlayer, this.currentPlayer.opponent as Player);
+                const conflict = new Conflict(this.game, this.currentPlayer, this.currentPlayer.opponent);
                 conflict.passConflict(
-                    '{0} passes their conflict opportunity as none of their characters can be declared as an attacker'
+                    msg`${this.currentPlayer} passes their conflict opportunity as none of their characters can be declared as an attacker`
                 );
             }
             if(this.currentPlayer.opponent) {
                 this.currentPlayer = this.currentPlayer.opponent;
             }
-            this.game.queueStep(new ActionWindow(this.game, 'Action Window', 'preConflict'));
+            this.game.queueStep(new ActionWindow(this.game, 'Action Window', ActionWindowName.PreConflict));
             this.game.queueStep(new SimpleStep(this.game, () => this.startConflictChoice()));
         } else {
             this.game.queueStep(new SimpleStep(this.game, () => this.claimImperialFavor()));
@@ -75,13 +75,11 @@ export class ConflictPhase extends Phase {
     }
 
     claimImperialFavor() {
-        AbilityDsl.actions
-            .performGloryCount({
-                gameAction: ((winner: Player | null) =>
-                    winner
-                        ? AbilityDsl.actions.claimImperialFavor({ target: winner })
-                        : (null as unknown as ReturnType<typeof AbilityDsl.actions.claimImperialFavor>)) as never
-            })
-            .resolve(undefined, this.game.getFrameworkContext());
+        performGloryCount({
+            gameAction: (winner: Player | null) =>
+                winner ? claimImperialFavor({ target: winner }) : null
+        })
+            // the count compares the players in first player order; the claim acts for the winner
+            .resolve(undefined, this.game.getFrameworkContext(this.game.getPlayersInFirstPlayerOrder()[0]));
     }
 }

@@ -247,3 +247,43 @@ describe('Seasoned Patroller', function() {
         });
     });
 });
+
+describe('Seasoned Patroller and calculated or set strength', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['seasoned-patroller'],
+                    hand: ['ride-them-down']
+                },
+                player2: {
+                    provinces: ['fortified-assembly']
+                }
+            });
+            this.patroller = this.player1.findCardByName('seasoned-patroller');
+            this.assembly = this.player2.findCardByName('fortified-assembly');
+            this.player1.player.imperialFavor = 'military';
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.patroller],
+                province: this.assembly
+            });
+            this.player2.clickCard(this.assembly);
+            this.player2.assignDefenders([]);
+        });
+
+        it('blocks an increase that is calculated (Fortified Assembly\'s honor tokens)', function() {
+            // Fortified Assembly's reaction placed an honor token when the attack was declared
+            expect(this.assembly.getTokenCount('honor')).toBe(1);
+            expect(this.assembly.getStrength()).toBe(this.assembly.printedStrength);
+        });
+
+        it('doesn\'t treat a set strength as an increase (Ride Them Down)', function() {
+            this.player2.pass();
+            this.player1.clickCard('ride-them-down');
+            expect(this.assembly.getStrength()).toBe(1);
+        });
+    });
+});
+

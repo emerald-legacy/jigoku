@@ -30,7 +30,7 @@ describe('Twin Sister Blades', function() {
                 attackers: [this.yakamo],
                 defenders: [this.dojiWhisperer]
             });
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.player2.pass();
             this.player1.clickCard(this.yakamo);
@@ -47,7 +47,7 @@ describe('Twin Sister Blades', function() {
                 attackers: [this.berserker],
                 defenders: [this.dojiWhisperer]
             });
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.player2.pass();
             this.player1.clickCard(this.berserker);
@@ -64,7 +64,7 @@ describe('Twin Sister Blades', function() {
                 attackers: [this.yoshi],
                 defenders: [this.dojiWhisperer]
             });
-            let _hand = this.player1.hand.length;
+            const _hand = this.player1.hand.length;
 
             this.player2.pass();
             expect(this.player1).toHavePrompt('Conflict Action Window');
@@ -80,7 +80,7 @@ describe('Twin Sister Blades', function() {
                 attackers: [this.yakamo],
                 defenders: [this.dojiWhisperer, this.toshimoko]
             });
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.player2.pass();
             this.player1.clickCard(this.yakamo);
@@ -97,7 +97,7 @@ describe('Twin Sister Blades', function() {
                 attackers: [this.berserker],
                 defenders: [this.dojiWhisperer, this.toshimoko]
             });
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.player2.pass();
             this.player1.clickCard(this.berserker);

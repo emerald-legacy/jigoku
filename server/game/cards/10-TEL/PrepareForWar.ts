@@ -1,57 +1,51 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type { GameAction } from '../../GameActions/GameAction.js';
-import type { StatusToken } from '../../StatusToken.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players, TargetMode } from '../../Constants.js';
+import {
+    discardFromPlay,
+    discardStatusToken,
+    honor,
+    optional,
+    multiple,
+    selectCards,
+    sequential
+} from '../../GameActions/GameActions.js';
+import { CardType, Players, TargetMode, Trait } from '../../Constants.js';
 
 class PrepareForWar extends DrawCard {
     static id = 'prepare-for-war';
 
-    setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Remove honor token and any attachment',
-            target: {
+    override setupCardAbilities() {
+        this.action('Remove honor token and any attachment')
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.multipleContext<DrawCard>((context) => {
-                        const promptActions = this.getStatusTokenPrompts(context);
-                        return {
-                            gameActions: [
-                                AbilityDsl.actions.selectCard<DrawCard>((context) => ({
-                                    mode: TargetMode.Unlimited,
-                                    cardType: CardType.Attachment,
-                                    controller: Players.Any,
-                                    cardCondition: (card) => card.parentCharacter === context.target,
-                                    activePromptTitle: 'Choose any amount of attachments',
-                                    optional: true,
-                                    gameAction: AbilityDsl.actions.discardFromPlay(),
-                                    message: '{0} chooses to discard {1} from {2}',
-                                    messageArgs: (cards: DrawCard[]) => [
-                                        context.player,
-                                        cards.length === 0 ? 'no attachments' : cards,
-                                        context.target ?? ''
-                                    ]
-                                })),
-                                ...promptActions
-                            ]
-                        };
-                    }),
-                    AbilityDsl.actions.honor<DrawCard>((context) => ({
-                        target: context.target?.hasTrait('commander') ? context.target : []
-                    }))
-                ])
-            },
-            effect: '{1}{2} {0}',
-            effectArgs: (context) => {
+                controller: Players.Self
+            }, sequential([
+                multiple((context) => {
+                    const promptActions = this.getStatusTokenPrompts(context);
+                    return [
+                        selectCards((context) => ({
+                            mode: TargetMode.Unlimited,
+                            cardType: CardType.Attachment,
+                            controller: Players.Any,
+                            cardCondition: (card) => card.parentCharacter === context.target,
+                            activePromptTitle: 'Choose any amount of attachments',
+                            optional: true,
+                            gameAction: discardFromPlay(),
+                            message: (context, cards) => msg`${context.player} chooses to discard ${cards.length === 0 ? 'no attachments' : cards} from ${context.target ?? ''}`
+                        })),
+                        ...promptActions
+                    ];
+                }),
+                honor((context) => ({
+                    target: context.target?.hasTrait(Trait.Commander) ? context.target : []
+                }))
+            ]))
+            .chatText((context) => {
                 const target = context.target;
-                if(!target) {
-                    return ['', ''];
-                }
-                let isCommander = target.hasTrait('commander');
-                let hasAttachments = target.attachments.length > 0;
-                let hasToken = target.isDishonored || target.isHonored;
+                const isCommander = target.hasTrait(Trait.Commander);
+                const hasAttachments = target.attachments.length > 0;
+                const hasToken = target.isDishonored || target.isHonored;
                 let discardMessage = '';
                 if(hasAttachments) {
                     discardMessage += 'choose to discard any number of attachments';
@@ -70,39 +64,19 @@ class PrepareForWar extends DrawCard {
                         honorMessage += ' and ';
                     }
                 }
-                return [honorMessage, discardMessage];
-            }
-        });
+                return msg`${honorMessage}${discardMessage} ${context.chatTarget()}`;
+            });
     }
 
-    getStatusTokenPrompts(context: AbilityContext) {
-        const tokens = (context.target as DrawCard).statusTokens;
-        let prompts: GameAction[] = [];
-        tokens.forEach((token: StatusToken) => {
-            prompts.push(
-                AbilityDsl.actions.menuPrompt((context) => ({
-                    activePromptTitle: `Do you wish to discard ${token.name}?`,
-                    choices: ['Yes', 'No'],
-                    optional: true,
-                    choiceHandler: (choice, displayMessage) => {
-                        if(displayMessage && choice === 'Yes') {
-                            this.game.addMessage(
-                                '{0} chooses to discard {1} from {2}',
-                                context.player,
-                                token,
-                                context.target
-                            );
-                        }
-
-                        return { target: choice === 'Yes' ? token : [] };
-                    },
-                    player: Players.Self,
-                    gameAction: AbilityDsl.actions.discardStatusToken()
-                }))
-            );
-        });
-
-        return prompts;
+    private getStatusTokenPrompts(context: AbilityContext) {
+        return (context.target?.statusTokens ?? []).map((token) =>
+            optional((context) => ({
+                activePromptTitle: `Do you wish to discard ${token.name}?`,
+                optional: true,
+                gameAction: discardStatusToken({ target: token }),
+                acceptMessage: () => msg`${context.player} chooses to discard ${token} from ${context.target}`
+            }))
+        );
     }
 }
 

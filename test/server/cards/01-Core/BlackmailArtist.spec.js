@@ -19,8 +19,8 @@ describe('Blackmail Artist', function () {
             });
 
             it('should take one honor from the opponent when winning a political conflict', function () {
-                let honorPlayer1 = this.player1.player.honor;
-                let honorPlayer2 = this.player2.player.honor;
+                const honorPlayer1 = this.player1.player.honor;
+                const honorPlayer2 = this.player2.player.honor;
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.blackmailArtist, this.bayushiLiar],
@@ -44,6 +44,7 @@ describe('Blackmail Artist', function () {
                 this.player2.pass();
                 this.player1.pass();
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(3)).toContain('player1 won a military conflict 1 vs 0');
             });
 
             it('can\'t trigger at home', function () {
@@ -54,7 +55,8 @@ describe('Blackmail Artist', function () {
                 });
                 this.player2.pass();
                 this.player1.pass();
-                expect(this.player1).not.toHavePrompt('Triggered Abilites');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(3)).toContain('player1 won a political conflict 3 vs 0');
             });
 
             it('can\'t trigger after losing the conflict', function () {
@@ -65,7 +67,8 @@ describe('Blackmail Artist', function () {
                 });
                 this.player2.pass();
                 this.player1.pass();
-                expect(this.player1).not.toHavePrompt('Triggered Abilites');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(3)).toContain('player2 won a political conflict 4 vs 2');
             });
         });
     });

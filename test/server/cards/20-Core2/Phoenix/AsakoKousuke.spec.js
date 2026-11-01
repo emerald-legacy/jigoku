@@ -129,3 +129,75 @@ describe('Asako Kousuke', function () {
         });
     });
 });
+
+describe('Asako Kousuke with Blessed by Fukurokujin', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asako-kousuke', 'adept-of-the-waves'],
+                    hand: ['blessed-by-fukurokujin']
+                },
+                player2: {
+                    inPlay: ['bayushi-manipulator']
+                }
+            });
+            this.kousuke = this.player1.findCardByName('asako-kousuke');
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.kousuke.honor();
+            this.adept.honor();
+            this.player1.playAttachment('blessed-by-fukurokujin', this.adept);
+            this.noMoreActions();
+            this.initiateConflict({ attackers: [this.adept], defenders: [] });
+            this.player2.pass();
+        });
+
+        it('only offers tokens the character can receive', function () {
+            this.player1.clickCard(this.kousuke);
+            this.player1.clickCard(this.adept);
+            expect(this.player1).not.toHavePromptButton('Turn it into Dishonored');
+            expect(this.adept.isHonored).toBe(false);
+            expect(this.adept.isTainted).toBe(true);
+            expect(this.getChatLogs(5)).toContain(
+                'player1 uses Asako Kousuke to clarify what it means to be tainted. The exposition reveals that Adept of the Waves is tainted'
+            );
+        });
+    });
+});
+
+describe('Asako Kousuke under Ichiro', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asako-kousuke', { card: 'solemn-scholar', attachments: ['fine-katana'] }]
+                },
+                player2: {
+                    inPlay: ['ichiro']
+                }
+            });
+            this.kousuke = this.player1.findCardByName('asako-kousuke');
+            this.scholar = this.player1.findCardByName('solemn-scholar');
+            this.scholar.dishonor();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.scholar],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        // receiving a status token isn't honoring (rulings #839, #900)
+        it('should turn a dishonored status token into an honored one', function () {
+            this.player1.clickCard(this.kousuke);
+            this.player1.clickCard(this.scholar);
+            expect(this.player1).toHavePromptButton('Turn it into Honored');
+            this.player1.clickPrompt('Turn it into Honored');
+            expect(this.scholar.isDishonored).toBe(false);
+            expect(this.scholar.isHonored).toBe(true);
+        });
+    });
+});

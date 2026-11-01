@@ -33,6 +33,7 @@ describe('Yuta', function() {
 
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 3 vs 2');
         });
 
         it('should react to winning an attack', function() {
@@ -44,8 +45,8 @@ describe('Yuta', function() {
                 defenders: [this.borderRider]
             });
 
-            let p1Fate = this.player1.fate;
-            let p2Fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
 
             this.noMoreActions();
             expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -69,6 +70,7 @@ describe('Yuta', function() {
             this.yuta.bow();
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a military conflict 2 vs 0');
         });
     });
 });

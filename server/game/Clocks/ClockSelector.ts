@@ -14,7 +14,7 @@ export enum ClockType {
     BYOYOMI = 'byoyomi'
 }
 
-export type ClockConfig = { type: ClockType; time: 0; periods: 0; timePeriod: 0 };
+export type ClockConfig = { type: ClockType; time: number; periods: number; timePeriod: number };
 
 export function clockFor(player: Player, details?: ClockConfig): ClockInterface {
     const time = (details?.time ?? 0) * 60;

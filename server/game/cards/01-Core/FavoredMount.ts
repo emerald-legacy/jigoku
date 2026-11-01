@@ -1,23 +1,23 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { addTrait } from '../../effects.js';
 
 class FavoredMount extends DrawCard {
     static id = 'favored-mount';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
         this.whileAttached({
-            effect: ability.effects.addTrait('cavalry')
+            effect: addTrait(Trait.Cavalry)
         });
 
-        this.action({
-            title: 'Move this character into the conflict',
-            cost: ability.costs.bowSelf(),
-            gameAction: ability.actions.moveToConflict(context => ({ target: context.source.parentCharacter }))
-        });
+        this.action('Move this character into the conflict')
+            .cost(costs.bowSelf())
+            .moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] }));
     }
 }
 

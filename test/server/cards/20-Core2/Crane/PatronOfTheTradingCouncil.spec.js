@@ -56,11 +56,11 @@ describe('Patron of the Trading Council', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['patron-of-the-trading-council'],
-                        conflictDiscard: ['fine-katana', 'assassination']
+                        conflictDiscard: ['banzai', 'fine-katana', 'assassination']
                     },
                     player2: {
                         inPlay: [],
-                        conflictDiscard: ['ornate-fan', 'watch-commander']
+                        conflictDiscard: ['let-go', 'ornate-fan', 'watch-commander']
                     }
                 });
 
@@ -69,11 +69,19 @@ describe('Patron of the Trading Council', function () {
                 this.player1.reduceDeckToNumber('conflict deck', 0);
                 this.player2.reduceDeckToNumber('conflict deck', 0);
 
+                this.banzai = this.player1.moveCard('banzai', 'conflict deck');
                 this.katana = this.player1.moveCard('fine-katana', 'conflict deck');
                 this.assassination = this.player1.moveCard('assassination', 'conflict deck');
 
+                this.letGo = this.player2.moveCard('let-go', 'conflict deck');
                 this.fan = this.player2.moveCard('ornate-fan', 'conflict deck');
                 this.commander = this.player2.moveCard('watch-commander', 'conflict deck');
+            });
+
+            it('should say that player1 reveals the top 2 cards of each deck', function () {
+                this.player1.clickCard(this.patron);
+                expect(this.getChatLogs(3)).toContain('player1 reveals the top 2 cards of their conflict deck: Assassination and Fine Katana');
+                expect(this.getChatLogs(3)).toContain('player1 reveals the top 2 cards of player2\'s conflict deck: Watch Commander and Ornate Fan');
             });
 
             it('should prompt to choose a card for yourself', function () {
@@ -101,13 +109,16 @@ describe('Patron of the Trading Council', function () {
                 expect(this.commander.location).toBe('hand');
             });
 
-            it('should shuffle the decks', function () {
+            it('should put the other cards on the bottom of the decks', function () {
                 this.player1.clickCard(this.patron);
                 this.player1.clickPrompt('Assassination');
                 this.player1.clickPrompt('Watch Commander');
 
-                expect(this.getChatLogs(10)).toContain('player1 is shuffling their conflict deck');
-                expect(this.getChatLogs(10)).toContain('player2 is shuffling their conflict deck');
+                expect(this.player1.conflictDeck).toEqual([this.banzai, this.katana]);
+                expect(this.player2.conflictDeck).toEqual([this.letGo, this.fan]);
+                expect(this.getChatLogs(10)).not.toContain('player1 is shuffling their conflict deck');
+                expect(this.getChatLogs(10)).toContain('player1 puts 1 card on the bottom of their conflict deck');
+                expect(this.getChatLogs(10)).toContain('player2 puts 1 card on the bottom of their conflict deck');
             });
         });
     });

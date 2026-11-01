@@ -1,19 +1,16 @@
-import { GameModes } from '../../GameModes.js';
-import { Location } from '../Constants.js';
-import { randomItem } from '../utils/helpers.js';
-import type BaseCard from '../BaseCard.js';
+import { Location, Phase } from '../Constants.js';
+import { randomItem } from '../utils/random.js';
 import type Game from '../Game.js';
-import { Phase } from './Phase.js';
+import { PhaseStep } from './PhaseStep.js';
 import { SimpleStep } from './SimpleStep.js';
-import MulliganConflictPrompt from './setup/MulliganConflictPrompt.js';
-import MulliganDynastyPrompt from './setup/MulliganDynastyPrompt.js';
-import SetupProvincesPrompt from './setup/SetupProvincesPrompt.js';
+import { MulliganConflictPrompt } from './setup/MulliganConflictPrompt.js';
+import { MulliganDynastyPrompt } from './setup/MulliganDynastyPrompt.js';
+import { SetupProvincesPrompt } from './setup/SetupProvincesPrompt.js';
 
-export class SetupPhase extends Phase {
+export class SetupPhase extends PhaseStep {
     constructor(game: Game) {
-        const name = 'setup';
-        super(game, name);
-        this.game.currentPhase = name;
+        super(game, Phase.Setup);
+        this.game.currentPhase = Phase.Setup;
         this.pipeline.initialise([
             new SimpleStep(game, () => this.setupBegin()),
             new SimpleStep(game, () => this.chooseFirstPlayer()),
@@ -23,6 +20,7 @@ export class SetupPhase extends Phase {
             new MulliganDynastyPrompt(game),
             new SimpleStep(game, () => this.drawStartingHands()),
             new MulliganConflictPrompt(game),
+            new SimpleStep(game, () => this.turnProvinceCardsFacedown()),
             new SimpleStep(game, () => this.startGame())
         ]);
     }
@@ -45,6 +43,7 @@ export class SetupPhase extends Phase {
             firstPlayer.stronghold?.stealFirstPlayerDuringSetupWithMsg &&
             !opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
         ) {
+            this.game.setFirstPlayer(firstPlayer);
             return;
         }
 
@@ -52,31 +51,33 @@ export class SetupPhase extends Phase {
             !firstPlayer.stronghold?.stealFirstPlayerDuringSetupWithMsg &&
             opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
         ) {
-            firstPlayer.firstPlayer = false;
-            opponent.firstPlayer = true;
-            this.game.addMessage(opponent.stronghold.stealFirstPlayerDuringSetupWithMsg, [
-                opponent
-            ]);
+            this.game.setFirstPlayer(opponent);
+            this.game.addMessage([opponent.stronghold.stealFirstPlayerDuringSetupWithMsg, [opponent]]);
             return;
         }
 
         this.game.promptWithHandlerMenu(firstPlayer, {
             activePromptTitle: 'You won the flip. Do you want to be:',
             source: 'Choose First Player',
-            choices: ['First Player', 'Second Player'],
-            handlers: [
-                () => {
-                    this.game.setFirstPlayer(firstPlayer);
+            options: [
+                {
+                    text: 'First Player',
+                    handler: () => {
+                        this.game.setFirstPlayer(firstPlayer);
+                    }
                 },
-                () => {
-                    this.game.setFirstPlayer(opponent);
+                {
+                    text: 'Second Player',
+                    handler: () => {
+                        this.game.setFirstPlayer(opponent);
+                    }
                 }
             ]
         });
     }
 
     attachStronghold() {
-        if(this.game.gameMode === GameModes.Skirmish) {
+        if(!this.game.rules.setupHaveStrongholds) {
             return;
         }
         for(const player of this.game.getPlayers()) {
@@ -90,11 +91,11 @@ export class SetupPhase extends Phase {
     }
 
     setupProvinces() {
-        if(this.game.gameMode === GameModes.Skirmish) {
+        if(!this.game.rules.setupHaveProvinceCards) {
             for(const player of this.game.getPlayers()) {
-                player.moveCard(player.provinceDeck[0], Location.ProvinceOne);
-                player.moveCard(player.provinceDeck[0], Location.ProvinceTwo);
-                player.moveCard(player.provinceDeck[0], Location.ProvinceThree);
+                for(const location of this.game.rules.setupNonStrongholdProvinces) {
+                    player.moveCard(player.provinceDeck[0], location);
+                }
                 player.hideProvinceDeck = true;
             }
         } else {
@@ -103,10 +104,7 @@ export class SetupPhase extends Phase {
     }
 
     fillProvinces() {
-        const provinces = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
-        if(this.game.gameMode !== GameModes.Skirmish) {
-            provinces.push(Location.ProvinceFour);
-        }
+        const provinces = this.game.rules.setupNonStrongholdProvinces;
         for(const player of this.game.getPlayers()) {
             for(const province of provinces) {
                 const card = player.dynastyDeck[0];
@@ -117,21 +115,32 @@ export class SetupPhase extends Phase {
             }
         }
 
-        for(const card of this.game.allCards as BaseCard[]) {
+        for(const card of this.game.allCards) {
             card.applyAnyLocationPersistentEffects();
         }
     }
 
     drawStartingHands() {
         for(const player of this.game.getPlayers()) {
-            player.drawCardsToHand(this.game.gameMode === GameModes.Skirmish ? 3 : 4);
+            player.drawCardsToHand(this.game.rules.setupStartingHandSize);
+        }
+    }
+
+    // each player looks at their province cards (and the mulligan's replacements) until both conflict mulligans are done
+    turnProvinceCardsFacedown() {
+        for(const player of this.game.getPlayers()) {
+            for(const location of this.game.getProvinceArray(false)) {
+                player.getDynastyCardsInProvince(location).forEach((card) => {
+                    card.facedown = true;
+                });
+            }
         }
     }
 
     startGame() {
         for(const player of this.game.getPlayers()) {
             const strongholdHonor = player.stronghold?.cardData.honor ?? 0;
-            player.honor = this.game.gameMode === GameModes.Skirmish ? 6 : strongholdHonor;
+            player.honor = this.game.rules.setupFixedStartingHonor ?? strongholdHonor;
             player.readyToStart = true;
         }
         this.endPhase();

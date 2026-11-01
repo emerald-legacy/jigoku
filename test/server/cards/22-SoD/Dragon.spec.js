@@ -85,7 +85,7 @@ describe('SoD - Dragon', function () {
 
             it('should prompt opponent to pick a card', function () {
                 this.player1.clickCard(this.night);
-                let deck = this.player1.conflictDeck.length;
+                const deck = this.player1.conflictDeck.length;
 
                 expect(this.player1).toHavePrompt('Choose two conflict cards');
                 expect(this.player1).not.toBeAbleToSelect(this.singer);
@@ -149,7 +149,7 @@ describe('SoD - Dragon', function () {
                     defenders: [this.yokuni]
                 });
 
-                const mil = this.monk.getMilitarySkill();
+                const mil = this.monk.militarySkill;
                 const fate = this.player1.fate;
 
                 this.player2.pass();
@@ -165,7 +165,7 @@ describe('SoD - Dragon', function () {
                 this.player1.clickRing('fire');
 
                 expect(this.player1.fate).toBe(fate + 5);
-                expect(this.monk.getMilitarySkill()).toBe(mil + 2);
+                expect(this.monk.militarySkill).toBe(mil + 2);
 
                 expect(this.game.rings.fire.conflictType).toBe('military');
                 expect(this.game.rings.fire.fate).toBe(0);
@@ -211,7 +211,7 @@ describe('SoD - Dragon', function () {
                 this.player1.clickCard(this.monk);
                 this.player1.clickCard(this.yokuni);
 
-                expect(this.yokuni.getMilitarySkill()).toBe(1);
+                expect(this.yokuni.militarySkill).toBe(1);
                 expect(this.yokuni.fate).toBe(1);
 
                 expect(this.getChatLogs(5)).toContain('player1 plays The Hundred Hand Strike to give Togashi Yokuni -4military and -4political');
@@ -233,7 +233,7 @@ describe('SoD - Dragon', function () {
                 this.player1.clickCard(this.monk);
                 this.player1.clickCard(this.yokuni);
 
-                expect(this.yokuni.getMilitarySkill()).toBe(0);
+                expect(this.yokuni.militarySkill).toBe(0);
                 expect(this.yokuni.fate).toBe(0);
 
                 expect(this.getChatLogs(5)).toContain('player1 plays The Hundred Hand Strike to give Togashi Yokuni -6military and -6political');
@@ -256,7 +256,7 @@ describe('SoD - Dragon', function () {
                 this.player1.clickCard(this.monk);
                 this.player1.clickCard(this.yokuni);
 
-                expect(this.yokuni.getMilitarySkill()).toBe(3);
+                expect(this.yokuni.militarySkill).toBe(3);
                 expect(this.yokuni.fate).toBe(0);
 
                 expect(this.getChatLogs(5)).toContain('player1 plays The Hundred Hand Strike to give Togashi Yokuni -2military and -2political');
@@ -369,7 +369,7 @@ describe('SoD - Dragon', function () {
             });
 
             it('holding', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.player.showBid = 1;
                 this.player2.player.showBid = 5;
 
@@ -431,3 +431,185 @@ describe('SoD - Dragon', function () {
     });
 });
 
+describe('Tattooed Man and costs', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['tattooed-man', 'ascetic-visionary-2', 'venerable-fortunist']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.tattooedMan = this.player1.findCardByName('tattooed-man');
+            this.visionary = this.player1.findCardByName('ascetic-visionary-2');
+            this.fortunist = this.player1.findCardByName('venerable-fortunist');
+        });
+
+        it('does not ready when fate is spent to a ring as a cost (costs are not effects)', function () {
+            this.tattooedMan.bow();
+            this.fortunist.bow();
+            this.noMoreActions();
+            this.initiateConflict({ attackers: [this.visionary], defenders: [] });
+            this.player2.pass();
+            this.player1.clickCard(this.visionary);
+            this.player1.clickCard(this.fortunist);
+            this.player1.clickRing('fire');
+            expect(this.fortunist.bowed).toBe(false);
+            expect(this.game.rings.fire.fate).toBe(1);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.tattooedMan.bowed).toBe(true);
+        });
+    });
+});
+
+describe('Road to Shakyaku Mura restrictions', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker', 'hida-sugi', 'shrine-maiden'],
+                    hand: ['fine-katana', 'assassination'],
+                    dynastyDiscard: ['road-to-shakyaku-mura']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['assassination', 'fine-katana']
+                }
+            });
+
+            this.road = this.player1.findCardByName('road-to-shakyaku-mura');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.sugi = this.player1.findCardByName('hida-sugi');
+            this.maiden = this.player1.findCardByName('shrine-maiden');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.p1Assassination = this.player1.findCardByName('assassination');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.assassination = this.player2.findCardByName('assassination');
+            this.p2Katana = this.player2.findCardByName('fine-katana');
+        });
+
+        it('does not trigger for a unique character', function () {
+            this.player1.moveCard(this.road, 'province 1');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker, this.sugi],
+                defenders: []
+            });
+            this.player2.clickCard(this.assassination);
+            this.player2.clickCard(this.sugi);
+            expect(this.sugi.location).toBe('dynasty discard pile');
+            expect(this.road.location).toBe('province 1');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+
+        it('does not trigger for a character an opponent controls', function () {
+            this.player1.moveCard(this.road, 'province 1');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.p1Assassination);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.location).toBe('dynasty discard pile');
+            expect(this.road.location).toBe('province 1');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+
+        it('discards a conflict character instead and still returns its attachments to hand', function () {
+            this.player1.moveCard(this.road, 'province 1');
+            this.player1.playAttachment(this.katana, this.maiden);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker, this.maiden],
+                defenders: []
+            });
+            this.player2.clickCard(this.assassination);
+            this.player2.clickCard(this.maiden);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.road);
+            this.player1.clickCard(this.road);
+            expect(this.road.location).toBe('dynasty discard pile');
+            expect(this.maiden.location).toBe('conflict discard pile');
+            expect(this.katana.location).toBe('hand');
+            expect(this.getChatLogs(5)).toContain('Shrine Maiden is discarded instead since it can\'t enter a province legally!');
+        });
+
+        it('returns an attachment to its owner\'s hand', function () {
+            this.player1.moveCard(this.road, 'province 1');
+            this.player1.pass();
+            this.player2.playAttachment(this.p2Katana, this.berserker);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.player2.clickCard(this.assassination);
+            this.player2.clickCard(this.berserker);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.road);
+            expect(this.berserker.location).toBe('province 1');
+            expect(this.p2Katana.location).toBe('hand');
+            expect(this.player2.hand).toContain(this.p2Katana);
+            expect(this.player1.hand).not.toContain(this.p2Katana);
+        });
+
+        it('puts the character into the Road\'s own province', function () {
+            this.player1.moveCard(this.road, 'province 2');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.player2.clickCard(this.assassination);
+            this.player2.clickCard(this.berserker);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.road);
+            expect(this.berserker.location).toBe('province 2');
+            expect(this.road.location).toBe('dynasty discard pile');
+            expect(this.getChatLogs(5)).toContain('player1 uses Road to Shakyaku Mura, sacrificing Road to Shakyaku Mura to prevent Matsu Berserker from leaving play, putting it into province 2 instead');
+        });
+    });
+});
+
+describe('Tattooed Man and an opponent\'s card effect', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['tattooed-man']
+                },
+                player2: {
+                    stronghold: 'temple-of-the-fivefold-path',
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.tattooedMan = this.player1.findCardByName('tattooed-man');
+            this.temple = this.player2.findCardByName('temple-of-the-fivefold-path');
+        });
+
+        it('does not ready when an opponent\'s card effect places fate on a ring', function () {
+            this.tattooedMan.bow();
+            this.player1.pass();
+            this.player2.clickCard(this.temple);
+            this.player2.clickRing('air');
+            expect(this.game.rings.air.fate).toBe(1);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.tattooedMan.bowed).toBe(true);
+        });
+    });
+});

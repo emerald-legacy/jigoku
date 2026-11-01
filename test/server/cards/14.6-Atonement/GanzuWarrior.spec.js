@@ -54,7 +54,7 @@ describe('Ganzu Warrior', function () {
                 province: this.fortress
             });
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player1.clickCard(this.ganzu);
             expect(this.player1).toBeAbleToSelectRing('air');
@@ -77,6 +77,8 @@ describe('Ganzu Warrior', function () {
                 province: this.fortress
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.fortress.facedown).toBe(false);
+            expect(this.player2).toHavePrompt('Choose defenders');
         });
 
         it('should activate when a province is revealed mid-conflict', function () {

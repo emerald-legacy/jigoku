@@ -1,8 +1,9 @@
+import { msg } from '../GameChat.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 
-class GameWonPrompt extends AllPlayerPrompt {
+export class GameWonPrompt extends AllPlayerPrompt {
     winner: Player;
     clickedButton: Record<string, boolean>;
 
@@ -12,11 +13,11 @@ class GameWonPrompt extends AllPlayerPrompt {
         this.clickedButton = {};
     }
 
-    completionCondition(player: Player): boolean {
+    override completionCondition(player: Player): boolean {
         return !!this.clickedButton[player.name];
     }
 
-    activePrompt() {
+    override activePrompt() {
         return {
             promptTitle: 'Game Won',
             menuTitle: this.winner.name + ' has won the game!',
@@ -24,12 +25,12 @@ class GameWonPrompt extends AllPlayerPrompt {
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to choose to continue' };
     }
 
-    menuCommand(player: Player): boolean {
-        this.game.addMessage('{0} wants to continue', player);
+    override menuCommand(player: Player): boolean {
+        this.game.addMessage(msg`${player} wants to continue`);
 
         this.clickedButton[player.name] = true;
 
@@ -37,4 +38,3 @@ class GameWonPrompt extends AllPlayerPrompt {
     }
 }
 
-export default GameWonPrompt;

@@ -52,7 +52,7 @@ describe('Ikoma Message Runner', function() {
                 expect(this.ikomaProdigy.facedown).toBe(true);
                 expect(this.berserker.facedown).toBe(true);
 
-                expect(this.getChatLogs(4)).toContain('player2 uses Ikoma Message Runner to reveal up to 1 facedown card in each player\'s provinces. Matsu Tsuko is revealed in player2\'s province 2. Akodo Toturi is revealed in player1\'s province 2.');
+                expect(this.getChatLogs(4)).toContain('player2 uses Ikoma Message Runner to reveal up to 1 facedown card in each player\'s provinces. Matsu Tsuko is revealed in player2\'s province 2. Akodo Toturi is revealed in player1\'s province 2');
             });
 
             it('having no facedown cards should not prevent activating it.', function() {
@@ -90,8 +90,35 @@ describe('Ikoma Message Runner', function() {
                 expect(this.tsuko.facedown).toBe(false);
                 expect(this.ikomaProdigy.facedown).toBe(true);
                 expect(this.berserker.facedown).toBe(false);
-                expect(this.getChatLogs(4)).toContain('player2 uses Ikoma Message Runner to reveal up to 1 facedown card in each player\'s provinces. Akodo Toturi is revealed in player1\'s province 2.');
+                expect(this.getChatLogs(4)).toContain('player2 uses Ikoma Message Runner to reveal up to 1 facedown card in each player\'s provinces. Akodo Toturi is revealed in player1\'s province 2');
             });
+        });
+    });
+});
+
+describe('Ikoma Message Runner with nothing to turn faceup', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player2: {
+                    inPlay: ['ikoma-message-runner']
+                }
+            });
+            this.runner = this.player2.findCardByName('ikoma-message-runner');
+            for(const player of [this.player1, this.player2]) {
+                for(const location of ['province 1', 'province 2', 'province 3', 'province 4']) {
+                    for(const card of player.player.getDynastyCardsInProvince(location)) {
+                        card.facedown = false;
+                    }
+                }
+            }
+        });
+
+        it('cannot be used when no facedown card can be turned faceup', function() {
+            this.player1.pass();
+            this.player2.clickCard(this.runner);
+            expect(this.player2).toHavePrompt('Action Window');
         });
     });
 });

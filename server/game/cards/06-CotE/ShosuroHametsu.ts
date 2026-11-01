@@ -1,22 +1,21 @@
 import DrawCard from '../../DrawCard.js';
-import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Location, Trait } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 
 class ShosuroHametsu extends DrawCard {
     static id = 'shosuro-hametsu';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Search conflict deck for a poison card',
-            cost: AbilityDsl.costs.payHonor(1),
-            effect: 'search conflict deck to reveal a poison card and add it to their hand',
-            gameAction: AbilityDsl.actions.deckSearch({
-                cardCondition: card => card.hasTrait('poison'),
-                gameAction: AbilityDsl.actions.moveCard({
+    override setupCardAbilities() {
+        this.action('Search conflict deck for a poison card')
+            .cost(costs.payHonor(1))
+            .deckSearch({
+                cardCondition: (card) => card.hasTrait(Trait.Poison),
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             })
-        });
+            .chatText('search conflict deck to reveal a poison card and add it to their hand');
     }
 }
 

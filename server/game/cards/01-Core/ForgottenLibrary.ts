@@ -1,18 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase } from '../../Constants.js';
 
 class ForgottenLibrary extends DrawCard {
     static id = 'forgotten-library';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Draw a card',
-            when: {
-                onPhaseStarted: event => event.phase === Phases.Draw
-            },
-            gameAction: ability.actions.draw()
-        });
+    override setupCardAbilities() {
+        this.reaction('Draw a card')
+            .when({
+                onPhaseStarted: (event) => event.phase === Phase.Draw
+            })
+            .draw();
     }
 }
 

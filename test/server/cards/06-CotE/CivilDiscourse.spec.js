@@ -96,7 +96,7 @@ describe('Civil Discourse', function() {
                 this.player2.clickCard(this.fineKatana);
                 this.player2.clickCard(this.agashaSwordsmith);
                 expect(this.player2.player.fate).toBe(player2fate - 1);
-                let player1fate = this.player1.player.fate;
+                const player1fate = this.player1.player.fate;
                 this.player1.clickCard(this.banzai);
                 this.player1.clickCard(this.dojiChallenger);
                 this.player1.clickPrompt('Done');

@@ -35,6 +35,7 @@ describe('Fight On', function() {
 
             it('should not be able to select an opponents character', function() {
                 expect(this.player2).not.toBeAbleToSelect(this.vaguardWarrior);
+                expect(this.player2).toBeAbleToSelect(this.borderlandsDefender);
             });
         });
     });

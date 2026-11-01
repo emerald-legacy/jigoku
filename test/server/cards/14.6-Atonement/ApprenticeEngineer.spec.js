@@ -88,7 +88,7 @@ describe('Apprentice Engineer', function() {
             this.player1.clickCard(this.storehouse);
             this.player1.clickCard(this.sd1);
             this.player2.pass();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.storehouse);
             expect(this.player1.hand.length).toBe(hand + 1);
         });
@@ -99,6 +99,8 @@ describe('Apprentice Engineer', function() {
             this.player1.clickCard(this.engineer);
             this.player1.clickPrompt('0');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.engineer.location).toBe('play area');
+            expect(this.player2).toHavePrompt('Action Window');
         });
 
         it('chat messages', function() {

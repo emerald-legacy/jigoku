@@ -1,49 +1,51 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { ConflictType, EventName } from '../Constants.js';
+import { type ConflictType, EventName, RestrictionType } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
+import type { ActionEvent } from './GameAction.js';
+import { takeAllFateFromRing } from './TakeFateFromRingAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface ClaimRingProperties extends RingActionProperties {
     takeFate?: boolean;
-    type?: string;
+    /** The side the ring is put in the claimed pool with. */
+    conflictType: ConflictType;
+    /** The conflict's own claim: the ring stays contested while the claim resolves, and the rules reset it afterwards. */
+    staysContested?: boolean;
 }
 
-export class ClaimRingAction extends RingAction<ClaimRingProperties, EventName.OnClaimRing> {
-    name = 'claimRing';
-    eventName = EventName.OnClaimRing;
-    effect = 'claim {0}';
-    defaultProperties: ClaimRingProperties = { takeFate: true, type: ConflictType.Military };
+export class ClaimRingAction<Context extends AbilityContext = AbilityContext> extends RingAction<ClaimRingProperties, EventName.OnClaimRing, Context, 'takeFate' | 'staysContested'> {
+    override name = 'claimRing';
+    override eventName = EventName.OnClaimRing;
+    override effect = 'claim {0}';
+    override defaultProperties = { takeFate: true, staysContested: false };
 
-    canAffect(ring: Ring, context: AbilityContext): boolean {
-        if(!context.player.checkRestrictions('claimRings', context)) {
+    override canAffect(ring: Ring, context: Context): boolean {
+        if(!context.player.checkRestrictions(RestrictionType.ClaimRings, context)) {
             return false;
         }
 
-        return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
+        return !ring.isRemovedFromGame() && !ring.isClaimedBy(context.player) && super.canAffect(ring, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnClaimRing>, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context as AbilityContext;
-        let { takeFate, type } = this.getProperties(context, additionalProperties) as ClaimRingProperties;
-        let ring = event.ring as Ring;
-        ring.contested = false;
-        ring.conflictType = type as ConflictType;
-        if(takeFate && ring.fate > 0 && context.player.checkRestrictions('takeFateFromRings', context)) {
-            context.game.addMessage('{0} takes {1} fate from {2}', context.player, ring.fate, ring);
-            let fate = ring.fate;
-            context.player.modifyFate(ring.fate);
-            ring.removeFate();
-            context.game.raiseEvent(EventName.OnMoveFate, {
-                fate: fate,
-                origin: ring,
-                context: context,
-                recipient: context.player
-            });
-        }
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnClaimRing, Context>, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): void {
+        super.addPropertiesToEvent(event, ring, context, additionalProperties);
+        // set before the handler: Henshin Mysteries cancels the claim of a conflict's ring
         event.player = context.player;
         event.conflict = context.game.currentConflict ?? undefined;
-        event.ring = ring;
+    }
+
+    override eventHandler(event: ActionEvent<EventName.OnClaimRing, Context>, additionalProperties: ActionOverrides = {}): void {
+        const context = event.context;
+        const { takeFate, conflictType, staysContested } = this.getProperties(context, additionalProperties);
+        const ring = event.ring;
+        if(!staysContested) {
+            ring.contested = false;
+        }
+        ring.conflictType = conflictType;
+        if(takeFate) {
+            context.game.openThenEventWindow(takeAllFateFromRing(ring, context));
+        }
         ring.claimRing(context.player);
     }
 }

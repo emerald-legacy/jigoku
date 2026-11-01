@@ -1,34 +1,30 @@
-import { Duration } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import type Player from '../../../Player.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot } from '../../../effects.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Players, RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class AshenFlamePlateau extends ProvinceCard {
     static id = 'ashen-flame-plateau';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Prevent opponent from triggering character abilities',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Prevent opponent from triggering character abilities')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
-            },
-            effect: 'prevent {1} from triggering character abilities this conflict',
-            effectArgs: (context) => [context.player.opponent as Player],
-            gameAction: AbilityDsl.actions.conflictLastingEffect((context) => ({
-                duration: Duration.UntilEndOfConflict,
+            })
+            .conflictLastingEffect({
+                targetController: Players.Opponent,
+                match: (card) => card.type === CardType.Character,
                 effect: [
-                    AbilityDsl.effects.charactersCannot({
-                        cannot: 'triggerAbilities',
-                        restricts: 'opponentsCharacters',
-                        applyingPlayer: context.player
+                    cardCannot({
+                        cannot: RestrictionType.TriggerAbilities,
+                        appliesTo: RestrictionScope.NonForcedAbilities
                     }),
-                    AbilityDsl.effects.charactersCannot({
-                        cannot: 'initiateKeywords',
-                        restricts: 'opponentsCharacters',
-                        applyingPlayer: context.player
+                    cardCannot({
+                        cannot: RestrictionType.InitiateKeywords,
+                        appliesTo: RestrictionScope.KeywordAbilities
                     })
                 ]
-            }))
-        });
+            })
+            .chatText((context) => msg`prevent ${context.player.opponent} from triggering character abilities this conflict`);
     }
 }

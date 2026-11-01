@@ -1,25 +1,23 @@
 import type { AbilityContext } from '../AbilityContext.js';
 
-export class EffectValue<V> {
-    value: V;
-    context: AbilityContext = {} as AbilityContext;
-
-    constructor(value: V) {
-        // @ts-expect-error -- defaults to true when value is nullish; V may not include boolean but this is intentional for the effect system
-        this.value = value === null || value === undefined ? true : value;
-    }
+/** What a static effect holds: resolves to `Value` and hooks into apply/unapply on targets of type `Target`. */
+export abstract class EffectValueBase<Value, Target = unknown> {
+    // set by the effect before it applies; a holder applied on its own has none
+    context?: AbilityContext;
 
     public setContext(context: AbilityContext): void {
         this.context = context;
     }
 
-    public setValue(value: V) {
-        this.value = value;
+    /** For reads that only happen once the effect has set the context. */
+    public requireContext(): AbilityContext {
+        if(!this.context) {
+            throw new Error('Effect value read before its context was set');
+        }
+        return this.context;
     }
 
-    public getValue(): V {
-        return this.value;
-    }
+    public abstract getValue(): Value;
 
     public recalculate(): boolean {
         return false;
@@ -27,7 +25,34 @@ export class EffectValue<V> {
 
     public reset(): void {}
 
-    public apply(_target: unknown): void {}
+    /** The holder for one effect. Effects made from one factory share the factory's holder unless this copies it. */
+    public copyForEffect(): EffectValueBase<Value, Target> {
+        return this;
+    }
 
-    public unapply(_target: unknown): void {}
+    /** A holder to apply to this target instead of this one. */
+    public copyForTarget(): EffectValueBase<Value, Target> | undefined {
+        return undefined;
+    }
+
+    public apply(_target: Target): void {}
+
+    public unapply(_target: Target): void {}
+}
+
+export class EffectValue<Value, Target = unknown> extends EffectValueBase<Value, Target> {
+    value: Value;
+
+    constructor(value: Value) {
+        super();
+        this.value = value;
+    }
+
+    public setValue(value: Value) {
+        this.value = value;
+    }
+
+    public getValue(): Value {
+        return this.value;
+    }
 }

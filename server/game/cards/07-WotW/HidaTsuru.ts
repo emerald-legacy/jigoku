@@ -1,33 +1,27 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { unlimited } from '../../AbilityLimit.js';
+import { modifyBothSkills } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventName } from '../../Constants.js';
 class HidaTsuru extends DrawCard {
     static id = 'hida-tsuru';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Give this character +1/+1',
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Give this character +1/+1')
+            .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()
-            },
-            effect: 'give him +1{1}/+1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(1) })
-        });
+            })
+            .cardLastingEffect({ effect: modifyBothSkills(1) })
+            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
+            .limit(unlimited());
 
-        this.reaction({
-            title: 'Give this character +1/+1',
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            when: {
-                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context) => event.card.isParticipating() && context.source.isParticipating()
-            },
-            effect: 'give him +1{1}/+1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(1) })
-        });
+        this.reaction('Give this character +1/+1')
+            .when({
+                onCardPlayed: (event, context) => event.card.isParticipating() && context.source.isParticipating()
+            })
+            .cardLastingEffect({ effect: modifyBothSkills(1) })
+            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
+            .limit(unlimited());
     }
 }
 

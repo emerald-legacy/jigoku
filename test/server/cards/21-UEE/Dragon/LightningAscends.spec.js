@@ -45,21 +45,62 @@ describe('Lightning Ascends', function () {
                 defenders: [this.solemnScholar]
             });
             this.player2.pass();
-            let currentMilitarySkill = this.itinerantPhilosopher.getMilitarySkill();
-            let currentPoliticalSkill = this.itinerantPhilosopher.getPoliticalSkill();
+            const currentMilitarySkill = this.itinerantPhilosopher.militarySkill;
+            const currentPoliticalSkill = this.itinerantPhilosopher.politicalSkill;
 
             this.player1.clickCard(this.lightningAscends);
             this.player1.clickCard(this.itinerantPhilosopher);
             this.player1.clickCard(this.solemnScholar);
 
-            expect(this.itinerantPhilosopher.getMilitarySkill()).toBe(currentMilitarySkill + 2);
-            expect(this.itinerantPhilosopher.getPoliticalSkill()).toBe(currentPoliticalSkill);
+            expect(this.itinerantPhilosopher.militarySkill).toBe(currentMilitarySkill + 2);
+            expect(this.itinerantPhilosopher.politicalSkill).toBe(currentPoliticalSkill);
 
-            expect(this.solemnScholar.getTraitSet().size).toBe(0);
+            expect(this.solemnScholar.getTraits().size).toBe(0);
 
             expect(this.getChatLogs(3)).toContain(
-                'player1 plays Lightning Ascends to grant +2 military to Itinerant Philosopher and removes all traits from Solemn Scholar'
+                'player1 plays Lightning Ascends to grant +2 military to Itinerant Philosopher and remove all traits from Solemn Scholar'
             );
+        });
+    });
+});
+
+describe('Lightning Ascends on a character with a gained trait', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['itinerant-philosopher'],
+                    hand: ['lightning-ascends']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'kakita-mio']
+                }
+            });
+            this.philosopher = this.player1.findCardByName('itinerant-philosopher');
+            this.lightningAscends = this.player1.findCardByName('lightning-ascends');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.mio = this.player2.findCardByName('kakita-mio');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.philosopher],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.mio);
+            this.player2.clickCard(this.scholar);
+            expect(this.scholar.hasTrait('shadowlands')).toBe(true);
+        });
+
+        it('should remove the gained trait too', function () {
+            this.player1.clickCard(this.lightningAscends);
+            this.player1.clickCard(this.philosopher);
+            this.player1.clickCard(this.scholar);
+            expect(this.lightningAscends.location).toBe('conflict discard pile');
+            expect(this.scholar.hasTrait('scholar')).toBe(false);
+            expect(this.scholar.hasTrait('shadowlands')).toBe(false);
+            expect(this.scholar.getTraits().size).toBe(0);
         });
     });
 });

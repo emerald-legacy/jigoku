@@ -1,28 +1,24 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityType, CardType } from '../../../Constants.js';
+import { gainAbility } from '../../../effects.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
+import { CardType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
 
 export default class TruthBurnsThroughLies extends DrawCard {
     static id = 'truth-burns-through-lies';
 
-    setupCardAbilities() {
-        this.attachmentConditions({ trait: ['courtier', 'magistrate'] });
+    override setupCardAbilities() {
+        this.attachmentConditions({ trait: [Trait.Courtier, Trait.Magistrate] });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Dishonor a character',
-                condition: (context) => context.source.isParticipating(),
-                target: {
+            effect: gainAbility.conflictAction('Dishonor a character', (ability) => ability
+                .target({
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         card.isParticipating() &&
-                        (context.source.hasTrait('magistrate')
-                            ? (card.printedCost ?? 0) <= (context.source.printedCost ?? 0)
-                            : (card.printedCost ?? 0) < (context.source.printedCost ?? 0)),
-                    gameAction: AbilityDsl.actions.dishonor()
-                }
-            } as ActionProps<this>)
+                        (context.source.hasTrait(Trait.Magistrate)
+                            ? card.costAtMost(context.source.getCost())
+                            : card.costLessThan(context.source.getCost()))
+                }, dishonor()))
         });
     }
 }

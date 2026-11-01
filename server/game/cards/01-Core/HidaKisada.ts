@@ -1,66 +1,57 @@
-import { AbilityType, CardType, EventName, Location } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { AbilityType, CardType, EffectName, EventName, Players } from '../../Constants.js';
+import { EffectBuilder } from '../../Effects/EffectBuilder.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { Event } from '../../Events/Event.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
-import type CardAbility from '../../CardAbility.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class HidaKisada extends DrawCard {
     static id = 'hida-kisada';
 
-    private abilityRegistrar?: EventRegistrar;
     private firstActionEvent = new Map<string, Event>();
 
-    public setupCardAbilities() {
-        this.abilityRegistrar = new EventRegistrar(this.game, this);
-        this.abilityRegistrar.register([
-            {
-                [EventName.OnInitiateAbilityEffects + ':' + AbilityType.WouldInterrupt]:
-                    'onInitiateAbilityEffectsWouldInterrupt'
-            }
-        ]);
-        this.abilityRegistrar.register([
-            {
-                [EventName.OnInitiateAbilityEffects + ':' + AbilityType.OtherEffects]:
-                    'onInitiateAbilityEffectsOtherEffects'
-            }
-        ]);
-        this.abilityRegistrar.register([EventName.OnConflictDeclared]);
+    public override setupCardAbilities() {
+        // bookkeeping only, so a copy of the ability knows which action came first
+        const registrar = new EventRegistrar(this.game);
+        registrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.WouldInterrupt, (event) => this.recordFirstAction(event));
+        registrar.register({
+            [EventName.OnConflictDeclared]: () => this.firstActionEvent.clear()
+        });
+
+        this.persistentEffect({
+            targetController: Players.Opponent,
+            effect: EffectBuilder.player.detached(EffectName.CancelFirstAction, {
+                apply: (player, context) => {
+                    const cancels = new EventRegistrar(this.game);
+                    cancels.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.OtherEffects, (event) => {
+                        if(
+                            event.context.player === player &&
+                            this.firstActionEvent.get(player.uuid) === event &&
+                            !event.cancelled &&
+                            !this.game.conflictRecord.some((conflict) => conflict.winner === context.player.opponent)
+                        ) {
+                            event.cancel();
+                            this.game.addMessage(msg`${player} attempts to initiate ${event.card}${event.card.type === CardType.Event ? '' : '\'s ability'}, but ${context.source} cancels it`);
+                        }
+                    });
+                    return cancels;
+                },
+                unapply: (_player, _context, cancels) => cancels.unregisterAll()
+            })
+        });
     }
 
-    public onInitiateAbilityEffectsWouldInterrupt(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
+    private recordFirstAction(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
         if(
+            !event.resolvedWithoutTriggering &&
             !this.firstActionEvent.has(event.context.player.uuid) &&
             this.game.isDuringConflict() &&
-            event.context.ability.abilityType === 'action' &&
+            event.context.ability.abilityType === AbilityType.Action &&
             !event.context.ability.isKeywordAbility() &&
-            !(event.context.ability as CardAbility).cannotBeCancelled
+            !event.context.ability.cannotBeCancelled
         ) {
             this.firstActionEvent.set(event.context.player.uuid, event);
         }
-    }
-
-    public onInitiateAbilityEffectsOtherEffects(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
-        if(
-            this.firstActionEvent.get(event.context.player.uuid) === event &&
-            event.context.player === this.controller.opponent &&
-            !event.cancelled &&
-            this.location === Location.PlayArea &&
-            !this.isBlank() &&
-            !this.game.conflictRecord.some((conflict) => conflict.winner === this.controller.opponent)
-        ) {
-            event.cancel();
-            this.game.addMessage(
-                '{0} attempts to initiate {1}{2}, but {3} cancels it',
-                event.context.player,
-                event.card,
-                event.card.type === CardType.Event ? '' : '\'s ability',
-                this
-            );
-        }
-    }
-
-    public onConflictDeclared() {
-        this.firstActionEvent.clear();
     }
 }

@@ -1,18 +1,15 @@
-import { CardType } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { ready } from '../../../GameActions/GameActions.js';
 
 export default class ForwardPatrol extends DrawCard {
     static id = 'forward-patrol';
 
-    setupCardAbilities() {
-        this.conflictAction({
-            title: 'Ready a character',
-            target: {
-                cardCondition: card => card.isParticipating() && card.hasTrait('bushi'),
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+    override setupCardAbilities() {
+        this.conflictAction('Ready a character')
+            .target({
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Bushi),
+                cardType: CardType.Character
+            }, ready());
     }
 }

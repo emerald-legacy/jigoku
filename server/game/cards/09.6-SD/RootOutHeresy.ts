@@ -1,53 +1,35 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, EventName, Location } from '../../Constants.js';
-import type { GameEvent } from '../../Events/EventPayloads.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { EventName, ConflictType } from '../../Constants.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class RootOutHeresy extends DrawCard {
     static id = 'root-out-heresy';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Discard a card at random from your oppoent\'s hand',
-            condition: () => this.game.isDuringConflict('political'),
-            gameAction: AbilityDsl.actions.discardAtRandom(context => ({ target: context.player.opponent })),
-            then: (context: AbilityContext) => ({
-                gameAction: AbilityDsl.actions.selectCard(({
-                    activePromptTitle: 'Choose an attacked province',
-                    hidePromptIfSingleCard: true,
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    cardCondition: (card: DrawCard) => card.isConflictProvince(),
-                    message: '{0} reduces the strength of {1} by {2}',
-                    messageArgs: (cards: DrawCard) => [context.player, cards, this.getStrengthModifier(context)],
-                    gameAction: AbilityDsl.actions.cardLastingEffect(() => {
-                        let amount = this.getStrengthModifier(context);
-                        return ({
-                            effect: AbilityDsl.effects.modifyProvinceStrength(amount)
-                        });
-                    })
+    override setupCardAbilities() {
+        this.action('Discard a card at random from your opponent\'s hand')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
+            .discardAtRandom()
+            .then()
+            .selectAttackedProvince((context) => ({
+                message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by ${-this.getStrengthModifier(context)}`,
+                gameAction: cardLastingEffect(() => ({
+                    effect: modifyProvinceStrength(this.getStrengthModifier(context))
                 }))
-            })
-        });
+            }));
     }
 
-    getStrengthModifier(context: AbilityContext) {
-        //Find the event
-        if(context.events) {
-            let event = context.events.find(a => a.name === 'onCardsDiscardedFromHand') as GameEvent<EventName.OnCardsDiscardedFromHand> | undefined;
-            if(event) {
-                if(event.discardedCards && event.discardedCards.length > 0) {
-                    //Grab the first one (this card should only discard one card)
-                    let card = event.discardedCards[0] as DrawCard;
-                    let cost = card.printedCost ?? 0;
-
-                    return -1 * cost;
-                }
-            }
+    /** The printed cost of the card discarded in the step before, as a strength reduction. */
+    private getStrengthModifier(context: AbilityContext) {
+        const event = context.previousEvents.find((event) => event.is(EventName.OnCardsDiscardedFromHand));
+        // this card only discards one card
+        const card = event?.discardedCards?.[0];
+        if(!card) {
+            return 0;
         }
-
-        return 0;
+        return -1 * (card.isDrawCard() ? card.printedCost ?? 0 : 0);
     }
 }
 

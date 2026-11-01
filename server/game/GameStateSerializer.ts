@@ -1,24 +1,12 @@
+import { Phase } from './Constants.js';
 import { AnonymousSpectator } from './AnonymousSpectator.js';
 import type Game from './Game.js';
 import type { GameState, SharedGameState } from './Game.js';
-import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
+import type Player from './Player.js';
 import type { PlayerState } from './Player.js';
-import type { GameSaveState, GameSummary, PlayerSummary } from '../gamenode/LobbyProtocol.js';
-
-interface DeckCardEntry {
-    count: number;
-    card?: { id: string };
-}
-
-export interface DeckForSaving {
-    faction: unknown;
-    conflictCards: DeckCardEntry[];
-    dynastyCards: DeckCardEntry[];
-    provinceCards?: DeckCardEntry[];
-    stronghold?: DeckCardEntry[];
-    role?: DeckCardEntry[];
-}
+import type { DeckDTO, GameSaveState, GameSummary, PlayerSummary } from '../gamenode/LobbyProtocol.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 export interface FormattedDeck {
     faction: unknown;
@@ -29,12 +17,21 @@ export interface FormattedDeck {
     role: string | undefined;
 }
 
+/** Hidden card identities from state `seq` on, until the next entry. */
+export interface HiddenInfoChange {
+    seq: number;
+    info: Record<string, unknown>;
+}
+
 export class GameStateSerializer {
     private lastHiddenInfoFingerprint = '';
+    private stateSeq = 0;
+    /** The replay covers the game up to and including the winning state; states after it aren't numbered. */
+    private hiddenInfoClosed = false;
 
     constructor(private readonly game: Game) {}
 
-    formatDeckForSaving(deck: DeckForSaving): FormattedDeck {
+    formatDeckForSaving(deck: DeckDTO): FormattedDeck {
         const result: FormattedDeck = {
             faction: {},
             conflictCards: [],
@@ -48,42 +45,36 @@ export class GameStateSerializer {
         result.faction = deck.faction;
 
         //conflict
-        deck.conflictCards.forEach((cardData: { count: number; card?: { id: string } }) => {
-            if(cardData && cardData.card) {
+        for(const cardData of deck.conflictCards ?? []) {
+            if(cardData.card) {
                 result.conflictCards.push(`${cardData.count}x ${cardData.card.id}`);
             }
-        });
+        }
 
         //dynasty
-        deck.dynastyCards.forEach((cardData: { count: number; card?: { id: string } }) => {
-            if(cardData && cardData.card) {
+        for(const cardData of deck.dynastyCards ?? []) {
+            if(cardData.card) {
                 result.dynastyCards.push(`${cardData.count}x ${cardData.card.id}`);
             }
-        });
+        }
 
         //provinces
-        if(deck.provinceCards) {
-            deck.provinceCards.forEach((cardData: { card?: { id: string } }) => {
-                if(cardData && cardData.card) {
-                    result.provinceCards.push(cardData.card.id);
-                }
-            });
+        for(const cardData of deck.provinceCards ?? []) {
+            if(cardData.card) {
+                result.provinceCards.push(cardData.card.id);
+            }
         }
 
         //stronghold & role
-        if(deck.stronghold) {
-            deck.stronghold.forEach((cardData: { card?: { id: string } }) => {
-                if(cardData && cardData.card) {
-                    result.stronghold = cardData.card.id;
-                }
-            });
+        for(const cardData of deck.stronghold ?? []) {
+            if(cardData.card) {
+                result.stronghold = cardData.card.id;
+            }
         }
-        if(deck.role) {
-            deck.role.forEach((cardData: { card?: { id: string } }) => {
-                if(cardData && cardData.card) {
-                    result.role = cardData.card.id;
-                }
-            });
+        for(const cardData of deck.role ?? []) {
+            if(cardData.card) {
+                result.role = cardData.card.id;
+            }
         }
 
         return result;
@@ -97,9 +88,9 @@ export class GameStateSerializer {
             honor: player.getTotalHonor(),
             lostProvinces: player
                 .getProvinceCards()
-                .reduce((count: number, card) => (card && card.isBroken ? count + 1 : count), 0),
-            deck: this.formatDeckForSaving(player.deck as DeckForSaving),
-            deckId: player.deck?._id?.toString()
+                .reduce((count: number, card) => (card.isBroken ? count + 1 : count), 0),
+            deck: this.formatDeckForSaving(player.deck),
+            deckId: player.deck._id === undefined || player.deck._id === null ? undefined : String(player.deck._id)
         }));
 
         return {
@@ -123,7 +114,7 @@ export class GameStateSerializer {
         }
 
         let conflictState: Record<string, unknown> = {};
-        if(game.currentPhase === 'conflict' && game.currentConflict) {
+        if(game.currentPhase === Phase.Conflict && game.currentConflict) {
             conflictState = game.currentConflict.getSummary();
         }
 
@@ -150,7 +141,7 @@ export class GameStateSerializer {
 
     getState(activePlayerName?: string, sharedState?: SharedGameState | null): GameState | GameSummary | undefined {
         const game = this.game;
-        const activePlayer = (activePlayerName && game.playersAndSpectators[activePlayerName]) || new AnonymousSpectator();
+        const activePlayer: StateViewer = (activePlayerName && game.playersAndSpectators[activePlayerName]) || new AnonymousSpectator();
 
         if(!game.started) {
             return this.getSummary(activePlayerName);
@@ -162,11 +153,11 @@ export class GameStateSerializer {
         const ringState: Record<string, unknown> = {};
 
         for(const player of game.getPlayers()) {
-            playerState[player.name] = player.getState(activePlayer as Player);
+            playerState[player.name] = player.getState(activePlayer);
         }
 
         Object.values(game.rings).forEach((ring) => {
-            ringState[ring.element] = ring.getState(activePlayer as Player);
+            ringState[ring.element] = ring.getState(activePlayer);
         });
 
         return Object.assign({}, shared, {
@@ -176,52 +167,66 @@ export class GameStateSerializer {
         });
     }
 
+    /** The piles whose cards the opponent doesn't see, in the replay log's order. */
+    private hiddenPiles(player: Player) {
+        return {
+            hand: player.hand,
+            stronghold: player.strongholdProvince,
+            one: player.provinceOne,
+            two: player.provinceTwo,
+            three: player.provinceThree,
+            four: player.provinceFour,
+            strongholdChildren: player.stronghold?.childCards ?? []
+        };
+    }
+
     getHiddenInfoFingerprint(): string {
         const parts: string[] = [];
         for(const player of this.game.getPlayers()) {
             parts.push(player.name);
-            parts.push(player.hand.map((c) => c.uuid).join(','));
-            parts.push(player.strongholdProvince.map((c) => c.uuid).join(','));
-            parts.push(player.provinceOne.map((c) => c.uuid).join(','));
-            parts.push(player.provinceTwo.map((c) => c.uuid).join(','));
-            parts.push(player.provinceThree.map((c) => c.uuid).join(','));
-            parts.push(player.provinceFour.map((c) => c.uuid).join(','));
-            parts.push(player.stronghold ? player.stronghold.childCards.map((c) => c.uuid).join(',') : '');
+            for(const pile of Object.values(this.hiddenPiles(player))) {
+                parts.push(pile.map((c) => c.uuid).join(','));
+            }
         }
         return parts.join('|');
     }
 
-    recordHiddenInfoIfChanged(): void {
+    recordHiddenInfo(): number | undefined {
+        if(this.hiddenInfoClosed) {
+            return undefined;
+        }
+        this.hiddenInfoClosed = !!this.game.winner;
+        const seq = ++this.stateSeq;
         const log = this.game.hiddenInfoLog;
         const fingerprint = this.getHiddenInfoFingerprint();
-        if(fingerprint === this.lastHiddenInfoFingerprint && log.length > 0) {
-            log.push(log[log.length - 1]);
-            return;
+        if(fingerprint !== this.lastHiddenInfoFingerprint || log.length === 0) {
+            this.lastHiddenInfoFingerprint = fingerprint;
+            log.push({ seq, info: this.getHiddenInfo() });
         }
-        this.lastHiddenInfoFingerprint = fingerprint;
-        log.push(this.getHiddenInfo());
+        return seq;
     }
 
     getHiddenInfo(): Record<string, unknown> {
         const info: Record<string, unknown> = {};
+        const cardSummary = (card: BaseCard) => ({
+            id: card.cardData.id,
+            name: card.cardData.name,
+            packId: card.packId,
+            type: card.getType(),
+            uuid: card.uuid
+        });
         for(const player of this.game.getPlayers()) {
-            const cardSummary = (card: BaseCard) => ({
-                id: card.cardData.id,
-                name: card.cardData.name,
-                packId: card.packId,
-                type: card.getType(),
-                uuid: card.uuid
-            });
+            const { hand, stronghold, one, two, three, four, strongholdChildren } = this.hiddenPiles(player);
             info[player.name] = {
-                hand: player.hand.map(cardSummary),
+                hand: hand.map(cardSummary),
                 provinces: {
-                    stronghold: player.strongholdProvince.map(cardSummary),
-                    one: player.provinceOne.map(cardSummary),
-                    two: player.provinceTwo.map(cardSummary),
-                    three: player.provinceThree.map(cardSummary),
-                    four: player.provinceFour.map(cardSummary)
+                    stronghold: stronghold.map(cardSummary),
+                    one: one.map(cardSummary),
+                    two: two.map(cardSummary),
+                    three: three.map(cardSummary),
+                    four: four.map(cardSummary)
                 },
-                strongholdChildren: player.stronghold ? player.stronghold.childCards.map(cardSummary) : []
+                strongholdChildren: strongholdChildren.map(cardSummary)
             };
         }
         return info;
@@ -232,7 +237,7 @@ export class GameStateSerializer {
         const playerSummaries: Record<string, PlayerSummary> = {};
 
         for(const player of game.getPlayers()) {
-            let deck: { name?: string; selected?: boolean } | undefined = undefined;
+            let deck: { name?: string; selected?: boolean } | undefined;
             if(player.left) {
                 return;
             }
@@ -250,7 +255,6 @@ export class GameStateSerializer {
                 emailHash: player.emailHash,
                 faction: player.faction.value,
                 id: player.id,
-                lobbyId: player.lobbyId as string | undefined,
                 left: player.left,
                 name: player.name,
                 owner: player.owner
@@ -273,7 +277,6 @@ export class GameStateSerializer {
             spectators: game.getSpectators().map((spectator) => {
                 return {
                     id: spectator.id,
-                    lobbyId: spectator.lobbyId,
                     name: spectator.name
                 };
             })

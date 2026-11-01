@@ -109,7 +109,7 @@ describe('Natures Wrath', function () {
             this.player2.clickCard(this.uji);
             expect(this.uji.isOrdinary()).toBe(true);
             expect(this.getChatLogs(5)).toContain(
-                'player2 chooses to dishonor Daidoji Uji to resolve Nature\'s Wrath again'
+                'player2 chooses to dishonor a participating character to resolve Nature\'s Wrath again'
             );
 
             expect(this.player2).toHavePrompt('Choose a character');
@@ -131,9 +131,108 @@ describe('Natures Wrath', function () {
             this.player2.clickCard(this.uji);
 
             expect(this.uji.isDishonored).toBe(true);
-            expect(this.getChatLogs(5)).toContain('player2 chooses to dishonor Daidoji Uji for no effect');
+            expect(this.getChatLogs(5)).toContain('player2 chooses to dishonor a participating character for no effect');
+            expect(this.getChatLogs(5)).toContain('player2 dishonors Daidoji Uji');
 
             expect(this.player2).not.toHavePrompt('Choose a character');
+        });
+    });
+
+    describe('max and condition', function () {
+        integration(function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['doji-diplomat', 'shosuro-sadako']
+                    },
+                    player2: {
+                        inPlay: ['daidoji-uji'],
+                        hand: ['nature-s-wrath', 'nature-s-wrath']
+                    }
+                });
+
+                this.sadako = this.player1.findCardByName('shosuro-sadako');
+                this.diplomat = this.player1.findCardByName('doji-diplomat');
+                this.uji = this.player2.findCardByName('daidoji-uji');
+                [this.wrath, this.wrath2] = this.player2.filterCardsByName('nature-s-wrath');
+            });
+
+            it('can only be played once per conflict', function () {
+                this.sadako.dishonor();
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.sadako, this.diplomat],
+                    defenders: [this.uji]
+                });
+
+                this.player2.clickCard(this.wrath);
+                this.player2.clickCard(this.sadako);
+                expect(this.sadako.isParticipating()).toBe(false);
+                this.player2.clickPrompt('Done');
+
+                this.player1.pass();
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                this.player2.clickCard(this.wrath2);
+                expect(this.wrath2.location).toBe('hand');
+                expect(this.diplomat.isParticipating()).toBe(true);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+
+            it('cannot be played without a participating character', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.sadako, this.diplomat],
+                    defenders: []
+                });
+
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                this.player2.clickCard(this.wrath);
+                expect(this.wrath.location).toBe('hand');
+                expect(this.sadako.isParticipating()).toBe(true);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+        });
+    });
+
+    describe('with a redirected dishonor', function () {
+        integration(function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shosuro-sadako', 'kitsuki-shomon']
+                    },
+                    player2: {
+                        inPlay: ['daidoji-uji'],
+                        hand: ['nature-s-wrath']
+                    }
+                });
+
+                this.sadako = this.player1.findCardByName('shosuro-sadako');
+                this.shomon = this.player1.findCardByName('kitsuki-shomon');
+                this.uji = this.player2.findCardByName('daidoji-uji');
+                this.wrath = this.player2.findCardByName('nature-s-wrath');
+            });
+
+            it('still offers to resolve it again', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.sadako],
+                    defenders: [this.uji]
+                });
+
+                this.player2.clickCard(this.wrath);
+                this.player2.clickCard(this.sadako);
+                this.player1.clickPrompt('Dishonor this character');
+                this.player1.clickCard(this.shomon);
+                expect(this.shomon.isDishonored).toBe(true);
+                expect(this.sadako.isDishonored).toBe(false);
+
+                expect(this.player2).toHavePrompt('Select one');
+                expect(this.player2).toHavePromptButton('Dishonor a participating character to resolve this ability again');
+            });
         });
     });
 });

@@ -60,3 +60,40 @@ describe('Darkflame Purifier', function () {
         });
     });
 });
+
+describe('Darkflame Purifier and a character leaving play with fate', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['darkflame-purifier', 'doji-challenger'],
+                    hand: ['assassination']
+                },
+                player2: {
+                    inPlay: ['bayushi-manipulator']
+                }
+            });
+            this.purifier = this.player1.findCardByName('darkflame-purifier');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.manipulator = this.player2.findCardByName('bayushi-manipulator');
+            this.assassination = this.player1.findCardByName('assassination');
+            this.challenger.fate = 2;
+            this.manipulator.fate = 2;
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.manipulator]
+            });
+        });
+
+        it('does not react to the fate leaving with a discarded character', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.assassination);
+            this.player1.clickCard(this.manipulator);
+            expect(this.manipulator.location).toBe('dynasty discard pile');
+            expect(this.player1).not.toBeAbleToSelect(this.purifier);
+        });
+    });
+});

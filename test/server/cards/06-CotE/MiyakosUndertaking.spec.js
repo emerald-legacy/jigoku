@@ -71,7 +71,7 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.bayushiKachiko.name).toBe(this.kitsuSpiritcaller.name);
                 expect(this.bayushiKachiko.getCost()).toBe(this.kitsuSpiritcaller.getCost());
                 expect(this.bayushiKachiko.getBaseMilitarySkill()).toBe(this.kitsuSpiritcaller.printedMilitarySkill);
-                expect(this.bayushiKachiko.getPoliticalSkill()).toBe(this.kitsuSpiritcaller.printedPoliticalSkill);
+                expect(this.bayushiKachiko.politicalSkill).toBe(this.kitsuSpiritcaller.printedPoliticalSkill);
                 expect(this.bayushiKachiko.getTraits()).toContain('shugenja');
                 expect(this.bayushiKachiko.getTraits()).toContain('water');
                 expect(this.bayushiKachiko.isUnique()).toBe(true);
@@ -97,7 +97,7 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.bayushiKachiko.name).toBe(this.bayushiKachiko.printedName);
                 expect(this.bayushiKachiko.getCost()).toBe(this.bayushiKachiko.printedCost);
                 expect(this.bayushiKachiko.getBaseMilitarySkill()).toBe(this.bayushiKachiko.printedMilitarySkill);
-                expect(this.bayushiKachiko.getPoliticalSkill()).toBe(this.bayushiKachiko.printedPoliticalSkill);
+                expect(this.bayushiKachiko.politicalSkill).toBe(this.bayushiKachiko.printedPoliticalSkill);
                 expect(this.bayushiKachiko.getTraits()).toContain('courtier');
                 expect(this.bayushiKachiko.getTraits()).toContain('imperial');
                 expect(this.bayushiKachiko.isUnique()).toBe(true);
@@ -152,7 +152,7 @@ describe('Miyako\'s Undertaking', function() {
                 this.player1.clickCard('miyako-s-undertaking');
                 this.player1.clickCard(this.akodoGunso);
                 this.player1.clickCard(this.bayushiLiar);
-                let handSize = this.player1.player.hand.length;
+                const handSize = this.player1.player.hand.length;
                 this.player2.clickCard('assassination');
                 this.player2.clickCard(this.bayushiLiar);
                 expect(this.player1.player.hand.length).toBe(handSize);
@@ -197,7 +197,7 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.bayushiKachiko.name).toBe(this.implacableMagistrate.name);
                 expect(this.bayushiKachiko.getCost()).toBe(this.implacableMagistrate.getCost());
                 expect(this.bayushiKachiko.getBaseMilitarySkill()).toBe(this.implacableMagistrate.printedMilitarySkill);
-                expect(this.bayushiKachiko.getPoliticalSkill()).toBe(this.implacableMagistrate.printedPoliticalSkill);
+                expect(this.bayushiKachiko.politicalSkill).toBe(this.implacableMagistrate.printedPoliticalSkill);
                 expect(this.bayushiKachiko.getTraits()).not.toContain('courtier');
                 expect(this.bayushiKachiko.getTraits()).not.toContain('shugenja');
                 expect(this.bayushiKachiko.getTraits()).not.toContain('water');
@@ -278,5 +278,40 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.challenger.isHonored).toBe(true);
             });
         });
+
+        describe('Miyako\'s Undertaking and a card with the same title', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        honor: 5,
+                        inPlay: ['wandering-ronin', 'doji-whisperer'],
+                        hand: ['miyako-s-undertaking']
+                    },
+                    player2: {
+                        inPlay: ['doomed-shugenja'],
+                        dynastyDiscard: ['wandering-ronin']
+                    }
+                });
+                this.ronin = this.player1.findCardByName('wandering-ronin', 'play area');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.opponentRonin = this.player2.findCardByName('wandering-ronin', 'dynasty discard pile');
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.ronin, this.whisperer],
+                    defenders: []
+                });
+                this.player2.pass();
+            });
+
+            it('should not let a character become a copy of a card with its own title', function() {
+                this.player1.clickCard('miyako-s-undertaking');
+                this.player1.clickCard(this.opponentRonin);
+                expect(this.player1).toBeAbleToSelect(this.whisperer);
+                expect(this.player1).not.toBeAbleToSelect(this.ronin);
+            });
+        });
     });
 });
+

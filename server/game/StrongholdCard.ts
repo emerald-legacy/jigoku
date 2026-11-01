@@ -1,12 +1,12 @@
 import BaseCard from './BaseCard.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import type DrawCard from './DrawCard.js';
-import type Player from './Player.js';
+import type { StateViewer } from './types/StateViewer.js';
 import type { Location } from './Constants.js';
 
 export class StrongholdCard extends BaseCard {
-    menu = [{ command: 'bow', text: 'Bow/Ready' }];
-    isStronghold = true;
+    override menu = [{ command: 'bow', text: 'Bow/Ready' }];
+    override isStronghold = true;
     stealFirstPlayerDuringSetupWithMsg?: string;
     private childCardHost = new ChildCardManager(this);
 
@@ -26,27 +26,15 @@ export class StrongholdCard extends BaseCard {
         this.childCardHost.remove(card, location);
     }
 
-    getFate(): number {
+    override getFate(): number {
         return this.cardData.fate ?? 0;
     }
 
-    getStartingHonor(): number {
-        return this.cardData.honor ?? 0;
-    }
-
-    getInfluence(): number {
-        return this.cardData.influence_pool ?? 0;
-    }
-
-    getProvinceStrengthBonus(): number {
+    override getProvinceStrengthBonus(): number {
         return parseInt(this.cardData.strength_bonus ?? '0');
     }
 
-    flipFaceup(): void {
-        this.facedown = false;
-    }
-
-    getSummary(activePlayer: Player, hideWhenFaceup = false) {
+    override getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,

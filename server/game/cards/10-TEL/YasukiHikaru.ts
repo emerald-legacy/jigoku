@@ -1,20 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { sendHome } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class YasukiHikaru extends DrawCard {
     static id = 'yasuki-hikaru';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Send home character',
-            condition: (context) => context.source.isDefending(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Send home character')
+            .condition((context) => context.source.isDefending())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isAttacking() && card.getMilitarySkill() > context.source.getMilitarySkill(),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: (card, context) => card.isAttacking() && card.militarySkill > context.source.militarySkill
+            }, sendHome());
     }
 }
 

@@ -9,7 +9,7 @@ describe('Floating Fortress', function () {
                 player2: {
                     inPlay: ['brash-samurai'],
                     hand: ['fine-katana', 'ornate-fan'],
-                    dynastyDiscard: ['floating-fortress', 'imperial-storehouse', 'fire-and-oil']
+                    dynastyDiscard: ['floating-fortress', 'floating-fortress', 'imperial-storehouse', 'fire-and-oil']
                 }
             });
 
@@ -30,7 +30,7 @@ describe('Floating Fortress', function () {
         });
 
         it('becomes a copy of a holding', function () {
-            let initialFate = this.player2.fate;
+            const initialFate = this.player2.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.diplomat],
@@ -48,7 +48,7 @@ describe('Floating Fortress', function () {
                 'player2 uses Floating Fortress, spending 1 fate to turn Floating Fortress into a copy of Fire and Oil'
             );
 
-            expect(this.player2).toHavePrompt('Move the holding to into the attacked provinces?');
+            expect(this.player2).toHavePrompt('Move this holding to the attacked province?');
             expect(this.player2).toHavePromptButton('No');
             expect(this.player2).toHavePromptButton('Yes');
 
@@ -80,6 +80,74 @@ describe('Floating Fortress', function () {
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.clickCard(this.fortress);
             expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+
+        it('only one copy can be used in a conflict (max 1 per conflict)', function () {
+            const fortress2 = this.player2.filterCardsByName('floating-fortress').find((card) => card !== this.fortress);
+            this.player2.placeCardInProvince(fortress2, 'province 3');
+            fortress2.facedown = false;
+            const initialFate = this.player2.fate;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.diplomat],
+                defenders: [this.brash],
+                province: this.sd1
+            });
+            this.player2.clickCard(this.fortress);
+            this.player2.clickCard(this.oil);
+            this.player2.clickPrompt('No');
+            this.player1.pass();
+
+            expect(this.fortress.name).toBe('Fire and Oil');
+            expect(this.player2.fate).toBe(initialFate - 1);
+
+            this.player2.clickCard(fortress2);
+            expect(this.player2).not.toHavePrompt('Choose a holding');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.player2.fate).toBe(initialFate - 1);
+            expect(fortress2.name).toBe('Floating Fortress');
+        });
+    });
+});
+
+describe('Floating Fortress copying a holding with a province strength bonus', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-diplomat']
+                },
+                player2: {
+                    inPlay: ['brash-samurai'],
+                    dynastyDiscard: ['floating-fortress', 'kaiu-forges']
+                }
+            });
+
+            this.diplomat = this.player1.findCardByName('doji-diplomat');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.fortress = this.player2.findCardByName('floating-fortress');
+            this.sd1 = this.player2.findCardByName('shameful-display', 'province 1');
+            this.player2.placeCardInProvince(this.fortress, 'province 2');
+            this.fortress.facedown = false;
+        });
+
+        it('uses the copied holding\'s province strength bonus', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.diplomat],
+                defenders: [this.brash],
+                province: this.sd1
+            });
+            const strength = this.sd1.getStrength();
+
+            this.player2.clickCard(this.fortress);
+            this.player2.clickCard('kaiu-forges');
+            this.player2.clickPrompt('Yes');
+            expect(this.fortress.location).toBe('province 1');
+            expect(this.fortress.getProvinceStrengthBonus()).toBe(3);
+            expect(this.sd1.getStrength()).toBe(strength + 3);
         });
     });
 });

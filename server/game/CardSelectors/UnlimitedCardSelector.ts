@@ -1,9 +1,8 @@
-import BaseCardSelector from './BaseCardSelector.js';
+import { BaseCardSelector } from './BaseCardSelector.js';
 
-class UnlimitedCardSelector extends BaseCardSelector {
-    hasReachedLimit(): boolean {
+export class UnlimitedCardSelector extends BaseCardSelector {
+    override hasReachedLimit(): boolean {
         return false;
     }
 }
 
-export default UnlimitedCardSelector;

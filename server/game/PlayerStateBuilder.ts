@@ -1,27 +1,28 @@
 import { ConflictType } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
-import type { PlayerState } from './Player.js';
+import type { GamePlayerUserSettings, PlayerState } from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type { CardSummary } from './BaseCard.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 export class PlayerStateBuilder {
     constructor(private readonly player: Player, private readonly game: Game) {}
 
-    getSummaryForHand(list: BaseCard[], activePlayer: Player, hideWhenFaceup: boolean): CardSummary[] {
+    getSummaryForHand(list: BaseCard[], activePlayer: StateViewer, hideWhenFaceup: boolean): CardSummary[] {
         if(this.player.optionSettings.sortHandByName) {
             return this.getSortedSummaryForCardList(list, activePlayer, hideWhenFaceup);
         }
         return this.getSummaryForCardList(list, activePlayer, hideWhenFaceup);
     }
 
-    getSummaryForCardList(list: BaseCard[], activePlayer: Player, hideWhenFaceup?: boolean): CardSummary[] {
+    getSummaryForCardList(list: BaseCard[], activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary[] {
         return list.map((card: BaseCard) => {
             return card.getSummary(activePlayer, hideWhenFaceup ?? false);
         });
     }
 
-    getSortedSummaryForCardList(list: BaseCard[], activePlayer: Player, hideWhenFaceup?: boolean): CardSummary[] {
+    getSortedSummaryForCardList(list: BaseCard[], activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary[] {
         const cards = list.slice();
         cards.sort((a: BaseCard, b: BaseCard) => a.printedName.localeCompare(b.printedName));
 
@@ -41,7 +42,7 @@ export class PlayerStateBuilder {
         };
     }
 
-    getState(activePlayer: Player): PlayerState {
+    getState(activePlayer: StateViewer): PlayerState {
         const player = this.player;
         const isActivePlayer = activePlayer === player;
         const promptState = isActivePlayer ? player.promptState.getState() : {};
@@ -68,9 +69,9 @@ export class PlayerStateBuilder {
             numConflictCards: player.conflictDeck.length,
             numDynastyCards: player.dynastyDeck.length,
             numProvinceCards: player.provinceDeck.length,
-            optionSettings: player.optionSettings,
+            // other viewers' boards show ring effects by this player's option
+            optionSettings: isActivePlayer ? player.optionSettings : { showRingEffects: player.optionSettings.showRingEffects },
             phase: this.game.currentPhase,
-            promptedActionWindows: player.promptedActionWindows,
             provinces: {
                 one: this.getSummaryForCardList(player.provinceOne, activePlayer, !player.readyToStart),
                 two: this.getSummaryForCardList(player.provinceTwo, activePlayer, !player.readyToStart),
@@ -79,29 +80,31 @@ export class PlayerStateBuilder {
             },
             showBid: player.showBid,
             stats: this.getStats(),
-            timerSettings: player.timerSettings,
             strongholdProvince: this.getSummaryForCardList(player.strongholdProvince, activePlayer),
             user: {
                 username: player.user.username,
                 emailHash: player.user.emailHash,
-                settings: player.user.settings
+                settings: isActivePlayer ? player.user.settings : this.getPublicUserSettings()
             }
         };
 
-        if(player.additionalPiles && Object.keys(player.additionalPiles)) {
-            Object.keys(player.additionalPiles).forEach((key) => {
-                if(player.additionalPiles[key].cards.length > 0) {
-                    state.cardPiles[key] = this.getSummaryForCardList(player.additionalPiles[key].cards, activePlayer);
-                }
-            });
+        if(isActivePlayer) {
+            state.promptedActionWindows = player.promptedActionWindows;
+            state.timerSettings = player.timerSettings;
         }
 
-        if(player.showConflict) {
+        for(const [key, pile] of Object.entries(player.additionalPiles)) {
+            if(pile.cards.length > 0) {
+                state.cardPiles[key] = this.getSummaryForCardList(pile.cards, activePlayer);
+            }
+        }
+
+        if(isActivePlayer && player.showConflict) {
             state.showConflictDeck = true;
             state.cardPiles.conflictDeck = this.getSummaryForCardList(player.conflictDeck, activePlayer);
         }
 
-        if(player.showDynasty) {
+        if(isActivePlayer && player.showDynasty) {
             state.showDynastyDeck = true;
             state.cardPiles.dynastyDeck = this.getSummaryForCardList(player.dynastyDeck, activePlayer);
         }
@@ -131,6 +134,20 @@ export class PlayerStateBuilder {
         }
 
         return Object.assign(state, promptState);
+    }
+
+    /** The user settings other viewers need (avatar, patron cosmetics); timer and option settings stay with the player. */
+    getPublicUserSettings(): GamePlayerUserSettings | undefined {
+        const settings = this.player.user.settings;
+        if(!settings) {
+            return undefined;
+        }
+        return {
+            cardSize: settings.cardSize,
+            disableGravatar: settings.disableGravatar,
+            background: settings.background,
+            patron: settings.patron
+        };
     }
 
     getShortSummary() {

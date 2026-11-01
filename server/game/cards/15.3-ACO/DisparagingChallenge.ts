@@ -1,23 +1,21 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { conditional, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 
 class DisparagingChallenge extends DrawCard {
     static id = 'disparaging-challenge';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
+    override setupCardAbilities() {
+        this.action('Initiate a political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
-                targetCondition: card => !card.isParticipating(),
-                gameAction: duel => AbilityDsl.actions.conditional({
+                targetCondition: (card) => !card.isParticipating(),
+                gameAction: (duel) => conditional({
                     condition: () => !duel.loser?.[0]?.isParticipating(),
-                    trueGameAction: AbilityDsl.actions.moveToConflict({ target: duel.loser }),
-                    falseGameAction: AbilityDsl.actions.sendHome({ target: duel.loser })
+                    trueGameAction: moveToConflict({ target: duel.loser }),
+                    falseGameAction: sendHome({ target: duel.loser })
                 })
-            }
-        });
+            }));
     }
 }
 

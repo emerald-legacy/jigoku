@@ -24,7 +24,7 @@ describe('Ride at Dawn', function() {
         });
 
         it('should discard a card', function() {
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
             this.player1.pass();
             this.player1.clickCard(this.rideAtDawn);
             expect(this.player2.hand.length).toBe(hand - 1);
@@ -37,6 +37,8 @@ describe('Ride at Dawn', function() {
             this.player2.pass();
             this.player1.pass();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 passes');
+            expect(this.game.currentPhase).toBe('draw');
         });
     });
 });

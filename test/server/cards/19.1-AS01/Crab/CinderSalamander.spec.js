@@ -69,13 +69,21 @@ describe('Cinder Salamander', function () {
                     }
                 });
 
-                let salamanders = this.player1.filterCardsByName('cinder-salamander');
+                const salamanders = this.player1.filterCardsByName('cinder-salamander');
                 this.salamander1 = salamanders[0];
                 this.salamander2 = salamanders[1];
                 this.salamander3 = salamanders[2];
 
                 this.player1.claimRing('fire');
                 this.game.checkGameState(true);
+            });
+
+            it('does nothing when the opponent has claimed the fire ring', function () {
+                this.player2.claimRing('fire');
+                this.player1.clickCard(this.salamander1);
+
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.player1).not.toHavePrompt('Select characters to put into play from your deck');
             });
 
             it('when 3 salamanders are in play, shuffle dynasty deck', function () {
@@ -142,6 +150,49 @@ describe('Cinder Salamander', function () {
 
                 expect(this.player2).toHavePrompt('Initiate an action');
             });
+        });
+    });
+});
+
+describe('Cinder Salamander\'s action gained through Contemplative Wisdom', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'cinder-salamander', attachments: ['contemplative-wisdom'] }, 'borderlands-defender'],
+                    dynastyDiscard: ['borderlands-defender', 'cinder-salamander']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+            this.salamander = this.player1.filterCardsByName('cinder-salamander', 'play area')[0];
+            this.defender = this.player1.filterCardsByName('borderlands-defender', 'play area')[0];
+            this.player1.moveCard(this.player1.filterCardsByName('borderlands-defender', 'dynasty discard pile')[0], 'dynasty deck');
+            this.player1.moveCard(this.player1.filterCardsByName('cinder-salamander', 'dynasty discard pile')[0], 'dynasty deck');
+            this.player1.claimRing('fire');
+            this.player1.claimRing('air');
+        });
+
+        it('searches for copies of the character using it', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.defender],
+                defenders: [],
+                ring: 'water'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.salamander);
+            this.player1.clickPrompt('Give all abilities to another character');
+            this.player1.clickCard(this.defender);
+            this.player1.clickRing('air');
+            this.player2.pass();
+            this.player1.clickCard(this.defender);
+            expect(this.player1).toHavePrompt('Select characters to put into play from your deck');
+            expect(this.player1).toHavePromptButton('Borderlands Defender');
+            expect(this.player1).not.toHavePromptButton('Cinder Salamander');
         });
     });
 });

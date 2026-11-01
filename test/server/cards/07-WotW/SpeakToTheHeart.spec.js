@@ -19,7 +19,7 @@ describe('Speak to the Heart', function() {
 
                 this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
 
-                let provinces = this.player2.provinces;
+                const provinces = this.player2.provinces;
                 provinces['province 1'].provinceCard.facedown = false;
                 provinces['province 2'].provinceCard.facedown = false;
                 provinces['province 3'].provinceCard.facedown = false;
@@ -33,21 +33,21 @@ describe('Speak to the Heart', function() {
 
             it('should give the chosen character +1 political skill for each faceup non-stronghold province your opponent controls', function() {
                 this.player2.pass();
-                let politicalSkill = this.borderRider.getPoliticalSkill();
+                const politicalSkill = this.borderRider.politicalSkill;
                 this.player1.clickCard(this.speakToTheHeart);
                 this.player1.clickCard(this.borderRider);
-                expect(this.borderRider.getPoliticalSkill()).toBe(politicalSkill + 3);
+                expect(this.borderRider.politicalSkill).toBe(politicalSkill + 3);
             });
 
             it('should last until the end of the conflict', function() {
                 this.player2.pass();
-                let politicalSkill = this.borderRider.getPoliticalSkill();
+                const politicalSkill = this.borderRider.politicalSkill;
                 this.player1.clickCard(this.speakToTheHeart);
                 this.player1.clickCard(this.borderRider);
                 this.player2.pass();
                 this.player1.pass();
                 this.player1.clickPrompt('Don\'t Resolve');
-                expect(this.borderRider.getPoliticalSkill()).toBe(politicalSkill);
+                expect(this.borderRider.politicalSkill).toBe(politicalSkill);
             });
 
             it('shouldn\'t be usable twice in a single conflict', function() {
@@ -66,6 +66,38 @@ describe('Speak to the Heart', function() {
                 expect(this.player1).toBeAbleToSelect(this.borderRider);
                 expect(this.player1).not.toBeAbleToSelect(this.miyaMystic);
                 expect(this.player1).not.toBeAbleToSelect(this.dojiWhisperer);
+            });
+        });
+
+        describe('Speak to the Heart and a unicorn attachment', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: [{ card: 'border-rider', attachments: ['favored-mount'] }],
+                        hand: ['speak-to-the-heart']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer']
+                    }
+                });
+
+                this.borderRider = this.player1.findCardByName('border-rider');
+                this.favoredMount = this.player1.findCardByName('favored-mount');
+                this.speakToTheHeart = this.player1.findCardByName('speak-to-the-heart');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.borderRider],
+                    defenders: ['doji-whisperer']
+                });
+            });
+
+            it('should only choose a character', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.speakToTheHeart);
+                expect(this.player1).toBeAbleToSelect(this.borderRider);
+                expect(this.player1).not.toBeAbleToSelect(this.favoredMount);
             });
         });
     });

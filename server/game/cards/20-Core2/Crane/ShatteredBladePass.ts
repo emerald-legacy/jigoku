@@ -1,28 +1,29 @@
 import { CardType, Players, Duration } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { additionalAction } from '../../../effects.js';
+import { moveToConflict, multiple, ready } from '../../../GameActions/GameActions.js';
 
 export default class ShatteredBladePass extends ProvinceCard {
     static id = 'shattered-blade-pass';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Ready a character and move it to the conflict',
-            condition: (context) => context.game.currentConflict !== null && context.game.currentConflict.defenders.length === 0,
-            target: {
+    public override setupCardAbilities() {
+        this.action('Ready a character and move it to the conflict')
+            .ifCondition((context) => !context.player.cardsInPlay.some((card) => card.isParticipating()))
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.moveToConflict(),
-                    AbilityDsl.actions.playerLastingEffect(context => ({
-                        targetController: context.player,
-                        duration: Duration.UntilPassPriority,
-                        effect: AbilityDsl.effects.additionalAction()
-                    }))
-                ])
-            },
-            effect: 'ready {0} and move it into the conflict, taking an additional action'
-        });
+                cardCondition: (card, context) => moveToConflict().canAffect(card, context)
+            }, multiple([
+                ready(),
+                moveToConflict()
+            ]))
+            .chatText('ready {0} and move it into the conflict, taking an additional action')
+            // readied or moved in (or both)
+            .afterwardsIf((context) => context.events.some((event) => event.isFullyResolved()))
+            .playerLastingEffect({
+                target: Players.Self,
+                duration: Duration.UntilPassPriority,
+                effect: additionalAction()
+            });
     }
 }

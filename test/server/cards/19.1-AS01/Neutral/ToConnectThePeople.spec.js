@@ -49,16 +49,27 @@ describe('To Connect the People', function () {
             });
 
             it('discards a few cards from the opponents dynasty deck', function () {
-                let initialDiscardPile = this.player2.player.dynastyDiscardPile.length;
+                const initialDiscardPile = this.player2.player.dynastyDiscardPile.length;
+                const topCards = this.player2.player.dynastyDeck.slice(0, 3);
+                const discarded = jasmine.createSpy('onCardsDiscarded');
+                this.game.on('onCardsDiscarded', discarded);
 
                 this.player1.clickCard(this.toConnectThePeople);
                 expect(this.player2.player.dynastyDiscardPile.length).toBe(initialDiscardPile + 3);
+                expect(discarded).toHaveBeenCalledWith(jasmine.objectContaining({ cards: topCards }));
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays To Connect the People to discard the top 3 cards of player2\'s dynasty deck'
+                    'player1 plays To Connect the People to discard Adept of the Waves, Adept of the Waves and Adept of the Waves from the top of player2\'s dynasty deck'
                 );
-                expect(this.getChatLogs(5)).toContain(
-                    'To Connect the People discards Adept of the Waves, Adept of the Waves and Adept of the Waves'
-                );
+            });
+
+            it('does not leave the character playable when the play is cancelled', function () {
+                this.player1.clickCard(this.toConnectThePeople);
+                this.player1.clickCard(this.opponentDynastyDiscardAkodoMotivator);
+                this.player1.clickPrompt('Cancel');
+                expect(this.opponentDynastyDiscardAkodoMotivator.location).toBe('dynasty discard pile');
+                this.player2.clickCard(this.opponentDynastyDiscardAkodoMotivator);
+                expect(this.opponentDynastyDiscardAkodoMotivator.location).toBe('dynasty discard pile');
+                expect(this.player2).toHavePrompt('Action Window');
             });
 
             it('should allow you to purchase any character from your opponent discard piles that has glory equal or lower than a merchant you control', function () {
@@ -91,6 +102,51 @@ describe('To Connect the People', function () {
 
                 expect(this.player1.fate).toBe(initialPLayerFate - 5); // 4 fate base + 1 extra fate placed
                 expect(this.opponentDynastyDiscardAkodoMotivator.location).toBe('play area');
+            });
+        });
+
+        describe('limits', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 10,
+                        inPlay: ['ikoma-prodigy', 'forthright-ide'],
+                        hand: ['to-connect-the-people', 'to-connect-the-people']
+                    },
+                    player2: {
+                        dynastyDiscard: ['akodo-motivator', 'ashigaru-levy']
+                    }
+                });
+                [this.toConnectThePeople, this.toConnectThePeople2] = this.player1.filterCardsByName('to-connect-the-people');
+                this.forthrightIde = this.player1.findCardByName('forthright-ide');
+                this.motivator = this.player2.findCardByName('akodo-motivator');
+            });
+
+            it('can only be played once per round', function () {
+                this.player1.clickCard(this.toConnectThePeople);
+                this.player1.clickCard(this.motivator);
+                this.player1.clickPrompt('0');
+                expect(this.motivator.location).toBe('play area');
+                expect(this.player1.fate).toBe(6);
+
+                this.player2.pass();
+                const discardSize = this.player2.player.dynastyDiscardPile.length;
+                expect(this.player1).toHavePrompt('Action Window');
+                this.player1.clickCard(this.toConnectThePeople2);
+                expect(this.toConnectThePeople2.location).toBe('hand');
+                expect(this.player2.player.dynastyDiscardPile.length).toBe(discardSize);
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+
+            it('cannot be played without a Merchant character', function () {
+                this.player1.moveCard(this.forthrightIde, 'dynasty discard pile');
+                const discardSize = this.player2.player.dynastyDiscardPile.length;
+                expect(this.player1).toHavePrompt('Action Window');
+                this.player1.clickCard(this.toConnectThePeople);
+                expect(this.toConnectThePeople.location).toBe('hand');
+                expect(this.player2.player.dynastyDiscardPile.length).toBe(discardSize);
+                expect(this.player1).toHavePrompt('Action Window');
             });
         });
     });

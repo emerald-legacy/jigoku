@@ -1,36 +1,17 @@
-import { getAbilityDsl, type AbilityDslType } from './AbilityDslProvider.js';
-import type { AbilityContext } from './AbilityContext.js';
 import { GameObject } from './GameObject.js';
-import { Location, Duration } from './Constants.js';
+import type { PrintedKeyword } from './KeywordParser.js';
+import { Location, Duration, type Trait, type Faction } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
-import type Effect from './Effects/Effect.js';
-import type { EffectFactory } from './Effects/EffectBuilder.js';
-import type { EffectMatch } from './Effects/Effect.js';
+import type { ActiveEffect } from './Effects/ActiveEffect.js';
+import type { EffectFactory, EffectTarget } from './Effects/EffectBuilder.js';
+import type { EffectProperties } from './Effects/ActiveEffect.js';
 
-interface EffectProperties {
-    duration?: Duration;
-    location?: Location;
-    effect?: EffectFactory | EffectFactory[];
-    match?: EffectMatch;
-    condition?: (context: AbilityContext) => boolean;
-}
-
-type PropertyFactory = (dsl: AbilityDslType) => EffectProperties;
+type EffectSourceProperties = EffectProperties<EffectTarget> & { effect?: EffectFactory | EffectFactory[] };
 
 // This class is inherited by Ring and BaseCard and also represents Framework effects
 
-// State the effect engine reads off a source. Subclasses expose these in
-// incompatible forms (BaseCard.controller is a field, StatusToken.controller a
-// getter; persistentEffects is a getter on BaseCard but a field on StatusToken/
-// ElementSymbol), so they can't be hoisted as a single class member — effect
-// sites narrow to this type instead.
-export type SourceWithState = EffectSource & {
-    controller?: Player;
-    persistentEffects?: { ref?: Effect[] }[];
-};
-
-class EffectSource extends GameObject {
+export class EffectSource extends GameObject {
     constructor(game: Game, name = 'Framework effect') {
         super(game, name);
     }
@@ -46,11 +27,11 @@ class EffectSource extends GameObject {
         return null;
     }
 
-    public hasKeyword(_keyword: string) {
+    public hasKeyword(_keyword: PrintedKeyword) {
         return false;
     }
 
-    public hasTrait(_trait: string) {
+    public hasTrait(_trait: Trait) {
         return false;
     }
 
@@ -58,7 +39,7 @@ class EffectSource extends GameObject {
         return new Set();
     }
 
-    public isFaction(_faction: string) {
+    public isFaction(_faction: Faction) {
         return false;
     }
 
@@ -70,70 +51,35 @@ class EffectSource extends GameObject {
         return false;
     }
 
-    public applyDurationEffect(duration: Duration, propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(getAbilityDsl());
+    // What the effect engine reads off a source. Subclasses hold these in incompatible forms
+    // (controller is a field on BaseCard but a getter on StatusToken), so they override methods.
+
+    /** The player whose effects these are; framework effects, rings and element symbols have none. */
+    public getEffectController(): Player | undefined {
+        return undefined;
+    }
+
+    public getPersistentEffectRecords(): readonly { ref?: ActiveEffect[] }[] {
+        return [];
+    }
+
+    public applyDurationEffect(duration: Duration, properties: EffectSourceProperties): void {
         this.addEffectToEngine(Object.assign({ duration, location: Location.Any }, properties));
-    }
-
-    /**
-     * Applies an immediate effect which lasts until the end of the current
-     * duel.
-     */
-    untilEndOfDuel(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilEndOfDuel, propertyFactory);
-    }
-
-    /**
-     * Applies an immediate effect which lasts until the end of the current
-     * conflict.
-     */
-    untilEndOfConflict(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilEndOfConflict, propertyFactory);
-    }
-
-    /**
-     * Applies an immediate effect which lasts until the end of the phase.
-     */
-    untilEndOfPhase(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilEndOfPhase, propertyFactory);
-    }
-
-    /**
-     * Applies an immediate effect which lasts until the end of the round.
-     */
-    untilEndOfRound(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilEndOfRound, propertyFactory);
-    }
-
-    untilPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilPassPriority, propertyFactory);
-    }
-
-    untilOpponentPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilOpponentPassPriority, propertyFactory);
-    }
-
-    untilNextPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilNextPassPriority, propertyFactory);
-    }
-
-    untilSelfPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.UntilSelfPassPriority, propertyFactory);
     }
 
     /**
      * Applies a lasting effect which lasts until an event contained in the
      * `until` property for the effect has occurred.
      */
-    lastingEffect(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Duration.Custom, propertyFactory);
+    lastingEffect(properties: EffectSourceProperties): void {
+        this.applyDurationEffect(Duration.Custom, properties);
     }
 
     /*
      * Adds a persistent/lasting/delayed effect to the effect engine
      * @param {Object} properties - properties for the effect - see Effects/Effect.js
      */
-    addEffectToEngine(properties: EffectProperties): Effect[] {
+    addEffectToEngine(properties: EffectSourceProperties): ActiveEffect[] {
         const { effect, ...rest } = properties;
         if(Array.isArray(effect)) {
             return effect.map((factory) => this.game.effectEngine.add(factory(this.game, this, rest)));
@@ -144,8 +90,8 @@ class EffectSource extends GameObject {
         return [];
     }
 
-    removeEffectFromEngine(effectArray: Effect[]): void {
-        this.game.effectEngine.unapplyAndRemove((effect: Effect) => effectArray.includes(effect));
+    removeEffectFromEngine(effectArray: ActiveEffect[]): void {
+        this.game.effectEngine.unapplyAndRemove((effect: ActiveEffect) => effectArray.includes(effect));
     }
 
     removeLastingEffects(): void {
@@ -153,4 +99,3 @@ class EffectSource extends GameObject {
     }
 }
 
-export default EffectSource;

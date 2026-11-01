@@ -52,6 +52,23 @@ describe('Retire To The Brotherhood', function() {
             this.player2.player.dynastyDiscardPile.forEach(a => this.player2.moveCard(a, 'dynasty deck'));
         });
 
+        it('changes status-token honor at once: only the net change counts (EmeraldDB ruling)', function() {
+            this.player1.player.honor = 1;
+            this.shoju.dishonor();
+            this.challenger.honor();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.berserker],
+                province: this.retire,
+                type: 'military'
+            });
+            this.player2.clickCard(this.retire);
+            expect(this.shoju.location).toBe('dynasty discard pile');
+            expect(this.challenger.location).toBe('dynasty discard pile');
+            expect(this.player1.honor).toBe(1);
+            expect(this.game.winner).toBeUndefined();
+        });
+
         it('base case', function() {
             this.noMoreActions();
             expect(this.retire.facedown).toBe(true);
@@ -153,7 +170,7 @@ describe('Retire To The Brotherhood', function() {
 
             expect(this.getChatLogs(10)).toContain('player2 uses Retire to the Brotherhood to discard Doji Whisperer, Daidoji Uji, Matsu Berserker, Bayushi Shoju, Doji Challenger and Daidoji Netsu');
             expect(this.getChatLogs(10)).toContain('player1 reveals Dispatch to Nowhere, Windswept Yurt and Shiba Tsukune');
-            expect(this.getChatLogs(10)).toContain('player2 is shuffling their dynasty deck');
+            expect(this.getChatLogs(10)).not.toContain('player2 is shuffling their dynasty deck'); // discarded nothing, revealed nothing (EmeraldDB ruling)
             expect(this.getChatLogs(10)).toContain('player1 is shuffling their dynasty deck');
 
             expect(this.shoju2.location).toBe('dynasty deck');

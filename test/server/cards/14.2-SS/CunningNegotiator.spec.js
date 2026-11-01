@@ -104,7 +104,7 @@ describe('Cunning Negotiator', function() {
 
         it('should trigger the province ability for the winner', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -127,7 +127,7 @@ describe('Cunning Negotiator', function() {
 
         it('should do nothing if you decline triggering the province ability', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -149,7 +149,7 @@ describe('Cunning Negotiator', function() {
 
         it('should prevent using the province if you use the duel first', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -171,7 +171,7 @@ describe('Cunning Negotiator', function() {
 
         it('should not prevent using the province via the duel if you use the province first', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -191,8 +191,8 @@ describe('Cunning Negotiator', function() {
 
         it('should not prevent using the province if your opponent wins the duel', function() {
             this.noMoreActions();
-            let p1Fate = this.player1.fate;
-            let fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -205,6 +205,7 @@ describe('Cunning Negotiator', function() {
             this.player1.clickPrompt('2');
             this.player2.clickPrompt('1');
             this.player1.clickPrompt('Yes');
+            expect(this.getChatLogs(10)).toContain('player1 chooses to trigger a province ability');
             this.player1.pass();
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.clickCard(this.manicuredGarden);
@@ -307,7 +308,7 @@ describe('Cunning Negotiator', function() {
 
         it('shinjo ambusher should prevent the duel from triggering the province', function() {
             this.noMoreActions();
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             this.initiateConflict({
                 attackers: [this.cunning],
@@ -377,3 +378,70 @@ describe('Cunning Negotiator + Emperor', function() {
         });
     });
 });
+
+describe('Cunning Negotiator + The Empty City', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['cunning-negotiator', 'fushicho'],
+                    conflictDiscard: ['guardian-kami']
+                },
+                player2: {
+                    provinces: ['the-empty-city'],
+                    inPlay: ['fushicho', 'doji-whisperer'],
+                    dynastyDiscard: ['crafty-tsukumogami']
+                }
+            });
+            this.cunning = this.player1.findCardByName('cunning-negotiator');
+            this.fushicho = this.player1.findCardByName('fushicho');
+            this.kami = this.player1.findCardByName('guardian-kami');
+            this.city = this.player2.findCardByName('the-empty-city', 'province 1');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.tsukumogami = this.player2.findCardByName('crafty-tsukumogami');
+        });
+
+        function winDuel(test) {
+            test.noMoreActions();
+            test.initiateConflict({
+                type: 'political',
+                attackers: [test.cunning],
+                defenders: [test.whisperer],
+                province: test.city
+            });
+            test.player2.pass();
+            test.player1.clickCard(test.cunning);
+            test.player2.clickCard(test.whisperer);
+            test.player1.clickPrompt('5');
+            test.player2.clickPrompt('1');
+            test.player1.clickPrompt('Yes');
+        }
+
+        it('should let the winner choose which province action to trigger', function() {
+            winDuel(this);
+            expect(this.player1).toHavePrompt('Choose an ability to trigger');
+            expect(this.player1).toHavePromptButton('Claim a ring');
+            expect(this.player1).toHavePromptButton('Put a Spirit character into play');
+            this.player1.clickPrompt('Put a Spirit character into play');
+            this.player1.clickCard(this.kami);
+            expect(this.kami.location).toBe('play area');
+        });
+
+        it('can trigger the province after its owner put a character into play with it', function() {
+            this.player1.pass();
+            this.player2.clickCard(this.city);
+            this.player2.clickPrompt('Put a Spirit character into play');
+            this.player2.clickCard(this.tsukumogami);
+            expect(this.tsukumogami.location).toBe('play area');
+            winDuel(this);
+            expect(this.player1).toHavePrompt('Choose an ability to trigger');
+            this.player1.clickPrompt('Claim a ring');
+            this.player1.clickRing('water');
+            this.player1.clickCard(this.fushicho);
+            expect(this.fushicho.bowed).toBe(true);
+            expect(this.game.rings.water.claimedBy).toBe(this.player1.player.name);
+        });
+    });
+});
+

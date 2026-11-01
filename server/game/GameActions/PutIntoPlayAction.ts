@@ -1,38 +1,48 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName, Location, Players } from '../Constants.js';
+import { CardType, EntersPlayStatus, EventName, Location, Players, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent, Defaults } from './GameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;
-    status?: 'honored' | 'ordinary' | 'dishonored';
+    status?: EntersPlayStatus;
     controller?: Players;
     side?: Player;
     overrideLocation?: Location;
 }
 
-export class PutIntoPlayAction extends CardGameAction {
-    name = 'putIntoPlay';
-    eventName = EventName.OnCharacterEntersPlay;
-    cost = 'putting {0} into play';
-    targetType = [CardType.Character];
+export type PutIntoPlayDefaults = 'fate' | 'status' | 'controller';
+
+export class PutIntoPlayAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<
+    PutIntoPlayProperties,
+    EventName.OnCharacterEntersPlay,
+    Context,
+    PutIntoPlayDefaults
+> {
+    override name = 'putIntoPlay';
+    override restriction = RestrictionType.PutIntoPlay;
+    override eventName = EventName.OnCharacterEntersPlay;
+    override cost = 'putting {0} into play';
+    override targetType = [CardType.Character];
     intoConflict: boolean;
-    defaultProperties: PutIntoPlayProperties = {
+    override defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
-        status: 'ordinary',
-        controller: Players.Self,
-        side: undefined,
-        overrideLocation: undefined
+        status: EntersPlayStatus.Ordinary,
+        controller: Players.Self
     };
     constructor(
-        properties: ((context: AbilityContext) => PutIntoPlayProperties) | PutIntoPlayProperties,
-        intoConflict = true
+        properties: ((context: Context) => PutIntoPlayProperties) | PutIntoPlayProperties,
+        intoConflict: boolean
     ) {
         super(properties);
         this.intoConflict = intoConflict;
+        if(intoConflict) {
+            this.name = 'putIntoConflict';
+        }
     }
 
     getDefaultSide(context: AbilityContext) {
@@ -43,26 +53,25 @@ export class PutIntoPlayAction extends CardGameAction {
         return context.player;
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let { target } = this.getProperties(context);
-        return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), [target]];
+    protected override effectMessage(): MessageArgs {
+        return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), []];
     }
 
-    canAffect(card: DrawCard, context: AbilityContext): boolean {
-        let properties = this.getProperties(context) as PutIntoPlayProperties;
-        let contextCopy = context.copy({ source: card });
-        let player = this.getPutIntoPlayPlayer(contextCopy);
-        let targetSide = properties.side || this.getDefaultSide(contextCopy);
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
+        const contextCopy = context.copy({ source: card });
+        const player = this.getPutIntoPlayPlayer(contextCopy);
+        const targetSide = properties.side || this.getDefaultSide(contextCopy);
 
-        if(!context || !super.canAffect(card, context)) {
+        if(!super.canAffect(card, context)) {
             return false;
         } else if(!player || card.anotherUniqueInPlay(player)) {
             return false;
         } else if(card.location === Location.PlayArea || card.isFacedown()) {
             return false;
-        } else if(!card.checkRestrictions('putIntoPlay', context)) {
+        } else if(!card.checkRestrictions(RestrictionType.PutIntoPlay, context)) {
             return false;
-        } else if(!player.checkRestrictions('enterPlay', contextCopy)) {
+        } else if(!player.checkRestrictions(RestrictionType.EnterPlay, contextCopy) || !card.checkRestrictions(RestrictionType.EnterPlay, contextCopy)) {
             return false;
         } else if(this.intoConflict) {
             // There is no current conflict, or no context (cards must be put into play by a player, not a framework event)
@@ -73,7 +82,7 @@ export class PutIntoPlayAction extends CardGameAction {
             if(card.hasDash(context.game.currentConflict.conflictType)) {
                 return false;
             }
-            if(!card.checkRestrictions('putIntoConflict', context)) {
+            if(!card.checkRestrictions(RestrictionType.PutIntoConflict, context)) {
                 return false;
             }
 
@@ -88,24 +97,24 @@ export class PutIntoPlayAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnCharacterEntersPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { fate, status, controller, side, overrideLocation } = this.getProperties(
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnCharacterEntersPlay, Context>, card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): void {
+        const { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
-        ) as PutIntoPlayProperties;
+        );
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.fate = fate;
-        event.status = status;
+        event.status = status === EntersPlayStatus.Ordinary ? card.entersPlayStatus() : status;
         event.controller = controller;
         event.intoConflict = this.intoConflict;
         event.originalLocation = overrideLocation || card.location;
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnCharacterEntersPlay>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
-        let player = this.getPutIntoPlayPlayer(context);
-        const card = event.card as DrawCard;
+    override eventHandler(event: ActionEvent<EventName.OnCharacterEntersPlay, Context>, additionalProperties: ActionOverrides = {}): void {
+        const context = event.context;
+        const player = this.getPutIntoPlayPlayer(context);
+        const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         card.new = true;
         if(event.fate) {
@@ -117,11 +126,11 @@ export class PutIntoPlayAction extends CardGameAction {
             finalController = finalController.opponent;
         }
 
-        let targetSide = event.side;
+        const targetSide = event.side;
 
-        if(event.status === 'honored') {
+        if(event.status === EntersPlayStatus.Honored) {
             card.honor();
-        } else if(event.status === 'dishonored') {
+        } else if(event.status === EntersPlayStatus.Dishonored) {
             card.dishonor();
         }
         if(card.hasPrintedKeyword('corrupted')) {
@@ -130,11 +139,14 @@ export class PutIntoPlayAction extends CardGameAction {
 
         player.moveCard(card, Location.PlayArea);
 
-        //moveCard sets all this stuff and only works if the owner is moving cards, so we're switching it around
+        // moveCard put the card into the pile of the player who put it into play
         if(card.controller !== finalController) {
+            const index = player.cardsInPlay.indexOf(card);
+            if(index >= 0) {
+                player.cardsInPlay.splice(index, 1);
+            }
             card.controller = finalController;
             card.setDefaultController(card.controller);
-            card.owner.cardsInPlay.splice(card.owner.cardsInPlay.indexOf(card), 1);
             card.controller.cardsInPlay.push(card);
         }
 

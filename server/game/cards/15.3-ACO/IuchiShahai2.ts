@@ -1,23 +1,23 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { addKeyword } from '../../effects.js';
 
 class IuchiShahai2 extends DrawCard {
     static id = 'iuchi-shahai-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => this.game.getFirstPlayer() === context.player,
-            effect: AbilityDsl.effects.addKeyword('covert')
+            condition: (context) => this.game.getFirstPlayer() === context.player,
+            effect: addKeyword('covert')
         });
 
-        this.reaction({
-            title: 'Place 1 fate on this character',
-            cost: AbilityDsl.costs.payHonor(1),
-            when: {
-                onCardPlayed: (event, context) => (event.card.hasTrait('meishodo') || event.card.hasTrait('maho')) && event.player === context.player
-            },
-            gameAction: AbilityDsl.actions.placeFate()
-        });
+        this.reaction('Place 1 fate on this character')
+            .when({
+                onCardPlayed: (event, context) => (event.card.hasTrait(Trait.Meishodo) || event.card.hasTrait(Trait.Maho)) && event.player === context.player
+            })
+            .cost(costs.payHonor(1))
+            .placeFate();
     }
 }
 

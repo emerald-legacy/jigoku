@@ -1,33 +1,25 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Location } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { setBaseProvinceStrength } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class CommandByName extends DrawCard {
     static id = 'command-by-name';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Reduce province strength',
-            cost: [
-                AbilityDsl.costs.payHonor(1),
-                AbilityDsl.costs.discardCard({ location: Location.Hand })
-            ],
-            condition: (context) => context.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.selectCard(context => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: card => card.isConflictProvince(),
-                message: '{0} reduces the strength of {1} to 0',
-                messageArgs: cards => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                    targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.setBaseProvinceStrength(0)
+    override setupCardAbilities() {
+        this.action('Reduce province strength')
+            .condition((context) => context.game.isDuringConflict())
+            .cost(costs.payHonor(1))
+            .cost(costs.discardCard({ location: Location.Hand }))
+            .selectAttackedProvince({
+                message: (context, cards) => msg`${context.player} sets the base strength of ${cards} to 0`,
+                gameAction: cardLastingEffect(() => ({
+                    effect: setBaseProvinceStrength(0)
                 }))
-            })),
-            effect: 'reduce the strength of an attacked province to 0'
-        });
+            })
+            .chatText('set the base strength of an attacked province to 0');
     }
 }
 

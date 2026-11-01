@@ -1,7 +1,7 @@
-import ActionWindow from '../../../build/server/game/gamesteps/ActionWindow.js';
+import { ActionWindow } from '../../../build/server/game/gamesteps/ActionWindow.js';
 import Game from '../../../build/server/game/Game.js';
 import Player from '../../../build/server/game/Player.js';
-import * as Settings from '../../../build/server/settings.js';
+import * as Settings from '../../../build/test/helpers/settings.js';
 
 describe('ActionWindow', function() {
     beforeEach(function() {

@@ -78,3 +78,71 @@ describe('Discerning Yoriki', function() {
         });
     });
 });
+
+describe('Discerning Yoriki - revealed cards and own hand', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer', 'shrewd-investigator'],
+                    hand: ['assassination', 'banzai']
+                },
+                player2: {
+                    inPlay: ['discerning-yoriki', 'shrewd-investigator'],
+                    hand: ['offer-testimony', 'let-go', 'ornate-fan']
+                }
+            });
+
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.shrewdP1 = this.player1.findCardByName('shrewd-investigator');
+            this.banzai = this.player1.findCardByName('banzai');
+
+            this.yoriki = this.player2.findCardByName('discerning-yoriki');
+            this.shrewd = this.player2.findCardByName('shrewd-investigator');
+            this.testimony = this.player2.findCardByName('offer-testimony');
+            this.letGo = this.player2.findCardByName('let-go');
+        });
+
+        it('should trigger when cards in an opponent\'s hand are revealed', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.whisperer],
+                defenders: [this.shrewd]
+            });
+
+            this.player2.clickCard(this.testimony);
+            this.player2.clickCard(this.shrewd);
+            this.player1.clickCard(this.whisperer);
+            expect(this.player2).toHavePrompt('Choose a card to reveal');
+            this.player2.clickCard(this.letGo);
+            expect(this.player1).toHavePrompt('Choose a card to reveal');
+            this.player1.clickCard(this.banzai);
+            expect(this.getChatLogs(10)).toContain('player1 reveals Banzai! due to Offer Testimony');
+
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.yoriki);
+            this.player2.clickCard(this.yoriki);
+            expect(this.player2).toHavePrompt('Choose a character to honor');
+            this.player2.clickCard(this.yoriki);
+            expect(this.yoriki.isHonored).toBe(true);
+        });
+
+        it('should not trigger when an opponent looks at cards in your hand', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.shrewdP1],
+                defenders: [this.shrewd]
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.shrewdP1);
+            expect(this.getChatLogs(5)).toContain('player1 uses Shrewd Investigator to look at 3 random cards in player2\'s hand');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.yoriki.isHonored).toBe(false);
+        });
+    });
+});

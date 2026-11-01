@@ -46,17 +46,19 @@ describe('Soshi Shadowshaper', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.togashiKazue);
             });
 
-            it('should be able to target characters which were played as if from hand', function() {
+            it('should not be able to target characters which were played as if from hand (ruling #427)', function() {
                 this.noMoreActions();
                 expect(this.game.currentPhase).toBe('conflict');
                 this.player1.clickCard(this.brash);
                 this.player1.clickPrompt('0');
+                expect(this.brash.location).toBe('play area');
+                this.player2.pass();
+                this.adeptOfShadows = this.player1.playCharacterFromHand('adept-of-shadows');
                 this.player2.pass();
                 this.soshiShadowshaper = this.player1.clickCard('soshi-shadowshaper');
                 expect(this.player1).toHavePrompt('Soshi Shadowshaper');
-                expect(this.player1).toBeAbleToSelect(this.brash);
-                this.player1.clickCard(this.brash);
-                expect(this.brash.location).toBe('dynasty discard pile');
+                expect(this.player1).toBeAbleToSelect(this.adeptOfShadows);
+                expect(this.player1).not.toBeAbleToSelect(this.brash);
             });
 
             it('should target characters played from hand by either player', function() {
@@ -117,6 +119,47 @@ describe('Soshi Shadowshaper', function() {
                 expect(this.adeptOfShadows.location).toBe('hand');
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
+        });
+    });
+});
+
+describe('Soshi Shadowshaper and a character that came back into play', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['soshi-shadowshaper'],
+                    hand: ['assassination']
+                },
+                player2: {
+                    fate: 5,
+                    inPlay: ['kitsu-spiritcaller'],
+                    hand: ['ageless-crone']
+                }
+            });
+            this.shadowshaper = this.player1.findCardByName('soshi-shadowshaper');
+            this.spiritcaller = this.player2.findCardByName('kitsu-spiritcaller');
+        });
+
+        it('can\'t return it, as it didn\'t enter play from hand this time', function() {
+            this.player1.pass();
+            this.crone = this.player2.playCharacterFromHand('ageless-crone');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.shadowshaper],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard('assassination');
+            this.player1.clickCard(this.crone);
+            expect(this.crone.location).toBe('conflict discard pile');
+            this.player2.clickCard(this.spiritcaller);
+            this.player2.clickCard(this.crone);
+            expect(this.crone.location).toBe('play area');
+            this.player1.clickCard(this.shadowshaper);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.crone.location).toBe('play area');
         });
     });
 });

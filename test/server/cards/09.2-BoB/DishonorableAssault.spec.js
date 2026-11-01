@@ -303,8 +303,8 @@ describe('Dishonorable Assault', function() {
                 expect(this.whisperer.isDishonored).toBe(true);
                 expect(this.youth.isDishonored).toBe(true);
 
-                let honor1 = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor1 = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.omoidasu);
@@ -535,6 +535,54 @@ describe('Dishonorable Assault', function() {
                 expect(this.duty.location).toBe('conflict discard pile');
                 expect(this.policyDebate.location).toBe('conflict discard pile');
             });
+        });
+    });
+});
+
+describe('Dishonorable Assault and an attacker that cannot be targeted', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['isawa-ujina', 'adept-of-the-waves'],
+                    hand: ['cloak-of-night']
+                },
+                player2: {
+                    provinces: ['dishonorable-assault'],
+                    hand: ['fine-katana', 'ornate-fan']
+                }
+            });
+            this.ujina = this.player1.findCardByName('isawa-ujina');
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.cloak = this.player1.findCardByName('cloak-of-night');
+            this.assault = this.player2.findCardByName('dishonorable-assault');
+            this.katana = this.player2.findCardByName('fine-katana');
+            this.fan = this.player2.findCardByName('ornate-fan');
+            this.assault.facedown = false;
+        });
+
+        it('limits X to the attackers that can be targeted (EmeraldDB ruling)', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.ujina, this.adept],
+                defenders: [],
+                province: this.assault
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.cloak);
+            this.player1.clickCard(this.ujina);
+            expect(this.cloak.location).toBe('conflict discard pile');
+            this.player2.clickCard(this.assault);
+            expect(this.player2).toHavePrompt('Choose up to 1 card to discard');
+            this.player2.clickCard(this.katana);
+            this.player2.clickPrompt('Done');
+            expect(this.player2).toHavePrompt('Choose a character');
+            expect(this.player2).toBeAbleToSelect(this.adept);
+            expect(this.player2).not.toBeAbleToSelect(this.ujina);
+            this.player2.clickCard(this.adept);
+            expect(this.adept.isDishonored).toBe(true);
+            expect(this.player2.hand.length).toBe(1);
         });
     });
 });

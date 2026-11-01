@@ -38,7 +38,7 @@ describe('Bayushi Truthseeker', function () {
             this.noMoreActions();
             this.player1.clickCard(this.bayushiTruthseeker);
             expect(this.player1).toHavePrompt('Which card do you want to discard?');
-            this.player1.clickPrompt('Do not discard either card.');
+            this.player1.clickPrompt('Do not discard either card');
             expect(this.fan.location).toBe('conflict deck');
             expect(this.shrineMaiden.location).toBe('conflict deck');
         });

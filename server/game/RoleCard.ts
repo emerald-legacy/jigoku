@@ -1,7 +1,8 @@
 import type { AbilityContext } from './AbilityContext.js';
+import type { GameActionName } from './GameActions/GameActionRegistry.js';
 import BaseCard from './BaseCard.js';
-import { EffectName, Element } from './Constants.js';
-import type Player from './Player.js';
+import { EffectName, Element, elementTrait } from './Constants.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 const illegalActions = new Set([
     'bow',
@@ -14,7 +15,6 @@ const illegalActions = new Set([
     'sendHome',
     'putIntoPlay',
     'putIntoConflict',
-    'break',
     'returnToHand',
     EffectName.TakeControl,
     'placeFate',
@@ -22,18 +22,9 @@ const illegalActions = new Set([
 ]);
 
 export class RoleCard extends BaseCard {
-    influenceModifier = 0;
     isRole = true;
 
-    getInfluence(): number {
-        return (this.cardData.influence_pool ?? 0) + this.influenceModifier;
-    }
-
-    flipFaceup(): void {
-        this.facedown = false;
-    }
-
-    getSummary(activePlayer: Player, hideWhenFaceup = false) {
+    override getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,
@@ -42,11 +33,12 @@ export class RoleCard extends BaseCard {
         };
     }
 
-    allowGameAction(actionType: string, context?: AbilityContext): boolean {
+    override allowGameAction(actionType: GameActionName, context: AbilityContext): boolean {
         return !illegalActions.has(actionType) && super.allowGameAction(actionType, context);
     }
 
+    /** The elements of the role, from its traits (an Allied role has all five). */
     getElement(): Element[] {
-        return [];
+        return Object.values(Element).filter((element) => this.hasTrait(elementTrait(element)));
     }
 }

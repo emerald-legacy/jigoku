@@ -1,15 +1,17 @@
-import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotContribute } from '../../effects.js';
 
 class EnigmaticMagistrate extends DrawCard {
     static id = 'enigmatic-magistrate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isAttacking(),
-            effect: AbilityDsl.effects.cannotContribute(() => {
-                return (card: BaseCard) => (card as DrawCard).getCost() === 0 || (((card as DrawCard).getCost() ?? 0) !== 0 && ((card as DrawCard).getCost() ?? 0) % 2 === 0);
+            condition: (context) => context.source.isAttacking(),
+            effect: cannotContribute(() => {
+                return (card) => {
+                    const cost = card.getCost();
+                    return cost !== null && cost % 2 === 0;
+                };
             })
         });
     }

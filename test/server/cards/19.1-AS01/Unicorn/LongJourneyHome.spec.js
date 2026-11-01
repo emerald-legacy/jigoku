@@ -112,3 +112,54 @@ describe('Long Journey Home', function () {
         });
     });
 });
+
+describe('Long Journey Home played by its owner\'s opponent', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    inPlay: ['mirumoto-raitsugu'],
+                    hand: ['trading-on-the-sand-road', 'retreat']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'doji-challenger'],
+                    hand: ['retreat'],
+                    conflictDiscard: ['long-journey-home']
+                }
+            });
+            this.raitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+            this.retreat = this.player1.findCardByName('retreat');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.retreat2 = this.player2.findCardByName('retreat');
+            this.longJourneyHome = this.player2.findCardByName('long-journey-home');
+            this.player2.moveCard(this.longJourneyHome, 'conflict deck');
+            this.noMoreActions();
+            this.player1.clickCard('trading-on-the-sand-road');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.raitsugu],
+                defenders: [this.challenger],
+                type: 'military'
+            });
+        });
+
+        it('reacts to a character of the opponent of the player who may play it', function () {
+            this.player2.clickCard(this.retreat2);
+            this.player2.clickCard(this.challenger);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.longJourneyHome);
+            this.player1.clickCard(this.longJourneyHome);
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.bowed).toBe(true);
+            expect(this.longJourneyHome.location).toBe('conflict discard pile');
+        });
+
+        it('does not react to a character of the player who may play it', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.retreat);
+            this.player1.clickCard(this.raitsugu);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

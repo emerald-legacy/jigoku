@@ -26,7 +26,7 @@ describe('Exemplary Negotiator', function () {
         it('Discard 2', function () {
             this.diplomat.dishonor();
 
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.player1.clickCard(this.negotiator);
             expect(this.player1).toHavePrompt('Choose up to 2 cards to discard');
@@ -45,7 +45,7 @@ describe('Exemplary Negotiator', function () {
         it('Discard 1', function () {
             this.diplomat.dishonor();
 
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.player1.clickCard(this.negotiator);
             expect(this.player1).toHavePrompt('Choose up to 2 cards to discard');

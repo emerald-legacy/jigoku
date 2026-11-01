@@ -91,5 +91,56 @@ describe('Ichigenkin Soloist', function() {
                 expect(this.player2).toBeAbleToSelect(this.wanderingRonin);
             });
         });
+
+        describe('Ichigenkin Soloist, if controller does not have composure,', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'draw',
+                    player1: {
+                        inPlay: ['ichigenkin-soloist', 'guardian-kami']
+                    },
+                    player2: {
+                        inPlay: ['miya-mystic'],
+                        hand: ['assassination']
+                    }
+                });
+                this.ichigenkinSoloist = this.player1.findCardByName('ichigenkin-soloist');
+                this.guardianKami = this.player1.findCardByName('guardian-kami');
+                this.assassination = this.player2.findCardByName('assassination');
+            });
+
+            it('can be targeted by an opponent\'s event when the honor bids are equal', function() {
+                this.player1.clickPrompt('2');
+                this.player2.clickPrompt('2');
+                expect(this.player1.player.hasComposure()).toBe(false);
+                this.noMoreActions();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.ichigenkinSoloist],
+                    defenders: []
+                });
+                this.player2.clickCard(this.assassination);
+                expect(this.player2).toHavePrompt('Choose a character');
+                expect(this.player2).toBeAbleToSelect(this.ichigenkinSoloist);
+                expect(this.player2).toBeAbleToSelect(this.guardianKami);
+            });
+
+            it('can be targeted by an opponent\'s event when its controller bid higher', function() {
+                this.player1.clickPrompt('2');
+                this.player2.clickPrompt('1');
+                expect(this.player1.player.hasComposure()).toBe(false);
+                this.noMoreActions();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.ichigenkinSoloist],
+                    defenders: []
+                });
+                this.player2.clickCard(this.assassination);
+                expect(this.player2).toHavePrompt('Choose a character');
+                expect(this.player2).toBeAbleToSelect(this.ichigenkinSoloist);
+                this.player2.clickCard(this.ichigenkinSoloist);
+                expect(this.ichigenkinSoloist.location).toBe('dynasty discard pile');
+            });
+        });
     });
 });

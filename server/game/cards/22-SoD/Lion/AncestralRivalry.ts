@@ -1,52 +1,40 @@
-import { CardType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Players } from '../../../Constants.js';
+import { perConflict } from '../../../AbilityLimit.js';
+import { modifyBothSkills } from '../../../effects.js';
+import { cardLastingEffect, claimImperialFavor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AncestralRivalry extends DrawCard {
     static id = 'ancestral-rivalry';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Give a character +3/+3 or claim favor',
-
-            max: AbilityDsl.limit.perConflict(1),
-            targets: {
-                character: {
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: card => card.isParticipating()
+    override setupCardAbilities() {
+        this.conflictAction('Give a character +3/+3 or claim favor')
+            .target({
+                name: 'character',
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (card) => card.isParticipating()
+            })
+            .select({
+                name: 'select',
+                dependsOn: 'character',
+                player: Players.Opponent
+            }, {
+                'Give the character +3/+3': {
+                    action: cardLastingEffect((context) => ({
+                        target: context.targets.character,
+                        effect: modifyBothSkills(3)
+                    })),
+                    chatText: (context) => msg`give ${context.targets.character}${' +3'}${'military'}${'/+3'}${'political'}`
                 },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'character',
-                    player: Players.Opponent,
-                    choices: {
-                        'Give the character +3/+3': AbilityDsl.actions.cardLastingEffect(context => ({
-                            target: context.targets.character,
-                            effect: AbilityDsl.effects.modifyBothSkills(3)
-                        })),
-                        'Let opponent claim favor': AbilityDsl.actions.claimImperialFavor(context => ({
-                            target: context.player
-                        }))
-                    }
+                'Let opponent claim favor': {
+                    action: claimImperialFavor((context) => ({
+                        target: context.player
+                    })),
+                    chatText: () => msg`claim the Imperial Favor`
                 }
-            },
-            effect: '{1}{2}{3}{4}{5}{6}',
-            effectArgs: (context) => context.selects.select.choice === 'Let opponent claim favor' ? [
-                'claim the Imperial Favor',
-                '',
-                '',
-                '',
-                '',
-                ''
-            ] : [
-                'give ',
-                context.targets.character,
-                ' +3',
-                'military',
-                '/+3',
-                'political'
-            ]
-        });
+            })
+            .max(perConflict(1));
     }
 }

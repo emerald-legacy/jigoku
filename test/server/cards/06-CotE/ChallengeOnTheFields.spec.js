@@ -86,9 +86,9 @@ describe('Challenge on the Fields', function () {
                 this.player1.clickCard(this.defendYourHonor);
                 this.player1.clickCard(this.borderRider);
                 this.player2.clickCard(this.agashaSwordsmith);
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.battleMaidenRecruit.getMilitarySkill()).toBe(0 + 2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1 + 1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.battleMaidenRecruit.militarySkill).toBe(0 + 2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1 + 1);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
                 expect(this.getChatLogs(2)).toContain('Border Rider: 3 vs 4: Agasha Swordsmith'); // 2 (skill) + 1 (honor bid) vs. 1 (skill) + 1 (CotF) + 2 (honor bid)
@@ -96,8 +96,8 @@ describe('Challenge on the Fields', function () {
                 this.player2.clickPrompt('Increase honor bid');
                 expect(this.getChatLogs(4)).toContain('Battle Maiden Recruit: 3 vs 5: Agasha Swordsmith'); // 0 (skill) + 2 (CotF) + 1 (honor bid) vs. 1 (skill) + 1 (CotF) + 3 (honor bid)
                 expect(this.battleMaidenRecruit.isParticipating()).toBe(false);
-                expect(this.battleMaidenRecruit.getMilitarySkill()).toBe(0);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.battleMaidenRecruit.militarySkill).toBe(0);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
             });
         });
 
@@ -180,18 +180,18 @@ describe('Challenge on the Fields', function () {
                     type: 'political'
                 });
                 this.player2.pass();
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
                 this.player1.clickCard(this.challengeOnTheFields);
                 this.player1.clickCard(this.borderRider);
                 this.player1.clickCard(this.agashaSwordsmith);
                 this.player2.clickPrompt('Pass');
-                expect(this.borderRider.getMilitarySkill()).toBe(2 + 2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1 + 1);
+                expect(this.borderRider.militarySkill).toBe(2 + 2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1 + 1);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
             });
 
             it('should send the loser home', function () {
@@ -220,15 +220,15 @@ describe('Challenge on the Fields', function () {
                     type: 'political'
                 });
                 this.player2.pass();
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
                 this.player1.clickCard(this.challengeOnTheFields);
                 this.player1.clickCard(this.borderRider);
                 this.player1.clickCard(this.agashaSwordsmith);
                 this.player2.clickCard('stay-your-hand');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.agashaSwordsmith.getMilitarySkill()).toBe(1);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.agashaSwordsmith.militarySkill).toBe(1);
             });
         });
 
@@ -275,6 +275,87 @@ describe('Challenge on the Fields', function () {
 
                 expect(this.getChatLogs(5)).toContain('Border Rider: 5 vs 3: Agasha Swordsmith');
             });
+        });
+
+        describe('under Emerald rules with Shosuro Technique', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['border-rider', 'battle-maiden-recruit', 'ide-messenger'],
+                        hand: ['challenge-on-the-fields']
+                    },
+                    player2: {
+                        fate: 5,
+                        inPlay: ['agasha-swordsmith', 'ancient-master'],
+                        hand: ['shosuro-technique']
+                    },
+                    gameMode: 'emerald'
+                });
+                this.borderRider = this.player1.findCardByName('border-rider');
+                this.battleMaidenRecruit = this.player1.findCardByName('battle-maiden-recruit');
+                this.ideMessenger = this.player1.findCardByName('ide-messenger');
+                this.challengeOnTheFields = this.player1.findCardByName('challenge-on-the-fields');
+
+                this.agashaSwordsmith = this.player2.findCardByName('agasha-swordsmith');
+                this.ancientMaster = this.player2.findCardByName('ancient-master');
+                this.technique = this.player2.findCardByName('shosuro-technique');
+            });
+
+            it('ignores the printed skill but keeps the bonus for other participating characters', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.borderRider, this.battleMaidenRecruit, this.ideMessenger],
+                    defenders: [this.agashaSwordsmith, this.ancientMaster],
+                    type: 'political'
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.challengeOnTheFields);
+                this.player1.clickCard(this.borderRider);
+                this.player1.clickCard(this.agashaSwordsmith);
+                this.player2.clickCard(this.technique);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+
+                expect(this.getChatLogs(5)).toContain('Border Rider: 3 vs 2: Agasha Swordsmith');
+            });
+        });
+    });
+});
+
+describe('Challenge on the Fields with Shiksha Scout', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 11,
+                    inPlay: ['border-rider', 'shiksha-scout'],
+                    hand: ['challenge-on-the-fields']
+                },
+                player2: {
+                    honor: 11,
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.borderRider = this.player1.findCardByName('border-rider');
+            this.scout = this.player1.findCardByName('shiksha-scout');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderRider, this.scout],
+                defenders: [this.whisperer],
+                type: 'political'
+            });
+            this.player2.pass();
+        });
+
+        it('counts Shiksha Scout\'s additional character (EmeraldDB ruling)', function () {
+            this.player1.clickCard('challenge-on-the-fields');
+            this.player1.clickCard(this.borderRider);
+            this.player1.clickCard(this.whisperer);
+            // printed 2, +1 for Shiksha Scout and +1 for its additional character
+            expect(this.borderRider.militarySkill).toBe(4);
         });
     });
 });

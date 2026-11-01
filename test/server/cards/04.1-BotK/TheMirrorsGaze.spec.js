@@ -16,7 +16,7 @@ describe('The Mirror\'s Gaze', function () {
                             'fine-katana',
                             'for-greater-glory'
                         ],
-                        conflictDiscardPile: ['banzai']
+                        conflictDiscard: ['banzai']
                     },
                     player2: {
                         fate: 4,
@@ -359,6 +359,229 @@ describe('The Mirror\'s Gaze', function () {
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
+        });
+    });
+});
+
+describe('The Mirror\'s Gaze after a cancelled event', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asahina-storyteller', 'doji-whisperer'],
+                    hand: ['the-mirror-s-gaze', 'forged-edict']
+                },
+                player2: {
+                    inPlay: ['seppun-guardsman'],
+                    hand: ['banzai']
+                }
+            });
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.guardsman = this.player2.findCardByName('seppun-guardsman');
+            this.mirrorGaze = this.player1.playAttachment('the-mirror-s-gaze', this.storyteller);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.storyteller],
+                defenders: [this.guardsman]
+            });
+        });
+
+        it('is not offered, as the event\'s effects never resolved', function () {
+            this.player2.clickCard('banzai');
+            this.player2.clickCard(this.guardsman);
+            expect(this.player1).toBeAbleToSelect('forged-edict');
+            this.player1.clickCard('forged-edict');
+            expect(this.player1).toHavePrompt('Forged Edict');
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+            expect(this.player1).not.toBeAbleToSelect(this.mirrorGaze);
+        });
+    });
+});
+
+describe('The Mirror\'s Gaze and play restrictions', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asahina-storyteller', 'doji-whisperer'],
+                    hand: ['the-mirror-s-gaze']
+                },
+                player2: {
+                    inPlay: ['seppun-guardsman', 'doji-challenger'],
+                    hand: ['fight-on', 'at-any-cost']
+                }
+            });
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.guardsman = this.player2.findCardByName('seppun-guardsman');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.mirrorGaze = this.player1.playAttachment('the-mirror-s-gaze', this.storyteller);
+            this.whisperer.bow();
+            this.guardsman.bow();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.storyteller],
+                defenders: [this.challenger]
+            });
+        });
+
+        it('can\'t copy an event whose "While …" restriction the copying player doesn\'t meet (developer ruling)', function () {
+            this.player2.clickCard('fight-on');
+            this.player2.clickCard(this.guardsman);
+            expect(this.guardsman.isParticipating()).toBe(true);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+
+        it('can copy a Limited event after its player played a Limited card this round (developer ruling)', function () {
+            this.player1.player.limitedPlayed = this.player1.player.maxLimited;
+            this.player2.clickCard('at-any-cost');
+            this.player2.clickCard(this.challenger);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.mirrorGaze);
+        });
+
+    });
+});
+
+describe('The Mirror\'s Gaze and events whose effects use their triggering condition', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['doji-challenger'],
+                    // in the discard pile, where their interrupts and reactions can't trigger during the setup
+                    conflictDiscard: ['trading-on-the-sand-road', 'supporting-cast', 'disrupted-supply-lines', 'know-the-terrain']
+                }
+            });
+        });
+
+        it('can\'t copy them (developer ruling)', function () {
+            for(const id of ['trading-on-the-sand-road', 'supporting-cast', 'disrupted-supply-lines', 'know-the-terrain']) {
+                const card = this.player2.findCardByName(id);
+                const abilities = [...card.abilities.actions, ...card.abilities.reactions];
+                expect(abilities.length).toBeGreaterThan(0);
+                expect(abilities.every((ability) => ability.cannotBeMirrored)).toBe(true);
+            }
+        });
+    });
+});
+
+describe('The Mirror\'s Gaze and Hantei XXXVIII', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hantei-xxxviii', 'brash-samurai'],
+                    hand: ['banzai']
+                },
+                player2: {
+                    inPlay: ['asahina-storyteller', 'seppun-guardsman'],
+                    hand: ['the-mirror-s-gaze']
+                }
+            });
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.storyteller = this.player2.findCardByName('asahina-storyteller');
+            this.guardsman = this.player2.findCardByName('seppun-guardsman');
+            this.player1.pass();
+            this.mirror = this.player2.playAttachment('the-mirror-s-gaze', this.storyteller);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.brash],
+                defenders: [this.guardsman]
+            });
+            this.player2.pass();
+        });
+
+        it('Hantei can\'t choose the targets of a copy, which isn\'t triggered (EmeraldDB ruling)', function () {
+            this.player1.clickCard('banzai');
+            this.player1.clickCard(this.brash);
+            this.player1.clickPrompt('Done');
+            expect(this.player2).toBeAbleToSelect(this.mirror);
+            this.player2.clickCard(this.mirror);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Banzai!');
+            expect(this.player2).toBeAbleToSelect(this.guardsman);
+        });
+    });
+});
+
+
+describe('The Mirror\'s Gaze and events ruling #376 doesn\'t exclude', function () {
+    integration(function () {
+        it('copies Gift of Amaterasu, ignoring its triggering condition', function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'asahina-storyteller', attachments: ['the-mirror-s-gaze'] }]
+                },
+                player2: {
+                    inPlay: ['akodo-toturi'],
+                    hand: ['gift-of-amaterasu']
+                }
+            });
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
+            this.gaze = this.player1.findCardByName('the-mirror-s-gaze');
+            this.toturi = this.player2.findCardByName('akodo-toturi');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.toturi],
+                defenders: []
+            });
+            this.noMoreActions();
+
+            this.player2.clickCard('gift-of-amaterasu');
+            this.player2.clickCard(this.toturi);
+            expect(this.toturi.isHonored).toBe(true);
+            expect(this.player1).toBeAbleToSelect(this.gaze);
+            this.player1.clickCard(this.gaze);
+            this.player1.clickCard(this.storyteller);
+            expect(this.storyteller.isHonored).toBe(true);
+        });
+
+        it('copies Try Again Tomorrow when its player meets the play restriction', function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'asahina-storyteller', attachments: ['the-mirror-s-gaze'] }, 'matsu-berserker', 'akodo-toturi']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['try-again-tomorrow']
+                }
+            });
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
+            this.gaze = this.player1.findCardByName('the-mirror-s-gaze');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.toturi = this.player1.findCardByName('akodo-toturi');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.storyteller.honor();
+            this.whisperer.honor();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.storyteller, this.berserker, this.toturi],
+                defenders: [this.whisperer]
+            });
+
+            this.player2.clickCard('try-again-tomorrow');
+            this.player2.clickCard(this.berserker);
+            expect(this.berserker.isParticipating()).toBe(false);
+            expect(this.player1).toBeAbleToSelect(this.gaze);
+            this.player1.clickCard(this.gaze);
+            this.player1.clickCard(this.toturi);
+            expect(this.toturi.isParticipating()).toBe(false);
         });
     });
 });

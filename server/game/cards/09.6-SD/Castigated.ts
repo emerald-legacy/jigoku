@@ -1,34 +1,28 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, ConflictType, SkillType, Trait } from '../../Constants.js';
+import { delayedEffect } from '../../effects.js';
+import { discardFromPlay } from '../../GameActions/GameActions.js';
 
 class Castigated extends DrawCard {
     static id = 'castigated';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
+        this.playOnlyIf((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait(Trait.Imperial)));
+
         this.whileAttached({
-            effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext<this>) => !!context.source.parentCharacter && !context.source.parentCharacter.hasDash('political') && context.source.parentCharacter.getPoliticalSkill() < 1,
-                message: '{0} is discarded by {1}',
-                messageArgs: (context: AbilityContext<this>) => [context.source.parentCharacter, context.source],
-                gameAction: AbilityDsl.actions.discardFromPlay()
+            effect: delayedEffect({
+                condition: (context) => !!context.source.parentCharacter && !context.source.parentCharacter.hasDash(SkillType.Political) && context.source.parentCharacter.politicalSkill < 1,
+                message: (context) => msg`${context.source.parentCharacter} is discarded by ${context.source}`,
+                gameAction: discardFromPlay()
             })
         });
     }
 
-    canPlayOn(card: BaseCard | Ring) {
-        return card instanceof DrawCard && card.isParticipating() && super.canPlayOn(card);
-    }
-
-    canPlay(context: AbilityContext, playType: string) {
-        if(!context.game.isDuringConflict('political') || !context.player.cardsInPlay.some((card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('imperial'))) {
-            return false;
-        }
-
-        return super.canPlay(context, playType);
+    override canPlayOn(card: BaseCard | Ring) {
+        return card.isCard() && card.isDrawCard() && card.isParticipating() && super.canPlayOn(card);
     }
 }
 

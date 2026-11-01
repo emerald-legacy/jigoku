@@ -58,7 +58,18 @@ describe('A Swallow\'s Return', function () {
                 expect(this.player2).toHavePromptButton('Honored Blade');
                 expect(this.player2).toHavePromptButton('Play nothing');
                 expect(this.getChatLogs(3)).toContain(
-                    'player2 plays A Swallow\'s Return, revealing Ready for Battle, Honored Blade and Assassination to choose one of those to play'
+                    'player2 plays A Swallow\'s Return to look at the top 3 cards of player1\'s conflict deck'
+                );
+            });
+
+            it('should discard all three when nothing is played', function () {
+                this.player2.clickCard(this.swallowsReturn);
+                this.player2.clickPrompt('Play nothing');
+                expect(this.assassination.location).toBe('conflict discard pile');
+                expect(this.honoredBlade.location).toBe('conflict discard pile');
+                expect(this.readyForBattle.location).toBe('conflict discard pile');
+                expect(this.getChatLogs(5)).toContain(
+                    'player2 plays nothing and discards Ready for Battle, Honored Blade and Assassination'
                 );
             });
 
@@ -125,6 +136,51 @@ describe('A Swallow\'s Return', function () {
             //     expect(this.honoredBlade.location).toBe('conflict discard pile');
             //     expect(this.readyForBattle.location).toBe('conflict discard pile');
             // });
+        });
+    });
+});
+
+describe('A Swallow\'s Return with fewer than 3 cards in the opponent\'s conflict deck', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker'],
+                    conflictDiscard: ['honored-blade', 'ready-for-battle']
+                },
+                player2: {
+                    honor: 10,
+                    fate: 4,
+                    hand: ['a-swallow-s-return']
+                }
+            });
+
+            this.swallowsReturn = this.player2.findCardByName('a-swallow-s-return');
+            this.matsuBerserker = this.player1.findCardByName('matsu-berserker');
+            this.honoredBlade = this.player1.findCardByName('honored-blade');
+            this.readyForBattle = this.player1.findCardByName('ready-for-battle');
+
+            // exactly 2 cards in player1's conflict deck: Ready for Battle on top, Honored Blade below
+            for(const card of this.player1.player.conflictDeck.slice()) {
+                this.player1.moveCard(card, 'conflict discard pile');
+            }
+            this.player1.player.moveCard(this.honoredBlade, 'conflict deck');
+            this.player1.player.moveCard(this.readyForBattle, 'conflict deck');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.matsuBerserker],
+                defenders: []
+            });
+        });
+
+        it('should look at the cards there are', function () {
+            expect(this.player1.player.conflictDeck.length).toBe(2);
+            this.player2.clickCard(this.swallowsReturn);
+            expect(this.player2).toHavePrompt('Choose a card to play');
+            expect(this.player2).toHavePromptButton('Honored Blade');
+            expect(this.player2).toHavePromptButton('Play nothing');
         });
     });
 });

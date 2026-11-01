@@ -21,7 +21,7 @@ describe('Ikoma Ikehata', function() {
                 this.noMoreActions();
             });
 
-            it('should trigger only after winning a political conflict', function() {
+            it('should not trigger after winning a military conflict', function() {
                 this.player1.clickRing('air');
                 this.player1.clickCard(this.shamefulDisplay);
                 this.player1.clickCard(this.ikehata);
@@ -30,6 +30,7 @@ describe('Ikoma Ikehata', function() {
                 this.player2.clickCard(this.mystic);
                 this.player2.clickPrompt('Done');
                 this.noMoreActions();
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 1 vs 1');
                 expect(this.player1).not.toBeAbleToSelect(this.ikehata);
             });
 

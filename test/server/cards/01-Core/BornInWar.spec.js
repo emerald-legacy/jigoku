@@ -28,19 +28,34 @@ describe('Born in War', function () {
             });
 
             it('should grant as much military as there a unclaimed rings', function () {
-                let military = this.borderRider.getMilitarySkill();
+                const military = this.borderRider.militarySkill;
                 this.player1.playAttachment(this.bornInWar, this.borderRider);
-                expect(this.borderRider.getMilitarySkill()).toBe(military + 5);
+                expect(this.borderRider.militarySkill).toBe(military + 5);
                 this.player1.claimRing('air');
-                expect(this.borderRider.getMilitarySkill()).toBe(military + 4);
+                expect(this.borderRider.militarySkill).toBe(military + 4);
                 this.player1.claimRing('fire');
-                expect(this.borderRider.getMilitarySkill()).toBe(military + 3);
+                expect(this.borderRider.militarySkill).toBe(military + 3);
                 this.player1.claimRing('water');
-                expect(this.borderRider.getMilitarySkill()).toBe(military + 2);
+                expect(this.borderRider.militarySkill).toBe(military + 2);
                 this.player1.claimRing('void');
-                expect(this.borderRider.getMilitarySkill()).toBe(military + 1);
+                expect(this.borderRider.militarySkill).toBe(military + 1);
                 this.player1.claimRing('earth');
-                expect(this.borderRider.getMilitarySkill()).toBe(military);
+                expect(this.borderRider.militarySkill).toBe(military);
+            });
+
+            it('does not count the contested ring as unclaimed (ruling #23)', function () {
+                this.player1.playAttachment(this.bornInWar, this.borderRider);
+                expect(this.borderRider.militarySkill).toBe(7);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'air',
+                    attackers: [this.borderRider],
+                    defenders: []
+                });
+                expect(this.borderRider.isParticipating()).toBe(true);
+                expect(this.game.rings.air.isUnclaimed()).toBe(false);
+                expect(this.borderRider.militarySkill).toBe(6);
             });
         });
     });

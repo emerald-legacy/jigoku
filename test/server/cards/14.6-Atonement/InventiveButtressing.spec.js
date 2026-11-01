@@ -65,7 +65,7 @@ describe('Inventive Buttressing', function() {
             this.player2.clickCard(this.buttressing);
             this.player2.clickCard(this.sd1);
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.noMoreActions();
             this.initiateConflict({
@@ -83,7 +83,7 @@ describe('Inventive Buttressing', function() {
             this.player2.clickCard(this.buttressing);
             this.player2.clickCard(this.sd1);
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.noMoreActions();
             this.initiateConflict({
@@ -101,7 +101,7 @@ describe('Inventive Buttressing', function() {
             this.player2.clickCard(this.buttressing);
             this.player2.clickCard(this.sd1);
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.noMoreActions();
             this.initiateConflict({

@@ -76,6 +76,57 @@ describe('Shameful Display', function() {
                 expect(this.whisperer.isHonored).toBe(false);
                 expect(this.borderRider.isHonored).toBe(true);
             });
+            it('should go back to the Honor/Dishonor menu', function() {
+                this.player2.clickCard(this.shamefulDisplay);
+                this.player2.clickCard(this.borderRider);
+                this.player2.clickCard(this.whisperer);
+                this.player2.clickPrompt('Done');
+                this.player2.clickPrompt('Honor');
+                expect(this.player2).toHavePrompt('Choose a character to honor');
+                this.player2.clickPrompt('Back');
+                expect(this.player2).toHavePrompt('Choose a character to:');
+                this.player2.clickPrompt('Dishonor');
+                this.player2.clickCard(this.borderRider);
+                expect(this.borderRider.isDishonored).toBe(true);
+                expect(this.whisperer.isHonored).toBe(true);
+            });
+
+            it('should skip the menu, without a Back button, when both targets are already dishonored', function() {
+                this.borderRider.dishonor();
+                this.whisperer.dishonor();
+                this.player2.clickCard(this.shamefulDisplay);
+                this.player2.clickCard(this.borderRider);
+                this.player2.clickCard(this.whisperer);
+                this.player2.clickPrompt('Done');
+                expect(this.player2).toHavePrompt('Choose a character to honor');
+                expect(this.player2).not.toHavePromptButton('Back');
+                this.player2.clickCard(this.whisperer);
+                expect(this.whisperer.isDishonored).toBe(false);
+                expect(this.borderRider.isDishonored).toBe(true);
+            });
+
+            it('should only offer characters that can receive the chosen status', function() {
+                this.borderRider.honor();
+                this.player2.clickCard(this.shamefulDisplay);
+                this.player2.clickCard(this.borderRider);
+                this.player2.clickCard(this.whisperer);
+                this.player2.clickPrompt('Done');
+                this.player2.clickPrompt('Honor');
+                expect(this.player2).toBeAbleToSelect(this.whisperer);
+                expect(this.player2).not.toBeAbleToSelect(this.borderRider);
+                this.player2.clickCard(this.whisperer);
+                expect(this.whisperer.isHonored).toBe(true);
+                expect(this.borderRider.isHonored).toBe(false);
+            });
+            it('should report which character is honored and which is dishonored', function() {
+                this.player2.clickCard(this.shamefulDisplay);
+                this.player2.clickCard(this.borderRider);
+                this.player2.clickCard(this.whisperer);
+                this.player2.clickPrompt('Done');
+                this.player2.clickPrompt('Dishonor');
+                this.player2.clickCard(this.whisperer);
+                expect(this.getChatLogs(5)).toContain('player2 chooses to honor Border Rider and dishonor Doji Whisperer');
+            });
         });
     });
 });

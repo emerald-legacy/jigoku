@@ -32,7 +32,7 @@ describe('All Out Assault', function() {
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.assault);
                 this.player1.clickCard(this.assault);
-                expect(this.getChatLogs(1)).toContain('player1 plays All Out Assault to force each player to attack with as many characters as they can each conflict!');
+                expect(this.getChatLogs(1)).toContain('player1 plays All Out Assault to force each player to attack with as many characters as they can each conflict');
             });
 
             it('should not allow passing conflicts', function() {

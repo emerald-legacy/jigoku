@@ -21,7 +21,7 @@ describe('Diplomat of the Steppes', function () {
         });
 
         it('does not trigger unless equal or more political skill', function () {
-            let honor = this.player2.player.honor;
+            const honor = this.player2.player.honor;
             this.initiateConflict({
                 type: 'political',
                 attackers: [this.arbiterOfAuthority, this.dojiWhisperer],
@@ -37,7 +37,7 @@ describe('Diplomat of the Steppes', function () {
         });
 
         it('should cost 1 honor and switch the conflict type from political to military', function () {
-            let honor = this.player2.player.honor;
+            const honor = this.player2.player.honor;
             this.initiateConflict({
                 type: 'political',
                 attackers: [this.arbiterOfAuthority],
@@ -53,7 +53,7 @@ describe('Diplomat of the Steppes', function () {
         });
 
         it('should not switch the conflict from military to political', function () {
-            let honor = this.player2.player.honor;
+            const honor = this.player2.player.honor;
             this.initiateConflict({
                 type: 'military',
                 attackers: [this.arbiterOfAuthority],

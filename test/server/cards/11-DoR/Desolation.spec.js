@@ -123,3 +123,52 @@ describe('Desolation', function() {
         });
     });
 });
+
+describe('Desolation on a province turned facedown', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['brash-samurai'],
+                    hand: ['desolation'],
+                    honor: 10
+                },
+                player2: {
+                    inPlay: ['shinjo-outrider'],
+                    hand: ['lay-of-the-land', 'mirumoto-s-fury'],
+                    provinces: ['fertile-fields', 'secret-cache', 'rally-to-the-cause', 'public-forum']
+                }
+            });
+            this.brashSamurai = this.player1.findCardByName('brash-samurai');
+            this.desolation = this.player1.findCardByName('desolation');
+            this.layOfTheLand = this.player2.findCardByName('lay-of-the-land');
+            this.fertileFields = this.player2.findCardByName('fertile-fields');
+            this.fertileFields.facedown = false;
+        });
+
+        // "including provinces that are revealed later this phase"
+        it('should stay blank when it is revealed again by an attack', function() {
+            this.player1.clickCard(this.desolation);
+            expect(this.player1.honor).toBe(8);
+
+            this.player2.clickCard(this.layOfTheLand);
+            this.player2.clickCard(this.fertileFields);
+            expect(this.fertileFields.facedown).toBe(true);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: 'fertile-fields',
+                attackers: [this.brashSamurai],
+                defenders: []
+            });
+            expect(this.fertileFields.facedown).toBe(false);
+            expect(this.player2.player.hand.length).toBe(1);
+
+            this.player2.clickCard(this.fertileFields);
+            expect(this.player2.player.hand.length).toBe(1);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

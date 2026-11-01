@@ -1,31 +1,25 @@
-import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
 import { DuelType, Players } from '../../Constants.js';
-import type { Duel } from '../../Duel.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { setConflictTotalSkill } from '../../effects.js';
+import { noAction, playerLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KakitaToshimoko extends DrawCard {
     static id = 'kakita-toshimoko';
 
-    setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Initiate a military duel',
-            when: {
+    override setupCardAbilities() {
+        this.wouldInterrupt('Initiate a military duel')
+            .when({
                 afterConflict: (event, context) =>
-                    context.source.isParticipating() && event.conflict.loser === context.player
-            },
-            initiateDuel: {
+                    event.conflict.isOnLosingSide(context.source)
+            })
+            .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                message: 'both players count 0 total skill for the conflict',
-                gameAction: AbilityDsl.actions.playerLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
-                    targetController: Players.Any,
-                    effect:
-                        (context.game.currentDuel as Duel).winner?.includes(context.source) ?? false
-                            ? AbilityDsl.effects.setConflictTotalSkill(0)
-                            : []
-                }))
-            }
-        });
+                chatText: () => msg`both players count 0 total skill for the conflict`,
+                gameAction: (duel) => duel.winner.includes(context.source)
+                    ? playerLastingEffect({ target: Players.Any, effect: setConflictTotalSkill(0) })
+                    : noAction()
+            }));
     }
 }

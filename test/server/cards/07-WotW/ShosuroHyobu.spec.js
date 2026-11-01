@@ -218,7 +218,7 @@ describe('Shosuro Hyobu', function() {
 
             it('should not trigger when opponent discards a duplicate during dynasty - from province', function() {
                 this.player1.pass();
-                let fate = this.shojuInPlay.fate;
+                const fate = this.shojuInPlay.fate;
                 this.player2.clickCard(this.shoju);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player2).toHavePrompt('Play cards from provinces');
@@ -227,7 +227,7 @@ describe('Shosuro Hyobu', function() {
 
             it('should not trigger when opponent discards a duplicate during dynasty - from hand', function() {
                 this.player1.pass();
-                let fate = this.kachikoInPlay.fate;
+                const fate = this.kachikoInPlay.fate;
                 this.player2.clickCard(this.kachiko);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player2).toHavePrompt('Play cards from provinces');

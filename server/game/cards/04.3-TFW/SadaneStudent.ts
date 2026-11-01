@@ -1,39 +1,24 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
 import { Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedAnyRing } from '../claimedRings.js';
 
-const elementKeys = {
-    air: 'sadane-student-air',
-    fire: 'sadane-student-fire'
-} as Record<string, string>;
+const elementSymbols = [
+    { key: 'sadane-student-air', element: Element.Air },
+    { key: 'sadane-student-fire', element: Element.Fire }
+];
 
 class SadaneStudent extends DrawCard {
     static id = 'sadane-student';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => (
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player) ||
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player)
-            ),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(2)
+            condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
+            effect: modifyPoliticalSkill(2)
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKeys.air,
-            prettyName: 'Claimed Ring',
-            element: Element.Air
-        });
-        symbols.push({
-            key: elementKeys.fire,
-            prettyName: 'Claimed Ring',
-            element: Element.Fire
-        });
-        return symbols;
-    }
+    protected override printedElementSymbols = claimedRingSymbols(elementSymbols);
 }
 
 

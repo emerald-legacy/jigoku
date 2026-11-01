@@ -1,25 +1,22 @@
-import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Trait } from '../../../Constants.js';
+import { placeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaBodyguard extends DrawCard {
     static id = 'shiba-bodyguard';
 
-    public setupCardAbilities() {
-        this.interrupt({
-            title: 'Place a fate on a character',
-            when: {
+    public override setupCardAbilities() {
+        this.interrupt('Place a fate on a character')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => !card.hasTrait('bushi'),
-                gameAction: AbilityDsl.actions.placeFate((context) => ({
-                    origin: context.player
-                }))
-            },
-            effect: 'place a fate from {1}\'s fate pool on {0}',
-            effectArgs: (context) => [context.player]
-        });
+                cardCondition: (card) => !card.hasTrait(Trait.Bushi)
+            }, placeFate((context) => ({
+                origin: context.player
+            })))
+            .chatText((context) => msg`place a fate from ${context.player}'s fate pool on ${context.chatTarget()}`);
     }
 }

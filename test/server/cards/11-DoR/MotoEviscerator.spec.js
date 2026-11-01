@@ -24,7 +24,7 @@ describe('Moto Eviscerator', function() {
                     defenders: []
                 });
                 this.player2.pass();
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard(this.moto);
                 expect(this.moto.inConflict).toBe(true);
                 expect(this.player1.honor).toBe(honor - 1);
@@ -38,7 +38,7 @@ describe('Moto Eviscerator', function() {
                     attackers: [this.whisperer],
                     defenders: []
                 });
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard(this.moto);
                 expect(this.moto.inConflict).toBe(true);
                 expect(this.player1.honor).toBe(honor - 1);
@@ -51,7 +51,7 @@ describe('Moto Eviscerator', function() {
                     defenders: []
                 });
                 this.player2.pass();
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard(this.moto);
                 expect(this.moto.inConflict).toBe(true);
                 expect(this.player1.honor).toBe(honor);

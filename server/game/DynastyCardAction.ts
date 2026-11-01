@@ -1,91 +1,57 @@
-import BaseAction from './BaseAction.js';
+import { msg } from './GameChat.js';
+import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
-import * as GameActions from './GameActions/GameActions.js';
-import { EffectName, Phases, PlayType, EventName } from './Constants.js';
+import { putIntoPlay } from './GameActions/GameActions.js';
+import { EffectName, Phase, PlayType, Blocker, RestrictionType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
-import type { EffectValue } from './Effects/EffectValue.js';
+import { isEffectOf } from './Effects/types.js';
+import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
+import { getExtraFateWhenPlayed, getPlayBlocker } from './playActionHelpers.js';
 
-class DynastyCardAction extends BaseAction {
-    title = 'Play this character';
-    declare card: DrawCard;
+export class DynastyCardAction extends PlayCardSourceAction {
+    override title = 'Play this character';
 
     constructor(card: BaseCard) {
         super(card, [chooseFate(PlayType.PlayFromProvince), payReduceableFateCost()]);
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
-        if(!ignoredRequirements.includes('facedown') && this.card.isFacedown()) {
-            return 'facedown';
-        } else if(!ignoredRequirements.includes('player') && context.player !== this.card.controller) {
-            return 'player';
-        } else if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Dynasty) {
-            return 'phase';
-        } else if(
-            !ignoredRequirements.includes('location') &&
-            !context.player.isCardInPlayableLocation(this.card, PlayType.PlayFromProvince)
-        ) {
-            return 'location';
-        } else if(
-            !ignoredRequirements.includes('cannotTrigger') &&
-            !this.card.canPlay(context, PlayType.PlayFromProvince)
-        ) {
-            return 'cannotTrigger';
-        } else if(this.card.anotherUniqueInPlay(context.player)) {
-            return 'unique';
+    override meetsRequirements(context: AbilityContext = this.createContext(), ignoredBlockers: Blocker[] = []): Blocker {
+        if(!ignoredBlockers.includes(Blocker.Facedown) && this.card.isFacedown()) {
+            return Blocker.Facedown;
+        } else if(!ignoredBlockers.includes(Blocker.WrongPlayer) && context.player !== this.card.controller) {
+            return Blocker.WrongPlayer;
+        } else if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Dynasty) {
+            return Blocker.WrongPhase;
         }
-        return super.meetsRequirements(context);
+        return getPlayBlocker(this.card, context, ignoredBlockers, PlayType.PlayFromProvince) ?? super.meetsRequirements(context, ignoredBlockers);
     }
 
-    displayMessage(context: AbilityContext): void {
-        context.game.addMessage(
-            '{0} plays {1} with {2} additional fate',
-            context.player,
-            context.source,
-            (context as AbilityContext & { chooseFate: number }).chooseFate
-        );
-        if(context.source.checkRestrictions('placeFate', context)) {
-            context.source
-                .getRawEffects()
-                .filter((effect) => effect.type === EffectName.GainExtraFateWhenPlayed)
-                .map((effect) =>
-                    context.game.addMessage(
-                        '{0} enters play with {1} additional fate due to {2}',
-                        context.source,
-                        (effect.value as EffectValue<number>).value,
-                        effect.context.source
-                    )
-                );
+    override displayMessage(context: AbilityContext): void {
+        context.game.addMessage(msg`${context.player} plays ${context.source} with ${context.chooseFate} additional fate`);
+        if(context.source.checkRestrictions(RestrictionType.PlaceFate, context)) {
+            for(const effect of context.source.getRawEffects()) {
+                if(isEffectOf(effect, EffectName.GainExtraFateWhenPlayed)) {
+                    context.game.addMessage(msg`${context.source} enters play with ${effect.getValue(context.source)} additional fate due to ${effect.context.source}`);
+                }
+            }
         }
     }
 
-    executeHandler(context: AbilityContext): void {
-        let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
-        const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
-        if(!context.source.checkRestrictions('placeFate', context)) {
-            extraFate = 0;
-        }
-        extraFate = extraFate + legendaryFate;
+    override executeHandler(context: AbilityContext<DrawCard>): void {
+        const extraFate = getExtraFateWhenPlayed(context.source, context);
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
-        const enterPlayEvent = GameActions.putIntoPlay({ fate: (context as AbilityContext & { chooseFate: number }).chooseFate + extraFate, status }).getEvent(
+        const enterPlayEvent = putIntoPlay({ fate: context.chooseFate + extraFate, status }).getEvent(
             context.source,
             context
         );
-        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
-            player: context.player,
-            card: context.source,
-            context: context,
-            originalLocation: context.source.location,
-            playType: PlayType.PlayFromProvince
-        });
-        context.game.openEventWindow([enterPlayEvent, cardPlayedEvent]);
+        context.game.openEventWindow([enterPlayEvent, createCardPlayedEvent(context, context.source, PlayType.PlayFromProvince)]);
     }
 
-    isCardPlayed(): boolean {
+    override isCardPlayed(): boolean {
         return true;
     }
 }
 
-export default DynastyCardAction;

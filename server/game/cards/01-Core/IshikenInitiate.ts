@@ -1,18 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
+import { countClaimedRings } from '../claimedRings.js';
 
 class IshikenInitiate extends DrawCard {
     static id = 'ishiken-initiate';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.modifyBothSkills(() => this.getNoOfClaimedRings())
+            effect: modifyBothSkills(() => countClaimedRings(this.game))
         });
-    }
-
-    getNoOfClaimedRings() {
-        let claimedRings = Object.values(this.game.rings).filter(ring => ring.isConsideredClaimed());
-        return claimedRings.length;
     }
 }
 

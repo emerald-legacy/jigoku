@@ -1,20 +1,17 @@
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 export default class RiotInTheStreets extends ProvinceCard {
     static id = 'riot-in-the-streets';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow character if you have 3 participating bushi',
-            condition: (context) =>
-                context.player.getNumberOfCardsInPlay((card) => card.hasTrait('bushi') && card.isParticipating()) >= 3,
-            target: {
+    override setupCardAbilities() {
+        this.action('Bow character if you have 3 participating bushi')
+            .ifCondition((context) =>
+                context.player.getNumberOfCardsInPlay((card) => card.hasTrait(Trait.Bushi) && card.isParticipating()) >= 3)
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, bow());
     }
 }

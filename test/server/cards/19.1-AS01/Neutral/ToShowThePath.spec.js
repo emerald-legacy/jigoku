@@ -167,3 +167,113 @@ describe('To Show the Path', function () {
         });
     });
 });
+
+describe('To Show the Path and an ability that also costs fate', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doomed-shugenja', 'doji-whisperer'],
+                    hand: ['to-show-the-path']
+                },
+                player2: {
+                    fate: 1,
+                    inPlay: ['soshi-illusionist', 'kakita-yoshi']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.illusionist = this.player2.findCardByName('soshi-illusionist');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.whisperer.honor();
+            this.yoshi.honor();
+            this.player1.clickCard('to-show-the-path');
+            this.player1.clickCard(this.whisperer);
+        });
+
+        it('doesn\'t offer its character when the ability\'s own fate cost leaves no fate for it', function () {
+            expect(this.player2.fate).toBe(1);
+            this.player2.clickCard(this.illusionist);
+            expect(this.player2).not.toBeAbleToSelect(this.whisperer);
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+        });
+    });
+});
+
+describe('To Show the Path and a resolved ability', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doomed-shugenja', 'doji-challenger'],
+                    hand: ['to-show-the-path']
+                },
+                player2: {
+                    fate: 10,
+                    inPlay: ['doji-kuwanan'],
+                    hand: ['battlefield-orders']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+            this.orders = this.player2.findCardByName('battlefield-orders');
+            this.player1.clickCard('to-show-the-path');
+            this.player1.clickCard(this.challenger);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.kuwanan]
+            });
+        });
+
+        it('makes the opponent pay the extra fate when an ability resolved by Battlefield Orders chooses that character', function () {
+            const fate = this.player2.fate;
+            this.player2.clickCard(this.orders);
+            this.player2.clickCard(this.kuwanan);
+            expect(this.player2).toBeAbleToSelect(this.challenger);
+            this.player2.clickCard(this.challenger);
+            expect(this.challenger.bowed).toBe(true);
+            expect(this.player2.fate).toBe(fate - this.orders.printedCost - 1);
+        });
+    });
+});
+
+describe('To Show the Path played by its owner\'s opponent', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    inPlay: ['doomed-shugenja', 'doji-challenger'],
+                    hand: ['trading-on-the-sand-road']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    conflictDiscard: ['to-show-the-path']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.toShowThePath = this.player2.findCardByName('to-show-the-path');
+            this.player2.moveCard(this.toShowThePath, 'conflict deck');
+            this.noMoreActions();
+            this.player1.clickCard('trading-on-the-sand-road');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('names the opponent of the player who played it', function () {
+            this.player1.clickCard(this.toShowThePath);
+            this.player1.clickCard(this.challenger);
+            expect(this.getChatLogs(3)).toContain(
+                'player1 plays To Show the Path to make player2 pay 1 additional fate as a cost whenever they target Doji Challenger or its attachments with a card ability until the end of the phase'
+            );
+        });
+    });
+});

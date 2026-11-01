@@ -50,17 +50,21 @@ describe('Display of Power', function() {
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect('display-of-power');
                 this.player2.clickCard('display-of-power');
-                this.player2.pass();
                 expect(this.player2).toHavePrompt('Earth Ring');
                 this.player2.clickPrompt('Draw a card and opponent discards');
                 expect(this.game.rings.earth.claimedBy).toBe(this.player2.player.name);
             });
 
-            it('when 2 DoP are played the second shouldn\'t do anything', function() {
-                this.spy = spyOn(this.game, 'addMessage');
+            // ruling #771: once one is pending, a second one would have nothing to cancel
+            it('should not allow a second DoP to be played in the same conflict', function() {
+                const [dop1, dop2] = this.player2.filterCardsByName('display-of-power');
                 this.noMoreActions();
-                this.player2.clickCard('display-of-power');
-                this.player2.clickCard('display-of-power', 'hand');
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                expect(this.player2).toBeAbleToSelect(dop2);
+                this.player2.clickCard(dop1);
+                expect(dop1.location).toBe('conflict discard pile');
+                expect(this.player2).not.toBeAbleToSelect(dop2);
+                expect(dop2.location).toBe('hand');
                 expect(this.player2).toHavePrompt('Earth Ring');
                 this.player2.clickPrompt('Draw a card and opponent discards');
                 expect(this.game.rings.earth.claimedBy).toBe(this.player2.player.name);
@@ -73,7 +77,6 @@ describe('Display of Power', function() {
                 this.player1.clickPrompt('Conflict');
                 this.noMoreActions();
                 this.player2.clickCard('display-of-power');
-                this.player2.pass();
                 expect(this.player2).toHavePrompt('Resolve Ring Effect');
                 this.player2.clickRing('air');
                 expect(this.player2).toHavePrompt('Air Ring');
@@ -85,7 +88,6 @@ describe('Display of Power', function() {
                 this.player2.clickRing('water');
                 this.noMoreActions();
                 this.player2.clickCard('display-of-power');
-                this.player2.pass();
                 expect(this.player2).toHavePrompt('Water Ring');
                 this.player2.clickPrompt('Don\'t resolve');
                 expect(this.game.rings.water.claimedBy).toBe(this.player2.player.name);
@@ -101,7 +103,6 @@ describe('Display of Power', function() {
                 this.player1.clickCard(this.akodoToturi);
                 this.noMoreActions();
                 this.player2.clickCard('display-of-power');
-                this.player2.pass();
                 this.player1.clickPrompt('No');
                 this.player2.clickPrompt('Draw a card and opponent discards');
                 expect(this.game.rings.earth.claimedBy).toBe(this.player2.player.name);
@@ -117,7 +118,6 @@ describe('Display of Power', function() {
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect('display-of-power');
                 this.player2.clickCard('display-of-power');
-                this.player2.pass();
                 expect(this.game.rings.earth.claimedBy).toBe(this.player2.player.name);
                 expect(this.player1).toHavePrompt('Action Window');
             });

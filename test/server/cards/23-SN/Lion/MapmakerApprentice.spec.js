@@ -40,7 +40,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);
@@ -103,7 +103,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);
@@ -132,7 +132,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);
@@ -157,7 +157,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.clickCard(this.assassination2);
             this.player2.clickCard(this.map1);
@@ -181,7 +181,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);
@@ -244,7 +244,7 @@ describe('Mapmaker Apprentice', function () {
                 defenders: [this.mitsu]
             });
 
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
 
             this.player2.pass();
             this.player1.clickCard(this.assassination1);
@@ -276,6 +276,52 @@ describe('Mapmaker Apprentice', function () {
             this.player1.clickCard(this.invocation);
             this.player1.clickPrompt('Raise attacked province\'s strength by 2');
             expect(this.sd1.getStrength()).toBe(strength + 2);
+        });
+    });
+});
+
+describe('Mapmaker Apprentice with A War on Two Fronts', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['mapmaker-apprentice', 'doji-challenger'],
+                    hand: ['a-war-on-two-fronts']
+                },
+                player2: {
+                    honor: 10,
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.map = this.player1.findCardByName('mapmaker-apprentice');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.war = this.player1.findCardByName('a-war-on-two-fronts');
+            this.sd1 = this.player2.findCardByName('shameful-display', 'province 1');
+            this.sd2 = this.player2.findCardByName('shameful-display', 'province 2');
+        });
+
+        it('only changes the mapped province', function () {
+            this.player1.clickCard(this.map);
+            this.player1.clickCard(this.sd1);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                province: this.sd1,
+                type: 'military'
+            });
+            this.player1.clickCard(this.war);
+            this.player1.clickCard(this.sd2);
+            expect(this.sd2.isConflictProvince()).toBe(true);
+
+            expect(this.player1).not.toHavePrompt('Choose an attacked province');
+            expect(this.player1).toHavePromptButton('Lower attacked province\'s strength by 2');
+            const strength1 = this.sd1.getStrength();
+            const strength2 = this.sd2.getStrength();
+            this.player1.clickPrompt('Lower attacked province\'s strength by 2');
+            expect(this.sd1.getStrength()).toBe(strength1 - 2);
+            expect(this.sd2.getStrength()).toBe(strength2);
         });
     });
 });

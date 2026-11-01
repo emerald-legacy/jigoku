@@ -68,7 +68,7 @@ describe('Courtly Challenger', function() {
             });
 
             it('the duel should still successfully resolve', function() {
-                let handSize = this.player1.player.hand.length;
+                const handSize = this.player1.player.hand.length;
                 this.player1.clickCard(this.courtlyChallenger);
                 this.player1.clickCard(this.obstinateRecruit);
                 this.player1.clickPrompt('1');
@@ -108,7 +108,7 @@ describe('Courtly Challenger', function() {
                     type: 'political'
                 });
                 this.player2.pass();
-                let handSize = this.player2.player.hand.length;
+                const handSize = this.player2.player.hand.length;
                 this.player1.clickCard(this.courtlyChallenger);
                 this.player1.clickCard(this.mirumotoRaitsugu);
                 this.player1.clickPrompt('1');

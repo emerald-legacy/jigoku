@@ -18,28 +18,30 @@ describe('Daring Challenger', function() {
             it('should have +1 military skill if controller is less honorable', function() {
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('1');
-                expect(this.player1.player.honor).toBeLessThan(this.player2.player.honor);
-                let baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
+                expect(this.player1.player.honor).toBe(9);
+                expect(this.player2.player.honor).toBe(11);
+                const baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
                 expect(baseMilitarySkill).toBe(2);
-                expect(this.daringChallenger.getMilitarySkill()).toBe(baseMilitarySkill + 1);
+                expect(this.daringChallenger.militarySkill).toBe(baseMilitarySkill + 1);
             });
 
             it('should not have +1 military skill if controller is equally honorable', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 expect(this.player1.player.honor).toBe(this.player2.player.honor);
-                let baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
+                const baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
                 expect(baseMilitarySkill).toBe(2);
-                expect(this.daringChallenger.getMilitarySkill()).toBe(baseMilitarySkill);
+                expect(this.daringChallenger.militarySkill).toBe(baseMilitarySkill);
             });
 
             it('should not have +1 military skill if controller is more honorable', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
-                expect(this.player1.player.honor).toBeGreaterThan(this.player2.player.honor);
-                let baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
+                expect(this.player1.player.honor).toBe(11);
+                expect(this.player2.player.honor).toBe(9);
+                const baseMilitarySkill = this.daringChallenger.getBaseMilitarySkill();
                 expect(baseMilitarySkill).toBe(2);
-                expect(this.daringChallenger.getMilitarySkill()).toBe(baseMilitarySkill);
+                expect(this.daringChallenger.militarySkill).toBe(baseMilitarySkill);
             });
         });
 

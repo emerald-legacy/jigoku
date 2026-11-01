@@ -58,6 +58,7 @@ describe('Asako Diplomat', function () {
                 });
                 this.player2.pass();
                 this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 4 vs 0');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
 
@@ -68,6 +69,7 @@ describe('Asako Diplomat', function () {
                 });
                 this.player2.pass();
                 this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 6 vs 1');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
         });

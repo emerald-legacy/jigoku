@@ -9,7 +9,7 @@ describe('Courteous Greeting', function() {
                 },
                 player2: {
                     provinces: ['courteous-greeting', 'toshi-ranbo', 'upholding-authority'],
-                    inPlay: ['shrine-maiden', 'shika-matchmaker']
+                    inPlay: ['shrine-maiden', 'shika-matchmaker', 'endless-plains-skirmisher']
                 }
             });
 
@@ -18,6 +18,7 @@ describe('Courteous Greeting', function() {
             this.upholding = this.player2.findCardByName('upholding-authority');
             this.maiden = this.player2.findCardByName('shrine-maiden');
             this.matchmaker = this.player2.findCardByName('shika-matchmaker');
+            this.skirmisher = this.player2.findCardByName('endless-plains-skirmisher');
 
             this.fields = this.player1.findCardByName('fertile-fields');
             this.entrenched = this.player1.findCardByName('entrenched-position');
@@ -56,7 +57,30 @@ describe('Courteous Greeting', function() {
             expect(this.player2).not.toBeAbleToSelect(this.scholar);
         });
 
-        it('should require targeting characters controlled by both players', function() {
+        it('should choose a defending and an attacking character, whoever controls them', function() {
+            this.initiateConflict({
+                province: this.greeting,
+                ring: 'earth',
+                type: 'military',
+                attackers: [this.wanderer],
+                defenders: [this.maiden]
+            });
+            this.player2.clickCard(this.skirmisher);
+            this.player2.clickPrompt('player1');
+            expect(this.skirmisher.isAttacking()).toBe(true);
+            this.player1.pass();
+            this.player2.clickCard(this.greeting);
+            expect(this.player2).toBeAbleToSelect(this.maiden);
+            expect(this.player2).not.toBeAbleToSelect(this.skirmisher);
+            this.player2.clickCard(this.maiden);
+            expect(this.player2).toBeAbleToSelect(this.wanderer);
+            expect(this.player2).toBeAbleToSelect(this.skirmisher);
+            this.player2.clickCard(this.skirmisher);
+            expect(this.maiden.bowed).toBe(true);
+            expect(this.skirmisher.bowed).toBe(true);
+        });
+
+        it('should require choosing both a defending and an attacking character', function() {
             this.initiateConflict({
                 province: this.greeting,
                 ring: 'earth',
@@ -66,8 +90,13 @@ describe('Courteous Greeting', function() {
             });
             this.player2.clickCard(this.greeting);
             this.player2.clickCard(this.maiden);
+            expect(this.player2).toHavePrompt('Courteous Greeting');
             expect(this.player2).not.toHavePromptButton('Done');
+            expect(this.player2).toBeAbleToSelect(this.wanderer);
+            expect(this.maiden.bowed).toBe(false);
             this.player2.clickCard(this.wanderer);
+            expect(this.maiden.bowed).toBe(true);
+            expect(this.wanderer.bowed).toBe(true);
         });
 
         it('should not work without a valid target on both sides - no defending character', function() {

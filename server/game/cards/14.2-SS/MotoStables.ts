@@ -1,29 +1,26 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType } from '../../Constants.js';
+import { perRound } from '../../AbilityLimit.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class MotoStables extends DrawCard {
     static id = 'moto-stables';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Give +2 military',
-            limit: AbilityDsl.limit.perRound(2),
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Give +2 military')
+            .when({
                 onMoveToConflict: (event, context) =>
                     event.card.type === CardType.Character &&
                     event.card.isParticipating() &&
                     event.card.controller === context.player
-            },
-            effect: 'give {1} +2{2}',
-            effectArgs: (context) => [context.event.card ?? '', 'military'],
-            gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                duration: Duration.UntilEndOfConflict,
+            })
+            .cardLastingEffect((context) => ({
                 target: context.event.card,
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+                effect: modifyMilitarySkill(2)
             }))
-        });
+            .chatText((context) => msg`give ${context.event.card} +2${'military'}`)
+            .limit(perRound(2));
     }
 }
 

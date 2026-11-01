@@ -48,7 +48,7 @@ describe('Medium of the Living Soul', function() {
         });
 
         it('should allow resolving the ring effect again (Kami Unleashed)', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.keepsakes, this.kami],
@@ -73,7 +73,7 @@ describe('Medium of the Living Soul', function() {
         });
 
         it('should allow resolving the ring effect again (Conflict Resolution)', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.keepsakes, this.kami],
@@ -96,6 +96,28 @@ describe('Medium of the Living Soul', function() {
             expect(this.getChatLogs(2)).toContain('player1 uses Maker of Keepsakes\'s gained ability from Medium of the Living Soul, removing 1 fate from Maker of Keepsakes to resolve Air Ring effect');
         });
 
+        it('should not trigger after the ring effect was not resolved', function() {
+            const honor = this.player1.honor;
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.keepsakes, this.kami],
+                defenders: [],
+                type: 'military',
+                ring: 'air'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.medium);
+            this.player1.clickCard(this.keepsakes);
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.getChatLogs(5)).toContain('player1 chooses not to resolve the air ring');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.keepsakes.fate).toBe(1);
+            expect(this.player1.honor).toBe(honor);
+        });
+
         it('should allow resolving the ring effect again (Mitsu)', function() {
             this.noMoreActions();
             this.initiateConflict({
@@ -110,14 +132,13 @@ describe('Medium of the Living Soul', function() {
             this.player1.clickCard(this.keepsakes);
             this.player2.pass();
 
-            let i = 0;
-            for(i = 0; i < 5; i++) {
+            for(let i = 0; i < 5; i++) {
                 this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.mitsu);
                 this.player2.pass();
             }
 
-            let honor = this.player1.honor;
-            let hand = this.player1.hand.length;
+            const honor = this.player1.honor;
+            const hand = this.player1.hand.length;
 
             this.player1.clickCard(this.mitsu);
             this.player1.clickRing('earth');
@@ -143,8 +164,7 @@ describe('Medium of the Living Soul', function() {
             this.player1.clickCard(this.keepsakes);
             this.player2.pass();
 
-            let i = 0;
-            for(i = 0; i < 5; i++) {
+            for(let i = 0; i < 5; i++) {
                 this.player1.playAttachment(this.player1.filterCardsByName('a-new-name')[i], this.mitsu);
                 this.player2.pass();
             }

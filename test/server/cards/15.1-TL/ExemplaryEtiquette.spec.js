@@ -133,3 +133,41 @@ describe('Exemplary Etiquette', function() {
         });
     });
 });
+
+describe('Exemplary Etiquette and Forced abilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['seppun-truthseeker'],
+                    hand: ['exemplary-etiquette']
+                },
+                player2: {
+                    hand: ['assassination']
+                }
+            });
+            this.truthseeker = this.player1.findCardByName('seppun-truthseeker');
+            this.etiquette = this.player1.findCardByName('exemplary-etiquette');
+            this.assassination = this.player2.findCardByName('assassination');
+        });
+
+        // rulings #778, #810, #942: Forced abilities are triggered by the game, not a player
+        it('does not stop a character\'s Forced ability', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.truthseeker],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.etiquette);
+            expect(this.getChatLogs(5)).toContain('player1 plays Exemplary Etiquette to make it so that characters cannot trigger abilities this conflict');
+            this.player2.clickCard(this.assassination);
+            this.player2.clickCard(this.truthseeker);
+            expect(this.truthseeker.location).toBe('dynasty discard pile');
+            expect(this.player1.hand.length).toBe(2);
+            expect(this.player2.hand.length).toBe(2);
+        });
+    });
+});

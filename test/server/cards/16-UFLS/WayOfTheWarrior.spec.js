@@ -73,6 +73,9 @@ describe('Way of the Warrior', function () {
             this.player2.clickCard(this.challenger);
             this.player1.clickCard(this.rout);
             expect(this.player1).not.toHavePrompt('Rout');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.rout.location).toBe('hand');
+            expect(this.challenger.isParticipating()).toBe(true);
         });
 
         it('should not be able to be dishonored by opponent\'s card effects when neutral', function () {

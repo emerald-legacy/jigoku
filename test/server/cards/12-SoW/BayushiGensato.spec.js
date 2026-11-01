@@ -191,5 +191,80 @@ describe('Bayushi Gensato', function() {
             expect(this.gensato.bowed).toBe(false);
             expect(this.gensato.isDishonored).toBe(false);
         });
+
+        it('cannot be used outside a conflict', function() {
+            this.player1.pass();
+            expect(this.game.isDuringConflict()).toBe(false);
+            expect(this.player2).toHavePrompt('Action Window');
+            this.player2.clickCard(this.gensato);
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.borderRider.bowed).toBe(false);
+            expect(this.gensato.isDishonored).toBe(false);
+        });
+
+        describe('under Emerald rules', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['border-rider'],
+                        hand: ['banzai', 'show-me-your-stance']
+                    },
+                    player2: {
+                        inPlay: ['bayushi-gensato']
+                    },
+                    gameMode: 'emerald'
+                });
+
+                this.borderRider = this.player1.findCardByName('border-rider');
+                this.banzai = this.player1.findCardByName('banzai');
+                this.stance = this.player1.findCardByName('show-me-your-stance');
+                this.gensato = this.player2.findCardByName('bayushi-gensato');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.borderRider],
+                    defenders: [this.gensato],
+                    type: 'military'
+                });
+            });
+
+            it('uses the printed military skill, ignoring skill bonuses from events', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.banzai);
+                this.player1.clickCard(this.borderRider);
+                this.player1.clickPrompt('Done');
+
+                this.player2.clickCard(this.gensato);
+                this.player2.clickCard(this.borderRider);
+                this.player1.clickPrompt('Pass');
+                this.player2.clickPrompt('1');
+                this.player1.clickPrompt('1');
+
+                expect(this.getChatLogs(4)).toContain('Bayushi Gensato: 4 vs 3: Border Rider');
+            });
+
+            it('ignores status tokens without Show Me Your Stance', function() {
+                this.borderRider.honor();
+                this.player2.clickCard(this.gensato);
+                this.player2.clickCard(this.borderRider);
+                this.player1.clickPrompt('Pass');
+                this.player2.clickPrompt('1');
+                this.player1.clickPrompt('1');
+
+                expect(this.getChatLogs(4)).toContain('Bayushi Gensato: 4 vs 3: Border Rider');
+            });
+
+            it('applies status tokens with Show Me Your Stance', function() {
+                this.borderRider.honor();
+                this.player2.clickCard(this.gensato);
+                this.player2.clickCard(this.borderRider);
+                this.player1.clickCard(this.stance);
+                this.player2.clickPrompt('1');
+                this.player1.clickPrompt('1');
+
+                expect(this.getChatLogs(6)).toContain('Bayushi Gensato: 4 vs 4: Border Rider');
+            });
+        });
     });
 });

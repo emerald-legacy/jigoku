@@ -1,12 +1,13 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName, Location, Players, TargetMode } from '../Constants.js';
+import { EventName, Location, Players, TargetMode, RestrictionType } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-import { shuffle } from '../utils/shuffle.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
+import { chooseBlindly, isBlindChoice } from './blindChoice.js';
 
 export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     amount?: number;
@@ -15,44 +16,49 @@ export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     bottom?: boolean;
 }
 
-export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckProperties, EventName.OnCardMoved> {
-    defaultProperties: ChosenReturnToDeckProperties = {
+export class ChosenReturnToDeckAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<ChosenReturnToDeckProperties, EventName.OnCardMoved, Context, 'amount' | 'targets' | 'shuffle' | 'bottom'> {
+    override defaultProperties = {
         amount: 1,
         targets: true,
         shuffle: false,
         bottom: false
     };
-    name = 'returnToDeck';
-    eventName = EventName.OnCardMoved;
+    override name = 'chosenReturnToDeck';
+    override restriction = RestrictionType.ReturnToDeck;
+    override eventName = EventName.OnCardMoved;
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context);
-        return ['make {0} return {1} cards to their deck', [properties.target, properties.amount]];
+    override defaultTargets(context: Context): Player[] {
+        return this.opponentTargets(context);
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { amount } = this.getProperties(context, additionalProperties);
+        return [amount === 1 ? 'make {0} return {1} card to their deck' : 'make {0} return {1} cards to their deck', [amount]];
+    }
+
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         if(player.hand.length === 0 || properties.amount === 0) {
             return false;
         }
         return super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties);
-        for(let player of properties.target as Player[]) {
-            let amount = Math.min(player.hand.length, properties.amount ?? 0);
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
+        const properties = this.getProperties(context, additionalProperties);
+        for(const player of targetList(properties.target)) {
+            const amount = Math.min(player.hand.length, properties.amount);
             if(amount > 0) {
                 if(amount === player.hand.length) {
-                    let event = this.getEvent(player, context);
+                    const event = this.getEvent(player, context, additionalProperties);
                     event.cards = player.hand.slice(0, amount);
                     events.push(event);
                     return;
                 }
 
-                if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
-                    let event = this.getEvent(player, context);
-                    event.cards = shuffle(player.hand).slice(0, amount);
+                if(properties.targets && isBlindChoice(context, player.hand)) {
+                    const event = this.getEvent(player, context, additionalProperties);
+                    event.cards = chooseBlindly(player.hand, amount, false);
                     events.push(event);
                     return;
                 }
@@ -65,7 +71,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
                     location: Location.Hand,
                     controller: player === context.player ? Players.Self : Players.Opponent,
                     onSelect: (selectingPlayer: Player, cards: BaseCard | BaseCard[]) => {
-                        let event = this.getEvent(selectingPlayer, context);
+                        const event = this.getEvent(selectingPlayer, context, additionalProperties);
                         event.cards = Array.isArray(cards) ? cards : [cards];
                         events.push(event);
                         return true;
@@ -75,8 +81,8 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnCardMoved>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, shuffle, bottom } = this.getProperties(context, additionalProperties);
+    override addPropertiesToEvent(event: PlayerEvent<EventName.OnCardMoved, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
+        const { amount, shuffle, bottom } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.options = { bottom };
         event.amount = amount;
@@ -85,19 +91,13 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         event.bottom = bottom;
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardMoved>): void {
-        const cards = event.cards as BaseCard[];
-        const context = event.context as AbilityContext;
-        context.game.addMessage(
-            '{0} returns {1} card{2} to{3} their deck',
-            event.player,
-            cards.length,
-            cards.length === 1 ? '' : 's',
-            event.bottom ? ' the bottom of' : ''
-        );
+    override eventHandler(event: ActionEvent<EventName.OnCardMoved, Context>): void {
+        const cards = event.cards ?? [];
+        const context = event.context;
+        context.game.addMessage(msg`${event.player} returns ${cards.length} card${cards.length === 1 ? '' : 's'} to${event.bottom ? ' the bottom of' : ''} their deck`);
         event.discardedCards = cards;
         const players: Player[] = [];
-        for(let card of cards) {
+        for(const card of cards) {
             card.owner.moveCard(card, Location.ConflictDeck, event.options);
             if(!players.includes(card.owner)) {
                 players.push(card.owner);

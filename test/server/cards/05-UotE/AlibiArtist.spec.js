@@ -28,6 +28,8 @@ describe('Alibi Artist', function() {
                     this.player1.honor = 4;
                     this.player1.clickCard('alibi-artist');
                     expect(this.player1).not.toHavePrompt('Select a card');
+                    expect(this.player1).toHavePrompt('Action Window');
+                    expect(this.player1.hand.length).toBe(3);
                 });
             });
 
@@ -38,21 +40,11 @@ describe('Alibi Artist', function() {
                     this.player1.moveCard(this.reprieve, 'conflict deck');
                 });
 
-                it('should show 1 card only and a \'Take Nothing\' option', function() {
+                it('should show 1 card only and no \'Take nothing\' option', function() {
                     this.player1.clickCard('alibi-artist');
                     expect(this.player1).toHavePrompt('Select a card');
                     expect(this.player1).toHavePromptButton('Reprieve');
-                    expect(this.player1).toHavePromptButton('Take nothing');
-                });
-
-                it('should leave the card in the deck if the \'Take Nothing\' option is chosen', function() {
-                    let handSize = this.player1.player.hand.length;
-                    this.player1.clickCard('alibi-artist');
-                    this.player1.clickPrompt('Take nothing');
-                    expect(this.player1.conflictDeck.length).toBe(1);
-                    expect(this.player1.player.hand.length).toBe(handSize);
-                    expect(this.getChatLogs(2)).not.toContain('player1 takes 1 card');
-                    expect(this.getChatLogs(1)).toContain('player1 puts 1 card on the bottom of their conflict deck');
+                    expect(this.player1).not.toHavePromptButton('Take nothing');
                 });
 
                 it('should put the card in hand if chosen', function() {
@@ -92,6 +84,8 @@ describe('Alibi Artist', function() {
                 this.player1.honor = 7;
                 this.player1.clickCard('alibi-artist');
                 expect(this.player1).not.toHavePrompt('Select a card');
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.player1.hand.length).toBe(3);
             });
 
             it('should work at 6 or less honor and correctly put cards in hand and at bottom of conflict deck', function() {
@@ -100,7 +94,7 @@ describe('Alibi Artist', function() {
                 this.player1.moveCard(this.fan, 'conflict deck');
                 this.player1.clickCard('alibi-artist');
                 expect(this.player1).toHavePrompt('Select a card');
-                expect(this.player1).not.toHavePromptButton('Take Nothing');
+                expect(this.player1).not.toHavePromptButton('Take nothing');
                 this.player1.clickPrompt('Ornate Fan');
                 expect(this.fan.location).toBe('hand');
                 expect(this.player1.player.conflictDeck.at(-1)).toBe(this.reprieve);

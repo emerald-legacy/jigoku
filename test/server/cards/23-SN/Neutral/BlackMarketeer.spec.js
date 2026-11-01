@@ -21,8 +21,8 @@ describe('Black Marketeer', function () {
         });
 
         it('pays cost to opponent', function () {
-            let fate = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player1.clickCard(this.marketeer);
             expect(this.player1).not.toBeAbleToSelect(this.katana);
@@ -40,8 +40,8 @@ describe('Black Marketeer', function () {
         });
 
         it('can play zero cost attachments', function () {
-            let fate = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player1.clickCard(this.marketeer);
             expect(this.player1).not.toBeAbleToSelect(this.katana);

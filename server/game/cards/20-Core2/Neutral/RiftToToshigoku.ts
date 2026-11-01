@@ -1,53 +1,44 @@
+import { msg } from '../../../GameChat.js';
 import { Players, CardType, EventName, AbilityType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { discardFromPlay } from '../../../GameActions/GameActions.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { Event } from '../../../Events/Event.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class RiftToToshigoku extends ProvinceCard {
     static id = 'rift-to-toshigoku';
 
-    private eventRegistrar?: EventRegistrar;
-    private shouldCancelRingEffectsHere?: boolean;
+    private cancelRingEffectsInConflict?: string;
 
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([
-            {
-                [EventName.OnResolveRingElement + ':' + AbilityType.WouldInterrupt]: 'cancelRingEffect'
-            }
-        ]);
+    public override setupCardAbilities() {
+        new EventRegistrar(this.game).registerTriggerWindow(EventName.OnResolveRingElement, AbilityType.WouldInterrupt, (event) => this.cancelRingEffect(event));
 
-        this.reaction({
-            title: 'Force opponent to remove all fate from a character and resolve the conflict',
-            when: {
+        this.reaction('Break this province to discard an attacker')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
-            },
-            cost: AbilityDsl.costs.breakSelf(),
-            target: {
+            })
+            .cost(costs.breakSelf())
+            .target({
                 activePromptTitle: 'Choose a character to discard',
                 player: Players.Opponent,
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            },
-            then: (_context) => {
-                this.shouldCancelRingEffectsHere = true;
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, discardFromPlay())
+            .onResolve((context) => {
+                this.cancelRingEffectsInConflict = context.game.currentConflict?.uuid;
+            });
     }
 
     public cancelRingEffect(event: Event) {
         if(
-            (event.context as AbilityContext).game.currentConflict &&
-            this.isConflictProvince() &&
-            this.shouldCancelRingEffectsHere &&
+            this.game.currentConflict &&
+            this.game.currentConflict.uuid === this.cancelRingEffectsInConflict &&
             !event.cancelled
         ) {
             event.cancel();
-            this.game.addMessage('{0} cancels the ring effect', this);
+            this.game.addMessage(msg`${this} cancels the ring effect`);
         }
     }
 }

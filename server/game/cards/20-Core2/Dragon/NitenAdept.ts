@@ -1,23 +1,16 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class NitenAdept extends DrawCard {
     static id = 'niten-adept';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow character',
-            condition: (context) => context.source.attachments.length > 0 && context.source.isParticipating(),
-            cost: AbilityDsl.costs.bow({
-                cardType: CardType.Attachment,
-                cardCondition: (card, context) => card.parentCharacter === context.source
-            }),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Bow character')
+            .ifCondition((context) => context.source.attachments.some((attachment) => attachment.controller === context.player))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.attachments.length === 0,
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating() && card.attachments.length === 0
+            }, bow());
     }
 }

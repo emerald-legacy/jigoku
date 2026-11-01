@@ -1,43 +1,33 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { copyCard } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import { controlsShugenja } from '../controlsShugenja.js';
+import { msg } from '../../GameChat.js';
 
 export default class BetrayedVision extends DrawCard {
     static id = 'betrayed-vision';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Make a character a copy',
-
-            targets: {
-                cardToCopy: {
-                    activePromptTitle: 'Choose a character to copy',
-                    cardType: CardType.Character,
-                    controller: Players.Any,
-                    cardCondition: (card) => !card.isUnique()
-                },
-                myCharacter: {
-                    dependsOn: 'cardToCopy',
-                    activePromptTitle: 'Choose a character to turn into the copy',
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    cardCondition: (card, context) => card.isParticipating() && card !== context.targets.cardToCopy,
-                    gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                        effect: AbilityDsl.effects.copyCard(context.targets.cardToCopy)
-                    }))
-                }
-            },
-            effect: 'make {1} into a copy of {2}',
-            effectArgs: (context) => [context.targets.myCharacter, context.targets.cardToCopy]
-        });
-    }
-
-    canPlay(context: TriggeredAbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
+    override setupCardAbilities() {
+        this.action('Make a character a copy')
+            .playOnlyIf((context) => controlsShugenja(context.player))
+            .target({
+                name: 'cardToCopy',
+                activePromptTitle: 'Choose a character to copy',
+                cardType: CardType.Character,
+                controller: Players.Any,
+                cardCondition: (card) => !card.isUnique()
+            })
+            .target({
+                name: 'myCharacter',
+                dependsOn: 'cardToCopy',
+                activePromptTitle: 'Choose a character to turn into the copy',
+                cardType: CardType.Character,
+                controller: Players.Opponent,
+                cardCondition: (card, context) => card.isParticipating() && card !== context.targets.cardToCopy && card.name !== context.targets.cardToCopy.name
+            }, cardLastingEffect((context) => ({
+                effect: copyCard(context.targets.cardToCopy)
+            })))
+            .chatText((context) => msg`make ${context.targets.myCharacter} into a copy of ${context.targets.cardToCopy}`);
     }
 }

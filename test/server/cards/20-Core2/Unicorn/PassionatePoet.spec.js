@@ -26,14 +26,14 @@ describe('Passionate Poet', function () {
             });
 
             this.player2.clickCard(this.passionatePoet);
-            expect(this.diplomat.getMilitarySkill()).toBe(0);
-            expect(this.diplomat.getPoliticalSkill()).toBe(0);
-            expect(this.brash.getMilitarySkill()).toBe(1);
-            expect(this.brash.getPoliticalSkill()).toBe(0);
-            expect(this.tadaka.getMilitarySkill()).toBe(4);
-            expect(this.tadaka.getPoliticalSkill()).toBe(2);
-            expect(this.passionatePoet.getMilitarySkill()).toBe(2);
-            expect(this.passionatePoet.getPoliticalSkill()).toBe(2);
+            expect(this.diplomat.militarySkill).toBe(0);
+            expect(this.diplomat.politicalSkill).toBe(0);
+            expect(this.brash.militarySkill).toBe(1);
+            expect(this.brash.politicalSkill).toBe(0);
+            expect(this.tadaka.militarySkill).toBe(4);
+            expect(this.tadaka.politicalSkill).toBe(2);
+            expect(this.passionatePoet.militarySkill).toBe(2);
+            expect(this.passionatePoet.politicalSkill).toBe(2);
 
             expect(this.getChatLogs(10)).toContain(
                 'player2 uses Passionate Poet to give all participating enemies -1military/-1political until the end of the conflict'

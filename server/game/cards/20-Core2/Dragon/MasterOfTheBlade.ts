@@ -1,28 +1,23 @@
-import { Duration } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { RestrictionType, RestrictionScope } from '../../../Constants.js';
 
 export default class MasterOfTheBlade extends DrawCard {
     static id = 'master-of-the-blade';
 
-    public setupCardAbilities() {
-        this.duelStrike({
-            title: 'Don\'t bow during resolution',
-            duelCondition: (duel, context) => duel.participants.includes(context.source),
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source,
+    public override setupCardAbilities() {
+        this.duelStrike('Don\'t bow during resolution', (duel, context) => context.game.isDuringConflict() && duel.participants.includes(context.source))
+            .cardLastingEffect((context) => ({
                 condition: (context) => context.game.isDuringConflict(),
-                duration: Duration.UntilEndOfConflict,
                 effect: [
-                    AbilityDsl.effects.doesNotBow(),
-                    AbilityDsl.effects.cardCannot({
-                        cannot: 'bow',
-                        restricts: 'opponentsCardEffects',
+                    doesNotBow(),
+                    cardCannot({
+                        cannot: RestrictionType.Bow,
+                        appliesTo: RestrictionScope.OpponentsCardEffects,
                         applyingPlayer: context.player
                     })
                 ]
-            })),
-            effect: 'prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict'
-        });
+            }))
+            .chatText('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict');
     }
 }

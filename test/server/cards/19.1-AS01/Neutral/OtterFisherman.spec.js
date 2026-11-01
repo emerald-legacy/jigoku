@@ -126,7 +126,7 @@ describe('Otter Fisherman', function() {
         });
 
         it('should give player1 1 honor if chosen', function() {
-            let initialHonor = this.player1.honor;
+            const initialHonor = this.player1.honor;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.otterFisherman],
@@ -147,7 +147,7 @@ describe('Otter Fisherman', function() {
         });
 
         it('should give player1 1 fate if chosen', function() {
-            let initialFate = this.player1.fate;
+            const initialFate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.otterFisherman],
@@ -168,7 +168,7 @@ describe('Otter Fisherman', function() {
         });
 
         it('should give player1 1 card if chosen', function() {
-            let initialHandSize = this.player1.hand.length;
+            const initialHandSize = this.player1.hand.length;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.otterFisherman],
@@ -186,6 +186,43 @@ describe('Otter Fisherman', function() {
 
             expect(this.player1.hand.length).toBe(initialHandSize + 1);
             expect(this.getChatLogs(3)).toContain('player1 uses Otter Fisherman to draw 1 card');
+        });
+    });
+});
+
+describe('Otter Fisherman immunity', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'otter-fisherman', attachments: ['favored-mount'] }, 'isawa-tadaka']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+
+            this.otterFisherman = this.player1.findCardByName('otter-fisherman');
+            this.favoredMount = this.player1.findCardByName('favored-mount');
+            this.isawaTadaka = this.player1.findCardByName('isawa-tadaka');
+        });
+
+        it('is immune to Creature card effects', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.isawaTadaka],
+                defenders: [],
+                type: 'political',
+                ring: 'earth'
+            });
+
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.favoredMount);
+            expect(this.otterFisherman.isParticipating()).toBe(false);
+            expect(this.favoredMount.bowed).toBe(false);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
         });
     });
 });

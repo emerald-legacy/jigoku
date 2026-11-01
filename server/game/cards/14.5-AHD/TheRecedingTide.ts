@@ -1,32 +1,27 @@
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
-import { Location, CardType, Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Location, CardType, Players, Trait } from '../../Constants.js';
+import { putIntoProvince, selectCard } from '../../GameActions/GameActions.js';
 
 class TheRecedingTide extends DrawCard {
     static id = 'the-receding-tide';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Return a character to a province',
-            target: {
+    override setupCardAbilities() {
+        this.action('Return a character to a province')
+            .target({
                 cardType: CardType.Character,
                 location: Location.PlayArea,
-                mode: TargetMode.Single,
-                cardCondition: card => !card.hasTrait('mythic') && card.owner === this.controller,
-                gameAction: AbilityDsl.actions.selectCard(context => ({
-                    targets: false,
-                    cardType: CardType.Province,
-                    controller: Players.Self,
-                    location: Location.Provinces,
-                    cardCondition: card => card.location !== Location.StrongholdProvince,
-                    subActionProperties: (card: ProvinceCard) => ({ destination: card.location }),
-                    gameAction: AbilityDsl.actions.putIntoProvince({
-                        target: context.target
-                    })
-                }))
-            }
-        });
+                cardCondition: (card, context) => !card.hasTrait(Trait.Mythic) && card.owner === context.player
+            }, selectCard((context) => ({
+                targets: false,
+                cardType: CardType.Province,
+                controller: Players.Self,
+                location: Location.Provinces,
+                cardCondition: (card) => card.location !== Location.StrongholdProvince,
+                subActionProperties: (card) => ({ destination: card.location }),
+                gameAction: putIntoProvince({
+                    target: context.target
+                })
+            })));
     }
 }
 

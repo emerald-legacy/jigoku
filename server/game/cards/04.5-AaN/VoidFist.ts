@@ -1,27 +1,22 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { bow, sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class VoidFist extends DrawCard {
     static id = 'void-fist';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Bow and send a character home',
-            condition: context =>
-                this.game.isDuringConflict() &&
-                !!this.game.currentConflict &&
-                this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 2,
-            target: {
+    override setupCardAbilities() {
+        this.action('Bow and send a character home')
+            .condition(() => !!this.game.currentConflict)
+            .ifCondition((context) => (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 2)
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getCharacters(context.player).some((myCard: DrawCard) =>
-                        myCard.hasTrait('monk') && (myCard.militarySkill ?? 0) >= (card.militarySkill ?? 0)
-                    ),
-                gameAction: [ability.actions.bow(), ability.actions.sendHome()]
-            },
-            effect: 'bow {0} and send them home'
-        });
+                    card.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getCharacters(context.player).some((myCard) =>
+                        myCard.hasTrait(Trait.Monk) && myCard.militarySkill >= card.militarySkill
+                    )
+            }, bow(), sendHome())
+            .chatText('bow {0} and send them home');
     }
 }
 

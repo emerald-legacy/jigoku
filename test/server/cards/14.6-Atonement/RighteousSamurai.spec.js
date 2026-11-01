@@ -53,12 +53,14 @@ describe('Righteous Samurai', function () {
             this.player2.clickCard(this.yurt);
             this.player2.clickPrompt('Each player gains 2 honor');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 uses Windswept Yurt, sacrificing Windswept Yurt to give each player 2 honor');
         });
 
         it('will not trigger from an honor loss caused by the controller', function () {
             this.player1.clickCard(this.backhand, 'hand');
             this.player1.clickPrompt('player1');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 plays Backhanded Compliment to make player1 lose an honor and draw a card');
         });
 
         it('should not trigger from a duel', function() {
@@ -68,12 +70,17 @@ describe('Righteous Samurai', function () {
                 defenders: [this.advisor],
                 type: 'military'
             });
+            const p1honor = this.player1.honor;
+            const p2honor = this.player2.honor;
             this.player2.clickCard(this.pd2);
             this.player2.clickCard(this.advisor);
             this.player2.clickCard(this.righteous);
             this.player1.clickPrompt('2');
             this.player2.clickPrompt('1');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1.honor).toBe(p1honor - 1);
+            expect(this.player2.honor).toBe(p2honor + 1);
+            expect(this.getChatLogs(5)).toContain('The duel ends in a draw');
         });
 
         it('should not trigger from a dishonored character leaving', function() {
@@ -136,6 +143,7 @@ describe('Righteous Samurai', function () {
             this.player2.clickPrompt('Give 1 honor to resolve this ability again');
             this.player2.clickPrompt('Done');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(6)).toContain('player2 chooses to give 1 honor to resolve Overhear again');
         });
     });
 });

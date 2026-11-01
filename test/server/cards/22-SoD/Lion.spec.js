@@ -26,8 +26,8 @@ describe('SoD - Lion', function () {
                     defenders: []
                 });
 
-                const mil = this.ancientMaster.getMilitarySkill();
-                const pol = this.ancientMaster.getPoliticalSkill();
+                const mil = this.ancientMaster.militarySkill;
+                const pol = this.ancientMaster.politicalSkill;
 
                 this.player2.pass();
 
@@ -37,8 +37,8 @@ describe('SoD - Lion', function () {
                 expect(this.player2).toHavePromptButton('Let opponent claim favor');
 
                 this.player2.clickPrompt('Give the character +3/+3');
-                expect(this.ancientMaster.getMilitarySkill()).toBe(mil + 3);
-                expect(this.ancientMaster.getPoliticalSkill()).toBe(pol + 3);
+                expect(this.ancientMaster.militarySkill).toBe(mil + 3);
+                expect(this.ancientMaster.politicalSkill).toBe(pol + 3);
                 expect(this.getChatLogs(5)).toContain('player1 plays Ancestral Rivalry to give Ancient Master +3military/+3political');
             });
 
@@ -52,16 +52,16 @@ describe('SoD - Lion', function () {
                     defenders: []
                 });
 
-                const mil = this.ancientMaster.getMilitarySkill();
-                const pol = this.ancientMaster.getPoliticalSkill();
+                const mil = this.ancientMaster.militarySkill;
+                const pol = this.ancientMaster.politicalSkill;
 
                 this.player2.pass();
 
                 this.player1.clickCard(this.rivalry);
                 this.player1.clickCard(this.ancientMaster);
                 this.player2.clickPrompt('Let opponent claim favor');
-                expect(this.ancientMaster.getMilitarySkill()).toBe(mil);
-                expect(this.ancientMaster.getPoliticalSkill()).toBe(pol);
+                expect(this.ancientMaster.militarySkill).toBe(mil);
+                expect(this.ancientMaster.politicalSkill).toBe(pol);
                 expect(this.getChatLogs(5)).toContain('player1 plays Ancestral Rivalry to claim the Imperial Favor');
                 expect(this.player1).toHavePromptButton('Military');
                 expect(this.player1).toHavePromptButton('Political');
@@ -82,16 +82,16 @@ describe('SoD - Lion', function () {
                     defenders: []
                 });
 
-                const mil = this.ancientMaster.getMilitarySkill();
-                const pol = this.ancientMaster.getPoliticalSkill();
+                const mil = this.ancientMaster.militarySkill;
+                const pol = this.ancientMaster.politicalSkill;
 
                 this.player2.pass();
 
                 this.player1.clickCard(this.rivalry);
                 this.player1.clickCard(this.ancientMaster);
                 this.player2.clickPrompt('Let opponent claim favor');
-                expect(this.ancientMaster.getMilitarySkill()).toBe(mil);
-                expect(this.ancientMaster.getPoliticalSkill()).toBe(pol);
+                expect(this.ancientMaster.militarySkill).toBe(mil);
+                expect(this.ancientMaster.politicalSkill).toBe(pol);
                 expect(this.getChatLogs(5)).toContain('player1 plays Ancestral Rivalry to claim the Imperial Favor');
                 expect(this.player1).toHavePromptButton('Military');
                 expect(this.player1).toHavePromptButton('Political');
@@ -441,12 +441,12 @@ describe('SoD - Lion', function () {
                     defenders: [this.natsuko, this.challenger]
                 });
 
-                const mil = this.natsuko.getMilitarySkill();
+                const mil = this.natsuko.militarySkill;
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
-                expect(this.natsuko.getMilitarySkill()).toBe(mil + 2);
+                expect(this.natsuko.militarySkill).toBe(mil + 2);
             });
 
             it('discarding favor', function () {
@@ -458,11 +458,12 @@ describe('SoD - Lion', function () {
                     defenders: [this.natsuko, this.challenger]
                 });
 
-                const mil = this.natsuko.getMilitarySkill();
+                const mil = this.natsuko.militarySkill;
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
-                expect(this.natsuko.getMilitarySkill()).toBe(mil + 2);
+                // the "may" is decided before any effect applies
+                expect(this.natsuko.militarySkill).toBe(mil);
                 expect(this.player2).toHavePromptButton('Discard the Imperial Favor');
                 expect(this.player2).toHavePromptButton('Done');
 
@@ -481,12 +482,12 @@ describe('SoD - Lion', function () {
                     defenders: [this.natsuko, this.challenger]
                 });
 
-                const mil = this.natsuko.getMilitarySkill();
+                const mil = this.natsuko.militarySkill;
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
-                expect(this.natsuko.getMilitarySkill()).toBe(mil + 2);
                 this.player2.clickPrompt('Done');
+                expect(this.natsuko.militarySkill).toBe(mil + 2);
                 expect(this.player2.player.imperialFavor).toBe('military');
             });
 
@@ -510,7 +511,7 @@ describe('SoD - Lion', function () {
 
                 this.player2.clickPrompt('Political');
                 expect(this.player2.player.imperialFavor).toBe('political');
-                expect(this.getChatLogs(5)).toContain('player2 claims the Imperial Favor to the delayed effect of Deeds, not Words');
+                expect(this.getChatLogs(5)).toContain('player2 claims the Imperial Favor due to the delayed effect of Deeds, not Words');
                 expect(this.getChatLogs(5)).toContain('player2 claims the Emperor\'s political favor!');
             });
 
@@ -536,6 +537,47 @@ describe('SoD - Lion', function () {
                 this.player1.clickPrompt('Don\'t resolve');
 
                 expect(this.player1).toHavePrompt('Action Window');
+            });
+        });
+
+        describe('Deeds not Words with Ikoma Yumiko\'s Dagger', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['ancient-master']
+                    },
+                    player2: {
+                        inPlay: ['ikoma-natsuko', 'ikoma-yumiko-s-dagger'],
+                        hand: ['deeds-not-words']
+                    }
+                });
+
+                this.ancientMaster = this.player1.findCardByName('ancient-master');
+                this.natsuko = this.player2.findCardByName('ikoma-natsuko');
+                this.dagger = this.player2.findCardByName('ikoma-yumiko-s-dagger');
+                this.deeds = this.player2.findCardByName('deeds-not-words');
+            });
+
+            it('does not honor the character if the dagger is discarded instead of the favor', function () {
+                this.player2.player.imperialFavor = 'military';
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.ancientMaster],
+                    defenders: [this.natsuko]
+                });
+
+                this.player2.clickCard(this.deeds);
+                this.player2.clickCard(this.natsuko);
+                this.player2.clickPrompt('Discard the Imperial Favor');
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                this.player2.clickCard(this.dagger);
+
+                expect(this.player2.player.imperialFavor).toBe('military');
+                expect(this.dagger.location).toBe('dynasty discard pile');
+                expect(this.natsuko.isHonored).toBe(false);
+                expect(this.getChatLogs(5)).toContain('player2 uses Ikoma Yumiko\'s Dagger to discard itself instead of the Imperial Favor');
             });
         });
 
@@ -591,3 +633,80 @@ describe('SoD - Lion', function () {
     });
 });
 
+describe('River Crossing during setup', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'setup',
+                player1: {
+                    provinces: ['river-crossing']
+                },
+                skipAutoSetup: true
+            });
+            this.province = this.player1.findCardByName('river-crossing');
+            this.selectFirstPlayer(this.player1);
+        });
+
+        it('cannot be the stronghold province', function () {
+            expect(this.player1).toHavePrompt('Select stronghold province');
+            expect(this.player1).not.toBeAbleToSelect(this.province);
+        });
+    });
+});
+
+describe('SoD - Lion: The Stranger limit', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    inPlay: ['doji-whisperer', 'fawning-diplomat', 'fawning-diplomat', 'fawning-diplomat'],
+                    hand: ['the-stranger']
+                },
+                player2: {
+                    inPlay: ['kakita-yoshi']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.stranger = this.player1.findCardByName('the-stranger');
+            [this.diplomat1, this.diplomat2, this.diplomat3] = this.player1.filterCardsByName('fawning-diplomat');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+
+            this.whisperer.fate = 1;
+            this.yoshi.fate = 1;
+            this.player1.playAttachment(this.stranger, this.whisperer);
+            this.whisperer.bowed = true;
+            this.diplomat1.bowed = true;
+            this.diplomat2.bowed = true;
+            this.diplomat3.bowed = true;
+        });
+
+        it('gives no honor for a third claim of the Imperial Favor in a round', function () {
+            this.flow.finishConflictPhase();
+
+            this.player1.clickCard(this.diplomat1);
+            this.player1.clickCard(this.diplomat1);
+            this.player1.clickPrompt('military');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.stranger);
+            expect(this.player1.honor).toBe(11);
+
+            this.player1.clickCard(this.diplomat2);
+            this.player1.clickCard(this.diplomat2);
+            this.player1.clickPrompt('military');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.stranger);
+            expect(this.player1.honor).toBe(12);
+
+            this.player1.clickCard(this.diplomat3);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.diplomat3);
+            this.player1.clickPrompt('military');
+            expect(this.player1.player.imperialFavor).toBe('military');
+            expect(this.diplomat3.location).toBe('dynasty discard pile');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1.honor).toBe(12);
+        });
+    });
+});

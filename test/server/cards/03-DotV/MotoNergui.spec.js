@@ -57,6 +57,22 @@ describe('Moto Nergui', function() {
                 this.shibaTsukune = this.player1.clickCard('shiba-tsukune', 'any', 'opponent');
                 expect(this.shibaTsukune.inConflict).toBe(false);
             });
+
+            it('cannot be used during a political conflict', function() {
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: ['moto-nergui'],
+                    defenders: ['shiba-tsukune']
+                });
+                this.player2.pass();
+                this.motoNergui = this.player1.findCardByName('moto-nergui');
+                this.shibaTsukune = this.player2.findCardByName('shiba-tsukune');
+                expect(this.motoNergui.isParticipating()).toBe(true);
+                this.player1.clickCard(this.motoNergui);
+                expect(this.player1).not.toHavePrompt('Moto Nergüi');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.shibaTsukune.inConflict).toBe(true);
+            });
         });
     });
 });

@@ -1,30 +1,30 @@
-import { Location } from '../../Constants.js';
+import { Location, RestrictionType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, gainExtraFateWhenPlayed } from '../../effects.js';
+import { isPlayedFromProvince } from '../playedFromProvince.js';
 
 export default class ToshiRanbo extends ProvinceCard {
     static id = 'toshi-ranbo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.facedown = false;
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot('turnFacedown')
+            effect: cardCannot(RestrictionType.TurnFacedown)
         });
 
         this.persistentEffect({
-            targetLocation: Location.Provinces,
-            match: (card: DrawCard, context) => card.isDynasty && card.location === context?.source.location,
-            effect: AbilityDsl.effects.gainExtraFateWhenPlayed()
+            targetLocation: Location.Any,
+            match: (card) => card.isDynasty && isPlayedFromProvince(card, this.location),
+            effect: gainExtraFateWhenPlayed()
         });
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 
-    startsGameFaceup() {
+    override startsGameFaceup() {
         return true;
     }
 }

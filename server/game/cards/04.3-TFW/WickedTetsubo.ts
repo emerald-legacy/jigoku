@@ -1,44 +1,40 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { setMilitarySkill, setPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { TargetMode, CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class WickedTetsubo extends DrawCard {
     static id = 'wicked-tetsubo';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'berserker'
+            trait: Trait.Berserker
         });
 
-        this.action({
-            title: 'Set Military or Political skill to 0',
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()),
-            targets: {
-                character: {
-                    activePromptTitle: 'Choose a defending character',
-                    cardType: CardType.Character,
-                    cardCondition: card => card.isDefending()
-                },
-                effect: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'character',
-                    activePromptTitle: 'Choose a skill to set to 0',
-                    choices: {
-                        'Military': ability.actions.cardLastingEffect((context: AbilityContext) => ({
-                            target: context.targets.character,
-                            effect: ability.effects.setMilitarySkill(0)
-                        })),
-                        'Political': ability.actions.cardLastingEffect((context: AbilityContext) => ({
-                            target: context.targets.character,
-                            effect: ability.effects.setPoliticalSkill(0)
-                        }))
-                    }
-                }
-            },
-            effect: 'set {1}\'s {2} skill to 0',
-            effectArgs: context => [context.targets.character, context.selects.effect.choice.toLowerCase()]
-        });
+        this.action('Set Military or Political skill to 0')
+            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
+            .target({
+                name: 'character',
+                activePromptTitle: 'Choose a defending character',
+                cardType: CardType.Character,
+                cardCondition: (card) => card.isDefending()
+            })
+            .select({
+                name: 'effect',
+                dependsOn: 'character',
+                activePromptTitle: 'Choose a skill to set to 0'
+            }, {
+                'Military': cardLastingEffect((context) => ({
+                    target: context.targets.character,
+                    effect: setMilitarySkill(0)
+                })),
+                'Political': cardLastingEffect((context) => ({
+                    target: context.targets.character,
+                    effect: setPoliticalSkill(0)
+                }))
+            })
+            .chatText((context) => msg`set ${context.targets.character}'s ${context.selects.effect.choice.toLowerCase()} skill to 0`);
     }
 }
 

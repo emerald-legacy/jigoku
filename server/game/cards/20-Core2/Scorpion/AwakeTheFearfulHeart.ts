@@ -1,36 +1,33 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { cardCannot } from '../../../effects.js';
+import { cardLastingEffect, onAffinity, sendHome, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
-import { CardType } from '../../../Constants.js';
+import { CardType, RestrictionType, Trait } from '../../../Constants.js';
+import { controlsParticipating } from '../../controlsParticipating.js';
 
 export default class AwakeTheFearfulHeart extends DrawCard {
     static id = 'awake-the-fearful-heart';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move home each character without fate',
-            condition: (context) =>
-                context.player.cardsInPlay.some(
-                    (card: DrawCard) => card.isParticipating() && card.hasTrait('shugenja')
-                ),
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.sendHome((context) => ({
+    override setupCardAbilities() {
+        this.conflictAction('Move home each character without fate')
+            .ifCondition((context) => controlsParticipating(context.player, Trait.Shugenja))
+            .gameAction(sequential([
+                sendHome((context) => ({
                     target:
-                        (context.game.currentConflict as Conflict | null)?.getParticipants(
+                        context.game.currentConflict?.getParticipants(
                             (character) => character.fate === 0
                         ) ?? []
                 })),
-                AbilityDsl.actions.onAffinity({
-                    trait: 'air',
-                    gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+                onAffinity({
+                    trait: Trait.Air,
+                    gameAction: cardLastingEffect((context) => ({
                         target: context.game.findAnyCardsInPlay(
-                            (card: DrawCard) => card.getType() === CardType.Character
+                            (card) => card.type === CardType.Character
                         ),
-                        effect: AbilityDsl.effects.cardCannot('moveToConflict')
+                        effect: cardCannot(RestrictionType.MoveToConflict)
                     })),
-                    effect: 'forbid all players from moving characters into the conflict'
+                    chatText: () => msg`forbid all players from moving characters into the conflict`
                 })
-            ])
-        });
+            ]));
     }
 }

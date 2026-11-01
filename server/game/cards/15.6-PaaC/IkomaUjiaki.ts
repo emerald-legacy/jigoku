@@ -1,17 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class IkomaUjiaki2 extends DrawCard {
     static id = 'ikoma-ujiaki-2';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Switch the conflict type',
-            condition: context => context.source.isParticipating(),
-            cost: AbilityDsl.costs.payHonor(2),
-            effect: 'switch the conflict type',
-            gameAction: AbilityDsl.actions.switchConflictType()
-        });
+    override setupCardAbilities() {
+        this.action('Switch the conflict type')
+            .condition((context) => context.source.isParticipating())
+            .cost(costs.payHonor(2))
+            .switchConflictType()
+            .chatText('switch the conflict type');
     }
 }
 

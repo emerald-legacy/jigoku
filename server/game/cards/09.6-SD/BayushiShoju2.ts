@@ -1,32 +1,28 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase, Players, RestrictionType } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
 
 class BayushiShoju2 extends DrawCard {
     static id = 'bayushi-shoju-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.playerCannot('haveImperialFavor')
+            effect: playerCannot(RestrictionType.HaveImperialFavor)
         });
 
-        this.forcedReaction({
-            title: 'After the conflict phase begins',
-            when: {
-                onPhaseStarted: event => event.phase === Phases.Conflict
-            },
-            effect: 'have each player loses an honor and draw two cards',
-            gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.loseHonor(context => ({
-                    target: context.game.getPlayers()
-                })),
-                AbilityDsl.actions.draw(context => ({
-                    target: context.game.getPlayers(),
-                    amount: 2
-                }))
-            ])
-        });
+        this.forcedReaction('After the conflict phase begins')
+            .when({
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
+            })
+            .loseHonor((context) => ({
+                target: context.game.getPlayers()
+            }))
+            .draw((context) => ({
+                target: context.game.getPlayers(),
+                amount: 2
+            }))
+            .chatText('have each player lose an honor and draw two cards');
     }
 }
 

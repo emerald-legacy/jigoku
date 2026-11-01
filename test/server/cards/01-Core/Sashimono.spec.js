@@ -52,3 +52,28 @@ describe('Sashimono', function() {
         });
     });
 });
+
+describe('Sashimono attach restriction', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['lion-s-pride-brawler'],
+                    hand: ['sashimono']
+                },
+                player2: {
+                    inPlay: ['doji-challenger']
+                }
+            });
+            this.brawler = this.player1.findCardByName('lion-s-pride-brawler');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+        });
+
+        it('attaches only to a Bushi you control', function () {
+            this.player1.clickCard('sashimono');
+            expect(this.player1).toBeAbleToSelect(this.brawler);
+            expect(this.player1).not.toBeAbleToSelect(this.challenger);
+        });
+    });
+});

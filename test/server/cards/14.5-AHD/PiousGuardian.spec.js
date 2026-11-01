@@ -43,7 +43,7 @@ describe('Pious Guardian', function() {
         });
 
         it('should gain 1 honor', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.noMoreActions();
             this.player1.clickCard(this.pious);
             expect(this.player1.honor).toBe(honor + 1);
@@ -61,6 +61,7 @@ describe('Pious Guardian', function() {
             this.sd2.isBroken = true;
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.game.currentPhase).toBe('fate');
         });
     });
 });

@@ -1,33 +1,26 @@
-import { ConflictType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, ConflictType } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { perConflict } from '../../../AbilityLimit.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TalkWithTheServants extends DrawCard {
     static id = 'talk-with-the-servants';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Force opponent to discard 2 cards',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Force opponent to discard 2 cards')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Political
-            },
-            cost: AbilityDsl.costs.dishonor({
+            })
+            .cost(costs.dishonor({
                 optional: true,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
-            }),
-            gameAction: AbilityDsl.actions.conditional({
-                condition: (context) => context.costs.dishonor instanceof DrawCard,
-                trueGameAction: AbilityDsl.actions.discardAtRandom((context) => ({
-                    amount: 2,
-                    target: context.player.opponent
-                })),
-                falseGameAction: AbilityDsl.actions.chosenDiscard((context) => ({
-                    amount: 2,
-                    target: context.player.opponent
-                }))
-            }),
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            }))
+            .if((context) => context.costs.dishonor instanceof DrawCard)
+                .discardAtRandom((context) => ({ amount: 2, target: context.player.opponent }))
+            .otherwise()
+                .chosenDiscard((context) => ({ amount: 2, target: context.player.opponent }))
+            .max(perConflict(1));
     }
 }

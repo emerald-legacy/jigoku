@@ -2,7 +2,8 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { EventName } from '../Constants.js';
-import type EventWindow from './EventWindow.js';
+import type { EventWindow } from './EventWindow.js';
+import type { GameEvent } from './EventPayloads.js';
 
 export class Event {
     cancelled = false;
@@ -23,13 +24,13 @@ export class Event {
     private static readonly RESERVED_PARAM_KEYS = new Set(['cancelled', 'resolved', 'handler', 'window']);
 
     constructor(
-        public name: string,
+        public name: EventName,
         params: Record<string, unknown>,
         private handler?: (event: Event) => void
     ) {
         for(const key in params) {
             if(Object.prototype.hasOwnProperty.call(params, key) && !Event.RESERVED_PARAM_KEYS.has(key)) {
-                (this as Record<string, unknown>)[key] = params[key];
+                Reflect.set(this, key, params[key]);
             }
         }
     }
@@ -53,6 +54,10 @@ export class Event {
         return event instanceof Event ? event.getPromptCard() : undefined;
     }
 
+    is<EventType extends EventName>(name: EventType): this is GameEvent<EventType> {
+        return this.name === name;
+    }
+
     cancel() {
         this.cancelled = true;
         if(this.window) {
@@ -62,10 +67,6 @@ export class Event {
 
     setWindow(window: EventWindow) {
         this.window = window;
-    }
-
-    unsetWindow() {
-        this.window = null;
     }
 
     checkCondition() {

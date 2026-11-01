@@ -72,6 +72,7 @@ describe('Fire Tensai Acolyte', function() {
                 this.player1.clickRing('fire');
                 this.player1.clickCard(this.acolyte);
                 this.player1.clickRing('void');
+                expect(this.game.currentConflict.ring.element).toBe('void');
                 expect(this.game.currentConflict.attackers).not.toContain(this.acolyte);
             });
         });

@@ -1,31 +1,28 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Duration, Phase, RestrictionType } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class DivineAncestry extends DrawCard {
     static id = 'divine-ancestry';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Prevent losing honor this phase',
-            when: {
-                onPhaseStarted: event => event.phase !== 'setup'
-            },
-            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
+    override setupCardAbilities() {
+        this.reaction('Prevent losing honor this phase')
+            .when({
+                onPhaseStarted: (event) => event.phase !== Phase.Setup
+            })
+            .playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,
-                targetController: context.player,
                 effect: [
-                    AbilityDsl.effects.playerCannot({
-                        cannot: 'loseHonor'
+                    playerCannot({
+                        cannot: RestrictionType.LoseHonor
                     }),
-                    AbilityDsl.effects.playerCannot({
-                        cannot: 'takeHonor'
+                    playerCannot({
+                        cannot: RestrictionType.TakeHonor
                     })
                 ]
-            })),
-            effect: 'prevent {1} from losing honor this phase',
-            effectArgs: context => [context.player]
-        });
+            })
+            .chatText((context) => msg`prevent ${context.player} from losing honor this phase`);
     }
 }
 

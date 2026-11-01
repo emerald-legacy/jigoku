@@ -1,15 +1,20 @@
-import { MatchingDiscardAction } from '../../../build/server/game/GameActions/MatchingDiscardAction.js';
+import { DiscardMatchingAction } from '../../../build/server/game/GameActions/DiscardMatchingAction.js';
+import BaseCard from '../../../build/server/game/BaseCard.js';
 
-describe('MatchingDiscardAction', function() {
+// fake cards that pick their discard pile as real cards do
+const discardPile = Object.getOwnPropertyDescriptor(BaseCard.prototype, 'discardPile');
+const fakeCard = (name, isDynasty) => Object.defineProperty({ name, isDynasty }, 'discardPile', discardPile);
+
+describe('DiscardMatchingAction', function() {
     beforeEach(function() {
         this.game = jasmine.createSpyObj('game', ['addMessage']);
         this.player = jasmine.createSpyObj('player', ['moveCard', 'checkRestrictions']);
         this.player.type = 'player';
         this.player.checkRestrictions.and.returnValue(true);
         this.player.game = this.game;
-        this.cardA = { name: 'Iron Will', isDynasty: false };
-        this.cardB = { name: 'Iron Will', isDynasty: false };
-        this.cardC = { name: 'Banzai!', isDynasty: false };
+        this.cardA = fakeCard('Iron Will', false);
+        this.cardB = fakeCard('Iron Will', false);
+        this.cardC = fakeCard('Banzai!', false);
         this.player.hand = [this.cardA, this.cardB, this.cardC];
         this.context = { player: this.player, gameActionsResolutionChain: [] };
     });
@@ -18,7 +23,7 @@ describe('MatchingDiscardAction', function() {
         describe('when hand is empty', function() {
             beforeEach(function() {
                 this.player.hand = [];
-                this.action = new MatchingDiscardAction({ target: [this.player], cards: [], match: () => true });
+                this.action = new DiscardMatchingAction({ target: [this.player], cards: [], match: () => true });
             });
 
             it('should return false', function() {
@@ -28,7 +33,7 @@ describe('MatchingDiscardAction', function() {
 
         describe('when hand has cards', function() {
             beforeEach(function() {
-                this.action = new MatchingDiscardAction({ target: [this.player], cards: [this.cardA], match: () => true });
+                this.action = new DiscardMatchingAction({ target: [this.player], cards: [this.cardA], match: () => true });
             });
 
             it('should return true', function() {
@@ -48,7 +53,7 @@ describe('MatchingDiscardAction', function() {
                     cards: [this.cardA, this.cardB],
                     match: () => true
                 };
-                this.action = new MatchingDiscardAction({});
+                this.action = new DiscardMatchingAction({});
             });
 
             it('should discard all matching cards', function() {
@@ -73,7 +78,7 @@ describe('MatchingDiscardAction', function() {
                     cards: [this.cardA, this.cardB, this.cardC],
                     match: (_context, card) => card.name === 'Iron Will'
                 };
-                this.action = new MatchingDiscardAction({});
+                this.action = new DiscardMatchingAction({});
             });
 
             it('should only discard matching cards', function() {
@@ -95,7 +100,7 @@ describe('MatchingDiscardAction', function() {
                     cards: [this.cardA, this.cardB, this.cardC],
                     match: () => false
                 };
-                this.action = new MatchingDiscardAction({});
+                this.action = new DiscardMatchingAction({});
             });
 
             it('should discard nothing', function() {
@@ -105,7 +110,7 @@ describe('MatchingDiscardAction', function() {
 
             it('should log a does-not-discard message', function() {
                 this.action.eventHandler(this.event);
-                expect(this.game.addMessage).toHaveBeenCalledWith('{0} does not discard anything', this.player);
+                expect(this.game.addMessage).toHaveBeenCalledWith(['{0} does not discard anything', [this.player]]);
             });
         });
 
@@ -119,7 +124,7 @@ describe('MatchingDiscardAction', function() {
                     cards: [this.cardA, this.cardB],
                     match: () => true
                 };
-                this.action = new MatchingDiscardAction({});
+                this.action = new DiscardMatchingAction({});
             });
 
             it('should discard only up to amount', function() {
@@ -139,12 +144,12 @@ describe('MatchingDiscardAction', function() {
                     cards: [this.cardA, this.cardB],
                     match: () => true
                 };
-                this.action = new MatchingDiscardAction({});
+                this.action = new DiscardMatchingAction({});
             });
 
             it('should call addMessage to reveal cards', function() {
                 this.action.eventHandler(this.event);
-                expect(this.game.addMessage).toHaveBeenCalledWith('{0} reveals {1}', this.player, [this.cardA, this.cardB]);
+                expect(this.game.addMessage).toHaveBeenCalledWith(['{0} reveals {1}', [this.player, [this.cardA, this.cardB]]]);
             });
         });
 
@@ -159,7 +164,7 @@ describe('MatchingDiscardAction', function() {
                     cards: [],
                     match: () => true
                 };
-                this.action = new MatchingDiscardAction({});
+                this.action = new DiscardMatchingAction({});
             });
 
             it('should not move any cards', function() {
@@ -170,7 +175,7 @@ describe('MatchingDiscardAction', function() {
 
         describe('dynasty card routing', function() {
             beforeEach(function() {
-                this.dynastyCard = { name: 'Kitsuki Investigator', isDynasty: true };
+                this.dynastyCard = fakeCard('Kitsuki Investigator', true);
                 this.player.hand = [this.dynastyCard];
                 this.event = {
                     player: this.player,
@@ -180,7 +185,7 @@ describe('MatchingDiscardAction', function() {
                     cards: [this.dynastyCard],
                     match: () => true
                 };
-                this.action = new MatchingDiscardAction({});
+                this.action = new DiscardMatchingAction({});
             });
 
             it('should move dynasty cards to dynasty discard pile', function() {

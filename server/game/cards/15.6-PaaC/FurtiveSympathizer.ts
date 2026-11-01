@@ -1,19 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { switchBaseSkills } from '../../effects.js';
+import { canSwitchSkills } from '../switchSkills.js';
 
 class FurtiveSympathizer extends DrawCard {
     static id = 'furtive-sympathizer';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Switch each character\'s base skills',
-            condition: context => context.source.isParticipating() && context.source.isOrdinary(),
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.game.currentConflict?.getParticipants().filter((a: DrawCard) => !a.hasDash()) ?? [],
-                effect: AbilityDsl.effects.switchBaseSkills()
-            })),
-            effect: 'switch all participating character\'s base military and political skill'
-        });
+    override setupCardAbilities() {
+        this.action('Switch each character\'s base skills')
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => context.source.isOrdinary())
+            .cardLastingEffect((context) => ({
+                target: context.game.currentConflict?.getParticipants().filter((a) => canSwitchSkills(a)) ?? [],
+                effect: switchBaseSkills()
+            }))
+            .chatText('switch all participating character\'s base military and political skill');
     }
 }
 

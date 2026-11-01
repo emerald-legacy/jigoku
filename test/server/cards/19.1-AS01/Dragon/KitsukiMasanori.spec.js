@@ -48,7 +48,8 @@ describe('Kitsuki Masanori', function () {
                             'duelist-training',
                             'writ-of-sanctification',
                             'shiba-s-oath',
-                            'justicar-s-approach'
+                            'justicar-s-approach',
+                            'contemplative-wisdom'
                         ],
                         hand: ['hidden-lineage', 'true-strike-kenjutsu', 'forebearer-s-echoes']
                     },
@@ -93,6 +94,21 @@ describe('Kitsuki Masanori', function () {
                 this.player1.clickCard(this.masanori);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.masanori);
+            });
+
+            it('only offers attachments with printed cost 1 or lower', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.raitsugu],
+                    defenders: []
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.echoes);
+                this.player1.clickCard(this.masanori);
+                this.player1.clickCard(this.masanori);
+                this.player1.clickPrompt('Search discard pile');
+                expect(this.player1).toHavePromptButton('Justicar\'s Approach');
+                expect(this.player1).not.toHavePromptButton('Contemplative Wisdom');
             });
 
             it('searches deck for a title or technique and equips it', function () {

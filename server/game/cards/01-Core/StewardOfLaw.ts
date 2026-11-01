@@ -1,16 +1,16 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotReceiveDishonorToken } from '../../effects.js';
 
 class StewardOfLaw extends DrawCard {
     static id = 'steward-of-law';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating(),
+            condition: (context) => context.source.isParticipating(),
             targetController: Players.Any,
-            match: card => card.getType() === CardType.Character,
-            effect: ability.effects.cannotReceiveDishonorToken()
+            match: (card) => card.type === CardType.Character,
+            effect: cannotReceiveDishonorToken()
         });
     }
 }

@@ -1,14 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotParticipateAsAttacker } from '../../effects.js';
 
 class ShibaPeacemaker extends DrawCard {
     static id = 'shiba-peacemaker';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            effect: ability.effects.cannotParticipateAsAttacker()
+            effect: cannotParticipateAsAttacker()
         });
     }
 }

@@ -35,7 +35,7 @@ describe('Stay Your Hand', function() {
                 expect(this.player1).toBeAbleToSelect(this.stayYourHand);
             });
 
-            it('should not trigger when a duel is to be initiated by you', function() {
+            it('should also trigger when you initiate the duel (errata)', function() {
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.honestChallenger],
@@ -45,9 +45,8 @@ describe('Stay Your Hand', function() {
                 this.player1.clickCard(this.gameOfSadane);
                 this.player1.clickCard(this.honestChallenger);
                 this.player1.clickCard(this.mirumotoRaitsugu);
-                expect(this.player1).not.toHavePrompt('Triggered Abilities');
-                expect(this.player1).not.toBeAbleToSelect(this.stayYourHand);
-                expect(this.player1).toHavePrompt('Choose your bid for the duel\nHonest Challenger: 2 vs 2: Mirumoto Raitsugu');
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.stayYourHand);
             });
 
             it('should trigger when a duel is to be initiated by an opponent\'s event', function() {

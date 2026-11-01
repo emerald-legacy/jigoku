@@ -1,16 +1,16 @@
 import type BaseCard from '../BaseCard.js';
 import { CardType } from '../Constants.js';
-import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
+import { BaseCardSelector, type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
-class SingleCardSelector extends BaseCardSelector {
-    numCards: number;
+export class SingleCardSelector extends BaseCardSelector {
+    override numCards: number;
 
     constructor(properties: BaseCardSelectorProperties) {
         super(properties);
         this.numCards = 1;
     }
 
-    defaultActivePromptTitle(): string {
+    override defaultActivePromptTitle(): string {
         if(this.cardType.length === 1) {
             if(this.cardType[0] === CardType.Attachment) {
                 return 'Choose an attachment';
@@ -20,21 +20,20 @@ class SingleCardSelector extends BaseCardSelector {
         return 'Choose a card';
     }
 
-    automaticFireOnSelect(): boolean {
+    override automaticFireOnSelect(): boolean {
         return true;
     }
 
-    hasReachedLimit(selectedCards: BaseCard[]): boolean {
+    override hasReachedLimit(selectedCards: BaseCard[]): boolean {
         return selectedCards.length >= this.numCards;
     }
 
-    hasExceededLimit(selectedCards: BaseCard[]): boolean {
+    override hasExceededLimit(selectedCards: BaseCard[]): boolean {
         return selectedCards.length > this.numCards;
     }
 
-    formatSelectParam(cards: BaseCard[]): BaseCard | BaseCard[] {
+    override formatSelectParam(cards: BaseCard[]): BaseCard | BaseCard[] {
         return cards[0] ? cards[0] : cards;
     }
 }
 
-export default SingleCardSelector;

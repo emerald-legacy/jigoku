@@ -85,7 +85,7 @@ describe('Imbued with Shadows', function() {
             });
 
             it('Should remove the honor and the status tokens from the chosen characters', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.player1.pass();
                 this.player2.clickCard(this.shadows);
@@ -117,7 +117,7 @@ describe('Imbued with Shadows', function() {
             });
 
             it('Should not let you choose more characters than you chose to lose honor', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.player1.pass();
                 this.player2.clickCard(this.shadows);
@@ -159,7 +159,7 @@ describe('Imbued with Shadows', function() {
             });
 
             it('should allow Finger of Jade to cancel', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 this.player1.playAttachment(this.jade, this.ambusher);
                 this.player2.clickCard(this.shadows);
                 this.player2.clickPrompt(3);
@@ -181,7 +181,7 @@ describe('Imbued with Shadows', function() {
             });
 
             it('Should prompt you if a character has multiple status tokens', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.youth.taint();
                 this.liar.taint();
@@ -292,5 +292,69 @@ describe('Imbued with Shadows', function() {
         //         expect(this.player2.fate).toBe(fate - 2);
         //     });
         // });
+    });
+});
+
+describe('Imbued with Shadows with only a tainted character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer']
+                },
+                player2: {
+                    hand: ['imbued-with-shadows']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.whisperer.taint();
+            this.game.checkGameState(true);
+            this.player1.pass();
+        });
+
+        it('can discard a tainted token', function() {
+            const honor = this.player2.honor;
+            this.player2.clickCard('imbued-with-shadows');
+            this.player2.clickPrompt('1');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.isTainted).toBe(false);
+            expect(this.player2.honor).toBe(honor - 1);
+        });
+    });
+});
+
+describe('Imbued with Shadows and Talented Performer', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['imbued-with-shadows']
+                },
+                player2: {
+                    inPlay: ['talented-performer', 'kakita-toshimoko']
+                }
+            });
+            this.shadows = this.player1.findCardByName('imbued-with-shadows');
+            this.performer = this.player2.findCardByName('talented-performer');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.performer.honor();
+            this.toshimoko.dishonor();
+        });
+
+        it('makes you choose the performer when you pay 1 honor', function() {
+            const honor = this.player1.honor;
+            this.player1.clickCard(this.shadows);
+            this.player1.clickPrompt('1');
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.performer);
+            expect(this.player1).not.toBeAbleToSelect(this.toshimoko);
+            this.player1.clickCard(this.performer);
+            expect(this.performer.isHonored).toBe(false);
+            expect(this.toshimoko.isDishonored).toBe(true);
+            expect(this.player1.honor).toBe(honor - 1);
+        });
     });
 });

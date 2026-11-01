@@ -1,17 +1,18 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { Trait } from '../../../Constants.js';
+import { addKeyword } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 
 export default class PearlOfTheBalash extends DrawCard {
     static id = 'pearl-of-the-balash';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'shugenja'
+            trait: Trait.Shugenja
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.addKeyword('covert')
+            effect: addKeyword('covert')
         });
     }
 }

@@ -45,6 +45,18 @@ describe('Know the Terrain', function() {
                 expect(this.rally.facedown).toBe(true);
             });
 
+            it('should not interrupt when no other facedown province can be switched with', function() {
+                this.endless.facedown = false;
+                this.cache.facedown = false;
+                this.garden.facedown = false;
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rider],
+                    province: this.rally
+                });
+                expect(this.player2).not.toBeAbleToSelect(this.p2Terrain);
+            });
+
             it('should not interrupt the province being revealed if it is faceup', function() {
                 this.rally.facedown = false;
                 this.initiateConflict({
@@ -122,8 +134,8 @@ describe('Know the Terrain', function() {
             });
 
             it('should switch the provinces', function() {
-                let rallyLocation = this.rally.location;
-                let gardenLocation = this.garden.location;
+                const rallyLocation = this.rally.location;
+                const gardenLocation = this.garden.location;
 
                 this.initiateConflict({
                     type: 'military',
@@ -251,7 +263,7 @@ describe('Know the Terrain', function() {
             });
 
             it('should trigger before fate is taken from rings', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -283,7 +295,7 @@ describe('Know the Terrain', function() {
             });
 
             it('should fizzle the conflict if your only attacker dies', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.moveCard(this.edict, 'hand');
                 this.noMoreActions();
                 this.initiateConflict({
@@ -323,10 +335,12 @@ describe('Know the Terrain', function() {
 
                 expect(this.getChatLogs(3)).toContain('player1 has failed to initiate a conflict because they no longer have any legal attackers');
                 expect(this.rally.facedown).toBe(true);
+                expect(this.game.rings.void.contested).toBe(false);
+                expect(this.game.rings.void.isUnclaimed()).toBe(true);
             });
 
             it('if the conflict fizzles should not allow reactions to declaration (mantra test)', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.moveCard(this.edict, 'hand');
                 this.noMoreActions();
                 this.initiateConflict({
@@ -369,7 +383,7 @@ describe('Know the Terrain', function() {
             });
 
             it('if the conflict fizzles should not allow reactions to declaration (crashing wave)', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.moveCard(this.edict, 'hand');
                 this.noMoreActions();
                 this.initiateConflict({

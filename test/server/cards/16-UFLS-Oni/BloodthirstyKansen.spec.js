@@ -25,7 +25,7 @@ describe('Bloodthirsty Kansen', function () {
                 defenders: [],
                 ring: 'air'
             });
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player2.pass();
             this.player1.pass();

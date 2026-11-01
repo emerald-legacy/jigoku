@@ -41,7 +41,7 @@ describe('Kitsuki Jusai', function() {
             });
 
             it('should move 1 fate from opponent\'s pool to chosen ring', function() {
-                let airFate = this.game.rings.air.fate;
+                const airFate = this.game.rings.air.fate;
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 this.player1.clickCard(this.kitsukiJusai);
@@ -56,6 +56,73 @@ describe('Kitsuki Jusai', function() {
                 this.player2.clickPrompt('1');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
+        });
+
+        describe('Kitsuki Jusai and a modified bid', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'draw',
+                    player1: {
+                        inPlay: ['kitsuki-jusai', 'bayushi-manipulator']
+                    },
+                    player2: {
+                        fate: 2
+                    }
+                });
+                this.kitsukiJusai = this.player1.findCardByName('kitsuki-jusai');
+                this.manipulator = this.player1.findCardByName('bayushi-manipulator');
+            });
+
+            it('should still trigger when the dials are equal and the bid is increased first', function() {
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                expect(this.player1).toBeAbleToSelect(this.manipulator);
+                this.player1.clickCard(this.manipulator);
+                expect(this.player1.player.honorBid).toBe(2);
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.kitsukiJusai);
+            });
+        });
+    });
+});
+
+describe('Kitsuki Jusai at Blood of Onnotangu', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kitsuki-jusai', 'mirumoto-raitsugu']
+                },
+                player2: {
+                    fate: 2,
+                    inPlay: ['doji-whisperer'],
+                    provinces: ['blood-of-onnotangu']
+                }
+            });
+            this.raitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.blood = this.player2.findCardByName('blood-of-onnotangu');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.raitsugu],
+                defenders: [this.whisperer],
+                province: this.blood
+            });
+            this.player2.pass();
+        });
+
+        it('moves fate from the opponent\'s fate pool, as moving fate isn\'t spending it', function() {
+            const earthFate = this.game.rings.earth.fate;
+            this.player1.clickCard(this.raitsugu);
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard('kitsuki-jusai');
+            this.player1.clickRing('earth');
+            expect(this.game.rings.earth.fate).toBe(earthFate + 1);
+            expect(this.player2.fate).toBe(1);
         });
     });
 });

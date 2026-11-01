@@ -1,29 +1,24 @@
-import { Duration, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { Duration } from '../../Constants.js';
+import { perPhase } from '../../AbilityLimit.js';
+import { cannotDeclareRing } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-
-type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
 
 export default class WayOfThePhoenix extends DrawCard {
     static id = 'way-of-the-phoenix';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Prevent an opponent contesting a ring',
-            condition: (context) => context.player.opponent !== undefined,
-            target: {
-                mode: TargetMode.Ring,
+    public override setupCardAbilities() {
+        this.action('Prevent an opponent contesting a ring')
+            .condition((context) => context.player.opponent !== undefined)
+            .ringTarget({
                 ringCondition: () => true
-            },
-            effect: 'prevent {1} from declaring a conflict with {0}',
-            effectArgs: (context) => context.player.opponent ?? '',
-            gameAction: AbilityDsl.actions.ringLastingEffect((context) => ({
+            })
+            .ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                target: (context.ring?.getElements() as Element[]).map((element) => this.game.rings[element]),
-                effect: AbilityDsl.effects.cannotDeclareRing((player: Player) => player === context.player.opponent)
-            })),
-            max: AbilityDsl.limit.perPhase(1)
-        });
+                target: context.ring.getElements().map((element) => this.game.rings[element]),
+                effect: cannotDeclareRing((player) => player === context.player.opponent)
+            }))
+            .chatText((context) => msg`prevent ${context.player.opponent ?? ''} from declaring a conflict with ${context.chatTarget()}`)
+            .max(perPhase(1));
     }
 }

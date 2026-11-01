@@ -1,79 +1,60 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Players, Duration } from '../../../Constants.js';
+import { doesNotBow } from '../../../effects.js';
+import {
+    atEndOfConflict,
+    cardLastingEffect,
+    discardStatusToken,
+    joint,
+    loseFate,
+    optional,
+    sequential
+} from '../../../GameActions/GameActions.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 
 class SurgingWave extends DrawCard {
     static id = 'surging-wave';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Prevent bowing after conflict',
-
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Prevent bowing after conflict')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk'),
-                gameAction: AbilityDsl.actions.sequentialContext((context) => {
-                    let kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
-                    let gameActions = [];
-                    gameActions.push(
-                        AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                            duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.delayedEffect({
-                                when: {
-                                    onConflictFinished: () => true
-                                },
-                                message: '{0} {3} removed from {1} due to the delayed effect of {2}',
-                                messageArgs: [
-                                    context.target.statusTokens,
-                                    context.target,
-                                    context.source,
-                                    context.target.statusTokens.length > 1 ? 'are' : 'is'
-                                ],
-                                gameAction: AbilityDsl.actions.discardStatusToken(() => ({
-                                    target: context.target.statusTokens
-                                }))
-                            })
+                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
+            }, sequential((context) => {
+                const kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
+                const gameActions = [];
+                gameActions.push(
+                    atEndOfConflict(() => ({
+                        message: () => msg`${context.target.statusTokens} ${context.target.statusTokens.length > 1 ? 'are' : 'is'} removed from ${context.target} due to the delayed effect of ${context.source}`,
+                        gameAction: discardStatusToken(() => ({
+                            target: context.target.statusTokens
                         }))
-                    );
-                    if(kihoPlayed) {
-                        gameActions.push(
-                            AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                                activePromptTitle:
+                    }))
+                );
+                if(kihoPlayed) {
+                    gameActions.push(
+                        optional({
+                            activePromptTitle:
                                     'Spend 1 fate to prevent ' +
                                     context.target.name +
                                     ' from bowing at the end of the conflict?',
-                                choices: ['Yes', 'No'],
-                                choiceHandler: (choice, displayMessage) => {
-                                    if(displayMessage) {
-                                        context.game.addMessage(
-                                            '{0} chooses {1}to spend a fate to prevent {2} from bowing during conflict resolution',
-                                            context.player,
-                                            choice === 'No' ? 'not ' : '',
-                                            context.target
-                                        );
-                                    }
-                                    return { amount: choice === 'Yes' ? 1 : 0 };
-                                },
-                                gameAction: AbilityDsl.actions.joint([
-                                    AbilityDsl.actions.loseFate({ target: context.player }),
-                                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                                        effect: AbilityDsl.effects.doesNotBow(),
-                                        target: context.target
-                                    }))
-                                ])
-                            }))
-                        );
-                    }
+                            acceptMessage: () => msg`${context.player} chooses to spend a fate to prevent ${context.target} from bowing during conflict resolution`,
+                            declineMessage: () => msg`${context.player} chooses not to spend a fate to prevent ${context.target} from bowing during conflict resolution`,
+                            gameAction: joint([
+                                loseFate({ target: context.player, spend: true }),
+                                cardLastingEffect(() => ({
+                                    effect: doesNotBow(),
+                                    target: context.target
+                                }))
+                            ])
+                        })
+                    );
+                }
 
-                    return {
-                        gameActions: gameActions
-                    };
-                })
-            },
-            effect: 'discard all status tokens from {0} at the end of the conflict'
-        });
+                return gameActions;
+            }))
+            .chatText('discard all status tokens from {0} at the end of the conflict');
     }
 }
 

@@ -117,5 +117,38 @@ describe('Insolent Rival', function() {
                 expect(this.doji.isDishonored).toBe(true);
             });
         });
+
+        describe('when Togashi Yokuni copies the ability', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['insolent-rival', 'togashi-yokuni']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer']
+                    }
+                });
+                this.rival = this.player1.findCardByName('insolent-rival');
+                this.togashiYokuni = this.player1.findCardByName('togashi-yokuni');
+                this.doji = this.player2.findCardByName('doji-whisperer');
+            });
+
+            it('should work while Yokuni is participating', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.togashiYokuni],
+                    defenders: [this.doji]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.togashiYokuni);
+                this.player1.clickCard(this.rival);
+                this.player2.pass();
+                this.player1.clickCard(this.togashiYokuni);
+                expect(this.player1).toHavePrompt('Togashi Yokuni');
+                expect(this.player1).toBeAbleToSelect(this.doji);
+            });
+        });
     });
 });

@@ -30,7 +30,7 @@ describe('Yasuki Oguri 2', function() {
                 defenders: [this.yasuki],
                 province: this.fields
             });
-            let p2Fate = this.player2.fate;
+            const p2Fate = this.player2.fate;
             this.player2.clickCard(this.yasuki);
             expect(this.player2).toBeAbleToSelect(this.whisperer);
             this.player2.clickCard(this.whisperer);

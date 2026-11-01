@@ -1,12 +1,14 @@
-import * as Settings from '../settings.js';
-import { CardType, ConflictType, EffectName, Element, EventName, Location } from './Constants.js';
+import { msg, type MessageArgs } from './GameChat.js';
+import { CardType, type ConflictType, EffectName, type Element, EventName, favorAppliesTo, Location, RestrictionType } from './Constants.js';
 import { GameObject } from './GameObject.js';
-import { ProvinceCard } from './ProvinceCard.js';
-import BaseCard from './BaseCard.js';
-import Game from './Game.js';
-import Player from './Player.js';
+import type { ProvinceCard } from './ProvinceCard.js';
+import type BaseCard from './BaseCard.js';
+import type Game from './Game.js';
+import type Player from './Player.js';
 import type Ring from './Ring.js';
-import DrawCard from './DrawCard.js';
+import type DrawCard from './DrawCard.js';
+import { bow } from './GameActions/GameActions.js';
+import { takeAllFateFromRing } from './GameActions/TakeFateFromRingAction.js';
 
 type Predicate = (card: DrawCard) => boolean;
 
@@ -30,10 +32,19 @@ export class Conflict extends GameObject {
     declaredType: ConflictType | null = null;
     defendersChosen = false;
     defenderSkill = 0;
-    defendingPlayer: Player;
-    isSinglePlayer: boolean;
+    /** Missing in a solo game. */
+    defendingPlayer: Player | undefined;
     loser?: Player;
     loserSkill?: number;
+    /** The provinces broken while this conflict was the current one. */
+    brokenProvinces: ProvinceCard[] = [];
+    attackersAtResolution: DrawCard[] = [];
+    /** The attackers and defenders as the conflict finished resolving, before they returned home: one sent home earlier (False Loyalties) isn't among them. */
+    attackersAtEnd: DrawCard[] = [];
+    defendersAtEnd: DrawCard[] = [];
+    /** The attacked provinces as the conflict finished, before its until-end-of-conflict effects (A War on Two Fronts) expired. */
+    provincesAtEnd: ProvinceCard[] = [];
+    defendersAtResolution: DrawCard[] = [];
     provinceStrengthsAtResolution: Array<{ province: ProvinceCard; strength: number }> = [];
     skillDifference?: number;
     winner?: Player;
@@ -44,14 +55,13 @@ export class Conflict extends GameObject {
     constructor(
         game: Game,
         public attackingPlayer: Player,
-        defendingPlayer: Player,
+        defendingPlayer: Player | undefined,
         public ring?: Ring,
         conflictProvince?: ProvinceCard,
         public forcedDeclaredType?: ConflictType
     ) {
         super(game, 'Conflict');
-        this.isSinglePlayer = !defendingPlayer;
-        this.defendingPlayer = defendingPlayer || this.singlePlayerDefender();
+        this.defendingPlayer = defendingPlayer;
         this.conflictProvince = conflictProvince;
         this.declaredRing = ring;
         this.declaredProvince = conflictProvince ?? null;
@@ -111,20 +121,22 @@ export class Conflict extends GameObject {
     }
 
     getSummary() {
-        let effects = this.getEffects(EffectName.ForceConflictUnopposed);
-        let forcedUnopposed = effects.length !== 0;
+        const effects = this.getEffects(EffectName.ForceConflictUnopposed);
+        const forcedUnopposed = effects.length !== 0;
+        // whether the attacker would win and break, counting what is added during resolution
+        const { attackerSkill, defenderSkill } = this.getResolutionSkills();
         return {
             attackingPlayerId: this.attackingPlayer.id,
-            defendingPlayerId: this.defendingPlayer.id,
+            defendingPlayerId: this.defendingPlayer?.id,
             attackerSkill: this.attackerSkill,
             defenderSkill: this.defenderSkill,
             type: this.conflictType,
             elements: this.elements,
-            attackerWins: this.#attackers.size > 0 && this.attackerSkill >= this.defenderSkill,
+            attackerWins: this.#attackers.size > 0 && attackerSkill >= defenderSkill,
             breaking:
                 this.conflictProvince &&
                 this.getConflictProvinces().some(
-                    (p) => p.getStrength() - (this.attackerSkill - this.defenderSkill) <= 0
+                    (p) => p.getStrength() - (attackerSkill - defenderSkill) <= 0
                 ),
             unopposed: !(this.#defenders && this.#defenders.size > 0 && !forcedUnopposed),
             declarationComplete: this.#declarationComplete,
@@ -140,20 +152,9 @@ export class Conflict extends GameObject {
         this.defendersChosen = value;
     }
 
-    private singlePlayerDefender() {
-        const dummyPlayer = new Player(
-            '',
-            Settings.getUserWithDefaultsSet({ username: 'Dummy Player' }),
-            false,
-            this.game
-        );
-        dummyPlayer.initialise();
-        return dummyPlayer;
-    }
-
     resetCards() {
         this.attackingPlayer.resetForConflict();
-        this.defendingPlayer.resetForConflict();
+        this.defendingPlayer?.resetForConflict();
         this.getConflictProvinces().forEach((a) => (a.inConflict = false));
     }
 
@@ -185,7 +186,7 @@ export class Conflict extends GameObject {
         return this.elements.includes(element);
     }
 
-    get elements(): Array<'air' | 'earth' | 'fire' | 'void' | 'water'> {
+    get elements(): Element[] {
         return this.ring ? this.ring.getElements() : [];
     }
 
@@ -202,32 +203,16 @@ export class Conflict extends GameObject {
     }
 
     switchElement(element: Element) {
-        let newRing = this.game.rings[element];
-        if(!newRing) {
-            throw new Error('switchElement called for non-existant element');
-        }
-        if(this.attackingPlayer.allowGameAction('takeFateFromRings') && newRing.fate > 0) {
-            this.game.addMessage('{0} takes {1} fate from {2}', this.attackingPlayer, newRing.fate, newRing);
-            let fate = newRing.fate;
-            this.attackingPlayer.modifyFate(newRing.fate);
-            newRing.fate = 0;
-            if(fate > 0) {
-                let context = this.game.getFrameworkContext(this.attackingPlayer);
-                this.game.raiseEvent(EventName.OnMoveFate, {
-                    fate: fate,
-                    origin: newRing,
-                    context: context,
-                    recipient: this.attackingPlayer
-                });
-            }
-        }
+        const newRing = this.game.rings[element];
+        this.game.openThenEventWindow(takeAllFateFromRing(newRing, this.game.getFrameworkContext(this.attackingPlayer)));
         if(newRing.conflictType !== this.conflictType) {
             newRing.flipConflictType();
         }
         if(this.ring) {
             if(newRing.isClaimed()) {
-                const claimedPlayer = this.game.getPlayers().find((player) => newRing.claimedBy === player.name);
+                const claimedPlayer = newRing.claimant;
                 if(claimedPlayer) {
+                    this.ring.contested = false;
                     this.ring.claimRing(claimedPlayer);
                 }
                 newRing.resetRing();
@@ -239,18 +224,16 @@ export class Conflict extends GameObject {
         this.ring = newRing;
     }
 
+    /** RRG Dash / Participating: such a character is removed from the conflict and placed at home bowed, a rule that "cannot be moved home" doesn't stop. */
     checkForIllegalParticipants() {
-        let illegal = this.getAttackers().filter((card) => !card.canParticipateAsAttacker(this.conflictType));
-        illegal = illegal.concat(
-            this.getDefenders().filter((card) => !card.canParticipateAsDefender(this.conflictType))
-        );
+        const illegal = [
+            ...this.getAttackers().filter((card) => !card.canParticipateAsAttacker(this.conflictType)),
+            ...this.getDefenders().filter((card) => !card.canParticipateAsDefender(this.conflictType))
+        ];
         if(illegal.length > 0) {
-            this.game.addMessage(
-                '{0} cannot participate in the conflict any more and {1} sent home bowed',
-                illegal,
-                illegal.length > 1 ? 'are' : 'is'
-            );
-            this.game.applyGameAction(null, { sendHome: illegal, bow: illegal });
+            this.game.addMessage(msg`${illegal} cannot participate in the conflict any more and ${illegal.length > 1 ? 'are' : 'is'} sent home bowed`);
+            illegal.forEach((card) => this.removeFromConflict(card));
+            this.game.resolveRuleAction(bow(), illegal.map((card) => ({ target: card, player: card.controller })));
         }
     }
 
@@ -263,22 +246,19 @@ export class Conflict extends GameObject {
         }
     }
 
+    /** A character that participates from home (Iuchi Soulweaver) on the attacking or defending side. */
+    #participatesFromHome(card: DrawCard, attacking: boolean): boolean {
+        return card.anyEffect(EffectName.ParticipatesFromHome) &&
+            (attacking ? card.canParticipateAsAttacker(this.conflictType) : card.canParticipateAsDefender(this.conflictType)) &&
+            card.isAtHome();
+    }
+
     isAttacking(card: DrawCard) {
-        return this.#attackers.has(card) || (
-            card.anyEffect(EffectName.ParticipatesFromHome) &&
-            card.canParticipateAsAttacker(this.conflictType) &&
-            card.isAtHome() &&
-            card.controller === this.attackingPlayer
-        );
+        return this.#attackers.has(card) || (this.#participatesFromHome(card, true) && card.controller === this.attackingPlayer);
     }
 
     isDefending(card: DrawCard) {
-        return this.#defenders.has(card) || (
-            card.anyEffect(EffectName.ParticipatesFromHome) &&
-            card.canParticipateAsDefender(this.conflictType) &&
-            card.isAtHome() &&
-            card.controller === this.defendingPlayer
-        );
+        return this.#defenders.has(card) || (this.#participatesFromHome(card, false) && card.controller === this.defendingPlayer);
     }
 
     isParticipating(card: DrawCard): boolean {
@@ -293,14 +273,8 @@ export class Conflict extends GameObject {
             }
         }
 
-        for(const card of this.attackingPlayer.cardsInPlay as BaseCard[]) {
-            if(
-                card instanceof DrawCard &&
-                card.anyEffect(EffectName.ParticipatesFromHome) &&
-                card.canParticipateAsAttacker(this.conflictType) &&
-                card.isAtHome() &&
-                (!predicate || predicate(card))
-            ) {
+        for(const card of this.attackingPlayer.cardsInPlay) {
+            if(this.#participatesFromHome(card, true) && (!predicate || predicate(card))) {
                 attackersArray.push(card);
             }
         }
@@ -314,22 +288,12 @@ export class Conflict extends GameObject {
                 defendersArray.push(defender);
             }
         }
-        for(const card of this.defendingPlayer.cardsInPlay as BaseCard[]) {
-            if(
-                card instanceof DrawCard &&
-                card.anyEffect(EffectName.ParticipatesFromHome) &&
-                card.canParticipateAsDefender(this.conflictType) &&
-                card.isAtHome() &&
-                (!predicate || predicate(card))
-            ) {
+        for(const card of this.defendingPlayer?.cardsInPlay ?? []) {
+            if(this.#participatesFromHome(card, false) && (!predicate || predicate(card))) {
                 defendersArray.push(card);
             }
         }
         return defendersArray;
-    }
-
-    anyParticipants(predicate: Predicate) {
-        return this.getAttackers().concat(this.getDefenders()).some(predicate);
     }
 
     getParticipants(predicate?: Predicate) {
@@ -352,19 +316,19 @@ export class Conflict extends GameObject {
             return 0;
         }
 
-        let characters = this.getCharacters(_player);
+        const characters = this.getCharacters(_player);
         if(predicate) {
             return characters.filter(predicate).length;
         }
         return characters.length + _player.sumEffects(EffectName.AdditionalCharactersInConflict);
     }
 
-    hasMoreParticipants(player: Player | undefined, predicate: Predicate = () => true) {
+    hasMoreParticipants(player: Player | undefined) {
         if(!player) {
             return false;
         }
         if(!player.opponent) {
-            return !!this.getNumberOfParticipantsFor(player, predicate);
+            return !!this.getNumberOfParticipantsFor(player);
         }
         return this.getNumberOfParticipantsFor(player) > this.getNumberOfParticipantsFor(player.opponent);
     }
@@ -397,61 +361,37 @@ export class Conflict extends GameObject {
         return player.sumEffects(EffectName.AdditionalCardPlayed) + this.getCardsPlayed(player).length;
     }
 
-    calculateSkill(prevStateChanged = false) {
+    /** `atResolution`: when the winner is determined, which also counts the skill added "during this conflict's resolution" (Disguised Protector). */
+    calculateSkill(prevStateChanged = false, atResolution = false) {
         const stateChanged = this.game.effectEngine.checkEffects(prevStateChanged);
 
         if(this.winnerDetermined) {
             return stateChanged;
         }
 
-        const contributingLocations = [
-            Location.PlayArea,
-            Location.ProvinceOne,
-            Location.ProvinceTwo,
-            Location.ProvinceThree,
-            Location.ProvinceFour,
-            Location.StrongholdProvince
-        ];
-
-        const additionalContributingCards = this.game.findAnyCardsInAnyList(
-            (card: BaseCard) =>
-                card.type === CardType.Character &&
-                contributingLocations.includes(card.location) &&
-                card.anyEffect(EffectName.ContributeToConflict)
-        );
-
-        if(this.attackingPlayer.anyEffect(EffectName.SetConflictTotalSkill)) {
-            this.attackerSkill = this.attackingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
+        const setAttackerSkill = this.attackingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
+        if(setAttackerSkill !== undefined) {
+            this.attackerSkill = setAttackerSkill;
         } else {
-            const additionalAttackers = additionalContributingCards.filter((card) =>
-                card.getEffects(EffectName.ContributeToConflict).some((value: Player) => value === this.attackingPlayer)
-            );
             this.attackerSkill =
-                this.calculateSkillFor(this.getAttackers().concat(additionalAttackers as DrawCard[])) +
-                this.attackingPlayer.skillModifier;
-            if(
-                (this.attackingPlayer.imperialFavor === this.conflictType ||
-                    this.attackingPlayer.imperialFavor === 'both') &&
-                this.#attackers.size > 0
-            ) {
+                this.calculateSkillFor(this.getAttackers().concat(this.getAdditionalContributors(this.attackingPlayer))) +
+                this.attackingPlayer.skillModifier + (atResolution ? this.resolutionBonus(this.attackingPlayer) : 0);
+            if(favorAppliesTo(this.attackingPlayer.imperialFavor, this.conflictType) && this.#attackers.size > 0) {
                 this.attackerSkill++;
             }
         }
 
-        if(this.defendingPlayer.anyEffect(EffectName.SetConflictTotalSkill)) {
-            this.defenderSkill = this.defendingPlayer.mostRecentEffect(EffectName.SetConflictTotalSkill);
+        const defender = this.defendingPlayer;
+        const setDefenderSkill = defender?.mostRecentEffect(EffectName.SetConflictTotalSkill);
+        if(setDefenderSkill !== undefined) {
+            this.defenderSkill = setDefenderSkill;
+        } else if(!defender) {
+            this.defenderSkill = 0;
         } else {
-            const additionalDefenders = additionalContributingCards.filter((card) =>
-                card.getEffects(EffectName.ContributeToConflict).some((value: Player) => value === this.defendingPlayer)
-            );
             this.defenderSkill =
-                this.calculateSkillFor(this.getDefenders().concat(additionalDefenders as DrawCard[])) +
-                this.defendingPlayer.skillModifier;
-            if(
-                (this.defendingPlayer.imperialFavor === this.conflictType ||
-                    this.defendingPlayer.imperialFavor === 'both') &&
-                this.#defenders.size > 0
-            ) {
+                this.calculateSkillFor(this.getDefenders().concat(this.getAdditionalContributors(defender))) +
+                defender.skillModifier + (atResolution ? this.resolutionBonus(defender) : 0);
+            if(favorAppliesTo(defender.imperialFavor, this.conflictType) && this.#defenders.size > 0) {
                 this.defenderSkill++;
             }
         }
@@ -459,16 +399,41 @@ export class Conflict extends GameObject {
         return stateChanged;
     }
 
-    calculateSkillFor(cards: BaseCard[]) {
+    /**
+     * A player's current skill of a type (RRG "Current"): the conflict total for the conflict's type. For the other
+     * type, the skill of that type of each character that would count, without the conflict's skill modifiers.
+     */
+    getCurrentSkill(player: Player, type: ConflictType): number {
+        const isAttacker = player === this.attackingPlayer;
+        if(type === this.conflictType) {
+            return isAttacker ? this.attackerSkill : this.defenderSkill;
+        }
+        const cards = (isAttacker ? this.getAttackers() : this.getDefenders()).concat(this.getAdditionalContributors(player));
+        return this.calculateSkillFor(cards, (card) => card.getSkill(type));
+    }
+
+    private getAdditionalContributors(player: Player): DrawCard[] {
+        const contributingLocations = [Location.PlayArea, ...this.game.getProvinceArray()];
+        return this.game.findAnyCardsInAnyList(
+            (card): card is DrawCard =>
+                card.isDrawCard() &&
+                card.type === CardType.Character &&
+                contributingLocations.includes(card.location) &&
+                card.getEffects(EffectName.ContributeToConflict).some((value) => value === player)
+        );
+    }
+
+    calculateSkillFor(cards: DrawCard[], fixedSkillFunction?: (card: DrawCard) => number) {
         let skillFunction =
-            this.mostRecentEffect(EffectName.ChangeConflictSkillFunction) ||
-            ((card: BaseCard) => (card as DrawCard).getContributionToConflict(this.conflictType as ConflictType));
-        let cannotContributeFunctions = this.getEffects(EffectName.CannotContribute);
+            fixedSkillFunction ??
+            (this.mostRecentEffect(EffectName.ChangeConflictSkillFunction) ||
+                ((card: DrawCard) => card.getContributionToConflict(this.conflictType)));
+        const cannotContributeFunctions = this.getEffects(EffectName.CannotContribute);
 
         return cards.reduce((sum, card) => {
-            let canContributeWhileBowed = card.anyEffect(EffectName.CanContributeWhileBowed);
+            const canContributeWhileBowed = card.anyEffect(EffectName.CanContributeWhileBowed);
             let cannotContribute = card.bowed && !canContributeWhileBowed;
-            let playerSkillFunction = card.controller.mostRecentEffect(EffectName.ChangeConflictSkillFunction);
+            const playerSkillFunction = fixedSkillFunction ? undefined : card.controller.mostRecentEffect(EffectName.ChangeConflictSkillFunction);
             if(playerSkillFunction) {
                 skillFunction = playerSkillFunction;
             }
@@ -477,8 +442,8 @@ export class Conflict extends GameObject {
             }
             if(!cannotContribute) {
                 cannotContribute = !card.checkRestrictions(
-                    'contributeSkillToConflictResolution',
-                    this.game.getFrameworkContext()
+                    RestrictionType.ContributeSkillToConflictResolution,
+                    this.game.getFrameworkContext(card.controller)
                 );
             }
             if(cannotContribute) {
@@ -489,38 +454,85 @@ export class Conflict extends GameObject {
     }
 
     determineWinner() {
-        this.calculateSkill();
+        this.calculateSkill(false, true);
         this.winnerDetermined = true;
+        this.attackersAtResolution = this.getAttackers().slice();
+        this.defendersAtResolution = this.getDefenders().slice();
         this.provinceStrengthsAtResolution = [];
-        this.getConflictProvinces()
-            .filter((a) => a)
-            .forEach((a) => {
-                this.provinceStrengthsAtResolution.push({
-                    province: a,
-                    strength: a.getStrength()
-                });
+        this.getConflictProvinces().forEach((a) => {
+            this.provinceStrengthsAtResolution.push({
+                province: a,
+                strength: a.getStrength()
             });
+        });
 
-        if(this.attackerSkill === 0 && this.defenderSkill === 0) {
+        const winner = this.getWinningPlayer();
+        if(!winner) {
             this.loser = undefined;
             this.winner = undefined;
             this.loserSkill = this.winnerSkill = 0;
             this.skillDifference = 0;
             return;
         }
-        if(this.attackerSkill >= this.defenderSkill) {
-            this.loser = this.defendingPlayer;
-            this.loserSkill = this.defenderSkill;
-            this.winner = this.attackingPlayer;
-            this.winnerSkill = this.attackerSkill;
-        } else {
-            this.loser = this.attackingPlayer;
-            this.loserSkill = this.attackerSkill;
-            this.winner = this.defendingPlayer;
-            this.winnerSkill = this.defenderSkill;
-        }
+        const attackerWon = winner === this.attackingPlayer;
+        this.winner = winner;
+        this.loser = attackerWon ? this.defendingPlayer : this.attackingPlayer;
+        this.winnerSkill = attackerWon ? this.attackerSkill : this.defenderSkill;
+        this.loserSkill = attackerWon ? this.defenderSkill : this.attackerSkill;
+        this.skillDifference = Math.max(0, this.winnerSkill - this.loserSkill);
+    }
 
-        this.skillDifference = this.winnerSkill - this.loserSkill;
+    /** Skill `player`'s side adds during this conflict's resolution (Disguised Protector), as it stands now; none while its total is set. */
+    resolutionBonus(player: Player | undefined): number {
+        if(!player) {
+            return 0;
+        }
+        return player.mostRecentEffect(EffectName.SetConflictTotalSkill) !== undefined || this.winnerDetermined ? 0 : player.resolutionSkillModifier;
+    }
+
+    /** The totals the conflict would resolve with now: the current totals plus what is added during resolution. */
+    getResolutionSkills(): { attackerSkill: number; defenderSkill: number } {
+        return {
+            attackerSkill: this.attackerSkill + this.resolutionBonus(this.attackingPlayer),
+            defenderSkill: this.defenderSkill + this.resolutionBonus(this.defendingPlayer)
+        };
+    }
+
+    /** Who wins with these totals (the current ones by default). RRG "Winning a Conflict": a side needs at least 1 skill and a participating character; a tie goes to the attacker. */
+    getWinningPlayer(attackerSkill = this.attackerSkill, defenderSkill = this.defenderSkill): Player | undefined {
+        const attackerCanWin = attackerSkill > 0 && this.getAttackers().length > 0;
+        const defenderCanWin = defenderSkill > 0 && this.getDefenders().length > 0;
+        if(attackerCanWin && (!defenderCanWin || attackerSkill >= defenderSkill)) {
+            return this.attackingPlayer;
+        }
+        return defenderCanWin ? this.defendingPlayer : undefined;
+    }
+
+    /** "this character wins the conflict" (RRG Winning a Conflict): it participates on the winning side, whoever controls it. */
+    isOnWinningSide(card: DrawCard): boolean {
+        return !!this.winner && this.isParticipatingFor(card, this.winner);
+    }
+
+    /** "this character loses the conflict": it participates on the losing side, whoever controls it. */
+    isOnLosingSide(card: DrawCard): boolean {
+        return !!this.loser && this.isParticipatingFor(card, this.loser);
+    }
+
+    /** "this character won the conflict", after the conflict: it was on the winning side when the winner was determined, even if it left the conflict afterwards (False Loyalties). */
+    wonAtResolution(card: DrawCard): boolean {
+        if(!this.winner) {
+            return false;
+        }
+        return (this.winner === this.attackingPlayer ? this.attackersAtResolution : this.defendersAtResolution).includes(card);
+    }
+
+    /** "this character wins the conflict as an attacker", fixed when the winner is determined (as `wonAtResolution`). */
+    wonAsAttacker(card: DrawCard): boolean {
+        return this.winner === this.attackingPlayer && this.attackersAtResolution.includes(card);
+    }
+
+    private isParticipatingFor(card: DrawCard, player: Player): boolean {
+        return this.isParticipating(card) && (player === this.attackingPlayer ? this.isAttacking(card) : this.isDefending(card));
     }
 
     isAttackerTheWinner() {
@@ -534,23 +546,16 @@ export class Conflict extends GameObject {
         return this.attackingPlayer === player ? this.getAttackers() : this.getDefenders();
     }
 
-    passConflict(message = '{0} has chosen to pass their conflict opportunity') {
-        this.game.addMessage(message, this.attackingPlayer);
+    passConflict(message: MessageArgs = msg`${this.attackingPlayer} has chosen to pass their conflict opportunity`) {
+        this.game.addMessage(message);
         this.conflictPassed = true;
         if(this.ring) {
             this.ring.resetRing();
         }
         this.game.recordConflict(this);
-        this.game.currentConflict = null;
+        this.game.updateCurrentConflict(null);
         this.game.raiseEvent(EventName.OnConflictPass, { conflict: this });
         this.resetCards();
-    }
-
-    isBreaking() {
-        return (
-            this.conflictProvince &&
-            this.getConflictProvinces().some((p) => p.getStrength() - (this.attackerSkill - this.defenderSkill) <= 0)
-        );
     }
 
     public isAtStrongholdProvince(): boolean {

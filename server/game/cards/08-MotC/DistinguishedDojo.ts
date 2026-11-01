@@ -1,47 +1,43 @@
-import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { EventName, TargetMode, TokenType } from '../../Constants.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
+import { perRound } from '../../AbilityLimit.js';
+import { sacrifice } from '../../GameActions/GameActions.js';
+import { TokenType } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
+import { stateWhenLeftPlay } from '../stateWhenLeftPlay.js';
+
+/** One honor for each honor token on the dōjō when it was sacrificed. */
+function honorTokens(context: AbilityContext) {
+    return stateWhenLeftPlay(context)?.getTokenCount(TokenType.Honor) ?? 0;
+}
 
 class DistinguishedDojo extends DrawCard {
     static id = 'distinguished-dojo';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Place an honor token',
-            when: {
-                afterDuel: (event: EventPayload<typeof EventName.AfterDuel>, context: AbilityContext) => {
+    override setupCardAbilities() {
+        this.reaction('Place an honor token')
+            .when({
+                afterDuel: (event, context) => {
                     if(!event.winningPlayer) {
                         return false;
                     }
                     if(Array.isArray(event.winningPlayer)) {
-                        return event.winningPlayer.some((player: Player) => player === context.player);
+                        return event.winningPlayer.some((player) => player === context.player);
                     }
                     return event.winningPlayer === context.player;
                 }
-            },
-            limit: AbilityDsl.limit.perRound(3),
-            gameAction: AbilityDsl.actions.addToken(),
-            then: (context: AbilityContext) => ({
-                target: {
-                    mode: TargetMode.Select,
-                    activePromptTitle: 'Sacrifice ' + (context?.source.name ?? '') + '?',
-                    choices: {
-                        'Yes': AbilityDsl.actions.sacrifice({ target: context?.source }),
-                        'No': () => true
-                    }
-                },
-                message: '{0} chooses {3}to sacrifice {1}',
-                messageArgs: (context: AbilityContext) => context.select === 'No' ? 'not ' : '',
-                then: (subThenContext: AbilityContext) => ({
-                    gameAction: AbilityDsl.actions.gainHonor({ amount: subThenContext.source.getTokenCount(TokenType.Honor) }),
-                    message: '{0} uses {1} to gain {3} honor',
-                    messageArgs: [subThenContext.source.getTokenCount(TokenType.Honor)]
-                })
             })
-        });
+            .addToken()
+            .limit(perRound(3))
+            .then()
+            .select({ activePromptTitle: 'Sacrifice ' + this.name + '?' }, {
+                Yes: sacrifice(),
+                No: () => true
+            })
+            .message((context) => msg`${context.player} chooses ${context.select === 'No' ? 'not ' : ''}to sacrifice ${context.source}`)
+            .then()
+            .gainHonor((context) => ({ amount: honorTokens(context) }))
+            .message((context) => msg`${context.player} uses ${context.source} to gain ${honorTokens(context)} honor`);
     }
 }
 

@@ -8,7 +8,7 @@ describe('Final Whisper', function() {
                 },
                 player2: {
                     inPlay: ['shameless-gossip', 'soshi-illusionist', 'brash-samurai'],
-                    hand: ['way-of-the-scorpion', 'final-whisper'],
+                    hand: ['way-of-the-scorpion', 'final-whisper', 'lurking-affliction'],
                     conflictDiscard: ['final-whisper']
                 }
             });
@@ -17,6 +17,7 @@ describe('Final Whisper', function() {
             this.illusionist = this.player2.findCardByName('soshi-illusionist');
             this.brash = this.player2.findCardByName('brash-samurai');
             this.scorp = this.player2.findCardByName('way-of-the-scorpion');
+            this.affliction = this.player2.findCardByName('lurking-affliction');
             this.whisper = this.player2.findCardByName('final-whisper', 'hand');
             this.whisper2 = this.player2.findCardByName('final-whisper', 'conflict discard pile');
 
@@ -47,6 +48,7 @@ describe('Final Whisper', function() {
             this.player2.clickCard(this.scorp);
             this.player2.clickCard(this.yokuni);
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 plays Way of the Scorpion to dishonor Togashi Yokuni');
         });
 
         it('should react to honoring a neutral character', function() {
@@ -61,6 +63,7 @@ describe('Final Whisper', function() {
             this.player2.clickCard(this.scorp);
             this.player2.clickCard(this.brash);
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 plays Way of the Scorpion to dishonor Brash Samurai');
         });
 
         it('should react to dishonoring as a cost', function() {
@@ -182,6 +185,21 @@ describe('Final Whisper', function() {
             expect(this.player1).not.toBeAbleToSelect(this.brash);
 
             this.player1.clickCard(this.harrier);
+        });
+
+        it('should not let the chosen character be one that is already tainted', function() {
+            this.harrier.taint();
+            this.player2.clickCard(this.affliction);
+            this.player2.clickCard(this.initiate);
+            expect(this.initiate.isTainted).toBe(true);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.whisper);
+
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).not.toBeAbleToSelect(this.initiate);
+            expect(this.player1).not.toBeAbleToSelect(this.harrier);
+            expect(this.player1).toBeAbleToSelect(this.yokuni);
+            expect(this.player1).toBeAbleToSelect(this.toshimoko);
         });
     });
 });

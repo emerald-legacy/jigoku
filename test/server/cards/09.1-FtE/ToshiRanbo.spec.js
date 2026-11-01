@@ -81,3 +81,29 @@ describe('Toshi Ranbo', function() {
         });
     });
 });
+
+describe('Toshi Ranbo and a character played as if it were in hand', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    provinces: ['toshi-ranbo'],
+                    dynastyDiscard: ['hidden-moon-dojo', 'bayushi-liar']
+                }
+            });
+            this.liar = this.player1.placeCardInProvince('bayushi-liar', 'province 1');
+            this.liar.facedown = false;
+            this.dojo = this.player1.placeCardInProvince('hidden-moon-dojo', 'province 2');
+            this.game.checkGameState(true);
+        });
+
+        it('gives no additional fate (EmeraldDB ruling)', function() {
+            this.player1.clickCard(this.liar);
+            this.player1.clickPrompt('0');
+            expect(this.liar.location).toBe('play area');
+            expect(this.liar.fate).toBe(0);
+        });
+    });
+});

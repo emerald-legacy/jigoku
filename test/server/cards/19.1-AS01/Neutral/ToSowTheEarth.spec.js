@@ -43,6 +43,17 @@ describe('To Sow the Earth', function () {
                 expect(this.getChatLogs(3)).toContain('player1 plays To Sow the Earth to play Ashigaru Levy from their discard pile');
             });
 
+            it('does not leave the character playable when the play is cancelled', function () {
+                this.player1.clickCard(this.toSowTheEarth);
+                this.player1.clickCard(this.ashigaruLevy);
+                this.player1.clickPrompt('Cancel');
+                expect(this.ashigaruLevy.location).toBe('dynasty discard pile');
+                this.player2.pass();
+                this.player1.clickCard(this.ashigaruLevy);
+                expect(this.ashigaruLevy.location).toBe('dynasty discard pile');
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+
             it('should let you bow a peasant to put a province facedown', function () {
                 this.shameful.facedown = false;
 
@@ -61,3 +72,66 @@ describe('To Sow the Earth', function () {
         });
     });
 });
+
+describe('To Sow the Earth with a Peasant attachment', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'matsu-berserker', attachments: ['ashigaru-company'] }],
+                    hand: ['to-sow-the-earth'],
+                    provinces: ['shameful-display']
+                }
+            });
+            this.ashigaruCompany = this.player1.findCardByName('ashigaru-company');
+            this.toSowTheEarth = this.player1.findCardByName('to-sow-the-earth');
+            this.shameful = this.player1.findCardByName('shameful-display', 'province 1');
+            this.shameful.facedown = false;
+        });
+
+        it('cannot bow a Peasant attachment for the cost ("a Peasant character")', function () {
+            this.player1.clickCard(this.toSowTheEarth);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.shameful.facedown).toBe(false);
+        });
+    });
+});
+
+describe('To Sow the Earth with Utaku Tetsuko', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    inPlay: ['adept-of-the-waves'],
+                    conflictDiscard: ['meek-informant'],
+                    hand: ['to-sow-the-earth']
+                },
+                player2: {
+                    inPlay: ['utaku-tetsuko']
+                }
+            });
+            this.informant = this.player1.findCardByName('meek-informant');
+            this.tetsuko = this.player2.findCardByName('utaku-tetsuko');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.tetsuko],
+                defenders: []
+            });
+        });
+
+        it('increases the cost of the character played as if from hand', function () {
+            this.player1.clickCard('to-sow-the-earth');
+            this.player1.clickCard(this.informant);
+            this.player1.clickPrompt('0');
+            expect(this.informant.location).toBe('play area');
+            // 1 for To Sow the Earth and 2 for Meek Informant
+            expect(this.player1.fate).toBe(7);
+        });
+    });
+});
+

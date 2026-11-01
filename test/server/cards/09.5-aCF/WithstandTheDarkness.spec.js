@@ -566,3 +566,44 @@ describe('Withstand The Darkness', function() {
         });
     });
 });
+
+describe('Withstand The Darkness with an event your opponent plays from your deck', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    fate: 10,
+                    inPlay: ['doji-challenger'],
+                    hand: ['trading-on-the-sand-road']
+                },
+                player2: {
+                    inPlay: ['crisis-breaker'],
+                    hand: ['withstand-the-darkness'],
+                    conflictDiscard: ['way-of-the-scorpion']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.crisisBreaker = this.player2.findCardByName('crisis-breaker');
+            this.withstand = this.player2.findCardByName('withstand-the-darkness');
+            this.scorpion = this.player2.findCardByName('way-of-the-scorpion');
+            this.player2.moveCard(this.scorpion, 'conflict deck');
+            this.noMoreActions();
+            this.player1.clickCard('trading-on-the-sand-road');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.crisisBreaker]
+            });
+            this.player2.pass();
+        });
+
+        it('reacts to the event your opponent played though you own it', function() {
+            this.player1.clickCard(this.scorpion);
+            this.player1.clickCard(this.crisisBreaker);
+            expect(this.crisisBreaker.isDishonored).toBe(true);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.withstand);
+        });
+    });
+});

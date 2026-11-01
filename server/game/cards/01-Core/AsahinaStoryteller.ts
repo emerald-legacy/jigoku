@@ -1,14 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword } from '../../effects.js';
 
 class AsahinaStoryteller extends DrawCard {
     static id = 'asahina-storyteller';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            match: (card: DrawCard) => card.getType() === CardType.Character && card.isHonored && card.isFaction('crane'),
-            effect: AbilityDsl.effects.addKeyword('sincerity')
+            match: (card) => card.type === CardType.Character && card.isHonored && card.isFaction('crane'),
+            effect: addKeyword('sincerity')
         });
     }
 }

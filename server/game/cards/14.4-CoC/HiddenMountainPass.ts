@@ -1,23 +1,20 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { EventName, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase } from '../../Constants.js';
+import { turnFacedown } from '../../GameActions/GameActions.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class HiddenMountainPass extends DrawCard {
     static id = 'hidden-mountain-pass';
 
-    setupCardAbilities() {
-        this.interrupt({
-            title: 'Flip this holding\'s province facedown',
-            when: {
-                onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>, context) => event.phase === Phases.Conflict && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
-            },
-            gameAction: AbilityDsl.actions.turnFacedown(context => ({
+    override setupCardAbilities() {
+        this.interrupt('Flip this holding\'s province facedown')
+            .when({
+                onPhaseEnded: (event, context) => event.phase === Phase.Conflict && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
+            })
+            .gameAction(turnFacedown((context) => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
-            })),
-            effect: 'Turn {1} facedown',
-            effectArgs: context => context.player.getProvinceCardInProvince(context.source.location)
-        });
+            })))
+            .chatText((context) => msg`turn ${context.player.getProvinceCardInProvince(context.source.location)} facedown`);
     }
 }
 

@@ -1,21 +1,21 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Location } from '../../Constants.js';
+import { modifyProvinceStrengthBonus } from '../../effects.js';
+import { CardType, Location, Trait } from '../../Constants.js';
 
 class NorthernCurtainWall extends DrawCard {
     static id = 'northern-curtain-wall';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
-            match: (card: DrawCard, context) => {
+            match: (card, context) => {
                 if(card.type === CardType.Holding) {
-                    let isWall = card.hasTrait('kaiu-wall') && card.isFaceup();
+                    const isWall = card.hasTrait(Trait.KaiuWall) && card.isFaceup();
                     return isWall && context !== undefined && context.player.areLocationsAdjacent(context.source.location, card.location);
                 }
                 return false;
             },
-            effect: AbilityDsl.effects.modifyProvinceStrengthBonus(2)
+            effect: modifyProvinceStrengthBonus(2)
         });
     }
 }

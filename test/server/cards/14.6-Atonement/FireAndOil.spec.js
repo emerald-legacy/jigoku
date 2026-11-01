@@ -48,7 +48,7 @@ describe('Fire and Oil', function() {
         });
 
         it('should cost an honor to dishonor the chosen character', function() {
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.berserker],

@@ -26,6 +26,63 @@ describe('Grasp of Earth 2', function () {
             });
         });
 
+        describe('Discount uses your own affinity', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['adept-of-the-waves'],
+                        hand: ['grasp-of-earth-2']
+                    },
+                    player2: {
+                        inPlay: ['solemn-scholar']
+                    }
+                });
+                this.solemnScholar = this.player2.findCardByName('solemn-scholar');
+                this.graspOfEarth = this.player1.findCardByName('grasp-of-earth-2');
+                this.initialP1Fate = this.player1.fate;
+            });
+
+            it('is not discounted for a player without Earth affinity, even on an opponent\'s Earth character', function () {
+                this.player1.clickCard(this.graspOfEarth);
+                this.player1.clickCard(this.solemnScholar);
+                expect(this.graspOfEarth.parent).toBe(this.solemnScholar);
+                expect(this.player1.fate).toBe(this.initialP1Fate - 1);
+            });
+        });
+
+        describe('Played by another player', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'dynasty',
+                    player1: {
+                        inPlay: ['solemn-scholar', 'adept-of-the-waves', 'doji-challenger'],
+                        hand: ['trading-on-the-sand-road']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        conflictDiscard: ['grasp-of-earth-2']
+                    }
+                });
+                this.graspOfEarth = this.player2.findCardByName('grasp-of-earth-2');
+                this.adeptOfTheWaves = this.player1.findCardByName('adept-of-the-waves');
+                this.player2.moveCard(this.graspOfEarth, 'conflict deck');
+                this.noMoreActions();
+                this.player1.clickCard('trading-on-the-sand-road');
+                this.noMoreActions();
+                this.initiateConflict({ type: 'military', attackers: ['doji-challenger'], defenders: [] });
+                this.player2.pass();
+            });
+
+            it('is discounted by the affinity of the player playing it', function () {
+                const fate = this.player1.fate;
+                this.player1.clickCard(this.graspOfEarth);
+                this.player1.clickCard(this.adeptOfTheWaves);
+                expect(this.graspOfEarth.parent).toBe(this.adeptOfTheWaves);
+                expect(this.player1.fate).toBe(fate);
+            });
+        });
+
         describe('Anti movement ability', function () {
             beforeEach(function () {
                 this.setupTest({

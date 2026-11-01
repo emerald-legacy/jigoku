@@ -44,5 +44,11 @@ describe('Yogo Paramour', function() {
             expect(this.paramour.bowed).toBe(true);
             expect(this.yoshi.isDishonored).toBe(true);
         });
+
+        it('cannot dishonor itself', function() {
+            this.player1.clickCard(this.paramour);
+            expect(this.player1).not.toBeAbleToSelect(this.paramour);
+            expect(this.player1).toBeAbleToSelect(this.yoshi);
+        });
     });
 });

@@ -1,36 +1,30 @@
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
+import { cardLastingEffect, ready } from '../../GameActions/GameActions.js';
 
 export default class SacredSanctuary extends ProvinceCard {
     static id = 'sacred-sanctuary';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Choose a monk character',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Choose a monk character')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('monk'),
-                gameAction: [
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.cardLastingEffect({
-                        condition: () => this.game.isDuringConflict(),
-                        effect: AbilityDsl.effects.doesNotBow()
-                    }),
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
-                        effect: AbilityDsl.effects.cardCannot({
-                            cannot: 'bow',
-                            restricts: 'opponentsCardEffects',
-                            applyingPlayer: context.player
-                        })
-                    }))
-                ]
-            },
-            effect: 'prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict'
-        });
+                cardCondition: (card) => card.hasTrait(Trait.Monk)
+            }, ready(), cardLastingEffect({
+                condition: () => this.game.isDuringConflict(),
+                effect: doesNotBow()
+            }), cardLastingEffect((context) => ({
+                effect: cardCannot({
+                    cannot: RestrictionType.Bow,
+                    appliesTo: RestrictionScope.OpponentsCardEffects,
+                    applyingPlayer: context.player
+                })
+            })))
+            .chatText('ready {0}, prevent opponents\' card effects from bowing it and stop it bowing at the end of the conflict');
     }
 }

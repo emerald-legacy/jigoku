@@ -27,6 +27,12 @@ describe('The Perfect Gift', function () {
             this.walkingTheWay = this.player2.moveCard('walking-the-way', 'conflict deck');
         });
 
+        it('should say that player1 reveals the top 4 cards of each deck', function () {
+            this.player1.clickCard(this.gift);
+            expect(this.getChatLogs(3)).toContain('player1 reveals the top 4 cards of their conflict deck: Against the Waves, Censure, Assassination and Fine Katana');
+            expect(this.getChatLogs(3)).toContain('player1 reveals the top 4 cards of player2\'s conflict deck: Walking the Way, Watch Commander, Shinjo Ambusher and Ornate Fan');
+        });
+
         it('should prompt you to pick a card for each player', function () {
             this.player1.clickCard(this.gift);
             expect(this.player1).toHavePrompt('Choose a card to give to yourself');

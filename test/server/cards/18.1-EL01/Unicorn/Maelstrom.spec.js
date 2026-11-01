@@ -215,8 +215,69 @@ describe('Maelstrom with Contested Countryside', function() {
             expect(this.rider.isHonored).toBe(false);
 
             this.noMoreActions();
+            // honored at the end of the conflict, after the break
+            expect(this.rider.isHonored).toBe(false);
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t resolve');
             expect(this.rider.isHonored).toBe(true);
             expect(this.getChatLogs(6)).toContain('Border Rider is honored due to Maelstrom\'s effect');
+        });
+    });
+});
+
+describe('Maelstrom with a reaction to the conflict result', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    inPlay: ['moto-chagatai', 'border-rider'],
+                    hand: ['a-bad-death']
+                },
+                player2: {
+                    honor: 10,
+                    inPlay: ['doji-hotaru', 'kakita-yoshi'],
+                    provinces: ['maelstrom', 'the-pursuit-of-justice']
+                }
+            });
+
+            this.chagatai = this.player1.findCardByName('moto-chagatai');
+            this.rider = this.player1.findCardByName('border-rider');
+            this.badDeath = this.player1.findCardByName('a-bad-death');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.hotaru = this.player2.findCardByName('doji-hotaru');
+            this.province = this.player2.findCardByName('maelstrom');
+        });
+
+        it('should honor the character at the end of the conflict, after reactions to its result', function() {
+            this.hotaru.honor();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.chagatai, this.rider],
+                defenders: [this.yoshi],
+                province: this.province
+            });
+
+            this.player2.clickCard(this.province);
+            this.player2.clickCard(this.hotaru);
+            expect(this.hotaru.isParticipating()).toBe(true);
+
+            this.chagatai.bow();
+            this.rider.bow();
+            this.noMoreActions();
+
+            // player2 won; A Bad Death dishonors Hotaru (honored -> ordinary)
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.badDeath);
+            this.player1.clickCard(this.rider);
+            this.player1.clickCard(this.hotaru);
+            this.player1.clickPrompt('Done');
+
+            expect(this.hotaru.isDishonored).toBe(false);
+            expect(this.hotaru.isHonored).toBe(true);
+            expect(this.getChatLogs(10)).toContain('Doji Hotaru is honored due to Maelstrom\'s effect');
         });
     });
 });

@@ -1,3 +1,5 @@
+import { addElement } from '../../../../../build/server/game/effects.js';
+
 describe('Void Acolyte', function() {
     integration(function() {
         beforeEach(function() {
@@ -36,6 +38,20 @@ describe('Void Acolyte', function() {
             expect(this.getChatLogs(5)).toContain('player1 uses Void Acolyte to place 1 fate on Void Acolyte');
         });
 
+        it('should not trigger when the opponent claims the void ring', function() {
+            this.initiateConflict({
+                type: 'military',
+                ring: 'void',
+                attackers: ['seeker-of-knowledge'],
+                defenders: [this.miyaMystic]
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(10)).toContain('player2 won a military conflict 1 vs 0');
+            expect(this.game.rings.void.claimedBy).toBe(this.player2.player.name);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.acolyte.fate).toBe(0);
+        });
+
         it('should trigger when the player resolves another ring effect', function() {
             this.initiateConflict({
                 type: 'political',
@@ -67,6 +83,26 @@ describe('Void Acolyte', function() {
             expect(this.player1).toHavePrompt('Resolve Ring Effect');
             this.player1.clickPrompt('Don\'t Resolve the Conflict Ring');
             // this.player1.clickPrompt('Resolve All Elements');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.acolyte);
+            this.player1.clickCard(this.acolyte);
+            expect(this.acolyte.fate).toBe(1);
+        });
+
+        it('should trigger when the player claims another ring that gained the void element', function() {
+            this.initiateConflict({
+                type: 'political',
+                ring: 'air',
+                attackers: ['seeker-of-knowledge'],
+                defenders: []
+            });
+            this.acolyte.applyDurationEffect('untilEndOfRound', {
+                match: this.game.rings.fire,
+                effect: addElement('void')
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.commune);
+            this.player1.clickRing('fire');
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.acolyte);
             this.player1.clickCard(this.acolyte);

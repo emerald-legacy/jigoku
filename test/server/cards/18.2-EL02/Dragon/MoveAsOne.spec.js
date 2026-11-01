@@ -52,7 +52,7 @@ describe('Move as One', function() {
         });
 
         it('should add it to your hand', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.initiateConflict({
                 attackers: [this.ancientMaster]
@@ -77,7 +77,7 @@ describe('Move as One', function() {
             expect(this.getChatLogs(5)).toContain('player1 puts 7 cards on the bottom of their conflict deck');
         });
 
-        it('should be max 1 per round', function() {
+        it('should be max 1 per conflict: a second copy found by the first can\'t react to the same declaration', function() {
             this.initiateConflict({
                 attackers: [this.ancientMaster]
             });
@@ -92,8 +92,10 @@ describe('Move as One', function() {
             expect(this.player1).toHaveDisabledPromptButton('Centipede Tattoo');
             expect(this.player1).toHavePromptButton('Take nothing');
 
-            this.player1.clickPrompt('Hurricane Punch (2)');
+            this.player1.clickPrompt('Move as One');
+            expect(this.alignment2.location).toBe('hand');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 has initiated a military conflict with skill 1');
         });
 
         it('should not trigger its reaction if you attack without a monk', function() {
@@ -101,6 +103,7 @@ describe('Move as One', function() {
                 attackers: [this.nitenMaster]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 has initiated a military conflict with skill 3');
         });
 
         it('should not trigger its reaction if your opponent defends with a monk', function() {
@@ -109,6 +112,7 @@ describe('Move as One', function() {
                 defenders: [this.wanderer]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 has defended with skill 2');
         });
 
         it('should not trigger its reaction if your opponent attacks with a monk and you defend without one', function() {
@@ -119,6 +123,7 @@ describe('Move as One', function() {
                 defenders: [this.nitenMaster]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 has defended with skill 3');
         });
 
         it('should trigger its reaction if you defend with a monk', function() {

@@ -78,6 +78,8 @@ describe('Bayushi Aramoro', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.aramoro);
                 expect(this.player1).not.toHavePrompt('Bayushi Aramoro');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.aramoro.isDishonored).toBe(true);
             });
 
             it('should kill moto youth if his skill is at 2 or lower', function() {
@@ -89,7 +91,7 @@ describe('Bayushi Aramoro', function() {
                 });
 
                 this.player2.pass();
-                expect(this.motoYouth.getMilitarySkill()).toBe(2);
+                expect(this.motoYouth.militarySkill).toBe(2);
                 this.player1.clickCard(this.aramoro);
                 this.player1.clickCard(this.motoYouth);
                 expect(this.motoYouth.location).toBe('dynasty discard pile');
@@ -106,7 +108,7 @@ describe('Bayushi Aramoro', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.aramoro);
                 this.player1.clickCard(this.motoYouth);
-                expect(this.motoYouth.getMilitarySkill()).toBe(1);
+                expect(this.motoYouth.militarySkill).toBe(1);
                 expect(this.motoYouth.location).toBe('play area');
                 expect(this.aramoro.isDishonored).toBe(true);
                 this.noMoreActions();

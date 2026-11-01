@@ -1,24 +1,23 @@
-import { Location } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import { Location, Trait } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { gainFate, moveCard } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
 
 export default class TheEastWind extends StrongholdCard {
     static id = 'the-east-wind';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Place fate on character',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Search for a card that shares a trait')
+            .when({
                 onCardPlayed: (event, context) =>
-                    event.player === context.player && (event.card.hasTrait('gaijin') || this.#isOutOfClan(event.card))
-            },
-            cost: AbilityDsl.costs.bowSelf(),
-            gameAction: AbilityDsl.actions.deckSearch((context) => {
-                const playedCardTraits = (context as TriggeredAbilityContext).event.card?.getTraitSet() ?? new Set<string>();
+                    event.player === context.player && (event.card.hasTrait(Trait.Gaijin) || this.isOutOfClan(event.card))
+            })
+            .cost(costs.bowSelf())
+            .deckSearch((context) => {
+                const playedCardTraits = context.event.card.getTraits();
                 return {
-                    amount: 5,
+                    cardsToLookAt: 5,
                     cardCondition: (card) => {
                         for(const searchedCardTrait of card.getTraits()) {
                             if(playedCardTraits.has(searchedCardTrait)) {
@@ -27,14 +26,13 @@ export default class TheEastWind extends StrongholdCard {
                         }
                         return false;
                     },
-                    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand }),
-                    takesNothingGameAction: AbilityDsl.actions.gainFate()
+                    gameAction: moveCard({ destination: Location.Hand }),
+                    takesNothingGameAction: gainFate()
                 };
-            })
-        });
+            });
     }
 
-    #isOutOfClan(card: BaseCard): boolean {
+    private isOutOfClan(card: BaseCard): boolean {
         return !card.isFaction('neutral') && !card.isFaction('unicorn');
     }
 }

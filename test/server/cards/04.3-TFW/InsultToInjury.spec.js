@@ -45,6 +45,7 @@ describe('Insult to Injury', function() {
                 this.player1.clickCard(this.mirumotoRaitsugu);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
+                expect(this.getChatLogs(5)).toContain('Doji Hotaru: 7 vs 3: Mirumoto Raitsugu');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player1).not.toBeAbleToSelect(this.insultToInjury);
             });
@@ -56,6 +57,7 @@ describe('Insult to Injury', function() {
                 this.player1.clickCard(this.mirumotoRaitsugu);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('5');
+                expect(this.getChatLogs(5)).toContain('Doji Challenger: 4 vs 7: Mirumoto Raitsugu');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player1).not.toBeAbleToSelect(this.insultToInjury);
             });

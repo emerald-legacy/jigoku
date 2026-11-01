@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { Element } from '../../Constants.js';
 
 const elementKey = 'bonsai-garden-air';
@@ -7,23 +6,19 @@ const elementKey = 'bonsai-garden-air';
 class BonsaiGarden extends DrawCard {
     static id = 'bonsai-garden';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Gain 1 honor',
-            condition: context => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            gameAction: AbilityDsl.actions.gainHonor()
-        });
+    override setupCardAbilities() {
+        this.action('Gain 1 honor')
+            .condition((context) => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
+            .gainHonor();
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Conflict Ring',
             element: Element.Air
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

@@ -87,3 +87,55 @@ describe('The Receding Tide', function() {
         });
     });
 });
+
+describe('The Receding Tide and attachments', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'matsu-berserker', attachments: ['ancestral-daisho', 'fine-katana'] }],
+                    hand: ['the-receding-tide']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.daisho = this.player1.findCardByName('ancestral-daisho');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.p1 = this.player1.findCardByName('shameful-display', 'province 1');
+        });
+
+        it('treats them as when the character leaves play: Ancestral returns to hand (RRG Leaves Play)', function() {
+            this.player1.clickCard('the-receding-tide');
+            this.player1.clickCard(this.berserker);
+            this.player1.clickCard(this.p1);
+            expect(this.berserker.location).toBe('province 1');
+            expect(this.daisho.location).toBe('hand');
+            expect(this.katana.location).toBe('conflict discard pile');
+        });
+    });
+});
+
+
+describe('The Receding Tide and "cannot leave play"', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker', 'callow-delegate'],
+                    hand: ['the-receding-tide']
+                },
+                player2: {
+                    inPlay: ['daidoji-netsu']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+        });
+
+        it('can\'t put a character that cannot leave play into a province', function() {
+            this.player1.clickCard('the-receding-tide');
+            expect(this.player1).not.toBeAbleToSelect(this.berserker);
+            expect(this.berserker.location).toBe('play area');
+        });
+    });
+});

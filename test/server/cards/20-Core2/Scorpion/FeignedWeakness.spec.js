@@ -81,6 +81,9 @@ describe('Feigned Weakness', function () {
             this.player1.clickCard(this.matsuBerserker);
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
             expect(this.player2).not.toBeAbleToSelect(this.feignedWeakness);
+            expect(this.matsuBerserker.militarySkill).toBe(5);
+            expect(this.feignedWeakness.location).toBe('hand');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
         });
     });
 });

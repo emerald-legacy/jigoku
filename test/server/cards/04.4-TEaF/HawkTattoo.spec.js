@@ -48,7 +48,8 @@ describe('Hawk Tattoo', function () {
                 expect(this.player1).toBeAbleToSelect(this.hawkTattoo);
                 this.player1.clickCard(this.hawkTattoo);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.getChatLogs(10)).toContain(
+                expect(this.getChatLogs(10)).toContain('player1 uses Hawk Tattoo to take an additional action');
+                expect(this.getChatLogs(10)).not.toContain(
                     'player1 uses Hawk Tattoo to move Ancient Master into the conflict and take an additional action'
                 );
             });

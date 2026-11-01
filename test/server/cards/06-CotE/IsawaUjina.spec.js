@@ -15,7 +15,7 @@ describe('Isawa Ujina', function() {
                 this.isawaUjina = this.player1.findCardByName('isawa-ujina');
                 this.adeptOfTheWaves = this.player1.findCardByName('adept-of-the-waves');
                 this.fushicho = this.player1.findCardByName('fushicho');
-                let knowTheWorlds = this.player1.filterCardsByName('know-the-world');
+                const knowTheWorlds = this.player1.filterCardsByName('know-the-world');
                 this.knowTheWorld1 = knowTheWorlds[0];
                 this.knowTheWorld2 = knowTheWorlds[1];
                 this.isawaKaede = this.player1.findCardByName('isawa-kaede');

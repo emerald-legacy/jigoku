@@ -129,3 +129,32 @@ describe('Shrewd Investigator', function() {
     });
 });
 
+describe('Shrewd Investigator with a small opponent hand', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shrewd-investigator']
+                },
+                player2: {
+                    hand: ['fine-katana', 'banzai']
+                }
+            });
+            this.investigator = this.player1.findCardByName('shrewd-investigator');
+        });
+
+        it('should say how many cards were looked at', function() {
+            expect(this.player1.player.getNumberOfFacedownProvinces()).toBe(5);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.investigator],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.investigator);
+            expect(this.getChatLogs(4)).toContain('Shrewd Investigator sees Banzai! and Fine Katana');
+            expect(this.getChatLogs(4)).toContain('player1 uses Shrewd Investigator to look at 2 random cards in player2\'s hand');
+        });
+    });
+});

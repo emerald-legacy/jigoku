@@ -38,7 +38,7 @@ describe('Insatiable Gaki', function () {
             expect(this.player2).toBeAbleToSelect(this.fan);
             this.player2.clickCard(this.assassination);
             expect(this.assassination.location).toBe('conflict discard pile');
-            expect(this.getChatLogs(5)).toContain('player1 uses Insatiable Gaki to make player2 discard 1 cards');
+            expect(this.getChatLogs(5)).toContain('player1 uses Insatiable Gaki to make player2 discard 1 card');
             expect(this.getChatLogs(5)).toContain('player2 discards Assassination');
         });
 

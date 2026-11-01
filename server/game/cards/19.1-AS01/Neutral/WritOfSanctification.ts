@@ -1,38 +1,32 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
-import { AbilityType, CardType, Players, TargetMode } from '../../../Constants.js';
+import { addKeyword, gainAbility } from '../../../effects.js';
+import { bow } from '../../../GameActions/GameActions.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
 
 export default class WritOfSanctification extends DrawCard {
     static id = 'writ-of-sanctification';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { title: 1 },
-            trait: 'shugenja'
+            trait: Trait.Shugenja
         });
 
         this.persistentEffect({
             condition: (context) =>
-                !(context.player.cardsInPlay as BaseCard[]).some(
-                    (card) => card.hasTrait('shadowlands') && card.type === CardType.Character
+                !context.player.cardsInPlay.some(
+                    (card) => card.hasTrait(Trait.Shadowlands) && card.type === CardType.Character
                 ),
-            effect: AbilityDsl.effects.addKeyword('ancestral')
+            effect: addKeyword('ancestral')
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Bow corrupt character',
-                condition: (context) => (context.source as DrawCard).isParticipating(),
-                target: {
+            effect: gainAbility.conflictAction('Bow corrupt character', (ability) => ability
+                .target({
                     cardType: CardType.Character,
                     controller: Players.Any,
-                    mode: TargetMode.Single,
-                    cardCondition: (card) => card.isParticipating() && (card.hasTrait('shadowlands') || card.isTainted),
-                    gameAction: AbilityDsl.actions.bow()
-                }
-            } as ActionProps)
+                    cardCondition: (card) => card.isParticipating() && (card.hasTrait(Trait.Shadowlands) || card.isTainted)
+                }, bow()))
         });
     }
 }

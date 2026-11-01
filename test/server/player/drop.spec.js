@@ -1,9 +1,11 @@
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import Player from '../../../build/server/game/Player.js';
 
 describe('Player - drop', () => {
     describe('drop()', function() {
         beforeEach(function() {
             this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'checkGameState', 'emitEvent', 'getOtherPlayer', 'raiseEvent', 'getProvinceArray']);
+            this.gameSpy.rules = rulesFor('stronghold');
 
             this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.gameSpy);
             spyOn(this.player, 'moveCard');
@@ -15,7 +17,7 @@ describe('Player - drop', () => {
             this.gameSpy.manualMode = true;
             this.gameSpy.getProvinceArray.and.returnValue(['province 1', 'province 2', 'province 3', 'province 4', 'stronghold province']);
 
-            this.cardSpy = jasmine.createSpyObj('card', ['getType', 'leavesPlay', 'moveTo', 'isFacedown', 'isFaceup']);
+            this.cardSpy = jasmine.createSpyObj('card', ['getType', 'leavesPlay', 'moveTo', 'isFacedown', 'isFaceup', 'isDrawCard']);
             this.cardSpy.uuid = '1111';
             this.cardSpy.controller = this.cardSpy.owner = this.player;
             this.cardSpy.type = 'character';

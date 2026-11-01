@@ -24,11 +24,11 @@ describe('Army of the Rising Wave', function() {
                 });
 
                 it('should put a fate on all unclaimed rings', function () {
-                    let airFate = this.game.rings.air.fate;
-                    let earthFate = this.game.rings.earth.fate;
-                    let fireFate = this.game.rings.fire.fate;
-                    let voidFate = this.game.rings.void.fate;
-                    let waterFate = this.game.rings.water.fate;
+                    const airFate = this.game.rings.air.fate;
+                    const earthFate = this.game.rings.earth.fate;
+                    const fireFate = this.game.rings.fire.fate;
+                    const voidFate = this.game.rings.void.fate;
+                    const waterFate = this.game.rings.water.fate;
 
                     this.player1.clickCard(this.army);
                     this.player1.clickPrompt('1');
@@ -47,11 +47,11 @@ describe('Army of the Rising Wave', function() {
                 it('should not put a fate on a claimed ring', function () {
                     this.player1.claimRing('air');
                     this.player2.claimRing('earth');
-                    let airFate = this.game.rings.air.fate;
-                    let earthFate = this.game.rings.earth.fate;
-                    let fireFate = this.game.rings.fire.fate;
-                    let voidFate = this.game.rings.void.fate;
-                    let waterFate = this.game.rings.water.fate;
+                    const airFate = this.game.rings.air.fate;
+                    const earthFate = this.game.rings.earth.fate;
+                    const fireFate = this.game.rings.fire.fate;
+                    const voidFate = this.game.rings.void.fate;
+                    const waterFate = this.game.rings.water.fate;
 
                     this.player1.clickCard(this.army);
                     this.player1.clickPrompt('1');
@@ -103,11 +103,11 @@ describe('Army of the Rising Wave', function() {
                 });
 
                 it('should not put a fate on contested rings', function () {
-                    let airFate = this.game.rings.air.fate;
-                    let earthFate = this.game.rings.earth.fate;
-                    let fireFate = this.game.rings.fire.fate;
-                    let voidFate = this.game.rings.void.fate;
-                    let waterFate = this.game.rings.water.fate;
+                    const airFate = this.game.rings.air.fate;
+                    const earthFate = this.game.rings.earth.fate;
+                    const fireFate = this.game.rings.fire.fate;
+                    const voidFate = this.game.rings.void.fate;
+                    const waterFate = this.game.rings.water.fate;
 
                     this.player2.pass();
                     this.player1.clickCard(this.charge);
@@ -127,11 +127,11 @@ describe('Army of the Rising Wave', function() {
                 it('should not put a fate on a contested or claimed ring', function () {
                     this.player1.claimRing('void');
                     this.player2.claimRing('earth');
-                    let airFate = this.game.rings.air.fate;
-                    let earthFate = this.game.rings.earth.fate;
-                    let fireFate = this.game.rings.fire.fate;
-                    let voidFate = this.game.rings.void.fate;
-                    let waterFate = this.game.rings.water.fate;
+                    const airFate = this.game.rings.air.fate;
+                    const earthFate = this.game.rings.earth.fate;
+                    const fireFate = this.game.rings.fire.fate;
+                    const voidFate = this.game.rings.void.fate;
+                    const waterFate = this.game.rings.water.fate;
 
                     this.player2.pass();
                     this.player1.clickCard(this.charge);

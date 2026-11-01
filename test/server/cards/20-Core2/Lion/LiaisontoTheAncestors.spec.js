@@ -106,3 +106,69 @@ describe('Liaison to the Ancestors', function () {
         });
     });
 });
+
+describe('Liaison to the Ancestors discard piles', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['liaison-to-the-ancestors', 'doji-whisperer'],
+                    conflictDiscard: ['cunning-magistrate']
+                },
+                player2: {
+                    hand: ['way-of-the-scorpion']
+                }
+            });
+            this.liaison = this.player1.findCardByName('liaison-to-the-ancestors');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: []
+            });
+        });
+
+        it('counts characters in the conflict discard pile', function () {
+            this.player2.clickCard('way-of-the-scorpion');
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.liaison);
+            expect(this.whisperer.isDishonored).toBe(false);
+        });
+    });
+});
+
+describe('Liaison to the Ancestors and a token', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['liaison-to-the-ancestors'],
+                    dynastyDiscard: ['ashigaru-encampment', 'ikoma-ujiaki']
+                },
+                player2: {
+                    hand: ['way-of-the-scorpion']
+                }
+            });
+            this.encampment = this.player1.placeCardInProvince('ashigaru-encampment');
+            this.encampment.facedown = false;
+            this.player1.clickCard(this.encampment);
+            this.ashigaru = this.player1.player.cardsInPlay.find((card) => card.name === 'Ashigaru Recruit');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.ashigaru],
+                defenders: []
+            });
+        });
+
+        it('does not honor a token, which has no printed cost', function () {
+            this.player2.clickCard('way-of-the-scorpion');
+            this.player2.clickCard(this.ashigaru);
+            expect(this.ashigaru.isDishonored).toBe(true);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

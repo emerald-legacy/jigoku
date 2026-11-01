@@ -1,29 +1,28 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Location } from '../../Constants.js';
+import { immunity } from '../../effects.js';
+import { removeFate } from '../../GameActions/GameActions.js';
+import { CardType, Location, RestrictionScope } from '../../Constants.js';
 
 class AkodoKaede extends DrawCard {
     static id = 'akodo-kaede';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.immunity({
-                restricts: 'opponentsRingEffects'
+            effect: immunity({
+                appliesTo: RestrictionScope.OpponentsRingEffects
             })
         });
 
-        this.wouldInterrupt({
-            title: 'Prevent a character from leaving play',
-            when: {
+        this.wouldInterrupt('Prevent a character from leaving play')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card.type === CardType.Character && event.card !== context.source && event.card.location === Location.PlayArea
-            },
-            effect: 'prevent {1} from leaving play',
-            effectArgs: context => context.event.card ?? '',
-            gameAction: AbilityDsl.actions.cancel(context => ({
+            })
+            .cancel((context) => ({
                 target: context.source,
-                replacementGameAction: AbilityDsl.actions.removeFate()
+                replacementGameAction: removeFate()
             }))
-        });
+            .chatText((context) => msg`prevent ${context.event.card} from leaving play`);
     }
 }
 

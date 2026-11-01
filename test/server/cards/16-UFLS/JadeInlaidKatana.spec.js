@@ -27,9 +27,9 @@ describe('Jade Inlaid Katana', function () {
             this.player1.playAttachment(this.katana, this.manipulator);
         });
 
-        it('should make opponent lose a fate when parent wins a conflict as first player', function () {
+        it('should remove a fate from a participating character with a status token when parent wins a conflict', function () {
             this.noMoreActions();
-            let fate = this.yogoHiroue.fate;
+            const fate = this.yogoHiroue.fate;
 
             this.initiateConflict({
                 type: 'political',
@@ -57,7 +57,8 @@ describe('Jade Inlaid Katana', function () {
                 defenders: []
             });
             this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilites');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 3 vs 0');
         });
 
         it('can\'t trigger after losing the conflict', function () {
@@ -68,7 +69,8 @@ describe('Jade Inlaid Katana', function () {
                 defenders: [this.yogoHiroue]
             });
             this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilites');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a political conflict 6 vs 3');
         });
     });
 });

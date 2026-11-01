@@ -1,56 +1,56 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword, modifyMilitarySkill, modifyPoliticalSkill } from '../../effects.js';
 import { Element } from '../../Constants.js';
+import type Player from '../../Player.js';
+import { hasClaimedRing } from '../claimedRings.js';
 
 const elementKeys = {
-    air: 'hallowed-ground-air',
-    earth: 'hallowed-ground-earth',
-    fire: 'hallowed-ground-fire'
+    air: 'henshin-disciple-air',
+    earth: 'henshin-disciple-earth',
+    fire: 'henshin-disciple-fire'
 };
 
 class HenshinDisciple extends DrawCard {
     static id = 'henshin-disciple';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context =>
-                this.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player) ||
-                !!(this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.air)) && this.game.currentConflict?.ring?.isContested()),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(2)
+            condition: (context) => this.hasClaimedOrIsContesting(elementKeys.air, context.player),
+            effect: modifyPoliticalSkill(2)
         });
         this.persistentEffect({
-            condition: context =>
-                this.game.rings[this.getCurrentElementSymbol(elementKeys.earth)].isConsideredClaimed(context.player) ||
-                !!(this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.earth)) && this.game.currentConflict?.ring?.isContested()),
-            effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            condition: (context) => this.hasClaimedOrIsContesting(elementKeys.earth, context.player),
+            effect: modifyMilitarySkill(2)
         });
         this.persistentEffect({
-            condition: context =>
-                this.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player) ||
-                !!(this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.fire)) && this.game.currentConflict?.ring?.isContested()),
-            effect: AbilityDsl.effects.addKeyword('pride')
+            condition: (context) => this.hasClaimedOrIsContesting(elementKeys.fire, context.player),
+            effect: addKeyword('pride')
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    private hasClaimedOrIsContesting(key: string, player: Player) {
+        const element = this.getCurrentElementSymbol(key);
+        return hasClaimedRing(this, key, player) ||
+            !!(this.game.isDuringConflict(element) && this.game.currentConflict?.ring?.isContested());
+    }
+
+    protected override printedElementSymbols = [
+        {
             key: elementKeys.air,
             prettyName: '+2 Political',
             element: Element.Air
-        });
-        symbols.push({
+        },
+        {
             key: elementKeys.earth,
             prettyName: '+2 Military',
             element: Element.Earth
-        });
-        symbols.push({
+        },
+        {
             key: elementKeys.fire,
             prettyName: 'Pride',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

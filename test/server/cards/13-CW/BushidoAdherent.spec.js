@@ -53,7 +53,7 @@ describe('Bushido Adherent', function() {
         });
 
         it('should honor chosen character and opponent should draw 1 card', function() {
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.initiateConflict({
                 type: 'military',

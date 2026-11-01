@@ -1,64 +1,68 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
-import { Location, CardType, Players } from '../../Constants.js';
-import type Player from '../../Player.js';
-import type BaseCard from '../../BaseCard.js';
+import { Location, CardType, DeckType, Players, Trait } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import { moveCard, placeInProvince, sequential } from '../../GameActions/GameActions.js';
 
 class KaiuForges extends DrawCard {
     static id = 'kaiu-forges';
 
-    setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Choose a province',
-            target: {
+    override setupCardAbilities() {
+        this.action('Choose a province')
+            .target({
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardType: CardType.Province
-            },
-            effect: 'look at the top ten cards of their dynasty deck',
-            handler: (context) => {
-                const province = context.target;
-                if(!province) {
-                    return;
-                }
-                this.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
-                    context: context,
-                    cardCondition: (card: BaseCard) => card.getType() === CardType.Holding,
-                    cards: context.player.dynastyDeck.slice(0, 10),
-                    choices: ['Take nothing'],
-                    handlers: [() => {
-                        this.game.addMessage('{0} takes nothing', context.player);
-                        context.player.shuffleDynastyDeck();
-                        return true;
-                    }],
-                    cardHandler: (cardFromDeck: DrawCard) => {
-                        const provinceLocation = province.location;
-                        const cards = context.player.getDynastyCardsInProvince(provinceLocation);
-                        if(cards.some((a: BaseCard) => a.getType() === CardType.Holding && a.hasTrait('kaiu-wall'))) {
-                            this.game.promptForSelect(context.player, {
-                                activePrompt: 'Choose a Kaiu Wall to swap with',
-                                cardType: CardType.Holding,
-                                location: Location.Provinces,
-                                controller: Players.Self,
-                                context: context,
-                                targets: false,
-                                cardCondition: (card: DrawCard) => cards.includes(card) && card.hasTrait('kaiu-wall'),
-                                onSelect: (player: Player, card: DrawCard) => {
-                                    this.game.addMessage('{0} chooses to replace {1} with {2}', player, card, cardFromDeck);
-                                    context.player.moveCard(cardFromDeck, provinceLocation);
-                                    context.player.moveCard(card, Location.DynastyDeck);
-                                    cardFromDeck.facedown = false;
-                                    context.player.shuffleDynastyDeck();
-                                    return true;
-                                }
-                            });
-                        } else {
-                            this.game.addMessage('{0} cannot put a holding into play because there is no Kaiu Wall in the selected province', context.player);
-                            context.player.shuffleDynastyDeck();
-                        }
-                    }
-                });
+                cardType: CardType.Province,
+                // RRG Target: only a province where the swap can happen
+                cardCondition: (card, context) => this.hasKaiuWall(context.player.getDynastyCardsInProvince(card.location))
+            })
+            .deckSearch({
+                activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
+                cardsToLookAt: 10,
+                deck: DeckType.Dynasty,
+                cardCondition: (card) => card.type === CardType.Holding,
+                selectedCardsHandler: (context, _event, [cardFromDeck]) => this.swapWithKaiuWall(context, cardFromDeck)
+            })
+            .chatText('look at the top ten cards of their dynasty deck');
+    }
+
+    private isKaiuWall(card: DrawCard): boolean {
+        return card.type === CardType.Holding && card.isFaceup() && card.hasTrait(Trait.KaiuWall);
+    }
+
+    private hasKaiuWall(cards: DrawCard[]): boolean {
+        return cards.some((card) => this.isKaiuWall(card));
+    }
+
+    private swapWithKaiuWall(context: AbilityContext, cardFromDeck: DrawCard | undefined): void {
+        if(!cardFromDeck) {
+            this.game.addMessage(msg`${context.player} takes nothing`);
+            return;
+        }
+        if(!context.target) {
+            return;
+        }
+        const provinceLocation = context.target.location;
+        const cards = context.player.getDynastyCardsInProvince(provinceLocation);
+        if(!this.hasKaiuWall(cards)) {
+            this.game.addMessage(msg`${context.player} cannot put a holding into play because there is no Kaiu Wall in the selected province`);
+            return;
+        }
+        this.game.promptForSelect(context.player, {
+            activePromptTitle: 'Choose a Kaiu Wall to swap with',
+            cardType: CardType.Holding,
+            location: Location.Provinces,
+            controller: Players.Self,
+            context: context,
+            targets: false,
+            cardCondition: (card) => cards.includes(card) && this.isKaiuWall(card),
+            onSelect: (player, card) => {
+                this.game.addMessage(msg`${player} chooses to replace ${card} with ${cardFromDeck}`);
+                sequential([
+                    placeInProvince({ target: cardFromDeck, destination: provinceLocation }),
+                    moveCard({ target: card, destination: Location.DynastyDeck })
+                ]).resolve(context.player, context);
+                return true;
             }
         });
     }

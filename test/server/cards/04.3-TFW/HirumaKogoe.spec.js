@@ -23,6 +23,7 @@ describe('Hiruma Kogoe', function () {
                 this.player2.player.honor = 3;
                 this.nextPhase();
                 expect(this.player1).not.toBeAbleToSelect(this.kogoe);
+                expect(this.player1).toHavePrompt('Choose how much honor to bid in the draw phase');
             });
 
             it('should trigger if lower honor', function () {
@@ -35,6 +36,7 @@ describe('Hiruma Kogoe', function () {
                 this.player2.player.honor = 5;
                 this.nextPhase();
                 expect(this.player1).not.toBeAbleToSelect(this.kogoe);
+                expect(this.player1).toHavePrompt('Choose how much honor to bid in the draw phase');
             });
 
             it('should correctly rearrange cards', function () {
@@ -53,6 +55,18 @@ describe('Hiruma Kogoe', function () {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('3');
                 expect(this.fan.location).toBe('hand');
+            });
+
+            it('should put the cards back in the chosen order', function () {
+                this.player2.player.honor = 11;
+                this.player1.moveCard(this.reprieve, 'conflict deck');
+                this.player1.moveCard(this.fan, 'conflict deck');
+                this.player1.moveCard(this.katana, 'conflict deck');
+                this.nextPhase();
+                this.player1.clickCard(this.kogoe);
+                this.player1.clickPrompt('Ornate Fan');
+                this.player1.clickPrompt('Reprieve');
+                expect(this.player1.conflictDeck.slice(0, 3)).toEqual([this.fan, this.reprieve, this.katana]);
             });
 
             describe('if there are exactly 2 cards in deck', function () {

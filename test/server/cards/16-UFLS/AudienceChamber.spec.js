@@ -38,6 +38,7 @@ describe('Audience Chamber', function() {
                 this.player1.clickCard(this.challenger);
                 this.player1.clickPrompt('0');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(3)).toContain('player1 plays Doji Challenger with 0 additional fate');
             });
 
             it('should not trigger if opponent plays a character that costs 4 or more', function() {
@@ -47,6 +48,7 @@ describe('Audience Chamber', function() {
                 this.player2.clickCard(this.uji);
                 this.player2.clickPrompt('0');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(3)).toContain('player2 plays Daidoji Uji with 0 additional fate');
             });
         });
 

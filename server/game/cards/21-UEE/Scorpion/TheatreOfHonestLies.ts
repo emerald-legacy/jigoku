@@ -1,28 +1,24 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 
 export default class TheatreOfHonestLies extends StrongholdCard {
     static id = 'theatre-of-honest-lies';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Draw a card',
-            when: {
-                onModifyHonor: (event, context) => event.player === context.player.opponent && (event.amount ?? 0) < 0,
-                onTransferHonor: (event, context) => event.player === context.player.opponent && (event.amount ?? 0) > 0
-            },
-            cost: AbilityDsl.costs.bowSelf(),
-            gameAction: AbilityDsl.actions.draw()
-        });
+    override setupCardAbilities() {
+        this.reaction('Draw a card')
+            .when({
+                onModifyHonor: (event, context) => event.player === context.player.opponent && event.amount < 0,
+                onTransferHonor: (event, context) => event.player === context.player.opponent && event.amount > 0
+            })
+            .cost(costs.bowSelf())
+            .draw();
 
-        this.reaction({
-            title: 'Take 1 honor',
-            when: {
-                onModifyHonor: (event, context) => event.player === context.player.opponent && (event.amount ?? 0) > 0,
-                onTransferHonor: (event, context) => event.player === context.player && (event.amount ?? 0) > 0
-            },
-            cost: AbilityDsl.costs.bowSelf(),
-            gameAction: AbilityDsl.actions.takeHonor()
-        });
+        this.reaction('Take 1 honor')
+            .when({
+                onModifyHonor: (event, context) => event.player === context.player.opponent && event.amount > 0,
+                onTransferHonor: (event, context) => event.player === context.player && event.amount > 0
+            })
+            .cost(costs.bowSelf())
+            .takeHonor();
     }
 }

@@ -1,21 +1,18 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class SavvyPolitician extends DrawCard {
     static id = 'savvy-politician';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Honor a character',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Honor a character')
+            .when({
                 onCardHonored: (event, context) => event.card === context.source
-            },
-            target: {
-                cardType: CardType.Character,
-                gameAction: ability.actions.honor()
-            }
-        });
+            })
+            .target({
+                cardType: CardType.Character
+            }, honor());
     }
 }
 

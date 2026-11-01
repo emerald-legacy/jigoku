@@ -1,0 +1,42 @@
+name: Publish docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/*.html'
+      - 'docs/assets/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Collect the pages
+        run: |
+          mkdir site
+          cp docs/*.html site/
+          cp -r docs/assets site/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

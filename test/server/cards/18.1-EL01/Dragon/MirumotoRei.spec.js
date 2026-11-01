@@ -1,4 +1,4 @@
-describe('Mirumoto\'s Peak', function() {
+describe('Mirumoto Rei', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
@@ -29,8 +29,8 @@ describe('Mirumoto\'s Peak', function() {
         });
 
         it('should let you choose another Bushi you control and give you a skill bonus equal to their attachment bonus', function() {
-            let mil = this.rei.getMilitarySkill();
-            let pol = this.rei.getPoliticalSkill();
+            const mil = this.rei.militarySkill;
+            const pol = this.rei.politicalSkill;
 
             this.player1.playAttachment(this.fan, this.challenger);
             this.player2.pass();
@@ -67,8 +67,8 @@ describe('Mirumoto\'s Peak', function() {
             this.player1.clickCard(this.challenger);
             expect(this.getChatLogs(5)).toContain('player1 uses Mirumoto Rei to give Mirumoto Rei a skill bonus equal to the total attachment skill bonus on Doji Challenger (4military/2political)');
 
-            expect(this.rei.getMilitarySkill()).toBe(mil + 4);
-            expect(this.rei.getPoliticalSkill()).toBe(pol + 2);
+            expect(this.rei.militarySkill).toBe(mil + 4);
+            expect(this.rei.politicalSkill).toBe(pol + 2);
         });
 
         it('cannot trigger from home', function () {
@@ -79,6 +79,8 @@ describe('Mirumoto\'s Peak', function() {
             });
 
             this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.rei.isParticipating()).toBe(false);
             expect(this.player1).not.toBeAbleToSelect(this.rei);
         });
     });

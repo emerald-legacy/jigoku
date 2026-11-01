@@ -1,20 +1,19 @@
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perRound } from '../../AbilityLimit.js';
 
 class FavoredNiece extends DrawCard {
     static id = 'favored-niece';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Discard then draw a card',
-            limit: ability.limit.perRound(2),
-            cost: ability.costs.discardCard({
+    override setupCardAbilities() {
+        this.action('Discard then draw a card')
+            .cost(costs.discardCard({
                 location: Location.Hand,
                 targets: true
-            }),
-            gameAction: ability.actions.draw()
-        });
+            }))
+            .draw()
+            .limit(perRound(2));
     }
 }
 

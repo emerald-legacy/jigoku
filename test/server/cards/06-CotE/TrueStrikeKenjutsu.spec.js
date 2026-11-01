@@ -70,8 +70,8 @@ describe('True Strike Kenjutsu', function() {
                     this.player1.clickCard(this.matsuBeiona);
                     this.player1.clickCard(this.dojiWhisperer);
                     expect(this.getChatLogs(1)).toContain('player1 uses Matsu Beiona\'s gained ability from True Strike Kenjutsu to initiate a military duel : Matsu Beiona vs. Doji Whisperer');
-                    expect(this.matsuBeiona.getMilitarySkill()).toBe(5);
-                    expect(this.dojiWhisperer.getMilitarySkill()).toBe(4);
+                    expect(this.matsuBeiona.militarySkill).toBe(5);
+                    expect(this.dojiWhisperer.militarySkill).toBe(4);
                     expect(this.player1).toHavePrompt('Choose your bid for the duel\nMatsu Beiona: 3 vs 0: Doji Whisperer');
                     expect(this.player2).toHavePrompt('Choose your bid for the duel\nMatsu Beiona: 3 vs 0: Doji Whisperer');
                     this.player1.clickPrompt(1);

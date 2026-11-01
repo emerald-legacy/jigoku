@@ -38,7 +38,7 @@ describe('Fields of Rolling Thunder', function () {
                 this.player1.clickCard(this.rider);
                 expect(this.rider.isHonored).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Fields of Rolling Thunder to honor Border Rider. They will be dishonored at the end of the conflict if player1 loses the conflict.'
+                    'player1 uses Fields of Rolling Thunder to honor Border Rider. They will be dishonored at the end of the conflict if player1 loses the conflict'
                 );
 
                 this.noMoreActions();
@@ -64,7 +64,7 @@ describe('Fields of Rolling Thunder', function () {
                 this.player1.clickCard(this.rider);
                 expect(this.rider.isHonored).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Fields of Rolling Thunder to honor Border Rider. They will be dishonored at the end of the conflict if player1 loses the conflict.'
+                    'player1 uses Fields of Rolling Thunder to honor Border Rider. They will be dishonored at the end of the conflict if player1 loses the conflict'
                 );
 
                 this.noMoreActions();
@@ -129,6 +129,39 @@ describe('Fields of Rolling Thunder', function () {
                     'player2 uses Fields of Rolling Thunder to discard Fields of Rolling Thunder'
                 );
             });
+        });
+    });
+});
+
+describe('Fields of Rolling Thunder targets', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['border-rider'],
+                    dynastyDiscard: ['fields-of-rolling-thunder']
+                },
+                player2: {
+                    inPlay: ['border-rider']
+                }
+            });
+            this.fields = this.player1.findCardByName('fields-of-rolling-thunder');
+            this.rider = this.player1.findCardByName('border-rider');
+            this.opponentsRider = this.player2.findCardByName('border-rider');
+            this.player1.moveCard(this.fields, 'province 1');
+        });
+
+        it('chooses only a Unicorn character you control', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.rider],
+                defenders: [this.opponentsRider]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.fields);
+            expect(this.player1).toBeAbleToSelect(this.rider);
+            expect(this.player1).not.toBeAbleToSelect(this.opponentsRider);
         });
     });
 });

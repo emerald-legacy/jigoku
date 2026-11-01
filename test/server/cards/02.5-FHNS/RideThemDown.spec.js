@@ -74,10 +74,51 @@ describe('Ride Them Down', function() {
                 });
 
                 it('the total province strength should be 1 plus the holding bonus', function() {
-                    let holdingStr = parseInt(this.favorableGround.cardData.strength_bonus, 10);
+                    const holdingStr = parseInt(this.favorableGround.cardData.strength_bonus, 10);
                     expect(this.game.currentConflict.conflictProvince.getStrength()).toBe(1 + holdingStr);
                 });
             });
+        });
+    });
+});
+
+describe('Ride Them Down on a province turned facedown', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['ride-them-down', 'charge'],
+                    dynastyDiscard: ['kitsuki-yaruma']
+                },
+                player2: {
+                    provinces: ['pilgrimage']
+                }
+            });
+            this.yaruma = this.player1.placeCardInProvince('kitsuki-yaruma', 'province 1');
+            this.pilgrimage = this.player2.findCardByName('pilgrimage');
+            this.player1.player.imperialFavor = 'military';
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.pilgrimage,
+                attackers: ['adept-of-the-waves'],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard('ride-them-down', 'hand');
+            this.player2.pass();
+        });
+
+        it('loses the effect: turning it facedown is leaving play (EmeraldDB ruling)', function() {
+            expect(this.pilgrimage.getStrength()).toBe(1);
+            this.player1.clickCard('charge', 'hand');
+            this.player1.clickCard(this.yaruma);
+            this.player1.clickCard(this.yaruma);
+            this.player1.clickCard(this.pilgrimage);
+            expect(this.pilgrimage.isFaceup()).toBe(true);
+            expect(this.pilgrimage.getStrength()).toBe(parseInt(this.pilgrimage.cardData.strength));
         });
     });
 });

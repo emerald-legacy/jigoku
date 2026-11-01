@@ -1,41 +1,30 @@
-import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import { PlayType } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
+import { nameCard, playerLastingEffect } from '../../GameActions/GameActions.js';
+import { Duration, PlayType, Players, RestrictionScope } from '../../Constants.js';
 
 class Gossip extends DrawCard {
     static id = 'gossip';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Name a card that your opponent cannot play for the phase',
-            handler: context => {
-                this.game.promptWithMenu(context.player, this, {
-                    context: context,
-                    activePrompt: {
-                        menuTitle: 'Name a card',
-                        controls: [
-                            { type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name' }
-                        ]
-                    }
-                });
-            }
-        });
-    }
-
-    selectCardName(player: Player, cardName: string, context: AbilityContext) {
-        this.game.addMessage('{0} names {1} - {2} cannot play copies of this card this phase', player, cardName, player.opponent);
-        context.source.untilEndOfPhase((ability) => ({
-            targetController: context.player.opponent,
-            effect: ability.effects.playerCannot({
-                cannot: PlayType.PlayFromHand,
-                restricts: 'copiesOfX',
-                params: cardName
-            })
-        }));
-        return true;
+    override setupCardAbilities() {
+        // naming is the effect, so it happens after the event could be cancelled
+        this.action('Name a card that your opponent cannot play for the phase')
+            .gameAction(nameCard({
+                message: (_context, cardName, player) =>
+                    msg`${player} names ${cardName} - ${player.opponent} cannot play cards named ${cardName} from their hand this phase`,
+                gameAction: (cardName) => playerLastingEffect({
+                    duration: Duration.UntilEndOfPhase,
+                    target: Players.Opponent,
+                    effect: playerCannot({
+                        cannot: PlayType.PlayFromHand,
+                        appliesTo: RestrictionScope.CopiesOfX,
+                        params: cardName
+                    })
+                })
+            }));
     }
 }
 
-export default Gossip;
 
+export default Gossip;

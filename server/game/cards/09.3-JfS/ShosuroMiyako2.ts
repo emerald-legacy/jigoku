@@ -1,37 +1,35 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Location, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
+import { discardFromPlay, dishonor } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class ShosuroMiyako2 extends DrawCard {
     static id = 'shosuro-miyako-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             location: Location.Any,
-            effect: AbilityDsl.effects.playerCannot({
-                cannot: 'playCharacter',
-                restricts: 'source'
+            effect: playerCannot({
+                cannot: RestrictionType.PlayCharacter,
+                appliesTo: RestrictionScope.Source
             })
         });
 
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+        this.reaction('Dishonor a character')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => !card.isUnique(),
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                cardCondition: (card) => !card.isUnique()
+            }, dishonor());
     }
 
-    canDisguise(card: DrawCard, context: AbilityContext, intoConflictOnly: boolean) {
+    override canDisguise(card: DrawCard, context: AbilityContext, intoConflictOnly: boolean) {
         return !card.isFaction('scorpion') &&
-            card.allowGameAction('discardFromPlay', context) &&
+            discardFromPlay().canAffect(card, context) &&
             !card.isUnique() &&
             (!intoConflictOnly || card.isParticipating());
     }

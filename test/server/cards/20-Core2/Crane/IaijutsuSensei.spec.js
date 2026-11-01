@@ -21,26 +21,26 @@ describe('Iaijutsu Sensei', function () {
         });
 
         it('should get +1/+1 if it has a single weapon', function () {
-            let baseMil = this.sensei.getMilitarySkill();
-            let basePol = this.sensei.getPoliticalSkill();
+            const baseMil = this.sensei.militarySkill;
+            const basePol = this.sensei.politicalSkill;
 
             this.player1.playAttachment(this.katana, this.sensei);
-            expect(this.sensei.getMilitarySkill()).toBe(baseMil + 3);
-            expect(this.sensei.getPoliticalSkill()).toBe(basePol + 1);
+            expect(this.sensei.militarySkill).toBe(baseMil + 3);
+            expect(this.sensei.politicalSkill).toBe(basePol + 1);
 
             this.player2.pass();
             this.player1.playAttachment(this.blade, this.sensei);
-            expect(this.sensei.getMilitarySkill()).toBe(baseMil + 4);
-            expect(this.sensei.getPoliticalSkill()).toBe(basePol + 0);
+            expect(this.sensei.militarySkill).toBe(baseMil + 4);
+            expect(this.sensei.politicalSkill).toBe(basePol + 0);
         });
 
         it('should not give +1/+1 to other characters', function () {
-            let baseMil = this.toshimoko.getMilitarySkill();
-            let basePol = this.toshimoko.getPoliticalSkill();
+            const baseMil = this.toshimoko.militarySkill;
+            const basePol = this.toshimoko.politicalSkill;
 
             this.player1.playAttachment(this.katana, this.toshimoko);
-            expect(this.toshimoko.getMilitarySkill()).toBe(baseMil + 2);
-            expect(this.toshimoko.getPoliticalSkill()).toBe(basePol + 0);
+            expect(this.toshimoko.militarySkill).toBe(baseMil + 2);
+            expect(this.toshimoko.politicalSkill).toBe(basePol + 0);
         });
 
         it('duel should prevent contribution from loser', function () {
@@ -83,6 +83,57 @@ describe('Iaijutsu Sensei', function () {
                 'Duel Effect: prevent Iaijutsu Sensei from contributing to resolution of this conflict'
             );
             expect(this.getChatLogs(10)).toContain('Military Air conflict - Attacker: 2 Defender: 4');
+        });
+    });
+});
+
+describe('Iaijutsu Sensei and a loser that leaves play and returns', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['iaijutsu-sensei'],
+                    hand: ['assassination']
+                },
+                player2: {
+                    inPlay: ['akodo-gunso', 'kitsu-spiritcaller-2']
+                }
+            });
+
+            this.sensei = this.player1.findCardByName('iaijutsu-sensei');
+            this.assassination = this.player1.findCardByName('assassination');
+            this.gunso = this.player2.findCardByName('akodo-gunso');
+            this.spiritcaller = this.player2.findCardByName('kitsu-spiritcaller-2');
+        });
+
+        it('the returned character contributes again', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.sensei],
+                defenders: [this.gunso]
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.sensei);
+            this.player2.clickCard(this.gunso);
+            this.player1.clickPrompt('5');
+            this.player2.clickPrompt('1');
+            expect(this.getChatLogs(10)).toContain(
+                'Duel Effect: prevent Akodo Gunsō from contributing to resolution of this conflict'
+            );
+            expect(this.game.currentConflict.defenderSkill).toBe(0);
+
+            this.player2.pass();
+            this.player1.clickCard(this.assassination);
+            this.player1.clickCard(this.gunso);
+            expect(this.gunso.location).toBe('dynasty discard pile');
+
+            this.player2.clickCard(this.spiritcaller);
+            this.player2.clickCard(this.gunso);
+            expect(this.gunso.isParticipating()).toBe(true);
+            expect(this.game.currentConflict.defenderSkill).toBe(this.gunso.militarySkill);
         });
     });
 });

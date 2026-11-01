@@ -1,42 +1,40 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { EventName, Location } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import * as costs from '../../../costs/index.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { discardMatching, multiple, reveal } from '../../../GameActions/GameActions.js';
+import { Location, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
-import { shuffle } from '../../../utils/shuffle.js';
+import { randomHandCards } from '../../randomHandCards.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class HonestAssessment extends DrawCard {
     static id = 'honest-assessment';
 
-    setupCardAbilities() {
-        this.attachmentConditions({ trait: 'courtier' });
+    override setupCardAbilities() {
+        this.attachmentConditions({ trait: Trait.Courtier });
 
-        this.reaction({
-            title: 'Name a card',
-            when: {
-                onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) =>
+        this.reaction('Name a card')
+            .when({
+                onCardAttached: (event, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
-            },
-            cost: AbilityDsl.costs.nameCard(),
-            max: AbilityDsl.limit.perRound(1),
-            gameAction: AbilityDsl.actions.multipleContext((context) => {
-                const hand: Array<DrawCard> = shuffle(context.player.opponent?.hand ?? []);
-                const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
-                return {
-                    gameActions: [
-                        AbilityDsl.actions.reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
-                        AbilityDsl.actions.discardMatching({
-                            target: context.player.opponent,
-                            cards,
-                            amount: -1, //all
-                            reveal: false,
-                            match: (context, card) => card.name === context.costs.nameCardCost
-                        })
-                    ]
-                };
-            }),
-            effect: 'reveal 4 random cards from {1}\'s hand and discard all copies of {2}',
-            effectArgs: (context) => [context.player.opponent as Player, context.costs.nameCardCost as string]
-        });
+            })
+            .cost(costs.nameCard())
+            .gameAction(multiple((context) => {
+                const cards = randomHandCards(context.player.opponent, 4);
+                return [
+                    reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
+                    discardMatching({
+                        target: context.player.opponent,
+                        cards,
+                        amount: -1, //all
+                        reveal: false,
+                        match: (context, card) => card.name === context.costs.namedCard
+                    })
+                ];
+            }))
+            .chatText((context) => {
+                const amount = Math.min(4, context.player.opponent?.hand.length ?? 0);
+                return msg`reveal ${amount} random card${amount === 1 ? '' : 's'} from ${context.player.opponent}'s hand and discard all copies of ${context.costs.namedCard}`;
+            })
+            .max(perRound(1));
     }
 }

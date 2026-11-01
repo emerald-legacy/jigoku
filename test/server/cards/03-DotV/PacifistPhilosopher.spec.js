@@ -25,7 +25,7 @@ describe('Pacifist Philosopher', function() {
             });
 
             it('if triggered, should gain you 1 fate', function() {
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 this.noMoreActions();
                 this.player1.clickPrompt('Pass Conflict');
                 this.player1.clickPrompt('Yes');

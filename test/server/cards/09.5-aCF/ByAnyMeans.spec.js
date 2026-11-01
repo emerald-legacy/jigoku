@@ -76,7 +76,7 @@ describe('By Any Means', function() {
                 this.player1.clickCard(this.toturi);
 
                 expect(this.getChatLogs(3)).toContain('player1 plays By Any Means to set Doji Challenger\'s base military skill to equal Akodo Toturi\'s current military skill');
-                expect(this.dojiChallenger.getBaseMilitarySkill()).toBe(this.toturi.getMilitarySkill());
+                expect(this.dojiChallenger.getBaseMilitarySkill()).toBe(this.toturi.militarySkill);
             });
 
             it('should set as military dash if target is military dash', function() {
@@ -101,8 +101,8 @@ describe('By Any Means', function() {
                     expect(this.player1).toBeAbleToSelect(this.dojiChallenger);
                     this.player1.clickCard(this.dojiChallenger);
                     this.player1.clickCard(this.toturi);
-                    expect(this.dojiChallenger.getBaseMilitarySkill()).toBe(this.toturi.getMilitarySkill());
-                    expect(this.dojiChallenger.getMilitarySkill()).toBe(this.dojiChallenger.getBaseMilitarySkill() + 4);
+                    expect(this.dojiChallenger.getBaseMilitarySkill()).toBe(this.toturi.militarySkill);
+                    expect(this.dojiChallenger.militarySkill).toBe(this.dojiChallenger.getBaseMilitarySkill() + 4);
                 });
 
                 it('should copy skill pumps already played', function() {
@@ -113,7 +113,7 @@ describe('By Any Means', function() {
                     this.player1.clickCard(this.dojiChallenger);
                     this.player1.clickCard(this.toturi);
 
-                    expect(this.dojiChallenger.getBaseMilitarySkill()).toBe(this.toturi.getMilitarySkill());
+                    expect(this.dojiChallenger.getBaseMilitarySkill()).toBe(this.toturi.militarySkill);
                 });
 
                 it('attachments', function() {
@@ -127,8 +127,8 @@ describe('By Any Means', function() {
                     this.player1.clickCard(this.dojiChallenger);
                     this.player1.clickCard(this.toturi);
 
-                    expect(this.dojiChallenger.getBaseMilitarySkill()).toBe(this.toturi.getMilitarySkill());
-                    expect(this.dojiChallenger.getMilitarySkill()).toBe(this.toturi.getBaseMilitarySkill() + 4);
+                    expect(this.dojiChallenger.getBaseMilitarySkill()).toBe(this.toturi.militarySkill);
+                    expect(this.dojiChallenger.militarySkill).toBe(this.toturi.getBaseMilitarySkill() + 4);
                 });
             });
 

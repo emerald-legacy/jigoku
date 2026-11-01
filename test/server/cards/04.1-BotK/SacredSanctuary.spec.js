@@ -84,3 +84,36 @@ describe('Sacred Sanctuary', function() {
         });
     });
 });
+
+describe('Sacred Sanctuary chat', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kitsuki-yaruma']
+                },
+                player2: {
+                    provinces: ['sacred-sanctuary'],
+                    inPlay: ['togashi-kazue']
+                }
+            });
+            this.yaruma = this.player1.findCardByName('kitsuki-yaruma');
+            this.kazue = this.player2.findCardByName('togashi-kazue');
+            this.sanctuary = this.player2.findCardByName('sacred-sanctuary');
+            this.kazue.bow();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.yaruma]
+            });
+        });
+
+        it('should say the character is readied', function() {
+            this.player2.clickCard(this.sanctuary);
+            this.player2.clickCard(this.kazue);
+            expect(this.kazue.bowed).toBe(false);
+            expect(this.getChatLogs(5)).toContain('player2 uses Sacred Sanctuary to ready Togashi Kazue, prevent opponents\' card effects from bowing it and stop it bowing at the end of the conflict');
+        });
+    });
+});

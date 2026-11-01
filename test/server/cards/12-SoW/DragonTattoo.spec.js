@@ -149,7 +149,7 @@ describe('Dragon Tattoo', function() {
         });
 
         it('should allow re-using reactions', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();
@@ -405,7 +405,7 @@ describe('Dragon Tattoo', function() {
         it('should make you pay the fate cost twice', function() {
             this.player1.fate = 10;
             this.noMoreActions();
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.initiateConflict({
                 attackers: [this.kazue, this.challenger],
                 defenders: [this.kuwanan],
@@ -438,7 +438,7 @@ describe('Dragon Tattoo', function() {
         it('should only remove from game if you can\'t pay the fate cost twice', function() {
             this.player1.fate = 5;
             this.noMoreActions();
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.initiateConflict({
                 attackers: [this.kazue, this.challenger],
                 defenders: [this.kuwanan],
@@ -570,7 +570,7 @@ describe('Dragon Tattoo', function() {
         });
 
         it('watch commander - actions - should get two watch commander triggers', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player2.playAttachment(this.watchCommander, this.kuwanan);
             this.noMoreActions();
             this.initiateConflict({
@@ -615,7 +615,7 @@ describe('Dragon Tattoo', function() {
         });
 
         it('watch commander - reactions - should get two watch commander triggers', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player2.playAttachment(this.watchCommander, this.kuwanan);
             this.noMoreActions();
             this.player1.passConflict();
@@ -707,6 +707,120 @@ describe('Dragon Tattoo - sub-resolutions', function() {
             expect(this.keeper.bowed).toBe(true);
             this.player2.clickPrompt('No');
             expect(this.getChatLogs(10)).toContain('player1 uses Dragon Tattoo to play The Void of War');
+        });
+    });
+});
+
+describe('Dragon Tattoo with an opponent\'s event', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    fate: 10,
+                    inPlay: [{ card: 'doji-challenger', attachments: ['dragon-tattoo'] }],
+                    hand: ['trading-on-the-sand-road']
+                },
+                player2: {
+                    conflictDiscard: ['way-of-the-crane']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.tattoo = this.player1.findCardByName('dragon-tattoo');
+            this.crane = this.player2.findCardByName('way-of-the-crane');
+            this.player2.moveCard(this.crane, 'conflict deck');
+            this.noMoreActions();
+            this.player1.clickCard('trading-on-the-sand-road');
+        });
+
+        it('reacts to an event you played though your opponent owns it', function() {
+            expect(this.crane.location).toBe('removed from game');
+            this.player1.clickCard(this.crane);
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.isHonored).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.tattoo);
+        });
+    });
+});
+
+describe('Dragon Tattoo when the replay is cancelled', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-kazue', 'doji-challenger'],
+                    hand: ['way-of-the-scorpion', 'dragon-tattoo']
+                },
+                player2: {
+                    inPlay: ['doji-kuwanan'],
+                    hand: ['voice-of-honor']
+                }
+            });
+            this.kazue = this.player1.findCardByName('togashi-kazue');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.scorpion = this.player1.findCardByName('way-of-the-scorpion');
+            this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+            this.voice = this.player2.findCardByName('voice-of-honor');
+            this.tattoo = this.player1.playAttachment('dragon-tattoo', this.kazue);
+            this.kuwanan.honor();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kazue, this.challenger],
+                defenders: [this.kuwanan],
+                type: 'military'
+            });
+            this.player2.pass();
+        });
+
+        it('removes the event from the game when the second play is cancelled', function() {
+            this.player1.clickCard(this.scorpion);
+            this.player1.clickCard(this.kazue);
+            expect(this.player2).toBeAbleToSelect(this.voice);
+            this.player2.pass();
+            this.player1.clickCard(this.tattoo);
+            this.player1.clickCard(this.challenger);
+            expect(this.player2).toBeAbleToSelect(this.voice);
+            this.player2.clickCard(this.voice);
+            expect(this.challenger.isDishonored).toBe(false);
+            expect(this.scorpion.location).toBe('removed from game');
+        });
+    });
+});
+
+describe('Dragon Tattoo and a target chosen in a then-step', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'doji-challenger', attachments: ['dragon-tattoo'] }, 'doji-whisperer'],
+                    hand: ['cornering-maneuver']
+                },
+                player2: {
+                    inPlay: ['doji-kuwanan']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.tattoo = this.player1.findCardByName('dragon-tattoo');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.whisperer],
+                defenders: ['doji-kuwanan']
+            });
+            this.player2.pass();
+        });
+
+        it('reacts when the tattooed character is chosen after "Then"', function() {
+            this.player1.clickCard('cornering-maneuver');
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.isParticipating()).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.tattoo);
         });
     });
 });

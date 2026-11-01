@@ -147,5 +147,11 @@ describe('Corner the Prey', function () {
                 expect(this.getChatLogs(5)).toContain('player1 plays Corner the Prey, sacrificing Ayubune Pilot and Dutiful Assistant to discard Solemn Scholar');
             });
         });
+
+        it('can\'t be copied by The Mirror\'s Gaze: its target refers to its cost', function () {
+            this.setupTest({ phase: 'conflict', player1: { hand: ['corner-the-prey'] } });
+            const card = this.player1.findCardByName('corner-the-prey');
+            expect(card.abilities.actions.every((ability) => ability.cannotBeMirrored)).toBe(true);
+        });
     });
 });

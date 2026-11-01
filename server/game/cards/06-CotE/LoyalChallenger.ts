@@ -1,49 +1,40 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { DuelType, EventName } from '../../Constants.js';
+import { blank, delayedEffect } from '../../effects.js';
+import { cardLastingEffect, gainHonor, loseHonor } from '../../GameActions/GameActions.js';
+import { DuelType } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class LoyalChallenger extends DrawCard {
     static id = 'loyal-challenger';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.delayedEffect({
+                delayedEffect({
                     when: {
-                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => event.conflict.winner === context.source.controller &&
-                            context.source.isParticipating()
+                        afterConflict: (event, context) => context.source.isDrawCard() && event.conflict.isOnWinningSide(context.source)
                     },
-                    message: '{0} gains 1 honor due to {1} winning a conflict',
-                    messageArgs: (context: AbilityContext) => [context.player, context.source],
-                    gameAction: AbilityDsl.actions.gainHonor(context => ({ target: context.player }))
-                })
-                ,
-                AbilityDsl.effects.delayedEffect({
+                    message: (context) => msg`${context.player} gains 1 honor due to ${context.source} winning a conflict`,
+                    gameAction: gainHonor((context) => ({ target: context.player }))
+                }),
+                delayedEffect({
                     when: {
-                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => event.conflict.loser === context.source.controller &&
-                            context.source.isParticipating()
+                        afterConflict: (event, context) => context.source.isDrawCard() && event.conflict.isOnLosingSide(context.source)
                     },
-                    message: '{0} loses 1 honor due to {1} losing a conflict',
-                    messageArgs: (context: AbilityContext) => [context.player, context.source],
-                    gameAction: AbilityDsl.actions.loseHonor(context => ({ target: context.player }))
+                    message: (context) => msg`${context.player} loses 1 honor due to ${context.source} losing a conflict`,
+                    gameAction: loseHonor((context) => ({ target: context.player }))
                 })
             ]
         });
-        this.action({
-            title: 'Initiate a Political duel',
-            initiateDuel: {
+        this.action('Initiate a Political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
-                message: '{0} is blanked until the end of the conflict',
-                messageArgs: duel => duel.loser,
-                gameAction: duel => AbilityDsl.actions.cardLastingEffect({
+                chatText: (_context, duel) => msg`${duel.loser?.[0]} is blanked until the end of the conflict`,
+                gameAction: (duel) => cardLastingEffect({
                     target: duel.loser,
-                    effect: AbilityDsl.effects.blank()
+                    effect: blank()
                 })
-            }
-        });
+            }));
     }
 }
 

@@ -1,36 +1,32 @@
-import { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import * as costs from '../../../costs/index.js';
+import { removeFate } from '../../../GameActions/GameActions.js';
+import { CardType, Phase, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ParanoidHososhi extends DrawCard {
     static id = 'paranoid-hososhi';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.legendary(2);
 
-        this.action({
-            title: 'Steal fate from a character',
-            phase: Phases.Conflict,
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+        this.action('Steal fate from a character')
+            .phase(Phase.Conflict)
+            .cost(costs.bowSelf())
+            .target({
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.getCost() === this.getHighestCostOfCharactersInPlay(context),
-                gameAction: AbilityDsl.actions.removeFate((context) => ({
-                    amount: 1,
-                    recipient: context.player
-                }))
-            },
-            effect: 'take 1 fate from {0} — evil begone!'
-        });
+                cardCondition: (card, context) => card.getCost() === this.getHighestCostOfCharactersInPlay(context)
+            }, removeFate((context) => ({
+                recipient: context.player
+            })))
+            .chatText('take 1 fate from {0} — evil begone');
     }
 
     private getHighestCostOfCharactersInPlay(context: AbilityContext) {
         return context.game
-            .findAnyCardsInPlay((card: BaseCard) => card.type === CardType.Character)
-            .reduce((prevHighestCost: number, card: DrawCard) => {
+            .findAnyCardsInPlay((card) => card.type === CardType.Character)
+            .reduce((prevHighestCost, card) => {
                 const cost = card.getCost();
                 return typeof cost === 'number' && cost > prevHighestCost ? cost : prevHighestCost;
             }, 0);

@@ -1,21 +1,20 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { Trait } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { modifyPoliticalSkill } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class SakeHouseConfidant extends DrawCard {
     static id = 'sake-house-confidant';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Give Shinobi +2 political',
-            condition: context => context.source.isParticipating(),
-            cost: ability.costs.discardImperialFavor(),
-            effect: 'give their Shinobi +0/+2',
-            gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
-                target: context.player.cardsInPlay.filter((card: DrawCard) => card.hasTrait('shinobi')),
-                effect: ability.effects.modifyPoliticalSkill(2)
+    override setupCardAbilities() {
+        this.action('Give Shinobi +2 political')
+            .condition((context) => context.source.isParticipating())
+            .cost(costs.discardImperialFavor())
+            .cardLastingEffect((context) => ({
+                target: context.player.cardsInPlay.filter((card) => card.hasTrait(Trait.Shinobi)),
+                effect: modifyPoliticalSkill(2)
             }))
-        });
+            .chatText('give their Shinobi +0/+2');
     }
 }
 

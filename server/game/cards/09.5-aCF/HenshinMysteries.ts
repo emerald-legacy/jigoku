@@ -1,28 +1,21 @@
+import { msg } from '../../GameChat.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type { EventName } from '../../Constants.js';
+import { AbilityType, EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 
 export default class HenshinMysteries extends ProvinceCard {
     static id = 'henshin-mysteries';
 
-    private eventRegistrar?: EventRegistrar;
-
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([{ 'onClaimRing:OtherEffects': 'cancelRingClaim' }]);
+    public override setupCardAbilities() {
+        new EventRegistrar(this.game).registerTriggerWindow(EventName.OnClaimRing, AbilityType.OtherEffects, (event) => this.cancelRingClaim(event));
     }
 
     public cancelRingClaim(event: GameEvent<EventName.OnClaimRing>) {
-        if(
-            !this.isBroken &&
-            !this.isBlank() &&
-            event.conflict &&
-            (event.conflict.getConflictProvinces() as ProvinceCard[]).some((a) => a === this) &&
-            !event.cancelled
-        ) {
+        const province = this.conflictProvinceWithText();
+        if(event.conflict && event.ring === event.conflict.ring && province && !event.cancelled) {
             event.cancel();
-            this.game.addMessage('{0} cancels the ring being claimed', this);
+            this.game.addMessage(msg`${province} cancels the ring being claimed`);
         }
     }
 }

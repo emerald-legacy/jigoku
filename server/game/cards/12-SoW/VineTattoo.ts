@@ -1,25 +1,26 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { addTrait, cardCannot } from '../../effects.js';
+import { RestrictionType, RestrictionScope, Trait } from '../../Constants.js';
 
 class VineTattoo extends DrawCard {
     static id = 'vine-tattoo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.addTrait('tattooed'),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'target',
-                    restricts: 'equalOrMoreExpensiveCharacterTriggeredAbilities',
+                addTrait(Trait.Tattooed),
+                cardCannot({
+                    cannot: RestrictionType.Target,
+                    appliesTo: RestrictionScope.EqualOrMoreExpensiveCharacterTriggeredAbilities,
                     source: this
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'target',
-                    restricts: 'equalOrMoreExpensiveCharacterKeywords',
+                cardCannot({
+                    cannot: RestrictionType.Target,
+                    appliesTo: RestrictionScope.EqualOrMoreExpensiveCharacterKeywords,
                     source: this
                 })
             ]

@@ -1,5 +1,6 @@
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import Player from '../../../build/server/game/Player.js';
-import { shuffle } from '../../../build/server/game/utils/shuffle.js';
+import { shuffle } from '../../../build/server/game/utils/random.js';
 
 describe('Player zone initialisation', function() {
     beforeEach(function() {
@@ -9,6 +10,7 @@ describe('Player zone initialisation', function() {
             'addMessage',
             'getProvinceArray'
         ]);
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([
             'province 1', 'province 2', 'province 3', 'province 4', 'stronghold province'
         ]);
@@ -77,6 +79,7 @@ describe('Player getSourceList', function() {
             'addMessage',
             'getProvinceArray'
         ]);
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([
             'province 1', 'province 2', 'province 3', 'province 4', 'stronghold province'
         ]);
@@ -131,10 +134,10 @@ describe('Player getSourceList', function() {
         expect(result).toContain(cardB);
     });
 
-    it('creates an additional pile when source is unknown but non-empty', function() {
+    it('returns an empty list without creating a pile when the source is unknown', function() {
         const list = this.player.getSourceList('some custom pile');
-        expect(Array.isArray(list)).toBe(true);
-        expect(this.player.additionalPiles['some custom pile']).toBeDefined();
+        expect(list).toEqual([]);
+        expect(this.player.additionalPiles['some custom pile']).toBeUndefined();
     });
 });
 
@@ -149,6 +152,7 @@ describe('Player zone card operations', function() {
             'queueSimpleStep',
             'isDuringConflict'
         ]);
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([
             'province 1', 'province 2', 'province 3', 'province 4', 'stronghold province'
         ]);
@@ -195,37 +199,6 @@ describe('Player zone card operations', function() {
     });
 });
 
-describe('Player isCardUuidInList and isCardNameInList', function() {
-    beforeEach(function() {
-        this.gameSpy = jasmine.createSpyObj('game', [
-            'getOtherPlayer',
-            'emitEvent',
-            'addMessage',
-            'getProvinceArray'
-        ]);
-        this.gameSpy.getProvinceArray.and.returnValue([]);
-        this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.gameSpy);
-        this.card = { uuid: 'card-1', name: 'Doji Challenger' };
-        this.list = [this.card];
-    });
-
-    it('isCardUuidInList returns true when uuid matches', function() {
-        expect(this.player.isCardUuidInList(this.list, this.card)).toBe(true);
-    });
-
-    it('isCardUuidInList returns false when uuid does not match', function() {
-        expect(this.player.isCardUuidInList(this.list, { uuid: 'other', name: 'Other' })).toBe(false);
-    });
-
-    it('isCardNameInList returns true when name matches', function() {
-        expect(this.player.isCardNameInList(this.list, this.card)).toBe(true);
-    });
-
-    it('isCardNameInList returns false when name does not match', function() {
-        expect(this.player.isCardNameInList(this.list, { uuid: 'other', name: 'Other' })).toBe(false);
-    });
-});
-
 describe('Player removeCardByUuid', function() {
     beforeEach(function() {
         this.gameSpy = jasmine.createSpyObj('game', [
@@ -234,6 +207,7 @@ describe('Player removeCardByUuid', function() {
             'addMessage',
             'getProvinceArray'
         ]);
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([]);
         this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.gameSpy);
         this.cardA = { uuid: 'a', name: 'A' };
@@ -270,27 +244,23 @@ describe('Player findCards', function() {
             'addMessage',
             'getProvinceArray'
         ]);
+        this.gameSpy.rules = rulesFor('stronghold');
         this.gameSpy.getProvinceArray.and.returnValue([]);
         this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.gameSpy);
     });
 
     it('returns cards that match the predicate', function() {
-        const cards = [{ uuid: 'x', type: 'character' }, { uuid: 'y', type: 'event' }];
+        const cards = [{ uuid: 'x', type: 'character', attachments: [] }, { uuid: 'y', type: 'event', attachments: [] }];
         const result = this.player.findCards(cards, (c) => c.type === 'character');
         expect(result.length).toBe(1);
         expect(result[0].uuid).toBe('x');
     });
 
     it('returns attachments that match the predicate', function() {
-        const attachment = { uuid: 'att', type: 'attachment' };
+        const attachment = { uuid: 'att', type: 'attachment', attachments: [] };
         const card = { uuid: 'c', type: 'character', attachments: [attachment] };
         const result = this.player.findCards([card], (c) => c.type === 'attachment');
         expect(result).toContain(attachment);
-    });
-
-    it('returns empty array for null cardList', function() {
-        const result = this.player.findCards(null, () => true);
-        expect(result).toEqual([]);
     });
 });
 

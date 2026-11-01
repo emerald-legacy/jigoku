@@ -1,31 +1,28 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { TargetMode, CardType, Location } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { resolveAbility } from '../../GameActions/GameActions.js';
+import { CardType, Location, Blocker } from '../../Constants.js';
 
 class CountrysideTrader extends DrawCard {
     static id = 'countryside-trader';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Resolve the attacked province ability',
-            cost: AbilityDsl.costs.payFate(1),
-            condition: context => context.game.isDuringConflict() && context.source.isAttacking(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Resolve the attacked province ability')
+            .condition((context) => context.game.isDuringConflict() && context.source.isAttacking())
+            .cost(costs.payFate(1))
+            .abilityTarget({
                 activePromptTitle: 'Select a province to trigger from',
-                mode: TargetMode.Ability,
                 location: Location.Provinces,
                 cardType: CardType.Province,
-                cardCondition: card => card.isConflictProvince(),
-                abilityCondition: ability => ability.printedAbility,
-                gameAction: AbilityDsl.actions.resolveAbility(context => ({
-                    target: context.targetAbility?.card,
-                    ability: context.targetAbility,
-                    player: context.player,
-                    ignoredRequirements: ['condition'],
-                    choosingPlayerOverride: context.choosingPlayerOverride
-                }))
-            }
-        });
+                cardCondition: (card) => card.isConflictProvince(),
+                printedOn: true
+            }, resolveAbility((context) => ({
+                target: context.targetAbility?.card,
+                ability: context.targetAbility,
+                player: context.player,
+                ignoredBlockers: [Blocker.ConditionNotMet, Blocker.IfConditionNotMet],
+                choosingPlayerOverride: context.choosingPlayerOverride
+            })));
     }
 }
 

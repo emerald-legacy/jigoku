@@ -28,7 +28,7 @@ describe('Collapsible Tunnels', function () {
                 defenders: [this.borderlandsDefender, this.whisperer],
                 province: this.sd1
             });
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
             this.player2.clickCard(this.tunnels);
 
             expect(this.player2).toHavePromptButton('Add Province Strength');
@@ -47,7 +47,7 @@ describe('Collapsible Tunnels', function () {
                 defenders: [this.borderlandsDefender, this.whisperer],
                 province: this.sd1
             });
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
             this.player2.clickCard(this.tunnels);
 
             expect(this.player2).toHavePromptButton('Add Province Strength');

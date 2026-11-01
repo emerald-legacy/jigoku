@@ -1,21 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Phases } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { Phase } from '../../Constants.js';
 
 class FeedingAnArmy extends DrawCard {
     static id = 'feeding-an-army';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Put fate on characters',
-            when: {
-                onPhaseStarted: (event) => event.phase === Phases.Conflict
-            },
-            cost: [AbilityDsl.costs.breakProvince({ cardCondition: (card) => card.isFaceup() })],
-            gameAction: AbilityDsl.actions.placeFate((context) => ({
-                target: context.player.cardsInPlay.filter((card: DrawCard) => card.costLessThan(4))
-            }))
-        });
+    override setupCardAbilities() {
+        this.reaction('Put fate on characters')
+            .when({
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
+            })
+            .cost(costs.breakProvince({ cardCondition: (card) => card.isFaceup() }))
+            .placeFate((context) => ({
+                target: context.player.cardsInPlay.filter((card) => card.costLessThan(4))
+            }));
     }
 }
 

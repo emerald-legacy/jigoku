@@ -1,64 +1,61 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Element, CardType, Players, TargetMode } from '../../Constants.js';
+import {
+    discardFromPlay,
+    discardStatusToken,
+    selectCard,
+    selectToken,
+    sendHome
+} from '../../GameActions/GameActions.js';
+import { Element, CardType, Players } from '../../Constants.js';
 
 const elementKey = 'void-wielder-void';
 
 class VoidWielder extends DrawCard {
     static id = 'void-wielder';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Wield the power of the void',
-            condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            targets: {
-                character: {
-                    cardType: CardType.Character,
-                    controller: Players.Any,
-                    cardCondition: (card, context) => card.isParticipating() && AbilityDsl.actions.sendHome().canAffect(card, context)
-                },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'character',
-                    player: context => (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
-                    choices: {
-                        'Move this character home': AbilityDsl.actions.sendHome(context => ({ target: context.targets.character })),
-                        'Discard a status token from this character': AbilityDsl.actions.selectToken(context => ({
-                            card: context.targets.character,
-                            player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
-                            activePromptTitle: 'Which token do you wish to discard?',
-                            message: '{0} discards {1}',
-                            effect: 'discard a status token from {0}',
-                            effectArgs: () => context.targets.character,
-                            messageArgs: (token, player) => [player, token],
-                            gameAction: AbilityDsl.actions.discardStatusToken()
-                        })),
-                        'Discard an attachment from this character': AbilityDsl.actions.selectCard(context => ({
-                            cardType: CardType.Attachment,
-                            player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
-                            activePromptTitle: 'Which attachment do you wish to discard?',
-                            cardCondition: (card, context) => card.parentCharacter === context.targets.character,
-                            gameAction: AbilityDsl.actions.discardFromPlay(),
-                            effect: 'discard an attachment from {0}',
-                            effectArgs: () => context.targets.character,
-                            message: '{0} discards {1}',
-                            messageArgs: (card, player) => [player, card]
-                        }))
-                    }
-                }
-            }
-        });
+    override setupCardAbilities() {
+        this.action('Wield the power of the void')
+            .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
+            .target({
+                name: 'character',
+                cardType: CardType.Character,
+                controller: Players.Any,
+                cardCondition: (card) => card.isParticipating()
+            })
+            .select({
+                name: 'select',
+                dependsOn: 'character',
+                player: (context) => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
+            }, {
+                'Move this character home': sendHome((context) => ({ target: context.targets.character })),
+                'Discard a status token from this character': selectToken((context) => ({
+                    card: context.targets.character,
+                    player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
+                    activePromptTitle: 'Which token do you wish to discard?',
+                    message: (_context, token, player) => msg`${player} discards ${token}`,
+                    chatText: () => msg`discard a status token from ${context.targets.character}`,
+                    gameAction: discardStatusToken()
+                })),
+                'Discard an attachment from this character': selectCard((context) => ({
+                    cardType: CardType.Attachment,
+                    player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
+                    activePromptTitle: 'Which attachment do you wish to discard?',
+                    cardCondition: (card, context) => card.parentCharacter === context.targets.character,
+                    gameAction: discardFromPlay(),
+                    chatText: () => msg`discard an attachment from ${context.targets.character}`,
+                    message: (_context, card, player) => msg`${player} discards ${card}`
+                }))
+            });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Contested Ring',
             element: Element.Void
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

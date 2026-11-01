@@ -70,6 +70,8 @@ describe('Stolen Breath', function() {
                     });
                     this.player2.pass();
                     this.player1.clickCard(this.favorableGround);
+                    expect(this.player1).toHavePrompt('Favorable Ground');
+                    expect(this.player1).toBeAbleToSelect('otomo-courtier');
                     expect(this.player1).not.toBeAbleToSelect(this.togashiKazue);
                 });
 

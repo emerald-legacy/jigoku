@@ -8,7 +8,7 @@ describe('Wholeness of the World', function() {
                         hand: ['wholeness-of-the-world', 'wholeness-of-the-world']
                     }
                 });
-                let wholenessOfTheWorlds = this.player1.filterCardsByName('wholeness-of-the-world');
+                const wholenessOfTheWorlds = this.player1.filterCardsByName('wholeness-of-the-world');
                 this.wholenessOfTheWorld = wholenessOfTheWorlds[0];
                 this.wholenessOfTheWorld2 = wholenessOfTheWorlds[1];
             });

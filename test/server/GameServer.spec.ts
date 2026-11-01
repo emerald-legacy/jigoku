@@ -1,11 +1,14 @@
 import { GameServer } from '../../server/gamenode/GameServer.js';
+import axios from 'axios';
 import jwt from 'jsonwebtoken';
+import { callMethod } from '../helpers/methodaccess.js';
 
-type GameSpy = jasmine.SpyObj<{
-    addAlert: (kind: string, msg: string) => void;
+type GameMethods = {
+    addAlert: (kind: string, msg: [string, unknown[]]) => void;
     isEmpty: () => boolean;
     isSpectator: (p: unknown) => boolean;
     leave: (name: string) => void;
+    disconnect: (name: string) => void;
     watch: (id: string, user: unknown) => void;
     getSummary: () => unknown;
     getSaveState: () => unknown;
@@ -16,16 +19,21 @@ type GameSpy = jasmine.SpyObj<{
     addMessage: (msg: string) => void;
     clearAnimations: () => void;
     allPlayersGone: () => boolean;
-    recordHiddenInfoIfChanged: () => void;
-}> & {
+    recordHiddenInfo: () => number | undefined;
+};
+
+type GameSpy = jasmine.SpyObj<GameMethods> & {
     id: string;
     name: string;
     started: boolean;
+    winner?: unknown;
+    hiddenInfoLog?: unknown[];
     password?: string;
     playersAndSpectators: Record<string, unknown>;
     gameChat: { messages: unknown[] };
-    pipeline: { getDebugInfo: () => unknown };
-    effectEngine: { getDebugInfo: () => unknown };
+    pipeline?: { getDebugInfo: () => unknown };
+    effectEngine?: { getDebugInfo: () => unknown };
+    failedConnect?: jasmine.Spy;
 };
 
 type ServerCtx = {
@@ -41,25 +49,26 @@ type ServerCtx = {
     unregisterUsersForGame?: (game: unknown) => void;
     findGameForUser?: (name: string) => unknown;
     clearMessageCountsForGame?: (game: unknown) => void;
+    shortCardData?: unknown[];
 };
 
-const proto = (GameServer as unknown as { prototype: Record<string, (...args: unknown[]) => unknown> }).prototype;
-
-function call<T = unknown>(method: string, ctx: unknown, ...args: unknown[]): T {
-    return proto[method].apply(ctx, args) as T;
+function call(method: string, ctx: ServerCtx, ...args: unknown[]): unknown {
+    return callMethod(ctx, method, ...args);
 }
 
 function makeGame(overrides: Partial<{ id: string; name: string; players: Record<string, unknown> }> = {}): GameSpy {
-    const game = jasmine.createSpyObj<GameSpy>('game', [
-        'addAlert', 'isEmpty', 'isSpectator', 'leave', 'watch', 'getSummary', 'getSaveState',
+    const methods = jasmine.createSpyObj<GameMethods>('game', [
+        'addAlert', 'isEmpty', 'isSpectator', 'leave', 'disconnect', 'watch', 'getSummary', 'getSaveState',
         'getState', 'getSharedState', 'getPlayers', 'getPlayersAndSpectators', 'addMessage',
-        'clearAnimations', 'allPlayersGone', 'recordHiddenInfoIfChanged'
-    ]) as GameSpy;
-    game.id = overrides.id ?? 'g1';
-    game.name = overrides.name ?? 'Test Game';
-    game.started = false;
-    game.playersAndSpectators = overrides.players ?? {};
-    game.gameChat = { messages: [] };
+        'clearAnimations', 'allPlayersGone', 'recordHiddenInfo'
+    ]);
+    const game: GameSpy = Object.assign(methods, {
+        id: overrides.id ?? 'g1',
+        name: overrides.name ?? 'Test Game',
+        started: false,
+        playersAndSpectators: overrides.players ?? {},
+        gameChat: { messages: [] }
+    });
     game.getPlayers.and.returnValue([]);
     game.getPlayersAndSpectators.and.returnValue(game.playersAndSpectators);
     game.isEmpty.and.returnValue(false);
@@ -69,22 +78,43 @@ function makeGame(overrides: Partial<{ id: string; name: string; players: Record
 }
 
 function makeCtx(overrides: Partial<ServerCtx> = {}): ServerCtx {
-    const ctx = Object.create(proto) as ServerCtx;
+    // built on the prototype: the real constructor starts a server
+    const ctx: ServerCtx = Object.create(GameServer.prototype);
     Object.assign(ctx, {
         games: new Map(),
         userGameMap: new Map(),
         abandonTimers: new Map(),
         lastSentMessageCount: new Map(),
-        wsSocket: jasmine.createSpyObj('wsSocket', ['send']),
+        wsSocket: jasmine.createSpyObj<{ send: (cmd: string, arg?: unknown) => void }>('wsSocket', ['send']),
         ...overrides
     });
     return ctx;
 }
 
+describe('GameServer.onHttpRequest', () => {
+    function request(url: string) {
+        const res = jasmine.createSpyObj<{ writeHead: (status: number, headers?: unknown) => void; end: (body?: string) => void }>('res', ['writeHead', 'end']);
+        call('onHttpRequest', makeCtx(), { url }, res);
+        return res;
+    }
+
+    it('answers the health check', () => {
+        const res = request('/health');
+        expect(res.writeHead).toHaveBeenCalledWith(200, { 'Content-Type': 'application/json' });
+        expect(JSON.parse(res.end.calls.mostRecent().args[0] ?? '')).toEqual(jasmine.objectContaining({ status: 'ok', games: 0 }));
+    });
+
+    it('answers any other request with 404 instead of leaving it open', () => {
+        const res = request('/favicon.ico');
+        expect(res.writeHead).toHaveBeenCalledWith(404);
+        expect(res.end).toHaveBeenCalled();
+    });
+});
+
 describe('GameServer.handshake', () => {
     const TEST_SECRET = 'testsecret';
 
-    function fakeSocket(token: unknown): { handshake: { auth: { token: unknown } }; request: { user?: unknown } } {
+    function fakeSocket(token: unknown): { handshake: { auth: { token: unknown } }; request: { user?: { username: string } } } {
         return {
             handshake: { auth: { token } },
             request: {}
@@ -115,7 +145,17 @@ describe('GameServer.handshake', () => {
         const socket = fakeSocket(token);
         call('handshake', ctx, socket, (err?: Error) => {
             expect(err).toBeUndefined();
-            expect((socket.request as { user?: { username: string } }).user?.username).toBe('alice');
+            expect(socket.request.user?.username).toBe('alice');
+            done();
+        });
+    });
+
+    it('calls next() with "Invalid authentication token" when the JWT has no username', (done) => {
+        const ctx = makeCtx();
+        const socket = fakeSocket(jwt.sign({ name: 'alice' }, TEST_SECRET));
+        call('handshake', ctx, socket, (err?: Error) => {
+            expect(err?.message).toBe('Invalid authentication token');
+            expect(socket.request.user).toBeUndefined();
             done();
         });
     });
@@ -145,7 +185,7 @@ describe('GameServer.startAbandonTimer / cancelAbandonTimer', () => {
         });
 
         call('startAbandonTimer', ctx, game);
-        expect(game.addAlert).toHaveBeenCalledWith('info', jasmine.stringContaining('60 seconds'));
+        expect(game.addAlert).toHaveBeenCalledWith('info', [jasmine.stringContaining('60 seconds'), []]);
         expect(sendStateSpy).toHaveBeenCalledWith(game);
         expect(ctx.abandonTimers.has('g1')).toBe(true);
 
@@ -282,8 +322,8 @@ describe('GameServer.handleError', () => {
     }
 
     function sentPayload(ctx: ServerCtx) {
-        const args = ctx.wsSocket.send.calls.mostRecent().args;
-        return { command: args[0], arg: args[1] as Record<string, unknown> };
+        const [command, arg] = ctx.wsSocket.send.calls.mostRecent().args;
+        return { command, arg };
     }
 
     it('sends the debug data when it is small enough', () => {
@@ -294,8 +334,10 @@ describe('GameServer.handleError', () => {
 
         const { command, arg } = sentPayload(ctx);
         expect(command).toBe('GAMEERROR');
-        expect(arg.errorMessage).toBe('boom');
-        expect(arg.debugData).toEqual({ pipeline: { step: 'ConflictFlow' }, effectEngine: { effects: [] } });
+        expect(arg).toEqual(jasmine.objectContaining({
+            errorMessage: 'boom',
+            debugData: { pipeline: { step: 'ConflictFlow' }, effectEngine: { effects: [] } }
+        }));
     });
 
     it('drops oversized debug data but still reports the error', () => {
@@ -306,9 +348,11 @@ describe('GameServer.handleError', () => {
 
         const { command, arg } = sentPayload(ctx);
         expect(command).toBe('GAMEERROR');
-        expect(arg.errorMessage).toBe('boom');
-        expect(arg.errorStack).toBeDefined();
-        expect((arg.debugData as { omitted?: string }).omitted).toContain('over the');
+        expect(arg).toEqual(jasmine.objectContaining({
+            errorMessage: 'boom',
+            errorStack: jasmine.any(String),
+            debugData: jasmine.objectContaining({ omitted: jasmine.stringContaining('over the') })
+        }));
     });
 
     it('drops debug data that cannot be serialized at all', () => {
@@ -320,8 +364,10 @@ describe('GameServer.handleError', () => {
         call('handleError', ctx, game, new Error('boom'));
 
         const { arg } = sentPayload(ctx);
-        expect(arg.errorMessage).toBe('boom');
-        expect((arg.debugData as { omitted?: string }).omitted).toContain('could not be serialized');
+        expect(arg).toEqual(jasmine.objectContaining({
+            errorMessage: 'boom',
+            debugData: jasmine.objectContaining({ omitted: jasmine.stringContaining('could not be serialized') })
+        }));
     });
 
     it('still reports the error when collecting the debug data throws', () => {
@@ -335,8 +381,10 @@ describe('GameServer.handleError', () => {
 
         const { command, arg } = sentPayload(ctx);
         expect(command).toBe('GAMEERROR');
-        expect(arg.errorMessage).toBe('boom');
-        expect(arg.debugData).toEqual({ omitted: 'could not be collected: Error: broken again' });
+        expect(arg).toEqual(jasmine.objectContaining({
+            errorMessage: 'boom',
+            debugData: { omitted: 'could not be collected: Error: broken again' }
+        }));
         expect(game.addMessage).toHaveBeenCalled();
     });
 });
@@ -399,9 +447,7 @@ describe('GameServer.onGameSync', () => {
 
         call('onGameSync', ctx, callback);
 
-        const summaries = (callback.calls.mostRecent().args[0] as Array<{ id: string; password?: string }>);
-        expect(summaries.length).toBe(1);
-        expect(summaries[0]).toEqual(jasmine.objectContaining({ id: 'g1', password: 'secret' }));
+        expect(callback.calls.mostRecent().args[0]).toEqual([jasmine.objectContaining({ id: 'g1', password: 'secret' })]);
     });
 });
 
@@ -479,6 +525,153 @@ describe('GameServer.onLeaveGame', () => {
     });
 });
 
+describe('GameServer replay hidden-info log', () => {
+    type SocketSpy = jasmine.SpyObj<{ send: (k: string, payload?: unknown) => void; leaveChannel: (id: string) => void }>;
+
+    function makeSocket(name: string): SocketSpy & { id: string; user: { username: string } } {
+        const socket = jasmine.createSpyObj<{ send: (k: string, payload?: unknown) => void; leaveChannel: (id: string) => void }>(name, ['send', 'leaveChannel']);
+        return Object.assign(socket, { id: name, user: { username: name } });
+    }
+
+    function makeCase() {
+        const aliceSocket = makeSocket('alice');
+        const bobSocket = makeSocket('bob');
+        const alice = { name: 'alice', socket: aliceSocket, disconnected: false };
+        const bob = { name: 'bob', socket: bobSocket, disconnected: false };
+        const game = makeGame({ id: 'g1', players: { alice, bob } });
+        game.started = true;
+        game.getPlayers.and.returnValue([alice, bob]);
+        game.getSaveState.and.returnValue({ gameId: 'g1' });
+        game.hiddenInfoLog = [{ seq: 1, info: { alice: { hand: [] } } }];
+        const ctx = makeCtx({ games: new Map([['g1', game]]), userGameMap: new Map([['alice', game], ['bob', game]]) });
+        return { aliceSocket, bobSocket, game, ctx };
+    }
+
+    function sentStates(socket: SocketSpy): unknown[] {
+        return socket.send.calls.all().filter((c) => c.args[0] === 'gamestate').map((c) => c.args[1]);
+    }
+
+    it('gives every viewer the same number for one send and a new number for the next', () => {
+        const { aliceSocket, bobSocket, game, ctx } = makeCase();
+        game.getState.and.returnValue({});
+        game.recordHiddenInfo.and.returnValues(7, 8);
+
+        call('sendGameState', ctx, game);
+        call('sendGameState', ctx, game);
+
+        expect(game.recordHiddenInfo).toHaveBeenCalledTimes(2);
+        expect(sentStates(aliceSocket)).toEqual([jasmine.objectContaining({ stateSeq: 7 }), jasmine.objectContaining({ stateSeq: 8 })]);
+        expect(sentStates(bobSocket)).toEqual([jasmine.objectContaining({ stateSeq: 7 }), jasmine.objectContaining({ stateSeq: 8 })]);
+    });
+
+    it('sends the log to both players with the winning state, not at gameWon', () => {
+        const { aliceSocket, bobSocket, game, ctx } = makeCase();
+        spyOn(axios, 'post').and.returnValue(Promise.resolve());
+        game.getState.and.returnValue({});
+        game.recordHiddenInfo.and.returnValue(5);
+
+        call('gameWon', ctx, game, 'honor', { name: 'alice' });
+        expect(ctx.wsSocket.send).toHaveBeenCalledWith('GAMEWIN', jasmine.objectContaining({ winner: 'alice' }));
+        expect(aliceSocket.send).not.toHaveBeenCalledWith('hiddeninfo', jasmine.anything());
+
+        game.winner = { name: 'alice' };
+        call('sendGameState', ctx, game);
+
+        expect(aliceSocket.send).toHaveBeenCalledWith('hiddeninfo', game.hiddenInfoLog);
+        expect(bobSocket.send).toHaveBeenCalledWith('hiddeninfo', game.hiddenInfoLog);
+        const aliceMessages = aliceSocket.send.calls.all().map((c) => c.args[0]);
+        expect(aliceMessages.indexOf('gamestate')).toBeLessThan(aliceMessages.indexOf('hiddeninfo'));
+    });
+
+    it('does not send the log again for states after the win', () => {
+        const { aliceSocket, game, ctx } = makeCase();
+        game.winner = { name: 'alice' };
+        game.getState.and.returnValue({});
+        game.recordHiddenInfo.and.returnValue(undefined);
+
+        call('sendGameState', ctx, game);
+
+        expect(sentStates(aliceSocket)).toEqual([jasmine.objectContaining({ stateSeq: undefined })]);
+        expect(aliceSocket.send).not.toHaveBeenCalledWith('hiddeninfo', jasmine.anything());
+    });
+
+    it('does not send the log when a player leaves a won game', () => {
+        const { aliceSocket, bobSocket, game, ctx } = makeCase();
+        game.winner = { name: 'alice' };
+        game.getState.and.returnValue({});
+        game.recordHiddenInfo.and.returnValue(undefined);
+
+        call('onLeaveGame', ctx, bobSocket);
+
+        expect(aliceSocket.send).not.toHaveBeenCalledWith('hiddeninfo', jasmine.anything());
+        expect(bobSocket.send).not.toHaveBeenCalledWith('hiddeninfo', jasmine.anything());
+    });
+
+    function connect(ctx: ServerCtx, username: string) {
+        const ioSocket = jasmine.createSpyObj<{ on: () => void; join: () => void; leave: () => void; emit: (k: string, payload?: unknown) => void; disconnect: () => void }>(
+            'ioSocket', ['on', 'join', 'leave', 'emit', 'disconnect']
+        );
+        Object.assign(ioSocket, { id: username + '-new', request: { user: { username } } });
+        call('onConnection', ctx, ioSocket);
+        return ioSocket;
+    }
+
+    it('sends the log to a player who connects to a won game', () => {
+        const { game, ctx } = makeCase();
+        game.winner = { name: 'alice' };
+        game.getState.and.returnValue({});
+        game.recordHiddenInfo.and.returnValue(undefined);
+
+        const ioSocket = connect(ctx, 'bob');
+
+        expect(ioSocket.emit).toHaveBeenCalledWith('hiddeninfo', game.hiddenInfoLog);
+    });
+
+    it('does not send the log to a player who connects to a game nobody has won', () => {
+        const { game, ctx } = makeCase();
+        game.getState.and.returnValue({});
+        game.recordHiddenInfo.and.returnValue(3);
+
+        const ioSocket = connect(ctx, 'bob');
+
+        expect(ioSocket.emit).not.toHaveBeenCalledWith('hiddeninfo', jasmine.anything());
+    });
+});
+
+describe('GameServer.onSocketDisconnected', () => {
+    function makeCase() {
+        const oldSocket = { user: { username: 'alice' }, id: 'old' };
+        const newSocket = { user: { username: 'alice' }, id: 'new' };
+        const game = makeGame({ id: 'g1', players: { alice: { socket: oldSocket } } });
+        const ctx = makeCtx({
+            games: new Map([['g1', game]]),
+            userGameMap: new Map([['alice', game]]),
+            lastSentMessageCount: new Map([['old', 3]]),
+            sendGameState: jasmine.createSpy('sendGameState')
+        });
+        return { oldSocket, newSocket, game, ctx };
+    }
+
+    it('disconnects the player when the socket it is using disconnects', () => {
+        const { oldSocket, game, ctx } = makeCase();
+
+        call('onSocketDisconnected', ctx, oldSocket, 'transport close');
+
+        expect(game.disconnect).toHaveBeenCalledWith('alice');
+        expect(ctx.sendGameState).toHaveBeenCalledWith(game);
+    });
+
+    it('keeps the player connected when an old socket disconnects after a reconnect', () => {
+        const { oldSocket, newSocket, game, ctx } = makeCase();
+        game.playersAndSpectators.alice = { socket: newSocket };
+
+        call('onSocketDisconnected', ctx, oldSocket, 'ping timeout');
+
+        expect(game.disconnect).not.toHaveBeenCalled();
+        expect(ctx.lastSentMessageCount.has('old')).toBe(false);
+    });
+});
+
 describe('GameServer.onFailedConnect', () => {
     it('does nothing when no game is found for user', () => {
         const ctx = makeCtx();
@@ -488,7 +681,7 @@ describe('GameServer.onFailedConnect', () => {
 
     it('does nothing when the found game has a different id', () => {
         const game = makeGame({ id: 'other' });
-        const failedConnectSpy = (game as unknown as { failedConnect: jasmine.Spy }).failedConnect = jasmine.createSpy();
+        const failedConnectSpy = game.failedConnect = jasmine.createSpy();
         const ctx = makeCtx({ userGameMap: new Map([['alice', game]]) });
         call('onFailedConnect', ctx, 'g1', 'alice');
         expect(failedConnectSpy).not.toHaveBeenCalled();
@@ -496,10 +689,95 @@ describe('GameServer.onFailedConnect', () => {
 
     it('forwards to game.failedConnect and clears userGameMap entry when gameId matches', () => {
         const game = makeGame({ id: 'g1' });
-        const failedConnectSpy = (game as unknown as { failedConnect: jasmine.Spy }).failedConnect = jasmine.createSpy();
+        const failedConnectSpy = game.failedConnect = jasmine.createSpy();
         const ctx = makeCtx({ userGameMap: new Map([['alice', game]]) });
         call('onFailedConnect', ctx, 'g1', 'alice');
         expect(failedConnectSpy).toHaveBeenCalledWith('alice');
         expect(ctx.userGameMap.has('alice')).toBe(false);
+    });
+
+    it('keeps the userGameMap entry of a player who stays in the game, so they can reconnect', () => {
+        const game = makeGame({ id: 'g1', players: { alice: { name: 'alice' } } });
+        game.failedConnect = jasmine.createSpy();
+        const ctx = makeCtx({ userGameMap: new Map([['alice', game]]) });
+        call('onFailedConnect', ctx, 'g1', 'alice');
+        expect(ctx.userGameMap.get('alice')).toBe(game);
+    });
+});
+
+describe('GameServer.onGameMessage', () => {
+    function setup() {
+        const game = Object.assign(makeGame({ id: 'g1' }), {
+            stopNonChessClocks: jasmine.createSpy('stopNonChessClocks'),
+            continue: jasmine.createSpy('continue'),
+            cardClicked: jasmine.createSpy('cardClicked'),
+            menuButton: jasmine.createSpy('menuButton')
+        });
+        const ctx = makeCtx({ userGameMap: new Map([['alice', game]]), sendGameState: jasmine.createSpy('sendGameState') });
+        const socket = { user: { username: 'alice' }, id: 's1' };
+        return { game, ctx, socket };
+    }
+
+    it('runs a command whose arguments are valid', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'cardClicked', 'card-uuid');
+        expect(game.cardClicked).toHaveBeenCalledWith('alice', 'card-uuid');
+        expect(game.continue).toHaveBeenCalled();
+    });
+
+    it('passes a menu button\'s numeric arg and missing method through', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'menuButton', 2, 'prompt-uuid', null);
+        expect(game.menuButton).toHaveBeenCalledWith('alice', 2, 'prompt-uuid', null);
+    });
+
+    it('rejects a command with malformed arguments before touching the game', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'cardClicked', { uuid: 'card-uuid' });
+        expect(game.cardClicked).not.toHaveBeenCalled();
+        expect(game.stopNonChessClocks).not.toHaveBeenCalled();
+    });
+
+    it('rejects names inherited from Object.prototype', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'toString');
+        expect(game.stopNonChessClocks).not.toHaveBeenCalled();
+    });
+});
+
+describe('GameServer.onCardData', () => {
+    it('keeps the valid card records and drops the invalid ones', () => {
+        const ctx = makeCtx();
+        call('onCardData', ctx, { titleCardData: {}, shortCardData: [{ id: 'a', name: 'A' }, { id: 'b' }, null, { id: 'c', name: 'C', type: 7 }] });
+        expect(ctx.shortCardData).toEqual([{ id: 'a', name: 'A' }, { id: 'c', name: 'C', type: undefined }]);
+    });
+});
+
+describe('GameServer.onSocketDisconnected for spectators', () => {
+    it('forgets a spectator who disconnects last, so the closed game is not kept', () => {
+        const socket = { id: 's1', user: { username: 'watcher' } };
+        const game = makeGame({ players: { watcher: { socket } } });
+        game.isSpectator.and.returnValue(true);
+        game.isEmpty.and.returnValue(true);
+        const ctx = makeCtx({ userGameMap: new Map([['watcher', game]]) });
+        Object.assign(ctx, { closeGame: jasmine.createSpy('closeGame'), sendGameState: jasmine.createSpy('sendGameState') });
+
+        call('onSocketDisconnected', ctx, socket, 'transport close');
+
+        expect(ctx.userGameMap.has('watcher')).toBe(false);
+    });
+});
+
+describe('GameServer.onSocketDisconnected errors', () => {
+    it('reports an error from the game instead of throwing it out of the socket handler', () => {
+        const socket = { id: 's1', user: { username: 'alice' } };
+        const game = makeGame({ players: { alice: { socket } } });
+        game.disconnect.and.throwError('boom');
+        const ctx = makeCtx({ userGameMap: new Map([['alice', game]]) });
+        const handleError = jasmine.createSpy('handleError');
+        Object.assign(ctx, { handleError });
+
+        expect(() => call('onSocketDisconnected', ctx, socket, 'transport close')).not.toThrow();
+        expect(handleError).toHaveBeenCalledWith(game, jasmine.any(Error));
     });
 });

@@ -148,5 +148,19 @@ describe('Guardians of Rokugan', function() {
             expect(this.player2).toHavePromptButton('Doji Challenger');
             expect(this.player2).not.toHavePromptButton('Seventh Tower');
         });
+
+        it('should not trigger if conflict won as the attacking player', function() {
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kuwanan],
+                defenders: [this.whisperer],
+                type: 'political'
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player2 won a political conflict 4 vs 3');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.guardians.location).toBe('hand');
+        });
     });
 });

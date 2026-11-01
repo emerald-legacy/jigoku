@@ -72,7 +72,7 @@ describe('Kinki', function () {
                 type: 'military'
             });
 
-            let fate = this.outrider.fate;
+            const fate = this.outrider.fate;
             this.player2.clickCard(this.kinki);
             this.player2.clickCard(this.outrider);
             this.player1.clickPrompt('Remove a fate from this character');
@@ -91,7 +91,7 @@ describe('Kinki', function () {
                 defenders: [this.inquisitor]
             });
 
-            let fate = this.outrider.fate;
+            const fate = this.outrider.fate;
             this.player2.clickCard(this.kinki);
             this.player2.clickCard(this.outrider);
             this.player1.clickPrompt('Move this character home');

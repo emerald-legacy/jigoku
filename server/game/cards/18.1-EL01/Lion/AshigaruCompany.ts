@@ -1,28 +1,24 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardType, EventName, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Location, RemainingCards, Trait } from '../../../Constants.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 class AshigaruCompany extends DrawCard {
     static id = 'ashigaru-company';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Search your conflict deck',
-            when: {
-                onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
-            },
-            effect: 'look at the top five cards of their deck',
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: 5,
-                cardCondition: (card) => card.hasTrait('follower') && card.type === CardType.Attachment,
-                gameAction: AbilityDsl.actions.moveCard({
+    override setupCardAbilities() {
+        this.reaction('Search your conflict deck')
+            .when({
+                onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
+            })
+            .deckSearch({
+                cardsToLookAt: 5,
+                cardCondition: (card) => card.hasTrait(Trait.Follower) && card.type === CardType.Attachment,
+                gameAction: moveCard({
                     destination: Location.Hand
                 }),
-                shuffle: false,
-                placeOnBottomInRandomOrder: true
+                remainingCards: RemainingCards.BottomRandom
             })
-        });
+            .chatText('look at the top five cards of their deck');
     }
 }
 

@@ -54,6 +54,7 @@ describe('Third Whisker Sneak', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 0');
         });
 
         it('should not prompt after you win opposed', function () {
@@ -65,6 +66,7 @@ describe('Third Whisker Sneak', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 1');
         });
 
         it('should not prompt after you win unopposed on defense (RAW - not unopposed)', function () {
@@ -80,6 +82,7 @@ describe('Third Whisker Sneak', function() {
             this.player2.clickCard(this.representative);
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 0');
         });
 
         it('unbroken = 5, should show 5 cards', function() {
@@ -161,6 +164,64 @@ describe('Third Whisker Sneak', function() {
             expect(this.getChatLogs(10)).toContain('player1 uses Third Whisker Sneak to look at the top 5 cards of their conflict deck');
             expect(this.getChatLogs(10)).toContain('player1 takes 1 card');
             expect(this.getChatLogs(10)).toContain('player1 is shuffling their conflict deck');
+        });
+    });
+});
+
+describe('Third Whisker Sneak immunity', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['third-whisker-sneak', 'brash-samurai', 'doji-whisperer', 'doji-challenger'],
+                    hand: ['spreading-the-darkness']
+                },
+                player2: {
+                    hand: ['way-of-the-scorpion', 'final-whisper']
+                }
+            });
+
+            this.sneak = this.player1.findCardByName('third-whisker-sneak');
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.spreading = this.player1.findCardByName('spreading-the-darkness');
+            this.scorpion = this.player2.findCardByName('way-of-the-scorpion');
+            this.finalWhisper = this.player2.findCardByName('final-whisper');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.sneak, this.brash],
+                defenders: [],
+                type: 'military'
+            });
+        });
+
+        it('should not be targetable by Mahō card effects', function() {
+            this.player2.pass();
+            this.player1.clickCard(this.spreading);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.brash);
+            expect(this.player1).not.toBeAbleToSelect(this.sneak);
+            this.player1.clickCard(this.brash);
+            expect(this.brash.militarySkill).toBe(6);
+            expect(this.sneak.militarySkill).toBe(2);
+        });
+
+        it('should not be targetable by Shadowlands card effects', function() {
+            this.player2.clickCard(this.scorpion);
+            this.player2.clickCard(this.brash);
+            expect(this.brash.isDishonored).toBe(true);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.finalWhisper);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+            expect(this.player1).not.toBeAbleToSelect(this.sneak);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+            expect(this.sneak.isDishonored).toBe(false);
         });
     });
 });

@@ -44,6 +44,10 @@ describe('The East Wind', function () {
             this.player1.clickCard(this.fineKatana);
             this.player1.clickCard(this.scout);
             expect(this.player1).not.toHavePrompt('Any reactions to Fine Katana being played?');
+            expect(this.fineKatana.location).toBe('play area');
+            expect(this.scout.attachments).toContain(this.fineKatana);
+            expect(this.eastWind.bowed).toBe(false);
+            expect(this.player2).toHavePrompt('Action Window');
         });
 
         it('triggers for out-of-clan cards', function () {

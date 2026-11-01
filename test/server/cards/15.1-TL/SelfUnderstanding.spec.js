@@ -63,6 +63,8 @@ describe('Self Understanding', function() {
             this.noMoreActions();
             this.player1.clickCard(this.challenger);
 
+            expect(this.player1).toHavePrompt('Earth Ring');
+            this.player1.clickPrompt('Draw a card and opponent discards');
             expect(this.player1).toHavePrompt('Fire Ring');
             this.player1.clickCard(this.brash);
             this.player1.clickPrompt('Dishonor Brash Samurai');

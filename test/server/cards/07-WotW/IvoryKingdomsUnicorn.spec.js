@@ -192,3 +192,42 @@ describe('Ivory Kingdoms Unicorn', function() {
     });
 });
 
+describe('Ivory Kingdoms Unicorn sent home by False Loyalties', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['ivory-kingdoms-unicorn', 'iuchi-farseer']
+                },
+                player2: {
+                    honor: 10,
+                    hand: ['false-loyalties']
+                }
+            });
+            this.unicorn = this.player1.findCardByName('ivory-kingdoms-unicorn');
+            this.farseer = this.player1.findCardByName('iuchi-farseer');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.unicorn],
+                defenders: []
+            });
+            this.conflict = this.game.currentConflict;
+            this.noMoreActions();
+            this.player2.clickCard('false-loyalties');
+            this.player2.clickCard(this.unicorn);
+            this.player2.clickCard(this.farseer);
+        });
+
+        it('can\'t react: it wasn\'t attacking when the conflict finished (EmeraldDB ruling)', function() {
+            expect(this.unicorn.isParticipating()).toBe(false);
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.conflict.brokenProvinces.length).toBe(1);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Action Window');
+        });
+    });
+});
+

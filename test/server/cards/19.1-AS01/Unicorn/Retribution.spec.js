@@ -303,3 +303,60 @@ describe('Retribution', function () {
         });
     });
 });
+
+describe('Retribution! under Waning Hostilities', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['doji-diplomat', 'battle-maiden-recruit'],
+                    hand: ['waning-hostilities', 'retribution-']
+                },
+                player2: {
+                    inPlay: ['doji-challenger', 'adept-of-shadows']
+                }
+            });
+            this.diplomat = this.player1.findCardByName('doji-diplomat');
+            this.recruit = this.player1.findCardByName('battle-maiden-recruit');
+            this.waning = this.player1.findCardByName('waning-hostilities');
+            this.retribution = this.player1.findCardByName('retribution-');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.adept = this.player2.findCardByName('adept-of-shadows');
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.waning);
+            expect(this.waning.location).toBe('conflict discard pile');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'water',
+                attackers: [this.diplomat],
+                defenders: [this.challenger]
+            });
+            this.noMoreActions();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                ring: 'air',
+                attackers: [this.adept],
+                defenders: []
+            });
+            this.honorBefore = this.player2.honor;
+            this.noMoreActions();
+            this.player2.clickPrompt('Gain 2 Honor');
+        });
+
+        it('should not be playable once its player has declared their only conflict', function () {
+            expect(this.player2.honor).toBe(this.honorBefore + 2);
+            expect(this.player1.player.getConflictOpportunities()).toBe(0);
+            expect(this.recruit.bowed).toBe(false);
+            expect(this.player1).not.toBeAbleToSelect(this.retribution);
+            expect(this.retribution.location).toBe('hand');
+        });
+    });
+});

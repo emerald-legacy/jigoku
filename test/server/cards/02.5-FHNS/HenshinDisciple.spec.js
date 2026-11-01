@@ -24,7 +24,7 @@ describe('Henshin Disciple', function() {
                         attackers: [this.henshinDisciple],
                         defenders: []
                     });
-                    expect(this.henshinDisciple.getPoliticalSkill()).toBe(4);
+                    expect(this.henshinDisciple.politicalSkill).toBe(4);
                 });
 
                 it('when the air ring is claimed', function() {
@@ -32,7 +32,7 @@ describe('Henshin Disciple', function() {
                     this.player1.clickRing('void');
                     this.player1.clickRing('air');
                     expect(this.game.rings.air.claimedBy).toBe(this.player1.player.name);
-                    expect(this.henshinDisciple.getPoliticalSkill()).toBe(4);
+                    expect(this.henshinDisciple.politicalSkill).toBe(4);
                 });
             });
 
@@ -45,7 +45,7 @@ describe('Henshin Disciple', function() {
                         attackers: [this.henshinDisciple],
                         defenders: []
                     });
-                    expect(this.henshinDisciple.getMilitarySkill()).toBe(4);
+                    expect(this.henshinDisciple.militarySkill).toBe(4);
                 });
 
                 it('when the earth ring is claimed', function() {
@@ -53,7 +53,7 @@ describe('Henshin Disciple', function() {
                     this.player1.clickRing('void');
                     this.player1.clickRing('earth');
                     expect(this.game.rings.earth.claimedBy).toBe(this.player1.player.name);
-                    expect(this.henshinDisciple.getMilitarySkill()).toBe(4);
+                    expect(this.henshinDisciple.militarySkill).toBe(4);
                 });
             });
 

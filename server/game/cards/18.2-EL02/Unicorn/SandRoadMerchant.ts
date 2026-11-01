@@ -1,74 +1,65 @@
-import { Location, PlayType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { Location, Players, RemainingCards, TargetMode } from '../../../Constants.js';
+import {
+    chooseAction,
+    deckSearch,
+    moveCard,
+    noAction,
+    placeCardUnderneath,
+    sequential
+} from '../../../GameActions/GameActions.js';
+import type { ChooseActionProperties } from '../../../GameActions/ChooseGameAction.js';
 import DrawCard from '../../../DrawCard.js';
-import Player from '../../../Player.js';
+import { playableFromUnderneath } from '../../cardsUnderneath.js';
 
 export default class SandRoadMerchant extends DrawCard {
     static id = 'sand-road-merchant';
 
-    public setupCardAbilities() {
-        this.persistentEffect({
-            location: Location.PlayArea,
-            targetLocation: this.uuid,
-            targetController: Players.Self,
-            match: (card: DrawCard) => card.location === this.uuid,
-            effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay(
-                    (player: Player) => player === this.controller,
-                    PlayType.PlayFromHand
-                ),
-                AbilityDsl.effects.registerToPlayFromOutOfPlay()
-            ]
-        });
+    public override setupCardAbilities() {
+        this.persistentEffect(playableFromUnderneath());
 
-        this.reaction({
-            title: 'Look at your opponent\'s conflict deck',
-            effect: 'look at the top two cards of their opponent\'s conflict deck',
-            when: {
+        this.reaction('Look at your opponent\'s conflict deck')
+            .when({
                 onConflictDeclared: (event, context) =>
                     (event.attackers ?? []).includes(context.source) && context.player.opponent !== undefined,
                 onDefendersDeclared: (event, context) =>
-                    (event.defenders ?? []).includes(context.source) && context.player.opponent !== undefined
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context) => ({
-                gameActions: [
-                    AbilityDsl.actions.deckSearch(() => ({
-                        amount: 2,
-                        player: context.player.opponent,
-                        choosingPlayer: context.player,
-                        gameAction: AbilityDsl.actions.placeCardUnderneath({
-                            destination: this
-                        }),
-                        shuffle: false,
-                        reveal: true
-                    })),
-                    AbilityDsl.actions.chooseAction(() => {
-                        let topCard = context.player.opponent?.conflictDeck[0];
-                        return {
-                            activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
-                            player: Players.Opponent,
-                            options: {
-                                'Leave on top of your deck': {
-                                    action: AbilityDsl.actions.noAction(),
-                                    message: '{0} chooses to put {2} on top of their deck'
-                                },
-                                'Put on the bottom of your deck': {
-                                    action: AbilityDsl.actions.handler({
-                                        handler: () => {
-                                            context.player.opponent?.moveCard(
-                                                topCard,
-                                                Location.ConflictDeck + ' bottom'
-                                            );
-                                        }
-                                    }),
-                                    message: '{0} chooses to put {2} on the bottom of their deck'
-                                }
+                    event.defenders.includes(context.source) && context.player.opponent !== undefined
+            })
+            .gameAction(sequential((context) => [
+                deckSearch({
+                    cardsToLookAt: 2,
+                    mode: TargetMode.Exactly,
+                    numCards: 1,
+                    target: context.player.opponent,
+                    player: Players.Self,
+                    gameAction: placeCardUnderneath({
+                        destination: this
+                    }),
+                    remainingCards: RemainingCards.Top,
+                    reveal: true
+                }),
+                chooseAction((): ChooseActionProperties => {
+                    const topCard = context.player.opponent?.conflictDeck[0];
+                    // only 1 card was revealed: there is no other card to place
+                    if(!topCard) {
+                        return { choices: {} };
+                    }
+                    return {
+                        activePromptTitle: 'Choose an action for ' + topCard.name,
+                        player: Players.Opponent,
+                        choices: {
+                            'Leave on top of your deck': {
+                                action: noAction(),
+                                message: (_context, _target, player) => msg`${player} chooses to put ${topCard} on top of their deck`
                             },
-                            messageArgs: [topCard]
-                        };
-                    })
-                ]
-            }))
-        });
+                            'Put on the bottom of your deck': {
+                                action: moveCard({ target: topCard, destination: Location.ConflictDeck, bottom: true }),
+                                message: (_context, _target, player) => msg`${player} chooses to put ${topCard} on the bottom of their deck`
+                            }
+                        }
+                    };
+                })
+            ]))
+            .chatText('look at the top two cards of their opponent\'s conflict deck');
     }
 }

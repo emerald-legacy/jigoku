@@ -45,9 +45,10 @@ describe('Sand Road Merchant', function() {
             expect(this.player1).toHavePrompt('Select a card to reveal');
             expect(this.player1).toHavePromptButton('Policy Debate');
             expect(this.player1).toHavePromptButton('Fine Katana');
+            expect(this.player1).not.toHavePromptButton('Take nothing');
             expect(this.policyDebate.location).toBe('conflict deck');
             this.player1.clickPrompt('Policy Debate');
-            expect(this.policyDebate.location).toBe(this.merchant.uuid);
+            expect(this.policyDebate.isUnderneath(this.merchant)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Sand Road Merchant to look at the top two cards of their opponent\'s conflict deck');
             expect(this.getChatLogs(5)).toContain('player1 takes Policy Debate');
@@ -68,6 +69,22 @@ describe('Sand Road Merchant', function() {
             expect(this.player1).toHavePrompt('Policy Debate');
         });
 
+        it('doesn\'t ask the opponent about a second card when their deck had only one', function() {
+            this.player2.reduceDeckToNumber('conflict deck', 0);
+            this.player2.moveCard(this.policyDebate, 'conflict deck');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.merchant],
+                type: 'political'
+            });
+
+            this.player1.clickCard(this.merchant);
+            this.player1.clickPrompt('Policy Debate');
+            expect(this.policyDebate.isUnderneath(this.merchant)).toBe(true);
+            expect(this.player2).not.toHavePromptButton('Leave on top of your deck');
+            expect(this.player2).toHavePrompt('Choose Defenders');
+        });
+
         it('should react to declaring as an attacker and take a card (opponent chooses bottom)', function() {
             this.noMoreActions();
             this.initiateConflict({
@@ -84,7 +101,7 @@ describe('Sand Road Merchant', function() {
             expect(this.player1).toHavePromptButton('Fine Katana');
             expect(this.policyDebate.location).toBe('conflict deck');
             this.player1.clickPrompt('Policy Debate');
-            expect(this.policyDebate.location).toBe(this.merchant.uuid);
+            expect(this.policyDebate.isUnderneath(this.merchant)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Sand Road Merchant to look at the top two cards of their opponent\'s conflict deck');
             expect(this.getChatLogs(5)).toContain('player1 takes Policy Debate');
@@ -149,6 +166,47 @@ describe('Sand Road Merchant', function() {
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.merchant);
+        });
+    });
+});
+
+describe('Sand Road Merchant after a change of control', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['sand-road-merchant', 'kakita-yoshi'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    honor: 8,
+                    inPlay: ['doji-whisperer'],
+                    hand: ['blackmail']
+                }
+            });
+            this.merchant = this.player1.findCardByName('sand-road-merchant');
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.player1.player.placeUnderneath(this.katana, this.merchant);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.yoshi],
+                defenders: [this.whisperer]
+            });
+            this.player2.clickCard('blackmail');
+            this.player2.clickCard(this.merchant);
+            this.player1.pass();
+        });
+
+        it('lets its new controller play the cards under it', function () {
+            expect(this.merchant.controller).toBe(this.player2.player);
+            this.player2.clickCard(this.katana);
+            this.player2.clickCard(this.whisperer);
+            expect(this.katana.parent).toBe(this.whisperer);
         });
     });
 });

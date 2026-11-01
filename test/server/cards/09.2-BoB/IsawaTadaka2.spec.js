@@ -33,6 +33,22 @@ describe('Isawa Tadaka 2', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.favorableGround);
             });
 
+            it('cannot be used when the opponent has no cards in hand', function() {
+                for(const card of this.player2.hand) {
+                    this.player2.moveCard(card, 'conflict discard pile');
+                }
+                expect(this.player2.hand.length).toBe(0);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.isawaTadaka],
+                    defenders: []
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.isawaTadaka);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.adeptOfTheWaves.location).toBe('dynasty discard pile');
+            });
+
             it('should not allow you to not choose a character to remove from the game', function() {
                 this.noMoreActions();
                 this.initiateConflict({
@@ -75,13 +91,13 @@ describe('Isawa Tadaka 2', function() {
                 this.player1.clickCard(this.solemnScholar);
                 this.player1.clickPrompt('Done');
                 expect(this.player1).toHavePrompt('Select a card:');
-                let matchingButtons = this.player1.currentPrompt().buttons.filter(button =>
+                const matchingButtons = this.player1.currentPrompt().buttons.filter(button =>
                     ['Ornate Fan', 'Fine Katana', 'Banzai!'].includes(button.text)
                 );
                 expect(matchingButtons.length).toBe(2);
                 expect(this.player1.currentPrompt().buttons.length).toBe(2);
-                let conflictDiscardPileSize = this.player2.player.conflictDiscardPile.length;
-                let hand = this.player2.player.hand.length;
+                const conflictDiscardPileSize = this.player2.player.conflictDiscardPile.length;
+                const hand = this.player2.player.hand.length;
                 this.player1.clickPrompt(matchingButtons[0].text);
                 expect(this.player2.player.conflictDiscardPile.length).toBe(conflictDiscardPileSize + 1);
                 expect(this.player2.player.hand.length).toBe(hand - 1);

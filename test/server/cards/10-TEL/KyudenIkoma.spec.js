@@ -47,7 +47,7 @@ describe('Kyüden Ikoma', function() {
 
                 this.player1.clickCard(this.kaiuShuichi);
 
-                expect(this.getChatLogs(10)).toContain('player1 uses Kyūden Ikoma, bowing Kyūden Ikoma to bow Kaiu Shuichi.');
+                expect(this.getChatLogs(10)).toContain('player1 uses Kyūden Ikoma, bowing Kyūden Ikoma to bow Kaiu Shuichi');
                 expect(this.kaiuShuichi.bowed).toBe(true);
             });
 
@@ -69,6 +69,7 @@ describe('Kyüden Ikoma', function() {
 
                 expect(this.ikomaProdigy.inConflict).toBe(false);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(5)).toContain('player2 won a political conflict 3 vs 0');
                 expect(this.player1).toHavePrompt('Action Window');
             });
 
@@ -88,6 +89,7 @@ describe('Kyüden Ikoma', function() {
                 this.player2.pass();
 
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(5)).toContain('player2 won a political conflict 3 vs 2');
             });
         });
     });

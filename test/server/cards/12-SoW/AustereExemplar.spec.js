@@ -44,8 +44,8 @@ describe('Austere Exemplar', function() {
             });
 
             it('should permit three consecutive actions', function() {
-                let ringFate = this.game.rings.water.fate;
-                let playerFate = this.player1.fate;
+                const ringFate = this.game.rings.water.fate;
+                const playerFate = this.player1.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -85,8 +85,8 @@ describe('Austere Exemplar', function() {
             });
 
             it('passing extra actions should not end the conflict', function() {
-                let ringFate = this.game.rings.water.fate;
-                let playerFate = this.player1.fate;
+                const ringFate = this.game.rings.water.fate;
+                const playerFate = this.player1.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -119,6 +119,36 @@ describe('Austere Exemplar', function() {
                 expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
                 this.player2.pass(); //both players pass consecutively, should end the conflict
                 expect(this.player1).toHavePrompt('Choose an effect to resolve');
+            });
+        });
+
+        describe('Max 1 per conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['austere-exemplar', 'austere-exemplar']
+                    },
+                    player2: {
+                        inPlay: ['brash-samurai']
+                    }
+                });
+                [this.exemplar1, this.exemplar2] = this.player1.filterCardsByName('austere-exemplar');
+            });
+
+            it('a second copy cannot be used in the same conflict', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.exemplar1, this.exemplar2],
+                    defenders: ['brash-samurai']
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.exemplar1);
+                this.player1.clickRing('fire');
+                expect(this.getChatLogs(3)).toContain('player1 uses Austere Exemplar, placing 1 fate on the Fire Ring to take three actions');
+
+                this.player1.clickCard(this.exemplar2);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
             });
         });
     });

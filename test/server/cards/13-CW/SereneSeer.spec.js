@@ -29,6 +29,8 @@ describe('Serene Seer', function() {
                 this.player2.claimRing('void');
                 this.player1.clickCard(this.seer);
                 expect(this.player1).toHavePrompt('Serene Seer');
+                // the province is chosen before the ability resolves
+                expect(this.getChatLogs(3)).not.toContain('player1 uses Serene Seer to look at a province');
                 expect(this.player1).toBeAbleToSelect(this.fields);
                 expect(this.player1).not.toBeAbleToSelect(this.garden);
                 expect(this.player1).not.toBeAbleToSelect(this.shamefulDisplay);

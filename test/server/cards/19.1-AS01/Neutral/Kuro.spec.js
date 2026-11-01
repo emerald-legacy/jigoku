@@ -6,7 +6,8 @@ describe('Kuro', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['kuro'],
-                        hand: ['fine-katana', 'above-question', 'adorned-barcha']
+                        hand: ['fine-katana', 'above-question', 'adorned-barcha', 'cloud-the-mind'],
+                        dynastyDiscard: ['solemn-scholar']
                     }
                 });
 
@@ -14,6 +15,18 @@ describe('Kuro', function () {
                 this.katana = this.player1.findCardByName('fine-katana');
                 this.aq = this.player1.findCardByName('above-question');
                 this.barcha = this.player1.findCardByName('adorned-barcha');
+                this.cloud = this.player1.findCardByName('cloud-the-mind');
+            });
+
+            it('should allow for printed cost 0 to be attached while blank', function () {
+                this.player1.moveCard('solemn-scholar', 'play area');
+                this.player1.playAttachment(this.cloud, this.kuro);
+                expect(this.kuro.isBlank()).toBe(true);
+                this.player2.pass();
+                this.player1.clickCard(this.katana);
+                expect(this.player1).toBeAbleToSelect(this.kuro);
+                this.player1.clickCard(this.kuro);
+                expect(this.katana.parent).toBe(this.kuro);
             });
 
             it('should not allow for printed cost 0 to be attached', function () {
@@ -147,6 +160,191 @@ describe('Kuro', function () {
                 expect(this.kuro.isParticipating()).toBe(false);
                 expect(this.getChatLogs(5)).toContain('player1 uses Kuro to seek the lost treasure \'Above Question\'. Kuro returns home with their treasure');
             });
+        });
+    });
+});
+
+describe('Kuro and an attachment you cannot pay for', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 0,
+                    inPlay: ['kuro'],
+                    hand: ['banzai']
+                },
+                player2: {
+                    conflictDiscard: ['above-question', 'adorned-barcha']
+                }
+            });
+            this.kuro = this.player1.findCardByName('kuro');
+            this.aq = this.player2.findCardByName('above-question');
+            this.barcha = this.player2.findCardByName('adorned-barcha');
+        });
+
+        it('only offers attachments affordable after the reduction', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kuro],
+                defenders: [],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.kuro);
+            expect(this.player1).toBeAbleToSelect(this.aq);
+            expect(this.player1).not.toBeAbleToSelect(this.barcha);
+        });
+    });
+});
+
+describe('Kuro and an attachment that cannot be played now', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    inPlay: ['kuro']
+                },
+                player2: {
+                    conflictDiscard: ['above-question', 'pacifism']
+                }
+            });
+            this.kuro = this.player1.findCardByName('kuro');
+            this.aq = this.player2.findCardByName('above-question');
+            this.pacifism = this.player2.findCardByName('pacifism');
+        });
+
+        it('does not offer a Peaceful attachment during a conflict (EmeraldDB ruling)', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kuro],
+                defenders: [],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.kuro);
+            expect(this.player1).toBeAbleToSelect(this.aq);
+            expect(this.player1).not.toBeAbleToSelect(this.pacifism);
+        });
+    });
+});
+
+describe('Kuro and an attachment it cannot legally take', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                gameMode: 'emerald',
+                player1: {
+                    fate: 6,
+                    inPlay: ['kuro'],
+                    hand: ['four-temples-advisor']
+                },
+                player2: {
+                    conflictDiscard: ['four-temples-advisor', 'above-question']
+                }
+            });
+            this.kuro = this.player1.findCardByName('kuro');
+            this.ownAdvisor = this.player1.findCardByName('four-temples-advisor');
+            this.advisor = this.player2.findCardByName('four-temples-advisor');
+            this.aq = this.player2.findCardByName('above-question');
+            this.player1.playAttachment(this.ownAdvisor, this.kuro);
+        });
+
+        it('does not offer a second copy of an attachment it already has (one copy per name)', function () {
+            expect(this.ownAdvisor.parent).toBe(this.kuro);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kuro],
+                defenders: [],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.kuro);
+            expect(this.player1).toBeAbleToSelect(this.aq);
+            expect(this.player1).not.toBeAbleToSelect(this.advisor);
+        });
+    });
+});
+
+describe('Kuro at a province where fate cannot be spent', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 3,
+                    inPlay: ['kuro']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    provinces: ['blood-of-onnotangu'],
+                    conflictDiscard: ['above-question', 'adorned-barcha']
+                }
+            });
+            this.kuro = this.player1.findCardByName('kuro');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.blood = this.player2.findCardByName('blood-of-onnotangu');
+            this.aq = this.player2.findCardByName('above-question');
+            this.barcha = this.player2.findCardByName('adorned-barcha');
+            this.blood.facedown = false;
+        });
+
+        it('only offers attachments that cost nothing after the reduction (Blood of Onnotangu)', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kuro],
+                defenders: [this.whisperer],
+                province: this.blood,
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.kuro);
+            expect(this.player1).toBeAbleToSelect(this.aq);
+            expect(this.player1).not.toBeAbleToSelect(this.barcha);
+        });
+    });
+});
+
+describe('Kuro\'s action gained through Contemplative Wisdom', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'kuro', attachments: ['contemplative-wisdom'] }, 'adept-of-the-waves']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar'],
+                    conflictDiscard: ['grasp-of-earth-2']
+                }
+            });
+            this.kuro = this.player1.findCardByName('kuro');
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.grasp = this.player2.findCardByName('grasp-of-earth-2');
+            this.player1.claimRing('air');
+        });
+
+        it('plays an attachment the character using it can take', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.adept],
+                defenders: [],
+                ring: 'fire'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.kuro);
+            this.player1.clickCard(this.adept);
+            this.player1.clickRing('air');
+            this.player2.pass();
+            this.player1.clickCard(this.adept);
+            this.player1.clickPrompt('Play opponent discarded attachment');
+            expect(this.player1).toBeAbleToSelect(this.grasp);
+            this.player1.clickCard(this.grasp);
+            expect(this.grasp.parent).toBe(this.adept);
         });
     });
 });

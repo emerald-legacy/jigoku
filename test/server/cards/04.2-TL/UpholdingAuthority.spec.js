@@ -70,7 +70,7 @@ describe('Upholding Authority', function() {
                 expect(this.banzai2.location).toBe('hand');
                 expect(this.banzai3.location).toBe('hand');
                 expect(this.player1).toHavePrompt('Break Upholding Authority');
-                expect(this.chat).toHaveBeenCalledWith('{0} chooses to discard {1} cop{2} of {3}', this.player2.player, '1', 'y', this.banzai1);
+                expect(this.chat).toHaveBeenCalledWith(['{0} chooses to discard {1} cop{2} of {3}', [this.player2.player, 1, 'y', this.banzai1]]);
             });
 
             it('should discard the correct number of cards if the player picks a card with multiple copies (2 chosen)', function() {
@@ -85,7 +85,7 @@ describe('Upholding Authority', function() {
                 expect(this.banzai2.location).toBe('conflict discard pile');
                 expect(this.banzai3.location).toBe('hand');
                 expect(this.player1).toHavePrompt('Break Upholding Authority');
-                expect(this.chat).toHaveBeenCalledWith('{0} chooses to discard {1} cop{2} of {3}', this.player2.player, '2', 'ies', this.banzai1);
+                expect(this.chat).toHaveBeenCalledWith(['{0} chooses to discard {1} cop{2} of {3}', [this.player2.player, 2, 'ies', this.banzai1]]);
             });
 
             it('should discard the correct number of cards if the player picks a card with multiple copies (3 chosen)', function() {
@@ -100,7 +100,7 @@ describe('Upholding Authority', function() {
                 expect(this.banzai2.location).toBe('conflict discard pile');
                 expect(this.banzai3.location).toBe('conflict discard pile');
                 expect(this.player1).toHavePrompt('Break Upholding Authority');
-                expect(this.chat).toHaveBeenCalledWith('{0} chooses to discard {1} cop{2} of {3}', this.player2.player, '3', 'ies', this.banzai1);
+                expect(this.chat).toHaveBeenCalledWith(['{0} chooses to discard {1} cop{2} of {3}', [this.player2.player, 3, 'ies', this.banzai1]]);
             });
         });
 
@@ -128,8 +128,72 @@ describe('Upholding Authority', function() {
                 expect(this.player1.player.hand.length).toBe(0);
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
                 this.upholdingAuthority = this.player2.clickCard('upholding-authority');
+                expect(this.player2).not.toHavePrompt('Choose a card to discard');
+                expect(this.player1).toHavePrompt('Break Upholding Authority');
             });
         });
 
+    });
+});
+
+describe('Upholding Authority strength with an Earth role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    role: 'keeper-of-earth',
+                    provinces: ['upholding-authority']
+                }
+            });
+            this.upholdingAuthority = this.player2.findCardByName('upholding-authority');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                province: this.upholdingAuthority,
+                defenders: []
+            });
+        });
+
+        it('should get +2 strength', function() {
+            expect(this.upholdingAuthority.facedown).toBe(false);
+            expect(this.player2.player.role.id).toBe('keeper-of-earth');
+            expect(this.upholdingAuthority.getStrength()).toBe(5);
+        });
+    });
+});
+
+describe('Upholding Authority strength without an Earth role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    role: 'keeper-of-fire',
+                    provinces: ['upholding-authority']
+                }
+            });
+            this.upholdingAuthority = this.player2.findCardByName('upholding-authority');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                province: this.upholdingAuthority,
+                defenders: []
+            });
+        });
+
+        it('should keep its printed strength', function() {
+            expect(this.upholdingAuthority.facedown).toBe(false);
+            expect(this.player2.player.role.id).toBe('keeper-of-fire');
+            expect(this.upholdingAuthority.getStrength()).toBe(3);
+        });
     });
 });

@@ -126,13 +126,13 @@ describe('Shiro Kitsuki', function() {
                 this.player2.pass();
                 this.player1.playAttachment(this.advisor, this.asakoTsuki);
                 this.player2.playAttachment(this.fineKatana, this.adept);
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 expect(this.player1).toHavePrompt('Choose a ring to claim');
                 this.player1.clickRing('void');
                 expect(this.player1.fate).toBe(fate + 1);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.advisor);
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.advisor);
                 expect(this.player1.hand.length).toBe(hand + 1);
             });

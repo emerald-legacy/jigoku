@@ -33,7 +33,7 @@ describe('Isawa Mori Seido', function() {
             it('should give the chosen character +2 glory', function() {
                 this.player1.clickCard(this.isawaMoriSeido);
                 this.player1.clickCard(this.fushicho);
-                expect(this.fushicho.getGlory()).toBe(2);
+                expect(this.fushicho.glory).toBe(2);
             });
         });
     });

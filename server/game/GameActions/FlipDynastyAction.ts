@@ -1,28 +1,32 @@
-import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import { targetList, type ActionEvent, type ActionOverrides } from './GameAction.js';
 
 export type FlipDynastyProperties = CardActionProperties;
 
-export class FlipDynastyAction extends CardGameAction<FlipDynastyProperties> {
-    name = 'reveal';
-    eventName = EventName.OnCardRevealed;
-    targetType = [CardType.Character, CardType.Holding, CardType.Event];
+export class FlipDynastyAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<FlipDynastyProperties, EventName.OnCardRevealed, Context> {
+    override name = 'flipDynasty';
+    override eventName = EventName.OnCardRevealed;
+    override targetType = [CardType.Character, CardType.Holding, CardType.Event];
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context);
-        const target = Array.isArray(properties.target) ? properties.target[0] : properties.target;
-        return ['reveal the facedown card in {0}', [target ? target.location : '']];
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const targets = targetList(this.getProperties(context, additionalProperties).target);
+        return [targets.length > 1 ? 'reveal the facedown cards in {0}' : 'reveal the facedown card in {0}', []];
     }
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {
+        const locations = targetList(this.getProperties(context, additionalProperties).target).map((target) => target.location);
+        return locations.length > 1 ? locations : locations[0] ?? '';
+    }
+
+    override canAffect(card: BaseCard, context: Context): boolean {
         return card.isInProvince() && card.isDynasty && card.isFacedown() && super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardRevealed>): void {
+    override eventHandler(event: ActionEvent<EventName.OnCardRevealed, Context>): void {
         event.card.facedown = false;
     }
 }

@@ -36,6 +36,7 @@ describe('Inspired Visionary', function() {
             this.noMoreActions();
             this.player1.clickPrompt('military');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 claims the Emperor\'s military favor!');
         });
 
         it('should allow bowing to shuffle an attachment back into the deck and have the owner draw a card', function() {
@@ -44,8 +45,8 @@ describe('Inspired Visionary', function() {
             this.player1.pass();
             this.player2.playAttachment(this.pacifism, this.kuwanan);
 
-            let hand1 = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand1 = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.noMoreActions();
             this.player1.clickPrompt('military');
@@ -78,8 +79,8 @@ describe('Inspired Visionary', function() {
             this.player2.clickCard(this.katana);
             this.player2.clickCard(this.toshimoko);
 
-            let hand1 = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand1 = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.noMoreActions();
             this.player1.clickPrompt('military');
@@ -108,6 +109,7 @@ describe('Inspired Visionary', function() {
             this.noMoreActions();
             this.player1.clickPrompt('military');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 claims the Emperor\'s military favor!');
         });
     });
 });

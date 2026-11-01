@@ -1,62 +1,62 @@
-import type { MessageArgs } from '../GameChat.js';
+import type { ActionOverrides } from './GameAction.js';
+import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { Conflict } from '../Conflict.js';
-import { EffectName, EventName } from '../Constants.js';
+import { Element, EventName } from '../Constants.js';
+import { isEnumValue } from '../utils/helpers.js';
 import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
-import { ResolveElementAction } from './ResolveElementAction.js';
+import type { PromptButton } from '../PlayerPromptState.js';
+import { ResolveRingEffectAction, ringEffectIsCancelled } from './ResolveRingEffectAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
+import type { ActionEvent } from './GameAction.js';
 
-export class ResolveConflictRingAction extends RingAction {
-    name = 'resolveRing';
-    eventName = EventName.OnResolveConflictRing;
-    constructor(properties: ((context: AbilityContext) => RingActionProperties) | RingActionProperties) {
-        super(properties);
+export class ResolveConflictRingAction<Context extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName.OnResolveConflictRing, Context> {
+    override name = 'resolveConflictRing';
+    override eventName = EventName.OnResolveConflictRing;
+
+    protected override effectMessage(): MessageArgs {
+        return ['resolve {0}', []];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties: RingActionProperties = this.getProperties(context);
-        return ['resolve {0}', [properties.target]];
-    }
-
-    addPropertiesToEvent(event: GameEvent<EventName.OnResolveConflictRing>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnResolveConflictRing, Context>, ring: Ring, context: Context, additionalProperties: ActionOverrides = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
-        let conflict = context.game.currentConflict;
+        const conflict = context.game.currentConflict;
 
         event.conflict = conflict ?? undefined;
         event.player = context.player;
     }
 
-    eventHandler(event: GameEvent<EventName.OnResolveConflictRing>): void {
+    // checked before the would-interrupt window, so a cancelled ring effect cannot be replaced (Display of Power)
+    override checkEventCondition(event: ActionEvent<EventName.OnResolveConflictRing, Context> & { ring: Ring }, additionalProperties: ActionOverrides = {}): boolean {
+        if(!super.checkEventCondition(event, additionalProperties)) {
+            return false;
+        }
+        return !ringEffectIsCancelled(event.context.player);
+    }
+
+    override eventHandler(event: ActionEvent<EventName.OnResolveConflictRing, Context>): void {
         if(event.name !== this.eventName) {
             return;
         }
 
-        const eventContext = event.context as AbilityContext;
-        const cannotResolveRingEffects = eventContext.player.getEffects(EffectName.CannotResolveRings);
-
-        if(cannotResolveRingEffects.length) {
-            eventContext.game.addMessage('{0}\'s ring effect is cancelled.', eventContext.player);
-            event.cancel();
-            return;
-        }
-
-        let elements = (event.ring as Ring).getElements();
-        let player = event.player as Player;
+        const elements = event.ring.getElements();
+        const player = event.player;
         if(elements.length === 1) {
             this.resolveRingEffects(player, elements);
         } else {
-            this.chooseElementsToResolve(player, elements, (event.conflict as Conflict).elementsToResolve);
+            if(!event.conflict) {
+                throw new Error('A ring with several elements can only be resolved during a conflict');
+            }
+            this.chooseElementsToResolve(player, elements, event.conflict.elementsToResolve);
         }
     }
 
     chooseElementsToResolve(
         player: Player,
-        elements: string[],
+        elements: Element[],
         elementsToResolve: number,
-        chosenElements: string[] = []
+        chosenElements: Element[] = []
     ): void {
         if(elements.length === 0 || elementsToResolve === 0) {
             this.resolveRingEffects(player, chosenElements);
@@ -69,10 +69,8 @@ export class ResolveConflictRingAction extends RingAction {
                 activePromptTitle + '\nChosen elements:'
             );
         }
-        let buttons = [];
-
-        elements.map((element) =>
-            buttons.push({ text: element.slice(0, 1).toUpperCase() + element.slice(1) + ' Ring', arg: element })
+        const buttons: PromptButton[] = elements.map((element) =>
+            ({ text: element.slice(0, 1).toUpperCase() + element.slice(1) + ' Ring', arg: element })
         );
         if(chosenElements.length > 0) {
             buttons.push({ text: 'Done', arg: 'done' });
@@ -98,11 +96,11 @@ export class ResolveConflictRingAction extends RingAction {
                 );
                 return true;
             },
-            onCancel: (cancelPlayer: Player) => cancelPlayer.game.addMessage('{0} chooses not to resolve the conflict ring', cancelPlayer),
+            onCancel: (cancelPlayer: Player) => cancelPlayer.game.addMessage(msg`${cancelPlayer} chooses not to resolve the conflict ring`),
             onMenuCommand: (menuPlayer: Player, arg: string) => {
                 if(arg === 'all') {
                     this.resolveRingEffects(menuPlayer, elements.concat(chosenElements));
-                } else if(elements.includes(arg)) {
+                } else if(isEnumValue(Element, arg) && elements.includes(arg)) {
                     elementsToResolve--;
                     chosenElements.push(arg);
                     this.chooseElementsToResolve(
@@ -119,12 +117,9 @@ export class ResolveConflictRingAction extends RingAction {
         });
     }
 
-    resolveRingEffects(player: Player, elements: string[], optional: boolean = true): void {
-        if(!Array.isArray(elements)) {
-            elements = [elements];
-        }
-        let rings = elements.map((element) => player.game.rings[element]);
-        let action = new ResolveElementAction({
+    resolveRingEffects(player: Player, elements: Element[], optional: boolean = true): void {
+        const rings = elements.map((element) => player.game.rings[element]);
+        const action = new ResolveRingEffectAction({
             target: rings,
             optional: optional,
             physicalRing: player.game.currentConflict?.ring

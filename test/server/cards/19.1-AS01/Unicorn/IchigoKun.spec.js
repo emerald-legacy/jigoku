@@ -106,7 +106,9 @@ describe('Ichigo-kun', function () {
                 expect(this.player1).toBeAbleToSelect(this.shiotome);
 
                 this.player1.clickCard(this.shiotome);
-                expect(this.player1).toHavePrompt('Select one');
+                expect(this.getChatLogs(5)).toContain('player1 uses Ichigo-kun to move Ichigo-kun to the conflict');
+                expect(this.ichigoKun.isParticipating()).toBe(true);
+                expect(this.player1).toHavePrompt('Select an action:');
                 expect(this.player1).toHavePromptButton('Increase own military, reduce other glory');
                 expect(this.player1).toHavePromptButton('Reduce own military, increase other glory');
 
@@ -114,7 +116,7 @@ describe('Ichigo-kun', function () {
                 expect(this.ichigoKun.militarySkill).toBe(ichigoInitialMil + 2);
                 expect(this.shiotome.glory).toBe(shiotomeInitialGlory - 2);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Ichigo-kun to give Ichigo-kun +2 military and Worldly Shiotome -2 glory - Ichigo-kun is wild today!'
+                    'player1 chooses to give Ichigo-kun +2 military and Worldly Shiotome -2 glory - Ichigo-kun is wild today'
                 );
             });
 
@@ -137,7 +139,9 @@ describe('Ichigo-kun', function () {
                 expect(this.player1).toBeAbleToSelect(this.shiotome);
 
                 this.player1.clickCard(this.shiotome);
-                expect(this.player1).toHavePrompt('Select one');
+                expect(this.getChatLogs(5)).toContain('player1 uses Ichigo-kun to move Ichigo-kun to the conflict');
+                expect(this.ichigoKun.isParticipating()).toBe(true);
+                expect(this.player1).toHavePrompt('Select an action:');
                 expect(this.player1).toHavePromptButton('Increase own military, reduce other glory');
                 expect(this.player1).toHavePromptButton('Reduce own military, increase other glory');
 
@@ -145,7 +149,7 @@ describe('Ichigo-kun', function () {
                 expect(this.ichigoKun.militarySkill).toBe(ichigoInitialMil - 2);
                 expect(this.shiotome.glory).toBe(shiotomeInitialGlory + 2);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Ichigo-kun to give Ichigo-kun -2 military and Worldly Shiotome +2 glory - Ichigo-kun is well-behaved. Impressive!'
+                    'player1 chooses to give Ichigo-kun -2 military and Worldly Shiotome +2 glory - Ichigo-kun is well-behaved. Impressive'
                 );
             });
 
@@ -168,7 +172,9 @@ describe('Ichigo-kun', function () {
                 expect(this.player1).toBeAbleToSelect(this.shiotome);
 
                 this.player1.clickCard(this.shiotome);
-                expect(this.player1).toHavePrompt('Select one');
+                expect(this.getChatLogs(5)).toContain('player1 uses Ichigo-kun to move Ichigo-kun to the conflict');
+                expect(this.ichigoKun.isParticipating()).toBe(true);
+                expect(this.player1).toHavePrompt('Select an action:');
                 expect(this.player1).toHavePromptButton('Increase own military, reduce other glory');
                 expect(this.player1).toHavePromptButton('Reduce own military, increase other glory');
 
@@ -177,7 +183,7 @@ describe('Ichigo-kun', function () {
                 expect(this.shiotome.glory).toBe(shiotomeInitialGlory - 2);
                 expect(this.ichigoKun.isParticipating()).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Ichigo-kun to give Ichigo-kun +2 military and Worldly Shiotome -2 glory - Ichigo-kun is wild today!'
+                    'player1 chooses to give Ichigo-kun +2 military and Worldly Shiotome -2 glory - Ichigo-kun is wild today'
                 );
             });
         });

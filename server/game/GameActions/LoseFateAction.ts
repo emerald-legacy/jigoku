@@ -1,45 +1,47 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface LoseFateProperties extends PlayerActionProperties {
     amount?: number;
+    /** The player spends or pays the fate (a cost, "spend/pay X fate"): a "cannot spend fate" restriction stops it (Blood of Onnotangu). Losing fate isn't spending it. */
+    spend?: boolean;
 }
 
-export class LoseFateAction extends PlayerAction {
-    name = 'spendFate';
-    eventName = EventName.OnModifyFate;
-    defaultProperties: LoseFateProperties = { amount: 1 };
+export class LoseFateAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, Context, 'amount' | 'spend'> {
+    override name = 'loseFate';
+    override eventName = EventName.OnModifyFate;
+    override defaultProperties = { amount: 1, spend: false };
 
-    constructor(propertyFactory: LoseFateProperties | ((context: AbilityContext) => LoseFateProperties)) {
-        super(propertyFactory);
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['make {0} lose {1} fate', [this.getProperties(context, additionalProperties).amount]];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties: LoseFateProperties = this.getProperties(context);
-        return ['make {0} lose {1} fate', [properties.target, properties.amount]];
-    }
-
-    getCostMessage(context: AbilityContext): MessageArgs {
-        let properties: LoseFateProperties = this.getProperties(context);
+    override getCostMessage(context: Context): MessageArgs {
+        const properties = this.getProperties(context);
         return ['spending {1} fate', [properties.amount]];
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties: LoseFateProperties = this.getProperties(context, additionalProperties);
-        return (properties.amount ?? 0) > 0 && player.fate > 0 && super.canAffect(player, context, additionalProperties);
+
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
+        // losing fate takes what there is; spending needs all of it (the third Objection costs 2)
+        return properties.amount > 0 &&
+            (properties.spend ? player.canSpendFate(properties.amount, context) : player.fate > 0) &&
+            super.canAffect(player, context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnModifyFate>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount } = this.getProperties(context, additionalProperties) as LoseFateProperties;
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnModifyFate, Context>, player: Player, context: Context, additionalProperties: ActionOverrides = {}): void {
+        const { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = -(amount ?? 0);
+        event.amount = -amount;
     }
 
-    eventHandler(event: GameEvent<EventName.OnModifyFate>): void {
-        (event.player as Player).modifyFate(event.amount as number);
+    override eventHandler(event: ActionEvent<EventName.OnModifyFate, Context>): void {
+        event.player.modifyFate(event.amount);
     }
 }

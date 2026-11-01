@@ -63,8 +63,13 @@ describe('Daidoji Akikore', function () {
             this.player2.clickPrompt('1');
 
             expect(this.getChatLogs(10)).toContain('Daidōji Akikore: 6 vs 5: Kakita Toshimoko');
-            expect(this.getChatLogs(10)).toContain('Duel Effect: add 3 to player1\'s side for this conflict');
-            expect(this.getChatLogs(10)).toContain('Military Air conflict - Attacker: 8 Defender: 4');
+            expect(this.getChatLogs(10)).toContain('Duel Effect: add 3 to player1\'s side during this conflict\'s resolution');
+            expect(this.getChatLogs(10)).toContain('Military Air conflict - Attacker: 5 (+3 at resolution) Defender: 4');
+            expect(this.getChatLogs(10)).toContain('Attacker is winning the conflict - Shameful Display is breaking!');
+            this.player2.pass();
+            this.player1.pass();
+            this.player2.clickPrompt('Pass');
+            expect(this.getChatLogs(10)).toContain('player1 won a military conflict 8 vs 4');
         });
 
         it('duel focus should give +1 during a pol conflict', function () {
@@ -92,8 +97,12 @@ describe('Daidoji Akikore', function () {
             expect(this.getChatLogs(10)).toContain('player1 uses Daidōji Akikore to add 1 to their duel total');
 
             expect(this.getChatLogs(10)).toContain('Daidōji Akikore: 7 vs 5: Kakita Toshimoko');
-            expect(this.getChatLogs(10)).toContain('Duel Effect: add 3 to player1\'s side for this conflict');
-            expect(this.getChatLogs(10)).toContain('Political Air conflict - Attacker: 7 Defender: 3');
+            expect(this.getChatLogs(10)).toContain('Duel Effect: add 3 to player1\'s side during this conflict\'s resolution');
+            expect(this.getChatLogs(10)).toContain('Political Air conflict - Attacker: 4 (+3 at resolution) Defender: 3');
+            this.player2.pass();
+            this.player1.pass();
+            this.player2.clickPrompt('Pass');
+            expect(this.getChatLogs(10)).toContain('player1 won a political conflict 7 vs 3');
         });
 
         it('duel focus should not trigger if not dueling', function () {

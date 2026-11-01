@@ -37,7 +37,7 @@ describe('kikyo', function() {
             });
 
             it('should grant the ability to a character when attached', function() {
-                let actionCount = this.kisadaP1.getReactions().length;
+                const actionCount = this.kisadaP1.getReactions().length;
                 this.player1.playAttachment(this.kikyo, this.kisadaP1);
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.kisadaP1.getReactions().length).toBe(actionCount + 1);
@@ -55,7 +55,7 @@ describe('kikyo', function() {
                 });
 
                 it('should grant the ability if the character is a champion', function() {
-                    let actionCount = this.yoritomo.getReactions().length;
+                    const actionCount = this.yoritomo.getReactions().length;
                     this.player1.playAttachment(this.kikyo, this.yoritomo);
                     expect(this.yoritomo.getReactions().length).toBe(actionCount + 1);
                 });
@@ -92,7 +92,7 @@ describe('kikyo', function() {
                     expect(this.player1).not.toBeAbleToSelect(this.kikyo);
                 });
 
-                it('should trigger when opponent draws a card', function() {
+                it('should not trigger when opponent draws a card', function() {
                     this.initiateConflict({
                         type: 'military',
                         attackers: [this.kisadaP1, this.oushi, this.yoritomo],
@@ -102,6 +102,7 @@ describe('kikyo', function() {
                     this.player1.clickCard(this.bhc);
                     this.player1.clickPrompt('player2');
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                    expect(this.getChatLogs(5)).toContain('player1 plays Backhanded Compliment to make player2 lose an honor and draw a card');
                 });
 
                 it('should not trigger if holder is not participating', function() {
@@ -114,6 +115,7 @@ describe('kikyo', function() {
                     this.player1.clickCard(this.bhc);
                     this.player1.clickPrompt('player1');
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                    expect(this.getChatLogs(5)).toContain('player1 plays Backhanded Compliment to make player1 lose an honor and draw a card');
                 });
 
                 it('should force opponent to discard at random', function() {
@@ -122,7 +124,7 @@ describe('kikyo', function() {
                         attackers: [this.kisadaP1, this.oushi, this.yoritomo],
                         defenders: [this.challenger]
                     });
-                    let hand = this.player2.hand.length;
+                    const hand = this.player2.hand.length;
                     this.player2.pass();
                     this.player1.clickCard(this.bhc);
                     this.player1.clickPrompt('player1');
@@ -131,6 +133,30 @@ describe('kikyo', function() {
                     expect(this.getChatLogs(5)).toContain('player1 uses Hida Kisada\'s gained ability from Kikyo to make player2 discard 1 card at random');
                 });
             });
+        });
+    });
+});
+
+describe('kikyo attach restriction', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['kikyo']
+                },
+                player2: {
+                    inPlay: ['hida-kisada', 'brash-samurai']
+                }
+            });
+            this.kisada = this.player2.findCardByName('hida-kisada');
+            this.brash = this.player2.findCardByName('brash-samurai');
+        });
+
+        it('can attach to an opponent\'s unique crab character', function() {
+            this.player1.clickCard('kikyo');
+            expect(this.player1).toBeAbleToSelect(this.kisada);
+            expect(this.player1).not.toBeAbleToSelect(this.brash);
         });
     });
 });

@@ -1,10 +1,17 @@
 /* eslint no-invalid-this: 0 */
 
-import { GameModes } from '../../server/GameModes.js';
+import '../../server/game/setupGameActions.js';
+import { GameMode } from '../../server/GameMode.js';
 import './objectformatters.js';
 import DeckBuilder, { fillers } from './deckbuilder.js';
+import type { PlayerDeckOptions } from './deckbuilder.js';
 import GameFlowWrapper from './gameflowwrapper.js';
 import type PlayerInteractionWrapper from './playerinteractionwrapper.js';
+import type { CardLike } from './playerinteractionwrapper.js';
+import BaseCard from '../../server/game/BaseCard.js';
+import Ring from '../../server/game/Ring.js';
+import { ActionWindowName, Location } from '../../server/game/Constants.js';
+import type Game from '../../server/game/Game.js';
 
 const deckBuilder = new DeckBuilder();
 
@@ -24,7 +31,7 @@ const ProxiedGameFlowWrapperMethods = [
     'getChatLog'
 ] as const;
 
-const customMatchers: any = {
+const customMatchers: jasmine.CustomMatcherFactories = {
     toHavePrompt: function () {
         return {
             compare: function (actual: PlayerInteractionWrapper, expected: string) {
@@ -37,12 +44,12 @@ const customMatchers: any = {
             }
         };
     },
-    toHavePromptButton: function (util: any, customEqualityMatchers: any) {
+    toHavePromptButton: function (util: jasmine.MatchersUtil) {
         return {
             compare: function (actual: PlayerInteractionWrapper, expected: string) {
-                const buttons = actual.currentPrompt().buttons as Array<{ text: string; disabled?: boolean }>;
+                const buttons = actual.currentPrompt().buttons;
                 const pass = buttons.some(
-                    (button) => !button.disabled && util.equals(button.text, expected, customEqualityMatchers)
+                    (button) => !button.disabled && util.equals(button.text, expected)
                 );
                 let message: string;
                 if(pass) {
@@ -57,12 +64,12 @@ const customMatchers: any = {
             }
         };
     },
-    toHaveDisabledPromptButton: function (util: any, customEqualityMatchers: any) {
+    toHaveDisabledPromptButton: function (util: jasmine.MatchersUtil) {
         return {
             compare: function (actual: PlayerInteractionWrapper, expected: string) {
-                const buttons = actual.currentPrompt().buttons as Array<{ text: string; disabled?: boolean }>;
+                const buttons = actual.currentPrompt().buttons;
                 const pass = buttons.some(
-                    (button) => button.disabled && util.equals(button.text, expected, customEqualityMatchers)
+                    (button) => button.disabled && util.equals(button.text, expected)
                 );
                 let message: string;
                 if(pass) {
@@ -84,8 +91,8 @@ const customMatchers: any = {
                 if(typeof card === 'string') {
                     resolvedCard = player.findCardByName(card);
                 }
-                const pass = player.currentActionTargets.includes(resolvedCard as never);
-                const cardName = (resolvedCard as { name?: string })?.name ?? String(resolvedCard);
+                const pass = resolvedCard instanceof BaseCard && player.currentActionTargets.includes(resolvedCard);
+                const cardName = resolvedCard instanceof BaseCard ? resolvedCard.name : String(resolvedCard);
                 const message = pass
                     ? `Expected ${cardName} not to be selectable by ${player.name} but it was.`
                     : `Expected ${cardName} to be selectable by ${player.name} but it wasn't.`;
@@ -98,10 +105,10 @@ const customMatchers: any = {
             compare: function (player: PlayerInteractionWrapper, ring: unknown) {
                 let resolvedRing = ring;
                 if(typeof ring === 'string') {
-                    resolvedRing = player.player.game.rings[ring];
+                    resolvedRing = player.player.game.ringFor(ring);
                 }
-                const pass = player.currentActionRingTargets.includes(resolvedRing as never);
-                const ringElement = (resolvedRing as { element?: string })?.element ?? String(resolvedRing);
+                const pass = resolvedRing instanceof Ring && player.currentActionRingTargets.includes(resolvedRing);
+                const ringElement = resolvedRing instanceof Ring ? resolvedRing.element : String(resolvedRing);
                 const message = pass
                     ? `Expected ${ringElement} not to be selectable by ${player.name} but it was.`
                     : `Expected ${ringElement} to be selectable by ${player.name} but it wasn't.`;
@@ -120,11 +127,11 @@ interface IntegrationDeckOptions {
     role?: string;
     stronghold?: string;
     strongholdProvince?: string;
-    provinces?: any;
+    provinces?: PlayerDeckOptions['provinces'];
     rings?: string[];
     fate?: number;
     honor?: number;
-    inPlay?: any[];
+    inPlay?: PlayerDeckOptions['inPlay'];
     hand?: string[];
     conflictDiscard?: string[];
     dynastyDiscard?: string[];
@@ -134,28 +141,51 @@ interface IntegrationDeckOptions {
 interface IntegrationSetupOptions {
     player1?: IntegrationDeckOptions;
     player2?: IntegrationDeckOptions;
-    gameMode?: GameModes;
+    gameMode?: GameMode;
     phase?: string;
     skipAutoSetup?: boolean;
     skipAutoFirstPlayer?: boolean;
 }
 
-(globalThis as { fillers?: typeof fillers }).fillers = fillers;
+interface InitiateConflictOptions {
+    type?: string;
+    ring?: string;
+    province?: CardLike;
+    attackers?: CardLike[];
+    defenders?: CardLike[];
+    jumpTo?: boolean;
+}
 
-(globalThis as { integration?: (definitions: () => void) => void }).integration = function (definitions: () => void): void {
+/** `this` inside an `integration()` spec. */
+export type IntegrationContext = Pick<GameFlowWrapper, (typeof ProxiedGameFlowWrapperMethods)[number]> & {
+    flow: GameFlowWrapper;
+    game: Game;
+    player1: PlayerInteractionWrapper;
+    player2: PlayerInteractionWrapper;
+    setupTest(options?: IntegrationSetupOptions): void;
+    initiateConflict(options?: InitiateConflictOptions): void;
+};
+
+globalThis.fillers = fillers;
+
+globalThis.integration = function (definitions: () => void): void {
     describe('integration', function (this: unknown) {
         beforeEach(function (this: Record<string, unknown>) {
-            const flow = new GameFlowWrapper();
-            this.flow = flow;
-            this.game = flow.game;
-            this.player1Object = flow.game.getPlayerByName('player1');
-            this.player2Object = flow.game.getPlayerByName('player2');
-            this.player1 = flow.player1;
-            this.player2 = flow.player2;
+            let flow = new GameFlowWrapper();
+            // a game keeps the mode it was created with, so another mode needs a new game
+            const useFlow = (next: GameFlowWrapper) => {
+                flow = next;
+                this.flow = flow;
+                this.game = flow.game;
+                this.player1Object = flow.game.getPlayerByName('player1');
+                this.player2Object = flow.game.getPlayerByName('player2');
+                this.player1 = flow.player1;
+                this.player2 = flow.player2;
+            };
+            useFlow(flow);
 
             ProxiedGameFlowWrapperMethods.forEach((method) => {
-                this[method] = (...args: unknown[]): unknown =>
-                    (flow[method] as (...a: unknown[]) => unknown).apply(flow, args);
+                this[method] = (...args: unknown[]): unknown => Reflect.apply(flow[method], flow, args);
             });
 
             this.buildDeck = function (faction: string, cards: string[]): unknown {
@@ -169,13 +199,13 @@ interface IntegrationSetupOptions {
                 if(!options.player2) {
                     options.player2 = {};
                 }
-                flow.game.gameMode = GameModes.Stronghold;
-                if(options.gameMode) {
-                    flow.game.gameMode = options.gameMode;
+                const gameMode = options.gameMode || GameMode.Stronghold;
+                if(gameMode !== flow.game.gameMode) {
+                    useFlow(new GameFlowWrapper(gameMode));
                 }
 
-                flow.player1.selectDeck(deckBuilder.customDeck(options.player1, flow.game.gameMode as GameModes));
-                flow.player2.selectDeck(deckBuilder.customDeck(options.player2, flow.game.gameMode as GameModes));
+                flow.player1.selectDeck(deckBuilder.customDeck(options.player1, gameMode));
+                flow.player2.selectDeck(deckBuilder.customDeck(options.player2, gameMode));
 
                 flow.startGame();
 
@@ -190,13 +220,13 @@ interface IntegrationSetupOptions {
                     });
                 }
 
-                if(flow.game.gameMode === GameModes.Skirmish) {
+                if(flow.game.gameMode === GameMode.Skirmish) {
                     flow.player1.setupSkirmishProvinces();
                     flow.player2.setupSkirmishProvinces();
                 }
 
                 if(options.phase !== 'setup') {
-                    if(options.phase && ['draw', 'fate'].includes(options.phase)) {
+                    if(options.phase === ActionWindowName.Draw || options.phase === ActionWindowName.Fate) {
                         flow.player1.player.promptedActionWindows[options.phase] = true;
                         flow.player2.player.promptedActionWindows[options.phase] = true;
                     }
@@ -206,7 +236,7 @@ interface IntegrationSetupOptions {
 
                     flow.keepConflict();
 
-                    flow.advancePhases(options.phase);
+                    flow.advancePhases(options.phase, true);
                 } else {
                     flow.player1.dynastyDiscard = options.player1.dynastyDiscard;
                     flow.player2.dynastyDiscard = options.player2.dynastyDiscard;
@@ -218,22 +248,22 @@ interface IntegrationSetupOptions {
                 if(options.player2.rings) {
                     options.player2.rings.forEach((ring: string) => flow.player2.claimRing(ring));
                 }
-                flow.player1.fate = options.player1.fate as number;
-                flow.player2.fate = options.player2.fate as number;
-                flow.player1.honor = options.player1.honor as number;
-                flow.player2.honor = options.player2.honor as number;
-                flow.player1.inPlay = (options.player1.inPlay ?? []) as never;
-                flow.player2.inPlay = (options.player2.inPlay ?? []) as never;
-                flow.player1.hand = (options.player1.hand ?? []) as never;
-                flow.player2.hand = (options.player2.hand ?? []) as never;
-                flow.player1.conflictDiscard = (options.player1.conflictDiscard ?? []) as never;
-                flow.player2.conflictDiscard = (options.player2.conflictDiscard ?? []) as never;
+                flow.player1.fate = options.player1.fate;
+                flow.player2.fate = options.player2.fate;
+                flow.player1.honor = options.player1.honor;
+                flow.player2.honor = options.player2.honor;
+                flow.player1.inPlay = options.player1.inPlay ?? [];
+                flow.player2.inPlay = options.player2.inPlay ?? [];
+                flow.player1.hand = options.player1.hand ?? [];
+                flow.player2.hand = options.player2.hand ?? [];
+                flow.player1.conflictDiscard = options.player1.conflictDiscard ?? [];
+                flow.player2.conflictDiscard = options.player2.conflictDiscard ?? [];
                 if(!options.skipAutoSetup) {
-                    flow.player1.provinces = options.player1.provinces as never;
-                    flow.player2.provinces = options.player2.provinces as never;
+                    flow.player1.provinces = options.player1.provinces;
+                    flow.player2.provinces = options.player2.provinces;
                 }
                 if(options.phase !== 'setup') {
-                    for(const location of ['province 1', 'province 2', 'province 3', 'province 4']) {
+                    for(const location of [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]) {
                         for(const wrapper of [flow.player1, flow.player2]) {
                             // A province emptied by the setup above (an `inPlay` card can be the
                             // only copy and get sourced out of a province) is backfilled facedown.
@@ -253,14 +283,7 @@ interface IntegrationSetupOptions {
                 }
             };
 
-            this.initiateConflict = function (this: Record<string, unknown>, options: {
-                type?: string;
-                ring?: string;
-                province?: unknown;
-                attackers?: unknown[];
-                defenders?: unknown[];
-                jumpTo?: boolean;
-            } = {}) {
+            this.initiateConflict = function (this: Record<string, unknown>, options: InitiateConflictOptions = {}) {
                 if(!options.type) {
                     options.type = 'military';
                 }
@@ -275,15 +298,15 @@ interface IntegrationSetupOptions {
                 }
                 attackingPlayer.declareConflict(
                     options.type,
-                    options.province as never,
-                    options.attackers as never,
+                    options.province,
+                    options.attackers,
                     options.ring
                 );
                 if(!options.defenders) {
                     return;
                 }
                 const defendingPlayer = flow.getPromptedPlayer('Choose defenders');
-                defendingPlayer.assignDefenders(options.defenders as never);
+                defendingPlayer.assignDefenders(options.defenders);
                 if(!options.jumpTo) {
                     return;
                 }

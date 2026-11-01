@@ -1,43 +1,34 @@
-import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Trait } from '../../../Constants.js';
+import { setBaseMilitarySkill, setBasePoliticalSkill } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
+import type BaseCard from '../../../BaseCard.js';
 
-function isEvil(character: DrawCard): boolean {
-    return character.isTainted || character.hasTrait('shadowlands');
+function isEvil(character: BaseCard): boolean {
+    return character.isTainted || character.hasTrait(Trait.Shadowlands);
 }
 
 export default class KaitoYoshiaki extends DrawCard {
     static id = 'kaito-yoshiaki';
 
-    setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Punish the wicked',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Punish the wicked')
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard, context) =>
-                    card !== context.source &&
+                cardCondition: (card, context) =>
                     card.isParticipating() &&
-                    (context.game.currentConflict as Conflict)
+                    context.game.requireConflict()
                         .getCharacters(context.player)
-                        .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0)),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect({
-                        effect: [
-                            AbilityDsl.effects.setBaseMilitarySkill(0),
-                            AbilityDsl.effects.setBasePoliticalSkill(0)
-                        ]
-                    }),
-                    AbilityDsl.actions.conditional({
-                        condition: (context) => isEvil(context.target as DrawCard),
-                        trueGameAction: AbilityDsl.actions.removeFate(),
-                        falseGameAction: AbilityDsl.actions.noAction()
-                    })
-                ])
-            },
-            effect: '{3}set the base skills of {0} to 0{1}/0{2}',
-            effectArgs: (context) => ['military', 'political', context.target && isEvil(context.target) ? 'remove a fate from and ' : '']
-        });
+                        .some((myCard) => card.costAtMost(myCard.getCost()))
+            }, cardLastingEffect({
+                effect: [
+                    setBaseMilitarySkill(0),
+                    setBasePoliticalSkill(0)
+                ]
+            }))
+            .if((context) => !!context.target && isEvil(context.target))
+            .removeFate()
+            .chatText((context) => msg`${isEvil(context.target) ? 'remove a fate from and ' : ''}set the base skills of ${context.chatTarget()} to 0${'military'}/0${'political'}`);
     }
 }

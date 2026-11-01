@@ -1,126 +1,89 @@
+import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { EffectName, EventName, Location, Phases, PlayType, Players } from './Constants.js';
+import { EffectName, Phase, PlayType, Players, Blocker, RestrictionType } from './Constants.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
-import { parseGameMode } from './GameMode.js';
 import type DrawCard from './DrawCard.js';
+import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
+import { getExtraFateWhenPlayed, getPlayBlocker } from './playActionHelpers.js';
 
-export enum PlayCharacterIntoLocation {
+/** Where a played character enters play: the player chooses (Any), or only one of them. */
+export enum PlayIntoLocation {
     Any,
     Conflict,
     Home
 }
 
-type ExecutionContext = AbilityContext<DrawCard> & { chooseFate: number };
-
 export class PlayCharacterAction extends PlayCardSourceAction {
-    public title = 'Play this character';
+    public override title = 'Play this character';
 
-    public constructor(card: DrawCard, private intoLocation = PlayCharacterIntoLocation.Any) {
+    public constructor(card: DrawCard, private intoLocation = PlayIntoLocation.Any) {
         super(card, [chooseFate(PlayType.PlayFromHand), payReduceableFateCost()]);
     }
 
-    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
+    public override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
         if(
-            !ignoredRequirements.includes('phase') &&
-            context.game.currentPhase === Phases.Dynasty &&
-            !parseGameMode(context.game.gameMode).dynastyPhaseCanPlayConflictCharacters
+            !ignoredBlockers.includes(Blocker.WrongPhase) &&
+            context.game.currentPhase === Phase.Dynasty &&
+            !context.game.rules.dynastyPhaseCanPlayConflictCharacters
         ) {
-            return 'phase';
+            return Blocker.WrongPhase;
         }
-        if(
-            !ignoredRequirements.includes('location') &&
-            !context.player.isCardInPlayableLocation(context.source, PlayType.PlayFromHand)
-        ) {
-            return 'location';
+        const blocker = getPlayBlocker(context.source, context, ignoredBlockers, PlayType.PlayFromHand);
+        if(blocker) {
+            return blocker;
         }
-        if(
-            !ignoredRequirements.includes('cannotTrigger') &&
-            !context.source.canPlay(context, PlayType.PlayFromHand)
-        ) {
-            return 'cannotTrigger';
+        if(!context.player.checkRestrictions(RestrictionType.PlayCharacter, context)) {
+            return Blocker.CannotPlay;
         }
-        if(context.source.anotherUniqueInPlay(context.player)) {
-            return 'unique';
+        if(!context.player.checkRestrictions(RestrictionType.EnterPlay, context)) {
+            return Blocker.EnterPlayRestricted;
         }
-        if(
-            !context.player.checkRestrictions('playCharacter', context) ||
-            !context.player.checkRestrictions('enterPlay', context)
-        ) {
-            return 'restriction';
+        if(this.intoLocation === PlayIntoLocation.Conflict && !context.source.allowGameAction('putIntoConflict', context)) {
+            return Blocker.CannotEnterConflict;
         }
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredBlockers);
     }
 
-    public executeHandler(context: ExecutionContext): void {
-        const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
-        let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
-        if(!context.source.checkRestrictions('placeFate', context)) {
-            extraFate = 0;
-        }
-        extraFate = extraFate + legendaryFate;
-        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
-            player: context.player,
-            card: context.source,
-            context: context,
-            originalLocation: context.source.location,
-            originallyOnTopOfConflictDeck:
-                context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
-            onPlayCardSource: context.onPlayCardSource,
-            playType: PlayType.PlayFromHand
-        });
+    public override executeHandler(context: AbilityContext<DrawCard>): void {
+        const extraFate = getExtraFateWhenPlayed(context.source, context, false);
+        const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
         const atHomeHandler = () => {
-            context.game.addMessage(
-                '{0} plays {1} at home with {2} additional fate',
-                context.player,
-                context.source,
-                context.chooseFate
-            );
+            context.game.addMessage(msg`${context.player} plays ${context.source} at home with ${context.chooseFate} additional fate`);
             const effect = context.source.getEffects(EffectName.EntersPlayForOpponent);
             const player = effect.length > 0 ? Players.Opponent : Players.Self;
             context.game.openEventWindow([
                 putIntoPlay({
                     fate: context.chooseFate + extraFate,
-                    controller: player,
-                    overrideLocation: Location.Hand
+                    controller: player
                 }).getEvent(context.source, context),
                 cardPlayedEvent
             ]);
         };
         const intoConflictHandler = () => {
-            context.game.addMessage(
-                '{0} plays {1} into the conflict with {2} additional fate',
-                context.player,
-                context.source,
-                context.chooseFate
-            );
+            context.game.addMessage(msg`${context.player} plays ${context.source} into the conflict with ${context.chooseFate} additional fate`);
             context.game.openEventWindow([
-                putIntoConflict({ fate: context.chooseFate }).getEvent(context.source, context),
+                putIntoConflict({ fate: context.chooseFate + extraFate }).getEvent(context.source, context),
                 cardPlayedEvent
             ]);
         };
-        if(
-            context.source.allowGameAction('putIntoConflict', context) &&
-            this.intoLocation !== PlayCharacterIntoLocation.Home
-        ) {
-            if(this.intoLocation === PlayCharacterIntoLocation.Conflict) {
-                return intoConflictHandler();
-            }
-
+        if(this.intoLocation === PlayIntoLocation.Conflict) {
+            return intoConflictHandler();
+        }
+        if(this.intoLocation === PlayIntoLocation.Any && context.source.allowGameAction('putIntoConflict', context)) {
             return context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Where do you wish to play this character?',
                 source: context.source,
-                choices: ['Conflict', 'Home'],
-                handlers: [intoConflictHandler, atHomeHandler]
+                options: [{ text: 'Conflict', handler: intoConflictHandler }, { text: 'Home', handler: atHomeHandler }]
             });
         }
 
         return atHomeHandler();
     }
 
-    public isCardPlayed(): boolean {
+    public override isCardPlayed(): boolean {
         return true;
     }
 }

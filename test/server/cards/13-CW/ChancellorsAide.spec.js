@@ -27,6 +27,19 @@ describe('Chancellor\'s Aide', function() {
                 expect(this.player1).toBeAbleToSelect(this.chancellorsAide);
             });
 
+            it('lets the opponent choose first when they are the first player (EmeraldDB ruling)', function() {
+                this.game.setFirstPlayer(this.player2.player);
+                this.player1.clickCard(this.daidojiKageyu);
+                this.player1.clickCard(this.chancellorsAide);
+                this.player1.clickCard(this.chancellorsAide);
+                expect(this.player2).toHavePrompt('Give an honor to your opponent?');
+                this.player2.clickPrompt('Yes');
+                expect(this.player2).toHavePrompt('Chancellor\'s Aide');
+                this.player2.clickPrompt('player1');
+                expect(this.player1).toHavePrompt('Chancellor\'s Aide');
+                this.player1.clickPrompt('player2');
+            });
+
             it('should give both players a prompt to target a player. Opponent is optional', function() {
                 this.player1.clickCard(this.daidojiKageyu);
                 this.player1.clickCard(this.chancellorsAide);

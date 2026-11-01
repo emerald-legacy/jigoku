@@ -1,37 +1,18 @@
-import type { AbilityContext } from '../../AbilityContext.js';
-import { EventName } from '../../Constants.js';
-import { EventRegistrar } from '../../EventRegistrar.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players } from '../../Constants.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class IkomaAnakazu extends DrawCard {
     static id = 'ikoma-anakazu';
 
-    private brokenProvincesThisPhase = new Map<string, number>();
-    private eventRegistrar?: EventRegistrar;
-
-    public setupCardAbilities() {
-        this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnPhaseEnded]);
-
+    public override setupCardAbilities() {
+        // the opponent is considered to have broken any of your provinces, also outside conflict resolution (ruling #634)
         this.persistentEffect({
-            condition: (context: AbilityContext<this>) =>
-                !!(context.source.isParticipating() &&
-                context.player.opponent &&
-                (this.brokenProvincesThisPhase.get(context.player.opponent.name) ?? 0) > 0),
-            effect: AbilityDsl.effects.modifyBothSkills(3)
+            condition: (context) =>
+                context.source.isParticipating() &&
+                context.game.getConflicts(Players.All).some((record) =>
+                    record.brokenProvinces.some((province) => province.controller === context.player)),
+            effect: modifyBothSkills(3)
         });
-    }
-
-    public onPhaseEnded() {
-        this.brokenProvincesThisPhase.clear();
-    }
-
-    public onBreakProvince(event: EventPayload<EventName.OnBreakProvince>) {
-        if(event.conflict && event.conflict.attackingPlayer) {
-            const oldValue = this.brokenProvincesThisPhase.get(event.conflict.attackingPlayer.name) || 0;
-            this.brokenProvincesThisPhase.set(event.conflict.attackingPlayer.name, oldValue + 1);
-        }
     }
 }

@@ -1,78 +1,31 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, Location } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { gainAbility } from '../../effects.js';
+import { discardCard, rearrangeDeck } from '../../GameActions/GameActions.js';
+import { TargetMode } from '../../Constants.js';
 
 class ShojusDiviner extends DrawCard {
     static id = 'shoju-s-diviner';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Divine your conflict deck',
-                printedAbility: false,
-                condition: (context: AbilityContext) => context.player.conflictDeck.length > 0,
-                effect: 'look at the top 8 cards of their conflict deck',
-                gameAction: AbilityDsl.actions.handler({
-                    handler: (context: AbilityContext) => {
-                        const cards = context.player.conflictDeck.slice(0, 8);
-                        const chosenCards: DrawCard[] = [];
-
-                        this.selectPrompt(context, cards, chosenCards);
-                    }
+            effect: gainAbility.action('Divine your conflict deck', (ability) => ability
+                .deckSearch({
+                    cardsToLookAt: 8,
+                    mode: TargetMode.Unlimited,
+                    reveal: false,
+                    activePromptTitle: 'Select the cards to discard',
+                    doneButtonText: 'Done',
+                    gameAction: discardCard(),
+                    message: (context, cards) => msg`${context.player} discards ${cards}`,
+                    takesNothingMessage: () => undefined,
+                    remainingCardsHandler: (context, _event, cards) => cards.length > 0 && rearrangeDeck({
+                        cards,
+                        message: (context, ordered) => msg`${context.player} places ${ordered.length} card${ordered.length > 1 ? 's' : ''} on top of their deck`
+                    }).resolve(context.player, context)
                 })
-            })
+                .chatText('look at the top 8 cards of their conflict deck'))
         });
-    }
-
-    selectPrompt(context: AbilityContext, cards: DrawCard[], chosenCards: DrawCard[]) {
-        if(!cards || cards.length <= 0) {
-            return;
-        }
-
-        const cardHandler = (currentCard: DrawCard) => {
-            cards = cards.filter((a: DrawCard) => a !== currentCard);
-            chosenCards.push(currentCard);
-            this.promptWithMenu(context, cards, chosenCards, cardHandler);
-        };
-
-        this.promptWithMenu(context, cards, chosenCards, cardHandler);
-
-    }
-
-    promptWithMenu(context: AbilityContext, cards: DrawCard[], chosenCards: DrawCard[], cardHandler: (card: DrawCard) => void) {
-        if(!cards || cards.length <= 0) {
-            this.handleCards(context, cards, chosenCards);
-            return;
-        }
-
-        let promptInfo = 'on top of your deck';
-        if(chosenCards.length > 0) {
-            promptInfo = `under ${chosenCards[chosenCards.length - 1].name}`;
-        }
-        const prompt = `Select the card to put ${promptInfo}`;
-
-        this.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: prompt,
-            context: context,
-            cards: cards,
-            cardHandler: cardHandler,
-            choices: ['Discard the rest'],
-            handlers: [() => {
-                this.handleCards(context, cards, chosenCards);
-            }]
-        });
-    }
-
-    handleCards(context: AbilityContext, cards: DrawCard[], chosenCards: DrawCard[]) {
-        if(cards && cards.length > 0) {
-            this.game.addMessage('{0} discards {1}', context.player, cards);
-            cards.forEach((card: DrawCard) => context.player.moveCard(card, Location.ConflictDiscardPile));
-        }
-        if(chosenCards.length > 0) {
-            this.game.addMessage('{0} places {1} card{2} on top of their deck', context.player, chosenCards.length, chosenCards.length > 1 ? 's' : '');
-            context.player.conflictDeck.splice(0, chosenCards.length, ...chosenCards);
-        }
     }
 }
 
