@@ -252,7 +252,14 @@ export class CardAbility extends ResolvableAbility {
             context.source.location !== Location.Hand &&
             context.source.location !== Location.BeingPlayed
         ) {
-            this.game.addMessage(msg`${context.player} plays ${context.source} from ${context.source.controller === context.player ? 'their' : 'their opponent\'s'} ${this.getLocationMessage(context.source)}`);
+            const setAsideBy = context.source.isDrawCard() && context.source.location === Location.RemovedFromGame
+                ? context.source.fromOutOfPlaySource?.at(-1)
+                : undefined;
+            if(setAsideBy) {
+                this.game.addMessage(msg`${context.player} plays ${context.source} from the cards set aside by ${setAsideBy}`);
+            } else {
+                this.game.addMessage(msg`${context.player} plays ${context.source} from ${context.source.controller === context.player ? 'their' : 'their opponent\'s'} ${this.getLocationMessage(context.source)}`);
+            }
         }
 
         if(this.properties.message) {

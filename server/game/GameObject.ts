@@ -167,12 +167,12 @@ export class GameObject {
         const targetingCost = totalTargetingCost(targetingCosts(context, targets.filter((target) => target.isCard())));
 
         if(context.stage === Stage.PreTarget || context.stage === Stage.Cost) {
-            //costs aren't paid yet: the pool fate left for targeting once the card's cost (less alternate fate) and other fate costs are paid
+            //costs aren't paid yet: the pool fate left for targeting once the card's cost (less alternate fate) and other fate costs, additional ones included, are paid
             //a Mahō card's cost is paid with fate on characters, never from the pool
             const cardCost = context.source.isTemptationsMaho()
                 ? 0
                 : Math.max(context.ability.getReducedCost(context) - context.player.getAvailableAlternateFate(context), 0);
-            const fateCost = cardCost + context.ability.cost.reduce((sum, cost) => sum + (cost.fateSpent?.(context) ?? 0), 0);
+            const fateCost = cardCost + context.ability.getCosts(context).reduce((sum, cost) => sum + (cost.fateSpent?.(context) ?? 0), 0);
             const availableFate = Math.max(context.player.fate - fateCost, 0);
 
             return targetingCost <= Math.min(availableFate, context.player.getSpendableFate(context));

@@ -107,6 +107,7 @@ function grantFor(args: GainAbilityArgs): Grant {
 }
 
 export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
+    args: GainAbilityArgs;
     abilityType: AbilityType;
     createCopies: boolean;
     forCopying: GainAbilityArgs | undefined;
@@ -119,6 +120,7 @@ export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
 
     constructor(...args: GainAbilityArgs) {
         super(true);
+        this.args = args;
         this.abilityType = args[0];
         this.createCopies = false;
         if(args[0] === AbilityType.Persistent && !isCopy(args) && args[1].createCopies) {
@@ -140,6 +142,22 @@ export class GainAbility extends EffectValue<GainedAbilityValue, BaseCard> {
 
     override reset() {
         this.grantedAbilityLimits = {};
+    }
+
+    // each effect grants its own ability: a copy of the card (Shosuro Actor) or another use of the same ability
+    // (Voice of the Ancestors) must not take over this one's
+    override copyForEffect(): GainAbility {
+        const copy = new GainAbility(...this.args);
+        if(copy.grant.kind !== AbilityType.Persistent && !isCopy(this.args)) {
+            const properties = copy.grant.properties;
+            if(properties.limit) {
+                properties.limit = properties.limit.clone();
+            }
+            if(properties.max) {
+                properties.max = properties.max.clone();
+            }
+        }
+        return copy;
     }
 
     override copyForTarget(): GainAbility | undefined {

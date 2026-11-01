@@ -1,7 +1,7 @@
 import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { EffectName, Location, Phase, PlayType, Players, Blocker, RestrictionType } from './Constants.js';
+import { EffectName, Phase, PlayType, Players, Blocker, RestrictionType } from './Constants.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
@@ -57,8 +57,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
             context.game.openEventWindow([
                 putIntoPlay({
                     fate: context.chooseFate + extraFate,
-                    controller: player,
-                    overrideLocation: Location.Hand
+                    controller: player
                 }).getEvent(context.source, context),
                 cardPlayedEvent
             ]);

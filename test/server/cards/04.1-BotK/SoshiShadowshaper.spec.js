@@ -46,17 +46,19 @@ describe('Soshi Shadowshaper', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.togashiKazue);
             });
 
-            it('should be able to target characters which were played as if from hand', function() {
+            it('should not be able to target characters which were played as if from hand (ruling #427)', function() {
                 this.noMoreActions();
                 expect(this.game.currentPhase).toBe('conflict');
                 this.player1.clickCard(this.brash);
                 this.player1.clickPrompt('0');
+                expect(this.brash.location).toBe('play area');
+                this.player2.pass();
+                this.adeptOfShadows = this.player1.playCharacterFromHand('adept-of-shadows');
                 this.player2.pass();
                 this.soshiShadowshaper = this.player1.clickCard('soshi-shadowshaper');
                 expect(this.player1).toHavePrompt('Soshi Shadowshaper');
-                expect(this.player1).toBeAbleToSelect(this.brash);
-                this.player1.clickCard(this.brash);
-                expect(this.brash.location).toBe('dynasty discard pile');
+                expect(this.player1).toBeAbleToSelect(this.adeptOfShadows);
+                expect(this.player1).not.toBeAbleToSelect(this.brash);
             });
 
             it('should target characters played from hand by either player', function() {

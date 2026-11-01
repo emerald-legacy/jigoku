@@ -60,5 +60,31 @@ describe('Akodo Gunso', function () {
                 expect(this.newCard.facedown).toBe(false);
             });
         });
+
+        describe('Akodo Gunso played as if from hand', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 10,
+                        dynastyDiscard: ['hidden-moon-dojo', 'akodo-gunso']
+                    }
+                });
+                this.dojo = this.player1.placeCardInProvince('hidden-moon-dojo', 'province 1');
+                this.dojo.facedown = false;
+                this.akodoGunso = this.player1.placeCardInProvince('akodo-gunso', 'province 2');
+                this.akodoGunso.facedown = false;
+            });
+
+            it('should trigger: it entered play from a province', function () {
+                this.player1.clickCard(this.akodoGunso);
+                this.player1.clickPrompt('0');
+                expect(this.akodoGunso.location).toBe('play area');
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.akodoGunso);
+                this.player1.clickCard(this.akodoGunso);
+                expect(this.player1.player.getDynastyCardInProvince('province 2').facedown).toBe(false);
+            });
+        });
     });
 });

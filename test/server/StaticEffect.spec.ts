@@ -81,6 +81,7 @@ describe('StaticEffect', function() {
             const copies = [copy1, copy2];
             let next = 0;
             spyOn(gain, 'getCopy').and.callFake(() => copies[next++]);
+            spyOn(gain, 'copyForEffect').and.returnValue(gain);
 
             effect = new StaticEffect(EffectName.GainAbility, gain);
             effect.apply(target1);

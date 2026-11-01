@@ -45,3 +45,44 @@ describe('Costs to target', function () {
         });
     });
 });
+
+describe('A targeting cost on top of an additional cost to trigger (Magistrate of Reason)', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    inPlay: ['magistrate-of-reason', 'adept-of-the-waves', 'doji-challenger'],
+                    hand: ['to-show-the-path']
+                },
+                player2: {
+                    fate: 1,
+                    inPlay: ['adept-of-the-waves']
+                }
+            });
+            this.magistrate = this.player1.findCardByName('magistrate-of-reason');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.path = this.player1.findCardByName('to-show-the-path');
+            this.adept2 = this.player2.findCardByName('adept-of-the-waves');
+
+            this.player1.clickCard(this.path);
+            this.player1.clickCard(this.challenger);
+            expect(this.getChatLogs(5).some((line) => line.includes('To Show the Path'))).toBe(true);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.magistrate],
+                defenders: [],
+                type: 'military'
+            });
+        });
+
+        it('does not offer a target whose fate cost can\'t be paid besides the fate to a ring', function () {
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.player2.fate).toBe(1);
+            this.player2.clickCard(this.adept2);
+            expect(this.player2).toBeAbleToSelect(this.adept2);
+            expect(this.player2).not.toBeAbleToSelect(this.challenger);
+        });
+    });
+});
