@@ -67,6 +67,8 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
         context.ability.abilityType === AbilityType.Action,
     [RestrictionScope.OwnCardEffects]: (context, effect) =>
         context.player === getApplyingPlayer(effect) && isCardEffect(context),
+    [RestrictionScope.OwnPrintedAbilities]: (context, effect) =>
+        context.player === getApplyingPlayer(effect) && !!context.ability.printedAbility,
     [RestrictionScope.AllButOwnCardEffects]: (context, effect) =>
         !checkRestrictions[RestrictionScope.OwnCardEffects](context, effect),
     [RestrictionScope.OpponentsCardAbilities]: (context, effect) =>

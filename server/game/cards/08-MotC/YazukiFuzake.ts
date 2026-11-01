@@ -18,7 +18,6 @@ class YasukiFuzake extends DrawCard {
             })
             .target({
                 name: 'first',
-                optional: true,
                 cardType: CardType.Character
             }, discardStatusToken((context) => ({
                 target: statusTokensOf(context.targets.first)

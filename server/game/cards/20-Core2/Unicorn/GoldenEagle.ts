@@ -1,5 +1,5 @@
 import { loseKeyword } from '../../../effects.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { CardType, EffectName, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 
@@ -15,6 +15,13 @@ export default class GoldenEagle extends DrawCard {
             targetLocation: Location.PlayArea,
             match: (card) => card.type === CardType.Character,
             effect: loseKeyword('covert')
+        });
+        this.persistentEffect({
+            location: Location.Any,
+            targetController: Players.Any,
+            // as an attachment it has only its attachment text (Serene Ise Zumi, ruling #851)
+            condition: (context) => context.source.getEffects(EffectName.ChangeType).includes(CardType.Attachment),
+            effect: loseKeyword('courtesy')
         });
     }
 }

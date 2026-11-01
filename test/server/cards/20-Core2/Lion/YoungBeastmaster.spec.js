@@ -68,3 +68,34 @@ describe('Young Beastmaster', function() {
         });
     });
 });
+
+describe('Young Beastmaster with a single card in the dynasty deck', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['young-beastmaster']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.beastmaster = this.player1.findCardByName('young-beastmaster');
+            this.player1.reduceDeckToNumber('dynasty deck', 1);
+            this.lastCard = this.player1.player.dynastyDeck[0];
+        });
+
+        it('should not trigger, as the cost can\'t be paid in full', function() {
+            expect(this.player1.player.dynastyDeck.length).toBe(1);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.beastmaster]
+            });
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Choose defenders');
+            expect(this.lastCard.location).toBe('dynasty deck');
+        });
+    });
+});

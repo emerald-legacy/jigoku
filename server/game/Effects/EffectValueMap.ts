@@ -213,6 +213,7 @@ export interface EffectValueMap {
     [EffectName.CanPlayFromOutOfPlay]: CanPlayFromOutOfPlayValue;
     [EffectName.CanPlayFromOpponents]: boolean;
     [EffectName.CannotResolveRings]: boolean;
+    [EffectName.CancelFirstAction]: boolean;
     [EffectName.ChangePlayerGloryModifier]: number;
     [EffectName.ChangePlayerSkillModifier]: number;
     [EffectName.ChangePlayerResolutionSkillModifier]: number;

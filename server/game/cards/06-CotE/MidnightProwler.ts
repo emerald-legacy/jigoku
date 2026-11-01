@@ -12,7 +12,7 @@ export default class MidnightProwler extends DrawCard {
                 afterConflict: (event, context) =>
                     this.game.isDuringConflict(ConflictType.Military) &&
                     event.conflict.isOnWinningSide(context.source) &&
-                    context.player.opponent !== undefined
+                    (context.player.opponent?.conflictDeck.length ?? 0) > 0
             })
             .cardMenu((context) => ({
                 activePromptTitle: 'Which card do you want to discard?',

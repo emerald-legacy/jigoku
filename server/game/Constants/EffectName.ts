@@ -117,6 +117,8 @@ export enum EffectName {
     CanPlayFromOutOfPlay = 'canPlayFromOutOfPlay',
     CanPlayFromOpponents = 'canPlayFromOpponents',
     CannotResolveRings = 'cannotResolveRings',
+    /** Hida Kisada: the player's first action ability in each conflict is cancelled. */
+    CancelFirstAction = 'cancelFirstAction',
     ChangePlayerGloryModifier = 'changePlayerGloryModifier',
     ChangePlayerSkillModifier = 'changePlayerSkillModifier',
     ChangePlayerResolutionSkillModifier = 'changePlayerResolutionSkillModifier',

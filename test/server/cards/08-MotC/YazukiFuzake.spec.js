@@ -52,10 +52,17 @@ describe('Yasuki Fuzake', function() {
                 expect(this.yasukiFuzake.location).toBe('dynasty discard pile');
             });
 
-            it('should name only the chosen character when the first is skipped', function() {
+            it('should not let the player skip the first choice', function() {
                 this.player1.clickCard(this.yasukiFuzake);
-                this.player1.clickPrompt('Done');
+                expect(this.player1).toHavePrompt('Choose a character');
+                expect(this.player1).toBeAbleToSelect(this.asahinaStoryteller);
+                expect(this.player1).not.toHavePromptButton('Done');
+            });
+
+            it('should name only the chosen character when the second is skipped', function() {
+                this.player1.clickCard(this.yasukiFuzake);
                 this.player1.clickCard(this.asahinaStoryteller);
+                this.player1.clickPrompt('Done');
                 expect(this.asahinaStoryteller.isHonored).toBe(false);
                 expect(this.getChatLogs(5)).toContain('player1 uses Yasuki Fuzake to discard all status tokens from Asahina Storyteller');
             });
@@ -87,6 +94,33 @@ describe('Yasuki Fuzake', function() {
                 expect(this.asahinaStoryteller.isTainted).toBe(false);
                 expect(this.yasukiFuzake.location).toBe('dynasty discard pile');
             });
+        });
+    });
+});
+
+describe('Yasuki Fuzake with no status token in play', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['yasuki-fuzake'],
+                    hand: ['way-of-the-crab']
+                },
+                player2: {
+                    inPlay: ['moto-chagatai']
+                }
+            });
+            this.fuzake = this.player1.findCardByName('yasuki-fuzake');
+            this.wayOfTheCrab = this.player1.findCardByName('way-of-the-crab');
+        });
+
+        it('should not trigger, as there is no status token to discard', function() {
+            this.player1.clickCard(this.wayOfTheCrab);
+            this.player1.clickCard(this.fuzake);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.fuzake.location).toBe('dynasty discard pile');
+            expect(this.player2).toHavePrompt('Choose a character to sacrifice');
         });
     });
 });

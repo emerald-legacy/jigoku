@@ -1,5 +1,6 @@
 import { msg } from '../../GameChat.js';
-import { AbilityType, CardType, EventName, Location } from '../../Constants.js';
+import { AbilityType, CardType, EffectName, EventName, Players } from '../../Constants.js';
+import { EffectBuilder } from '../../Effects/EffectBuilder.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { Event } from '../../Events/Event.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
@@ -11,15 +12,37 @@ export default class HidaKisada extends DrawCard {
     private firstActionEvent = new Map<string, Event>();
 
     public override setupCardAbilities() {
-        const abilityRegistrar = new EventRegistrar(this.game);
-        abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.WouldInterrupt, (event) => this.onInitiateAbilityEffectsWouldInterrupt(event));
-        abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.OtherEffects, (event) => this.onInitiateAbilityEffectsOtherEffects(event));
-        abilityRegistrar.register({
-            [EventName.OnConflictDeclared]: () => this.onConflictDeclared()
+        // bookkeeping only, so a copy of the ability knows which action came first
+        const registrar = new EventRegistrar(this.game);
+        registrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.WouldInterrupt, (event) => this.recordFirstAction(event));
+        registrar.register({
+            [EventName.OnConflictDeclared]: () => this.firstActionEvent.clear()
+        });
+
+        this.persistentEffect({
+            targetController: Players.Opponent,
+            effect: EffectBuilder.player.detached(EffectName.CancelFirstAction, {
+                apply: (player, context) => {
+                    const cancels = new EventRegistrar(this.game);
+                    cancels.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.OtherEffects, (event) => {
+                        if(
+                            event.context.player === player &&
+                            this.firstActionEvent.get(player.uuid) === event &&
+                            !event.cancelled &&
+                            !this.game.conflictRecord.some((conflict) => conflict.winner === context.player.opponent)
+                        ) {
+                            event.cancel();
+                            this.game.addMessage(msg`${player} attempts to initiate ${event.card}${event.card.type === CardType.Event ? '' : '\'s ability'}, but ${context.source} cancels it`);
+                        }
+                    });
+                    return cancels;
+                },
+                unapply: (_player, _context, cancels) => cancels.unregisterAll()
+            })
         });
     }
 
-    public onInitiateAbilityEffectsWouldInterrupt(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
+    private recordFirstAction(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
         if(
             !event.resolvedWithoutTriggering &&
             !this.firstActionEvent.has(event.context.player.uuid) &&
@@ -30,23 +53,5 @@ export default class HidaKisada extends DrawCard {
         ) {
             this.firstActionEvent.set(event.context.player.uuid, event);
         }
-    }
-
-    public onInitiateAbilityEffectsOtherEffects(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
-        if(
-            this.firstActionEvent.get(event.context.player.uuid) === event &&
-            event.context.player === this.controller.opponent &&
-            !event.cancelled &&
-            this.location === Location.PlayArea &&
-            !this.isBlank() &&
-            !this.game.conflictRecord.some((conflict) => conflict.winner === this.controller.opponent)
-        ) {
-            event.cancel();
-            this.game.addMessage(msg`${event.context.player} attempts to initiate ${event.card}${event.card.type === CardType.Event ? '' : '\'s ability'}, but ${this} cancels it`);
-        }
-    }
-
-    public onConflictDeclared() {
-        this.firstActionEvent.clear();
     }
 }

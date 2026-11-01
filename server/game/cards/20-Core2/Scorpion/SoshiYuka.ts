@@ -14,7 +14,7 @@ export default class SoshiYuka extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 player: Players.Opponent,
-                cardCondition: (card) => !card.bowed
+                cardCondition: (card, context) => bow().canAffect(card, context)
             })
             .selectCard((context) => ({
                 cardType: CardType.Character,

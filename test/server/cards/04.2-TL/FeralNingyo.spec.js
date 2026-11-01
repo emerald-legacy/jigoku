@@ -172,3 +172,43 @@ describe('Feral Ningyo played normally', function () {
     });
 });
 
+describe('Feral Ningyo when it cannot enter play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['expert-interpreter', 'matsu-berserker']
+                },
+                player2: {
+                    hand: ['feral-ningyo']
+                }
+            });
+            this.interpreter = this.player1.findCardByName('expert-interpreter');
+            this.ningyo = this.player2.findCardByName('feral-ningyo');
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.interpreter);
+            this.player1.clickRing('water');
+            this.player2.clickPrompt('No');
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'water',
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                defenders: []
+            });
+        });
+
+        it('cannot use the Action from hand while characters cannot enter play', function () {
+            expect(this.game.currentConflict.ring.element).toBe('water');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.clickCard(this.ningyo);
+            expect(this.ningyo.location).toBe('hand');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.getChatLogs(5)).not.toContain(jasmine.stringMatching('uses Feral Ningyo'));
+        });
+    });
+});

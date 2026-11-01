@@ -20,6 +20,22 @@ class ConsumedByFiveFires extends DrawCard {
             .chatText((context) => msg`remove fate from ${context.player.opponent}'s characters`);
     }
 
+    private removeChosenFate(context: AbilityContext, targets: Record<string, number>, messages: MsgArg[]) {
+        const opponent = context.player.opponent;
+        if(!opponent) {
+            return;
+        }
+        this.game.addMessage(msg`${context.player} chooses to: ${messages}`);
+        const events = Object.keys(targets).map((key) => {
+            const card = opponent.cardsInPlay.find((c) => c.uuid === key);
+            if(card) {
+                return GameActions.removeFate({ amount: targets[key] }).getEvent(card, context);
+            }
+            return undefined;
+        }).filter((obj): obj is NonNullable<typeof obj> => !!obj);
+        this.game.openThenEventWindow(events);
+    }
+
     private chooseCard(context: AbilityContext, targets: Record<string, number>, messages: MsgArg[]) {
         const fateRemaining = 5 - Object.values(targets).reduce((totalFate: number, fateToRemove: number) => totalFate + fateToRemove, 0);
         if(!context.player.opponent) {
@@ -27,21 +43,20 @@ class ConsumedByFiveFires extends DrawCard {
         }
         const opponent = context.player.opponent;
         if(fateRemaining === 0 || !opponent.cardsInPlay.some((card) => removeFate().canAffect(card, context) && !Object.keys(targets).includes(card.uuid))) {
-            this.game.addMessage(msg`${context.player} chooses to: ${messages}`);
-            const keys = Object.keys(targets);
-            const events = keys.map((key) => {
-                const card = opponent.cardsInPlay.find((c) => c.uuid === key);
-                if(card) {
-                    return GameActions.removeFate({ amount: targets[key] }).getEvent(card, context);
-                }
-                return undefined;
-            }).filter((obj): obj is NonNullable<typeof obj> => !!obj);
-            this.game.openThenEventWindow(events);
+            this.removeChosenFate(context, targets, messages);
             return;
         }
         this.game.promptForSelect(context.player, {
             context: context,
             cardType: CardType.Character,
+            buttons: Object.keys(targets).length > 0 ? [{ text: 'Done', arg: 'finish' }] : [],
+            onMenuCommand: (_player, arg) => {
+                if(arg !== 'finish') {
+                    return false;
+                }
+                this.removeChosenFate(context, targets, messages);
+                return true;
+            },
             cardCondition: (card) => card.location === Location.PlayArea && removeFate().canAffect(card, context) && card.controller !== context.player && !Object.keys(targets).includes(card.uuid),
             onSelect: (player, card) => {
                 const maxFate = Math.min(fateRemaining, card.getFate());

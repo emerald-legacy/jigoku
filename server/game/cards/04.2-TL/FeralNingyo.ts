@@ -10,7 +10,8 @@ class FeralNingyo extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Put into play')
-            .condition(() => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
+            .condition((context) => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)) &&
+                (context.source.location === Location.PlayArea || putIntoConflict().canAffect(context.source, context)))
             // also while in play, when it was played normally: then it only returns at the end of the conflict
             .location([Location.Hand, Location.PlayArea])
             .gameAction(sequential([

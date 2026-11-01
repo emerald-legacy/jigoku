@@ -1,4 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
+import { RingAbilities } from '../../RingAbilities.js';
 
 export default class TempleOfTheDragons extends ProvinceCard {
     static id = 'temple-of-the-dragons';
@@ -8,6 +9,8 @@ export default class TempleOfTheDragons extends ProvinceCard {
             .when({
                 onCardRevealed: (event, context) => event.card === context.source
             })
+            .condition((context) => (context.game.currentConflict?.elements ?? []).some((element) =>
+                RingAbilities.contextFor(context.player, element, false).ability.hasLegalTargets(context)))
             .resolveConflictRing();
     }
 }

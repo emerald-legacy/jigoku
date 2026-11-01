@@ -25,7 +25,7 @@ export default class LightningAscends extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect((context) => ({
-                effect: context.targets.enemy.traits.map((t) => loseTrait(t))
+                effect: [...context.targets.enemy.getTraits()].map((t) => loseTrait(t))
             })))
             .chatText((context) => msg`grant +2 ${'military'} to ${context.targets.monk} and remove all traits from ${context.targets.enemy}`);
     }

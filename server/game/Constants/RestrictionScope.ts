@@ -35,6 +35,8 @@ export enum RestrictionScope {
     OpponentsTriggeredAbilities = 'opponentsTriggeredAbilities',
     OpponentsTriggeredActionAbilities = 'opponentsTriggeredActionAbilities',
     OwnCardEffects = 'ownCardEffects',
+    /** The applying player's printed abilities of the card ("You cannot trigger X's printed abilities"). */
+    OwnPrintedAbilities = 'ownPrintedAbilities',
     /** Everything except the applying player's own card effects (also playing the card). */
     AllButOwnCardEffects = 'allButOwnCardEffects',
     Reactions = 'reactions',

@@ -45,9 +45,9 @@ describe('Traveling Tinker', function () {
             expect(this.player1).toHavePrompt('Choose an attachment');
             expect(this.player1).toBeAbleToSelect(this.katana);
             expect(this.player1).toBeAbleToSelect(this.fan);
-            expect(this.player1).toBeAbleToSelect(this.ann);
+            expect(this.player1).not.toBeAbleToSelect(this.ann);
             expect(this.player1).toBeAbleToSelect(this.blade);
-            expect(this.player1).toBeAbleToSelect(this.talisman);
+            expect(this.player1).not.toBeAbleToSelect(this.talisman);
 
             this.player1.clickCard(this.katana);
             expect(this.tinkerer.militarySkill).toBe(1);

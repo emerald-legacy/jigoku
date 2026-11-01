@@ -12,10 +12,9 @@ export default class StokeInsurrection extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            condition: (context) =>
-                context.player.opponent !== undefined && this.getFaceDownProvinceCards(context.player.opponent) >= 4,
             effect: reduceCost({
-                amount: 2,
+                amount: (_card, player: Player) =>
+                    player.opponent && this.getFaceDownProvinceCards(player.opponent) >= 4 ? 2 : 0,
                 match: (card, source) => card === source
             })
         });

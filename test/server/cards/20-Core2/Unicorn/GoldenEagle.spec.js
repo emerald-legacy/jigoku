@@ -36,3 +36,41 @@ describe('Golden Eagle', function() {
         });
     });
 });
+
+describe('Golden Eagle played as an attachment', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    inPlay: ['doji-whisperer'],
+                    hand: ['golden-eagle']
+                },
+                player2: {
+                    inPlay: ['underhanded-samurai'],
+                    hand: ['let-go']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.eagle = this.player1.findCardByName('golden-eagle');
+            this.letGo = this.player2.findCardByName('let-go');
+
+            this.player1.playAttachment(this.eagle, this.whisperer);
+            expect(this.eagle.parent).toBe(this.whisperer);
+        });
+
+        it('should not have Courtesy', function () {
+            expect(this.eagle.hasKeyword('courtesy')).toBe(false);
+        });
+
+        it('should give no fate when it is discarded', function () {
+            const fate = this.player1.fate;
+            this.player2.clickCard(this.letGo);
+            this.player2.clickCard(this.eagle);
+            expect(this.eagle.location).toBe('conflict discard pile');
+            expect(this.player1.fate).toBe(fate);
+            expect(this.getChatLogs(5)).not.toContain('player1 gains a fate due to Golden Eagle\'s Courtesy');
+        });
+    });
+});

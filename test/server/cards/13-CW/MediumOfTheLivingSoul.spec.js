@@ -96,6 +96,28 @@ describe('Medium of the Living Soul', function() {
             expect(this.getChatLogs(2)).toContain('player1 uses Maker of Keepsakes\'s gained ability from Medium of the Living Soul, removing 1 fate from Maker of Keepsakes to resolve Air Ring effect');
         });
 
+        it('should not trigger after the ring effect was not resolved', function() {
+            const honor = this.player1.honor;
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.keepsakes, this.kami],
+                defenders: [],
+                type: 'military',
+                ring: 'air'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.medium);
+            this.player1.clickCard(this.keepsakes);
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.getChatLogs(5)).toContain('player1 chooses not to resolve the air ring');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.keepsakes.fate).toBe(1);
+            expect(this.player1.honor).toBe(honor);
+        });
+
         it('should allow resolving the ring effect again (Mitsu)', function() {
             this.noMoreActions();
             this.initiateConflict({

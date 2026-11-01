@@ -50,3 +50,39 @@ describe('Kabuki Hero', function() {
         });
     });
 });
+
+describe('Kabuki Hero at 0 political skill', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 3,
+                    inPlay: ['kabuki-hero']
+                },
+                player2: {
+                    inPlay: ['sinister-soshi']
+                }
+            });
+            this.kabukiHero = this.player1.findCardByName('kabuki-hero');
+            this.soshi = this.player2.findCardByName('sinister-soshi');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.kabukiHero],
+                defenders: []
+            });
+            this.player2.clickCard(this.soshi);
+            this.player2.clickCard(this.kabukiHero);
+        });
+
+        it('should not be usable, as +0 changes nothing', function() {
+            expect(this.kabukiHero.politicalSkill).toBe(0);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.kabukiHero);
+            expect(this.player1.fate).toBe(3);
+            expect(this.kabukiHero.militarySkill).toBe(0);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

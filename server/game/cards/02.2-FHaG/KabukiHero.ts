@@ -8,7 +8,7 @@ class KabukiHero extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Gain military bonus')
-            .condition(() => this.game.isDuringConflict())
+            .condition((context) => this.game.isDuringConflict() && context.source.politicalSkill > 0)
             .cost(costs.payFate(1))
             .cardLastingEffect((context) => ({
                 effect: modifyMilitarySkill(context.source.politicalSkill)

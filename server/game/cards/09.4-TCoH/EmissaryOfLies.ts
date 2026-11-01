@@ -12,7 +12,7 @@ class EmissaryOfLies extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => card.isParticipating() && sendHome().canAffect(card, context)
             })
             .gameAction(nameCard((context) => ({
                 player: Players.Opponent,

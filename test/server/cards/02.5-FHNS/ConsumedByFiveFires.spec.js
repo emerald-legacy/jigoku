@@ -27,5 +27,18 @@ describe('Consumed by Five Fires', function() {
             expect(this.whisperer.fate).toBe(1);
             expect(this.getChatLogs(5)).toContain('player1 chooses to: remove 3 fate from Doji Challenger and remove 2 fate from Doji Whisperer');
         });
+
+        it('lets the player stop before 5 fate are chosen', function() {
+            this.player1.clickCard('consumed-by-five-fires');
+            expect(this.player1).not.toHavePromptButton('Done');
+            this.player1.clickCard(this.challenger);
+            this.player1.clickPrompt('1');
+            expect(this.player1).toHavePromptButton('Done');
+            this.player1.clickPrompt('Done');
+            expect(this.challenger.fate).toBe(2);
+            expect(this.whisperer.fate).toBe(3);
+            expect(this.getChatLogs(5)).toContain('player1 chooses to: remove 1 fate from Doji Challenger');
+            expect(this.player2).toHavePrompt('Action Window');
+        });
     });
 });

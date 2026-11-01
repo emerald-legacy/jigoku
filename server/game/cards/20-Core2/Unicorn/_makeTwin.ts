@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { blank } from '../../../effects.js';
+import { cardCannot } from '../../../effects.js';
 import {
     attach,
     cardLastingEffect,
@@ -12,7 +12,7 @@ import {
     returnToDeck,
     sequential
 } from '../../../GameActions/GameActions.js';
-import { DeckType, Duration, Location, RemainingCards } from '../../../Constants.js';
+import { DeckType, Duration, Location, RemainingCards, RestrictionScope, RestrictionType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
@@ -80,7 +80,11 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
             sequential(sequence).resolve(newCharacter, context);
 
             cardLastingEffect({
-                effect: blank(),
+                effect: cardCannot({
+                    cannot: RestrictionType.TriggerAbilities,
+                    appliesTo: RestrictionScope.OwnPrintedAbilities,
+                    applyingPlayer: context.player
+                }),
                 duration: Duration.UntilEndOfRound,
                 target: newCharacter
             })

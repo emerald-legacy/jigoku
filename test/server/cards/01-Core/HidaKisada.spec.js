@@ -284,3 +284,53 @@ describe('Hida Kisada and resolved abilities', function() {
         });
     });
 });
+
+describe('Hida Kisada\'s ability switched by Ebb and Flow', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['banzai', 'ebb-and-flow']
+                },
+                player2: {
+                    inPlay: ['hida-kisada'],
+                    hand: ['banzai']
+                }
+            });
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.banzai1 = this.player1.findCardByName('banzai');
+            this.ebb = this.player1.findCardByName('ebb-and-flow');
+            this.kisada = this.player2.findCardByName('hida-kisada');
+            this.banzai2 = this.player2.findCardByName('banzai');
+        });
+
+        it('should let the Shugenja that gained it cancel player2\'s first action', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.adept],
+                defenders: [this.kisada]
+            });
+            this.player2.pass();
+
+            this.player1.clickCard(this.banzai1);
+            this.player1.clickCard(this.adept);
+            expect(this.getChatLogs(3)).toContain('player1 attempts to initiate Banzai!, but Hida Kisada cancels it');
+
+            this.player2.pass();
+            this.player1.clickCard(this.ebb);
+            this.player1.clickCard(this.adept);
+            this.player1.clickCard(this.kisada);
+            this.player1.clickPrompt('Yes');
+            expect(this.getChatLogs(5)).toContain('player1 channels their water affinity to swap the abilities of Adept of the Waves and Hida Kisada');
+            expect(this.kisada.getMilitarySkill()).toBe(2);
+
+            this.player2.clickCard(this.banzai2);
+            this.player2.clickCard(this.kisada);
+            expect(this.getChatLogs(3)).toContain('player2 attempts to initiate Banzai!, but Adept of the Waves cancels it');
+            expect(this.kisada.getMilitarySkill()).toBe(2);
+        });
+    });
+});

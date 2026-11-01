@@ -61,9 +61,11 @@ describe('Temple of the Dragons', function() {
                 });
             });
 
-            it('should trigger ?', function () {
-                expect(this.player2).toHavePrompt('Triggered Abilities');
-                expect(this.player2).toBeAbleToSelect(this.totd);
+            it('should not trigger, as the Void ring finds no fate to remove', function () {
+                expect(this.zerker.fate).toBe(0);
+                expect(this.totd.isFacedown()).toBe(false);
+                expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2).toHavePrompt('Choose defenders');
             });
         });
 

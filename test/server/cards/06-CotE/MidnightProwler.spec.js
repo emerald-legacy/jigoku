@@ -91,3 +91,34 @@ describe('Midnight Prowler when not winning a military conflict', function() {
         });
     });
 });
+
+describe('Midnight Prowler with an empty opponent conflict deck', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['midnight-prowler']
+                },
+                player2: {
+                    inPlay: ['shinjo-outrider']
+                }
+            });
+            this.midnightProwler = this.player1.findCardByName('midnight-prowler');
+            this.player2.reduceDeckToNumber('conflict deck', 0);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.midnightProwler],
+                defenders: []
+            });
+        });
+
+        it('should not trigger, as there are no cards to look at', function() {
+            this.noMoreActions();
+            expect(this.player2.conflictDeck.length).toBe(0);
+            expect(this.getChatLogs(10)).toContain('player1 won a military conflict 2 vs 0');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

@@ -63,3 +63,44 @@ describe('Lightning Ascends', function () {
         });
     });
 });
+
+describe('Lightning Ascends on a character with a gained trait', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['itinerant-philosopher'],
+                    hand: ['lightning-ascends']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'kakita-mio']
+                }
+            });
+            this.philosopher = this.player1.findCardByName('itinerant-philosopher');
+            this.lightningAscends = this.player1.findCardByName('lightning-ascends');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.mio = this.player2.findCardByName('kakita-mio');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.philosopher],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.mio);
+            this.player2.clickCard(this.scholar);
+            expect(this.scholar.hasTrait('shadowlands')).toBe(true);
+        });
+
+        it('should remove the gained trait too', function () {
+            this.player1.clickCard(this.lightningAscends);
+            this.player1.clickCard(this.philosopher);
+            this.player1.clickCard(this.scholar);
+            expect(this.lightningAscends.location).toBe('conflict discard pile');
+            expect(this.scholar.hasTrait('scholar')).toBe(false);
+            expect(this.scholar.hasTrait('shadowlands')).toBe(false);
+            expect(this.scholar.getTraits().size).toBe(0);
+        });
+    });
+});

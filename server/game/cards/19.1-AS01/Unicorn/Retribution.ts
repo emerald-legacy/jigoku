@@ -10,6 +10,7 @@ import { CardType, ConflictType, Duration, Players, Trait } from '../../../Const
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import { msg } from '../../../GameChat.js';
+import { extraConflictPossible } from '../../extraConflictPossible.js';
 
 function brokenProvinceCountForPlayer(player: Player): number {
     return player.getProvinceCards().reduce((sum, province) => (province.isBroken ? sum + 1 : sum), 0);
@@ -29,6 +30,7 @@ export default class Retribution extends DrawCard {
                     brokenProvinceCountForPlayer(context.player) >=
                         brokenProvinceCountForPlayer(context.player.opponent)
             })
+            .condition((context) => extraConflictPossible(context.player))
             .target({
                 cardType: CardType.Character,
                 controller: Players.Self,

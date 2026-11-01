@@ -16,7 +16,7 @@ class MediumOfTheLivingSoul extends DrawCard {
             }, cardLastingEffect(() => ({
                 effect: gainAbility.reaction('Resolve the Ring Effect', (ability) => ability
                     .when({
-                        onResolveRingElement: (event, context) => event.player === context.player && context.source.isParticipating()
+                        onResolveRingElement: (event, context) => event.effectResolved && event.player === context.player && context.source.isParticipating()
                     })
                     .cost(costs.removeFateFromSelf())
                     .resolveRingEffect((context) => ({ target: context.event.ring })))
