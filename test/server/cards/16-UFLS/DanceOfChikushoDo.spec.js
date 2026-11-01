@@ -168,6 +168,22 @@ describe('Dance Of Chikusho-Do', function() {
             expect(this.getChatLogs(5)).toContain('player1 plays Dance of Chikushō-dō to have player1 and player2 place 2 cards in each unbroken province they control');
         });
 
+        it('can only be played once per round', function() {
+            this.player1.clickCard(this.dance);
+            this.player1.clickPrompt('player2');
+            expect(this.aranat2.location).toBe('province 1');
+            expect(this.player1.fate).toBe(28);
+
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.clickCard(this.dance2);
+            expect(this.player1).not.toHavePrompt('Choose any number of players');
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.dance2.location).toBe('hand');
+            expect(this.player1.fate).toBe(28);
+            expect(this.chagatai2.location).toBe('dynasty deck');
+        });
+
         it('should work if you deck yourself', function() {
             const cards1 = this.player1.player.getDynastyCardsInProvince('province 1').length;
             const cards2 = this.player1.player.getDynastyCardsInProvince('province 2').length;

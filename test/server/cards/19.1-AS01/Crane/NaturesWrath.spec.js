@@ -138,6 +138,64 @@ describe('Natures Wrath', function () {
         });
     });
 
+    describe('max and condition', function () {
+        integration(function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['doji-diplomat', 'shosuro-sadako']
+                    },
+                    player2: {
+                        inPlay: ['daidoji-uji'],
+                        hand: ['nature-s-wrath', 'nature-s-wrath']
+                    }
+                });
+
+                this.sadako = this.player1.findCardByName('shosuro-sadako');
+                this.diplomat = this.player1.findCardByName('doji-diplomat');
+                this.uji = this.player2.findCardByName('daidoji-uji');
+                [this.wrath, this.wrath2] = this.player2.filterCardsByName('nature-s-wrath');
+            });
+
+            it('can only be played once per conflict', function () {
+                this.sadako.dishonor();
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.sadako, this.diplomat],
+                    defenders: [this.uji]
+                });
+
+                this.player2.clickCard(this.wrath);
+                this.player2.clickCard(this.sadako);
+                expect(this.sadako.isParticipating()).toBe(false);
+                this.player2.clickPrompt('Done');
+
+                this.player1.pass();
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                this.player2.clickCard(this.wrath2);
+                expect(this.wrath2.location).toBe('hand');
+                expect(this.diplomat.isParticipating()).toBe(true);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+
+            it('cannot be played without a participating character', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.sadako, this.diplomat],
+                    defenders: []
+                });
+
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                this.player2.clickCard(this.wrath);
+                expect(this.wrath.location).toBe('hand');
+                expect(this.sadako.isParticipating()).toBe(true);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+        });
+    });
+
     describe('with a redirected dishonor', function () {
         integration(function () {
             beforeEach(function () {

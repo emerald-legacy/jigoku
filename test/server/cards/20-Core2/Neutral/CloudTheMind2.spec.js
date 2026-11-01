@@ -114,3 +114,52 @@ describe('Cloud the Mind 2 with Air affinity on a character that gained all abil
         });
     });
 });
+
+describe('Cloud the Mind 2 without Air affinity', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['cloud-the-mind-2']
+                },
+                player2: {
+                    inPlay: ['miya-mystic', 'matsu-berserker'],
+                    hand: ['command-the-tributary']
+                }
+            });
+
+            this.cloud = this.player1.findCardByName('cloud-the-mind-2');
+            this.mystic = this.player2.findCardByName('miya-mystic');
+            this.berserker = this.player2.findCardByName('matsu-berserker');
+            this.tributary = this.player2.findCardByName('command-the-tributary');
+
+            this.berserker.fate = 1;
+            this.player1.pass();
+            this.player2.playAttachment(this.tributary, this.berserker);
+        });
+
+        it('blanks printed abilities but keeps the traits', function () {
+            this.player1.playAttachment(this.cloud, this.mystic);
+            expect(this.mystic.attachments).toContain(this.cloud);
+
+            this.player2.clickCard(this.mystic);
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.mystic.location).toBe('play area');
+            expect(this.cloud.location).toBe('play area');
+            expect(this.mystic.hasTrait('shugenja')).toBe(true);
+            expect(this.mystic.hasTrait('imperial')).toBe(true);
+        });
+
+        it('keeps gained abilities', function () {
+            this.player1.playAttachment(this.cloud, this.berserker);
+            expect(this.berserker.attachments).toContain(this.cloud);
+
+            this.player2.clickCard(this.berserker);
+            this.player2.clickCard(this.mystic);
+            expect(this.berserker.fate).toBe(0);
+            expect(this.mystic.fate).toBe(1);
+        });
+    });
+});

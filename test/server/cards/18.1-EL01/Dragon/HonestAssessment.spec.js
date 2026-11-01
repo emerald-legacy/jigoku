@@ -93,3 +93,46 @@ describe('Honest Assessment', function() {
         });
     });
 });
+
+describe('Honest Assessment - max 1 per round', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['isawa-tadaka-2'],
+                    hand: ['ornate-fan', 'fine-katana', 'banzai']
+                },
+                player2: {
+                    fate: 10,
+                    inPlay: ['doji-diplomat', 'doji-whisperer'],
+                    hand: ['honest-assessment', 'honest-assessment']
+                }
+            });
+
+            this.ornateFan = this.player1.findCardByName('ornate-fan');
+            this.diplomat = this.player2.findCardByName('doji-diplomat');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.assessment = this.player2.filterCardsByName('honest-assessment')[0];
+            this.assessment2 = this.player2.filterCardsByName('honest-assessment')[1];
+            this.player1.pass();
+        });
+
+        it('can only be used once per round', function() {
+            this.player2.clickCard(this.assessment);
+            this.player2.clickCard(this.diplomat);
+            this.player2.clickCard(this.assessment);
+            this.player2.chooseCardInPrompt('Let Go', 'card-name');
+            expect(this.player1.hand.length).toBe(3);
+
+            this.player1.pass();
+            this.player2.clickCard(this.assessment2);
+            this.player2.clickCard(this.whisperer);
+            expect(this.assessment2.parent).toBe(this.whisperer);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.ornateFan.location).toBe('hand');
+            expect(this.player1.hand.length).toBe(3);
+        });
+    });
+});

@@ -111,5 +111,43 @@ describe('Above Question', function() {
                 expect(this.player2).toBeAbleToSelect(this.vanguardWarrior);
             });
         });
+
+        describe('Above Question on an opponent\'s only participating character', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['agasha-swordsmith'],
+                        hand: ['above-question']
+                    },
+                    player2: {
+                        inPlay: ['siege-captain', 'vanguard-warrior'],
+                        hand: ['court-games']
+                    }
+                });
+
+                this.agashaSwordsmith = this.player1.findCardByName('agasha-swordsmith');
+                this.aboveQuestion = this.player1.findCardByName('above-question');
+                this.siegeCaptain = this.player2.findCardByName('siege-captain');
+                this.vanguardWarrior = this.player2.findCardByName('vanguard-warrior');
+                this.courtGames = this.player2.findCardByName('court-games');
+                this.player1.playAttachment(this.aboveQuestion, this.siegeCaptain);
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+            });
+
+            it('Court Games\' honor option cannot be selected by that opponent (ruling #727)', function() {
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.siegeCaptain],
+                    defenders: [this.agashaSwordsmith]
+                });
+                this.player1.pass();
+                this.player2.clickCard(this.courtGames);
+                expect(this.player2).toHavePromptButton('Dishonor an opposing character');
+                expect(this.player2).not.toHavePromptButton('Honor a friendly character');
+            });
+        });
     });
 });

@@ -142,3 +142,53 @@ describe('One With the Sea and cost increases', function() {
         });
     });
 });
+
+describe('One With the Sea - max 1 per round', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    inPlay: ['doji-challenger', 'doji-kuwanan'],
+                    hand: ['one-with-the-sea', 'one-with-the-sea']
+                },
+                player2: {
+                    inPlay: ['kakita-yoshi', 'doji-whisperer']
+                }
+            });
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.sea = this.player1.filterCardsByName('one-with-the-sea')[0];
+            this.sea2 = this.player1.filterCardsByName('one-with-the-sea')[1];
+            this.player1.claimRing('water');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: []
+            });
+        });
+
+        it('can only use the second ability once per round', function() {
+            this.player2.pass();
+            this.player1.clickCard(this.sea);
+            this.player1.clickPrompt('Move any character to the conflict');
+            this.player1.clickCard(this.yoshi);
+            expect(this.yoshi.isParticipating()).toBe(true);
+            expect(this.player1.fate).toBe(9);
+
+            this.player2.pass();
+            this.player1.clickCard(this.sea2);
+            expect(this.player1).not.toHavePromptButton('Move any character to the conflict');
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.kuwanan);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            this.player1.clickCard(this.kuwanan);
+            expect(this.kuwanan.isParticipating()).toBe(true);
+            expect(this.whisperer.isParticipating()).toBe(false);
+            expect(this.player1.fate).toBe(9);
+        });
+    });
+});

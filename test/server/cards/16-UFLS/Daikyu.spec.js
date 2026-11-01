@@ -115,6 +115,24 @@ describe('Daikyu', function() {
             this.player2.clickCard(this.hotaru);
             expect(this.hotaru.bowed).toBe(true);
         });
+
+        it('should not react in a political conflict', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.hotaru, this.initiate],
+                defenders: [this.toturi]
+            });
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.clickCard(this.mount);
+            expect(this.whisperer.isParticipating()).toBe(true);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.hotaru.bowed).toBe(false);
+            expect(this.initiate.bowed).toBe(false);
+            expect(this.toturi.bowed).toBe(false);
+            expect(this.whisperer.bowed).toBe(false);
+        });
     });
 });
 

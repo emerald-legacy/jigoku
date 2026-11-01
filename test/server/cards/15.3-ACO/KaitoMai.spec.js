@@ -96,3 +96,36 @@ describe('Kaito Mai', function() {
         });
     });
 });
+
+describe('Kaito Mai in the fate phase', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kaito-mai', 'bayushi-manipulator']
+                },
+                player2: {
+                    inPlay: ['alibi-artist']
+                }
+            });
+            this.mai = this.player1.findCardByName('kaito-mai');
+            this.manipulator = this.player1.findCardByName('bayushi-manipulator');
+            this.alibi = this.player2.findCardByName('alibi-artist');
+
+            this.mai.fate = 2;
+            this.manipulator.fate = 2;
+            this.alibi.fate = 2;
+        });
+
+        it('should not react to fate removed in the fate phase', function() {
+            this.noMoreActions();
+            this.flow.finishConflictPhase();
+
+            expect(this.mai.fate).toBe(1);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.manipulator.fate).toBe(1);
+            expect(this.alibi.fate).toBe(1);
+        });
+    });
+});

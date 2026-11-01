@@ -23,5 +23,22 @@ describe('Outmaneuvered in Court', function () {
             expect(this.player1).toBeAbleToSelect(this.brash);
             expect(this.player1).not.toBeAbleToSelect(this.yoshi);
         });
+
+        it('discards the Imperial Favor and bows the chosen character', function () {
+            this.player1.clickCard('outmaneuvered-in-court');
+            this.player1.clickCard(this.brash);
+            expect(this.brash.bowed).toBe(true);
+            expect(this.player1.player.imperialFavor).toBe('');
+            expect(this.player2.player.imperialFavor).toBe('');
+        });
+
+        it('cannot be played without the Imperial Favor', function () {
+            this.player1.player.imperialFavor = '';
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.clickCard('outmaneuvered-in-court');
+            expect(this.player1.findCardByName('outmaneuvered-in-court').location).toBe('hand');
+            expect(this.brash.bowed).toBe(false);
+            expect(this.player1).toHavePrompt('Action Window');
+        });
     });
 });

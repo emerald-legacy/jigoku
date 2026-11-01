@@ -70,3 +70,75 @@ describe('Commander of the Legions', function() {
         });
     });
 });
+
+describe('Commander of the Legions with a printed cost 4 Lion character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['commander-of-the-legions', 'matsu-berserker', 'akodo-motivator'],
+                    honor: 15
+                },
+                player2: {
+                    inPlay: ['moto-youth'],
+                    honor: 10
+                }
+            });
+
+            this.commanderOfTheLegions = this.player1.findCardByName('commander-of-the-legions');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.motivator = this.player1.findCardByName('akodo-motivator');
+        });
+
+        it('should not prevent fate from being removed from a Lion character with printed cost 4', function() {
+            this.commanderOfTheLegions.fate = 1;
+            this.berserker.fate = 1;
+            this.motivator.fate = 1;
+            this.noMoreActions();
+
+            this.flow.finishConflictPhase();
+            this.player2.clickPrompt('Done');
+
+            expect(this.commanderOfTheLegions.fate).toBe(0);
+            expect(this.motivator.fate).toBe(0);
+            expect(this.berserker.fate).toBe(1);
+        });
+    });
+});
+
+describe('Commander of the Legions with less than 5 more honor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['commander-of-the-legions', 'matsu-berserker'],
+                    honor: 14
+                },
+                player2: {
+                    inPlay: ['moto-youth'],
+                    honor: 10
+                }
+            });
+
+            this.commanderOfTheLegions = this.player1.findCardByName('commander-of-the-legions');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.enemyYouth = this.player2.findCardByName('moto-youth');
+        });
+
+        it('should not prevent fate removal in the fate phase when the honor lead is only 4', function() {
+            this.commanderOfTheLegions.fate = 1;
+            this.berserker.fate = 1;
+            this.noMoreActions();
+
+            this.flow.finishConflictPhase();
+            this.player2.clickPrompt('Done');
+
+            expect(this.player1.honor).toBe(14);
+            expect(this.player2.honor).toBe(10);
+            expect(this.commanderOfTheLegions.fate).toBe(0);
+            expect(this.berserker.fate).toBe(0);
+        });
+    });
+});

@@ -38,3 +38,35 @@ describe('Incessant Moto', function () {
         });
     });
 });
+
+describe('Incessant Moto attachments', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['incessant-moto', 'doji-whisperer'],
+                    hand: ['fine-katana', 'ornate-fan']
+                },
+                player2: {}
+            });
+            this.moto = this.player1.findCardByName('incessant-moto');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.fan = this.player1.findCardByName('ornate-fan');
+        });
+
+        it('can have a Weapon attached', function () {
+            this.player1.clickCard(this.katana);
+            expect(this.player1).toBeAbleToSelect(this.moto);
+            this.player1.clickCard(this.moto);
+            expect(this.katana.parent).toBe(this.moto);
+        });
+
+        it('cannot have a non-Weapon attachment attached', function () {
+            this.player1.clickCard(this.fan);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).not.toBeAbleToSelect(this.moto);
+        });
+    });
+});

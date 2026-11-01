@@ -5,10 +5,11 @@ describe('Hot Springs', function() {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['steadfast-witch-hunter', 'vanguard-warrior'],
+                    hand: ['assassination'],
                     dynastyDiscard: ['restorative-hot-spring']
                 },
                 player2: {
-                    inPlay: ['doji-challenger'],
+                    inPlay: ['doji-challenger', 'doji-diplomat'],
                     hand: ['assassination']
                 }
             });
@@ -17,7 +18,9 @@ describe('Hot Springs', function() {
             this.springs = this.player1.findCardByName('restorative-hot-spring');
 
             this.challenger = this.player2.findCardByName('doji-challenger');
+            this.diplomat = this.player2.findCardByName('doji-diplomat');
             this.assassination = this.player2.findCardByName('assassination');
+            this.ownAssassination = this.player1.findCardByName('assassination');
 
             this.p1 = this.player1.findCardByName('shameful-display', 'province 1');
             this.p2 = this.player1.findCardByName('shameful-display', 'province 2');
@@ -48,6 +51,23 @@ describe('Hot Springs', function() {
             expect(this.springs.location).toBe('removed from game');
             expect(this.player1.fate).toBe(fate - 1);
             expect(this.getChatLogs(5)).toContain('player1 uses Restorative Hot Spring, spending 1 fate to prevent Vanguard Warrior from leaving play, removing itself from the game instead');
+        });
+
+        it('does not trigger when an opponent\'s character leaves play', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.steadfastWitchHunter, this.warrior],
+                defenders: [this.challenger],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.ownAssassination);
+            this.player1.clickCard(this.diplomat);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.diplomat.location).toBe('dynasty discard pile');
+            expect(this.springs.location).toBe('province 3');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
         });
     });
 });

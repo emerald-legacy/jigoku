@@ -102,3 +102,35 @@ describe('Suffer the Consequences under Waning Hostilities', function() {
         });
     });
 });
+
+describe('Suffer the Consequences max 1 per phase', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'palace-guard', bowed: true }, { card: 'bayushi-liar', bowed: true }],
+                    hand: ['suffer-the-consequences', 'suffer-the-consequences']
+                }
+            });
+            this.bushi = this.player1.findCardByName('palace-guard');
+            this.courtier = this.player1.findCardByName('bayushi-liar');
+            this.suffer1 = this.player1.filterCardsByName('suffer-the-consequences')[0];
+            this.suffer2 = this.player1.filterCardsByName('suffer-the-consequences')[1];
+        });
+
+        it('should not allow a second copy to be played in the same phase', function() {
+            this.player1.clickCard(this.suffer1);
+            this.player1.clickCard(this.bushi);
+            expect(this.bushi.location).toBe('dynasty discard pile');
+            expect(this.player1.player.getRemainingConflictOpportunitiesForType('political')).toBe(2);
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.clickCard(this.suffer2);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.suffer2.location).toBe('hand');
+            expect(this.courtier.location).toBe('play area');
+            expect(this.player1.player.getRemainingConflictOpportunitiesForType('political')).toBe(2);
+        });
+    });
+});

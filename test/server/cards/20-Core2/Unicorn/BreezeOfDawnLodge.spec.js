@@ -70,3 +70,25 @@ describe('Breeze of Dawn Lodge', function () {
         });
     });
 });
+
+describe('Breeze of Dawn Lodge during setup', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {},
+                player2: {
+                    stronghold: 'breeze-of-dawn-lodge'
+                },
+                skipAutoFirstPlayer: true
+            });
+        });
+
+        it('makes its controller the first player after setup', function () {
+            expect(this.player2.player.firstPlayer).toBe(true);
+            expect(this.player1.player.firstPlayer).toBe(false);
+            expect(this.game.getFirstPlayer()).toBe(this.player2.player);
+            expect(this.game.currentPhase).toBe('dynasty');
+        });
+    });
+});

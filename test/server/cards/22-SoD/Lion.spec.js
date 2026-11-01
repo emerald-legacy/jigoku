@@ -653,3 +653,60 @@ describe('River Crossing during setup', function () {
         });
     });
 });
+
+describe('SoD - Lion: The Stranger limit', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    inPlay: ['doji-whisperer', 'fawning-diplomat', 'fawning-diplomat', 'fawning-diplomat'],
+                    hand: ['the-stranger']
+                },
+                player2: {
+                    inPlay: ['kakita-yoshi']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.stranger = this.player1.findCardByName('the-stranger');
+            [this.diplomat1, this.diplomat2, this.diplomat3] = this.player1.filterCardsByName('fawning-diplomat');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+
+            this.whisperer.fate = 1;
+            this.yoshi.fate = 1;
+            this.player1.playAttachment(this.stranger, this.whisperer);
+            this.whisperer.bowed = true;
+            this.diplomat1.bowed = true;
+            this.diplomat2.bowed = true;
+            this.diplomat3.bowed = true;
+        });
+
+        it('gives no honor for a third claim of the Imperial Favor in a round', function () {
+            this.flow.finishConflictPhase();
+
+            this.player1.clickCard(this.diplomat1);
+            this.player1.clickCard(this.diplomat1);
+            this.player1.clickPrompt('military');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.stranger);
+            expect(this.player1.honor).toBe(11);
+
+            this.player1.clickCard(this.diplomat2);
+            this.player1.clickCard(this.diplomat2);
+            this.player1.clickPrompt('military');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.stranger);
+            expect(this.player1.honor).toBe(12);
+
+            this.player1.clickCard(this.diplomat3);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.diplomat3);
+            this.player1.clickPrompt('military');
+            expect(this.player1.player.imperialFavor).toBe('military');
+            expect(this.diplomat3.location).toBe('dynasty discard pile');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1.honor).toBe(12);
+        });
+    });
+});

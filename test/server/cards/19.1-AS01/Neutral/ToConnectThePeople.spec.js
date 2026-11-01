@@ -104,5 +104,50 @@ describe('To Connect the People', function () {
                 expect(this.opponentDynastyDiscardAkodoMotivator.location).toBe('play area');
             });
         });
+
+        describe('limits', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 10,
+                        inPlay: ['ikoma-prodigy', 'forthright-ide'],
+                        hand: ['to-connect-the-people', 'to-connect-the-people']
+                    },
+                    player2: {
+                        dynastyDiscard: ['akodo-motivator', 'ashigaru-levy']
+                    }
+                });
+                [this.toConnectThePeople, this.toConnectThePeople2] = this.player1.filterCardsByName('to-connect-the-people');
+                this.forthrightIde = this.player1.findCardByName('forthright-ide');
+                this.motivator = this.player2.findCardByName('akodo-motivator');
+            });
+
+            it('can only be played once per round', function () {
+                this.player1.clickCard(this.toConnectThePeople);
+                this.player1.clickCard(this.motivator);
+                this.player1.clickPrompt('0');
+                expect(this.motivator.location).toBe('play area');
+                expect(this.player1.fate).toBe(6);
+
+                this.player2.pass();
+                const discardSize = this.player2.player.dynastyDiscardPile.length;
+                expect(this.player1).toHavePrompt('Action Window');
+                this.player1.clickCard(this.toConnectThePeople2);
+                expect(this.toConnectThePeople2.location).toBe('hand');
+                expect(this.player2.player.dynastyDiscardPile.length).toBe(discardSize);
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+
+            it('cannot be played without a Merchant character', function () {
+                this.player1.moveCard(this.forthrightIde, 'dynasty discard pile');
+                const discardSize = this.player2.player.dynastyDiscardPile.length;
+                expect(this.player1).toHavePrompt('Action Window');
+                this.player1.clickCard(this.toConnectThePeople);
+                expect(this.toConnectThePeople.location).toBe('hand');
+                expect(this.player2.player.dynastyDiscardPile.length).toBe(discardSize);
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+        });
     });
 });

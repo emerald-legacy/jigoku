@@ -96,3 +96,41 @@ describe('Scouts Steed outside the conflict phase', function () {
         });
     });
 });
+
+describe('Scouts Steed province protection', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['moto-conqueror'],
+                    hand: ['scout-s-steed']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    provinces: ['fertile-fields']
+                }
+            });
+
+            this.scoutsSteed = this.player1.findCardByName('scout-s-steed');
+            this.motoConqueror = this.player1.findCardByName('moto-conqueror');
+            this.fertile = this.player2.findCardByName('fertile-fields');
+            this.fertile.facedown = true;
+        });
+
+        it('the chosen province cannot be broken during this conflict', function () {
+            this.player1.clickCard(this.scoutsSteed);
+            this.player1.clickCard(this.motoConqueror);
+            this.player1.clickCard(this.scoutsSteed);
+            this.player1.clickCard(this.fertile);
+            expect(this.player1).toHavePrompt('Military Air Conflict');
+            this.player1.clickPrompt('Initiate Conflict');
+            expect(this.player2).toHavePrompt('Choose defenders');
+            this.player2.clickPrompt('Done');
+            this.noMoreActions();
+
+            expect(this.getChatLogs(10)).toContain('player1 won a military conflict 5 vs 0');
+            expect(this.fertile.isBroken).toBe(false);
+        });
+    });
+});

@@ -165,3 +165,42 @@ describe('Akodo Cho', function () {
         });
     });
 });
+
+describe('Akodo Cho without a Follower', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-cho'],
+                    hand: ['a-new-name']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+
+            this.cho = this.player1.findCardByName('akodo-cho');
+            this.ann = this.player1.findCardByName('a-new-name');
+            this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+            this.player1.playAttachment(this.ann, this.cho);
+        });
+
+        it('cannot be used if it has no Follower attachment', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.cho],
+                defenders: [this.dojiWhisperer],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.cho);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.ann.parent).toBe(this.cho);
+            expect(this.dojiWhisperer.bowed).toBe(false);
+            expect(this.cho.bowed).toBe(false);
+        });
+    });
+});

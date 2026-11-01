@@ -815,3 +815,85 @@ describe('SoD - Phoenix: Appeasing the Restless at Blood of Onnotangu', function
         });
     });
 });
+
+describe('SoD - Phoenix: Vengeful Kami and covert', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['unassuming-yojimbo']
+                },
+                player2: {
+                    inPlay: ['vengeful-kami', 'doji-challenger', 'kakita-yoshi']
+                }
+            });
+            this.yojimbo = this.player1.findCardByName('unassuming-yojimbo');
+            this.vengeful = this.player2.findCardByName('vengeful-kami');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.p1 = this.player2.findCardByName('shameful-display', 'province 1');
+        });
+
+        it('cannot be chosen as a covert target', function () {
+            this.noMoreActions();
+            this.player1.clickRing('air');
+            this.player1.clickCard(this.p1);
+            this.player1.clickCard(this.yojimbo);
+            this.player1.clickPrompt('Initiate Conflict');
+            expect(this.player1).toHavePrompt('Choose covert target for Unassuming Yōjimbō');
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+            expect(this.player1).toBeAbleToSelect(this.yoshi);
+            expect(this.player1).not.toBeAbleToSelect(this.vengeful);
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.covert).toBe(true);
+            expect(this.vengeful.covert).toBe(false);
+            expect(this.player2).toHavePrompt('Choose Defenders');
+            this.player2.clickCard(this.vengeful);
+            this.player2.clickPrompt('Done');
+            expect(this.vengeful.isDefending()).toBe(true);
+        });
+    });
+});
+
+describe('SoD - Phoenix: Song of the Empty City moving into a province with holdings', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    dynastyDiscard: ['song-of-the-empty-city', 'iron-mine', 'imperial-storehouse']
+                },
+                player2: {}
+            });
+            this.song = this.player1.findCardByName('song-of-the-empty-city');
+            this.ironMine = this.player1.findCardByName('iron-mine');
+            this.storehouse = this.player1.findCardByName('imperial-storehouse');
+            this.player1.placeCardInProvince(this.song, 'province 1');
+            this.player1.placeCardInProvince(this.ironMine, 'province 2');
+            this.player1.placeCardInProvince(this.storehouse, 'province 3');
+            this.song.facedown = false;
+            this.ironMine.facedown = false;
+            this.storehouse.facedown = true;
+
+            this.p2 = this.player1.findCardByName('shameful-display', 'province 2');
+            this.p3 = this.player1.findCardByName('shameful-display', 'province 3');
+        });
+
+        it('discards a faceup holding in the province it moves to', function () {
+            this.player1.clickCard(this.song);
+            this.player1.clickCard(this.p2);
+            expect(this.song.location).toBe('province 2');
+            expect(this.ironMine.location).toBe('dynasty discard pile');
+            expect(this.getChatLogs(5)).toContain('Song of the Empty City discards the other holdings in the province');
+        });
+
+        it('leaves a facedown card in the province it moves to', function () {
+            this.player1.clickCard(this.song);
+            this.player1.clickCard(this.p3);
+            expect(this.song.location).toBe('province 3');
+            expect(this.storehouse.location).toBe('province 3');
+            expect(this.storehouse.facedown).toBe(true);
+        });
+    });
+});

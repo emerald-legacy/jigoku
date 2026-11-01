@@ -82,3 +82,32 @@ describe('Soshi Yuka and a character that cannot be bowed', function () {
         });
     });
 });
+
+describe('Soshi Yuka with fewer than 2 ready opposing characters', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['soshi-yuka']
+                },
+                player2: {
+                    inPlay: ['doji-challenger', 'doji-whisperer']
+                }
+            });
+            this.yuka = this.player1.findCardByName('soshi-yuka');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+
+            this.whisperer.bow();
+        });
+
+        it('cannot be used', function () {
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.clickCard(this.yuka);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.player2).not.toHavePrompt('Choose 2 characters');
+            expect(this.challenger.bowed).toBe(false);
+        });
+    });
+});

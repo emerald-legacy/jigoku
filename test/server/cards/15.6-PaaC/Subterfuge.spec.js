@@ -156,3 +156,52 @@ describe('Subterfuge', function() {
         });
     });
 });
+
+describe('Subterfuge in the draw phase', function() {
+    integration(function() {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    conflictDiscard: ['fine-katana', 'ornate-fan', 'honored-blade', 'sharpen-the-mind'],
+                    dynastyDiscard: ['imperial-storehouse'],
+                    honor: 12
+                },
+                player2: {
+                    hand: ['subterfuge'],
+                    honor: 9
+                }
+            });
+
+            this.fineKatana = this.player1.findCardByName('fine-katana');
+            this.ornateFan = this.player1.findCardByName('ornate-fan');
+            this.honoredBlade = this.player1.findCardByName('honored-blade');
+            this.sharpenTheMind = this.player1.findCardByName('sharpen-the-mind');
+            this.storehouse = this.player1.findCardByName('imperial-storehouse');
+
+            this.player1.moveCard(this.fineKatana, 'conflict deck');
+            this.player1.moveCard(this.ornateFan, 'conflict deck');
+            this.player1.moveCard(this.sharpenTheMind, 'conflict deck');
+            this.player1.moveCard(this.honoredBlade, 'conflict deck');
+            this.player1.placeCardInProvince(this.storehouse, 'province 1');
+            this.storehouse.facedown = false;
+
+            this.subterfuge = this.player2.findCardByName('subterfuge');
+        });
+
+        it('cannot interrupt draws during the draw phase', function () {
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.honoredBlade.location).toBe('hand');
+
+            this.player1.clickCard(this.storehouse);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.sharpenTheMind.location).toBe('hand');
+            expect(this.ornateFan.location).toBe('conflict deck');
+            expect(this.subterfuge.location).toBe('hand');
+            expect(this.getChatLogs(10)).toContain('player1 uses Imperial Storehouse, sacrificing Imperial Storehouse to draw 1 card');
+        });
+    });
+});

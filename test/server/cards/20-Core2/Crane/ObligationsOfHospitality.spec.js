@@ -71,3 +71,80 @@ describe('Obligations of Hospitality and The Mirror\'s Gaze', function () {
         });
     });
 });
+
+describe('Obligations of Hospitality cost and conditions', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    fate: 10,
+                    inPlay: ['kakita-yoshi'],
+                    hand: ['obligations-of-hospitality']
+                },
+                player2: {
+                    honor: 8,
+                    inPlay: ['brash-samurai', 'doji-challenger']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.obligations = this.player1.findCardByName('obligations-of-hospitality');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+        });
+
+        describe('during a conflict', function () {
+            beforeEach(function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.yoshi],
+                    defenders: [this.brash, this.challenger]
+                });
+                this.player2.pass();
+            });
+
+            it('costs 3 without the Imperial Favor', function () {
+                this.player1.clickCard(this.obligations);
+                this.player1.clickCard(this.brash);
+                expect(this.brash.controller).toBe(this.player1.player);
+                expect(this.player1.fate).toBe(7);
+            });
+
+            it('chooses only a character with printed cost 2 or lower', function () {
+                this.player1.clickCard(this.obligations);
+                expect(this.player1).toBeAbleToSelect(this.brash);
+                expect(this.player1).not.toBeAbleToSelect(this.challenger);
+            });
+        });
+
+        it('costs 1 less while you have the Imperial Favor', function () {
+            this.player1.player.imperialFavor = 'military';
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [this.brash, this.challenger]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.obligations);
+            this.player1.clickCard(this.brash);
+            expect(this.brash.controller).toBe(this.player1.player);
+            expect(this.player1.fate).toBe(8);
+        });
+
+        it('cannot be played when you are not more honorable', function () {
+            this.player1.honor = 8;
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [this.brash]
+            });
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.obligations);
+            expect(this.obligations.location).toBe('hand');
+            expect(this.brash.controller).toBe(this.player2.player);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

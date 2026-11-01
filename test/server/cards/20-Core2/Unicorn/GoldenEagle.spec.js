@@ -74,3 +74,31 @@ describe('Golden Eagle played as an attachment', function () {
         });
     });
 });
+
+describe('Golden Eagle played as a character', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    hand: ['golden-eagle']
+                },
+                player2: {}
+            });
+            this.eagle = this.player1.findCardByName('golden-eagle');
+            this.player1.playCharacterFromHand(this.eagle);
+        });
+
+        it('has Courtesy and gains 1 fate when it leaves play', function () {
+            expect(this.eagle.location).toBe('play area');
+            expect(this.eagle.hasKeyword('courtesy')).toBe(true);
+            expect(this.player1.fate).toBe(4);
+            this.flow.finishConflictPhase();
+            this.player1.clickPrompt('Done');
+            expect(this.eagle.location).toBe('conflict discard pile');
+            expect(this.getChatLogs(5)).toContain('player1 gains a fate due to Golden Eagle\'s Courtesy');
+            expect(this.player1.fate).toBe(5);
+        });
+    });
+});

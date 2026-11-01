@@ -189,3 +189,40 @@ describe('Otter Fisherman', function() {
         });
     });
 });
+
+describe('Otter Fisherman immunity', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'otter-fisherman', attachments: ['favored-mount'] }, 'isawa-tadaka']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+
+            this.otterFisherman = this.player1.findCardByName('otter-fisherman');
+            this.favoredMount = this.player1.findCardByName('favored-mount');
+            this.isawaTadaka = this.player1.findCardByName('isawa-tadaka');
+        });
+
+        it('is immune to Creature card effects', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.isawaTadaka],
+                defenders: [],
+                type: 'political',
+                ring: 'earth'
+            });
+
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.favoredMount);
+            expect(this.otterFisherman.isParticipating()).toBe(false);
+            expect(this.favoredMount.bowed).toBe(false);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

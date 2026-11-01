@@ -77,5 +77,20 @@ describe('Stinger', function () {
             this.advancePhases('fate');
             expect(this.tadaka.bowed).toBe(false);
         });
+
+        it('cannot be played during a political conflict', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.tadaka],
+                defenders: [this.yoshi]
+            });
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.clickCard(this.stinger);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.stinger.location).toBe('hand');
+            expect(this.tadaka.attachments).not.toContain(this.stinger);
+            expect(this.player2.honor).toBe(10);
+        });
     });
 });
