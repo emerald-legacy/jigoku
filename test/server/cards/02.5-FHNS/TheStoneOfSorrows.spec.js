@@ -36,3 +36,45 @@ describe('The Stone of Sorrows', function () {
         });
     });
 });
+
+describe('The Stone of Sorrows and the contested ring', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    inPlay: ['kaiu-envoy']
+                },
+                player2: {
+                    inPlay: [{ card: 'doji-whisperer', attachments: ['the-stone-of-sorrows'] }]
+                }
+            });
+            this.envoy = this.player1.findCardByName('kaiu-envoy');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.game.rings.water.fate = 2;
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'water',
+                attackers: [this.envoy],
+                defenders: []
+            });
+        });
+
+        it('the attacker takes no fate from the contested ring at declaration (ruling #161)', function () {
+            expect(this.game.currentConflict.ring.element).toBe('water');
+            expect(this.game.rings.water.fate).toBe(2);
+            expect(this.player1.fate).toBe(5);
+        });
+
+        it('the attacker takes no fate from the ring once the attached character is bowed or on claiming it (ruling #161)', function () {
+            this.noMoreActions();
+            expect(this.player1).toHavePrompt('Water Ring');
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.bowed).toBe(true);
+            expect(this.game.rings.water.claimedBy).toBe('player1');
+            expect(this.game.rings.water.fate).toBe(2);
+            expect(this.player1.fate).toBe(5);
+        });
+    });
+});

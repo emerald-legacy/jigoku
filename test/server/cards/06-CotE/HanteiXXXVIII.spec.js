@@ -702,3 +702,69 @@ describe('Hantei XXXVIII and targets after "then"', function() {
         });
     });
 });
+
+describe('Hantei XXXVIII\'s bow action and No attachments', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hantei-xxxviii', 'matsu-berserker'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['serene-warrior', 'siege-captain']
+                }
+            });
+            this.hantei = this.player1.findCardByName('hantei-xxxviii');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.sereneWarrior = this.player2.findCardByName('serene-warrior');
+            this.siegeCaptain = this.player2.findCardByName('siege-captain');
+        });
+
+        it('cannot have attachments', function() {
+            this.player1.clickCard(this.katana);
+            expect(this.player1).toHavePrompt('Fine Katana');
+            expect(this.player1).toBeAbleToSelect(this.berserker);
+            expect(this.player1).not.toBeAbleToSelect(this.hantei);
+        });
+
+        it('cannot use the bow action outside a conflict', function() {
+            this.player1.clickCard(this.hantei);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.game.isDuringConflict()).toBe(false);
+            expect(this.sereneWarrior.bowed).toBe(false);
+            expect(this.siegeCaptain.bowed).toBe(false);
+        });
+
+        describe('during a conflict', function() {
+            beforeEach(function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.berserker],
+                    defenders: [this.sereneWarrior]
+                });
+                this.player2.pass();
+            });
+
+            it('can choose a participating character but not a character at home', function() {
+                this.player1.clickCard(this.hantei);
+                expect(this.player1).toHavePrompt('Hantei XXXVIII');
+                expect(this.player1).toBeAbleToSelect(this.sereneWarrior);
+                expect(this.player1).toBeAbleToSelect(this.berserker);
+                expect(this.player1).not.toBeAbleToSelect(this.siegeCaptain);
+                expect(this.player1).not.toBeAbleToSelect(this.hantei);
+            });
+
+            it('bows the chosen participating character', function() {
+                this.player1.clickCard(this.hantei);
+                this.player1.clickCard(this.sereneWarrior);
+                expect(this.sereneWarrior.bowed).toBe(true);
+                expect(this.berserker.bowed).toBe(false);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+        });
+    });
+});

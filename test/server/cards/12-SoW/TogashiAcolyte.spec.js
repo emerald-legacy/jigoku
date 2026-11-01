@@ -189,5 +189,54 @@ describe('Togashi Acolyte', function () {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
         });
+
+        describe('Togashi Acolyte and cards put into play', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['togashi-mitsu'],
+                        hand: ['niten', 'togashi-acolyte', 'fine-katana']
+                    },
+                    player2: {
+                        inPlay: []
+                    }
+                });
+
+                this.mitsu = this.player1.findCardByName('togashi-mitsu');
+                this.niten = this.player1.findCardByName('niten');
+                this.acolyte = this.player1.findCardByName('togashi-acolyte');
+                this.katana = this.player1.findCardByName('fine-katana');
+
+                this.player1.playAttachment(this.niten, this.mitsu);
+                this.player2.pass();
+                this.player1.clickCard(this.acolyte);
+                this.player1.clickPrompt('Play Togashi Acolyte as an attachment');
+                this.player1.clickCard(this.mitsu);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.mitsu]
+                });
+                expect(this.player1).toHavePrompt('Choose covert target for Togashi Mitsu');
+                this.player1.clickPrompt('No Target');
+                this.player2.clickPrompt('Done');
+                this.player2.pass();
+            });
+
+            it('should not trigger when a card is put into play by a card effect (ruling #795)', function () {
+                expect(this.mitsu.attachments).toContain(this.acolyte);
+                expect(this.mitsu.militarySkill).toBe(5);
+                expect(this.mitsu.politicalSkill).toBe(4);
+                this.player1.clickCard(this.niten);
+                expect(this.player1).toHavePrompt('Niten');
+                this.player1.clickCard(this.katana);
+                expect(this.mitsu.attachments).toContain(this.katana);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.mitsu.militarySkill).toBe(6);
+                expect(this.mitsu.politicalSkill).toBe(3);
+            });
+        });
     });
 });

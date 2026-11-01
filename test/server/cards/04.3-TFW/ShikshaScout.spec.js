@@ -28,3 +28,31 @@ describe('Shiksha Scout', function () {
         });
     });
 });
+
+describe('Shiksha Scout not participating', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shiksha-scout', 'doji-whisperer']
+                }
+            });
+            this.shikshaScout = this.player1.findCardByName('shiksha-scout');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.noMoreActions();
+        });
+
+        it('does not add a character to the conflict', function () {
+            this.initiateConflict({
+                type: 'political',
+                ring: 'air',
+                attackers: [this.whisperer],
+                defenders: []
+            });
+            expect(this.shikshaScout.isParticipating()).toBe(false);
+            expect(this.whisperer.isParticipating()).toBe(true);
+            expect(this.game.currentConflict.getNumberOfParticipantsFor(this.player1.player)).toBe(1);
+        });
+    });
+});

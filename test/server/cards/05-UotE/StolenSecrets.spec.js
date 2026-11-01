@@ -367,5 +367,47 @@ describe('Stolen Secrets', function () {
                 });
             });
         });
+
+        describe('Stolen Secrets and abilities that put the card into play from hand', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['favored-niece'],
+                        hand: ['stolen-secrets']
+                    },
+                    player2: {
+                        hand: ['feral-ningyo']
+                    }
+                });
+
+                this.favoredNiece = this.player1.findCardByName('favored-niece');
+                this.favoredNiece.fate = 2;
+                this.stolenSecrets = this.player1.findCardByName('stolen-secrets');
+                this.feralNingyo = this.player2.findCardByName('feral-ningyo', 'hand');
+                this.player2.moveCard(this.feralNingyo, 'conflict deck');
+                this.player2.reduceDeckToNumber('conflict deck', 1);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.favoredNiece],
+                    defenders: [],
+                    ring: 'water'
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.stolenSecrets);
+                this.player1.clickCard(this.favoredNiece);
+                this.player1.clickPrompt(this.feralNingyo.name);
+            });
+
+            it('cannot use Feral Ningyo\'s put-into-play ability from the removed zone (ruling #482)', function () {
+                expect(this.feralNingyo.location).toBe('removed from game');
+                this.player2.pass();
+                this.player1.clickCard(this.feralNingyo);
+                expect(this.player1).toHavePrompt('Choose additional fate');
+                expect(this.player1).not.toHavePromptButton('Put into play');
+            });
+        });
     });
 });

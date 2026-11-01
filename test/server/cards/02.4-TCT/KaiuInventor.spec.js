@@ -65,3 +65,60 @@ describe('Kaiu Inventor', function () {
         });
     });
 });
+
+describe('Kaiu Inventor with a once-per-round holding', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kaiu-inventor', 'doji-whisperer'],
+                    dynastyDiscard: ['city-of-lies', 'bonsai-garden']
+                },
+                player2: {
+                    dynastyDiscard: ['artisan-academy']
+                }
+            });
+            this.inventor = this.player1.findCardByName('kaiu-inventor');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.cityOfLies = this.player1.placeCardInProvince('city-of-lies', 'province 1');
+            this.cityOfLies.facedown = false;
+            this.bonsaiGarden = this.player1.placeCardInProvince('bonsai-garden', 'province 2');
+            this.bonsaiGarden.facedown = true;
+            this.academy = this.player2.placeCardInProvince('artisan-academy', 'province 1');
+            this.academy.facedown = false;
+        });
+
+        it('can only choose a faceup holding you control', function () {
+            this.player1.clickCard(this.inventor);
+            expect(this.player1).toHavePrompt('Kaiu Inventor');
+            expect(this.player1).toBeAbleToSelect(this.cityOfLies);
+            expect(this.player1).not.toBeAbleToSelect(this.bonsaiGarden);
+            expect(this.player1).not.toBeAbleToSelect(this.academy);
+        });
+
+        it('gives the holding one additional use for the rest of the round', function () {
+            this.player1.clickCard(this.inventor);
+            this.player1.clickCard(this.cityOfLies);
+            this.player2.pass();
+            this.player1.clickCard(this.cityOfLies);
+            expect(this.player2).toHavePrompt('Action Window');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.whisperer],
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player1 won a political conflict 3 vs 0');
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.clickCard(this.cityOfLies);
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.getChatLogs(3)).toContain('player1 uses City of Lies to reduce the cost of their next event by 1');
+            this.player2.pass();
+            this.player1.clickCard(this.cityOfLies);
+            expect(this.player1).toHavePrompt('Action Window');
+        });
+    });
+});

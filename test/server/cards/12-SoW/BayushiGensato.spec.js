@@ -192,6 +192,16 @@ describe('Bayushi Gensato', function() {
             expect(this.gensato.isDishonored).toBe(false);
         });
 
+        it('cannot be used outside a conflict', function() {
+            this.player1.pass();
+            expect(this.game.isDuringConflict()).toBe(false);
+            expect(this.player2).toHavePrompt('Action Window');
+            this.player2.clickCard(this.gensato);
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.borderRider.bowed).toBe(false);
+            expect(this.gensato.isDishonored).toBe(false);
+        });
+
         describe('under Emerald rules', function() {
             beforeEach(function() {
                 this.setupTest({

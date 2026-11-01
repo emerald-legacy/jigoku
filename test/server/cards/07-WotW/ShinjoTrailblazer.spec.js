@@ -48,6 +48,67 @@ describe('Shinjo Trailblazer', function() {
                 expect(this.shinjoTrailblazer.politicalSkill).toBe(politicalSkill);
             });
         });
+
+        describe('Shinjo Trailblazer\'s ability and other reveals', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shinjo-trailblazer']
+                    },
+                    player2: {
+                        inPlay: ['matsu-berserker']
+                    }
+                });
+                this.shinjoTrailblazer = this.player1.findCardByName('shinjo-trailblazer');
+                this.ownProvince = this.player1.findCardByName('shameful-display', 'province 2');
+                this.oppProvince = this.player2.findCardByName('shameful-display', 'province 2');
+                this.berserker = this.player2.findCardByName('matsu-berserker');
+            });
+
+            it('does not trigger when your own province is revealed during a conflict', function() {
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                expect(this.ownProvince.facedown).toBe(true);
+                this.player2.declareConflict('military', this.ownProvince, [this.berserker], 'air');
+                expect(this.ownProvince.facedown).toBe(false);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1).toHavePrompt('Choose defenders');
+                expect(this.shinjoTrailblazer.militarySkill).toBe(2);
+                expect(this.shinjoTrailblazer.politicalSkill).toBe(1);
+            });
+        });
+
+        describe('Shinjo Trailblazer\'s ability outside a conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'dynasty',
+                    player1: {
+                        fate: 10,
+                        inPlay: ['shinjo-trailblazer'],
+                        dynastyDiscard: ['iuchi-farseer']
+                    }
+                });
+                this.shinjoTrailblazer = this.player1.findCardByName('shinjo-trailblazer');
+                this.iuchiFarseer = this.player1.placeCardInProvince('iuchi-farseer', 'province 1');
+                this.oppProvince = this.player2.findCardByName('shameful-display', 'province 2');
+            });
+
+            it('does not trigger when an opponent\'s province is revealed outside a conflict', function() {
+                this.player1.clickCard(this.iuchiFarseer);
+                this.player1.clickPrompt('0');
+                expect(this.iuchiFarseer.location).toBe('play area');
+                this.player1.clickCard(this.iuchiFarseer);
+                this.player1.clickCard(this.oppProvince);
+                expect(this.oppProvince.facedown).toBe(false);
+                expect(this.game.isDuringConflict()).toBe(false);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2).toHavePrompt('Play cards from provinces');
+                expect(this.shinjoTrailblazer.militarySkill).toBe(2);
+                expect(this.shinjoTrailblazer.politicalSkill).toBe(1);
+            });
+        });
     });
 });
 

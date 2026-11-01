@@ -57,3 +57,73 @@ describe('Mountaintop Statuary', function() {
         });
     });
 });
+
+describe('Mountaintop Statuary\'s action', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['border-rider', 'doji-challenger']
+                },
+                player2: {
+                    inPlay: ['moto-youth'],
+                    dynastyDiscard: ['mountaintop-statuary']
+                }
+            });
+            this.borderRider = this.player1.findCardByName('border-rider');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.motoYouth = this.player2.findCardByName('moto-youth');
+            this.statuary = this.player2.placeCardInProvince('mountaintop-statuary', 'province 1');
+            this.statuary.facedown = false;
+            this.province1 = this.player2.findCardByName('shameful-display', 'province 1');
+            this.province2 = this.player2.findCardByName('shameful-display', 'province 2');
+        });
+
+        it('can only choose an attacking character with printed cost 2 or lower', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.province1,
+                attackers: [this.borderRider, this.challenger],
+                defenders: [this.motoYouth]
+            });
+            this.player2.clickCard(this.statuary);
+            expect(this.player2).toHavePrompt('Mountaintop Statuary');
+            expect(this.player2).toBeAbleToSelect(this.borderRider);
+            expect(this.player2).not.toBeAbleToSelect(this.challenger);
+            expect(this.player2).not.toBeAbleToSelect(this.motoYouth);
+        });
+
+        it('sacrifices itself to move the chosen attacking character home', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.province1,
+                attackers: [this.borderRider, this.challenger],
+                defenders: [this.motoYouth]
+            });
+            this.player2.clickCard(this.statuary);
+            this.player2.clickCard(this.borderRider);
+            expect(this.borderRider.isParticipating()).toBe(false);
+            expect(this.challenger.isParticipating()).toBe(true);
+            expect(this.statuary.location).toBe('dynasty discard pile');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+
+        it('cannot be used during a conflict at another province', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.province2,
+                attackers: [this.borderRider],
+                defenders: [this.motoYouth]
+            });
+            expect(this.province2.isConflictProvince()).toBe(true);
+            this.player2.clickCard(this.statuary);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.statuary.location).toBe('province 1');
+            expect(this.borderRider.isParticipating()).toBe(true);
+        });
+    });
+});

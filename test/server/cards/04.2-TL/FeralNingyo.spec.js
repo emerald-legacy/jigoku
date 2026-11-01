@@ -214,3 +214,59 @@ describe('Feral Ningyo when it cannot enter play', function () {
         });
     });
 });
+
+describe('Feral Ningyo put into play by its ability', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 4,
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['feral-ningyo'],
+                    dynastyDeck: ['funeral-pyre']
+                },
+                player2: {
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['cloud-the-mind']
+                }
+            });
+            this.feral = this.player1.findCardByName('feral-ningyo');
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.pyre = this.player1.placeCardInProvince('funeral-pyre');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'water',
+                attackers: [this.adept],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.feral);
+            this.player1.clickPrompt('Put into play');
+            expect(this.feral.location).toBe('play area');
+        });
+
+        it('is not shuffled into the deck when it left play before the end of the conflict (ruling #460)', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.pyre);
+            this.player1.clickCard(this.feral);
+            expect(this.feral.location).toBe('conflict discard pile');
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.game.currentConflict).toBeNull();
+            expect(this.feral.location).toBe('conflict discard pile');
+            expect(this.getChatLogs(5)).not.toContain('Feral Ningyo returns to the deck and shuffles due to its delayed effect');
+        });
+
+        it('is still shuffled into the deck when its text was blanked (ruling #542)', function () {
+            this.player2.playAttachment('cloud-the-mind', this.feral);
+            expect(this.feral.attachments).toContain(this.player2.findCardByName('cloud-the-mind'));
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.feral.location).toBe('conflict deck');
+            expect(this.getChatLogs(5)).toContain('Feral Ningyo returns to the deck and shuffles due to its delayed effect');
+        });
+    });
+});

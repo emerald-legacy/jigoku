@@ -36,3 +36,27 @@ describe('Ide Messenger', function() {
         });
     });
 });
+
+describe('Ide Messenger outside a conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 3,
+                    inPlay: ['ide-messenger', 'doji-whisperer']
+                }
+            });
+            this.messenger = this.player1.findCardByName('ide-messenger');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+        });
+
+        it('cannot be used outside a conflict', function() {
+            expect(this.game.isDuringConflict()).toBe(false);
+            this.player1.clickCard(this.messenger);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            expect(this.player1.fate).toBe(3);
+        });
+    });
+});

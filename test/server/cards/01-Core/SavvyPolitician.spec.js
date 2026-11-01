@@ -108,3 +108,67 @@ describe('Savvy Politician honored by its pride', function() {
         });
     });
 });
+
+describe('Savvy Politician with a status token', function() {
+    integration(function() {
+        describe('when it goes from dishonored to ordinary', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: [{ card: 'savvy-politician', honor: 'dishonored' }, 'doji-whisperer'],
+                        hand: ['court-games']
+                    },
+                    player2: {
+                        inPlay: ['kaiu-envoy']
+                    }
+                });
+                this.politician = this.player1.findCardByName('savvy-politician');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.politician],
+                    defenders: []
+                });
+                this.player2.pass();
+            });
+
+            it('triggers because it is honored (ruling #95)', function() {
+                this.player1.clickCard('court-games');
+                this.player1.clickPrompt('Honor a friendly character');
+                this.player1.clickCard(this.politician);
+                expect(this.politician.isDishonored).toBe(false);
+                expect(this.politician.isHonored).toBe(false);
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                this.player1.clickCard(this.politician);
+                expect(this.player1).toBeAbleToSelect(this.whisperer);
+                this.player1.clickCard(this.whisperer);
+                expect(this.whisperer.isHonored).toBe(true);
+                expect(this.getChatLogs(3)).toContain('player1 uses Savvy Politician to honor Doji Whisperer');
+            });
+        });
+
+        describe('when an honored status token is moved to it', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: [{ card: 'origami-master', honor: 'honored' }, 'savvy-politician', 'doji-whisperer']
+                    }
+                });
+                this.origamiMaster = this.player1.findCardByName('origami-master');
+                this.politician = this.player1.findCardByName('savvy-politician');
+            });
+
+            it('does not trigger (rulings #724 and #825)', function() {
+                this.player1.clickCard(this.origamiMaster);
+                this.player1.clickCard(this.politician);
+                expect(this.politician.isHonored).toBe(true);
+                expect(this.origamiMaster.isHonored).toBe(false);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2).toHavePrompt('Action Window');
+            });
+        });
+    });
+});

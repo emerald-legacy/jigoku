@@ -75,3 +75,65 @@ describe('Seeking The Truth', function() {
         });
     });
 });
+
+describe('Seeking The Truth strength with a Water role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    role: 'keeper-of-water',
+                    provinces: ['seeking-the-truth']
+                }
+            });
+            this.seekingTheTruth = this.player2.findCardByName('seeking-the-truth');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                province: this.seekingTheTruth,
+                defenders: []
+            });
+        });
+
+        it('should get +2 strength', function() {
+            expect(this.seekingTheTruth.facedown).toBe(false);
+            expect(this.player2.player.role.id).toBe('keeper-of-water');
+            expect(this.seekingTheTruth.getStrength()).toBe(5);
+        });
+    });
+});
+
+describe('Seeking The Truth strength without a Water role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    role: 'keeper-of-earth',
+                    provinces: ['seeking-the-truth']
+                }
+            });
+            this.seekingTheTruth = this.player2.findCardByName('seeking-the-truth');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                province: this.seekingTheTruth,
+                defenders: []
+            });
+        });
+
+        it('should keep its printed strength', function() {
+            expect(this.seekingTheTruth.facedown).toBe(false);
+            expect(this.player2.player.role.id).toBe('keeper-of-earth');
+            expect(this.seekingTheTruth.getStrength()).toBe(3);
+        });
+    });
+});

@@ -203,5 +203,136 @@ describe('Embrace the Void', function() {
                 expect(this.player2.fate).toBe(2);
             });
         });
+
+        describe('Embrace the Void in the fate phase', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 3,
+                        inPlay: [{ card: 'adept-of-the-waves', fate: 2, attachments: ['embrace-the-void'] }]
+                    }
+                });
+                this.adept = this.player1.findCardByName('adept-of-the-waves');
+                this.embraceTheVoid = this.player1.findCardByName('embrace-the-void');
+            });
+
+            it('moves the fate removed from the attached character to your fate pool (ruling #194)', function() {
+                this.flow.finishConflictPhase();
+                expect(this.game.currentPhase).toBe('fate');
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.embraceTheVoid);
+                this.player1.clickCard(this.embraceTheVoid);
+                expect(this.adept.fate).toBe(1);
+                expect(this.player1.fate).toBe(4);
+                expect(this.embraceTheVoid.location).toBe('play area');
+            });
+        });
+
+        describe('Embrace the Void and the Void ring', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kaiu-envoy']
+                    },
+                    player2: {
+                        fate: 0,
+                        inPlay: [{ card: 'adept-of-the-waves', fate: 2, attachments: ['embrace-the-void'] }]
+                    }
+                });
+                this.envoy = this.player1.findCardByName('kaiu-envoy');
+                this.adept = this.player2.findCardByName('adept-of-the-waves');
+                this.embraceTheVoid = this.player2.findCardByName('embrace-the-void');
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.envoy],
+                    defenders: [],
+                    ring: 'void'
+                });
+            });
+
+            it('moves the fate removed by the Void ring to your fate pool (ruling #194)', function() {
+                this.noMoreActions();
+                expect(this.player1).toHavePrompt('Void Ring');
+                this.player1.clickCard(this.adept);
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                expect(this.player2).toBeAbleToSelect(this.embraceTheVoid);
+                this.player2.clickCard(this.embraceTheVoid);
+                expect(this.adept.fate).toBe(1);
+                expect(this.player2.fate).toBe(1);
+            });
+        });
+
+        describe('Embrace the Void and Togashi Kazue', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['ikoma-prodigy'],
+                        hand: ['togashi-kazue']
+                    },
+                    player2: {
+                        fate: 0,
+                        inPlay: [{ card: 'adept-of-the-waves', fate: 1, attachments: ['embrace-the-void'] }]
+                    }
+                });
+                this.prodigy = this.player1.findCardByName('ikoma-prodigy');
+                this.adept = this.player2.findCardByName('adept-of-the-waves');
+                this.embraceTheVoid = this.player2.findCardByName('embrace-the-void');
+                this.kazue = this.player1.clickCard('togashi-kazue');
+                this.player1.clickPrompt('Play Togashi Kazue as an attachment');
+                this.player1.clickCard(this.prodigy);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.prodigy],
+                    defenders: [this.adept]
+                });
+                this.player2.pass();
+            });
+
+            it('moves the fate moved by Togashi Kazue to your fate pool (ruling #194)', function() {
+                this.player1.clickCard(this.kazue);
+                this.player1.clickCard(this.adept);
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                expect(this.player2).toBeAbleToSelect(this.embraceTheVoid);
+                this.player2.clickCard(this.embraceTheVoid);
+                expect(this.adept.fate).toBe(0);
+                expect(this.prodigy.fate).toBe(0);
+                expect(this.player2.fate).toBe(1);
+            });
+        });
+
+        describe('Embrace the Void play restriction', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['seppun-guardsman'],
+                        hand: ['embrace-the-void'],
+                        dynastyDiscard: ['adept-of-the-waves']
+                    }
+                });
+                this.guardsman = this.player1.findCardByName('seppun-guardsman');
+                this.adept = this.player1.findCardByName('adept-of-the-waves');
+                this.embraceTheVoid = this.player1.findCardByName('embrace-the-void');
+            });
+
+            it('cannot be played without a Shugenja in play (ruling #322)', function() {
+                expect(this.adept.location).toBe('dynasty discard pile');
+                this.player1.clickCard(this.embraceTheVoid);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.player1).not.toBeAbleToSelect(this.guardsman);
+                expect(this.embraceTheVoid.location).toBe('hand');
+            });
+
+            it('can be played once you control a Shugenja in play', function() {
+                this.player1.putIntoPlay(this.adept);
+                this.player1.clickCard(this.embraceTheVoid);
+                expect(this.player1).toBeAbleToSelect(this.guardsman);
+                this.player1.clickCard(this.guardsman);
+                expect(this.guardsman.attachments).toContain(this.embraceTheVoid);
+            });
+        });
     });
 });

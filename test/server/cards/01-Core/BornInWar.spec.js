@@ -42,6 +42,21 @@ describe('Born in War', function () {
                 this.player1.claimRing('earth');
                 expect(this.borderRider.militarySkill).toBe(military);
             });
+
+            it('does not count the contested ring as unclaimed (ruling #23)', function () {
+                this.player1.playAttachment(this.bornInWar, this.borderRider);
+                expect(this.borderRider.militarySkill).toBe(7);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'air',
+                    attackers: [this.borderRider],
+                    defenders: []
+                });
+                expect(this.borderRider.isParticipating()).toBe(true);
+                expect(this.game.rings.air.isUnclaimed()).toBe(false);
+                expect(this.borderRider.militarySkill).toBe(6);
+            });
         });
     });
 });

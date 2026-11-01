@@ -70,3 +70,62 @@ describe('Shiba Tetsu', function() {
         });
     });
 });
+
+describe('Shiba Tetsu and Spells it does not react to', function() {
+    integration(function() {
+        describe('a Spell played by the opponent', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shiba-tetsu']
+                    },
+                    player2: {
+                        inPlay: ['adept-of-the-waves'],
+                        hand: ['supernatural-storm']
+                    }
+                });
+                this.shiba = this.player1.findCardByName('shiba-tetsu');
+                this.adept = this.player2.findCardByName('adept-of-the-waves');
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.shiba],
+                    defenders: [this.adept]
+                });
+            });
+
+            it('does not trigger on a Spell played by the opponent', function() {
+                this.player2.clickCard('supernatural-storm');
+                this.player2.clickCard(this.adept);
+                expect(this.adept.militarySkill).toBe(3);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.shiba.militarySkill).toBe(2);
+            });
+        });
+
+        describe('a Spell played outside a conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shiba-tetsu', 'adept-of-the-waves'],
+                        hand: ['embrace-the-void']
+                    }
+                });
+                this.shiba = this.player1.findCardByName('shiba-tetsu');
+                this.adept = this.player1.findCardByName('adept-of-the-waves');
+                this.embrace = this.player1.findCardByName('embrace-the-void');
+            });
+
+            it('does not trigger on a Spell played outside a conflict', function() {
+                expect(this.game.currentConflict).toBeNull();
+                this.player1.playAttachment(this.embrace, this.adept);
+                expect(this.adept.attachments).toContain(this.embrace);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2).toHavePrompt('Action Window');
+                expect(this.shiba.militarySkill).toBe(2);
+            });
+        });
+    });
+});

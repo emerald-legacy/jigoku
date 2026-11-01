@@ -66,3 +66,34 @@ describe('Minami Kaze Regulars', function() {
         });
     });
 });
+
+describe('Minami Kaze Regulars attachments', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['minami-kaze-regulars', 'doji-whisperer'],
+                    hand: ['ornate-fan', 'fine-katana']
+                }
+            });
+            this.regulars = this.player1.findCardByName('minami-kaze-regulars');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.fan = this.player1.findCardByName('ornate-fan');
+            this.katana = this.player1.findCardByName('fine-katana');
+        });
+
+        it('cannot get a non-Weapon attachment', function() {
+            this.player1.clickCard(this.fan);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).not.toBeAbleToSelect(this.regulars);
+        });
+
+        it('can get a Weapon attachment', function() {
+            this.player1.clickCard(this.katana);
+            expect(this.player1).toBeAbleToSelect(this.regulars);
+            this.player1.clickCard(this.regulars);
+            expect(this.regulars.attachments).toContain(this.katana);
+        });
+    });
+});

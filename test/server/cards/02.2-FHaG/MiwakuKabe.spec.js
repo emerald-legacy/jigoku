@@ -40,3 +40,35 @@ describe('Miwaku Kabe', function() {
         });
     });
 });
+
+describe('Miwaku Kabe when another province is broken', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-toshimoko', 'doji-challenger']
+                },
+                player2: {
+                    dynastyDiscard: ['miwaku-kabe']
+                }
+            });
+            this.kabe = this.player2.placeCardInProvince('miwaku-kabe', 'province 2');
+            this.province = this.player2.findCardByName('shameful-display', 'province 1');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.province,
+                attackers: ['kakita-toshimoko', 'doji-challenger'],
+                defenders: []
+            });
+            this.noMoreActions();
+        });
+
+        it('does not trigger', function() {
+            expect(this.province.isBroken).toBe(true);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.kabe.location).toBe('province 2');
+        });
+    });
+});

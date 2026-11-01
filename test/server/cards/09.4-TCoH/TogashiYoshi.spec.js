@@ -84,6 +84,53 @@ describe('Togashi Yoshi', function() {
                 expect(this.getChatLogs(5)).toContain('player2 won a political conflict 2 vs 1');
             });
         });
+
+        describe('Togashi Yoshi\'s ability and claimed or contested rings', function() {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['togashi-yoshi'],
+                        fate: 6
+                    },
+                    player2: {
+                        inPlay: ['asahina-artisan'],
+                        rings: ['water']
+                    }
+                });
+                this.togashiYoshi = this.player1.findCardByName('togashi-yoshi');
+                this.asahinaArtisan = this.player2.findCardByName('asahina-artisan');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.togashiYoshi],
+                    defenders: [this.asahinaArtisan],
+                    ring: 'fire'
+                });
+
+                this.game.rings.air.fate = 1;
+                this.game.rings.fire.fate = 1;
+                this.game.rings.water.fate = 1;
+
+                this.player2.pass();
+                this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 1 vs 0');
+                this.player1.clickCard(this.togashiYoshi);
+            });
+
+            it('cannot choose a claimed ring', function () {
+                expect(this.game.rings.water.claimed).toBe(true);
+                expect(this.player1).toBeAbleToSelectRing('air');
+                expect(this.player1).not.toBeAbleToSelectRing('water');
+            });
+
+            it('cannot choose the contested ring', function () {
+                expect(this.game.rings.fire.contested).toBe(true);
+                expect(this.player1).toBeAbleToSelectRing('air');
+                expect(this.player1).not.toBeAbleToSelectRing('fire');
+            });
+        });
     });
 });
 

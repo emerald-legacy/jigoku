@@ -75,6 +75,30 @@ describe('Field of Ruin', function() {
                 expect(this.challenger.location).toBe('dynasty discard pile');
                 expect(this.yoshi.location).toBe('dynasty discard pile');
             });
+
+            it('should discard each card in the province when the attached province is broken', function() {
+                this.entrenched.isBroken = true;
+                this.entrenched.facedown = false;
+                this.game.checkGameState(true);
+                const fate = this.player1.fate;
+                this.player1.playAttachment(this.fieldOfRuin, this.entrenched);
+                expect(this.fieldOfRuin.parent).toBe(this.entrenched);
+                expect(this.player1.fate).toBe(fate);
+                this.noMoreActions();
+
+                expect(this.entrenched.isBroken).toBe(true);
+                expect(this.toshimoko.location).toBe('province 1');
+                expect(this.challenger.location).toBe('province 1');
+                expect(this.yoshi.location).toBe('province 1');
+
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.fieldOfRuin);
+                this.player1.clickCard(this.fieldOfRuin);
+
+                expect(this.toshimoko.location).toBe('dynasty discard pile');
+                expect(this.challenger.location).toBe('dynasty discard pile');
+                expect(this.yoshi.location).toBe('dynasty discard pile');
+            });
         });
 
         describe('Field of Ruin as a province attachment', function() {

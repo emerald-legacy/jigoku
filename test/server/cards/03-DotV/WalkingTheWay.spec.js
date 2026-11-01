@@ -45,5 +45,58 @@ describe('Walking the Way', function() {
             expect(this.getChatLogs(3)).toContain('player1 discards Kakita Toshimoko, replacing it with Favorable Ground');
             expect(this.getChatLogs(3)).toContain('player1 is shuffling their dynasty deck');
         });
+
+        it('costs 1 fate without a Shugenja', function() {
+            this.player1.clickCard(this.walkingTheWay);
+            expect(this.player1).toHavePrompt('Choose a card to place in a province');
+            expect(this.player1.fate).toBe(4);
+        });
+    });
+});
+
+describe('Walking the Way cost reduction', function() {
+    integration(function() {
+        describe('while you control a Shugenja', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 5,
+                        inPlay: ['adept-of-the-waves'],
+                        hand: ['walking-the-way']
+                    }
+                });
+                this.walkingTheWay = this.player1.findCardByName('walking-the-way');
+            });
+
+            it('costs 0 fate', function() {
+                this.player1.clickCard(this.walkingTheWay);
+                expect(this.player1).toHavePrompt('Choose a card to place in a province');
+                expect(this.player1.fate).toBe(5);
+            });
+        });
+
+        describe('while only the opponent controls a Shugenja', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 5,
+                        inPlay: ['doji-whisperer'],
+                        hand: ['walking-the-way']
+                    },
+                    player2: {
+                        inPlay: ['adept-of-the-waves']
+                    }
+                });
+                this.walkingTheWay = this.player1.findCardByName('walking-the-way');
+            });
+
+            it('costs 1 fate', function() {
+                this.player1.clickCard(this.walkingTheWay);
+                expect(this.player1).toHavePrompt('Choose a card to place in a province');
+                expect(this.player1.fate).toBe(4);
+            });
+        });
     });
 });
