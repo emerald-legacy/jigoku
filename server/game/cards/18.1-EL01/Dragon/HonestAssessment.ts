@@ -31,7 +31,10 @@ export default class HonestAssessment extends DrawCard {
                     })
                 ];
             }))
-            .chatText((context) => msg`reveal 4 random cards from ${context.player.opponent}'s hand and discard all copies of ${context.costs.namedCard}`)
+            .chatText((context) => {
+                const amount = Math.min(4, context.player.opponent?.hand.length ?? 0);
+                return msg`reveal ${amount} random card${amount === 1 ? '' : 's'} from ${context.player.opponent}'s hand and discard all copies of ${context.costs.namedCard}`;
+            })
             .max(perRound(1));
     }
 }

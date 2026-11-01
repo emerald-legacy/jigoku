@@ -83,3 +83,77 @@ describe('Playing an event set aside by Stolen Secrets', function () {
         });
     });
 });
+
+describe('Turning several facedown dynasty cards faceup', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    dynastyDiscard: ['staging-ground', 'akodo-gunso', 'doji-whisperer']
+                }
+            });
+            this.stagingGround = this.player1.placeCardInProvince('staging-ground', 'province 1');
+            this.gunso = this.player1.placeCardInProvince('akodo-gunso', 'province 2');
+            this.whisperer = this.player1.placeCardInProvince('doji-whisperer', 'province 3');
+            this.gunso.facedown = true;
+            this.whisperer.facedown = true;
+        });
+
+        it('names every province (Staging Ground)', function () {
+            this.player1.clickCard(this.stagingGround);
+            this.player1.clickCard(this.gunso);
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickPrompt('Done');
+            expect(this.gunso.facedown).toBe(false);
+            expect(this.whisperer.facedown).toBe(false);
+            expect(this.getChatLogs(5)).toContain('player1 uses Staging Ground to reveal the facedown cards in province 2 and province 3');
+        });
+
+        it('names the one province when one card is turned faceup', function () {
+            this.player1.clickCard(this.stagingGround);
+            this.player1.clickCard(this.gunso);
+            this.player1.clickPrompt('Done');
+            expect(this.gunso.facedown).toBe(false);
+            expect(this.whisperer.facedown).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 uses Staging Ground to reveal the facedown card in province 2');
+        });
+    });
+});
+
+describe('Discarding more random cards than the hand holds', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-kuwanan'],
+                    hand: ['assassination']
+                },
+                player2: {
+                    inPlay: ['hida-kisada'],
+                    dynastyDiscard: ['river-of-the-last-stand']
+                }
+            });
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.kisada = this.player2.findCardByName('hida-kisada');
+            this.assassination = this.player1.findCardByName('assassination');
+            this.river = this.player2.placeCardInProvince('river-of-the-last-stand', 'province 1');
+            this.p1 = this.player2.findCardByName('shameful-display', 'province 1');
+        });
+
+        it('names the number of cards the hand holds (River of the Last Stand)', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kuwanan],
+                defenders: [this.kisada],
+                province: this.p1
+            });
+            expect(this.player1.hand.length).toBe(1);
+            this.player2.clickCard(this.river);
+            expect(this.assassination.location).toBe('conflict discard pile');
+            expect(this.getChatLogs(5)).toContain('player2 uses River of the Last Stand to make player1 discard 1 card at random');
+        });
+    });
+});

@@ -42,6 +42,7 @@ describe('Eagle\'s Rest Peak', function () {
             expect(this.getChatLogs(10)).toContain(
                 'player2 uses Eagle\'s Rest Peak to use the insight of Togashi Yokuni, revealing and setting aside 2 cards from player1\'s hand'
             );
+            expect(this.getChatLogs(10)).toContain(jasmine.stringMatching(/^player1 reveals (I Can Swim and Way of the Scorpion|Way of the Scorpion and I Can Swim)$/));
         });
     });
 });

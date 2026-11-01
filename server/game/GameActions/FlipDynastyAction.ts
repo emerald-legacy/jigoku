@@ -12,13 +12,14 @@ export class FlipDynastyAction<Context extends AbilityContext = AbilityContext> 
     override eventName = EventName.OnCardRevealed;
     override targetType = [CardType.Character, CardType.Holding, CardType.Event];
 
-    protected override effectMessage(): MessageArgs {
-        return ['reveal the facedown card in {0}', []];
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const targets = targetList(this.getProperties(context, additionalProperties).target);
+        return [targets.length > 1 ? 'reveal the facedown cards in {0}' : 'reveal the facedown card in {0}', []];
     }
 
     protected override effectMessageTarget(context: Context, additionalProperties: ActionOverrides = {}): MsgArg {
-        const [target] = targetList(this.getProperties(context, additionalProperties).target);
-        return target ? target.location : '';
+        const locations = targetList(this.getProperties(context, additionalProperties).target).map((target) => target.location);
+        return locations.length > 1 ? locations : locations[0] ?? '';
     }
 
     override canAffect(card: BaseCard, context: Context): boolean {

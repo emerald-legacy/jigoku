@@ -23,7 +23,8 @@ class EmissaryOfLies extends DrawCard {
                     choices: {
                         'Yes': multiple([
                             lookAt({
-                                target: context.player.hand.slice().sort((a, b) => a.name.localeCompare(b.name))
+                                target: context.player.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
+                                message: (context, cards) => msg`${context.player} reveals their hand: ${cards}`
                             }),
                             conditional({
                                 condition: () => !context.player.hand.some((card) => card.name === cardName),

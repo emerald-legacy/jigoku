@@ -51,12 +51,12 @@ describe('Overhear', function() {
                 expect(this.player2.hand.length).toBe(handSize - 1);
                 expect(this.player2.conflictDeck.length).toBe(deckSize + 1);
                 expect([
-                    'player1 sees Fine Katana',
-                    'player1 sees Ornate Fan',
-                    'player1 sees Banzai!'
+                    'player2 reveals Fine Katana',
+                    'player2 reveals Ornate Fan',
+                    'player2 reveals Banzai!'
                 ]).toContain(this.getChatLogs(1)[0]);
                 expect(
-                    `player1 sees ${ this.player2.conflictDeck[0].name }`
+                    `player2 reveals ${ this.player2.conflictDeck[0].name }`
                 ).toEqual(this.getChatLogs(1)[0]);
             });
 

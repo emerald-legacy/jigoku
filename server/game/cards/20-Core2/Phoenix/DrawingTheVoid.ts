@@ -41,7 +41,10 @@ export default class DrawingTheVoid extends DrawCard {
                     }))
                 ];
             }))
-            .chatText((context) => msg`reveal 2 random cards from ${context.player.opponent}'s hand and remove one from the game`)
+            .chatText((context) => {
+                const amount = Math.min(2, context.player.opponent?.hand.length ?? 0);
+                return msg`reveal ${amount} random card${amount === 1 ? '' : 's'} from ${context.player.opponent}'s hand and remove ${amount === 1 ? 'it' : 'one'} from the game`;
+            })
             .max(perRound(1));
     }
 }

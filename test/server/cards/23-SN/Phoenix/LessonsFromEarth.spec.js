@@ -67,7 +67,7 @@ describe('Lessons From Earth', function () {
             this.noMoreActions();
             this.player1.clickPrompt('No');
             this.player1.clickPrompt('Don\'t Resolve');
-            expect(this.getChatLogs(5)).toContain('player1 uses Lessons from Earth to cause player1 to draw a card and player2 to discard a card');
+            expect(this.getChatLogs(5)).toContain('player1 uses Lessons from Earth to cause player1 to draw a card');
             expect(this.player2).not.toHavePrompt('Lessons from Earth');
             expect(this.getChatLogs(5)).toContain('player2\'s affinity to Earth prevents them from discarding a card');
 
@@ -94,7 +94,7 @@ describe('Lessons From Earth', function () {
             this.player1.clickPrompt('Don\'t Resolve');
             expect(this.lessons.parent).toBe(this.sd);
             expect(this.player1.hand.length).toBe(hand + 1);
-            expect(this.getChatLogs(5)).toContain('player1 uses Lessons from Earth to cause player1 to draw a card and player2 to discard a card');
+            expect(this.getChatLogs(5)).toContain('player1 uses Lessons from Earth to cause player1 to draw a card');
         });
 
     });

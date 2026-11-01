@@ -15,7 +15,7 @@ export default class Overhear extends DrawCard {
                 return [
                     lookAt(() => ({
                         target: card,
-                        message: (context, cards) => msg`${context.player} sees ${cards}`
+                        message: (context, cards) => msg`${context.player.opponent} reveals ${cards}`
                     })),
                     moveCard(() => ({
                         target: card,

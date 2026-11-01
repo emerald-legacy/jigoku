@@ -39,6 +39,16 @@ describe('Drawing the Void', function () {
             expect(this.player2).toHavePrompt('Initiate an action');
         });
 
+        it('says "remove it" when the opponent holds 1 card', function () {
+            this.player2.moveCard(this.reprieve, 'conflict discard pile');
+            this.player1.clickCard(this.drawingTheVoid);
+            expect(this.getChatLogs(5)).toContain(
+                'player1 plays Drawing the Void to reveal 1 random card from player2\'s hand and remove it from the game'
+            );
+            this.player1.clickPrompt('Regal Bearing');
+            expect(this.regalBearing.location).toBe('removed from game');
+        });
+
         it('reveals two cards and remove one from the game, without affinity player still chooses but does not draw', function () {
             this.player1.moveCard(this.akodoKaede, 'dynasty deck');
 

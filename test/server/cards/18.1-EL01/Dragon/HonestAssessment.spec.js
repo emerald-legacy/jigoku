@@ -87,7 +87,7 @@ describe('Honest Assessment', function() {
             this.player2.chooseCardInPrompt(this.letGo.name, 'card-name');
 
             expect(this.player1.hand.length).toBe(hand);
-            expect(this.getChatLogs(15)).toContain('player2 uses Honest Assessment, naming Let Go to reveal 4 random cards from player1\'s hand and discard all copies of Let Go');
+            expect(this.getChatLogs(15)).toContain('player2 uses Honest Assessment, naming Let Go to reveal 3 random cards from player1\'s hand and discard all copies of Let Go');
             expect(this.getChatLogs(15)).toContain('player1 reveals Banzai! due to Honest Assessment');
             expect(this.getChatLogs(15)).toContain('player1 does not discard anything');
         });

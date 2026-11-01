@@ -39,7 +39,9 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                 }
                 return gameActions;
             }))
-            .chatText((context) => msg`cause ${context.event.conflict?.winner} to draw a card and ${context.event.conflict?.loser} to discard a card`)
+            .chatText((context) => context.event.conflict?.loser?.hasAffinity(Trait.Earth, context)
+                ? msg`cause ${context.event.conflict?.winner} to draw a card`
+                : msg`cause ${context.event.conflict?.winner} to draw a card and ${context.event.conflict?.loser} to discard a card`)
             .limit(unlimited());
     }
 

@@ -91,7 +91,7 @@ describe('Emissary of lies\'', function() {
                 this.player1.clickCard(this.tsukune);
                 this.player2.chooseCardInPrompt(this.banzai.name, 'card-name');
                 this.player1.clickPrompt('Yes');
-                expect(this.getChatLogs(5)).toContain('Emissary of Lies sees Fine Katana');
+                expect(this.getChatLogs(5)).toContain('player1 reveals their hand: Fine Katana');
             });
         });
     });

@@ -111,7 +111,7 @@ describe('Inquisitorial Initiate', function() {
             this.player1.clickPrompt('Ornate Fan');
             expect(this.fan.location).toBe('conflict discard pile');
             expect(this.getChatLogs(3)).toContain('player1 chooses Ornate Fan to be discarded');
-            expect(this.getChatLogs(3)).toContain('Inquisitorial Initiate sees Ornate Fan and Banzai!');
+            expect(this.getChatLogs(3)).toContain('player2 reveals Ornate Fan and Banzai!');
             expect(this.getChatLogs(10)).toContain('player1 uses Inquisitorial Initiate to make player2 reveal 2 cards and discard one of them');
         });
 
@@ -137,7 +137,7 @@ describe('Inquisitorial Initiate', function() {
             this.player1.clickPrompt('Ornate Fan');
             expect(this.fan.location).toBe('conflict discard pile');
             expect(this.getChatLogs(3)).toContain('player1 chooses Ornate Fan to be discarded');
-            expect(this.getChatLogs(3)).toContain('Inquisitorial Initiate sees Ornate Fan');
+            expect(this.getChatLogs(3)).toContain('player2 reveals Ornate Fan');
             expect(this.getChatLogs(10)).toContain('player1 uses Inquisitorial Initiate to make player2 reveal 1 card and discard it');
         });
     });

@@ -20,7 +20,8 @@ class DaidojiHarrier extends DrawCard {
                 location: Location.Hand
             })
             .lookAt((context) => ({
-                target: context.targets.target
+                target: context.targets.target,
+                message: (context, cards) => msg`${context.player.opponent} reveals ${cards}`
             }))
             .cardMenu((context) => ({
                 cards: context.targets.target.filter((card) => card.isDrawCard()),

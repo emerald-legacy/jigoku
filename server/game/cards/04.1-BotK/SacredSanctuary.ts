@@ -25,6 +25,6 @@ export default class SacredSanctuary extends ProvinceCard {
                     applyingPlayer: context.player
                 })
             })))
-            .chatText('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict');
+            .chatText('ready {0}, prevent opponents\' card effects from bowing it and stop it bowing at the end of the conflict');
     }
 }

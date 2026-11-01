@@ -24,6 +24,9 @@ export default class HidaMarauder extends DrawCard {
                     chooseCardToDiscard(cards)
                 ];
             }))
-            .chatText((context) => msg`make ${context.player.opponent} reveal ${context.game.currentConflict?.getCharacters(context.player).length ?? 0} random card${(context.game.currentConflict?.getCharacters(context.player).length ?? 0) === 1 ? '' : 's'} from their hand`);
+            .chatText((context) => {
+                const amount = Math.min(context.game.currentConflict?.getCharacters(context.player).length ?? 0, context.player.opponent?.hand.length ?? 0);
+                return msg`make ${context.player.opponent} reveal ${amount} random card${amount === 1 ? '' : 's'} from their hand`;
+            });
     }
 }

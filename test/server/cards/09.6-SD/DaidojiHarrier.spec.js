@@ -96,7 +96,7 @@ describe('Daidoji Harrier', function() {
                 this.player1.clickPrompt('Ornate Fan');
                 expect(this.fan.location).toBe('conflict discard pile');
                 expect(this.getChatLogs(3)).toContain('player1 chooses Ornate Fan to be discarded');
-                expect(this.getChatLogs(3)).toContain('Daidoji Harrier sees Ornate Fan and Banzai!');
+                expect(this.getChatLogs(3)).toContain('player2 reveals Ornate Fan and Banzai!');
                 expect(this.getChatLogs(10)).toContain('player1 uses Daidoji Harrier to make player2 reveal 2 cards and discard one of them');
             });
         });

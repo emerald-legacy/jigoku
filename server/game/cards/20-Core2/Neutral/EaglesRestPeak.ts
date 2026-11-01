@@ -21,7 +21,10 @@ export default class EaglesRestPeak extends ProvinceCard {
                     .slice(0, context.target.getCost() ?? 0);
 
                 return [
-                    lookAt({ target: setAsideCards }),
+                    lookAt({
+                        target: setAsideCards,
+                        message: (_context, cards) => msg`${opponent} reveals ${cards}`
+                    }),
                     setAside({
                         target: setAsideCards,
                         returnAtEndOfConflict: true,

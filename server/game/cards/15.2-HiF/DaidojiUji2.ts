@@ -17,7 +17,7 @@ class DaidojiUji2 extends DrawCard {
                 reveal: false,
                 selectedCardsHandler: (context, event, cards) => {
                     if(cards.length > 0) {
-                        this.game.addMessage(msg`${event.player} selects ${cards.length} cards`);
+                        this.game.addMessage(msg`${event.player} selects ${cards.length} card${cards.length === 1 ? '' : 's'}`);
                         cards.forEach((card) => placeCardUnderneath({ destination: this }).resolve(card, context));
                     } else {
                         this.game.addMessage(msg`${event.player} selects no cards`);

@@ -19,7 +19,8 @@ class KitsukiChiari extends DrawCard {
                 const cards = randomHandCards(context.player.opponent, 4);
                 return [
                     lookAt(() => ({
-                        target: cards
+                        target: cards,
+                        message: (context, cards) => msg`${context.player.opponent} reveals ${cards}`
                     })),
                     discardMatching((context) => ({
                         target: context.player.opponent,
@@ -30,7 +31,10 @@ class KitsukiChiari extends DrawCard {
                     }))
                 ];
             }))
-            .chatText((context) => msg`look at 4 random cards in ${context.player.opponent}'s hand and discard all cards named ${context.costs.namedCard}`);
+            .chatText((context) => {
+                const count = Math.min(4, context.player.opponent?.hand.length ?? 0);
+                return msg`look at ${count} random card${count === 1 ? '' : 's'} in ${context.player.opponent}'s hand and discard all cards named ${context.costs.namedCard}`;
+            });
     }
 
 

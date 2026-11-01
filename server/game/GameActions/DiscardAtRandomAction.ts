@@ -5,7 +5,7 @@ import { EventName, Location, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { shuffle } from '../utils/random.js';
-import type { ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
 export interface RandomDiscardProperties extends PlayerActionProperties {
     amount?: number;
@@ -26,8 +26,10 @@ export class DiscardAtRandomAction<Context extends AbilityContext = AbilityConte
     override restriction = RestrictionType.Discard;
     override eventName = EventName.OnCardsDiscardedFromHand;
     protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
-        const { amount } = this.getProperties(context, additionalProperties);
-        return ['make {0} discard {1} {2} at random', [amount, amount > 1 ? 'cards' : 'card']];
+        const { amount, target } = this.getProperties(context, additionalProperties);
+        const [player] = targetList(target);
+        const count = player ? Math.min(amount, player.hand.length) : amount;
+        return ['make {0} discard {1} {2} at random', [count, count > 1 ? 'cards' : 'card']];
     }
 
     override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {

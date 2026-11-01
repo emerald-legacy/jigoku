@@ -24,7 +24,7 @@ export default class ShiroGisu extends StrongholdCard {
                 reveal: false
             })
             .chatText((context) => {
-                const amount = this.getCharactersWithoutFate(context);
+                const amount = Math.min(this.getCharactersWithoutFate(context), context.player.conflictDeck.length);
                 return msg`look at the top ${amount} card${amount === 1 ? '' : 's'} of their conflict deck`;
             });
     }

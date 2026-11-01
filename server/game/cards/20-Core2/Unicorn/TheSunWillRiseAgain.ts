@@ -21,7 +21,7 @@ export default class TheSunWillRiseAgain extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: additionalConflict(context.event.conflict.conflictType)
             }))
-            .chatText((context) => msg`gain an additional ${context.event.conflict.conflictType} conflict this round. They will not forget this defeat`)
+            .chatText((context) => msg`gain an additional ${context.event.conflict.conflictType} conflict this phase. They will not forget this defeat`)
             .max(perConflict(1));
     }
 }

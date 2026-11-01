@@ -11,6 +11,9 @@ export default class ShrewdInvestigator extends DrawCard {
             .lookAt((context) => ({
                 target: randomHandCards(context.player.opponent, context.player.getNumberOfFacedownProvinces())
             }))
-            .chatText((context) => msg`look at ${context.player.getNumberOfFacedownProvinces()} random card${context.player.getNumberOfFacedownProvinces() === 1 ? '' : 's'} in ${context.player.opponent}'s hand`);
+            .chatText((context) => {
+                const amount = Math.min(context.player.getNumberOfFacedownProvinces(), context.player.opponent?.hand.length ?? 0);
+                return msg`look at ${amount} random card${amount === 1 ? '' : 's'} in ${context.player.opponent}'s hand`;
+            });
     }
 }

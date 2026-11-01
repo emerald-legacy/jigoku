@@ -18,6 +18,9 @@ export default class CourtOfJustice extends DrawCard {
                 target: shuffle(context.player.opponent?.hand ?? []).slice(0, 3),
                 message: (context, cards) => msg`${context.player} sees ${cards} from ${context.player.opponent}'s hand`
             }))
-            .chatText((context) => msg`look at 3 random cards from ${context.player.opponent}'s hand`);
+            .chatText((context) => {
+                const amount = Math.min(3, context.player.opponent?.hand.length ?? 0);
+                return msg`look at ${amount} random card${amount === 1 ? '' : 's'} from ${context.player.opponent}'s hand`;
+            });
     }
 }

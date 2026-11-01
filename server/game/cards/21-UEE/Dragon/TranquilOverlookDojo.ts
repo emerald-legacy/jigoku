@@ -49,7 +49,10 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
                     ];
                 })
                 : noAction(),
-            chatText: (context) => msg`reveal 2 random cards from ${context.player.opponent}'s hand and discard 1 of them`
+            chatText: (context) => {
+                const amount = Math.min(2, context.player.opponent?.hand.length ?? 0);
+                return msg`reveal ${amount} random card${amount === 1 ? '' : 's'} from ${context.player.opponent}'s hand and discard ${amount === 1 ? 'it' : '1 of them'}`;
+            }
         }))
         .max(limit);
 }

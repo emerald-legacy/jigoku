@@ -398,3 +398,34 @@ describe('Daidoji Uji 2\'s abilities gained through Contemplative Wisdom', funct
         });
     });
 });
+
+describe('Daidoji Uji 2 chat for a single card', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    dynastyDiscard: ['daidoji-uji-2'],
+                    conflictDiscard: ['voice-of-honor', 'let-go', 'a-new-name']
+                }
+            });
+
+            this.uji = this.player1.placeCardInProvince('daidoji-uji-2', 'province 1');
+            this.voice = this.player1.moveCard('voice-of-honor', 'conflict deck');
+            this.player1.moveCard('let-go', 'conflict deck');
+            this.player1.moveCard('a-new-name', 'conflict deck');
+        });
+
+        it('should use the singular for one selected card', function() {
+            this.player1.clickCard(this.uji);
+            this.player1.clickPrompt('0');
+            this.player1.clickCard(this.uji);
+            this.player1.clickPrompt('Voice of Honor');
+            this.player1.clickPrompt('Done');
+
+            expect(this.voice.isUnderneath(this.uji)).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 selects 1 card');
+            expect(this.getChatLogs(5)).not.toContain('player1 selects 1 cards');
+        });
+    });
+});
