@@ -29,7 +29,7 @@ describe('Wrathstorm Dancer', function () {
             expect(this.dancer.bowed).toBe(false);
         });
 
-        it('bows as a result of conflict resolution if player has another berserker participating', function () {
+        it('bows as a result of conflict resolution if player has no other berserker participating', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.dancer],

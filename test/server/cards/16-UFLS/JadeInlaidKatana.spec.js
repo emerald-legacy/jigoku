@@ -27,7 +27,7 @@ describe('Jade Inlaid Katana', function () {
             this.player1.playAttachment(this.katana, this.manipulator);
         });
 
-        it('should make opponent lose a fate when parent wins a conflict as first player', function () {
+        it('should remove a fate from a participating character with a status token when parent wins a conflict', function () {
             this.noMoreActions();
             const fate = this.yogoHiroue.fate;
 

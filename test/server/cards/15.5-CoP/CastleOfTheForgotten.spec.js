@@ -1,6 +1,3 @@
-import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
-import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
-
 describe('Castle of the Forgotten', function() {
     integration(function() {
         beforeEach(function() {
@@ -111,35 +108,45 @@ describe('Castle of the Forgotten other breaks', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
-                phase: 'conflict',
+                phase: 'draw',
                 player1: {
-                    stronghold: ['castle-of-the-forgotten']
+                    stronghold: ['castle-of-the-forgotten'],
+                    inPlay: ['doji-whisperer'],
+                    hand: ['feeding-an-army']
                 },
                 player2: {
-                    inPlay: ['border-rider']
+                    inPlay: ['border-rider'],
+                    hand: ['feeding-an-army']
                 }
             });
             this.castle = this.player1.findCardByName('castle-of-the-forgotten');
-            this.rider = this.player2.findCardByName('border-rider');
+            this.ownFeeding = this.player1.findCardByName('feeding-an-army');
+            this.opponentsFeeding = this.player2.findCardByName('feeding-an-army');
+            this.ownProvince = this.player1.findCardByName('shameful-display', 'province 1');
             this.opponentsProvince = this.player2.findCardByName('shameful-display', 'province 1');
+            this.ownProvince.facedown = false;
+            this.opponentsProvince.facedown = false;
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
         });
 
-        it('reacts when the opponent\'s province breaks outside a conflict, as you broke it', function() {
-            const context = new ResolvableAbility(this.rider, {}).createContext(this.player2.player);
-            this.game.queueSimpleStep(() => breakProvince().resolve(this.opponentsProvince, context));
-            this.game.continue();
+        it('reacts when the opponent breaks their own province outside a conflict, as you broke it', function() {
+            this.player1.pass();
+            this.player2.clickCard(this.opponentsFeeding);
+            this.player2.clickCard(this.opponentsProvince);
             this.player1.clickPrompt('No');
             expect(this.opponentsProvince.isBroken).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.castle);
         });
 
-        it('does not react when your own province breaks', function() {
-            const ownProvince = this.player1.findCardByName('shameful-display', 'province 1');
-            const context = new ResolvableAbility(this.rider, {}).createContext(this.player2.player);
-            this.game.queueSimpleStep(() => breakProvince().resolve(ownProvince, context));
-            this.game.continue();
+        it('does not react when you break your own province', function() {
+            this.player1.clickCard(this.ownFeeding);
+            this.player1.clickCard(this.ownProvince);
             this.player2.clickPrompt('No');
-            expect(ownProvince.isBroken).toBe(true);
+            expect(this.ownProvince.isBroken).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player2 has broken Shameful Display!');
             expect(this.player1).not.toBeAbleToSelect(this.castle);
         });
     });

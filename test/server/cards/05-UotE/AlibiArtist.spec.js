@@ -28,6 +28,8 @@ describe('Alibi Artist', function() {
                     this.player1.honor = 4;
                     this.player1.clickCard('alibi-artist');
                     expect(this.player1).not.toHavePrompt('Select a card');
+                    expect(this.player1).toHavePrompt('Action Window');
+                    expect(this.player1.hand.length).toBe(3);
                 });
             });
 
@@ -82,6 +84,8 @@ describe('Alibi Artist', function() {
                 this.player1.honor = 7;
                 this.player1.clickCard('alibi-artist');
                 expect(this.player1).not.toHavePrompt('Select a card');
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.player1.hand.length).toBe(3);
             });
 
             it('should work at 6 or less honor and correctly put cards in hand and at bottom of conflict deck', function() {

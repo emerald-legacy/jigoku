@@ -32,6 +32,9 @@ describe('Bird-Helm Adjudicator', function() {
             this.noMoreActions();
             this.player2.passConflict();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player2 has chosen to pass their conflict opportunity');
+            expect(this.player1.honor).toBe(10);
+            expect(this.player2.honor).toBe(10);
         });
 
         it('should be limited to once per round', function() {

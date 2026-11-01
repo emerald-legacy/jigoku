@@ -60,8 +60,12 @@ describe('Paranoid Hososhi', function () {
                 });
 
                 it('is not triggerable', function () {
+                    const player1FateBefore = this.player1.fate;
                     this.player1.clickCard(this.paranoidHososhi);
                     expect(this.player1).not.toHavePrompt('Paranoid Hōsōshi');
+                    expect(this.paranoidHososhi.bowed).toBe(false);
+                    expect(this.player1.fate).toBe(player1FateBefore);
+                    expect(this.tsukune.fate).toBe(0);
                 });
             });
         });

@@ -100,6 +100,7 @@ describe('Honed Nodachi', function() {
             it('should not trigger if attached character has no fate', function() {
                 this.hida.fate = 0;
                 this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 7 vs 3');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
 
@@ -113,7 +114,10 @@ describe('Honed Nodachi', function() {
                 this.player2.clickPrompt('1');
                 this.player1.pass();
                 this.player2.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 8 vs 2');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.student.location).toBe('play area');
+                expect(this.hida.fate).toBe(1);
             });
         });
     });

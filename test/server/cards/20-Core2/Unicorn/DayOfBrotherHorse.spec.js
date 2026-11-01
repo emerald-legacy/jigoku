@@ -34,6 +34,10 @@ describe('Day of Brother Horse', function () {
             this.noMoreActions();
             this.player1.clickPrompt('Pass');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(10)).toContain(
+                'player1 passes their conflict opportunity as none of their characters can be declared as an attacker'
+            );
+            expect(this.dayofBrotherHorse.location).toBe('hand');
         });
 
         it('if triggered, protects a ring, draw 3 cards and discard 1 card', function () {

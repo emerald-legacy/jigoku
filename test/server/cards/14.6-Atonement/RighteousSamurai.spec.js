@@ -70,12 +70,17 @@ describe('Righteous Samurai', function () {
                 defenders: [this.advisor],
                 type: 'military'
             });
+            const p1honor = this.player1.honor;
+            const p2honor = this.player2.honor;
             this.player2.clickCard(this.pd2);
             this.player2.clickCard(this.advisor);
             this.player2.clickCard(this.righteous);
             this.player1.clickPrompt('2');
             this.player2.clickPrompt('1');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1.honor).toBe(p1honor - 1);
+            expect(this.player2.honor).toBe(p2honor + 1);
+            expect(this.getChatLogs(5)).toContain('The duel ends in a draw');
         });
 
         it('should not trigger from a dishonored character leaving', function() {

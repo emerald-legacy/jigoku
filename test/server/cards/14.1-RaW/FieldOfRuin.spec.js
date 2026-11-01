@@ -147,7 +147,7 @@ describe('Field of Ruin', function() {
                 expect(this.player1.fate).toBe(playerFatePreFieldOfRuin - 1);
             });
 
-            it('should not discard when the attached province is broken', function() {
+            it('stays attached when the attached province is broken', function() {
                 this.player1.clickCard(this.fieldOfRuin);
                 expect(this.player1).toBeAbleToSelect(this.ancestralLands);
                 expect(this.player1).toBeAbleToSelect(this.garden);

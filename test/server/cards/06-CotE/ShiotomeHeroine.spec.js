@@ -22,7 +22,7 @@ describe('Shiotome Heroine', function() {
                 this.game.rings.air.fate = 1;
             });
 
-            it('should trigger when your opponent gains 1 or more fate through a card effect (via Shiotome Heroine\'s controller card effect)', function() {
+            it('should trigger when your opponent gains 1 or more honor through a card effect (via Shiotome Heroine\'s controller card effect)', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 const honor = this.player2.player.honor;
@@ -33,7 +33,7 @@ describe('Shiotome Heroine', function() {
                 expect(this.player2.player.honor).toBe(honor + 2);
             });
 
-            it('should trigger when your opponent gains 1 or more fate through a card effect (via Shiotome Heroine\'s opponent card effect)', function() {
+            it('should trigger when your opponent gains 1 or more honor through a card effect (via Shiotome Heroine\'s opponent card effect)', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 this.player1.pass();
@@ -46,7 +46,7 @@ describe('Shiotome Heroine', function() {
                 expect(this.player2.player.honor).toBe(honor + 1);
             });
 
-            it('should not trigger when your opponent gains 1 or more fate through a framework effect', function() {
+            it('should not trigger when your opponent gains 1 or more honor through a framework effect', function() {
                 const honor = this.player2.player.honor;
                 this.player1.clickPrompt('2');
                 this.player2.clickPrompt('1');

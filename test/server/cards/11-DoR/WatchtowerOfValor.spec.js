@@ -82,6 +82,7 @@ describe('Watchtower of Valor', function() {
 
                 const hand = this.player2.hand.length;
                 expect(this.player2).not.toBeAbleToSelect(this.watchtower);
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 7 vs 5');
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand);
             });
@@ -100,6 +101,7 @@ describe('Watchtower of Valor', function() {
 
                 const hand = this.player2.hand.length;
                 expect(this.player2).not.toBeAbleToSelect(this.watchtower);
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 7 vs 5');
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand);
             });
@@ -119,6 +121,7 @@ describe('Watchtower of Valor', function() {
 
                 const hand = this.player2.hand.length;
                 expect(this.player2).not.toBeAbleToSelect(this.watchtower);
+                expect(this.getChatLogs(10)).toContain('player2 won a military conflict 7 vs 5');
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand);
             });
@@ -137,6 +140,7 @@ describe('Watchtower of Valor', function() {
 
                 const hand = this.player2.hand.length;
                 expect(this.player2).not.toBeAbleToSelect(this.watchtower);
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 4 vs 2');
                 this.player2.clickCard(this.watchtower);
                 expect(this.player2.hand.length).toBe(hand);
             });

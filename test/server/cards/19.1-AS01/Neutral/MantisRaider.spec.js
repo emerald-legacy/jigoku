@@ -124,7 +124,11 @@ describe('Mantis Raider', function () {
                 });
 
                 this.player2.pass();
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.mantisRaider.isParticipating()).toBe(false);
                 expect(this.player1).not.toBeAbleToSelect(this.mantisRaider);
+                this.player1.clickCard(this.mantisRaider);
+                expect(this.mantisRaider.fate).toBe(2);
             });
         });
     });

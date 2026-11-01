@@ -70,11 +70,12 @@ describe('Second Wind', function () {
             );
         });
 
-        it('should place on the bottom of the deck at the end of the phase', function () {
+        it('should place on the bottom of the deck at the end of the conflict', function () {
             this.player2.clickCard(this.secondWind);
             this.player2.clickCard(this.masterTactician);
             this.noMoreActions();
             expect(this.masterTactician.location).toBe('dynasty deck');
+            expect(this.player2.player.dynastyDeck.at(-1)).toBe(this.masterTactician);
         });
 
     });

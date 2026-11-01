@@ -56,6 +56,9 @@ describe('War Cry', function () {
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.getChatLogs(5)).not.toContain('player1 plays War Cry to break an attacked province');
+            expect(this.getChatLogs(10)).toContain('player1 won a military conflict 1 vs 0');
+            expect(this.warcry.location).toBe('hand');
+            expect(this.sd.isBroken).toBe(false);
         });
     });
 });

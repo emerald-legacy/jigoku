@@ -22,7 +22,7 @@ describe('Hida Backbreaker', function () {
             this.noMoreActions();
         });
 
-        it('should trigger and honor a character after winning a conflict', function () {
+        it('should trigger and dishonor a character after winning a conflict', function () {
             this.initiateConflict({
                 attackers: [this.hida, this.shibaTsukune],
                 defenders: [this.daidojiUji]

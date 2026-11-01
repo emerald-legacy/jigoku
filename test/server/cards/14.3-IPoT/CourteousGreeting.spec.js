@@ -80,7 +80,7 @@ describe('Courteous Greeting', function() {
             expect(this.skirmisher.bowed).toBe(true);
         });
 
-        it('should require targeting characters controlled by both players', function() {
+        it('should require choosing both a defending and an attacking character', function() {
             this.initiateConflict({
                 province: this.greeting,
                 ring: 'earth',
@@ -90,8 +90,13 @@ describe('Courteous Greeting', function() {
             });
             this.player2.clickCard(this.greeting);
             this.player2.clickCard(this.maiden);
+            expect(this.player2).toHavePrompt('Courteous Greeting');
             expect(this.player2).not.toHavePromptButton('Done');
+            expect(this.player2).toBeAbleToSelect(this.wanderer);
+            expect(this.maiden.bowed).toBe(false);
             this.player2.clickCard(this.wanderer);
+            expect(this.maiden.bowed).toBe(true);
+            expect(this.wanderer.bowed).toBe(true);
         });
 
         it('should not work without a valid target on both sides - no defending character', function() {

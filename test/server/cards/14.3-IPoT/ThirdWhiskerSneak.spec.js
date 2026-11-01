@@ -54,6 +54,7 @@ describe('Third Whisker Sneak', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 0');
         });
 
         it('should not prompt after you win opposed', function () {
@@ -65,6 +66,7 @@ describe('Third Whisker Sneak', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 1');
         });
 
         it('should not prompt after you win unopposed on defense (RAW - not unopposed)', function () {
@@ -80,6 +82,7 @@ describe('Third Whisker Sneak', function() {
             this.player2.clickCard(this.representative);
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 0');
         });
 
         it('unbroken = 5, should show 5 cards', function() {

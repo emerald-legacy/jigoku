@@ -55,7 +55,7 @@ describe('Hida Kotoe', function() {
             expect(this.getChatLogs(5)).toContain('player2 won a military conflict 9 vs 7');
         });
 
-        it('should not trigger if win not attacking', function() {
+        it('should not trigger if win while attacking', function() {
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();

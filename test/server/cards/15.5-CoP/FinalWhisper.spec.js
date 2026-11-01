@@ -1,5 +1,3 @@
-import { taint } from '../../../../build/server/game/GameActions/GameActions.js';
-
 describe('Final Whisper', function() {
     integration(function() {
         beforeEach(function() {
@@ -10,7 +8,7 @@ describe('Final Whisper', function() {
                 },
                 player2: {
                     inPlay: ['shameless-gossip', 'soshi-illusionist', 'brash-samurai'],
-                    hand: ['way-of-the-scorpion', 'final-whisper'],
+                    hand: ['way-of-the-scorpion', 'final-whisper', 'lurking-affliction'],
                     conflictDiscard: ['final-whisper']
                 }
             });
@@ -19,6 +17,7 @@ describe('Final Whisper', function() {
             this.illusionist = this.player2.findCardByName('soshi-illusionist');
             this.brash = this.player2.findCardByName('brash-samurai');
             this.scorp = this.player2.findCardByName('way-of-the-scorpion');
+            this.affliction = this.player2.findCardByName('lurking-affliction');
             this.whisper = this.player2.findCardByName('final-whisper', 'hand');
             this.whisper2 = this.player2.findCardByName('final-whisper', 'conflict discard pile');
 
@@ -190,8 +189,9 @@ describe('Final Whisper', function() {
 
         it('should not let the chosen character be one that is already tainted', function() {
             this.harrier.taint();
-            this.game.queueSimpleStep(() => taint().resolve(this.initiate, this.game.getFrameworkContext(this.player2.player)));
-            this.game.continue();
+            this.player2.clickCard(this.affliction);
+            this.player2.clickCard(this.initiate);
+            expect(this.initiate.isTainted).toBe(true);
             expect(this.player2).toHavePrompt('Triggered Abilities');
             this.player2.clickCard(this.whisper);
 

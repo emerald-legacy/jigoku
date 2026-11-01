@@ -54,7 +54,7 @@ describe('Insightful Gatekeeper', function() {
             expect(this.gatekeeper.militarySkill).toBe(this.gatekeeper.getBaseMilitarySkill());
         });
 
-        it('should give +2 mil when not participating', function() {
+        it('should not give +2 mil when not participating', function() {
             this.player2.claimRing('void');
             this.noMoreActions();
             this.initiateConflict({

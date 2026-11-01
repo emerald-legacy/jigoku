@@ -54,7 +54,7 @@ describe('Cunning Confidant', function() {
             expect(this.confidant.politicalSkill).toBe(this.confidant.getBasePoliticalSkill());
         });
 
-        it('should give +2 pol when not participating', function() {
+        it('should not give +2 pol when not participating', function() {
             this.player2.claimRing('void');
             this.noMoreActions();
             this.initiateConflict({

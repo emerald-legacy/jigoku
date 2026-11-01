@@ -48,7 +48,7 @@ describe('Kitsuki Sano', function() {
             });
 
             it('does not work when opposed', function() {
-                const _initialHand = this.player1.hand.length;
+                const initialHand = this.player1.hand.length;
                 this.initiateConflict({
                     attackers: [this.kitsukiSano],
                     defenders: [this.miyaMystic]
@@ -56,6 +56,9 @@ describe('Kitsuki Sano', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.kitsukiSano);
                 expect(this.player1).not.toHavePrompt('Choose 2 cards to discard');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.player1.hand.length).toBe(initialHand);
+                expect(initialHand).toBe(3);
             });
         });
     });

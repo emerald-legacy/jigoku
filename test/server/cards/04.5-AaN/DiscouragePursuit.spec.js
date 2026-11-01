@@ -41,6 +41,8 @@ describe('Discourage Pursuit', function() {
                 this.player1.moveCard('shosuro-miyako', 'dynasty discard pile');
                 this.player1.clickCard('discourage-pursuit');
                 expect(this.player1).not.toHavePrompt('Choose a character');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.player1.findCardByName('discourage-pursuit').location).toBe('hand');
             });
         });
     });

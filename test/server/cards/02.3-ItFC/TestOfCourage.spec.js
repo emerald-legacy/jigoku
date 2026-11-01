@@ -22,6 +22,7 @@ describe('Test of Courage', function() {
         it('cannot be played outside a conflict', function() {
             this.player1.clickCard(this.testOfCourage);
             expect(this.testOfCourage.location).toBe('hand');
+            expect(this.player1).toHavePrompt('Action Window');
         });
 
         it('moves a character to the conflict, then honors it', function() {

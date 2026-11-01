@@ -6,14 +6,17 @@ describe('Agasha Swordsmith', function() {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['agasha-swordsmith'],
-                        conflictDeck: ['hurricane-punch', 'centipede-tattoo', 'mantra-of-fire', 'censure', 'ornate-fan'],
-                        conflictDeckSize: 5
+                        conflictDiscard: ['fine-katana', 'hurricane-punch', 'centipede-tattoo', 'mantra-of-fire', 'censure', 'ornate-fan']
                     },
                     player2: {
                     }
                 });
                 this.agashaSwordsmith = this.player1.findCardByName('agasha-swordsmith');
                 this.ornateFan = this.player1.findCardByName('ornate-fan');
+                this.fineKatana = this.player1.findCardByName('fine-katana');
+                // the sixth card, an attachment too, stays on the bottom out of reach
+                this.player1.reduceDeckToNumber('conflict deck', 0);
+                ['fine-katana', 'hurricane-punch', 'centipede-tattoo', 'mantra-of-fire', 'censure', 'ornate-fan'].forEach((card) => this.player1.moveCard(card, 'conflict deck'));
             });
 
             it('should prompt tp choose from the top 5 cards for an attachment', function() {
@@ -24,6 +27,8 @@ describe('Agasha Swordsmith', function() {
                 expect(this.player1).toHaveDisabledPromptButton('Mantra of Fire');
                 expect(this.player1).toHaveDisabledPromptButton('Censure');
                 expect(this.player1).toHavePromptButton('Ornate Fan');
+                expect(this.player1).not.toHavePromptButton('Fine Katana');
+                expect(this.player1.conflictDeck.at(-1)).toBe(this.fineKatana);
             });
 
             it('should reveal the chosen attachment', function() {

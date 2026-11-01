@@ -1,6 +1,3 @@
-import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
-import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
-
 describe('Repentant Legion', function() {
     integration(function() {
         beforeEach(function() {
@@ -11,7 +8,8 @@ describe('Repentant Legion', function() {
                     dynastyDiscard: ['doji-whisperer', 'matsu-berserker', 'miya-mystic', 'imperial-storehouse']
                 },
                 player2: {
-                    inPlay: ['doji-challenger']
+                    inPlay: ['doji-challenger'],
+                    hand: ['raze-to-the-ground']
                 }
             });
 
@@ -24,6 +22,7 @@ describe('Repentant Legion', function() {
             this.storehouse = this.player1.moveCard('imperial-storehouse', 'dynasty deck');
 
             this.dojiChallenger = this.player2.findCardByName('doji-challenger');
+            this.raze = this.player2.findCardByName('raze-to-the-ground');
         });
 
         it('should trigger on breaking an enemy province', function() {
@@ -87,11 +86,16 @@ describe('Repentant Legion', function() {
             });
 
             const attackersProvince = this.player2.findCardByName('shameful-display', 'province 1');
-            const context = new ResolvableAbility(this.dojiChallenger, {}).createContext(this.player2.player);
-            this.game.queueSimpleStep(() => breakProvince().resolve(attackersProvince, context));
-            this.game.continue();
+            attackersProvince.facedown = false;
+            this.repentantLegion.bowed = true;
+            this.noMoreActions();
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 3 vs 0');
+            this.player2.clickCard(this.raze);
+            this.player2.clickCard(this.dojiChallenger);
+            this.player2.clickCard(attackersProvince);
             this.player1.clickPrompt('No');
             expect(attackersProvince.isBroken).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.repentantLegion);
         });
 

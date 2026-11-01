@@ -1,6 +1,6 @@
 describe('Relentless Inquisitor', function() {
     integration(function() {
-        describe('For Shame!\'s ability', function() {
+        describe('Relentless Inquisitor\'s ability', function() {
             beforeEach(function() {
                 this.setupTest({
                     phase: 'conflict',

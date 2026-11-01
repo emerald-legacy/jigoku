@@ -302,6 +302,14 @@ describe('Kunshu', function () {
             this.player1.clickCard(this.afwtd);
             this.player1.clickCard(this.kachiko);
 
+            expect(this.kachiko.bowed).toBe(true);
+            expect(this.kachiko.isDishonored).toBe(true);
+            expect(this.afwtd.location).toBe('conflict discard pile');
+            expect(this.player2.conflictDiscard).toContain(this.afwtd);
+            expect(this.player1.player.imperialFavor).toBe('');
+            expect(this.getChatLogs(10)).toContain(
+                'player1 uses Bayushi Kachiko\'s gained ability from Kunshu, discarding the Imperial Favor to play A Fate Worse Than Death'
+            );
             expect(this.getChatLogs(5)).not.toContain(
                 'player1 plays a card from their opponent\'s conflict discard pile due to the ability of Bayushi Kachiko (2 uses remaining)'
             );

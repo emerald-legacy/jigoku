@@ -96,6 +96,8 @@ describe('Outmaneuvered by Force', function () {
                     expect(this.player1).not.toBeAbleToSelect(
                         this.outmaneuveredByForce
                     );
+                    expect(this.player1).toHavePrompt('Action Window');
+                    expect(this.outmaneuveredByForce.location).toBe('hand');
                 });
             });
 
@@ -171,9 +173,11 @@ describe('Outmaneuvered by Force', function () {
                     this.player1.clickPrompt('Don\'t Resolve');
 
                     this.player1.pass();
+                    expect(this.player2).toHavePrompt('Action Window');
                     expect(this.player2).not.toBeAbleToSelect(
                         this.outmaneuveredByForce
                     );
+                    expect(this.outmaneuveredByForce.location).toBe('hand');
                 });
             });
         });

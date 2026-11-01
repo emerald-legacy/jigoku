@@ -50,7 +50,7 @@ describe('Gift of Amaterasu', function() {
                 });
             });
 
-            it('should trigger if won  by 5 or more skill', function() {
+            it('should not trigger if won by less than 5 skill', function() {
                 this.initiateConflict({
                     attackers: [this.toturi],
                     defenders: [this.whisperer],
@@ -58,8 +58,10 @@ describe('Gift of Amaterasu', function() {
                 });
                 this.player2.pass();
                 this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 3 vs 3');
                 this.player1.clickCard(this.gift);
                 expect(this.player1).not.toHavePrompt('Gift of Amaterasu');
+                expect(this.gift.location).toBe('hand');
             });
         });
     });

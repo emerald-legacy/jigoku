@@ -110,6 +110,7 @@ describe('Chikara', function() {
                     });
                     this.noMoreActions();
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                    expect(this.getChatLogs(5)).toContain('player1 won a military conflict 7 vs 7');
                 });
 
                 it('should let you choose a participating character', function() {

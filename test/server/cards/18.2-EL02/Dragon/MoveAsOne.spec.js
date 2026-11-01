@@ -77,7 +77,7 @@ describe('Move as One', function() {
             expect(this.getChatLogs(5)).toContain('player1 puts 7 cards on the bottom of their conflict deck');
         });
 
-        it('should be max 1 per round', function() {
+        it('should be max 1 per conflict: a second copy found by the first can\'t react to the same declaration', function() {
             this.initiateConflict({
                 attackers: [this.ancientMaster]
             });
@@ -92,7 +92,8 @@ describe('Move as One', function() {
             expect(this.player1).toHaveDisabledPromptButton('Centipede Tattoo');
             expect(this.player1).toHavePromptButton('Take nothing');
 
-            this.player1.clickPrompt('Hurricane Punch (2)');
+            this.player1.clickPrompt('Move as One');
+            expect(this.alignment2.location).toBe('hand');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.getChatLogs(3)).toContain('player1 has initiated a military conflict with skill 1');
         });

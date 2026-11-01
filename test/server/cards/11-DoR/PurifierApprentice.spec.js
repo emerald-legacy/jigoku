@@ -50,6 +50,7 @@ describe('Purifier Apprentice', function() {
 
                 const honor = this.player1.honor;
                 expect(this.player2).not.toBeAbleToSelect(this.purifier);
+                expect(this.getChatLogs(10)).toContain('player2 won a military conflict 7 vs 5');
                 this.player2.clickCard(this.purifier);
                 expect(this.player1.honor).toBe(honor);
             });
@@ -67,6 +68,7 @@ describe('Purifier Apprentice', function() {
 
                 const honor = this.player1.honor;
                 expect(this.player2).not.toBeAbleToSelect(this.purifier);
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 4 vs 2');
                 this.player2.clickCard(this.purifier);
                 expect(this.player1.honor).toBe(honor);
             });

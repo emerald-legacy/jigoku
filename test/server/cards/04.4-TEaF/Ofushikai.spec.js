@@ -39,6 +39,7 @@ describe('Ofushikai', function() {
             it('should not attach to a non-unique character', function() {
                 this.player1.clickCard('ofushikai');
                 expect(this.player1).not.toBeAbleToSelect(this.fearsomeMysic);
+                expect(this.player1).toBeAbleToSelect(this.shibaTsukune);
             });
 
             it('should not grant an ability to a character that is not a champion when attached', function() {

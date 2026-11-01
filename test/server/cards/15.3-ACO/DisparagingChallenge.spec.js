@@ -1,4 +1,4 @@
-describe('Disaraging Challenge', function() {
+describe('Disparaging Challenge', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

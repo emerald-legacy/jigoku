@@ -1,5 +1,3 @@
-import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
-
 describe('Breakthrough', function () {
     integration(function () {
         describe('Breakthrough', function () {
@@ -158,19 +156,20 @@ describe('Breakthrough after a province broke outside conflict resolution', func
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['moto-horde', 'aggressive-moto'],
+                    inPlay: ['doji-whisperer', 'aggressive-moto', 'moto-horde'],
                     hand: ['breakthrough']
                 },
                 player2: {
-                    inPlay: ['mirumoto-raitsugu', 'doji-challenger']
+                    inPlay: ['mirumoto-raitsugu', 'doji-challenger'],
+                    provinces: ['endless-plains']
                 }
             });
-            this.motoHorde = this.player1.findCardByName('moto-horde');
+            this.dojiWhisperer = this.player1.findCardByName('doji-whisperer');
             this.aggressiveMoto = this.player1.findCardByName('aggressive-moto');
             this.breakthrough = this.player1.findCardByName('breakthrough');
             this.raitsugu = this.player2.findCardByName('mirumoto-raitsugu');
             this.challenger = this.player2.findCardByName('doji-challenger');
-            this.province = this.player2.findCardByName('shameful-display', 'province 1');
+            this.province = this.player2.findCardByName('endless-plains', 'province 1');
             this.noMoreActions();
         });
 
@@ -178,17 +177,18 @@ describe('Breakthrough after a province broke outside conflict resolution', func
             this.initiateConflict({
                 type: 'political',
                 province: this.province,
-                attackers: [this.aggressiveMoto],
-                defenders: [this.raitsugu, this.challenger]
+                attackers: [this.dojiWhisperer, this.aggressiveMoto]
             });
-            this.game.queueSimpleStep(() => breakProvince().resolve(this.province, this.game.getFrameworkContext(this.player2.player)));
-            this.game.continue();
+            this.player2.clickCard(this.province);
             this.player1.clickPrompt('No');
+            this.player1.clickCard(this.aggressiveMoto);
             expect(this.province.isBroken).toBe(true);
+            expect(this.aggressiveMoto.location).toBe('dynasty discard pile');
+            this.player2.assignDefenders([this.raitsugu, this.challenger]);
 
             this.player2.pass();
             this.player1.pass();
-            expect(this.getChatLogs(10)).toContain('player2 won a political conflict 5 vs 0');
+            expect(this.getChatLogs(10)).toContain('player2 won a political conflict 5 vs 3');
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.breakthrough);
         });

@@ -128,6 +128,8 @@ describe('Upholding Authority', function() {
                 expect(this.player1.player.hand.length).toBe(0);
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
                 this.upholdingAuthority = this.player2.clickCard('upholding-authority');
+                expect(this.player2).not.toHavePrompt('Choose a card to discard');
+                expect(this.player1).toHavePrompt('Break Upholding Authority');
             });
         });
 

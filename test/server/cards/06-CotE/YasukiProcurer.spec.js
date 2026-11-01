@@ -106,8 +106,7 @@ describe('Yasuki Procurer', function() {
 
                 it('should reduce the cost of the next attachment by 1', function() {
                     const playerFate = this.player1.player.fate;
-                    const expectedFateCost = Math.max(0, this.watchCommander.getCost() - 1);
-                    expect(expectedFateCost).toBe(0);
+                    const expectedFateCost = 0;
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.watchCommander);
                     this.player1.clickCard(this.yasukiProcurer);
@@ -117,8 +116,7 @@ describe('Yasuki Procurer', function() {
 
                 it('should reduce the cost of the next character by 1', function() {
                     const playerFate = this.player1.player.fate;
-                    const expectedFateCost = Math.max(0, this.masterOfTheSpear.getCost() - 1);
-                    expect(expectedFateCost).toBe(2);
+                    const expectedFateCost = 2;
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.masterOfTheSpear);
                     this.player1.clickPrompt('0');
@@ -144,8 +142,7 @@ describe('Yasuki Procurer', function() {
                     this.player1.clickCard(this.masterOfTheSpear);
                     this.player1.clickPrompt('0');
                     this.player1.clickPrompt('Home');
-                    const expectedFateCost1 = Math.max(0, this.masterOfTheSpear.getCost() - 1);
-                    expect(expectedFateCost1).toBe(2);
+                    const expectedFateCost1 = 2;
                     this.player2.pass();
                     this.player1.clickCard(this.watchCommander);
                     const expectedFateCost2 = this.watchCommander.getCost();
@@ -172,7 +169,7 @@ describe('Yasuki Procurer', function() {
                     expect(this.player1).toHavePromptButton('1');
                     this.player1.clickPrompt('0');
                     this.player1.clickPrompt('Home');
-                    const expectedFateCost2 = Math.max(0, this.masterOfTheSpear.getCost() - 1);
+                    const expectedFateCost2 = 2;
                     expect(this.player1.player.fate).toBe(playerFate - expectedFateCost1 - expectedFateCost2);
                 });
             });

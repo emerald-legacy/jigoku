@@ -23,6 +23,7 @@ describe('Hiruma Kogoe', function () {
                 this.player2.player.honor = 3;
                 this.nextPhase();
                 expect(this.player1).not.toBeAbleToSelect(this.kogoe);
+                expect(this.player1).toHavePrompt('Choose how much honor to bid in the draw phase');
             });
 
             it('should trigger if lower honor', function () {
@@ -35,6 +36,7 @@ describe('Hiruma Kogoe', function () {
                 this.player2.player.honor = 5;
                 this.nextPhase();
                 expect(this.player1).not.toBeAbleToSelect(this.kogoe);
+                expect(this.player1).toHavePrompt('Choose how much honor to bid in the draw phase');
             });
 
             it('should correctly rearrange cards', function () {

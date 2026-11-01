@@ -28,6 +28,7 @@ describe('Demonstrating Excellence', function() {
                 this.demonstratingExcellence = this.player2.clickCard('demonstrating-excellence');
                 expect(this.player1).toHavePrompt('Break Demonstrating Excellence');
                 expect(this.player2.fate).toBe(fate + 1);
+                expect(this.player2.hand.length).toBe(1);
                 expect(this.demonstratingExcellence.isBroken).toBe(true);
             });
         });

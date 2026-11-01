@@ -58,6 +58,9 @@ describe('Agasha Sumiko 2', function() {
             this.player2.clickCard(this.swim);
             this.player2.clickCard(this.sumiko);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.sumiko.location).toBe('dynasty discard pile');
+            expect(this.player2.honor).toBe(10);
+            expect(this.player2.fate).toBe(10);
         });
 
         it('should not trigger - more honor, fate, and cards', function() {
@@ -70,6 +73,9 @@ describe('Agasha Sumiko 2', function() {
             this.player2.clickCard(this.swim);
             this.player2.clickCard(this.sumiko);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.sumiko.location).toBe('dynasty discard pile');
+            expect(this.player2.honor).toBe(10);
+            expect(this.player2.fate).toBe(10);
         });
 
         it('should cause opponent to lose 2 fate if they have more fate', function() {

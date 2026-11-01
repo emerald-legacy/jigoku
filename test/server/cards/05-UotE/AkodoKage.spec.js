@@ -34,6 +34,7 @@ describe('Akodo Kage', function() {
                     this.player2.clickPrompt('2');
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
                     expect(this.player1).not.toBeAbleToSelect(this.akodoKage.id);
+                    expect(this.player1.hand.length).toBe(2);
                 });
 
                 it('should not trigger if your bid is greater than an opponent\'s', function () {
@@ -41,6 +42,7 @@ describe('Akodo Kage', function() {
                     this.player2.clickPrompt('2');
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
                     expect(this.player1).not.toBeAbleToSelect(this.akodoKage.id);
+                    expect(this.player1.hand.length).toBe(3);
                 });
             });
 
@@ -55,6 +57,7 @@ describe('Akodo Kage', function() {
                     this.player2.clickPrompt('2');
                     expect(this.player1).not.toHavePrompt('Triggered Abilities');
                     expect(this.player1).not.toBeAbleToSelect(this.akodoKage.id);
+                    expect(this.player1.hand.length).toBe(1);
                 });
             });
 

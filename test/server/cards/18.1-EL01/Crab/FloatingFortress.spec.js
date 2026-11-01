@@ -86,6 +86,7 @@ describe('Floating Fortress', function () {
             const fortress2 = this.player2.filterCardsByName('floating-fortress').find((card) => card !== this.fortress);
             this.player2.placeCardInProvince(fortress2, 'province 3');
             fortress2.facedown = false;
+            const initialFate = this.player2.fate;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -98,8 +99,14 @@ describe('Floating Fortress', function () {
             this.player2.clickPrompt('No');
             this.player1.pass();
 
+            expect(this.fortress.name).toBe('Fire and Oil');
+            expect(this.player2.fate).toBe(initialFate - 1);
+
             this.player2.clickCard(fortress2);
             expect(this.player2).not.toHavePrompt('Choose a holding');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.player2.fate).toBe(initialFate - 1);
+            expect(fortress2.name).toBe('Floating Fortress');
         });
     });
 });

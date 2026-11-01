@@ -1,4 +1,4 @@
-describe('Mirumoto\'s Peak', function() {
+describe('Mirumoto Rei', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
@@ -79,6 +79,8 @@ describe('Mirumoto\'s Peak', function() {
             });
 
             this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.rei.isParticipating()).toBe(false);
             expect(this.player1).not.toBeAbleToSelect(this.rei);
         });
     });

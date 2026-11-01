@@ -68,6 +68,9 @@ describe('Foreign Customs', function () {
             it('is not playable without any unicorn cards', function () {
                 this.player1.clickCard(this.foreignCustoms);
                 expect(this.player1).not.toHavePrompt('Choose a character');
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.foreignCustoms.location).toBe('hand');
+                expect(this.adept.bowed).toBe(true);
             });
         });
 
@@ -143,6 +146,10 @@ describe('Foreign Customs', function () {
                 this.player2.clickPrompt('1');
 
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(10)).toContain('Kakita Toshimoko: 4 vs 4: Doji Challenger');
+                expect(this.getChatLogs(10)).toContain('The duel ends in a draw');
+                expect(this.foreignCustoms.location).toBe('hand');
+                expect(this.chagatai.location).toBe('province 2');
             });
 
             it('should not react if you win', function () {
@@ -160,6 +167,9 @@ describe('Foreign Customs', function () {
                 this.player2.clickPrompt('2');
 
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(10)).toContain('Kakita Toshimoko: 5 vs 4: Doji Challenger');
+                expect(this.foreignCustoms.location).toBe('hand');
+                expect(this.chagatai.location).toBe('province 2');
             });
         });
     });

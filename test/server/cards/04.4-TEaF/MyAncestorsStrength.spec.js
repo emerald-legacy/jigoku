@@ -88,6 +88,7 @@ describe('My Ancestors Strength', function() {
                 this.player1.clickCard('my-ancestor-s-strength');
                 this.asakoDiplomat = this.player1.findCardByName('asako-diplomat');
                 expect(this.player1).not.toBeAbleToSelect(this.asakoDiplomat);
+                expect(this.player1).toBeAbleToSelect('fearsome-mystic');
             });
         });
 

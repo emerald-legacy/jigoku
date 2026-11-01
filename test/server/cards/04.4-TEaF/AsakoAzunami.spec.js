@@ -41,6 +41,7 @@ describe('Asako Azunami', function() {
                 // Break Province prompt
                 this.player1.clickPrompt('No');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1).toHavePromptButton('Gain 2 Honor');
             });
 
             it('should prompt the player to select targets', function() {

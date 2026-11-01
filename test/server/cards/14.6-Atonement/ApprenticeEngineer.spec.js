@@ -99,6 +99,8 @@ describe('Apprentice Engineer', function() {
             this.player1.clickCard(this.engineer);
             this.player1.clickPrompt('0');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.engineer.location).toBe('play area');
+            expect(this.player2).toHavePrompt('Action Window');
         });
 
         it('chat messages', function() {

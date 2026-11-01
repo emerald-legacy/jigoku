@@ -59,14 +59,14 @@ describe('Adorned Temple', function() {
             expect(this.getChatLogs(5)).toContain('player1 uses Adorned Temple to draw 2 cards');
         });
 
-        it('should react to adding fate via framework effects', function() {
+        it('should not react to adding fate via framework effects', function() {
             this.player1.clickCard(this.shoju2);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.getChatLogs(5)).toContain('player1 discards a duplicate to add 1 fate to Bayushi Shoju');
             expect(this.player2).toHavePrompt('Play cards from provinces');
         });
 
-        it('should react to playing with fate', function() {
+        it('should not react to playing with fate', function() {
             this.player1.clickCard(this.artist);
             this.player1.clickPrompt('2');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
@@ -75,7 +75,7 @@ describe('Adorned Temple', function() {
     });
 });
 
-describe('Shadowed Village - Putting fate on yourself', function() {
+describe('Adorned Temple - Putting fate on yourself', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

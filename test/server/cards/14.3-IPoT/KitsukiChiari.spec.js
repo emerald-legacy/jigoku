@@ -122,6 +122,8 @@ describe('Kitsuki Chiari', function () {
                 attackers: [this.chiari]
             });
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1.findCardByName('shameful-display', 'province 1').facedown).toBe(false);
+            expect(this.player1).toHavePrompt('Choose defenders');
         });
 
         it('no poison attachments', function () {

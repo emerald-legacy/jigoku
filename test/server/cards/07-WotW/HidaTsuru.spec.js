@@ -93,6 +93,9 @@ describe('Hida Tsuru', function() {
                 this.player2.clickPrompt('0');
                 this.player2.clickPrompt('Home');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.stoicGunso.location).toBe('play area');
+                expect(this.stoicGunso.inConflict).toBe(false);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
             it('should not trigger if he is not participating in the conflict', function() {
@@ -104,9 +107,14 @@ describe('Hida Tsuru', function() {
                 this.player2.clickPrompt('0');
                 this.player2.clickPrompt('Home');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.stoicGunso.location).toBe('play area');
+                expect(this.stoicGunso.inConflict).toBe(false);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.pass();
                 this.player2.clickCard(this.shinjoOutrider);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.shinjoOutrider.inConflict).toBe(true);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
             it('should give him +1/+1', function() {

@@ -23,6 +23,7 @@ describe('Feral Ningyo', function () {
                 this.player2.pass();
                 this.player1.clickCard(this.feral);
                 expect(this.player1).not.toHavePromptButton('Put into play');
+                expect(this.player1).toHavePromptButton('0');
             });
 
             it('should not activate during non-water conflicts', function () {
@@ -36,6 +37,7 @@ describe('Feral Ningyo', function () {
                 this.player2.clickPrompt('Pass');
                 this.player1.clickCard(this.feral);
                 expect(this.player1).not.toHavePromptButton('Put into play');
+                expect(this.player1).toHavePromptButton('0');
             });
 
             describe('when Hida Kisada\'s ability is active', function () {

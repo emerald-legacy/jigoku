@@ -41,6 +41,7 @@ describe('Proving Ground', function() {
                 this.player2.clickCard(this.dojiChallenger);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
+                expect(this.getChatLogs(5)).toContain('Mirumoto Raitsugu: 5 vs 4: Doji Challenger');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
 

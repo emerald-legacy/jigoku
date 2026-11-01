@@ -147,6 +147,7 @@ describe('Jealous Ancestor', function () {
                     this.noMoreActions();
                     expect(this.player1).not.toHavePrompt('Any reactions?');
                     expect(this.player1).not.toBeAbleToSelect(this.giftedTactician);
+                    expect(this.getChatLogs(10)).toContain('player1 won a military conflict 4 vs 2');
                 });
 
                 it('blocks parent player deck search', function () {
@@ -166,6 +167,9 @@ describe('Jealous Ancestor', function () {
                     this.player2.pass();
                     this.player1.clickCard(this.ancestralArmory);
                     expect(this.player1).not.toHavePrompt('Ancestral Armory');
+                    expect(this.player1).toHavePrompt('Conflict Action Window');
+                    expect(this.ancestralArmory.location).toBe('province 1');
+                    expect(this.player1.findCardByName('fine-katana').location).toBe('conflict discard pile');
                 });
 
                 it('blocks parent return characters to hand', function () {

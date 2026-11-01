@@ -139,6 +139,10 @@ describe('Village Doshin', function () {
             this.player2.clickCard(this.dragonsClaw);
 
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.dragonsClaw.location).toBe('conflict discard pile');
+            expect(this.letGo.location).toBe('conflict discard pile');
+            expect(this.villageDoshin.location).toBe('hand');
+            expect(this.player1).toHavePrompt('Action Window');
         });
     });
 });

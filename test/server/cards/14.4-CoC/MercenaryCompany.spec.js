@@ -45,6 +45,8 @@ describe('Mercenary Company', function() {
 
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Place a fate on Mercenary Company to take control of it?');
+            expect(this.getChatLogs(10)).toContain('player2 won a military conflict 11 vs 7');
+            expect(this.company.controller).toBe(this.player1.player);
         });
 
         it('should not prompt opponent if this wins a conflict', function() {
@@ -57,6 +59,8 @@ describe('Mercenary Company', function() {
 
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Place a fate on Mercenary Company to take control of it?');
+            expect(this.getChatLogs(10)).toContain('player1 won a military conflict 7 vs 6');
+            expect(this.company.controller).toBe(this.player1.player);
         });
 
         it('should move a fate and take control of the company', function() {

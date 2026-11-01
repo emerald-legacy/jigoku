@@ -69,6 +69,8 @@ describe('Invocation of Ash and a character it can\'t move to', function () {
         it('can\'t choose a character with "No attachments"', function () {
             this.player1.clickCard(this.ash);
             expect(this.player1).not.toBeAbleToSelect(this.whisperers);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.ash.parent).toBe(this.mystic);
         });
     });
 });

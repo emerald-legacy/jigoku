@@ -81,6 +81,7 @@ describe('Togashi Yoshi', function() {
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player1).not.toBeAbleToSelect(this.togashiYoshi);
                 expect(this.player1.fate).toBe(6);
+                expect(this.getChatLogs(5)).toContain('player2 won a political conflict 2 vs 1');
             });
         });
     });

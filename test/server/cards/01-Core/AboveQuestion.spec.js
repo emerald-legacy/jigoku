@@ -86,7 +86,7 @@ describe('Above Question', function() {
                 expect(this.player2).toBeAbleToSelect(this.vanguardWarrior);
             });
 
-            it('should not forbid opponent\'s events to target attached character', function() {
+            it('should forbid events of the attached character\'s controller (Above Question\'s opponent) to target it', function() {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.siegeCaptain, this.vanguardWarrior],

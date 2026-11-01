@@ -48,7 +48,9 @@ describe('Spoils Of War', function() {
                 this.player2.clickCard(this.kuroiMori);
                 this.player2.clickPrompt('Switch the conflict type');
                 this.noMoreActions();
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 2 vs 0');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.spoilsOfWar.location).toBe('hand');
             });
 
             it('should not trigger after you win a military conflict as a defender', function() {
@@ -58,8 +60,10 @@ describe('Spoils Of War', function() {
                 this.player2.clickCard(this.outrider);
                 this.player1.pass();
                 this.player2.pass();
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 4 vs 3');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.spoilsOfWar.location).toBe('hand');
             });
 
             it('should draw 3 cards', function() {
@@ -90,7 +94,9 @@ describe('Spoils Of War', function() {
                 this.noMoreActions();
                 this.player1.clickCard(this.spoilsOfWar);
                 this.player1.clickCard(this.ornateFan);
+                expect(this.ornateFan.location).toBe('conflict discard pile');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1.filterCardsByName('spoils-of-war', 'hand').length).toBe(1);
             });
         });
     });

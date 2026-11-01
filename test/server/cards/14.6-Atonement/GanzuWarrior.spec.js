@@ -77,6 +77,8 @@ describe('Ganzu Warrior', function () {
                 province: this.fortress
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.fortress.facedown).toBe(false);
+            expect(this.player2).toHavePrompt('Choose defenders');
         });
 
         it('should activate when a province is revealed mid-conflict', function () {

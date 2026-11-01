@@ -39,7 +39,8 @@ describe('Matsu Tsuko', function() {
                 this.player2.pass();
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.matsuTsuko);
-                expect(this.player1.player.honor).toBeGreaterThan(this.player2.player.honor);
+                expect(this.player1.player.honor).toBe(11);
+                expect(this.player2.player.honor).toBe(10);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
@@ -54,7 +55,8 @@ describe('Matsu Tsuko', function() {
                 });
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.matsuTsuko);
-                expect(this.player1.player.honor).toBeGreaterThan(this.player2.player.honor);
+                expect(this.player1.player.honor).toBe(11);
+                expect(this.player2.player.honor).toBe(10);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
@@ -81,7 +83,8 @@ describe('Matsu Tsuko', function() {
                 this.player2.pass();
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.matsuTsuko);
-                expect(this.player1.player.honor).toBeLessThan(this.player2.player.honor);
+                expect(this.player1.player.honor).toBe(9);
+                expect(this.player2.player.honor).toBe(10);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
@@ -95,7 +98,8 @@ describe('Matsu Tsuko', function() {
                 this.player2.pass();
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.matsuTsuko);
-                expect(this.player1.player.honor).toBeGreaterThan(this.player2.player.honor);
+                expect(this.player1.player.honor).toBe(11);
+                expect(this.player2.player.honor).toBe(10);
                 expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
             });
 
@@ -114,8 +118,7 @@ describe('Matsu Tsuko', function() {
 
                 it('should reduce the cost of the next card by 2 (event)', function() {
                     const playerFate = this.player1.player.fate;
-                    const expectedFateCost = Math.max(0, this.strengthInNumbers.getCost() - 2);
-                    expect(expectedFateCost).toBe(0);
+                    const expectedFateCost = 0;
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.strengthInNumbers);
                     this.player1.clickCard(this.mirumotoRaitsugu);
@@ -125,8 +128,7 @@ describe('Matsu Tsuko', function() {
 
                 it('should reduce the cost of the next card by 2 (attachment)', function() {
                     const playerFate = this.player1.player.fate;
-                    const expectedFateCost = Math.max(0, this.sashimono.getCost() - 2);
-                    expect(expectedFateCost).toBe(0);
+                    const expectedFateCost = 0;
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.sashimono);
                     this.player1.clickCard(this.matsuTsuko);
@@ -136,8 +138,7 @@ describe('Matsu Tsuko', function() {
 
                 it('should reduce the cost of the next card by 2 (character)', function() {
                     const playerFate = this.player1.player.fate;
-                    const expectedFateCost = Math.max(0, this.masterOfTheSpear.getCost() - 2);
-                    expect(expectedFateCost).toBe(1);
+                    const expectedFateCost = 1;
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.masterOfTheSpear);
                     this.player1.clickPrompt('0');
@@ -149,8 +150,7 @@ describe('Matsu Tsuko', function() {
                 it('should only reduce the cost of the next card played', function() {
                     const playerFate = this.player1.player.fate;
                     this.player1.clickCard(this.strengthInNumbers);
-                    const expectedFateCost1 = Math.max(0, this.strengthInNumbers.getCost() - 2);
-                    expect(expectedFateCost1).toBe(0);
+                    const expectedFateCost1 = 0;
                     this.player1.clickCard(this.mirumotoRaitsugu);
                     this.player2.pass();
                     this.player1.clickCard(this.sashimono);

@@ -13,7 +13,7 @@ describe('Grasp of Earth', function () {
             this.grasp = this.player1.findCardByName('grasp-of-earth');
         });
 
-        it('costs 1 fate with Earth affinity', function () {
+        it('can be attached to a Shugenja you control for 1 fate', function () {
             expect(this.player1.player.hasAffinity('earth')).toBe(true);
             const fate = this.player1.fate;
             this.player1.playAttachment(this.grasp, this.student);

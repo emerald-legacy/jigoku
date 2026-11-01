@@ -78,6 +78,8 @@ describe('Bayushi Aramoro', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.aramoro);
                 expect(this.player1).not.toHavePrompt('Bayushi Aramoro');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.aramoro.isDishonored).toBe(true);
             });
 
             it('should kill moto youth if his skill is at 2 or lower', function() {

@@ -53,6 +53,9 @@ describe('Miya Library', function () {
             it('should not let you select an imperial holding', function () {
                 this.player1.clickCard(this.miyaLibrary);
                 expect(this.player1).not.toBeAbleToSelect('Kanjo District');
+                expect(this.player1).toHavePrompt('Select an Imperial character to replace Miya Library');
+                expect(this.player1).not.toHavePromptButton('Kanjo District');
+                expect(this.player1).toHavePromptButton('Miya Satoshi');
             });
 
             it('should still let you rearrange your deck if there is not an imperial character', function () {

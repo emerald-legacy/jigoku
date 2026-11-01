@@ -44,6 +44,7 @@ describe('Yasuki Oguri', function() {
                 this.player1.clickPrompt('Done');
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
                 expect(this.player2).not.toBeAbleToSelect(this.oguri);
+                expect(this.outrider.militarySkill).toBe(4);
             });
 
             it('should give him +1/+1', function() {
